@@ -3,19 +3,18 @@
 :root {
   /* Adjusted Palette - More Grey, less pure Black */
   --color-bg-base: 220 15% 12%;
-  /* Dark Slate Grey, not Black */
   --color-bg-surface: 220 15% 18%;
-  /* Slightly lighter surface */
   --color-bg-elevated: 220 15% 24%;
 
   --color-text-primary: 220 20% 95%;
   --color-text-secondary: 220 10% 70%;
   --color-text-muted: 220 10% 50%;
 
-  --color-accent-purple: 260 100% 70%;
-  /* Lighter purple for better contrast against gray */
-  --color-accent-cyan: 190 90% 60%;
-  --color-accent-pink: 320 90% 65%;
+  /* Color Tweak: Lighter accents for better visibility */
+  --color-accent-purple: 260 100% 80%;
+  /* Increased lightness from 70% to 80% */
+  --color-accent-cyan: 190 90% 65%;
+  --color-accent-pink: 320 90% 70%;
 
   --color-border: 220 15% 30%;
 

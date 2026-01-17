@@ -23,8 +23,9 @@ export default function SocialBanner() {
                 <div className={styles.subtitle}>// The Meta-Portfolio</div>
 
                 <p className={styles.description}>
-                    A living, breathing, and occasionally broken map of my work.
-                    Less "Look at me," more "Look at this weird thing I found."
+                    A portfolio presented as a <span className={styles.highlight}>living system.</span><br />
+                    Intentionally unfinished. Like my laundry, but public.
+                    Replacing the static "Hire Me" site with a dynamic map of what I&apos;m actually breaking right now.
                 </p>
             </motion.div>
         </div>

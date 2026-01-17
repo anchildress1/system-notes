@@ -48,11 +48,32 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
                 <div className={styles.modalContent}>
                     <h2 className={styles.title}>{project.title}</h2>
-                    <div className={styles.meta}>{project.isOrg ? 'CheckMarK DevTools' : 'anchildress1'}</div>
+                    <div className={styles.meta}>
+                        <span>{project.isOrg ? 'CheckMarK DevTools' : 'anchildress1'}</span>
+                        {/* Future: Add more meta like "Updated 2 days ago" */}
+                    </div>
 
                     <p className={styles.bodyText}>
                         {project.longDescription || project.description}
                     </p>
+
+                    <div className={styles.infoSection}>
+                        <h4 className={styles.sectionHeader}>Tech Stack</h4>
+                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            {project.tech.map(t => (
+                                <span key={t} style={{
+                                    fontFamily: 'var(--font-mono)',
+                                    fontSize: '0.8rem',
+                                    padding: '0.2rem 0.5rem',
+                                    background: 'hsl(var(--color-bg-elevated))',
+                                    borderRadius: '4px',
+                                    color: 'hsl(var(--color-text-primary))'
+                                }}>
+                                    {t}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
 
                     <div className={styles.actions}>
                         <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className={styles.primaryBtn}>

@@ -19,7 +19,8 @@
 
 .imageContainer {
     width: 100%;
-    height: 160px;
+    aspect-ratio: 1.91 / 1;
+    /* Standard Open Graph ratio (~1200x630) */
     background: hsl(var(--color-bg-elevated));
     position: relative;
     overflow: hidden;
@@ -33,10 +34,11 @@
 }
 
 .card:hover .image {
+    /* Subtle zoom on hover */
     transform: scale(1.05);
 }
 
-/* Placeholder Art for missing images */
+/* Placeholder Art */
 .placeholderArt {
     width: 100%;
     height: 100%;
@@ -80,6 +82,8 @@
 }
 
 .title {
+    font-family: var(--font-sans);
+    /* Ensuring font usage */
     font-size: 1.1rem;
     font-weight: 700;
     color: hsl(var(--color-text-primary));
@@ -109,6 +113,12 @@
     margin-bottom: var(--space-md);
     line-height: 1.5;
     flex-grow: 1;
+
+    /* Prevent cutting off text oddly, but limit length still */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .tags {
