@@ -1,0 +1,53 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    /* Asymmetry in alignment */
+    padding: var(--space-md) var(--space-lg);
+    margin-bottom: var(--space-lg);
+    border-bottom: 1px solid transparent;
+    /* Placeholder for scroll effect if needed */
+}
+
+.identity {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: hsl(var(--color-text-primary));
+    letter-spacing: -0.02em;
+}
+
+.handle {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: hsl(var(--color-text-secondary));
+    margin-top: 0.2rem;
+}
+
+.systemName {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: hsl(var(--color-accent-purple));
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.7;
+}
+
+.nav {
+    display: flex;
+    gap: var(--space-md);
+}
+
+.navLink {
+    font-size: 0.9rem;
+    color: hsl(var(--color-text-secondary));
+    transition: color 0.2s ease;
+}
+
+.navLink:hover {
+    color: hsl(var(--color-text-primary));
+}

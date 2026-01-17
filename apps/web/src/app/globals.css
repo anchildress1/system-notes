@@ -1,27 +1,82 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
-  --background: #1E1F24;
-  --foreground: #ededed;
-  --surface: #3A3D46;
-  --primary: #B56BFF;
-  --accent-pink: #F16197;
-  --accent-teal: #3EC7C2;
+  /* HSL Colors for vibrancy and control */
+  --color-bg-base: 240 10% 4%; /* Dark gunmetal */
+  --color-bg-surface: 240 10% 8%;
+  --color-text-primary: 0 0% 95%;
+  --color-text-secondary: 240 5% 65%;
+  --color-accent-purple: 260 100% 65%; /* Electric Purple */
+  --color-accent-cyan: 190 100% 50%; /* Neon Cyan */
+  --color-accent-pink: 320 100% 60%;
+  --color-danger: 0 90% 65%;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 8rem;
+
+  /* Typography */
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Animation */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  --color-primary: var(--primary);
-  --color-accent-pink: var(--accent-pink);
-  --color-accent-teal: var(--accent-teal);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background-color: hsl(var(--color-bg-base));
+  color: hsl(var(--color-text-primary));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--color-bg-base));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--color-bg-surface));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--color-accent-purple) / 0.5);
+}
+
+/* Utilities (minimal) */
+.glass-panel {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-bg-surface) / 0.7),
+    hsl(var(--color-bg-base) / 0.8)
+  );
+  backdrop-filter: blur(12px);
+  border: 1px solid hsl(255 100% 100% / 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }

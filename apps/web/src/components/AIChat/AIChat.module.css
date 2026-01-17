@@ -1,0 +1,113 @@
+.chatWrapper {
+    position: fixed;
+    bottom: var(--space-md);
+    right: var(--space-md);
+    z-index: 100;
+    font-family: var(--font-sans);
+}
+
+.toggleButton {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: hsl(var(--color-bg-surface));
+    border: 1px solid hsl(var(--color-accent-purple));
+    color: hsl(var(--color-accent-purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s var(--ease-spring);
+}
+
+.toggleButton:hover {
+    transform: scale(1.1);
+    background: hsl(var(--color-accent-purple));
+    color: hsl(var(--color-bg-base));
+}
+
+.chatWindow {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 320px;
+    background: hsl(var(--color-bg-surface));
+    border: 1px solid hsl(var(--color-text-primary) / 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform-origin: bottom right;
+}
+
+.header {
+    padding: var(--space-sm);
+    background: hsl(var(--color-bg-base));
+    border-bottom: 1px solid hsl(var(--color-text-primary) / 0.1);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: hsl(var(--color-text-primary));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.statusDot {
+    width: 8px;
+    height: 8px;
+    background: hsl(var(--color-accent-cyan));
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    box-shadow: 0 0 8px hsl(var(--color-accent-cyan));
+}
+
+.messages {
+    padding: var(--space-sm);
+    height: 250px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.message {
+    font-size: 0.9rem;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 85%;
+    line-height: 1.4;
+}
+
+.botMessage {
+    align-self: flex-start;
+    background: hsl(var(--color-text-primary) / 0.05);
+    color: hsl(var(--color-text-secondary));
+    border-top-left-radius: 2px;
+}
+
+.userMessage {
+    align-self: flex-end;
+    background: hsl(var(--color-accent-purple) / 0.2);
+    color: hsl(var(--color-text-primary));
+    border-top-right-radius: 2px;
+}
+
+.inputArea {
+    padding: var(--space-sm);
+    border-top: 1px solid hsl(var(--color-text-primary) / 0.1);
+}
+
+.input {
+    width: 100%;
+    background: hsl(var(--color-bg-base));
+    border: 1px solid hsl(var(--color-text-primary) / 0.2);
+    padding: 8px 12px;
+    border-radius: 20px;
+    color: hsl(var(--color-text-primary));
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.input:focus {
+    border-color: hsl(var(--color-accent-purple));
+}
