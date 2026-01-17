@@ -1,0 +1,15 @@
+# lefthook.yml
+pre-commit:
+  parallel: true
+  commands:
+    lint-js:
+      glob: "*.{js,ts,jsx,tsx,json}"
+      run: npx turbo run lint --filter={staged_files}
+    lint-py:
+      glob: "*.py"
+      run: cd apps/api && .venv/bin/ruff check {staged_files} && .venv/bin/ruff format --check {staged_files}
+
+commit-msg:
+  commands:
+    commitlint:
+      run: npx --no-install commitlint --edit
