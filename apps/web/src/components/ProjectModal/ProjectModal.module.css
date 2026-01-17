@@ -1,0 +1,113 @@
+.modal {
+    background: hsl(var(--color-bg-surface));
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    border-radius: 16px;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.5);
+    border: 1px solid hsl(var(--color-accent-purple) / 0.3);
+}
+
+.banner {
+    height: 200px;
+    width: 100%;
+    background: hsl(var(--color-bg-elevated));
+    position: relative;
+}
+
+.bannerImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Fallback pattern for modal banner too */
+.placeholderBanner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, hsl(var(--color-bg-base)), hsl(var(--color-bg-elevated)));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placeholderBanner::after {
+    content: '🦄';
+    font-size: 4rem;
+    opacity: 0.2;
+}
+
+.closeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.closeButton:hover {
+    background: white;
+    color: black;
+}
+
+.modalContent {
+    padding: var(--space-md);
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: var(--space-xs);
+    color: hsl(var(--color-text-primary));
+}
+
+.meta {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: hsl(var(--color-accent-purple));
+    margin-bottom: var(--space-md);
+    opacity: 0.8;
+}
+
+.bodyText {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: hsl(var(--color-text-secondary));
+    margin-bottom: var(--space-lg);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid hsl(var(--color-border));
+    padding-top: var(--space-md);
+}
+
+.primaryBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: hsl(var(--color-accent-purple));
+    color: hsl(var(--color-bg-base));
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+}
+
+.primaryBtn:hover {
+    opacity: 0.9;
+}

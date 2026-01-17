@@ -1,31 +1,11 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Project, personalProjects, orgProjects } from '@/data/projects';
+import ProjectCard from '@/components/ProjectCard/ProjectCard';
+import ProjectModal from '@/components/ProjectModal/ProjectModal';
 import styles from './ProjectGrid.module.css';
-
-const projects = [
-    {
-        id: 'system-notes',
-        title: 'System Notes',
-        description: 'This very website. It&apos;s not just a portfolio; it&apos;s a cry for help formatted as a knowledge graph. Replaces a static site with a "living system" (read: I tinker with it constantly).',
-        tech: ['Next.js', 'Framer Motion', 'Self-Deprecation'],
-        link: 'https://github.com/anchildress1/system-notes'
-    },
-    {
-        id: 'commitlint',
-        title: 'Commitlint Config',
-        description: 'Because "fixed stuff" is not a valid commit message, Dave. Enforcing semantic versioning with an iron fist and a linter.',
-        tech: ['JavaScript', 'Git Hooks', 'Discipline'],
-        link: 'https://github.com/anchildress1/commitlint-config'
-    },
-    {
-        id: 'another-one',
-        title: 'Mystery Project',
-        description: 'Lives in the shadows. Might be an AI taking over the world, might be a To-Do app I started in 2021. You&apos;ll never know.',
-        tech: ['Void', 'Null', 'Undefined'],
-        link: '#'
-    }
-];
 
 const container = {
     hidden: { opacity: 0 },
@@ -37,39 +17,58 @@ const container = {
     }
 };
 
-const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-};
-
 export default function ProjectGrid() {
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
     return (
-        <motion.div
-            className={styles.gridWrapper}
-            variants={container}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-        >
-            {projects.map((p) => (
-                <motion.a
-                    key={p.id}
-                    href={p.link}
-                    className={styles.card}
-                    variants={item}
-                    target="_blank"
-                    rel="noopener noreferrer"
+        <>
+            <div className={styles.gridSection}>
+                <h2 className={styles.sectionTitle}>
+                    <span className={styles.icon}>🦄</span>
+                    Personal Projects <span style={{ opacity: 0.4, fontSize: '0.9em' }}>(anchildress1)</span>
+                </h2>
+
+                <motion.div
+                    className={styles.grid}
+                    variants={container}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
                 >
-                    <div className={styles.cardHeader}>
-                        <span className={styles.projectTitle}>{p.title}</span>
-                        <span className={styles.projectMeta}>{p.id}</span>
-                    </div>
-                    <p className={styles.projectDescription}>{p.description}</p>
-                    <div className={styles.techStack}>
-                        {p.tech.map(t => <span key={t} className={styles.techTag}>{t}</span>)}
-                    </div>
-                </motion.a>
-            ))}
-        </motion.div>
+                    {personalProjects.map((p) => (
+                        <motion.div key={p.id} variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className={styles.cardWrapper}>
+                            <ProjectCard project={p} onSelect={setSelectedProject} />
+                        </motion.div>
+                    ))}
+                </motion.div>
+            </div>
+
+            <div className={styles.gridSection}>
+                <h2 className={styles.sectionTitle}>
+                    <span className={styles.icon}>🏢</span>
+                    Organization <span style={{ opacity: 0.4, fontSize: '0.9em' }}>(CheckMarK DevTools)</span>
+                </h2>
+
+                <motion.div
+                    className={styles.grid}
+                    variants={container}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                >
+                    {orgProjects.map((p) => (
+                        <motion.div key={p.id} variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className={styles.cardWrapper}>
+                            <ProjectCard project={p} onSelect={setSelectedProject} />
+                        </motion.div>
+                    ))}
+                </motion.div>
+            </div>
+
+            <AnimatePresence>
+                {selectedProject && (
+                    <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+                )}
+            </AnimatePresence>
+        </>
     );
 }

@@ -10,32 +10,22 @@ export default function SocialBanner() {
 
     return (
         <div className={styles.bannerWrapper}>
-            <motion.img
-                style={{ y, opacity }}
-                src="https://raw.githubusercontent.com/ChecKMarKDevTools/rai-lint/main/docs/assets/rai-lint-banner.png"
-                alt="RAI-Lint Banner"
-                className={styles.bannerImage}
-            />
-
-            <div className={styles.overlay} />
+            <motion.div style={{ y, opacity }} className={styles.gridBackground} />
 
             <motion.div
                 className={styles.content}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, type: "spring" }}
             >
-                <h1 className={styles.title}>RAI-Lint</h1>
-                <div className={styles.subtitle}>{"// Because your AI needs a babysitter."}</div>
+                <div className={styles.floatingIcon}>🦄</div>
+                <h1 className={styles.title}>System Notes</h1>
+                <div className={styles.subtitle}>// The Meta-Portfolio</div>
 
                 <p className={styles.description}>
-                    GitHub Copilot is like a brilliant, caffeinated intern. RAI-Lint is the leash.
-                    Keep usage predictable, sane, and surprisingly bug-free.
+                    A living, breathing, and occasionally broken map of my work.
+                    Less "Look at me," more "Look at this weird thing I found."
                 </p>
-
-                <a href="https://github.com/CheckMarKDevTools/rai-lint" target="_blank" rel="noopener noreferrer" className={styles.cta}>
-                    View on GitHub <span>→</span>
-                </a>
             </motion.div>
         </div>
     );

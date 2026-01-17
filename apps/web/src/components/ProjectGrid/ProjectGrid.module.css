@@ -1,85 +1,34 @@
-.gridWrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--space-md);
+.gridSection {
+    margin-bottom: var(--space-xl);
     padding: 0 var(--space-lg);
     max-width: 1400px;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.card {
-    position: relative;
-    background: hsl(var(--color-bg-surface));
-    border: 1px solid hsl(var(--color-text-primary) / 0.1);
-    padding: var(--space-md);
-    border-radius: 12px;
-    transition: all 0.4s var(--ease-spring);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    border-color: hsl(var(--color-accent-purple) / 0.4);
-    box-shadow: 0 10px 40px -10px hsl(var(--color-accent-purple) / 0.2);
-}
-
-.cardHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--space-sm);
-}
-
-.projectTitle {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: hsl(var(--color-text-primary));
-}
-
-.projectMeta {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 300;
     color: hsl(var(--color-text-secondary));
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-.projectDescription {
-    flex-grow: 1;
-    font-size: 0.95rem;
-    color: hsl(var(--color-text-secondary));
-    line-height: 1.6;
     margin-bottom: var(--space-md);
-}
-
-.techStack {
+    border-bottom: 1px solid hsl(var(--color-border));
+    padding-bottom: var(--space-xs);
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
     gap: 0.5rem;
-    margin-top: auto;
 }
 
-.techTag {
-    font-size: 0.7rem;
-    font-family: var(--font-mono);
-    padding: 0.2rem 0.5rem;
-    background: hsl(var(--color-text-primary) / 0.05);
-    border-radius: 4px;
-    color: hsl(var(--color-text-secondary));
+.icon {
+    font-size: 1.2rem;
 }
 
-/* Asymmetry: Make the second child span 2 cols if space permits, just for flavor */
-@media (min-width: 1024px) {
-    .card:nth-child(2) {
-        grid-column: span 1;
-        /* Keeping it simple for now to avoid breaking flow too much */
-    }
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-md);
 }
 
-/* The "Intentional Imperfection" - slightly rotated third card on hover */
-.card:nth-child(3):hover {
-    transform: rotate(1deg) translateY(-5px);
+/* Ensure consistent card height */
+.cardWrapper {
+    height: 100%;
 }

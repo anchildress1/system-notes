@@ -1,15 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
-  /* HSL Colors for vibrancy and control */
-  --color-bg-base: 240 10% 4%; /* Dark gunmetal */
-  --color-bg-surface: 240 10% 8%;
-  --color-text-primary: 0 0% 95%;
-  --color-text-secondary: 240 5% 65%;
-  --color-accent-purple: 260 100% 65%; /* Electric Purple */
-  --color-accent-cyan: 190 100% 50%; /* Neon Cyan */
-  --color-accent-pink: 320 100% 60%;
-  --color-danger: 0 90% 65%;
+  /* Adjusted Palette - More Grey, less pure Black */
+  --color-bg-base: 220 15% 12%;
+  /* Dark Slate Grey, not Black */
+  --color-bg-surface: 220 15% 18%;
+  /* Slightly lighter surface */
+  --color-bg-elevated: 220 15% 24%;
+
+  --color-text-primary: 220 20% 95%;
+  --color-text-secondary: 220 10% 70%;
+  --color-text-muted: 220 10% 50%;
+
+  --color-accent-purple: 260 100% 70%;
+  /* Lighter purple for better contrast against gray */
+  --color-accent-cyan: 190 90% 60%;
+  --color-accent-pink: 320 90% 65%;
+
+  --color-border: 220 15% 30%;
 
   /* Spacing */
   --space-xs: 0.5rem;
@@ -42,6 +50,32 @@ body {
   line-height: 1.6;
 }
 
+/* Modal Overlay Base Styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+}
+
+/* Utilities */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -58,25 +92,16 @@ button {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: hsl(var(--color-bg-base));
 }
+
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--color-bg-surface));
+  background: hsl(var(--color-bg-elevated));
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--color-accent-purple) / 0.5);
-}
-
-/* Utilities (minimal) */
-.glass-panel {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--color-bg-surface) / 0.7),
-    hsl(var(--color-bg-base) / 0.8)
-  );
-  backdrop-filter: blur(12px);
-  border: 1px solid hsl(255 100% 100% / 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
