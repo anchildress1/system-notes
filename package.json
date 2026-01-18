@@ -11,6 +11,7 @@
     "lint": "turbo run lint",
     "format": "npx prettier --write \"**/*.{ts,tsx,md,json,js}\"",
     "test": "turbo run test",
+    "bench": "turbo run bench",
     "clean": "rm -rf node_modules **/*/node_modules",
     "postinstall": "lefthook install"
   },

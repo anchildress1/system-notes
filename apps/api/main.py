@@ -40,11 +40,16 @@ try:
         base_prompt = f.read()
 
     # Dynamic Context (Project Narratives)
-    projects_path = os.path.join(current_dir, "project_narratives.md")
+    projects_path = os.path.join(current_dir, "projects.md")
     with open(projects_path, "r") as f:
         projects_content = f.read()
+
+    # Persona Context
+    ashley_path = os.path.join(current_dir, "about_ashley.md")
+    with open(ashley_path, "r") as f:
+        ashley_content = f.read()
         
-    SYSTEM_PROMPT = f"{base_prompt}\n\n{projects_content}"
+    SYSTEM_PROMPT = f"{base_prompt}\n\n{ashley_content}\n\n{projects_content}"
     
 except FileNotFoundError as e:
     logger.warning(f"File not found during system prompt init: {e}")
@@ -144,10 +149,10 @@ def parse_projects(content: str) -> List[Project]:
 async def get_projects():
     try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(current_dir, "projects_data.md")
+        file_path = os.path.join(current_dir, "projects.md")
         with open(file_path, "r") as f:
             content = f.read()
         return parse_projects(content)
     except FileNotFoundError:
-        logger.error("projects.tmp not found")
+        logger.error("projects.md not found")
         return []

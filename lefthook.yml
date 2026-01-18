@@ -10,6 +10,9 @@ pre-commit:
       staged_files: true
     test:
       run: npm run test
+    bench:
+      run: npm run bench -- -- --run
+      output: true
 
 commit-msg:
   commands:
