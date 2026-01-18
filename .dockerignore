@@ -1,0 +1,9 @@
+node_modules
+.git
+.gitignore
+.DS_Store
+# Keep these out of the build context to save time
+.next
+dist
+# Turborepo
+.turbo
