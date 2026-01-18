@@ -1,21 +1,25 @@
 .gridSection {
     margin-bottom: var(--space-xl);
-    padding: 0 var(--space-lg);
-    max-width: 1400px;
+    width: 100%;
+    max-width: 1300px;
+    /* Tighter container to force outer whitespace */
     margin-left: auto;
     margin-right: auto;
+    padding-inline: var(--space-md);
+    /* Standard internal padding */
 }
 
 .sectionTitle {
     font-size: 1.5rem;
     font-weight: 300;
-    color: hsl(var(--color-text-secondary));
+    color: hsl(var(--color-text-muted));
     margin-bottom: var(--space-md);
-    border-bottom: 1px solid hsl(var(--color-border));
-    padding-bottom: var(--space-xs);
+    /* Removed border for cleaner look */
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    opacity: 0.6;
+    /* Subtler */
 }
 
 .icon {
@@ -24,8 +28,10 @@
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: var(--space-md);
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 2rem;
+    /* Tighter gap to group cards together */
 }
 
 /* Ensure consistent card height */

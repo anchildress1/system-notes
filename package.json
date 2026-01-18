@@ -8,8 +8,8 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint --fix",
-    "format": "prettier --write \"**/*.{ts,tsx,md,json,js}\"",
+    "lint": "turbo run lint",
+    "format": "npx prettier --write \"**/*.{ts,tsx,md,json,js}\"",
     "test": "turbo run test",
     "clean": "rm -rf node_modules **/*/node_modules",
     "postinstall": "lefthook install"
@@ -19,7 +19,8 @@
     "@commitlint/cli": "^20.3.1",
     "@commitlint/config-conventional": "^20.3.1",
     "lefthook": "^2.0.15",
-    "prettier": "^3.8.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
     "turbo": "latest"
   },
   "packageManager": "npm@10.0.0"

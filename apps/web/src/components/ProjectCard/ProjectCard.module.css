@@ -1,29 +1,57 @@
 .card {
     position: relative;
     background: hsl(var(--color-bg-surface));
-    border: 1px solid hsl(var(--color-border));
     border-radius: 12px;
+    /* Sharper, more technical */
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: all 0.3s var(--ease-spring);
+    transition: transform 0.4s var(--ease-morph), box-shadow 0.4s var(--ease-morph);
     cursor: pointer;
     height: 100%;
+    box-shadow: var(--shadow-card);
+    border: 1px solid transparent;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    border-color: hsl(var(--color-accent-purple));
-    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
+    /* Subtler lift */
+    background: hsl(var(--color-bg-elevated));
+    box-shadow: var(--shadow-bento), 0 0 20px hsl(var(--color-accent-purple) / 0.1);
+    border-color: hsl(var(--color-accent-purple) / 0.3);
 }
 
 .imageContainer {
     width: 100%;
-    aspect-ratio: 1.91 / 1;
+    aspect-ratio: 2 / 1;
     /* Standard Open Graph ratio (~1200x630) */
-    background: hsl(var(--color-bg-elevated));
     position: relative;
     overflow: hidden;
+}
+
+.imageWrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.conceptBackground {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 10% 10%, hsl(var(--color-bg-elevated)), hsl(var(--color-bg-base)));
+    z-index: 0;
+}
+
+.conceptBackground::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(hsl(var(--color-border)) 1px, transparent 1px),
+        linear-gradient(90deg, hsl(var(--color-border)) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.2;
+    z-index: 1;
 }
 
 .image {
@@ -31,6 +59,8 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
+    position: relative;
+    z-index: 2;
 }
 
 .card:hover .image {
@@ -68,25 +98,45 @@
 }
 
 .content {
-    padding: var(--space-sm) var(--space-md) var(--space-md);
+    padding: var(--space-md);
+    /* Increased from sm/md */
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    gap: var(--space-sm);
 }
 
 .header {
     display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    /* Increased */
+    margin-bottom: var(--space-sm);
+}
+
+.headerTop {
+    display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--space-xs);
+    align-items: center;
+    width: 100%;
+}
+
+.ownerBadge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: hsl(var(--color-text-muted));
+    background: hsl(var(--color-bg-base));
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid hsl(var(--color-border));
 }
 
 .title {
     font-family: var(--font-sans);
-    /* Ensuring font usage */
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: hsl(var(--color-text-primary));
+    line-height: 1.3;
 }
 
 .ghLink {

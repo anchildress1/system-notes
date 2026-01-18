@@ -1,6 +1,10 @@
 .main {
     min-height: 100vh;
+    padding-top: 120px;
+    /* Offset for fixed header */
     padding-bottom: var(--space-xl);
+    position: relative;
+    z-index: 1;
 }
 
 .introSection {
