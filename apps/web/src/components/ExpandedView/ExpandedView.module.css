@@ -31,13 +31,12 @@
 }
 
 /* Cinematic Header: Image fits naturally */
+/* Cinematic Header: Image fits naturally */
 .imageContainer {
     width: 100%;
-    height: 60%;
-    /* Occupy top portion, allow scroll for tall images */
+    aspect-ratio: 2 / 1;
     position: relative;
     background: black;
-    overflow-y: auto;
     flex-shrink: 0;
     border-bottom: 1px solid hsl(var(--color-border));
 }
@@ -103,9 +102,9 @@
 .content {
     padding: var(--space-md) var(--space-lg);
     background: linear-gradient(to bottom, hsl(var(--color-bg-base)), hsl(var(--color-bg-surface)));
-    /* Subtle gradient */
-    overflow-y: auto;
+    /* Remove separate scroll */
     flex-grow: 1;
+    height: auto;
 }
 
 .header {
@@ -233,4 +232,46 @@
 
 .repoLink:hover {
     transform: scale(1.05);
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 4px 8px;
+    background: hsl(var(--color-accent-purple) / 0.1);
+    color: hsl(var(--color-accent-purple));
+    border: 1px solid hsl(var(--color-accent-purple) / 0.3);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-md);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.shortDescription {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: hsl(var(--color-text-primary));
+    margin-bottom: var(--space-lg);
+    line-height: 1.3;
+}
+
+.outcome {
+    font-size: 1rem;
+    color: hsl(var(--color-text-secondary));
+    line-height: 1.6;
+    border-left: 2px solid hsl(var(--color-accent-cyan));
+    padding-left: var(--space-md);
+}
+
+.mainColumn {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.sideColumn {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
 }
