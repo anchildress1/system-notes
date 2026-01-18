@@ -42,3 +42,6 @@ It’s a one-time adjustment—like setting up ESLint rules. Sure, there’s one
 Anything is doable. But just because you can doesn’t mean you should. Sometimes, the terrible idea doesn’t reveal itself until _after_ you shipped it.
 
 Automation? If it's a one-time task, skip it. If it repeats? Now we're talking.
+
+**About the Font**
+It’s not special—just weird enough to keep her interested. If it looks typical, she’s already over it.

@@ -7,7 +7,10 @@ const mockProject: Project = {
   id: 'bench-project',
   title: 'Benchmark Project',
   description: 'A project for benchmarking performance',
-  tech: ['React', 'Vitest'],
+  tech: [
+    { name: 'React', role: 'UI' },
+    { name: 'Vitest', role: 'Testing' },
+  ],
   imageUrl: 'https://placehold.co/600x400',
   owner: 'anchildress1',
 };

@@ -69,19 +69,33 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             <h4 className={styles.sectionHeader}>Tech Stack</h4>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               {project.tech.map((t) => (
-                <span
-                  key={t}
+                <div
+                  key={t.name}
                   style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: '0.8rem',
-                    padding: '0.2rem 0.5rem',
+                    padding: '0.4rem 0.6rem',
                     background: 'hsl(var(--color-bg-elevated))',
                     borderRadius: '4px',
                     color: 'hsl(var(--color-text-primary))',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
+                    borderLeft: '2px solid hsl(var(--color-accent-purple))',
                   }}
                 >
-                  {t}
-                </span>
+                  <span style={{ fontWeight: 700 }}>{t.name}</span>
+                  <span
+                    style={{
+                      fontSize: '0.8em',
+                      color: 'hsl(var(--color-text-muted))',
+                      fontStyle: 'italic',
+                      fontFamily: 'var(--font-sans)',
+                    }}
+                  >
+                    {t.role}
+                  </span>
+                </div>
               ))}
             </div>
           </div>

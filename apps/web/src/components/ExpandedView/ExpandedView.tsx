@@ -30,28 +30,25 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         className={styles.expandedCard}
         layoutId={`card-${project.id}`}
         onClick={(e) => e.stopPropagation()}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+        transition={{ duration: 0.2, ease: 'easeInOut' }}
       >
         <div className={styles.imageContainer}>
           <motion.div className={styles.imageWrapper} layoutId={`image-${project.id}`}>
-            {/* Ambient Background derived from image */}
             <div
               className={styles.conceptBackground}
               style={{ backgroundImage: project.imageUrl ? `url(${project.imageUrl})` : undefined }}
             />
-
             {project.imageUrl && (
               <Image
                 src={project.imageUrl}
                 alt={project.title}
-                className={styles.image}
+                className={styles.bannerImage}
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: 'cover' }}
                 priority={false}
               />
             )}
           </motion.div>
-
           <button className={styles.closeButton} onClick={onClose}>
             <svg
               width="24"
@@ -71,7 +68,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
           <div className={styles.header}>
             <div>
               <div className={styles.metaRow}>
-                <span>👤 {project.owner}</span>
+                <span>{project.owner}</span>
               </div>
               <h2 className={styles.title}>{project.title}</h2>
               {project.status && <span className={styles.statusBadge}>{project.status}</span>}
@@ -104,8 +101,11 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
                 <h3 className={styles.sectionTitle}>Tech Stack</h3>
                 <div className={styles.tags}>
                   {project.tech.map((t) => (
-                    <span key={t} className={styles.tag}>
-                      {t}
+                    <span key={t.name} className={styles.tag}>
+                      <span style={{ fontWeight: 600 }}>{t.name}</span>
+                      <span style={{ opacity: 0.7, marginLeft: '6px', fontSize: '0.9em' }}>
+                        {t.role}
+                      </span>
                     </span>
                   ))}
                 </div>

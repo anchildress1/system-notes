@@ -1,38 +1,61 @@
 .chatWrapper {
     position: fixed;
-    bottom: var(--space-md);
+    bottom: 90px;
+    /* Moved up to avoid footer */
     right: var(--space-md);
     z-index: 100;
     font-family: var(--font-sans);
 }
 
 .toggleButton {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background: hsl(var(--color-bg-surface));
-    border: 1px solid hsl(var(--color-accent-purple));
-    color: hsl(var(--color-accent-purple));
+    background: hsl(var(--color-accent-teal));
+    /* Teal Icon */
+    border: none;
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     transition: all 0.3s var(--ease-spring);
+    /* animation: pulse 2s infinite ease-in-out; */
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.stopPulse {
+    animation: none;
 }
 
 .toggleButton:hover {
     transform: scale(1.1);
-    background: hsl(var(--color-accent-purple));
-    color: hsl(var(--color-bg-base));
+    box-shadow: 0 8px 24px hsl(var(--color-accent-teal) / 0.4);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 hsl(var(--color-accent-teal) / 0.7);
+    }
+
+    10% {
+        box-shadow: 0 0 0 12px hsl(var(--color-accent-teal) / 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 hsl(var(--color-accent-teal) / 0);
+    }
 }
 
 .chatWindow {
     position: absolute;
-    bottom: 70px;
+    bottom: 75px;
     right: 0;
-    width: 320px;
+    width: 340px;
+    /* Slightly Larger */
     background: hsl(var(--color-bg-surface));
-    border: 1px solid hsl(var(--color-text-primary) / 0.1);
+    border: 1px solid hsl(var(--color-accent-pink) / 0.3);
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     overflow: hidden;
@@ -42,28 +65,28 @@
 .header {
     padding: var(--space-sm);
     background: hsl(var(--color-bg-base));
-    border-bottom: 1px solid hsl(var(--color-text-primary) / 0.1);
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: hsl(var(--color-text-primary));
+    border-bottom: 1px solid hsl(var(--color-border));
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.statusDot {
-    width: 8px;
-    height: 8px;
-    background: hsl(var(--color-accent-cyan));
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-    box-shadow: 0 0 8px hsl(var(--color-accent-cyan));
+.ruckusName {
+    font-family: var(--font-ribeye), cursive;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.agentMeta {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: hsl(var(--color-text-muted));
 }
 
 .messages {
     padding: var(--space-sm);
-    height: 250px;
+    height: 280px;
+    /* Taller */
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -82,23 +105,31 @@
     align-self: flex-start;
     background: hsl(var(--color-text-primary) / 0.05);
     color: hsl(var(--color-text-secondary));
+    border-left: 3px solid hsl(var(--color-accent-teal));
+    /* Teal Branding */
     border-top-left-radius: 2px;
 }
 
 .userMessage {
     align-self: flex-end;
-    background: hsl(var(--color-accent-purple) / 0.2);
+    background: hsl(var(--color-accent-pink) / 0.2);
+    /* Pink Branding */
     color: hsl(var(--color-text-primary));
+    border-right: 3px solid hsl(var(--color-accent-pink));
     border-top-right-radius: 2px;
 }
 
 .inputArea {
     padding: var(--space-sm);
-    border-top: 1px solid hsl(var(--color-text-primary) / 0.1);
+    border-top: 1px solid hsl(var(--color-border));
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 .input {
     width: 100%;
+    flex: 1;
     background: hsl(var(--color-bg-base));
     border: 1px solid hsl(var(--color-text-primary) / 0.2);
     padding: 8px 12px;
@@ -109,5 +140,21 @@
 }
 
 .input:focus {
-    border-color: hsl(var(--color-accent-purple));
+    border-color: hsl(var(--color-accent-teal));
+}
+
+.sendButton {
+    background: none;
+    border: none;
+    color: hsl(var(--color-accent-teal));
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.sendButton:hover {
+    transform: scale(1.1);
+    color: hsl(var(--color-text-primary));
 }

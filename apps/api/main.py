@@ -35,17 +35,17 @@ try:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     
     # Base Prompt
-    prompt_path = os.path.join(current_dir, "system_prompt.md")
+    prompt_path = os.path.join(current_dir, "prompts", "system_prompt.md")
     with open(prompt_path, "r") as f:
         base_prompt = f.read()
 
     # Dynamic Context (Project Narratives)
-    projects_path = os.path.join(current_dir, "projects.md")
+    projects_path = os.path.join(current_dir, "prompts", "projects.md")
     with open(projects_path, "r") as f:
         projects_content = f.read()
 
     # Persona Context
-    ashley_path = os.path.join(current_dir, "about_ashley.md")
+    ashley_path = os.path.join(current_dir, "prompts", "about_ashley.md")
     with open(ashley_path, "r") as f:
         ashley_content = f.read()
         
@@ -149,7 +149,7 @@ def parse_projects(content: str) -> List[Project]:
 async def get_projects():
     try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(current_dir, "projects.md")
+        file_path = os.path.join(current_dir, "prompts", "projects.md")
         with open(file_path, "r") as f:
             content = f.read()
         return parse_projects(content)

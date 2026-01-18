@@ -24,10 +24,9 @@
 }
 
 .name {
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    font-size: 1.5rem;
+    font-family: var(--font-ribeye), cursive;
+    font-weight: 400;
     color: hsl(var(--color-text-primary));
 }
 
@@ -35,9 +34,7 @@
     font-family: var(--font-mono);
     font-size: 0.8rem;
     color: hsl(var(--color-accent-purple));
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 .nav {
@@ -53,4 +50,45 @@
 
 .navLink:hover {
     color: hsl(var(--color-text-primary));
+}
+
+.skipLink {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: hsl(var(--color-accent-yellow));
+    color: hsl(var(--color-bg-base));
+    padding: 0.5rem 1rem;
+    z-index: 1000;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: top 0.3s;
+}
+
+
+.skipLink:focus {
+    top: 1rem;
+}
+
+.ctaButton {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.8rem;
+    height: 32px;
+    font-size: 0.85rem;
+    background: hsl(270, 70%, 40%);
+    /* Darkened for A11y */
+    color: white;
+    border-radius: 4px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.ctaButton:hover {
+    background: hsl(var(--color-accent-yellow));
+    color: hsl(var(--color-bg-base));
+    box-shadow: 0 0 10px hsl(var(--color-accent-yellow) / 0.5);
 }

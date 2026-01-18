@@ -5,61 +5,103 @@ export interface Project {
   description: string;
   longDescription: string;
   outcome: string;
-  tech: string[];
+  tech: { name: string; role: string }[];
   repoUrl: string;
   imageUrl?: string;
   owner: 'anchildress1' | 'CheckMarKDevTools';
 }
-
 export const allProjects: Project[] = [
   {
     id: 'system-notes',
     title: 'System Notes',
-    status: 'Active',
-    description: 'A living, queryable system map of projects, decisions, and evolution over time.',
+    status: 'Active · Deployed',
+    description: 'A map of systems: intent, constraints, and outcomes over time.',
     longDescription:
-      'System Notes replaces a traditional developer website with a structured, machine-readable system. Projects are treated as evolving systems with relationships, intent, and history, designed to be navigated by both humans and AI. Includes an interactive chatbot that allows users to query and explore the system as designed. This interface is currently a proof of concept, with additional enhancements planned as part of the Algolia challenge.',
+      'This is not a portfolio product; it is a constraint-based system map. I intentionally avoided learning Next.js deeply, forcing the system to rely on agentic generation for the UI while I focused on structure, bounds, and data modeling. It exists to show how decisions evolve, not just what was built.',
     outcome:
-      'Early-stage system that is already stable enough to serve as a live portfolio backbone. Validation to date is qualitative, with planned expansion of the interactive layer.',
+      'A strict read-only system backbone that replaces a traditional developer website. It proves that structure and intent matter more than pixel-perfect manual control.',
     tech: [
-      'Markdown-first documentation',
-      'GitHub repository–driven system modeling',
-      'AI-assisted navigation and context layering',
-      'Chat-based interface (POC)',
+      { name: 'Next.js', role: 'The UI Layer (Agent-managed)' },
+      { name: 'Python', role: 'The Backbone' },
+      { name: 'Markdown', role: 'Single Source of Truth' },
+      { name: 'Google Cloud Run', role: 'Deployment Target' },
     ],
     repoUrl: 'https://github.com/anchildress1/system-notes',
     owner: 'anchildress1',
     imageUrl: '/projects/system-notes.jpg',
   },
   {
-    id: 'underfoot-underground-travel-planner',
-    title: 'Underfoot: Underground Travel Planner',
+    id: 'rai-lint',
+    title: 'RAI Lint',
     status: 'Active',
-    description: 'An experimental travel planner for discovering hidden, off-grid destinations.',
+    description: 'Attribution enforcement: if AI helped, that attribution must exist.',
     longDescription:
-      'A full-stack application that surfaces unconventional travel destinations using narrative context rather than ranking algorithms, prioritizing discovery over optimization.',
+      'Security through transparency. This tool integrates directly into commit workflows to enforce AI attribution. It is not policy theater; it is a hard technical boundary. Nothing more, nothing less. If you use tools, you cite them.',
     outcome:
-      'Shipped as the first hackathon project in nearly 20 years. Did not place, but produced a complete concept and informed a documented postmortem and follow-up writing.',
+      'Rolling out to live teams. It turns invisible assistance into explicit, trackable data without disrupting the flow state.',
     tech: [
-      'JavaScript / TypeScript',
-      'Full-stack web application',
-      'AI-assisted discovery and scoring logic',
-      'Privacy-first data handling',
+      { name: 'TypeScript', role: 'Rule Logic' },
+      { name: 'Python', role: 'Git Hooks' },
+      { name: 'commitlint', role: 'Enforcement Engine' },
+      { name: 'PolyForm Shield', role: 'License' },
+    ],
+    repoUrl: 'https://github.com/CheckMarKDevTools/rai-lint',
+    owner: 'CheckMarKDevTools',
+    imageUrl: '/projects/rai-lint.jpg',
+  },
+  {
+    id: 'underfoot-underground-travel-planner',
+    title: 'Underfoot',
+    status: 'Active · In Progress',
+    description: 'A failed hackathon project rewritten to push AI orchestration to its limits.',
+    longDescription:
+      'Started as a standard travel app that failed under real-world cost constraints. I tore it down and rebuilt it as a pure AI orchestration challenge. The goal shifted from "ranking destinations" to "narrative discovery" using a custom orchestrator to bypass traditional API limits.',
+    outcome:
+      'Unfinished, but instructive. The failure forced a pivot from "consuming APIs" to "synthesizing data," effectively turning a cost problem into an architecture project.',
+    tech: [
+      { name: 'Python', role: 'The Orchestrator' },
+      { name: 'Supabase', role: 'The Brain' },
+      { name: 'React', role: 'The Face' },
+      { name: 'Scraping', role: 'Data Ingestion' },
     ],
     repoUrl: 'https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/underfoot-underground-travel-planner.jpg',
   },
   {
-    id: 'checkmark-echo',
-    title: 'eslint-config-echo',
+    id: 'awesome-github-copilot',
+    title: 'Awesome GitHub Copilot',
     status: 'Active',
-    description: 'Enterprise ESLint configuration with dual v8 and v9 support.',
+    description: 'A curated cultivation layer for prompts, agents, and skills.',
     longDescription:
-      'A shared ESLint configuration package designed to standardize linting across repositories while supporting both legacy ESLint v8 and modern v9 flat config workflows.',
+      'This is where my workflows go to survive. It is not a link dump; it is a graduation stage. I build tools for myself locally, and only the ones that survive daily abuse get polished and promoted here. It serves as the bridge between "it works on my machine" and "community standard."',
     outcome:
-      'Adopted in a real production codebase to reduce configuration drift and standardize linting behavior.',
-    tech: ['JavaScript', 'ESLint', 'Prettier', 'Sonar-aligned rule sets', 'Node.js ecosystem'],
+      'My most successful open-source contribution. It proves that curation and utility beat volume every time.',
+    tech: [
+      { name: 'Markdown', role: 'The Format' },
+      { name: 'GitHub Copilot', role: 'The Platform' },
+      { name: 'MCP', role: 'Agent Protocols' },
+      { name: 'Manual Curation', role: 'Quality Control' },
+    ],
+    repoUrl: 'https://github.com/anchildress1/awesome-github-copilot',
+    owner: 'anchildress1',
+    imageUrl: '/projects/awesome-github-copilot.jpg',
+  },
+  {
+    id: 'checkmark-echo',
+    title: 'Echo',
+    status: 'Active',
+    description: 'I got tired of repeating myself, so I codified my opinions.',
+    longDescription:
+      'A boring, reliable, shared configuration. It supports both legacy and modern flat configs because migration is messy and I needed a bridge. It enforces Sonar consistency so I can focus on logic, not spaces.',
+    outcome:
+      'Reduces drift. Removes "nitpick" comments from code reviews. It is a feature because it is invisible.',
+    tech: [
+      { name: 'Node.js', role: 'Ecosystem' },
+      { name: 'ESLint', role: 'The Enforcer' },
+      { name: 'Jest', role: 'Verification' },
+      { name: 'Sonar', role: 'Static Analysis' },
+    ],
     repoUrl: 'https://github.com/CheckMarKDevTools/checkmark-echo',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/eslint-config-echo.jpg',
@@ -67,18 +109,17 @@ export const allProjects: Project[] = [
   {
     id: 'checkmark-delegate',
     title: 'Delegate Action',
-    status: 'Active (Experimental)',
-    description: 'A GitHub Action that turns prompts into pull requests, not auto-merges.',
+    status: 'Active (POC)',
+    description: 'Turning prompts into Pull Requests (with humans in the loop).',
     longDescription:
-      'A theoretical human-in-the-loop automation pattern designed to compensate for the absence of a reliable coding agent in GitHub Actions. Generates changes, opens a pull request, and enforces review boundaries.',
+      'Service accounts are hard; delegation is easier. This Action acts as a coding agent that takes a prompt, generates a draft PR, and signs me as the reviewer. It solves the "blank page" problem by forcing the AI to show its work before merging.',
     outcome:
-      'Design-stage solution informed by prior experience with similar automation flows. Not yet production-tested, but early outlook is positive.',
+      "A working Proof of Concept that bypasses the need for complex bot permissions by leveraging the user's own review flow.",
     tech: [
-      'GitHub Actions',
-      'JavaScript / Node.js',
-      'GitHub Copilot',
-      'CI security and quality gates',
-      'Responsible AI attribution enforcement',
+      { name: 'GitHub Actions', role: 'The Runtime' },
+      { name: 'Node.js', role: 'Logic Layer' },
+      { name: 'Security', role: 'Injection Detection' },
+      { name: 'PAT', role: 'Auth Bypass' },
     ],
     repoUrl: 'https://github.com/CheckMarKDevTools/checkmark-delegate',
     owner: 'CheckMarKDevTools',
@@ -87,90 +128,36 @@ export const allProjects: Project[] = [
   {
     id: 'devto-mirror',
     title: 'Dev.to Mirror',
-    status: 'Active (planned move to CheckMarkDevTools)',
-    description: 'A set-and-forget static mirror for Dev.to blogs.',
+    status: 'Active',
+    description: 'Set-and-forget discovery optimization for technical writing.',
     longDescription:
-      'Automatically generates a static, crawlable mirror of Dev.to content optimized for search and AI discovery while preserving canonical links to original posts.',
+      'I write on DEV, but I need discovery everywhere. This running cron job pulls my content, formats it for SEO/AI crawlers, and deploys it to a static site. No analytics, no maintenance, just pure signal amplification.',
     outcome:
-      'Successfully increased inbound discovery across search engines, syndication networks, and AI tools without requiring analytics infrastructure or operational overhead.',
+      'Zero-touch operation that increased inbound traffic and AI visibility without adding a single minute of maintenance time.',
     tech: [
-      'JavaScript',
-      'Static site generation',
-      'HTML-first output',
-      'GitHub Pages–compatible structure',
-      'Search and AI discoverability optimization',
+      { name: 'Python', role: 'The Script' },
+      { name: 'GitHub Actions', role: 'The Cron' },
+      { name: 'GitHub Pages', role: 'The Host' },
+      { name: 'SEO', role: 'The Goal' },
     ],
     repoUrl: 'https://github.com/anchildress1/devto-mirror',
     owner: 'anchildress1',
     imageUrl: '/projects/devto-mirror.jpg',
   },
   {
-    id: 'rai-lint',
-    title: 'RAI Lint',
-    status: 'Active',
-    description: 'Dual-language commit validation enforcing Responsible AI attribution.',
-    longDescription:
-      'A validation framework that enforces explicit AI attribution in commits using structured footers, with native plugins for both JavaScript (commitlint) and Python (gitlint).',
-    outcome:
-      'Works reliably in daily workflows and is gradually being adopted by the team using non-blocking warnings to encourage compliance without disruption.',
-    tech: [
-      'JavaScript',
-      'TypeScript',
-      'Python',
-      'Node.js',
-      'commitlint',
-      'gitlint',
-      'ESLint',
-      'GitHub Actions',
-      'SonarCloud',
-      'Codecov',
-      'Polyform Shield License',
-    ],
-    repoUrl: 'https://github.com/CheckMarKDevTools/rai-lint',
-    owner: 'CheckMarKDevTools',
-    imageUrl: '/projects/rai-lint.jpg',
-  },
-  {
-    id: 'awesome-github-copilot',
-    title: 'Awesome GitHub Copilot',
-    status: 'Active',
-    description: 'A curated collection of Copilot instructions, prompts, and agents.',
-    longDescription:
-      'A structured library of reusable Copilot instructions, prompts, and agent configurations labeled by lifecycle stage, serving as both an experimentation sandbox and an incubation space before upstreaming.',
-    outcome:
-      'By far the most shared and starred project in the portfolio, exceeding expectations and demonstrating strong community interest.',
-    tech: [
-      'Node.js (24.x)',
-      'Markdown-based prompt and instruction system',
-      'GitHub Copilot',
-      'ChatGPT',
-      'MCP-compatible agent patterns',
-    ],
-    repoUrl: 'https://github.com/anchildress1/awesome-github-copilot',
-    owner: 'anchildress1',
-    imageUrl: '/projects/awesome-github-copilot.jpg',
-  },
-  {
     id: 'my-hermantic-agent',
-    title: 'My Hermantic Agent (Hermes)',
+    title: 'Hermes Agent',
     status: 'Active (WIP)',
-    description: 'A self-hosted, tool-using AI agent with long-term memory.',
+    description: 'A zero-stakes laboratory for breaking AI memory models.',
     longDescription:
-      'A CLI-driven autonomous agent built around a reasoning-capable local LLM, combining short-term conversational context with long-term semantic memory, tool usage, and persistent state.',
+      'I needed a place to break things safely. Hermes is a fully local, forbidden-free zone where I test long-term memory architectures and tool-use patterns. It is not polished. It is not safe. It is where I learn how the brain works by building a messy one.',
     outcome:
-      'Early-stage research project exploring agent autonomy, memory design, and local-first AI systems.',
+      'A chaotic, functional research sandbox that informs the architecture of my production tools.',
     tech: [
-      'Python 3.12+',
-      'Ollama',
-      'NousResearch Hermes-4-14B',
-      'Hugging Face models',
-      'OpenAI embeddings',
-      'PostgreSQL',
-      'TimescaleDB',
-      'pgvector',
-      'GitHub Copilot',
-      'ChatGPT',
-      'Polyform Shield License',
+      { name: 'Python', role: 'The Mind' },
+      { name: 'Ollama', role: 'The Engine' },
+      { name: 'PostgreSQL', role: 'Long-term Memory' },
+      { name: 'Local', role: 'The Environment' },
     ],
     repoUrl: 'https://github.com/anchildress1/my-hermantic-agent',
     owner: 'anchildress1',
@@ -178,13 +165,18 @@ export const allProjects: Project[] = [
   },
   {
     id: 'checkmark-copilot-chat',
-    title: 'CheckMarK Copilot Chat',
+    title: 'Copilot Chat Exp.',
     status: 'Archived',
-    description: 'An early experiment in portable Copilot chat workflows.',
+    description: 'Hypothesis: Chat context is portable. Result: False.',
     longDescription:
-      'Explored reusable Copilot chat configuration patterns. Archived after a core assumption proved false: chat context is not meaningfully editable in the way required. A workaround was identified but deemed unsuitable for a production product.',
-    outcome: 'Hypothesis disproven, boundary documented, project archived intentionally.',
-    tech: ['GitHub Copilot Chat', 'JavaScript', 'Early MCP-adjacent experimentation'],
+      'I tried to build a portable Copilot chat context for IntelliJ teams. I failed. The API did not support the persistence I needed. I archived it immediately. Knowing when to kill a project is just as important as knowing when to ship one.',
+    outcome:
+      'Archived. The failure saved me months of wasted effort and redirected focus to the Awesome Copilot project.',
+    tech: [
+      { name: 'Copilot Chat', role: 'The Constraint' },
+      { name: 'JavaScript', role: 'The Glue' },
+      { name: 'Failure', role: 'The Lesson' },
+    ],
     repoUrl: 'https://github.com/CheckMarKDevTools/checkmark-copilot-chat',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/checkmark-copilot-chat.jpg',

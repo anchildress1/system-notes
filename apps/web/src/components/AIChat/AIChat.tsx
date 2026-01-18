@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Send } from 'lucide-react';
 import styles from './AIChat.module.css';
 
 interface Message {
@@ -82,10 +83,8 @@ export default function AIChat() {
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
             <div className={styles.header}>
-              <div>
-                <span className={styles.statusDot}></span>
-                Ruckus (no memory yet)
-              </div>
+              <span className={styles.ruckusName}>Ruckus</span>
+              <span className={styles.agentMeta}>no memory yet</span>
             </div>
             <div className={styles.messages}>
               {messages.map((msg, index) => (
@@ -110,13 +109,21 @@ export default function AIChat() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={isLoading}
+                aria-label="Chat message"
               />
+              <button onClick={handleSend} className={styles.sendButton} aria-label="Send">
+                <Send size={18} />
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <button className={styles.toggleButton} onClick={() => setIsOpen(!isOpen)}>
+      <button
+        className={`${styles.toggleButton} ${isOpen ? styles.stopPulse : ''}`}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? 'Close AI Chat' : 'Open AI Chat'}
+      >
         {isOpen ? '✕' : '?'}
       </button>
     </div>

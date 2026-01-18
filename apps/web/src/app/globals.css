@@ -1,25 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
-  /* Agentic Morph Palette */
-  --color-bg-base: 220 20% 10%;
-  /* Deeper, richer dark */
-  --color-bg-surface: 220 20% 14%;
-  /* Slightly lighter for cards */
-  --color-bg-elevated: 220 20% 18%;
-  /* Highlights */
+  /* Agentic Morph Palette - V2 Power Theme */
+  --color-bg-base: 230 9% 13%;
+  /* #1E1F24 */
+  --color-bg-surface: 225 11% 30%;
+  /* #444854 Lighter Surface */
+  --color-bg-elevated: 225 10% 25%;
+  /* #3A3D46 */
 
   --color-text-primary: 220 20% 98%;
   --color-text-secondary: 220 10% 75%;
   --color-text-muted: 220 10% 55%;
 
-  /* Accents - "Electric" feel */
-  --color-accent-purple: 260 100% 75%;
-  --color-accent-cyan: 190 100% 60%;
-  --color-accent-pink: 320 100% 70%;
+  /* Accents - Power & Electric */
+  --color-accent-purple: 262 100% 71%;
+  /* #A86AFF */
+  --color-accent-pink: 338 78% 61%;
+  /* #E94D88 */
+  --color-accent-teal: 178 59% 45%;
+  /* #2FB7B2 */
+  --color-accent-yellow: 174 96% 35%;
+  /* Vibrant Teal (Overriding Yellow variable for V3) */
 
-  --color-border: 220 20% 25%;
-  --color-border-hover: 220 30% 40%;
+  --color-border: 225 10% 25%;
+  --color-border-hover: 262 100% 71%;
+  /* Purple hover */
 
   --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
   --shadow-bento: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
@@ -29,23 +35,16 @@
   --space-xs: 0.75rem;
   --space-sm: 1.5rem;
   --space-md: 3rem;
-  /* Increased from 2rem */
   --space-lg: 6rem;
-  /* Increased from 4rem */
   --space-xl: 12rem;
-  /* Increased from 8rem */
 
   /* Typography */
-  --font-sans: 'Inter',
-    sans-serif;
-  --font-mono: 'JetBrains Mono',
-    monospace;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
   /* Animation */
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  /* Snappy */
   --ease-morph: cubic-bezier(0.4, 0, 0.2, 1);
-  /* Morph standard */
 }
 
 * {
@@ -57,8 +56,9 @@
 body {
   background-color: hsl(var(--color-bg-base));
   background-image:
-    radial-gradient(circle at 15% 10%, hsl(var(--color-accent-purple) / 0.15), transparent 50%),
-    radial-gradient(circle at 85% 90%, hsl(var(--color-accent-cyan) / 0.12), transparent 50%);
+    radial-gradient(circle at 50% -20%, hsl(var(--color-accent-purple) / 0.3), transparent 60%),
+    radial-gradient(circle at 85% 90%, hsl(var(--color-accent-teal) / 0.1), transparent 50%),
+    radial-gradient(circle at 10% 50%, hsl(var(--color-accent-yellow) / 0.05), transparent 40%);
   background-attachment: fixed;
   color: hsl(var(--color-text-primary));
   font-family: var(--font-sans);
@@ -66,6 +66,13 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.6;
+}
+
+/* Accessibility: Visible Focus Indicators */
+:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-cyan));
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 /* Modal Overlay Base Styles */
