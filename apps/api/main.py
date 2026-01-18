@@ -143,7 +143,9 @@ def parse_projects(content: str) -> List[Project]:
 @app.get("/projects", response_model=List[Project])
 async def get_projects():
     try:
-        with open("../../projects.tmp", "r") as f:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(current_dir, "projects_data.md")
+        with open(file_path, "r") as f:
             content = f.read()
         return parse_projects(content)
     except FileNotFoundError:
