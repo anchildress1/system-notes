@@ -101,6 +101,7 @@ EOF
             --image "$IMAGE_URI" \
             --region "$REGION" \
             --allow-unauthenticated \
+            --labels dev-tutorial=devnewyear2026 \
             --port "$PORT" \
             --set-env-vars "$ENV_VARS"
     else
@@ -108,6 +109,7 @@ EOF
             --image "$IMAGE_URI" \
             --region "$REGION" \
             --allow-unauthenticated \
+            --labels dev-tutorial=devnewyear2026 \
             --port "$PORT"
     fi
 }
