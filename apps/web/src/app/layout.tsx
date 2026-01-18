@@ -23,8 +23,28 @@ import BackgroundMusic from '@/components/BackgroundMusic/BackgroundMusic';
 import GlitterBomb from '@/components/GlitterBomb/GlitterBomb';
 
 export const metadata: Metadata = {
-  title: "Ashley Childress' System Notes | v1.0.0",
+  title: {
+    default: "Ashley Childress' System Notes",
+    template: "%s | System Notes",
+  },
   description: 'A living, queryable index of projects and decisions.',
+  openGraph: {
+    title: "Ashley Childress' System Notes",
+    description: 'A living, queryable index of projects and decisions.',
+    url: 'https://system-notes-ui-856401495068.us-east1.run.app', // Best guess based on deploy context or localhost
+    siteName: 'System Notes',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Ashley Childress' System Notes",
+    description: 'A living, queryable index of projects and decisions.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

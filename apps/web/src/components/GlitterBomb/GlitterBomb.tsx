@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 // Define Particle interface locally
-interface Particle {
+export interface Particle {
   x: number;
   y: number;
   speed: number;
@@ -15,6 +15,7 @@ interface Particle {
   fill: (color: number) => void;
   alpha: number;
   scale: { x: number; y: number };
+  visible: boolean;
 }
 
 export default function GlitterBomb() {

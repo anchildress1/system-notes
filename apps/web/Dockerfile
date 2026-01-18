@@ -17,7 +17,7 @@ COPY --from=pruner /app/out/package-lock.json ./package-lock.json
 
 # Set LEFTHOOK=0 to ensure it doesn't try to install hooks
 # Use --ignore-scripts to prevent postinstall scripts from running
-RUN LEFTHOOK=0 npm install --ignore-scripts
+RUN LEFTHOOK=0 npm install --ignore-scripts --legacy-peer-deps
 
 COPY --from=pruner /app/out/full/ .
 COPY turbo.json turbo.json
