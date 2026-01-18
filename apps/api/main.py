@@ -39,8 +39,8 @@ try:
     with open(prompt_path, "r") as f:
         base_prompt = f.read()
 
-    # Dynamic Context (Projects)
-    projects_path = os.path.join(current_dir, "../../projects.tmp")
+    # Dynamic Context (Project Narratives)
+    projects_path = os.path.join(current_dir, "project_narratives.md")
     with open(projects_path, "r") as f:
         projects_content = f.read()
         
