@@ -54,11 +54,17 @@ test.describe('System Notes Integration', () => {
     const input = page.getByPlaceholder('Type a message...');
     await expect(input).toBeVisible();
 
+    // Verify initial focus
+    await expect(input).toBeFocused();
+
     await input.fill('Hello AI');
     await page.keyboard.press('Enter');
 
     // Check for "Thinking..." state
     await expect(page.locator('text=Thinking...')).toBeVisible();
+
+    // Verify focus returns to input
+    await expect(input).toBeFocused();
   });
 
   test('should open expanded view and verify banner', async ({ page }) => {

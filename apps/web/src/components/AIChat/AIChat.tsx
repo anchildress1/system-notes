@@ -11,6 +11,7 @@ export default function AIChat() {
   const { isOpen, toggleChat, messages, addMessage, isLoading, setIsLoading } = useChat();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -20,12 +21,21 @@ export default function AIChat() {
     scrollToBottom();
   }, [messages, isOpen]);
 
+  useEffect(() => {
+    if (isOpen) {
+      inputRef.current?.focus();
+    }
+  }, [isOpen]);
+
   const handleSend = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
     setInput('');
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
     addMessage({ role: 'user', text: userMessage });
     setIsLoading(true);
 
@@ -94,13 +104,13 @@ export default function AIChat() {
             </div>
             <div className={styles.inputArea}>
               <input
+                ref={inputRef}
                 type="text"
                 placeholder="Type a message..."
                 className={styles.input}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                disabled={isLoading}
                 aria-label="Chat message"
               />
               <button onClick={handleSend} className={styles.sendButton} aria-label="Send">

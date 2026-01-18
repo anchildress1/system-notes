@@ -25,7 +25,7 @@ export default function Footer() {
           GitHub
         </a>
         <a
-          href="https://linkedin.com/in/ashley-childress"
+          href="https://linkedin.com/in/anchildress1"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.link}
