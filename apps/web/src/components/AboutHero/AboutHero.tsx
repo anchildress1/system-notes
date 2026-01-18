@@ -27,7 +27,7 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
     height: 400,
   };
 
-  const heroTitle = title || 'I design for the failure \n you haven\'t met yet.';
+  const heroTitle = title || "I design for the failure \n you haven't met yet.";
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -169,4 +169,3 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
     </div>
   );
 }
-
