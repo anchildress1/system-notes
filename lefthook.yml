@@ -4,8 +4,10 @@ pre-commit:
   commands:
     format:
       run: npm run format
-    # lint:
-    #   run: npm run lint   # Disabled to unblock commit
+      staged_files: true
+    lint:
+      run: npm run lint
+      staged_files: true
     test:
       run: npm run test
 

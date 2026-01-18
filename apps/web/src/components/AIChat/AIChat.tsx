@@ -84,7 +84,7 @@ export default function AIChat() {
             <div className={styles.header}>
               <div>
                 <span className={styles.statusDot}></span>
-                Ruckus
+                Ruckus (no memory yet)
               </div>
             </div>
             <div className={styles.messages}>

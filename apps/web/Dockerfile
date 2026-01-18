@@ -8,13 +8,16 @@ RUN npx turbo prune --scope=web --docker
 
 # Block 2: The Installer
 FROM node:20-alpine AS installer
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat git
 WORKDIR /app
 
 # First install the dependencies (as they change less often)
 COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/package-lock.json ./package-lock.json
-RUN npm install
+
+# Set LEFTHOOK=0 to ensure it doesn't try to install hooks
+# Use --ignore-scripts to prevent postinstall scripts from running
+RUN LEFTHOOK=0 npm install --ignore-scripts
 
 COPY --from=pruner /app/out/full/ .
 COPY turbo.json turbo.json
