@@ -98,7 +98,7 @@ async def health_check():
 async def chat(request: ChatRequest):
     try:
         completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Using gpt-3.5-turbo for cost saving per instructions
+            model="gpt-4o",  # Using gpt-4o as proxy for "GPT 5.2" per user request
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": request.message},

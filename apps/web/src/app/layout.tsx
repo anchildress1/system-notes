@@ -21,6 +21,8 @@ const ribeye = Ribeye({
 import Footer from '@/components/Footer/Footer';
 import BackgroundMusic from '@/components/BackgroundMusic/BackgroundMusic';
 import GlitterBomb from '@/components/GlitterBomb/GlitterBomb';
+import AIChat from '@/components/AIChat/AIChat';
+import { ChatProvider } from '@/context/ChatContext';
 
 export const metadata: Metadata = {
   title: {
@@ -58,12 +60,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${ribeye.variable} antialiased`}
         style={{ paddingBottom: '80px' }}
       >
-        <div aria-hidden="true">
-          <GlitterBomb />
-        </div>
-        <BackgroundMusic />
-        {children}
-        <Footer />
+        <ChatProvider>
+          <div aria-hidden="true">
+            <GlitterBomb />
+          </div>
+          <BackgroundMusic />
+          {children}
+          <AIChat />
+          <Footer />
+        </ChatProvider>
       </body>
     </html>
   );

@@ -74,10 +74,19 @@ test.describe('System Notes Integration', () => {
     // Check for "Project Output" or similar text to ensure content loaded
     // Verify content loaded - check for specific section title within expanded view
     const expandedContent = page
-      .locator('div[class*="ExpandedView"] h3')
+      .locator('h3[class*="sectionTitle"]')
       .filter({ hasText: /Project Output|Outcome/ })
       .first();
     await expect(expandedContent).toBeVisible();
+
+    // Verify Vertical Tech Stack
+    // Should have multiple tag items stacked
+    const techStack = page.locator('div[class*="tags"]');
+    await expect(techStack).toBeVisible();
+
+    // Check specific class for vertical items if possible (tagItem)
+    const tagItems = page.locator('div[class*="tagItem"]');
+    await expect(tagItems.first()).toBeVisible();
   });
 
   test('About page smoke test', async ({ page }) => {
@@ -99,5 +108,35 @@ test.describe('System Notes Integration', () => {
     // Accessibility check
     const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
     expect(accessibilityScanResults.violations).toEqual([]);
+  });
+  test('Chat state persistence across navigation', async ({ page }) => {
+    await page.goto('/');
+
+    // Open Chat
+    await page.getByLabel('Open AI Chat').click();
+    const input = page.getByPlaceholder('Type a message...');
+
+    // Send a message
+    await input.fill('Are you persistent?');
+    await page.keyboard.press('Enter');
+
+    // Wait for message to appear in chat log (User message)
+    await expect(page.locator('text=Are you persistent?')).toBeVisible();
+
+    // Navigate to /about
+    await page.getByRole('link', { name: 'About Ashley' }).click();
+    await expect(page).toHaveURL('/about');
+
+    // Wait for nav to complete
+    await page.waitForLoadState('domcontentloaded');
+
+    // Chat should be visible and contain history
+    const chatContainer = page.locator('div[class*="chatWindow"]');
+
+    // Check visibility first
+    await expect(chatContainer).toBeVisible({ timeout: 10000 });
+
+    // Check history
+    await expect(page.locator('text=Are you persistent?')).toBeVisible();
   });
 });

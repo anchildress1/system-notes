@@ -8,7 +8,7 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.left}>
-        <span>&copy; {currentYear} Ashley Childress</span>
+        <span suppressHydrationWarning>&copy; {currentYear} Ashley Childress</span>
       </div>
       <div className={styles.center}>
         <span className={styles.builtWith}>

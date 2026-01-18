@@ -5,9 +5,29 @@ import Image from 'next/image';
 import styles from './AboutHero.module.css';
 import { Particle } from '../GlitterBomb/GlitterBomb';
 
-export default function AboutHero() {
+interface AboutHeroProps {
+  title?: string;
+  image?: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+  };
+}
+
+export default function AboutHero({ title, image }: AboutHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
+
+  // default image if not provided
+  const heroImage = image || {
+    src: '/ashley-gen-2.jpg',
+    alt: 'Ashley Childress',
+    width: 600,
+    height: 400,
+  };
+
+  const heroTitle = title || 'I design for the failure \n you haven\'t met yet.';
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -127,16 +147,21 @@ export default function AboutHero() {
     <div className={styles.hero} ref={containerRef}>
       <div className={styles.titleContainer} ref={textRef}>
         <div className={styles.title}>
-          I design for the failure <br /> you haven&apos;t met yet.
+          {heroTitle.split('\n').map((line, i) => (
+            <span key={i}>
+              {line}
+              {i < heroTitle.split('\n').length - 1 && <br />}
+            </span>
+          ))}
         </div>
       </div>
 
       <div className={styles.imageContainer}>
         <Image
-          src="/ashley-gen-2.jpg"
-          alt="Ashley Childress"
-          width={600}
-          height={400} // Approximate aspect ratio, will adjust auto
+          src={heroImage.src}
+          alt={heroImage.alt}
+          width={heroImage.width}
+          height={heroImage.height}
           className={styles.image}
           priority
         />
@@ -144,3 +169,4 @@ export default function AboutHero() {
     </div>
   );
 }
+

@@ -66,21 +66,20 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
 
         <motion.div className={styles.content} layoutId={`content-${project.id}`}>
           <div className={styles.header}>
-            <div>
+            <div className={styles.headerContent}>
+              <div className={styles.titleRow}>
+                <h2 className={styles.title}>{project.title}</h2>
+                {project.status && <span className={styles.statusBadge}>{project.status}</span>}
+              </div>
               <div className={styles.metaRow}>
                 <span>{project.owner}</span>
               </div>
-              <h2 className={styles.title}>{project.title}</h2>
-              {project.status && <span className={styles.statusBadge}>{project.status}</span>}
+              {project.description && <p className={styles.subheader}>{project.description}</p>}
             </div>
           </div>
 
           <div className={styles.body}>
             <div className={styles.mainColumn}>
-              {project.description && (
-                <p className={styles.shortDescription}>{project.description}</p>
-              )}
-
               {project.longDescription && (
                 <div className={styles.section}>
                   <h3 className={styles.sectionTitle}>Project Output</h3>
@@ -101,12 +100,10 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
                 <h3 className={styles.sectionTitle}>Tech Stack</h3>
                 <div className={styles.tags}>
                   {project.tech.map((t) => (
-                    <span key={t.name} className={styles.tag}>
-                      <span style={{ fontWeight: 600 }}>{t.name}</span>
-                      <span style={{ opacity: 0.7, marginLeft: '6px', fontSize: '0.9em' }}>
-                        {t.role}
-                      </span>
-                    </span>
+                    <div key={t.name} className={styles.tagItem}>
+                      <span className={styles.tagName}>{t.name}</span>
+                      <span className={styles.tagRole}>{t.role}</span>
+                    </div>
                   ))}
                 </div>
               </div>
