@@ -25,7 +25,7 @@ import GlitterBomb from '@/components/GlitterBomb/GlitterBomb';
 export const metadata: Metadata = {
   title: {
     default: "Ashley Childress' System Notes",
-    template: "%s | System Notes",
+    template: '%s | System Notes',
   },
   description: 'A living, queryable index of projects and decisions.',
   openGraph: {

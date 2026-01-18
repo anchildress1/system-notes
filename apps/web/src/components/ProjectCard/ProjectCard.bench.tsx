@@ -8,7 +8,8 @@ const mockProject: Project = {
   title: 'Benchmark Project',
   status: 'Active',
   description: 'A project for benchmarking performance',
-  longDescription: 'A longer description for the benchmark project to test text rendering performance.',
+  longDescription:
+    'A longer description for the benchmark project to test text rendering performance.',
   outcome: 'Valid benchmarks',
   repoUrl: 'https://github.com/anchildress1/system-notes',
   tech: [
@@ -21,6 +22,6 @@ const mockProject: Project = {
 
 describe('ProjectCard Performance', () => {
   bench('render ProjectCard', () => {
-    render(<ProjectCard project={mockProject} onSelect={() => { }} />);
+    render(<ProjectCard project={mockProject} onSelect={() => {}} />);
   });
 });
