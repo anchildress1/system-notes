@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Project } from '@/data/projects';
+import Image from 'next/image';
 import styles from './ProjectCard.module.css';
 
 interface ProjectCardProps {
@@ -21,10 +22,12 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
         <motion.div className={styles.imageWrapper} layoutId={`image-${project.id}`}>
           <div className={styles.conceptBackground} />
           {project.imageUrl ? (
-            <img
+            <Image
               src={project.imageUrl}
               alt={`Thumbnail for ${project.title}`}
+              fill
               className={styles.image}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
             <div className={styles.placeholderArt}>

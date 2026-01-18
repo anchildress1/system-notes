@@ -11,7 +11,7 @@ export default function Header() {
       <nav className={styles.nav}>
         <div className={`${styles.navItem} ${styles.active}`}>Projects</div>
         <div className={styles.navItem} style={{ opacity: 0.3, cursor: 'not-allowed' }}>
-          Gallery
+          Gallery (coming soon)
         </div>
       </nav>
     </header>

@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Project } from '@/data/projects';
+import Image from 'next/image';
 import styles from './ProjectModal.module.css';
 import { useEffect } from 'react';
 
@@ -42,7 +43,14 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
         <div className={styles.banner}>
           {project.imageUrl ? (
-            <img src={project.imageUrl} alt="" className={styles.bannerImage} />
+            <Image
+              src={project.imageUrl}
+              alt={`Detailed view of ${project.title}`}
+              fill
+              className={styles.bannerImage}
+              sizes="(max-width: 800px) 100vw, 800px"
+              priority
+            />
           ) : (
             <div className={styles.placeholderBanner} />
           )}

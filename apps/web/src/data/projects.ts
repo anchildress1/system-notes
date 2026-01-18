@@ -29,7 +29,7 @@ export const allProjects: Project[] = [
     ],
     repoUrl: 'https://github.com/anchildress1/system-notes',
     owner: 'anchildress1',
-    imageUrl: '/projects/system-notes.png',
+    imageUrl: '/projects/system-notes.jpg',
   },
   {
     id: 'underfoot-underground-travel-planner',
@@ -48,7 +48,7 @@ export const allProjects: Project[] = [
     ],
     repoUrl: 'https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner',
     owner: 'CheckMarKDevTools',
-    imageUrl: '/projects/underfoot-underground-travel-planner.png',
+    imageUrl: '/projects/underfoot-underground-travel-planner.jpg',
   },
   {
     id: 'checkmark-echo',
@@ -62,7 +62,7 @@ export const allProjects: Project[] = [
     tech: ['JavaScript', 'ESLint', 'Prettier', 'Sonar-aligned rule sets', 'Node.js ecosystem'],
     repoUrl: 'https://github.com/CheckMarKDevTools/checkmark-echo',
     owner: 'CheckMarKDevTools',
-    imageUrl: '/projects/eslint-config-echo.png',
+    imageUrl: '/projects/eslint-config-echo.jpg',
   },
   {
     id: 'checkmark-delegate',
@@ -82,7 +82,7 @@ export const allProjects: Project[] = [
     ],
     repoUrl: 'https://github.com/CheckMarKDevTools/checkmark-delegate',
     owner: 'CheckMarKDevTools',
-    imageUrl: '/projects/delegate-action.png',
+    imageUrl: '/projects/delegate-action.jpg',
   },
   {
     id: 'devto-mirror',
@@ -102,7 +102,7 @@ export const allProjects: Project[] = [
     ],
     repoUrl: 'https://github.com/anchildress1/devto-mirror',
     owner: 'anchildress1',
-    imageUrl: '/projects/devto-mirror.png',
+    imageUrl: '/projects/devto-mirror.jpg',
   },
   {
     id: 'rai-lint',
@@ -128,7 +128,7 @@ export const allProjects: Project[] = [
     ],
     repoUrl: 'https://github.com/CheckMarKDevTools/rai-lint',
     owner: 'CheckMarKDevTools',
-    imageUrl: '/projects/rai-lint.png',
+    imageUrl: '/projects/rai-lint.jpg',
   },
   {
     id: 'awesome-github-copilot',
@@ -148,7 +148,7 @@ export const allProjects: Project[] = [
     ],
     repoUrl: 'https://github.com/anchildress1/awesome-github-copilot',
     owner: 'anchildress1',
-    imageUrl: '/projects/awesome-github-copilot.png',
+    imageUrl: '/projects/awesome-github-copilot.jpg',
   },
   {
     id: 'my-hermantic-agent',
@@ -174,7 +174,7 @@ export const allProjects: Project[] = [
     ],
     repoUrl: 'https://github.com/anchildress1/my-hermantic-agent',
     owner: 'anchildress1',
-    imageUrl: '/projects/my-hermantic-agent.png',
+    imageUrl: '/projects/my-hermantic-agent.jpg',
   },
   {
     id: 'checkmark-copilot-chat',
@@ -187,6 +187,6 @@ export const allProjects: Project[] = [
     tech: ['GitHub Copilot Chat', 'JavaScript', 'Early MCP-adjacent experimentation'],
     repoUrl: 'https://github.com/CheckMarKDevTools/checkmark-copilot-chat',
     owner: 'CheckMarKDevTools',
-    imageUrl: '/projects/checkmark-copilot-chat.png',
+    imageUrl: '/projects/checkmark-copilot-chat.jpg',
   },
 ];
