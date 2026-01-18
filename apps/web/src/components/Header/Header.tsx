@@ -10,7 +10,9 @@ export default function Header() {
       </div>
 
       <nav className={styles.nav}>
-        <Link href="/" className={`${styles.navItem} ${styles.active}`}>Projects</Link>
+        <Link href="/" className={`${styles.navItem} ${styles.active}`}>
+          Projects
+        </Link>
         <Link href="/about" className={styles.navItem}>
           About Ashley
         </Link>

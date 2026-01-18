@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import styles from './Hero.module.css';
+import Image from 'next/image';
+import styles from './AboutHero.module.css';
 import { Particle } from '../GlitterBomb/GlitterBomb';
 
-export default function Hero() {
+export default function AboutHero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,11 +18,10 @@ export default function Hero() {
       if (!containerRef.current) return;
       const PIXI = await import('pixi.js');
 
-      // Create Pixi Application
       app = new PIXI.Application();
       await app.init({
         width: containerRef.current.clientWidth,
-        height: containerRef.current.clientHeight,
+        height: containerRef.current.clientHeight, // Cover full hero area
         backgroundAlpha: 0,
         resolution: window.devicePixelRatio || 1,
         autoDensity: true,
@@ -35,9 +36,8 @@ export default function Hero() {
       app.canvas.style.position = 'absolute';
       app.canvas.style.top = '0';
       app.canvas.style.left = '0';
-      app.canvas.style.pointerEvents = 'none'; // Click through, but track JS mouse events on parent
+      app.canvas.style.pointerEvents = 'none';
 
-      // Animation Loop
       app.ticker.add(() => {
         for (let i = particles.length - 1; i >= 0; i--) {
           const p = particles[i];
@@ -51,9 +51,9 @@ export default function Hero() {
           } else {
             p.x += Math.cos(p.direction) * p.speed;
             p.y += Math.sin(p.direction) * p.speed;
-            p.speed *= 0.9; // Drag
+            p.speed *= 0.9;
             p.alpha = p.life;
-            p.scale.x = p.life * 0.5; // Smaller sparks
+            p.scale.x = p.life * 0.5;
             p.scale.y = p.life * 0.5;
           }
         }
@@ -63,16 +63,25 @@ export default function Hero() {
     initPixi();
 
     const handleMouseMove = async (e: MouseEvent) => {
-      if (!app || !containerRef.current) return;
-      const PIXI = await import('pixi.js');
+      if (!app || !containerRef.current || !textRef.current) return;
 
+      // Only trigger sparks if hovering near the text
+      const textRect = textRef.current.getBoundingClientRect();
+      const isInText =
+        e.clientX >= textRect.left &&
+        e.clientX <= textRect.right &&
+        e.clientY >= textRect.top &&
+        e.clientY <= textRect.bottom;
+
+      if (!isInText) return;
+
+      const PIXI = await import('pixi.js');
       const rect = containerRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      // Spawn chaotic sparks
       const count = 3;
-      const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
+      const colors = [0xff00ff, 0x00ffff, 0xffffff];
 
       for (let i = 0; i < count; i++) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,7 +90,7 @@ export default function Hero() {
 
         particle.circle(0, 0, Math.random() * 2 + 1);
         particle.fill(color);
-        particle.x = x + (Math.random() - 0.5) * 20; // Jitter
+        particle.x = x + (Math.random() - 0.5) * 20;
         particle.y = y + (Math.random() - 0.5) * 20;
         particle.alpha = 1;
 
@@ -116,10 +125,22 @@ export default function Hero() {
 
   return (
     <div className={styles.hero} ref={containerRef}>
-      <div className={styles.title}>
-        Disruption is a feature, <br /> not a bug.
+      <div className={styles.titleContainer} ref={textRef}>
+        <div className={styles.title}>
+          I design for the failure <br /> you haven&apos;t met yet.
+        </div>
       </div>
-      <div className={styles.subtitle}>Not here to play nice. Just to play loud.</div>
+
+      <div className={styles.imageContainer}>
+        <Image
+          src="/ashley-gen-2.jpg"
+          alt="Ashley Childress"
+          width={600}
+          height={400} // Approximate aspect ratio, will adjust auto
+          className={styles.image}
+          priority
+        />
+      </div>
     </div>
   );
 }

@@ -79,4 +79,25 @@ test.describe('System Notes Integration', () => {
       .first();
     await expect(expandedContent).toBeVisible();
   });
+
+  test('About page smoke test', async ({ page }) => {
+    await page.goto('/about');
+
+    // Check Hero Image
+    const heroImage = page.getByAltText('Ashley Childress');
+    await expect(heroImage).toBeVisible();
+
+    // Check Hero Text
+    await expect(page.locator("text=failure you haven't met yet")).toBeVisible();
+
+    // Check API Content Loading (wait for it)
+    await expect(page.locator('text=Initializing identity protocol')).not.toBeVisible({
+      timeout: 10000,
+    });
+    await expect(page.locator('text=Off-screen fuel')).toBeVisible();
+
+    // Accessibility check
+    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+    expect(accessibilityScanResults.violations).toEqual([]);
+  });
 });
