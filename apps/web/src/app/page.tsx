@@ -1,4 +1,5 @@
 import Header from '@/components/Header/Header';
+import Hero from '@/components/Hero/Hero';
 
 import ProjectGrid from '@/components/ProjectGrid/ProjectGrid';
 import AIChat from '@/components/AIChat/AIChat';
@@ -8,7 +9,7 @@ export default function Home() {
   return (
     <main className={styles.main} id="main-content">
       <Header />
-
+      <Hero />
       <ProjectGrid />
 
       <AIChat />

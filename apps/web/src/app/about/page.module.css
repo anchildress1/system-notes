@@ -1,0 +1,45 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    color: var(--foreground);
+}
+
+.content {
+    font-family: var(--font-mono);
+    line-height: 1.6;
+}
+
+.content h1 {
+    font-size: 2.5rem;
+    color: var(--accent-cyan);
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+}
+
+.content h2 {
+    font-size: 1.5rem;
+    color: var(--accent-pink);
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+
+.content p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.loading,
+.error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    font-family: var(--font-mono);
+    color: var(--muted-foreground);
+}
+
+.error {
+    color: var(--error);
+}

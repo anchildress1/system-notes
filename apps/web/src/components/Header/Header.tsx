@@ -1,4 +1,5 @@
 import { Code } from 'lucide-react';
+import Link from 'next/link';
 import styles from './Header.module.css';
 
 export default function Header() {
@@ -9,14 +10,10 @@ export default function Header() {
       </div>
 
       <nav className={styles.nav}>
-        <div className={`${styles.navItem} ${styles.active}`}>Projects</div>
-        <div
-          className={styles.navItem}
-          style={{ opacity: 0.3, cursor: 'not-allowed' }}
-          aria-disabled="true"
-        >
-          About Ashley (coming soon)
-        </div>
+        <Link href="/" className={`${styles.navItem} ${styles.active}`}>Projects</Link>
+        <Link href="/about" className={styles.navItem}>
+          About Ashley
+        </Link>
         <a
           href="https://dev.to/anchildress1"
           target="_blank"

@@ -156,3 +156,17 @@ async def get_projects():
     except FileNotFoundError:
         logger.error("projects.md not found")
         return []
+
+
+@app.get("/about")
+async def get_about():
+    try:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(current_dir, "prompts", "about_ashley.md")
+        with open(file_path, "r") as f:
+            content = f.read()
+        return {"content": content}
+    except FileNotFoundError:
+        logger.error("about_ashley.md not found")
+        return {"content": "About content not available."}
+
