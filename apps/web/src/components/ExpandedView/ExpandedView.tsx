@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Project } from '@/data/projects';
 import styles from './ExpandedView.module.css';
 import { useEffect } from 'react';
+import Image from 'next/image';
 
 interface ExpandedViewProps {
   project: Project;
@@ -39,7 +40,16 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
               style={{ backgroundImage: project.imageUrl ? `url(${project.imageUrl})` : undefined }}
             />
 
-            {project.imageUrl && <img src={project.imageUrl} alt="" className={styles.image} />}
+            {project.imageUrl && (
+              <Image
+                src={project.imageUrl}
+                alt={project.title}
+                className={styles.image}
+                fill
+                style={{ objectFit: 'contain' }}
+                priority={false}
+              />
+            )}
           </motion.div>
 
           <button className={styles.closeButton} onClick={onClose}>
