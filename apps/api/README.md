@@ -5,7 +5,7 @@
 ### Prerequisites
 
 - [uv](https://github.com/astral-sh/uv) (Preferred over pip)
-- Python 3.10+
+- Python 3.12+
 
 ### Setup
 
