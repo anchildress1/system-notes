@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
 import styles from './AIChat.module.css';
+import { API_URL } from '@/config';
 
 interface Message {
   role: 'bot' | 'user';
@@ -37,7 +38,7 @@ export default function AIChat() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/chat', {
+      const response = await fetch(`${API_URL}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
