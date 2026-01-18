@@ -1,32 +1,32 @@
-'use client';
-
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import Header from '@/components/Header/Header';
-import AIChat from '@/components/AIChat/AIChat'; // Keep the chat available
 import styles from './page.module.css';
-import { API_URL } from '@/config';
 import AboutHero from '@/components/AboutHero/AboutHero';
+import { API_URL } from '@/config';
 
 export default function About() {
-  const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchAbout() {
+    const fetchAbout = async () => {
       try {
-        const res = await fetch(`${API_URL}/about`);
-        if (!res.ok) throw new Error('Failed to load content');
-        const data = await res.json();
-        setContent(data.content);
-      } catch (err) {
-        console.error(err);
-        setError('System error: Unable to retrieve identity file.');
+        const response = await fetch(`${API_URL}/about`);
+        if (response.ok) {
+          const data = await response.json();
+          setContent(data.content);
+        } else {
+          console.error('Failed to fetch about content');
+          setContent('Failed to load content.');
+        }
+      } catch (error) {
+        console.error('Error loading about content:', error);
+        setContent('Error loading content.');
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchAbout();
   }, []);
@@ -36,17 +36,10 @@ export default function About() {
       <Header />
       <AboutHero />
       <div className={styles.container}>
-        {loading && <div className={styles.loading}>Initializing identity protocol...</div>}
-
-        {error && <div className={styles.error}>{error}</div>}
-
-        {!loading && !error && (
-          <div className={styles.content}>
-            <ReactMarkdown>{content}</ReactMarkdown>
-          </div>
-        )}
+        <div className={styles.content}>
+          {loading ? <p>Loading...</p> : <ReactMarkdown>{content}</ReactMarkdown>}
+        </div>
       </div>
-      <AIChat />
     </main>
   );
 }

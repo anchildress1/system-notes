@@ -6,15 +6,28 @@ import os
 from openai import OpenAI
 import logging
 from dotenv import load_dotenv
+from fastapi.exceptions import RequestValidationError
+from fastapi.requests import Request
+from fastapi.responses import JSONResponse
 
 # Load environment variables
 load_dotenv()
 
 app = FastAPI(title="System Notes API", version="0.1.0")
 
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    logger.error(f"Validation error: {exc.body}")
+    return JSONResponse(
+        status_code=400,
+        content={"detail": exc.errors(), "body": str(exc.body)},
+    )
+
 
 # Configure CORS
 app.add_middleware(
@@ -85,7 +98,7 @@ async def health_check():
 async def chat(request: ChatRequest):
     try:
         completion = client.chat.completions.create(
-            model="gpt-4o",  # Using gpt-4o as proxy for "GPT 5.2" per instructions to use latest capabilities available via API
+            model="gpt-3.5-turbo",  # Using gpt-3.5-turbo for cost saving per instructions
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": request.message},

@@ -5,20 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
 import styles from './AIChat.module.css';
 import { API_URL } from '@/config';
-
-interface Message {
-  role: 'bot' | 'user';
-  text: string;
-}
+import { useChat } from '@/context/ChatContext';
 
 export default function AIChat() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, toggleChat, messages, addMessage, isLoading, setIsLoading } = useChat();
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>([
-    { role: 'bot', text: "I'm here. I'm listening. I'm not judging (much)." },
-    { role: 'bot', text: 'Ask me about the architecture, or why Ashley chose this font.' },
-  ]);
-  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -30,11 +21,12 @@ export default function AIChat() {
   }, [messages, isOpen]);
 
   const handleSend = async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
     setInput('');
-    setMessages((prev) => [...prev, { role: 'user', text: userMessage }]);
+    addMessage({ role: 'user', text: userMessage });
     setIsLoading(true);
 
     try {
@@ -47,20 +39,19 @@ export default function AIChat() {
       });
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Network response was not ok', response.status, errorData);
         throw new Error('Network response was not ok');
       }
 
       const data = await response.json();
-      setMessages((prev) => [...prev, { role: 'bot', text: data.reply }]);
+      addMessage({ role: 'bot', text: data.reply });
     } catch (error) {
       console.error('Error fetching chat response:', error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: 'bot',
-          text: 'I seem to be having trouble connecting to my brain. Must be a network glitch.',
-        },
-      ]);
+      addMessage({
+        role: 'bot',
+        text: 'I seem to be having trouble connecting to my brain. Must be a network glitch.',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +113,7 @@ export default function AIChat() {
 
       <button
         className={`${styles.toggleButton} ${isOpen ? styles.stopPulse : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleChat}
         aria-label={isOpen ? 'Close AI Chat' : 'Open AI Chat'}
       >
         {isOpen ? '✕' : '?'}
