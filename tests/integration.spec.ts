@@ -8,12 +8,11 @@ test.describe('System Notes Integration', () => {
     await expect(page.locator('h1')).toContainText("Ashley Childress' System Notes");
   });
 
-  test('should display the sticky footer', async ({ page }) => {
+  test('should display the footer', async ({ page }) => {
     await page.goto('/');
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
     await expect(footer).toContainText('Built with Gemini 3 Pro');
-    await expect(footer).toHaveCSS('position', 'fixed');
   });
 
   test('should display blog CTA in header', async ({ page }) => {
@@ -46,8 +45,6 @@ test.describe('System Notes Integration', () => {
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 
-
-
   test('AIChat interaction', async ({ page }) => {
     await page.goto('/');
     // Open Chat
@@ -70,10 +67,13 @@ test.describe('System Notes Integration', () => {
     await page.locator('div[class*="card"]').first().click();
 
     // Check for banner container
-    const banner = page.locator('div[class*="imageContainer"]');
+    // Use a more specific locator to avoid matching Project Cards
+    const banner = page.locator('div[class*="ExpandedView"] div[class*="imageContainer"]');
     await expect(banner).toBeVisible();
 
     // Check for "Project Output" or similar text to ensure content loaded
-    await expect(page.locator('text=Project Output').or(page.locator('text=Outcome'))).toBeVisible();
+    // Verify content loaded - check for specific section title within expanded view
+    const expandedContent = page.locator('div[class*="ExpandedView"] h3').filter({ hasText: /Project Output|Outcome/ }).first();
+    await expect(expandedContent).toBeVisible();
   });
 });

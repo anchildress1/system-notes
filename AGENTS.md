@@ -12,10 +12,10 @@ Its primary job is to make complex, evolving projects **legible at a glance** an
 
 **Core principles:**
 
-* No instructional copy for obvious interactions
-* Visual hierarchy over prose
-* Scannability beats completeness
-* WIP is acceptable; confusion is not
+- No instructional copy for obvious interactions
+- Visual hierarchy over prose
+- Scannability beats completeness
+- WIP is acceptable; confusion is not
 
 ---
 
@@ -23,38 +23,36 @@ Its primary job is to make complex, evolving projects **legible at a glance** an
 
 ### Title & Emphasis Font
 
-* **Ribeye**
-* Usage:
+- **Ribeye**
+- Usage:
+  - Site title
+  - Section headers
+  - **Project names**
 
-  * Site title
-  * Section headers
-  * **Project names**
-* Rationale:
-
-  * Distinctive
-  * High personality
-  * Clearly separates “structure” from body content
+- Rationale:
+  - Distinctive
+  - High personality
+  - Clearly separates “structure” from body content
 
 ### Body Font
 
-* Neutral, highly readable sans-serif
+- Neutral, highly readable sans-serif
   (Roboto, Inter, or system-ui are acceptable)
-* Usage:
-
-  * Descriptions
-  * Metadata
-  * Navigation
-  * Footer content
+- Usage:
+  - Descriptions
+  - Metadata
+  - Navigation
+  - Footer content
 
 ### Rules
 
-* Ribeye is **never** used for paragraphs
-* Ribeye may be used for:
+- Ribeye is **never** used for paragraphs
+- Ribeye may be used for:
+  - Project names
+  - Page-level headings
 
-  * Project names
-  * Page-level headings
-* Body text minimum size: 16px
-* Comfortable line height (≈1.5)
+- Body text minimum size: 16px
+- Comfortable line height (≈1.5)
 
 ---
 
@@ -62,22 +60,21 @@ Its primary job is to make complex, evolving projects **legible at a glance** an
 
 ### Display Name
 
-* Use **human-readable project names**
-* Not raw repo slugs unless the slug *is* the brand
+- Use **human-readable project names**
+- Not raw repo slugs unless the slug _is_ the brand
 
 Examples:
 
-* `RAI Lint` (not `rai-lint`)
-* `System Notes` (not `system-notes-ui`)
-* `CheckMarK DevTools` (not org/repo path)
+- `RAI Lint` (not `rai-lint`)
+- `System Notes` (not `system-notes-ui`)
+- `CheckMarK DevTools` (not org/repo path)
 
 ### Repo Names
 
-* Appear only:
-
-  * On detail views
-  * As secondary metadata
-  * In links/tooltips if needed
+- Appear only:
+  - On detail views
+  - As secondary metadata
+  - In links/tooltips if needed
 
 **Default rule:**
 If a human would say it out loud, that’s the display name.
@@ -90,30 +87,29 @@ Each project renders as a **card**, not a markdown block.
 
 ### Card Contents
 
-* Project social banner image
+- Project social banner image
+  - Pulled from GitHub
+  - Resized only if original spacing requires it
 
-  * Pulled from GitHub
-  * Resized only if original spacing requires it
-* Project name (Ribeye)
-* One-sentence intent description
-* Optional metadata:
+- Project name (Ribeye)
+- One-sentence intent description
+- Optional metadata:
+  - Tech stack
+  - Status (WIP / Prototype / Active)
 
-  * Tech stack
-  * Status (WIP / Prototype / Active)
-* Clickable surface:
-
-  * Entire card is clickable
-  * No “Click here” text
-  * No instructional affordances
+- Clickable surface:
+  - Entire card is clickable
+  - No “Click here” text
+  - No instructional affordances
 
 ### Interaction Rules
 
-* Cards are obviously interactive by:
+- Cards are obviously interactive by:
+  - Hover state
+  - Cursor change
+  - Visual depth
 
-  * Hover state
-  * Cursor change
-  * Visual depth
-* Do **not** explain interaction in copy
+- Do **not** explain interaction in copy
 
 ---
 
@@ -121,16 +117,16 @@ Each project renders as a **card**, not a markdown block.
 
 ### Top Navigation (Sticky)
 
-* Home
-* Projects
-* Blog
-* About (or equivalent)
+- Home
+- Projects
+- Blog
+- About (or equivalent)
 
 ### Blog Button
 
-* Explicit **Blog** entry in top nav
-* No buried links
-* Blog is a first-class citizen, not an afterthought
+- Explicit **Blog** entry in top nav
+- No buried links
+- Blog is a first-class citizen, not an afterthought
 
 ---
 
@@ -138,26 +134,26 @@ Each project renders as a **card**, not a markdown block.
 
 ### Content Container
 
-* Max width: ~650–800px for reading surfaces
-* Centered
-* Generous vertical spacing between sections
+- Max width: ~650–800px for reading surfaces
+- Centered
+- Generous vertical spacing between sections
 
 ### Sections
 
-* Clear section headers (Ribeye)
-* Logical grouping
-* No wall-of-text layouts
+- Clear section headers (Ribeye)
+- Logical grouping
+- No wall-of-text layouts
 
 ---
 
 ## 7. Images & Banners
 
-* All project images are:
+- All project images are:
+  - Actual GitHub social banners
+  - Not decorative stock imagery
 
-  * Actual GitHub social banners
-  * Not decorative stock imagery
-* Consistent aspect ratio per section
-* Optimized for load, not re-designed
+- Consistent aspect ratio per section
+- Optimized for load, not re-designed
 
 ---
 
@@ -165,11 +161,11 @@ Each project renders as a **card**, not a markdown block.
 
 Footer must include:
 
-* Short identity statement
-* Navigation links
-* External links (GitHub, Dev.to, etc.)
-* No filler text
-* No copyright boilerplate unless necessary
+- Short identity statement
+- Navigation links
+- External links (GitHub, Dev.to, etc.)
+- No filler text
+- No copyright boilerplate unless necessary
 
 Footer signals **completion**, not abandonment.
 
@@ -177,10 +173,10 @@ Footer signals **completion**, not abandonment.
 
 ## 9. Accessibility & UX Baselines
 
-* Proper heading hierarchy (h1 → h2 → h3)
-* Images have alt text
-* Sufficient contrast
-* Interactive elements are visually obvious
+- Proper heading hierarchy (h1 → h2 → h3)
+- Images have alt text
+- Sufficient contrast
+- Interactive elements are visually obvious
 
 ---
 
@@ -188,10 +184,10 @@ Footer signals **completion**, not abandonment.
 
 Do NOT:
 
-* Explain basic web interactions
-* Over-optimize for SEO at the cost of clarity
-* Rewrite content just to “sound nicer”
-* Hide WIP behind polish
+- Explain basic web interactions
+- Over-optimize for SEO at the cost of clarity
+- Rewrite content just to “sound nicer”
+- Hide WIP behind polish
 
 This site favors **truthful structure** over performative finish.
 

@@ -147,7 +147,7 @@
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.5px;
-    background: hsl(var(--color-accent-purple));
+    background: hsl(270, 70%, 35%);
     /* Darkened for A11y contrast */
     color: white;
     padding: 2px 8px;
