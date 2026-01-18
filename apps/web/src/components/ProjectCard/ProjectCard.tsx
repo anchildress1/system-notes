@@ -21,7 +21,7 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
         <motion.div className={styles.imageWrapper} layoutId={`image-${project.id}`}>
           <div className={styles.conceptBackground} />
           {project.imageUrl ? (
-            <img src={project.imageUrl} alt="" className={styles.image} />
+            <img src={project.imageUrl} alt={`Thumbnail for ${project.title}`} className={styles.image} />
           ) : (
             <div className={styles.placeholderArt}>
               <span className={styles.initials}>{project.title.substring(0, 2).toUpperCase()}</span>
@@ -39,7 +39,7 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
             </span>
             {/* Hyperlink removed for clean aesthetic */}
           </div>
-          <h3 className={styles.title}>{project.title}</h3>
+          <h2 className={styles.title}>{project.title}</h2>
         </div>
 
         <p className={styles.description}>{project.description}</p>
