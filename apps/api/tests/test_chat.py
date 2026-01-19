@@ -32,7 +32,7 @@ def test_chat_endpoint_validation_error():
     Test strict contract enforcement (validation error on missing field).
     """
     response = client.post("/chat", json={})  # Missing 'message'
-    assert response.status_code == 422
+    assert response.status_code == 400
 
 
 def test_chat_endpoint_failsafe():

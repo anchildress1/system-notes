@@ -7,6 +7,7 @@
     "start": "uv run uvicorn main:app --port 8000",
     "lint": "uv run ruff check .",
     "format": "uv run ruff format .",
-    "setup": "uv sync"
+    "setup": "uv sync",
+    "test": "PYTHONPATH=. uv run pytest"
   }
 }
