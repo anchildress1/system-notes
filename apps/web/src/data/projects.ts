@@ -17,14 +17,15 @@ export const allProjects: Project[] = [
     status: 'Active · Deployed',
     description: 'A map of systems: intent, constraints, and outcomes over time.',
     longDescription:
-      'This is not a portfolio product; it is a constraint-based system map. I intentionally avoided learning Next.js deeply, forcing the system to rely on agentic generation for the UI while I focused on structure, bounds, and data modeling. It exists to show how decisions evolve, not just what was built.',
+      'This is not a traditional portfolio project. It is a deliberately time-boxed experiment in building a developer site almost entirely through AI generation. I intentionally avoided deep, manual investment in Next.js to constrain my role to system design, intent setting, and boundary definition, while ChatGPT handled the majority of ideation and written output. The project exists to capture how architectural decisions emerge, shift, and stabilize when authorship is shared between a human and an AI system.',
     outcome:
-      'A strict read-only system backbone that replaces a traditional developer website. It proves that structure and intent matter more than pixel-perfect manual control.',
+      'The result is a strictly read-only, AI-assembled backbone that replaces a conventional developer website. It demonstrates that clear structure, constraints, and declared intent outperform handcrafted polish when the goal is traceability, coherence, and long-term evolution rather than visual perfection.',
     tech: [
-      { name: 'Next.js', role: 'The UI Layer (Agent-managed)' },
-      { name: 'Python', role: 'The Backbone' },
-      { name: 'Markdown', role: 'Single Source of Truth' },
-      { name: 'Google Cloud Run', role: 'Deployment Target' },
+      { name: 'Gemini 3 Pro', role: 'The Architect' },
+      { name: 'Antigravity', role: 'Orchestration Layer' },
+      { name: 'Google Cloud Run', role: 'Runtime' },
+      { name: 'ChatGPT', role: 'The Manager' },
+      { name: 'GPT 5.2', role: 'Conversational Interface' },
     ],
     repoUrl: 'https://github.com/anchildress1/system-notes',
     owner: 'anchildress1',
@@ -165,7 +166,7 @@ export const allProjects: Project[] = [
   },
   {
     id: 'checkmark-copilot-chat',
-    title: 'Copilot Chat Exp.',
+    title: 'Copilot Chat Extension',
     status: 'Archived',
     description: 'Hypothesis: Chat context is portable. Result: False.',
     longDescription:
