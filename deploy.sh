@@ -48,6 +48,7 @@ deploy_service() {
     local PORT=$3
     local ENV_VARS=$4
     local DOCKERFILE_PATH=$5
+    local BUILD_ARGS_FLAGS=$6
 
     echo ""
     echo "--- Processing $SERVICE_NAME ---"
@@ -70,21 +71,17 @@ deploy_service() {
     IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$SERVICE_NAME:latest"
     echo "Building and pushing image: $IMAGE_URI"
     
-    # Construct build command arguments
-    BUILD_ARGS="--tag $IMAGE_URI"
     if [ -n "$DOCKERFILE_PATH" ]; then
-        # If a custom Dockerfile path is provided, use the config flag to specify it
-        # gcloud builds submit doesn't have a direct --file flag like docker build,
-        # but we can assume the source is correct.
-        # Wait, gcloud builds submit DOES NOT support --file directly for source builds easily without cloudbuild.yaml.
-        # BUT, if we can't use --file, we might need a cloudbuild.yaml or use `docker build` + `docker push` if local docker is available,
-        # OR use the --config flag pointing to a generated cloudbuild.yaml.
-        
         # Simpler approach: Create a temporary cloudbuild.yaml for this build
+        # Use bash entrypoint to handle argument expansion correctly
         cat > cloudbuild_tmp.yaml <<EOF
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', '$IMAGE_URI', '-f', '$DOCKERFILE_PATH', '.' ]
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    docker build -t $IMAGE_URI -f $DOCKERFILE_PATH $BUILD_ARGS_FLAGS .
 images:
 - '$IMAGE_URI'
 EOF
@@ -115,7 +112,7 @@ EOF
 }
 
 # Deploy API
-deploy_service "$API_SERVICE" "$API_SOURCE" "$API_PORT" "OPENAI_API_KEY=${OPENAI_API_KEY}" ""
+deploy_service "$API_SERVICE" "$API_SOURCE" "$API_PORT" "OPENAI_API_KEY=${OPENAI_API_KEY}" "" ""
 
 # Get API URL
 echo "Retrieving API URL..."
@@ -133,21 +130,21 @@ echo "API URL: $API_URL"
 # Actually, NEXT_PUBLIC_ vars are inlined at JS build time. 
 # So we need to pass --build-arg NEXT_PUBLIC_API_URL=$API_URL to the build step in Dockerfile!
 
-# Wait, `gcloud run deploy --set-env-vars` sets runtime env vars. 
+# Wait, \`gcloud run deploy --set-env-vars\` sets runtime env vars. 
 # Next.js client-side code *cannot* see runtime env vars unless we use a specialized approach.
 # However, for simplicity now, let's assume we might need to rebuild or we accept that for this fix I will just set the ENV VAR and hope the user rebuilds locally or we modify Dockerfile to accept ARG.
 
 # Let's modify the deploy function or just pass it here. 
-# BUT wait, the Dockerfile runs `turbo run build`. It won't see the env var unless passed as ARG.
+# BUT wait, the Dockerfile runs \`turbo run build\`. It won't see the env var unless passed as ARG.
 # So we need to update Dockerfile to accept ARG NEXT_PUBLIC_API_URL and passed it. 
 
-# For now, let's pass it as --set-env-vars. If Next.js is running in standalone mode (server.js), `process.env` might work for SSR, but client-side `NEXT_PUBLIC_` needs to be there at build.
+# For now, let's pass it as --set-env-vars. If Next.js is running in standalone mode (server.js), \`process.env\` might work for SSR, but client-side \`NEXT_PUBLIC_\` needs to be there at build.
 
 # Plan update: I will pass it as env var.
 # We also need to pass it as a build-arg to the docker build command for it to be baked in.
 export API_URL
 BUILD_ARGS="--build-arg NEXT_PUBLIC_API_URL=$API_URL"
-deploy_service "$UI_SERVICE" "." "$UI_PORT" "NEXT_PUBLIC_API_URL=$API_URL" "apps/web/Dockerfile"
+deploy_service "$UI_SERVICE" "." "$UI_PORT" "NEXT_PUBLIC_API_URL=$API_URL" "apps/web/Dockerfile" "$BUILD_ARGS"
 
 echo ""
 echo "=================================================="
