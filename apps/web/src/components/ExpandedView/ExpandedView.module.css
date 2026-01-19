@@ -4,7 +4,7 @@
     z-index: 1000;
     background: rgba(0, 0, 0, 0.85);
     /* Deep focus */
-    backdrop-filter: blur(10px) saturate(180%);
+    /* backdrop-filter: blur(10px) saturate(180%); Removed for performance */
     display: flex;
     align-items: center;
     justify-content: center;

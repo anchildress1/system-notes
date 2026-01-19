@@ -31,10 +31,51 @@ export const allProjects: Project[] = [
     owner: 'anchildress1',
     imageUrl: '/projects/system-notes.jpg',
   },
+
+  {
+    id: 'delegate-action',
+    title: 'Delegate Action',
+    status: 'Active · POC',
+    description: 'Turning prompts into Pull Requests (with humans in the loop).',
+    longDescription:
+      'Service accounts are hard; delegation is easier. This Action acts as a coding agent that takes a prompt, generates a draft PR, and signs me as the reviewer. It solves the "blank page" problem by forcing the AI to show its work before merging.',
+    outcome:
+      "A working Proof of Concept that bypasses the need for complex bot permissions by leveraging the user's own review flow.",
+    tech: [
+      { name: 'GitHub Actions', role: 'The Runtime' },
+      { name: 'Node.js', role: 'Logic Layer' },
+      { name: 'Security', role: 'Injection Detection' },
+      { name: 'PAT', role: 'Auth Shortcut' },
+    ],
+    repoUrl: 'https://github.com/CheckMarKDevTools/delegate-action',
+    owner: 'CheckMarKDevTools',
+    imageUrl: '/projects/delegate-action.jpg',
+  },
+
+  {
+    id: 'my-hermantic-agent',
+    title: 'Hermes Agent',
+    status: 'Active · In Progress',
+    description: 'A zero-stakes laboratory for breaking AI memory models.',
+    longDescription:
+      'I needed a place to break things safely. Hermes is a fully local, forbidden-free zone where I test long-term memory architectures and tool-use patterns. It is not polished. It is not safe. It is where I learn how the brain works by building a messy one.',
+    outcome:
+      'A chaotic, functional research sandbox that informs the architecture of my production tools.',
+    tech: [
+      { name: 'Python', role: 'The Mind' },
+      { name: 'Ollama', role: 'The Engine' },
+      { name: 'PostgreSQL', role: 'Long-term Memory' },
+      { name: 'Local', role: 'The Environment' },
+    ],
+    repoUrl: 'https://github.com/anchildress1/my-hermantic-agent',
+    owner: 'anchildress1',
+    imageUrl: '/projects/my-hermantic-agent.jpg',
+  },
+
   {
     id: 'rai-lint',
     title: 'RAI Lint',
-    status: 'Active',
+    status: 'Active · Published',
     description: 'Attribution enforcement: if AI helped, that attribution must exist.',
     longDescription:
       'Security through transparency. This tool integrates directly into commit workflows to enforce AI attribution. It is not policy theater; it is a hard technical boundary. Nothing more, nothing less. If you use tools, you cite them.',
@@ -42,14 +83,16 @@ export const allProjects: Project[] = [
       'Rolling out to live teams. It turns invisible assistance into explicit, trackable data without disrupting the flow state.',
     tech: [
       { name: 'TypeScript', role: 'Rule Logic' },
-      { name: 'Python', role: 'Git Hooks' },
-      { name: 'commitlint', role: 'Enforcement Engine' },
+      { name: 'Python', role: 'Rule Logic' },
+      { name: 'commitlint', role: 'Node Enforcement' },
+      { name: 'gitlint', role: 'Python Enforcement' },
       { name: 'PolyForm Shield', role: 'License' },
     ],
     repoUrl: 'https://github.com/CheckMarKDevTools/rai-lint',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/rai-lint.jpg',
   },
+
   {
     id: 'underfoot-underground-travel-planner',
     title: 'Underfoot',
@@ -63,12 +106,13 @@ export const allProjects: Project[] = [
       { name: 'Python', role: 'The Orchestrator' },
       { name: 'Supabase', role: 'The Brain' },
       { name: 'React', role: 'The Face' },
-      { name: 'Scraping', role: 'Data Ingestion' },
+      { name: 'Data Ingestion', role: 'Sourcing' },
     ],
     repoUrl: 'https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/underfoot-underground-travel-planner.jpg',
   },
+
   {
     id: 'awesome-github-copilot',
     title: 'Awesome GitHub Copilot',
@@ -88,10 +132,31 @@ export const allProjects: Project[] = [
     owner: 'anchildress1',
     imageUrl: '/projects/awesome-github-copilot.jpg',
   },
+
+  {
+    id: 'devto-mirror',
+    title: 'Dev.to Mirror',
+    status: 'Active',
+    description: 'Set-and-forget discovery optimization for technical writing.',
+    longDescription:
+      'I write on DEV, but I need discovery everywhere. This running cron job pulls my content, formats it for SEO/AI crawlers, and deploys it to a static site. No analytics, no maintenance, just pure signal amplification.',
+    outcome:
+      'Zero-touch operation that increased inbound visibility without adding a single minute of maintenance time.',
+    tech: [
+      { name: 'Python', role: 'The Script' },
+      { name: 'GitHub Actions', role: 'The Cron' },
+      { name: 'GitHub Pages', role: 'The Host' },
+      { name: 'SEO', role: 'The Goal' },
+    ],
+    repoUrl: 'https://github.com/CheckMarKDevTools/devto-mirror',
+    owner: 'CheckMarKDevTools',
+    imageUrl: '/projects/devto-mirror.jpg',
+  },
+
   {
     id: 'eslint-config-echo',
     title: 'Echo',
-    status: 'Active',
+    status: 'Active · Testing',
     description: 'I got tired of repeating myself, so I codified my opinions.',
     longDescription:
       'A boring, reliable, shared configuration. It supports both legacy and modern flat configs because migration is messy and I needed a bridge. It enforces Sonar consistency so I can focus on logic, not spaces.',
@@ -107,63 +172,7 @@ export const allProjects: Project[] = [
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/eslint-config-echo.jpg',
   },
-  {
-    id: 'delegate-action',
-    title: 'Delegate Action',
-    status: 'Active (POC)',
-    description: 'Turning prompts into Pull Requests (with humans in the loop).',
-    longDescription:
-      'Service accounts are hard; delegation is easier. This Action acts as a coding agent that takes a prompt, generates a draft PR, and signs me as the reviewer. It solves the "blank page" problem by forcing the AI to show its work before merging.',
-    outcome:
-      "A working Proof of Concept that bypasses the need for complex bot permissions by leveraging the user's own review flow.",
-    tech: [
-      { name: 'GitHub Actions', role: 'The Runtime' },
-      { name: 'Node.js', role: 'Logic Layer' },
-      { name: 'Security', role: 'Injection Detection' },
-      { name: 'PAT', role: 'Auth Bypass' },
-    ],
-    repoUrl: 'https://github.com/CheckMarKDevTools/delegate-action',
-    owner: 'CheckMarKDevTools',
-    imageUrl: '/projects/delegate-action.jpg',
-  },
-  {
-    id: 'devto-mirror',
-    title: 'Dev.to Mirror',
-    status: 'Active',
-    description: 'Set-and-forget discovery optimization for technical writing.',
-    longDescription:
-      'I write on DEV, but I need discovery everywhere. This running cron job pulls my content, formats it for SEO/AI crawlers, and deploys it to a static site. No analytics, no maintenance, just pure signal amplification.',
-    outcome:
-      'Zero-touch operation that increased inbound traffic and AI visibility without adding a single minute of maintenance time.',
-    tech: [
-      { name: 'Python', role: 'The Script' },
-      { name: 'GitHub Actions', role: 'The Cron' },
-      { name: 'GitHub Pages', role: 'The Host' },
-      { name: 'SEO', role: 'The Goal' },
-    ],
-    repoUrl: 'https://github.com/CheckMarKDevTools/devto-mirror',
-    owner: 'CheckMarKDevTools',
-    imageUrl: '/projects/devto-mirror.jpg',
-  },
-  {
-    id: 'my-hermantic-agent',
-    title: 'Hermes Agent',
-    status: 'Active (WIP)',
-    description: 'A zero-stakes laboratory for breaking AI memory models.',
-    longDescription:
-      'I needed a place to break things safely. Hermes is a fully local, forbidden-free zone where I test long-term memory architectures and tool-use patterns. It is not polished. It is not safe. It is where I learn how the brain works by building a messy one.',
-    outcome:
-      'A chaotic, functional research sandbox that informs the architecture of my production tools.',
-    tech: [
-      { name: 'Python', role: 'The Mind' },
-      { name: 'Ollama', role: 'The Engine' },
-      { name: 'PostgreSQL', role: 'Long-term Memory' },
-      { name: 'Local', role: 'The Environment' },
-    ],
-    repoUrl: 'https://github.com/anchildress1/my-hermantic-agent',
-    owner: 'anchildress1',
-    imageUrl: '/projects/my-hermantic-agent.jpg',
-  },
+
   {
     id: 'checkmark-copilot-chat',
     title: 'Copilot Chat Extension',

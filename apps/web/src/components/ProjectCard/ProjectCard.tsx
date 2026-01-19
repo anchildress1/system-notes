@@ -17,12 +17,11 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
   return (
     <motion.div
       className={styles.card}
-      layoutId={`card-${project.id}`}
       onClick={() => onSelect(project)}
       whileHover={{ y: -5 }}
     >
       <div className={styles.imageContainer}>
-        <motion.div className={styles.imageWrapper} layoutId={`image-${project.id}`}>
+        <div className={styles.imageWrapper}>
           <div className={styles.conceptBackground} />
           {project.imageUrl ? (
             <Image
@@ -37,7 +36,7 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
               <span className={styles.initials}>{project.title.substring(0, 2).toUpperCase()}</span>
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
       {/* Header / Title Area */}
       <div className={styles.content}>

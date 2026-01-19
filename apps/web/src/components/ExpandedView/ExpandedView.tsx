@@ -25,15 +25,24 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
   }, [onClose]);
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <motion.div
+      className={styles.overlay}
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
       <motion.div
         className={styles.expandedCard}
-        layoutId={`card-${project.id}`}
         onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
         transition={{ type: 'spring', stiffness: 350, damping: 25 }}
       >
         <div className={styles.imageContainer}>
-          <motion.div className={styles.imageWrapper} layoutId={`image-${project.id}`}>
+          <div className={styles.imageWrapper}>
             <div
               className={styles.conceptBackground}
               style={{ backgroundImage: project.imageUrl ? `url(${project.imageUrl})` : undefined }}
@@ -48,7 +57,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
                 priority={false}
               />
             )}
-          </motion.div>
+          </div>
           <button className={styles.closeButton} onClick={onClose}>
             <svg
               width="24"
@@ -64,7 +73,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
           </button>
         </div>
 
-        <motion.div className={styles.content} layoutId={`content-${project.id}`}>
+        <div className={styles.content}>
           <div className={styles.header}>
             <div className={styles.headerContent}>
               <div className={styles.titleRow}>
@@ -134,8 +143,8 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
