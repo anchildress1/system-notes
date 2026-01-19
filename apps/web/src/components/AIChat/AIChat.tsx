@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
-import { MdSmartToy } from 'react-icons/md';
+import { LuBrain } from "react-icons/lu";
 import styles from './AIChat.module.css';
 import { API_URL } from '@/config';
 import { useChat } from '@/context/ChatContext';
@@ -127,7 +127,7 @@ export default function AIChat() {
         onClick={toggleChat}
         aria-label={isOpen ? 'Close AI Chat' : 'Open AI Chat'}
       >
-        {isOpen ? '✕' : <MdSmartToy size={24} />}
+        {isOpen ? '✕' : <LuBrain size={24} />}
       </button>
     </div>
   );

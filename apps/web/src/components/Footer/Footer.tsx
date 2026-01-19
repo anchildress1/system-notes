@@ -12,7 +12,7 @@ export default function Footer() {
       </div>
       <div className={styles.center}>
         <span className={styles.builtWith}>
-          Built with Gemini 3 Pro + Antigravity with a little help from ChatGPT. 🦄
+          Built with Gemini 3 Pro + Antigravity<br />(plus a little help from ChatGPT) 🦄
         </span>
       </div>
       <div className={styles.right}>

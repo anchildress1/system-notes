@@ -30,7 +30,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         className={styles.expandedCard}
         layoutId={`card-${project.id}`}
         onClick={(e) => e.stopPropagation()}
-        transition={{ duration: 0.2, ease: 'easeInOut' }}
+        transition={{ type: 'spring', stiffness: 350, damping: 25 }}
       >
         <div className={styles.imageContainer}>
           <motion.div className={styles.imageWrapper} layoutId={`image-${project.id}`}>
