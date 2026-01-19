@@ -66,8 +66,13 @@ try:
     ashley_path = os.path.join(current_dir, "prompts", "about_ashley.md")
     with open(ashley_path, "r") as f:
         ashley_content = f.read()
+
+    # Portfolio Canon
+    portfolio_path = os.path.join(current_dir, "prompts", "portfolio_canon.md")
+    with open(portfolio_path, "r") as f:
+        portfolio_content = f.read()
         
-    SYSTEM_PROMPT = f"{base_prompt}\n\n{ashley_content}\n\n{projects_content}"
+    SYSTEM_PROMPT = f"{base_prompt}\n\n{projects_content}\n\n{ashley_content}\n\n{portfolio_content}"
     
 except FileNotFoundError as e:
     logger.warning(f"File not found during system prompt init: {e}")

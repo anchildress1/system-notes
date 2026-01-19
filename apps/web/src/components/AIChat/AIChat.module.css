@@ -3,7 +3,7 @@
     bottom: 90px;
     /* Moved up to avoid footer */
     right: var(--space-md);
-    z-index: 9999;
+    z-index: 10001;
     font-family: var(--font-sans);
 }
 

@@ -1,77 +1,83 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Mobile Responsiveness', () => {
-    test('should render header correctly on mobile', async ({ page }) => {
-        await page.goto('/');
+  test('should render header correctly on mobile', async ({ page }) => {
+    await page.goto('/');
 
-        // Check if header exists
-        const header = page.locator('header');
-        await expect(header).toBeVisible();
+    // Check if header exists
+    const header = page.locator('header');
+    await expect(header).toBeVisible();
 
-        // Check if nav links are stacked or visible (depending on implementation)
-        // We expect them to be visible but maybe in a different layout
-        const nav = page.locator('nav');
-        await expect(nav).toBeVisible();
-    });
+    // Check if nav links are stacked or visible (depending on implementation)
+    // We expect them to be visible but maybe in a different layout
+    const nav = page.locator('nav');
+    await expect(nav).toBeVisible();
+  });
 
-    test('should render project grid in single column on small screens', async ({ page, isMobile }) => {
-        if (!isMobile) test.skip();
+  test('should render project grid in single column on small screens', async ({
+    page,
+    isMobile,
+  }) => {
+    if (!isMobile) test.skip();
 
-        await page.goto('/');
-        const grid = page.locator('section').locator('.grid'); // Assuming class name from module css, but locally scoped?
-        // Note: CSS modules make class names hashed. We should use data-testid or text content for better reliability, 
-        // or just check visual stability. 
-        // For now, checking if multiple project cards are visible.
+    await page.goto('/');
+    const grid = page.locator('section').locator('.grid'); // Assuming class name from module css, but locally scoped?
+    // Note: CSS modules make class names hashed. We should use data-testid or text content for better reliability,
+    // or just check visual stability.
+    // For now, checking if multiple project cards are visible.
 
-        const projects = page.getByText('CheckMarK', { exact: false }); // Heuristic
-        await expect(projects.first()).toBeVisible();
-    });
+    const projects = page.getByText('CheckMarK', { exact: false }); // Heuristic
+    await expect(projects.first()).toBeVisible();
+  });
 
-    test('should open expanded view on click', async ({ page }) => {
-        await page.goto('/');
-        // Click the first project card
-        // Filter by text and click forcefully to bypass any potential overlay issues (like particles)
-        const card = page.locator('div[class*="ProjectCard_card"]').filter({ hasText: 'System Notes' }).first();
-        // If class hashing is tricky, use specific text combo
-        if (await card.count() === 0) {
-            // Fallback
-            await page.getByText('System Notes').first().click({ force: true });
-        } else {
-            await card.click({ force: true });
-        }
+  test('should open expanded view on click', async ({ page }) => {
+    await page.goto('/');
+    // Click the first project card
+    // Filter by text and click forcefully to bypass any potential overlay issues (like particles)
+    const card = page
+      .locator('div[class*="ProjectCard_card"]')
+      .filter({ hasText: 'System Notes' })
+      .first();
+    // If class hashing is tricky, use specific text combo
+    if ((await card.count()) === 0) {
+      // Fallback
+      await page.getByText('System Notes').first().click({ force: true });
+    } else {
+      await card.click({ force: true });
+    }
 
-        // Expect modal to open
-        const modal = page.getByRole('dialog');
-        await expect(modal).toBeVisible();
-        const modalTitle = modal.getByRole('heading', { name: 'System Notes', level: 2 });
-        await expect(modalTitle).toBeVisible();
+    // Expect modal to open
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+    const modalTitle = modal.getByRole('heading', { name: 'System Notes', level: 2 });
+    await expect(modalTitle).toBeVisible();
 
-        // Close it
-        await page.keyboard.press('Escape');
-        await expect(modal).not.toBeVisible();
-    });
+    // Close it
+    await page.keyboard.press('Escape');
+    await expect(modal).not.toBeVisible();
+  });
 
-    test('AIChat should be accessible', async ({ page, isMobile }) => {
-        await page.goto('/');
-        // Check for chat toggle button
-        const toggle = page.getByRole('button', { name: /Open AI Chat/i });
-        await expect(toggle).toBeVisible();
+  test('AIChat should be accessible', async ({ page, isMobile }) => {
+    await page.goto('/');
+    // Check for chat toggle button
+    const toggle = page.getByRole('button', { name: /Open AI Chat/i });
+    await expect(toggle).toBeVisible();
 
-        // Open chat
-        await toggle.click();
-        const input = page.getByPlaceholder('Type a message...');
-        await expect(input).toBeVisible();
+    // Open chat
+    await toggle.click();
+    const input = page.getByPlaceholder('Type a message...');
+    await expect(input).toBeVisible();
 
-        if (isMobile) {
-            // Verify it takes up most of the screen width (simplified check)
-            // Use text "Ruckus" in the header to find the chat window container
-            const chatHeader = page.getByText('Ruckus');
-            await expect(chatHeader).toBeVisible();
+    if (isMobile) {
+      // Verify it takes up most of the screen width (simplified check)
+      // Use text "Ruckus" in the header to find the chat window container
+      const chatHeader = page.getByText('Ruckus');
+      await expect(chatHeader).toBeVisible();
 
-            // Check bounding box of the chat window (parent of header roughly)
-            // We can just verify the input field width is substantial
-            const inputStyle = await input.boundingBox();
-            expect(inputStyle?.width).toBeGreaterThan(250);
-        }
-    });
+      // Check bounding box of the chat window (parent of header roughly)
+      // We can just verify the input field width is substantial
+      const inputStyle = await input.boundingBox();
+      expect(inputStyle?.width).toBeGreaterThan(250);
+    }
+  });
 });

@@ -80,7 +80,9 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
           <div className={styles.header}>
             <div className={styles.headerContent}>
               <div className={styles.titleRow}>
-                <h2 className={styles.title} id="modal-title">{project.title}</h2>
+                <h2 className={styles.title} id="modal-title">
+                  {project.title}
+                </h2>
                 {project.status && <span className={styles.statusBadge}>{project.status}</span>}
               </div>
               <div className={styles.metaRow}>

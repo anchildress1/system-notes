@@ -26,6 +26,9 @@ export default function GlitterBomb() {
     let app: any;
 
     const initPixi = async () => {
+      // Check for mobile - disable if width < 768px
+      if (window.innerWidth < 768) return;
+
       const PIXI = await import('pixi.js');
 
       if (!containerRef.current) return;

@@ -36,7 +36,11 @@ export default function ProjectGrid() {
               variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
               className={styles.cardWrapper}
             >
-              <ProjectCard project={p} onSelect={setSelectedProject} />
+              <ProjectCard
+                project={p}
+                onSelect={setSelectedProject}
+                priority={allProjects.indexOf(p) < 2}
+              />
             </motion.div>
           ))}
         </motion.div>

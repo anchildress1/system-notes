@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Ribeye } from 'next/font/google';
+import { Inter, JetBrains_Mono, Ribeye } from 'next/font/google';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const inter = Inter({
+  variable: '--font-sans',
   subsets: ['latin'],
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const jetbrainsMono = JetBrains_Mono({
+  variable: '--font-mono',
   subsets: ['latin'],
 });
 
@@ -18,11 +18,7 @@ const ribeye = Ribeye({
   subsets: ['latin'],
 });
 
-import Footer from '@/components/Footer/Footer';
-import BackgroundMusic from '@/components/BackgroundMusic/BackgroundMusic';
-import GlitterBomb from '@/components/GlitterBomb/GlitterBomb';
-import AIChat from '@/components/AIChat/AIChat';
-import { ChatProvider } from '@/context/ChatContext';
+import ClientShell from '@/components/ClientShell/ClientShell';
 
 export const metadata: Metadata = {
   title: {
@@ -57,18 +53,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${ribeye.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${ribeye.variable} antialiased`}
         suppressHydrationWarning
       >
-        <ChatProvider>
-          <div aria-hidden="true">
-            <GlitterBomb />
-          </div>
-          <BackgroundMusic />
-          {children}
-          <AIChat />
-          <Footer />
-        </ChatProvider>
+        <ClientShell>{children}</ClientShell>
       </body>
     </html>
   );

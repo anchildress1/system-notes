@@ -8,9 +8,10 @@ import styles from './ProjectCard.module.css';
 interface ProjectCardProps {
   project: Project;
   onSelect: (project: Project) => void;
+  priority?: boolean;
 }
 
-export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
+export default function ProjectCard({ project, onSelect, priority = false }: ProjectCardProps) {
   const repoName = project.repoUrl.split('/').pop();
   const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'CheckMarK DevTools';
 
@@ -25,6 +26,7 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
               alt={`Thumbnail for ${project.title}`}
               fill
               className={styles.image}
+              priority={priority}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (

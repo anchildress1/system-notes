@@ -35,6 +35,9 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
     const particles: Particle[] = [];
 
     const initPixi = async () => {
+      // Disable interaction/animation on mobile
+      if (window.innerWidth < 768) return;
+
       if (!containerRef.current) return;
       const PIXI = await import('pixi.js');
 
