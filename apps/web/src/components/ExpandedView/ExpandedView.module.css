@@ -29,6 +29,8 @@
     flex-direction: column;
     isolation: isolate;
     will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 /* Cinematic Header: Image fits naturally */
@@ -77,8 +79,8 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.6);
+    /* backdrop-filter: blur(4px); Removed for performance */
     color: white;
     display: flex;
     align-items: center;
