@@ -189,7 +189,8 @@
     }
 
     .imageContainer {
-        height: 40%;
+        height: 200px;
+        flex-shrink: 0;
     }
 
     .content {

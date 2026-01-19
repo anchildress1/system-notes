@@ -36,6 +36,9 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
       <motion.div
         className={styles.expandedCard}
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -77,7 +80,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
           <div className={styles.header}>
             <div className={styles.headerContent}>
               <div className={styles.titleRow}>
-                <h2 className={styles.title}>{project.title}</h2>
+                <h2 className={styles.title} id="modal-title">{project.title}</h2>
                 {project.status && <span className={styles.statusBadge}>{project.status}</span>}
               </div>
               <div className={styles.metaRow}>

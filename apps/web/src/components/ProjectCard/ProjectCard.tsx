@@ -15,11 +15,7 @@ export default function ProjectCard({ project, onSelect }: ProjectCardProps) {
   const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'CheckMarK DevTools';
 
   return (
-    <motion.div
-      className={styles.card}
-      onClick={() => onSelect(project)}
-      whileHover={{ y: -5 }}
-    >
+    <motion.div className={styles.card} onClick={() => onSelect(project)} whileHover={{ y: -5 }}>
       <div className={styles.imageContainer}>
         <div className={styles.imageWrapper}>
           <div className={styles.conceptBackground} />
