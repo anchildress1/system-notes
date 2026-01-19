@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
-import { LuBrain } from "react-icons/lu";
+import { LuBrain } from 'react-icons/lu';
 import styles from './AIChat.module.css';
 import { API_URL } from '@/config';
 import { useChat } from '@/context/ChatContext';

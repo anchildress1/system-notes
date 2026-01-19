@@ -58,7 +58,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${ribeye.variable} antialiased`}
-        style={{ paddingBottom: '80px' }}
         suppressHydrationWarning
       >
         <ChatProvider>
