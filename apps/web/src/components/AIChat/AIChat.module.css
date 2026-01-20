@@ -5,6 +5,16 @@
     right: var(--space-md);
     z-index: 10001;
     font-family: var(--font-sans);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    pointer-events: none;
+    /* Allow clicks to pass through wrapper area */
+}
+
+.chatWrapper>* {
+    pointer-events: auto;
+    /* Re-enable pointer events for children */
 }
 
 .toggleButton {

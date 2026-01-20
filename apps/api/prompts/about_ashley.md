@@ -104,3 +104,12 @@
   - Instruction shaping
 
 - AI dependence treated as a deliberate system choice, not a risk to mitigate
+
+## Theme Song
+
+- Song: "I Build Things"
+- Artist: Twisted Game Songs
+- Classification: Personal signal + systems metaphor
+- Encodes intolerance for avoidable post-deploy hotfixes
+- Reflects a build philosophy centered on finding and fixing failure points early
+

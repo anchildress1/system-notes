@@ -20,11 +20,10 @@ export interface Particle {
 
 export default function GlitterBomb() {
   const containerRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const appRef = useRef<any>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let app: any;
-
     const initPixi = async () => {
       // Check for mobile - disable if width < 768px
       if (window.innerWidth < 768) return;
@@ -34,7 +33,7 @@ export default function GlitterBomb() {
       if (!containerRef.current) return;
 
       // Create Pixi Application with transparent background
-      app = new PIXI.Application();
+      const app = new PIXI.Application();
       await app.init({
         resizeTo: window,
         backgroundAlpha: 0,
@@ -43,86 +42,107 @@ export default function GlitterBomb() {
       });
 
       if (!containerRef.current) {
-        app.destroy(true, { children: true, texture: true, baseTexture: true });
+        app.destroy({ removeView: true });
         return;
       }
 
       containerRef.current.appendChild(app.canvas);
+      appRef.current = app;
 
-      // --- Power Explosion Config ---
-      const particles: Particle[] = [];
-      const colors = [0xffd700, 0xffec8b, 0xffffff, 0xb56bff]; // Gold, Light Gold, White, Purple
-      const particleCount = 200;
+      // Function to trigger explosion
+      const trigger = () => {
+        if (!app.ticker.started) app.start();
 
-      const centerX = app.screen.width / 2;
-      const centerY = app.screen.height / 3; // Explode from top-ish center
+        // --- Power Explosion Config ---
+        const particles: Particle[] = [];
+        const colors = [0xffd700, 0xffec8b, 0xffffff, 0xb56bff]; // Gold, Light Gold, White, Purple
+        const particleCount = 200;
 
-      for (let i = 0; i < particleCount; i++) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const particle = new PIXI.Graphics() as any as Particle;
-        const color = colors[Math.floor(Math.random() * colors.length)];
+        const centerX = app.screen.width / 2;
+        const centerY = app.screen.height / 3; // Explode from top-ish center
 
-        // Initial Draw
-        particle.circle(0, 0, Math.random() * 3 + 1); // Tiny particles
-        particle.fill(color);
+        for (let i = 0; i < particleCount; i++) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const particle = new PIXI.Graphics() as any as Particle;
+          const color = colors[Math.floor(Math.random() * colors.length)];
 
-        // Start at center
-        particle.x = centerX;
-        particle.y = centerY;
-        particle.alpha = 1;
+          // Initial Draw
+          particle.circle(0, 0, Math.random() * 3 + 1); // Tiny particles
+          particle.fill(color);
 
-        // Explosion Physics
-        const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 10 + 4; // Much Faster/Bigger blast
+          // Start at center
+          particle.x = centerX;
+          particle.y = centerY;
+          particle.alpha = 1;
 
-        particle.direction = angle;
-        particle.speed = velocity;
-        particle.life = 1.0;
-        particle.decay = Math.random() * 0.01 + 0.005; // Faster fade
+          // Explosion Physics
+          const angle = Math.random() * Math.PI * 2;
+          const velocity = Math.random() * 10 + 4; // Much Faster/Bigger blast
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        app.stage.addChild(particle as unknown as any);
-        particles.push(particle);
-      }
+          particle.direction = angle;
+          particle.speed = velocity;
+          particle.life = 1.0;
+          particle.decay = Math.random() * 0.01 + 0.005; // Faster fade
 
-      // Animation Loop
-      app.ticker.add(() => {
-        let activeParticles = 0;
-
-        particles.forEach((p) => {
-          if (p.life > 0) {
-            activeParticles++;
-
-            // Move outward
-            p.x += Math.cos(p.direction) * p.speed;
-            p.y += Math.sin(p.direction) * p.speed;
-
-            // Gravity / Drag
-            p.speed *= 0.98; // Gentle drag
-            p.y += 0.5; // Floaty gravity
-
-            // Fade out
-            p.life -= p.decay;
-            p.alpha = p.life;
-            p.scale.x = p.life;
-            p.scale.y = p.life;
-          } else {
-            p.visible = false;
-          }
-        });
-
-        // Stop ticker if done
-        if (activeParticles === 0) {
-          app.stop();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          app.stage.addChild(particle as unknown as any);
+          particles.push(particle);
         }
-      });
+
+        // Animation Loop Logic (add to ticker if not already there, or just keep adding particles to existing ticker)
+        // We can just add a ticker callback that cleans itself up or manages these specific particles
+        const tick = () => {
+          let activeParticles = 0;
+          particles.forEach((p) => {
+            if (p.life > 0) {
+              activeParticles++;
+
+              // Move outward
+              p.x += Math.cos(p.direction) * p.speed;
+              p.y += Math.sin(p.direction) * p.speed;
+
+              // Gravity / Drag
+              p.speed *= 0.98; // Gentle drag
+              p.y += 0.5; // Floaty gravity
+
+              // Fade out
+              p.life -= p.decay;
+              p.alpha = p.life;
+              p.scale.x = p.life;
+              p.scale.y = p.life;
+            } else {
+              p.visible = false;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              if ((p as any).parent) (p as any).parent.removeChild(p as any);
+            }
+          });
+
+          if (activeParticles === 0) {
+            app.ticker.remove(tick);
+          }
+        };
+        app.ticker.add(tick);
+      };
+
+      // Trigger initial explosion
+      trigger();
+
+      // Listen for custom event
+      window.addEventListener('trigger-glitter-bomb', trigger);
+
+      // Cleanup listener
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any)._glitterCleanup = () => window.removeEventListener('trigger-glitter-bomb', trigger);
     };
 
     initPixi();
 
     return () => {
-      if (app) {
-        app.destroy(true, { children: true, texture: true, baseTexture: true });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((window as any)._glitterCleanup) (window as any)._glitterCleanup();
+      if (appRef.current) {
+        appRef.current.destroy({ removeView: true });
       }
     };
   }, []);

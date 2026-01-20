@@ -148,7 +148,19 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
 
   return (
     <div className={styles.hero} ref={containerRef}>
-      <div className={styles.titleContainer} ref={textRef}>
+      <div
+        className={styles.titleContainer}
+        ref={textRef}
+        onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
+        style={{ cursor: 'pointer' }}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            window.dispatchEvent(new Event('trigger-glitter-bomb'));
+          }
+        }}
+      >
         <div className={styles.title}>
           {heroTitle.split('\n').map((line, i) => (
             <span key={i}>

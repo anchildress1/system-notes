@@ -1,0 +1,113 @@
+.playerWrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.playButton {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: hsl(var(--color-bg-surface));
+    border: 2px solid hsl(var(--color-accent-pink));
+    color: hsl(var(--color-accent-pink));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-spring);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 2;
+}
+
+.playButton:hover {
+    transform: scale(1.1);
+    background: hsl(var(--color-accent-pink));
+    color: white;
+    box-shadow: 0 8px 24px hsl(var(--color-accent-pink) / 0.4);
+}
+
+.active {
+    background: hsl(var(--color-accent-pink));
+    color: white;
+    box-shadow: 0 0 15px hsl(var(--color-accent-pink) / 0.5);
+    animation: pulse 2s infinite ease-in-out;
+}
+
+.explicitBadge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #000;
+    color: #fff;
+    font-size: 8px;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 4px;
+    border: 1px solid #fff;
+    z-index: 3;
+}
+
+.infoTooltip {
+    position: absolute;
+    bottom: 100%;
+    right: 50%;
+    transform: translateX(50%);
+    background: hsl(var(--color-bg-surface));
+    border: 1px solid hsl(var(--color-border));
+    padding: 8px 12px;
+    border-radius: 8px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    margin-bottom: 10px;
+    z-index: 10;
+}
+
+.playButton:hover+.infoTooltip,
+.playButton:focus-visible+.infoTooltip {
+    opacity: 1;
+    transform: translateX(50%) translateY(-5px);
+}
+
+.songTitle {
+    display: block;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: hsl(var(--color-text-primary));
+}
+
+.bandName {
+    display: block;
+    font-size: 0.75rem;
+    color: hsl(var(--color-text-muted));
+}
+
+.explicitWarning {
+    display: block;
+    font-size: 0.7rem;
+    color: hsl(var(--color-accent-pink));
+    margin-top: 4px;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 hsl(var(--color-accent-pink) / 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px hsl(var(--color-accent-pink) / 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 hsl(var(--color-accent-pink) / 0);
+    }
+}
