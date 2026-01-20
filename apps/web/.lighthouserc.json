@@ -1,0 +1,45 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "npm start",
+      "url": ["http://localhost:3000/"],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": [
+          "error",
+          {
+            "minScore": 1,
+            "aggregationMethod": "optimistic"
+          }
+        ],
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 1,
+            "aggregationMethod": "optimistic"
+          }
+        ],
+        "categories:best-practices": [
+          "error",
+          {
+            "minScore": 1,
+            "aggregationMethod": "optimistic"
+          }
+        ],
+        "categories:seo": [
+          "error",
+          {
+            "minScore": 1,
+            "aggregationMethod": "optimistic"
+          }
+        ]
+      },
+      "matchingUrlPatterns": ["http://localhost:3000/"]
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

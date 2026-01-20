@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "ESLINT_USE_FLAT_CONFIG=true eslint --config eslint.config.mjs .",
-    "test": "vitest --passWithNoTests",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
     "bench": "vitest bench"
   },
   "dependencies": {

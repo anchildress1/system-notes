@@ -18,6 +18,7 @@ export default function Hero() {
 
       if (!containerRef.current) return;
       const PIXI = await import('pixi.js');
+      if (!containerRef.current) return;
 
       // Create Pixi Application
       app = new PIXI.Application();
