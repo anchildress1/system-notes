@@ -17,6 +17,13 @@ if ! command -v gcloud &> /dev/null; then
     exit 1
 fi
 
+# Load environment variables from apps/api/.env if present
+if [ -f "apps/api/.env" ]; then
+    echo "Loading environment variables from apps/api/.env..."
+    export $(grep -v '^#' apps/api/.env | xargs)
+fi
+
+
 if [ -z "$OPENAI_API_KEY" ]; then
     echo "Error: OPENAI_API_KEY environment variable is not set."
     echo "Export it: export OPENAI_API_KEY='your-key'"
