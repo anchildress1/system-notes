@@ -10,7 +10,6 @@ UI_SERVICE="system-notes-ui"
 UI_SOURCE="apps/web"
 UI_PORT="3000"
 
-REGION="us-east1"
 
 # Check dependencies
 if ! command -v gcloud &> /dev/null; then
@@ -38,7 +37,7 @@ fi
 echo "=================================================="
 echo "DEPLOYMENT STARTED"
 echo "Project: $PROJECT_ID"
-echo "Region:  $REGION"
+echo "Deployment Type: Multi-Region"
 echo "=================================================="
 
 # Function to deploy a service
@@ -111,40 +110,33 @@ EOF
     fi
 }
 
-# Deploy API
-deploy_service "$API_SERVICE" "$API_SOURCE" "$API_PORT" "OPENAI_API_KEY=${OPENAI_API_KEY}" "" ""
 
-# Get API URL
-echo "Retrieving API URL..."
-API_URL=$(gcloud run services describe "$API_SERVICE" --region "$REGION" --format 'value(status.url)')
-echo "API URL: $API_URL"
+# Define target regions
+# us-east1: Primary US region
+# me-west1: Tier 1 region closest to Tbilisi, Georgia (Tel Aviv)
+REGIONS=("us-east1" "me-west1")
 
-# Deploy UI
-# Source is root (.) because turbo prune needs to see the whole repo
-# Dockerfile is apps/web/Dockerfile
-# Pass NEXT_PUBLIC_API_URL as a build arg or env var depending on how Next.js is built in Docker.
-# Since we build in Docker, we need to pass it as a build ARG or set it at runtime for client-side (but client-side envs need to be present at build time for static generation usually, or use Runtime Config)
-# For standard Next.js env vars (NEXT_PUBLIC_), they are baked in at build time. 
-# WE MUST REBUILD THE DOCKER IMAGE FOR THIS TO WORK IF WE PASS AS ARG? 
-# OR we can set env var for the container if we used publicRuntimeConfig (legacy) or just use the env var if it's not statically optimized out?
-# Actually, NEXT_PUBLIC_ vars are inlined at JS build time. 
-# So we need to pass --build-arg NEXT_PUBLIC_API_URL=$API_URL to the build step in Dockerfile!
+for REGION in "${REGIONS[@]}"; do
+    echo ""
+    echo "##################################################"
+    echo "DEPLOYING TO REGION: $REGION"
+    echo "##################################################"
+    echo ""
 
-# Wait, \`gcloud run deploy --set-env-vars\` sets runtime env vars. 
-# Next.js client-side code *cannot* see runtime env vars unless we use a specialized approach.
-# However, for simplicity now, let's assume we might need to rebuild or we accept that for this fix I will just set the ENV VAR and hope the user rebuilds locally or we modify Dockerfile to accept ARG.
+    # Deploy API
+    deploy_service "$API_SERVICE" "$API_SOURCE" "$API_PORT" "OPENAI_API_KEY=${OPENAI_API_KEY}" "" ""
 
-# Let's modify the deploy function or just pass it here. 
-# BUT wait, the Dockerfile runs \`turbo run build\`. It won't see the env var unless passed as ARG.
-# So we need to update Dockerfile to accept ARG NEXT_PUBLIC_API_URL and passed it. 
+    # Get API URL
+    echo "Retrieving API URL for $REGION..."
+    API_URL=$(gcloud run services describe "$API_SERVICE" --region "$REGION" --format 'value(status.url)')
+    echo "API URL ($REGION): $API_URL"
 
-# For now, let's pass it as --set-env-vars. If Next.js is running in standalone mode (server.js), \`process.env\` might work for SSR, but client-side \`NEXT_PUBLIC_\` needs to be there at build.
-
-# Plan update: I will pass it as env var.
-# We also need to pass it as a build-arg to the docker build command for it to be baked in.
-export API_URL
-BUILD_ARGS="--build-arg NEXT_PUBLIC_API_URL=$API_URL"
-deploy_service "$UI_SERVICE" "." "$UI_PORT" "NEXT_PUBLIC_API_URL=$API_URL" "apps/web/Dockerfile" "$BUILD_ARGS"
+    # Deploy UI
+    # Build args must be passed to bake in the regional API URL
+    export API_URL
+    BUILD_ARGS="--build-arg NEXT_PUBLIC_API_URL=$API_URL"
+    deploy_service "$UI_SERVICE" "." "$UI_PORT" "NEXT_PUBLIC_API_URL=$API_URL" "apps/web/Dockerfile" "$BUILD_ARGS"
+done
 
 echo ""
 echo "=================================================="

@@ -133,7 +133,8 @@ export default function GlitterBomb() {
 
       // Cleanup listener
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any)._glitterCleanup = () => window.removeEventListener('trigger-glitter-bomb', trigger);
+      (window as any)._glitterCleanup = () =>
+        window.removeEventListener('trigger-glitter-bomb', trigger);
     };
 
     initPixi();

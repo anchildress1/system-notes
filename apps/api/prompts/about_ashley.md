@@ -112,4 +112,3 @@
 - Classification: Personal signal + systems metaphor
 - Encodes intolerance for avoidable post-deploy hotfixes
 - Reflects a build philosophy centered on finding and fixing failure points early
-
