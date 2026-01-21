@@ -60,9 +60,9 @@ test.describe('System Notes Integration', () => {
     await expect(input).toBeFocused();
 
     // Mock API response
-    await page.route('**/api/chat', async route => {
+    await page.route('**/api/chat', async (route) => {
       // Delay to ensure "Thinking..." is visible
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await route.fulfill({
         status: 200,
         contentType: 'application/json',

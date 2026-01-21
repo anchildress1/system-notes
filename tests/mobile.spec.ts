@@ -34,9 +34,7 @@ test.describe('Mobile Responsiveness', () => {
     await page.goto('/');
     // Click the first project card
     // Click the first project card
-    const card = page
-      .locator('div[class*="card"]')
-      .first();
+    const card = page.locator('div[class*="card"]').first();
 
     await card.click({ force: true });
 
