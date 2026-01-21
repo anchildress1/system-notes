@@ -25,4 +25,7 @@ pre-push:
       run: npm run test
     e2e:
       run: npx playwright test
+    lighthouse:
+      run: npx lhci autorun
+
 

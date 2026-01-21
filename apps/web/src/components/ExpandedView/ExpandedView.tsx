@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Project } from '@/data/projects';
 import styles from './ExpandedView.module.css';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 interface ExpandedViewProps {
@@ -12,15 +12,38 @@ interface ExpandedViewProps {
 }
 
 export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    // Focus the card on mount for accessibility and keyboard events
+    if (cardRef.current) {
+      cardRef.current.focus();
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      // Manual scroll handling for better UX since body scroll is locked
+      if (cardRef.current) {
+        const scrollAmount = 60;
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          cardRef.current.scrollBy({ top: scrollAmount, behavior: 'auto' });
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          cardRef.current.scrollBy({ top: -scrollAmount, behavior: 'auto' });
+        }
+      }
     };
+
     document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', handleEsc);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
       document.body.style.overflow = 'unset';
-      window.removeEventListener('keydown', handleEsc);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);
 
@@ -34,11 +57,13 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
       transition={{ duration: 0.2 }}
     >
       <motion.div
+        ref={cardRef}
         className={styles.expandedCard}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        tabIndex={-1} // Make focusable
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -105,6 +130,26 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
                 <div className={styles.section}>
                   <h3 className={styles.sectionTitle}>Outcome</h3>
                   <p className={styles.outcome}>{project.outcome}</p>
+                </div>
+              )}
+
+              {project.blogs && project.blogs.length > 0 && (
+                <div className={styles.section}>
+                  <h3 className={styles.sectionTitle}>Related Reading</h3>
+                  <ul className={styles.blogList}>
+                    {project.blogs.map((blog, i) => (
+                      <li key={i} className={styles.blogItem}>
+                        <a
+                          href={blog.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.blogLink}
+                        >
+                          {blog.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
