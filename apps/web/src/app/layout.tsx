@@ -27,11 +27,23 @@ export const metadata: Metadata = {
     default: "Ashley Childress' System Notes",
     template: '%s | System Notes',
   },
-  description: "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
-  keywords: ['AI', 'Engineering', 'Portfolio', 'System Notes', 'Ashley Childress', 'Next.js', 'React', 'Generative AI', 'Agents'],
+  description:
+    "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
+  keywords: [
+    'AI',
+    'Engineering',
+    'Portfolio',
+    'System Notes',
+    'Ashley Childress',
+    'Next.js',
+    'React',
+    'Generative AI',
+    'Agents',
+  ],
   openGraph: {
     title: "Ashley Childress' System Notes",
-    description: "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
+    description:
+      "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
     url: 'https://system-notes-ui-856401495068.us-east1.run.app',
     siteName: 'System Notes',
     images: [
@@ -48,7 +60,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: "Ashley Childress' System Notes",
-    description: "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
+    description:
+      "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
     images: ['/projects/system-notes.jpg'],
   },
   robots: {

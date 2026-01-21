@@ -33,20 +33,8 @@ export const allProjects: Project[] = [
     imageUrl: '/projects/system-notes.jpg',
     blogs: [
       {
-        title: 'Three AIs and a Funeral: My Take on GPT-5',
-        url: 'https://dev.to/anchildress1/three-ais-and-a-funeral-my-take-on-gpt-5-3f3e',
-      },
-      {
-        title: 'Medium and the Blanket AI Ban',
-        url: 'https://dev.to/anchildress1/medium-and-the-blanket-ai-ban-2cni',
-      },
-      {
         title: 'Can We Set the Record Straight? AI Content and a Bit of Sanity',
         url: 'https://dev.to/anchildress1/can-we-set-the-record-straight-ai-content-and-a-bit-of-sanity-1inj',
-      },
-      {
-        title: 'Codeck Presents Verdent AI: They Wanted Opinions, I Have Plenty',
-        url: 'https://dev.to/anchildress1/codeck-presents-verdent-ai-they-wanted-opinions-i-have-plenty-5ccl',
       },
       {
         title: 'Waiting With Intent: Designing AI Systems for the Long Game',
@@ -55,10 +43,6 @@ export const allProjects: Project[] = [
       {
         title: 'Fact Checking the Fear Behind the Dark Side of AI',
         url: 'https://dev.to/anchildress1/fact-checking-the-fear-behind-the-dark-side-of-ai-the-real-story-366p',
-      },
-      {
-        title: 'When the Spark is Done: The ADHD Energy Cycle No One Talks About',
-        url: 'https://dev.to/anchildress1/when-the-spark-is-done-the-adhd-energy-cycle-no-one-talks-about-43fo',
       },
     ],
   },
@@ -188,84 +172,20 @@ export const allProjects: Project[] = [
     imageUrl: '/projects/awesome-github-copilot.jpg',
     blogs: [
       {
-        title: 'Letting AI Drive a Month of Building with GitHub Copilot',
-        url: 'https://dev.to/anchildress1/letting-ai-drive-a-month-of-building-with-github-copilot-4a94',
-      },
-      {
-        title: 'From Hell Loops to Happy Commits',
-        url: 'https://dev.to/anchildress1/from-hell-loops-to-happy-commits-38c4',
-      },
-      {
-        title: "What I've Learned About GitHub Copilot Agent Mode",
-        url: 'https://dev.to/anchildress1/what-ive-learned-about-github-copilot-agent-mode-4co2',
-      },
-      {
         title: 'Troubleshooting Production with GitHub Copilot',
         url: 'https://dev.to/anchildress1/troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o',
       },
       {
-        title: "All I've Learned About GitHub Copilot Instructions So Far",
-        url: 'https://dev.to/anchildress1/all-ive-learned-about-github-copilot-instructions-so-far-5bm7',
-      },
-      {
-        title: 'Build It Better: Real World AI Coding with GitHub Copilot',
-        url: 'https://dev.to/anchildress1/build-it-better-real-world-ai-coding-with-github-copilot-1d47',
-      },
-      {
-        title: 'GitHub Copilot Agent Mode: The Mistake You Never Want to Make',
-        url: 'https://dev.to/anchildress1/github-copilot-agent-mode-the-mistake-you-never-want-to-make-1mmh',
-      },
-      {
-        title: 'GitHub Copilot: Everything You Wanted to Know About Reusable and Experimental Prompts Part 1',
-        url: 'https://dev.to/anchildress1/github-copilot-everything-you-wanted-to-know-about-reusable-and-experimental-prompts-part-1-iff',
-      },
-      {
-        title: 'GitHub Copilot Reusable Prompts Part 2: Walkthrough Real Examples',
-        url: 'https://dev.to/anchildress1/github-copilot-reusable-prompts-part-2-walkthrough-real-examples-17mh',
-      },
-      {
-        title: 'Oh I Have Big News! Guess What I Got Yesterday',
+        title: "Oh I Have Big News—I'm GitHub Copilot Certified!",
         url: 'https://dev.to/anchildress1/oh-i-have-big-news-guess-what-i-got-yesterday-1jca',
       },
       {
-        title: 'GitHub Copilot Reusable Prompts Part 3: More Experiments More Mayhem',
-        url: 'https://dev.to/anchildress1/github-copilot-reusable-prompts-part-3-more-experiments-more-mayhem-552b',
-      },
-      {
-        title: 'Everything I Know About GitHub Copilot Instructions: From Zero to Onboarded for Real',
+        title: 'Everything I Know About GitHub Copilot Instructions',
         url: 'https://dev.to/anchildress1/everything-i-know-about-github-copilot-instructions-from-zero-to-onboarded-for-real-4nb0',
-      },
-      {
-        title: 'What In The World is GitHub Coding Agent?',
-        url: 'https://dev.to/anchildress1/what-in-the-world-is-github-coding-agent-2m8p',
-      },
-      {
-        title: 'GitHub Coding Agent: The Magical Autonomous AI The Prequel',
-        url: 'https://dev.to/anchildress1/github-coding-agent-the-magical-autonomous-ai-the-prequel-4h11',
-      },
-      {
-        title: 'Magical Coding Agent: The Ship Ready Spellbook',
-        url: 'https://dev.to/anchildress1/magical-coding-agent-the-ship-ready-spellbook-2mbf',
-      },
-      {
-        title: 'Demystifying Coding Agent Prompts That Always Work',
-        url: 'https://dev.to/anchildress1/demystifying-coding-agent-prompts-that-always-work-2on7',
       },
       {
         title: 'GitHub Copilot Chat Modes Explained with Personality',
         url: 'https://dev.to/anchildress1/github-copilot-chat-modes-explained-with-personality-2f4c',
-      },
-      {
-        title: 'GitHub Copilot Chat Modes: From Chaos to Command',
-        url: 'https://dev.to/anchildress1/github-copilot-chat-modes-from-chaos-to-command-54k0',
-      },
-      {
-        title: 'Copilot Premium Requests More Than Asked: Exactly What You Need',
-        url: 'https://dev.to/anchildress1/copilot-premium-requests-more-than-asked-exactly-what-you-need-8ph',
-      },
-      {
-        title: 'Top 10 GitHub Copilot Updates You Actually Need to Know About',
-        url: 'https://dev.to/anchildress1/top-10-github-copilot-updates-you-actually-need-to-know-about-297d',
       },
       {
         title: 'Leash not Autopilot: Building Predictable AI Behavior with Copilot Instructions',

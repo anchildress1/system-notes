@@ -45,7 +45,11 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
-            <div className={styles.placeholderArt} role="img" aria-label={`Placeholder initials for ${project.title}`}>
+            <div
+              className={styles.placeholderArt}
+              role="img"
+              aria-label={`Placeholder initials for ${project.title}`}
+            >
               <span className={styles.initials}>{project.title.substring(0, 2).toUpperCase()}</span>
             </div>
           )}

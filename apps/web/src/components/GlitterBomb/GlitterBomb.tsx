@@ -40,7 +40,7 @@ export default function GlitterBomb() {
       await app.init({
         resizeTo: window,
         backgroundAlpha: 0,
-        resolution: isMobile ? 1 : (window.devicePixelRatio || 1), // Force 1x resolution on mobile
+        resolution: isMobile ? 1 : window.devicePixelRatio || 1, // Force 1x resolution on mobile
         autoDensity: true,
         antialias: !isMobile, // Disable antialias on mobile
       });
