@@ -42,6 +42,12 @@
           {
             "minScore": 0.3
           }
+        ],
+        "max-potential-fid": [
+          "warn",
+          {
+            "minScore": 0.1
+          }
         ]
       }
     }
