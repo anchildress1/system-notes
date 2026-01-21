@@ -40,4 +40,16 @@ yarn-error.log*
 
 # Playwright
 test-results/
-playwright-report/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+# Temporary artifacts
+*.tmp
+lighthouse.json

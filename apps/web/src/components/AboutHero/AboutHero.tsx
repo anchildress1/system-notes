@@ -42,6 +42,7 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
       const PIXI = await import('pixi.js');
 
       app = new PIXI.Application();
+      if (!containerRef.current) return;
       await app.init({
         width: containerRef.current.clientWidth,
         height: containerRef.current.clientHeight, // Cover full hero area
@@ -76,8 +77,8 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
             p.y += Math.sin(p.direction) * p.speed;
             p.speed *= 0.9;
             p.alpha = p.life;
-            p.scale.x = p.life * 0.5;
-            p.scale.y = p.life * 0.5;
+            p.scale.x = p.life * 0.8;
+            p.scale.y = p.life * 0.8;
           }
         }
       });
@@ -111,7 +112,7 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
         const particle = new PIXI.Graphics() as any as Particle;
         const color = colors[Math.floor(Math.random() * colors.length)];
 
-        particle.circle(0, 0, Math.random() * 2 + 1);
+        particle.circle(0, 0, Math.random() * 1.5 + 0.5); // "Dust" size
         particle.fill(color);
         particle.x = x + (Math.random() - 0.5) * 20;
         particle.y = y + (Math.random() - 0.5) * 20;
@@ -123,7 +124,7 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
         particle.direction = angle;
         particle.speed = velocity;
         particle.life = 1.0;
-        particle.decay = Math.random() * 0.05 + 0.02;
+        particle.decay = Math.random() * 0.03 + 0.01; // Slower decay, matches Hero.tsx
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         app.stage.addChild(particle as any);
