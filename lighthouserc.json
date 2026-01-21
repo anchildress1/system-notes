@@ -24,6 +24,24 @@
           {
             "maxLength": 2
           }
+        ],
+        "largest-contentful-paint": [
+          "warn",
+          {
+            "minScore": 0.3
+          }
+        ],
+        "first-contentful-paint": [
+          "warn",
+          {
+            "minScore": 0.3
+          }
+        ],
+        "interactive": [
+          "warn",
+          {
+            "minScore": 0.3
+          }
         ]
       }
     }
