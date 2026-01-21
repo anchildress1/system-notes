@@ -54,3 +54,4 @@ htmlcov/
 # Temporary artifacts
 *.tmp
 lighthouse.json
+.lighthouseci/
