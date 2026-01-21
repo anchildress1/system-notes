@@ -63,11 +63,17 @@ secret-scan:
 		echo "⚠️ detect-secrets not found. Skipping scan."; \
 	fi
 
-# Run all AI checks (Scan -> Format -> Lint -> Test)
+# Run Playwright E2E tests
+test-e2e:
+	@echo "🎭 Running Playwright E2E tests..."
+	npx playwright test
+
+# Run all AI checks (Scan -> Format -> Lint -> Test -> E2E)
 ai-checks: secret-scan
 	$(MAKE) format
 	$(MAKE) lint
 	$(MAKE) test
+	$(MAKE) test-e2e
 	@echo "🤖 AI Checks Complete: All Systems Nominal."
 
 # Build the project
