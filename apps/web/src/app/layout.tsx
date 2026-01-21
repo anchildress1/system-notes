@@ -5,17 +5,20 @@ import './globals.css';
 const inter = Inter({
   variable: '--font-sans',
   subsets: ['latin'],
+  display: 'swap',
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
+  display: 'swap',
 });
 
 const ribeye = Ribeye({
   weight: '400',
   variable: '--font-ribeye',
   subsets: ['latin'],
+  display: 'swap',
 });
 
 import ClientShell from '@/components/ClientShell/ClientShell';
@@ -23,6 +26,7 @@ import ClientShell from '@/components/ClientShell/ClientShell';
 import { allProjects } from '@/data/projects';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://system-notes-ui-856401495068.us-east1.run.app'),
   title: {
     default: "Ashley Childress' System Notes",
     template: '%s | System Notes',
