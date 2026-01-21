@@ -1,23 +1,30 @@
-# API Service
+# System Notes // API
 
-## Development
+The cerebral cortex. Connects the dots, talks to the AI, and serves the data.
 
-### Prerequisites
+## Tech Stack
 
-- [uv](https://github.com/astral-sh/uv) (Preferred over pip)
-- Python 3.12+
+- **Python 3.12**
+- **FastAPI**
+- **UV** (Package management at lightspeed)
+- **Pydantic**
 
-### Setup
-
-1. Create a virtual environment and install dependencies:
+## Critical Commands
 
 ```bash
-uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
+# Start the brain
+uv run uvicorn main:app --reload
+
+# Run tests (ensure logic is logical)
+uv run pytest --cov=.
 ```
 
-### Scripts
+## Contributors
 
-- `npm run dev`: Start the development server
-- `npm run lint`: Run ruff check and format
+**None.**
+
+(I'm the only one allowed to mess up the backend logic.)
+
+## License
+
+Fork it, study it, but respect the root `LICENSE`. No commercial use without asking nicely.

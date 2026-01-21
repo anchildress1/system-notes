@@ -33,18 +33,12 @@ test.describe('Mobile Responsiveness', () => {
   test('should open expanded view on click', async ({ page }) => {
     await page.goto('/');
     // Click the first project card
-    // Filter by text and click forcefully to bypass any potential overlay issues (like particles)
+    // Click the first project card
     const card = page
-      .locator('div[class*="ProjectCard_card"]')
-      .filter({ hasText: 'System Notes' })
+      .locator('div[class*="card"]')
       .first();
-    // If class hashing is tricky, use specific text combo
-    if ((await card.count()) === 0) {
-      // Fallback
-      await page.getByText('System Notes').first().click({ force: true });
-    } else {
-      await card.click({ force: true });
-    }
+
+    await card.click({ force: true });
 
     // Expect modal to open
     const modal = page.getByRole('dialog');

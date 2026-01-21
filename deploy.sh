@@ -121,7 +121,7 @@ EOF
 # Define target regions
 # us-east1: Primary US region
 # me-west1: Tier 1 region closest to Tbilisi, Georgia (Tel Aviv)
-REGIONS=("us-east1" "me-west1")
+REGIONS=("us-east1" "europe-north1")
 
 for REGION in "${REGIONS[@]}"; do
     echo ""

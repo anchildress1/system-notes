@@ -57,8 +57,8 @@ export default function Hero() {
             p.y += Math.sin(p.direction) * p.speed;
             p.speed *= 0.9; // Drag
             p.alpha = p.life;
-            p.scale.x = p.life * 0.5; // Smaller sparks
-            p.scale.y = p.life * 0.5;
+            p.scale.x = p.life * 0.8; // Larger sparks
+            p.scale.y = p.life * 0.8;
           }
         }
       });
@@ -75,7 +75,7 @@ export default function Hero() {
       const y = e.clientY - rect.top;
 
       // Spawn chaotic sparks
-      const count = 3;
+      const count = 5; // Increased from 3
       const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
 
       for (let i = 0; i < count; i++) {
@@ -83,7 +83,7 @@ export default function Hero() {
         const particle = new PIXI.Graphics() as any as Particle;
         const color = colors[Math.floor(Math.random() * colors.length)];
 
-        particle.circle(0, 0, Math.random() * 2 + 1);
+        particle.circle(0, 0, Math.random() * 1.5 + 0.5); // "Dust" size
         particle.fill(color);
         particle.x = x + (Math.random() - 0.5) * 20; // Jitter
         particle.y = y + (Math.random() - 0.5) * 20;
@@ -95,7 +95,7 @@ export default function Hero() {
         particle.direction = angle;
         particle.speed = velocity;
         particle.life = 1.0;
-        particle.decay = Math.random() * 0.05 + 0.02;
+        particle.decay = Math.random() * 0.03 + 0.01; // Slower decay
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         app.stage.addChild(particle as any);

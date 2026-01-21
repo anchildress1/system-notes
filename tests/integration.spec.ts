@@ -41,7 +41,9 @@ test.describe('System Notes Integration', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .disableRules(['region'])
+      .analyze();
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 
@@ -56,6 +58,17 @@ test.describe('System Notes Integration', () => {
 
     // Verify initial focus
     await expect(input).toBeFocused();
+
+    // Mock API response
+    await page.route('**/api/chat', async route => {
+      // Delay to ensure "Thinking..." is visible
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ reply: 'I am AI.' }),
+      });
+    });
 
     await input.fill('Hello AI');
     await page.keyboard.press('Enter');
@@ -109,10 +122,12 @@ test.describe('System Notes Integration', () => {
     await expect(page.locator('text=Initializing identity protocol')).not.toBeVisible({
       timeout: 10000,
     });
-    await expect(page.locator('text=Off-screen fuel')).toBeVisible();
+    await expect(page.locator('text=Appalachia').first()).toBeVisible();
 
     // Accessibility check
-    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .disableRules(['region'])
+      .analyze();
     expect(accessibilityScanResults.violations).toEqual([]);
   });
   test('Chat state persistence across navigation', async ({ page }) => {

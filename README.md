@@ -1,83 +1,52 @@
 # System Notes
 
-A living, queryable index of projects, versions, and decisions.
+![CI](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/badge/license-Polyform%20Shield%201.0.0-blue)
+![Status](https://img.shields.io/badge/status-active%20%26%20evolving-success)
 
-## What this is
+## The Narrative
 
-System Notes replaces a static developer website with a dynamic system map.
-It presents projects as evolving systems rather than finished artifacts, with
-visible relationships, version history, and intent.
+Welcome to the digital nervous system of my professional existence. This isn't a static portfolio or a dusty résumé; it's a living, breathing, and occasionally glittering map of what I've built, broken, and fixed.
 
-This repository contains the structure, data model, and interface that power
-that system.
+System Notes treats projects like evolving organisms rather than finished artifacts. It acknowledges that "finished" is a myth and that the relationships between projects are often more interesting than the projects themselves. It is built to be queried, explored, and poked at.
 
-## What this is not
+It is **Incomplete by Design**.
 
-- A marketing site
-- A résumé replacement
-- A product landing page
-- A collection of unrelated demos
+## The Architecture
 
-## Core concepts
+This monorepo houses the full stack of the system:
 
-- **System map UI**: Projects are represented as interconnected nodes rather than pages.
-- **Versioned records**: Each project exposes its evolution over time.
-- **Contextual AI interface**: Queries surface structure, history, and relationships.
-- **Machine-readable data**: Content is structured for retrieval and indexing.
+- **apps/web**: The face. A Next.js frontend that believes in "More Sparkles, More Problems" but handles them anyway.
+- **apps/api**: The brain. A FastAPI service that talks to LLMs so you don't have to guess what I was thinking.
+- **packages/**: The shared tissue connecting the organs.
 
-## Repository structure
+## Quick Start
 
-```
-system-notes/
-├─ app/                # UI and interaction layer
-├─ data/               # Project and version definitions
-├─ ai/                 # Embedded AI interface logic
-├─ indexing/           # Search and retrieval schemas (Algolia-ready)
-├─ public/
-├─ docs/
-└─ README.md
+We use a `Makefile` to keep things civilized.
+
+```bash
+# Setup everything (Node + Python + vibes)
+make setup
+
+# Run the development environment (Frontend + Backend)
+make dev
+
+# Run all the checks because you care about quality
+make ai-checks
 ```
 
-## Related systems
+## Contributors
 
-- **CheckMarK DevTools**  
-  A collection of developer tooling projects indexed within System Notes.  
-  External site: https://anchildress1.dev  
-  GitHub org: https://github.com/CheckMarKDevTools
+**None.**
 
-## Status
-
-Active and evolving. Incomplete by design.
+(Unless you count the AI assistants I argue with daily. I don't. They don't push code, they just critique it.)
 
 ## Mine. Read Before You Get Ideas. ⚖️
 
 This project is my work and it’s licensed under the [Polyform Shield License 1.0.0](./LICENSE).
 
-You’re welcome to use it, fork it, study it, remix it, and generally take it apart to see how it ticks. Run it internally. Adapt it for your workflows. Learn from it. That part is encouraged.
+**Fork it?** Absolutely.  
+**Learn from it?** Please do.  
+**Monetize it?** Absolutely not.
 
-What you don’t get to do is quietly turn it into money and pretend we never met.
-
-If you’re selling it, monetizing it, bundling it into a paid product, offering it as a service, or otherwise making profit because this exists, you need my explicit permission first. I’m friendly. I’m reasonable. I’m not a checkout lane. 🛒
-
-## Development
-
-### Setup
-
-1. **Install dependencies**:
-
-   ```bash
-   npm install --ignore-scripts
-   ```
-
-2. **Setup Git Hooks**:
-
-   ```bash
-   npx lefthook install
-   ```
-
-3. **Python (API)**:
-   We use [uv](https://github.com/astral-sh/uv) for Python package management.
-   ```bash
-   cd apps/api
-   npm run setup  # Runs: uv venv && uv pip install -r requirements.txt
-   ```
+If you’re selling it, bundling it, or otherwise profiting from my late-night coding sessions, we’re going to have a problem. Keep it open, keep it personal, and we'll be fine.
