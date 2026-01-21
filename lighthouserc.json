@@ -2,7 +2,7 @@
   "ci": {
     "collect": {
       "numberOfRuns": 1,
-      "startServerCommand": "npm run start",
+      "startServerCommand": "npm run start --workspace=apps/web",
       "url": ["http://localhost:3000/"]
     },
     "upload": {

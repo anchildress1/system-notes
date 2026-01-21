@@ -55,12 +55,12 @@ deploy_service() {
     local ENV_VARS=$4
     local DOCKERFILE_PATH=$5
     local BUILD_ARGS_FLAGS=$6
+    local SERVICE_ACCOUNT=$7
 
     echo ""
     echo "--- Processing $SERVICE_NAME ---"
 
     # 1. Ensure Artifact Registry Repo exists
-    # We use the service name as the repo name for isolation
     REPO_NAME="$SERVICE_NAME"
     
     if ! gcloud artifacts repositories describe "$REPO_NAME" --location="$REGION" &>/dev/null; then
@@ -79,7 +79,6 @@ deploy_service() {
     
     if [ -n "$DOCKERFILE_PATH" ]; then
         # Simpler approach: Create a temporary cloudbuild.yaml for this build
-        # Use bash entrypoint to handle argument expansion correctly
         cat > cloudbuild_tmp.yaml <<EOF
 steps:
 - name: 'gcr.io/cloud-builders/docker'
@@ -99,27 +98,32 @@ EOF
 
     # 3. Deploy to Cloud Run
     echo "Deploying to Cloud Run..."
+    
+    local DEPLOY_CMD="gcloud run deploy $SERVICE_NAME \
+        --image $IMAGE_URI \
+        --region $REGION \
+        --allow-unauthenticated \
+        --labels dev-tutorial=devnewyear2026 \
+        --port $PORT"
+
     if [ -n "$ENV_VARS" ]; then
-        gcloud run deploy "$SERVICE_NAME" \
-            --image "$IMAGE_URI" \
-            --region "$REGION" \
-            --allow-unauthenticated \
-            --labels dev-tutorial=devnewyear2026 \
-            --port "$PORT" \
-            --set-env-vars "$ENV_VARS"
-    else
-        gcloud run deploy "$SERVICE_NAME" \
-            --image "$IMAGE_URI" \
-            --region "$REGION" \
-            --allow-unauthenticated \
-            --labels dev-tutorial=devnewyear2026 \
-            --port "$PORT"
+        DEPLOY_CMD="$DEPLOY_CMD --set-env-vars $ENV_VARS"
     fi
+
+    if [ -n "$SERVICE_ACCOUNT" ]; then
+        DEPLOY_CMD="$DEPLOY_CMD --service-account $SERVICE_ACCOUNT"
+    fi
+
+    eval $DEPLOY_CMD
 }
 
 
 # Define target regions
 REGIONS=("us-east1" "europe-north1")
+
+# Service Accounts
+API_SA="system-notes-api@anchildress1.iam.gserviceaccount.com"
+UI_SA="system-notes-ui@anchildress1.iam.gserviceaccount.com"
 
 for REGION in "${REGIONS[@]}"; do
     echo ""
@@ -129,7 +133,7 @@ for REGION in "${REGIONS[@]}"; do
     echo ""
 
     # Deploy API
-    deploy_service "$API_SERVICE" "$API_SOURCE" "$API_PORT" "OPENAI_API_KEY=${OPENAI_API_KEY}" "" ""
+    deploy_service "$API_SERVICE" "$API_SOURCE" "$API_PORT" "OPENAI_API_KEY=${OPENAI_API_KEY}" "" "" "$API_SA"
 
     # Get API URL
     echo "Retrieving API URL for $REGION..."
@@ -137,10 +141,9 @@ for REGION in "${REGIONS[@]}"; do
     echo "API URL ($REGION): $API_URL"
 
     # Deploy UI
-    # Build args must be passed to bake in the regional API URL
     export API_URL
     BUILD_ARGS="--build-arg NEXT_PUBLIC_API_URL=$API_URL"
-    deploy_service "$UI_SERVICE" "." "$UI_PORT" "NEXT_PUBLIC_API_URL=$API_URL" "apps/web/Dockerfile" "$BUILD_ARGS"
+    deploy_service "$UI_SERVICE" "." "$UI_PORT" "NEXT_PUBLIC_API_URL=$API_URL" "apps/web/Dockerfile" "$BUILD_ARGS" "$UI_SA"
 done
 
 echo ""
