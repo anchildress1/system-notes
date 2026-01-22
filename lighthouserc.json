@@ -3,7 +3,9 @@
     "collect": {
       "numberOfRuns": 1,
       "startServerCommand": "npm run start --workspace=apps/web",
-      "url": ["http://localhost:3000/"]
+      "url": [
+        "http://localhost:3000/"
+      ]
     },
     "upload": {
       "target": "temporary-public-storage"
@@ -45,6 +47,18 @@
           "warn",
           {
             "minScore": 0.1
+          }
+        ],
+        "unused-javascript": [
+          "warn",
+          {
+            "maxLength": 10
+          }
+        ],
+        "critical-request-chains": [
+          "warn",
+          {
+            "minScore": 0
           }
         ]
       }
