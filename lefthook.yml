@@ -4,12 +4,10 @@ pre-commit:
   commands:
     format:
       run: npm run format
+      stage_fixed: true
     lint:
       run: npm run lint
-    test:
-      run: npm run test
-    bench:
-      run: npm run bench -- -- --run
+      stage_fixed: true
 
 commit-msg:
   commands:
@@ -17,12 +15,13 @@ commit-msg:
       run: npx --no-install commitlint --edit
 
 pre-push:
+  parallel: true
   commands:
     test:
       run: npm run test
     e2e:
       run: npx playwright test
+    bench:
+      run: npm run bench -- -- --run
     lighthouse:
       run: npx @lhci/cli autorun
-
-

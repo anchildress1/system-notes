@@ -18,8 +18,10 @@ export const allProjects: Project[] = [
     id: 'system-notes',
     title: 'System Notes',
     status: 'Active · Deployed',
-    description: 'AI-generated challenge site used to test orchestration and authorship boundaries.',
-    purpose: 'Built to satisfy a required challenge deliverable and used as a controlled AI experiment with Antigravity.',
+    description:
+      'AI-generated challenge site used to test orchestration and authorship boundaries.',
+    purpose:
+      'Built to satisfy a required challenge deliverable and used as a controlled AI experiment with Antigravity.',
     longDescription:
       'System Notes exists because the challenge required a site, and I treated that requirement as another AI experiment. Instead of hand-authoring a polished portfolio, I delegated structure and content generation to Antigravity and ChatGPT while constraining scope, intent, and boundaries. The value is not the site itself, but the traceability of decisions made when AI assembles a system under human supervision.',
     outcome:
@@ -55,7 +57,8 @@ export const allProjects: Project[] = [
     title: 'Delegate Action',
     status: 'Active · POC',
     description: 'Temporary AI coding agent implemented as a GitHub Action.',
-    purpose: 'Placeholder solution until Copilot coding agent supports valid user PAT tokens via CLI in GitHub Actions.',
+    purpose:
+      'Placeholder solution until Copilot coding agent supports valid user PAT tokens via CLI in GitHub Actions.',
     longDescription:
       'Delegate Action exists because the functionality I wanted does not yet exist in Copilot. I needed AI-generated pull requests immediately, under my own credentials, without waiting on upstream support. This Action fills that gap by generating draft PRs using my PAT, with explicit human review and ownership.',
     outcome:
@@ -76,11 +79,11 @@ export const allProjects: Project[] = [
     title: 'Hermes Agent',
     status: 'Active · In Progress',
     description: 'Personal AI agent playground with early memory experiments.',
-    purpose: 'A zero-stakes environment to experiment with memory and agent behavior for a personal local AI system.',
+    purpose:
+      'A zero-stakes environment to experiment with memory and agent behavior for a personal local AI system.',
     longDescription:
       'Hermes is a personal playground where I am starting with memory as a first-class concern while the stakes are low. I use it to explore how an agent behaves when memory exists, evolves, and occasionally misbehaves, without production pressure or polish influencing decisions.',
-    outcome:
-      'A functional local sandbox that informs future agent and memory design decisions.',
+    outcome: 'A functional local sandbox that informs future agent and memory design decisions.',
     tech: [
       { name: 'Python', role: 'The Mind' },
       { name: 'Ollama', role: 'The Engine' },
@@ -100,8 +103,7 @@ export const allProjects: Project[] = [
     purpose: 'To make AI usage explicit and enforceable instead of implied and ignored.',
     longDescription:
       'RAI Lint integrates directly into commit workflows to require explicit attribution when AI tools are used. It is intentionally strict and mechanical. The goal is traceability, not policy theater.',
-    outcome:
-      'Live adoption that turns invisible AI assistance into explicit, auditable data.',
+    outcome: 'Live adoption that turns invisible AI assistance into explicit, auditable data.',
     tech: [
       { name: 'TypeScript', role: 'Rule Logic' },
       { name: 'Python', role: 'Rule Logic' },
@@ -133,7 +135,8 @@ export const allProjects: Project[] = [
     title: 'Underfoot',
     status: 'Active · In Progress',
     description: 'Narrative travel discovery explored through AI orchestration experiments.',
-    purpose: 'To explore AI orchestration and narrative synthesis using a real-world travel discovery problem.',
+    purpose:
+      'To explore AI orchestration and narrative synthesis using a real-world travel discovery problem.',
     longDescription:
       'Underfoot began as a travel discovery hackathon and was repurposed as an AI orchestration experiment once real-world constraints shaped its direction. Rather than redesigning the system from scratch, I used the existing application as a surface for testing orchestration patterns and parallel workflows. The project focuses on how AI can generate discovery paths and context from incomplete systems.',
     outcome:
@@ -164,11 +167,11 @@ export const allProjects: Project[] = [
     title: 'Awesome GitHub Copilot',
     status: 'Active',
     description: 'Curated GitHub Copilot workflows, agents, and patterns.',
-    purpose: 'A place for GitHub Copilot tools and patterns that earned their keep instead of just sounding clever.',
+    purpose:
+      'A place for GitHub Copilot tools and patterns that earned their keep instead of just sounding clever.',
     longDescription:
       'This repo is not a list and not neutral. I build a lot of Copilot-assisted tooling locally, and most of it dies there. Only workflows that survive daily use, frustration, and edge cases make it into this repository. It reflects how I actually work with Copilot, not how documentation suggests I should.',
-    outcome:
-      'A widely adopted resource that favors practical utility over volume.',
+    outcome: 'A widely adopted resource that favors practical utility over volume.',
     tech: [
       { name: 'Markdown', role: 'The Format' },
       { name: 'GitHub Copilot', role: 'The Platform' },
@@ -210,8 +213,7 @@ export const allProjects: Project[] = [
     purpose: 'To make long-form technical writing legible to AI systems.',
     longDescription:
       'Dev.to Mirror pulls my DEV posts, restructures them for AI ingestion, and deploys them automatically. This is not SEO or analytics-driven optimization. It exists to ensure AI systems can correctly index and reference my work.',
-    outcome:
-      'Increased AI discoverability with zero ongoing maintenance.',
+    outcome: 'Increased AI discoverability with zero ongoing maintenance.',
     tech: [
       { name: 'Python', role: 'The Script' },
       { name: 'GitHub Actions', role: 'The Cron' },
@@ -237,8 +239,7 @@ export const allProjects: Project[] = [
     purpose: 'To provide AI strict, reusable formatting and linting constraints across projects.',
     longDescription:
       'Echo exists primarily for AI, not humans. By collapsing formatting and linting rules into a single shared configuration, I can reuse the same boundaries across projects and AI agents without restating preferences.',
-    outcome:
-      'Reduced drift and predictable AI-assisted code output.',
+    outcome: 'Reduced drift and predictable AI-assisted code output.',
     tech: [
       { name: 'Node.js', role: 'Ecosystem' },
       { name: 'ESLint', role: 'The Enforcer' },
@@ -258,8 +259,7 @@ export const allProjects: Project[] = [
     purpose: 'To test whether Copilot chat context could persist across environments.',
     longDescription:
       'I attempted to build portable Copilot chat context for IntelliJ teams and discovered the API could not support the persistence required. The project was archived immediately to avoid wasted effort.',
-    outcome:
-      'A falsified hypothesis that redirected focus to more viable Copilot tooling.',
+    outcome: 'A falsified hypothesis that redirected focus to more viable Copilot tooling.',
     tech: [
       { name: 'Copilot Chat', role: 'The Constraint' },
       { name: 'JavaScript', role: 'The Glue' },
