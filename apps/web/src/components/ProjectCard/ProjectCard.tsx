@@ -39,7 +39,10 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
           {project.imageUrl ? (
             <Image
               src={project.imageUrl}
-              alt={`Project concept art for ${project.title}: ${project.description}`}
+              alt={
+                project.imageAlt ||
+                `Project concept art for ${project.title}: ${project.description}`
+              }
               fill
               className={styles.image}
               priority={priority}

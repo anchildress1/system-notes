@@ -55,7 +55,7 @@ export const metadata: Metadata = {
         url: '/projects/system-notes.jpg',
         width: 1200,
         height: 630,
-        alt: 'System Notes Interface',
+        alt: 'System Notes interface showing a grid of AI engineering projects and architectural decisions',
       },
     ],
     locale: 'en_US',

@@ -7,7 +7,8 @@ import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: 'Sitemap | System Notes',
-  description: 'Full list of projects and resources on System Notes.',
+  description:
+    'Full list of projects, resources, and engineering logs available on the System Notes platform.',
 };
 
 export default function SitemapPage() {

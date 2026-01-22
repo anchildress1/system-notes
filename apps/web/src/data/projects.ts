@@ -9,6 +9,7 @@ export interface Project {
   tech: { name: string; role: string }[];
   repoUrl: string;
   imageUrl?: string;
+  imageAlt?: string;
   owner: 'anchildress1' | 'CheckMarKDevTools';
   blogs?: { title: string; url: string }[];
 }
@@ -36,6 +37,8 @@ export const allProjects: Project[] = [
     repoUrl: 'https://github.com/anchildress1/system-notes',
     owner: 'anchildress1',
     imageUrl: '/projects/system-notes.jpg',
+    imageAlt:
+      'System Notes project dashboard showing AI-generated portfolio entries and architecture decisions',
     blogs: [
       {
         title: 'Can We Set the Record Straight? AI Content and a Bit of Sanity',
@@ -72,6 +75,8 @@ export const allProjects: Project[] = [
     repoUrl: 'https://github.com/CheckMarKDevTools/delegate-action',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/delegate-action.jpg',
+    imageAlt:
+      'Delegate Action GitHub workflow allowing secure AI-generated pull requests via personal access tokens',
   },
 
   {
@@ -93,6 +98,8 @@ export const allProjects: Project[] = [
     repoUrl: 'https://github.com/anchildress1/my-hermantic-agent',
     owner: 'anchildress1',
     imageUrl: '/projects/my-hermantic-agent.jpg',
+    imageAlt:
+      'Hermes Agent interface showing local AI memory experiments and conversational history',
   },
 
   {
@@ -114,6 +121,7 @@ export const allProjects: Project[] = [
     repoUrl: 'https://github.com/CheckMarKDevTools/rai-lint',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/rai-lint.jpg',
+    imageAlt: 'RAI Lint banner enforcing explicit AI attribution in git commits and workflows',
     blogs: [
       {
         title: 'Is GitHub Copilot Safe? The Fun and Hard Truth About Responsible AI',
@@ -150,6 +158,8 @@ export const allProjects: Project[] = [
     repoUrl: 'https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/underfoot-underground-travel-planner.jpg',
+    imageAlt:
+      'Underfoot travel planner interface showing AI-orchestrated discovery of hidden travel destinations',
     blogs: [
       {
         title: "Underfoot: The Chatpot for Hidden Places and Why I Don't Do Hackathons",
@@ -181,6 +191,8 @@ export const allProjects: Project[] = [
     repoUrl: 'https://github.com/anchildress1/awesome-github-copilot',
     owner: 'anchildress1',
     imageUrl: '/projects/awesome-github-copilot.jpg',
+    imageAlt:
+      'Awesome GitHub Copilot repository banner listing curated AI workflows and agent patterns',
     blogs: [
       {
         title: 'Troubleshooting Production with GitHub Copilot',
@@ -223,6 +235,8 @@ export const allProjects: Project[] = [
     repoUrl: 'https://github.com/CheckMarKDevTools/devto-mirror',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/devto-mirror.jpg',
+    imageAlt:
+      'Dev.to Mirror workflow diagram showing automated syncing of technical blogs for AI ingestion',
     blogs: [
       {
         title: 'Weekend Hack: Making My Blog AI Searchable (No Flames Required)',
@@ -249,6 +263,8 @@ export const allProjects: Project[] = [
     repoUrl: 'https://github.com/CheckMarKDevTools/eslint-config-echo',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/eslint-config-echo.jpg',
+    imageAlt:
+      'Echo ESLint configuration banner representing reusable linting boundaries for AI coding agents',
   },
 
   {
@@ -268,5 +284,7 @@ export const allProjects: Project[] = [
     repoUrl: 'https://github.com/CheckMarKDevTools/checkmark-copilot-chat',
     owner: 'CheckMarKDevTools',
     imageUrl: '/projects/checkmark-copilot-chat.jpg',
+    imageAlt:
+      'Copilot Chat Extension interface showing an experimental portable chat context for IDEs',
   },
 ];
