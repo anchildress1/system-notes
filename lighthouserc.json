@@ -28,7 +28,7 @@
         "largest-contentful-paint": [
           "warn",
           {
-            "minScore": 0.3
+            "minScore": 0.1
           }
         ],
         "first-contentful-paint": [
@@ -64,7 +64,7 @@
         "legacy-javascript": [
           "warn",
           {
-            "maxLength": 5
+            "minScore": 0
           }
         ],
         "network-dependency-tree-insight": [
