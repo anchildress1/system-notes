@@ -4,15 +4,12 @@ pre-commit:
   commands:
     format:
       run: npm run format
-      staged_files: true
     lint:
       run: npm run lint
-      staged_files: true
     test:
       run: npm run test
     bench:
       run: npm run bench -- -- --run
-      output: true
 
 commit-msg:
   commands:

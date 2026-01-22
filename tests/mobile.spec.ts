@@ -18,7 +18,7 @@ test.describe('Mobile Responsiveness', () => {
     page,
     isMobile,
   }) => {
-    if (!isMobile) test.skip();
+    // if (!isMobile) test.skip();
 
     await page.goto('/');
     const grid = page.locator('section').locator('.grid'); // Assuming class name from module css, but locally scoped?
