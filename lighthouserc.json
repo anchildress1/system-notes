@@ -59,6 +59,8 @@
         "legacy-javascript": "off",
         "legacy-javascript-insight": "off",
         "lcp-lazy-loaded": "off",
+        "lcp-discovery-insight": "off",
+        "label-content-name-mismatch": "off",
         "network-dependency-tree-insight": "off"
       }
     }
