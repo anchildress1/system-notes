@@ -118,8 +118,8 @@ EOF
 }
 
 
-# Define target regions
-REGIONS=("us-east1" "europe-north1")
+# Define target regions (space separated)
+REGIONS=("us-east1")
 
 # Service Accounts
 API_SA="system-notes-api@anchildress1.iam.gserviceaccount.com"

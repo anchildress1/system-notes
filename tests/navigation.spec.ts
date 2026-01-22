@@ -13,9 +13,9 @@ test.describe('Primary Navigation Flows', () => {
 
     // Verify About Page Content
     // Update to match actual content
-    const heading = page.getByText('Ashley Childress', { exact: false }).first();
+    const heading = page.getByRole('heading', { name: 'Ashley Childress', level: 1 }).first();
+    await expect(heading).toBeVisible({ timeout: 10000 });
     await heading.scrollIntoViewIfNeeded();
-    await expect(heading).toBeVisible();
 
     // Navigate back to Home
     await page.getByRole('link', { name: 'Projects' }).first().click();
