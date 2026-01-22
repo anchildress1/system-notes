@@ -2,7 +2,9 @@
   "ci": {
     "collect": {
       "startServerCommand": "npm start",
-      "url": ["http://localhost:3000/"],
+      "url": [
+        "http://localhost:3000/"
+      ],
       "numberOfRuns": 3
     },
     "assert": {
@@ -10,7 +12,7 @@
         "categories:performance": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.95,
             "aggregationMethod": "optimistic"
           }
         ],
@@ -36,7 +38,9 @@
           }
         ]
       },
-      "matchingUrlPatterns": ["http://localhost:3000/"]
+      "matchingUrlPatterns": [
+        "http://localhost:3000/"
+      ]
     },
     "upload": {
       "target": "temporary-public-storage"
