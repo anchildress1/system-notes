@@ -185,6 +185,7 @@ export const useSparkles = ({
       clearTimeout(timeoutId);
       try {
         if (app) {
+          app.ticker.stop();
           app.destroy(true, { children: true, texture: true, baseTexture: true });
         }
       } catch (err) {
