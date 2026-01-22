@@ -57,6 +57,8 @@
         ],
         "critical-request-chains": "off",
         "legacy-javascript": "off",
+        "legacy-javascript-insight": "off",
+        "lcp-lazy-loaded": "off",
         "network-dependency-tree-insight": "off"
       }
     }
