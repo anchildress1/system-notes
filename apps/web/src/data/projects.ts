@@ -91,7 +91,7 @@ export const allProjects: Project[] = [
     id: 'rai-lint',
     title: 'RAI Lint',
     status: 'Active · Published',
-    description: 'Attribution enforcement: if AI helped, that attribution must exist.',
+    description: "AI can't follow rules that don't exist.",
     longDescription:
       'Security through transparency. This tool integrates directly into commit workflows to enforce AI attribution. It is not policy theater; it is a hard technical boundary. Nothing more, nothing less. If you use tools, you cite them.',
     outcome:
