@@ -55,24 +55,9 @@
             "maxLength": 10
           }
         ],
-        "critical-request-chains": [
-          "warn",
-          {
-            "minScore": 0
-          }
-        ],
-        "legacy-javascript": [
-          "warn",
-          {
-            "minScore": 0
-          }
-        ],
-        "network-dependency-tree-insight": [
-          "warn",
-          {
-            "minScore": 0
-          }
-        ]
+        "critical-request-chains": "off",
+        "legacy-javascript": "off",
+        "network-dependency-tree-insight": "off"
       }
     }
   }
