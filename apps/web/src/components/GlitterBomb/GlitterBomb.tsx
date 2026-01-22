@@ -13,6 +13,7 @@ export interface Particle {
   // properties from PIXI.Graphics (partial)
   circle: (x: number, y: number, radius: number) => void;
   fill: (color: number) => void;
+  tint: number;
   alpha: number;
   scale: { x: number; y: number };
   visible: boolean;
