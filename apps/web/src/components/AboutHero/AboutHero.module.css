@@ -18,12 +18,15 @@
 }
 
 .name {
-    font-family: var(--font-ribeye), cursive;
-    font-size: clamp(3rem, 6vw, 5rem);
-    font-weight: 400;
-    color: hsl(var(--color-primary));
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: hsl(var(--color-text-primary));
     margin-bottom: 0.5rem;
-    line-height: 1;
+    line-height: 1.2;
+    text-align: left;
+    align-self: flex-start;
+    width: 100%;
 }
 
 .enunciation {
@@ -32,6 +35,8 @@
     color: hsl(var(--color-text-secondary));
     margin-bottom: 1.5rem;
     opacity: 0.8;
+    text-align: left;
+    align-self: flex-start;
 }
 
 .sitemapLink {
@@ -82,4 +87,15 @@
     width: 100%;
     height: auto;
     display: block;
+}
+
+.identityContainer {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 800px;
+    /* Match content width */
 }

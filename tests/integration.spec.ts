@@ -5,7 +5,7 @@ test.describe('System Notes Integration', () => {
   test('loads homepage with correct metadata', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/System Notes/);
-    await expect(page.locator('h1')).first().toContainText("System Notes");
+    await expect(page.locator('h1').first()).toContainText('System Notes');
   });
 
   test('should display the footer', async ({ page }) => {
@@ -145,11 +145,16 @@ test.describe('System Notes Integration', () => {
     await expect(page.locator('text=Are you persistent?')).toBeVisible();
 
     // Navigate to /about
+    // Close chat first to ensure link is clickable on mobile
+    await page.getByLabel('Close AI Chat').click();
     await page.getByRole('link', { name: 'About' }).click();
     await expect(page).toHaveURL('/about');
 
     // Wait for nav to complete
     await page.waitForLoadState('domcontentloaded');
+
+    // Re-open Chat to check history
+    await page.getByLabel('Open AI Chat').click();
 
     // Chat should be visible and contain history
     const chatContainer = page.locator('div[class*="chatWindow"]');

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import styles from './AboutHero.module.css';
 import { Particle } from '../GlitterBomb/GlitterBomb';
@@ -161,45 +162,48 @@ export default function AboutHero({
 
   return (
     <div className={styles.hero} ref={containerRef}>
-      <div className={styles.titleContainer} ref={textRef}>
-        <h1
-          className={styles.name}
-          onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              window.dispatchEvent(new Event('trigger-glitter-bomb'));
-            }
-          }}
-          tabIndex={0}
-          role="button"
-          style={{ cursor: 'pointer' }}
-        >
-          {heroName}
+      <div className={styles.identityContainer}>
+        <h1 className={styles.name}>
+          <span
+            onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                window.dispatchEvent(new Event('trigger-glitter-bomb'));
+              }
+            }}
+            tabIndex={0}
+            role="button"
+            style={{ cursor: 'pointer' }}
+          >
+            {heroName}
+          </span>
         </h1>
         <div className={styles.enunciation}>{heroEnunciation}</div>
-
-        <a href="/sitemap" className={styles.sitemapLink}>
+        <Link href="/sitemap" className={styles.sitemapLink}>
           {heroSitemapText}
-        </a>
+        </Link>
+      </div>
 
-        <div
-          className={styles.title}
-          onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              window.dispatchEvent(new Event('trigger-glitter-bomb'));
-            }
-          }}
-          tabIndex={0}
-          role="button"
-          style={{ cursor: 'pointer' }}
-        >
-          {heroTitle.split('\n').map((line, i) => (
-            <span key={i}>
-              {line}
-              {i < heroTitle.split('\n').length - 1 && <br />}
-            </span>
-          ))}
+      <div className={styles.titleContainer} ref={textRef}>
+        <div className={styles.title}>
+          <span
+            onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                window.dispatchEvent(new Event('trigger-glitter-bomb'));
+              }
+            }}
+            tabIndex={0}
+            role="button"
+            style={{ cursor: 'pointer', display: 'inline-block' }}
+          >
+            {heroTitle.split('\n').map((line, i) => (
+              <span key={i}>
+                {line}
+                {i < heroTitle.split('\n').length - 1 && <br />}
+              </span>
+            ))}
+          </span>
         </div>
       </div>
 

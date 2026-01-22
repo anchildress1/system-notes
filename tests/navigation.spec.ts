@@ -5,7 +5,7 @@ test.describe('Primary Navigation Flows', () => {
     // Start at Home
     await page.goto('/');
     await expect(page).toHaveURL('/');
-    await expect(page.locator('h1')).first().toContainText("System Notes");
+    await expect(page.locator('h1').first()).toContainText('System Notes');
 
     // Navigate to About
     await page.getByRole('link', { name: 'About' }).click();
@@ -18,7 +18,7 @@ test.describe('Primary Navigation Flows', () => {
     // Navigate back to Home
     await page.getByRole('link', { name: 'Projects' }).first().click();
     await expect(page).toHaveURL('/');
-    await expect(page.locator('h1')).first().toContainText("System Notes");
+    await expect(page.locator('h1').first()).toContainText('System Notes');
   });
 
   test('should navigate to external links correctly', async ({ page }) => {

@@ -18,9 +18,7 @@ export const aboutData: AboutData = {
   enunciation: '/ ASH-lee CHIL-dres /',
   sitemapText: 'System Topology / sitemap',
   title: "I design for the failure you haven't met yet.",
-  bio: `## Ash-lee Chill-dress
-
-I’m a senior software engineer with roots in southwest Virginia, raised in a small coal-mining town deep in Appalachia. Isolation shaped how I see systems. The nearest Walmart was a 45-minute drive, and for a long time the biggest city I knew was Bristol. At seventeen, I moved to Georgia, where I’ve lived ever since, gradually drifting west of Atlanta and closer to Alabama. No matter where I land, the mountains still feel like home. Appalachia is the place I keep reaching for.
+  bio: `I’m a senior software engineer with roots in southwest Virginia, raised in a small coal-mining town deep in Appalachia. Isolation shaped how I see systems. The nearest Walmart was a 45-minute drive, and for a long time the biggest city I knew was Bristol. At seventeen, I moved to Georgia, where I’ve lived ever since, gradually drifting west of Atlanta and closer to Alabama. No matter where I land, the mountains still feel like home. Appalachia is the place I keep reaching for.
 
 I came to software engineering in a practical way. During my second attempt at college, a career aptitude test offered a short list of options, which I ranked by earning potential and software engineering was at the top. I quickly fell in love with the work and what started as a pragmatic decision turned into a long-term obsession.
 
