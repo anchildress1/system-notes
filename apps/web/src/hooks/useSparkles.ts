@@ -113,7 +113,8 @@ export const useSparkles = ({
     }
 
     const handleInteraction = async (clientX: number, clientY: number) => {
-      if (!app || !containerRef.current || !isMounted) return;
+      // Early check
+      if (!app || !app.renderer || !containerRef.current || !isMounted) return;
 
       try {
         // If restricted to text area (like in AboutHero)
@@ -129,18 +130,21 @@ export const useSparkles = ({
         }
 
         const PIXI = await import('pixi.js');
-        if (!isMounted || !circleTexture) return;
+        // Re-check EVERYTHING after async await
+        if (!isMounted || !app || !app.renderer || !circleTexture) return;
 
         const rect = containerRef.current.getBoundingClientRect();
         const x = clientX - rect.left;
         const y = clientY - rect.top;
 
-        // Spawn chaotic sparks
         // Reduce count on mobile to maintain FPS
         const count = isMobile ? 2 : 5;
         const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
 
         for (let i = 0; i < count; i++) {
+          // Double check app state
+          if (!app.renderer) return;
+
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const particle = new PIXI.Sprite(circleTexture) as any as Particle;
           const color = colors[Math.floor(Math.random() * colors.length)];
@@ -199,8 +203,10 @@ export const useSparkles = ({
       clearTimeout(timeoutId);
       try {
         if (app) {
-          app.ticker.stop();
+          app.ticker?.stop();
           app.destroy(true, { children: true, texture: true, baseTexture: true });
+          app = null;
+          circleTexture = null;
         }
       } catch (err) {
         console.warn('Failed to destroy Pixi app:', err);

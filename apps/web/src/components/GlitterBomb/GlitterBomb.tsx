@@ -59,6 +59,7 @@ export default function GlitterBomb() {
 
       // Function to trigger explosion
       const trigger = () => {
+        if (!app.renderer) return;
         if (!app.ticker.started) app.start();
 
         // --- Optimized Explosion Config ---
@@ -163,6 +164,7 @@ export default function GlitterBomb() {
         // Stop ticker first?
         appRef.current.ticker?.stop();
         appRef.current.destroy({ removeView: true });
+        appRef.current = null;
       }
     };
   }, []);
