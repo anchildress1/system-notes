@@ -7,6 +7,12 @@
     z-index: 1;
 }
 
+@media (max-width: 768px) {
+    .main {
+        padding-top: 0;
+    }
+}
+
 .introSection {
     padding: 0 var(--space-lg);
     margin-bottom: var(--space-lg);

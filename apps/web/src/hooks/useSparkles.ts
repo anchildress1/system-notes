@@ -17,6 +17,9 @@ export const useSparkles = ({
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let app: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let circleTexture: any;
+
     const particles: Particle[] = [];
     let isObserverPaused = false;
     let isMounted = true; // Track mount status to prevent leaks/crashes
@@ -42,10 +45,13 @@ export const useSparkles = ({
           resolution: isMobile ? 1 : window.devicePixelRatio || 1,
           autoDensity: true,
           // Disable antialias on mobile for performance
-          antialias: !isMobile,
+          antialias: false,
+          powerPreference: 'high-performance',
         });
 
         if (!containerRef.current || !isMounted) {
+          // Stop ticker before destroy if init happened partially
+          app.ticker?.stop();
           app.destroy(true, { children: true, texture: true, baseTexture: true });
           return;
         }
@@ -55,6 +61,12 @@ export const useSparkles = ({
         app.canvas.style.top = '0';
         app.canvas.style.left = '0';
         app.canvas.style.pointerEvents = 'none';
+
+        // Generate texture for Sprites
+        const circleGraphics = new PIXI.Graphics();
+        circleGraphics.circle(0, 0, 4);
+        circleGraphics.fill({ color: 0xffffff });
+        circleTexture = app.renderer.generateTexture(circleGraphics);
 
         // Animation Loop
         app.ticker.add(() => {
@@ -74,8 +86,7 @@ export const useSparkles = ({
               p.y += Math.sin(p.direction) * p.speed;
               p.speed *= 0.9; // Drag
               p.alpha = p.life;
-              p.scale.x = p.life * 0.8;
-              p.scale.y = p.life * 0.8;
+              p.scale.set(p.life * 0.8);
             }
           }
         });
@@ -118,7 +129,7 @@ export const useSparkles = ({
         }
 
         const PIXI = await import('pixi.js');
-        if (!isMounted) return;
+        if (!isMounted || !circleTexture) return;
 
         const rect = containerRef.current.getBoundingClientRect();
         const x = clientX - rect.left;
@@ -131,13 +142,16 @@ export const useSparkles = ({
 
         for (let i = 0; i < count; i++) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const particle = new PIXI.Graphics() as any as Particle;
+          const particle = new PIXI.Sprite(circleTexture) as any as Particle;
           const color = colors[Math.floor(Math.random() * colors.length)];
 
+          particle.tint = color;
+          particle.anchor.set(0.5);
+
           // Smaller particles on mobile
-          const baseSize = isMobile ? 1 : 1.5;
-          particle.circle(0, 0, Math.random() * baseSize + 0.5); // "Dust" size
-          particle.fill(color);
+          const baseScale = isMobile ? 0.2 : 0.4;
+          particle.scale.set(Math.random() * baseScale + 0.1);
+
           particle.x = x + (Math.random() - 0.5) * 20; // Jitter
           particle.y = y + (Math.random() - 0.5) * 20;
           particle.alpha = 1;
