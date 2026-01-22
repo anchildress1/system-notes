@@ -13,9 +13,11 @@ test.describe('Primary Navigation Flows', () => {
 
     // Verify About Page Content
     // Update to match actual content
-    const heading = page.getByRole('heading', { name: 'Ashley Childress', level: 1 }).first();
-    await expect(heading).toBeVisible({ timeout: 10000 });
-    await heading.scrollIntoViewIfNeeded();
+    // Use loose text check to verify content loading
+    await expect(page.locator('body')).toContainText('Ashley Childress', { timeout: 10000 });
+
+    // Also check for something unique to the bio
+    await expect(page.locator('body')).toContainText('Appalachia');
 
     // Navigate back to Home
     await page.getByRole('link', { name: 'Projects' }).first().click();

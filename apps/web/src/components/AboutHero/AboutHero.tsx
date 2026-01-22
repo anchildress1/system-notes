@@ -29,7 +29,7 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
 
   const heroTitle = title || "I design for the failure \n you haven't met yet.";
 
-  useSparkles({ containerRef, textRef, sparkleNearText: true });
+  // useSparkles({ containerRef, textRef, sparkleNearText: true });
 
   return (
     <div className={styles.hero} ref={containerRef}>

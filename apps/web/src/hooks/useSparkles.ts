@@ -19,6 +19,7 @@ export const useSparkles = ({
     let app: any;
     const particles: Particle[] = [];
     let isObserverPaused = false;
+    let isMounted = true; // Track mount status to prevent leaks/crashes
 
     // Feature detect mobile for optimizations
     const isMobile =
@@ -26,10 +27,10 @@ export const useSparkles = ({
 
     const initPixi = async () => {
       try {
-        if (!containerRef.current) return;
+        if (!containerRef.current || !isMounted) return;
         const PIXI = await import('pixi.js');
         // Re-check after async import
-        if (!containerRef.current) return;
+        if (!containerRef.current || !isMounted) return;
 
         // Create Pixi Application
         app = new PIXI.Application();
@@ -44,7 +45,7 @@ export const useSparkles = ({
           antialias: !isMobile,
         });
 
-        if (!containerRef.current) {
+        if (!containerRef.current || !isMounted) {
           app.destroy(true, { children: true, texture: true, baseTexture: true });
           return;
         }
@@ -57,7 +58,7 @@ export const useSparkles = ({
 
         // Animation Loop
         app.ticker.add(() => {
-          if (isObserverPaused) return;
+          if (isObserverPaused || !isMounted) return;
 
           for (let i = particles.length - 1; i >= 0; i--) {
             const p = particles[i];
@@ -83,15 +84,8 @@ export const useSparkles = ({
       }
     };
 
-    // Lazy initialization using requestIdleCallback if available, else setTimeout
-    if ('requestIdleCallback' in window) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).requestIdleCallback(() => {
-        initPixi();
-      });
-    } else {
-      setTimeout(initPixi, 200);
-    }
+    // Use simple setTimeout for lazy load to avoid requestIdleCallback instability
+    const timeoutId = setTimeout(initPixi, 100);
 
     // Intersection Observer to pause rendering when out of view
     const observer = new IntersectionObserver(
@@ -108,57 +102,62 @@ export const useSparkles = ({
     }
 
     const handleInteraction = async (clientX: number, clientY: number) => {
-      // Logic for spawning sparkles
-      if (!app || !containerRef.current) return;
+      if (!app || !containerRef.current || !isMounted) return;
 
-      // If restricted to text area (like in AboutHero)
-      if (sparkleNearText && textRef?.current) {
-        const textRect = textRef.current.getBoundingClientRect();
-        const isInText =
-          clientX >= textRect.left &&
-          clientX <= textRect.right &&
-          clientY >= textRect.top &&
-          clientY <= textRect.bottom;
+      try {
+        // If restricted to text area (like in AboutHero)
+        if (sparkleNearText && textRef?.current) {
+          const textRect = textRef.current.getBoundingClientRect();
+          const isInText =
+            clientX >= textRect.left &&
+            clientX <= textRect.right &&
+            clientY >= textRect.top &&
+            clientY <= textRect.bottom;
 
-        if (!isInText) return;
-      }
+          if (!isInText) return;
+        }
 
-      const PIXI = await import('pixi.js');
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
+        const PIXI = await import('pixi.js');
+        if (!isMounted) return;
 
-      // Spawn chaotic sparks
-      // Reduce count on mobile to maintain FPS
-      const count = isMobile ? 2 : 5;
-      const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
+        const rect = containerRef.current.getBoundingClientRect();
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
 
-      for (let i = 0; i < count; i++) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const particle = new PIXI.Graphics() as any as Particle;
-        const color = colors[Math.floor(Math.random() * colors.length)];
+        // Spawn chaotic sparks
+        // Reduce count on mobile to maintain FPS
+        const count = isMobile ? 2 : 5;
+        const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
 
-        // Smaller particles on mobile
-        const baseSize = isMobile ? 1 : 1.5;
-        particle.circle(0, 0, Math.random() * baseSize + 0.5); // "Dust" size
-        particle.fill(color);
-        particle.x = x + (Math.random() - 0.5) * 20; // Jitter
-        particle.y = y + (Math.random() - 0.5) * 20;
-        particle.alpha = 1;
+        for (let i = 0; i < count; i++) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const particle = new PIXI.Graphics() as any as Particle;
+          const color = colors[Math.floor(Math.random() * colors.length)];
 
-        const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 5 + 2;
+          // Smaller particles on mobile
+          const baseSize = isMobile ? 1 : 1.5;
+          particle.circle(0, 0, Math.random() * baseSize + 0.5); // "Dust" size
+          particle.fill(color);
+          particle.x = x + (Math.random() - 0.5) * 20; // Jitter
+          particle.y = y + (Math.random() - 0.5) * 20;
+          particle.alpha = 1;
 
-        particle.direction = angle;
-        particle.speed = velocity;
-        particle.life = 1.0;
+          const angle = Math.random() * Math.PI * 2;
+          const velocity = Math.random() * 5 + 2;
 
-        // Faster decay on mobile to clear buffer
-        particle.decay = Math.random() * (isMobile ? 0.05 : 0.03) + 0.01;
+          particle.direction = angle;
+          particle.speed = velocity;
+          particle.life = 1.0;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        app.stage.addChild(particle as any);
-        particles.push(particle);
+          // Faster decay on mobile to clear buffer
+          particle.decay = Math.random() * (isMobile ? 0.05 : 0.03) + 0.01;
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          app.stage.addChild(particle as any);
+          particles.push(particle);
+        }
+      } catch (err) {
+        console.error('Sparkle interaction error:', err);
       }
     };
 
@@ -182,8 +181,14 @@ export const useSparkles = ({
     }
 
     return () => {
-      if (app) {
-        app.destroy(true, { children: true, texture: true, baseTexture: true });
+      isMounted = false;
+      clearTimeout(timeoutId);
+      try {
+        if (app) {
+          app.destroy(true, { children: true, texture: true, baseTexture: true });
+        }
+      } catch (err) {
+        console.warn('Failed to destroy Pixi app:', err);
       }
       observer.disconnect();
       if (containerRef.current) {
