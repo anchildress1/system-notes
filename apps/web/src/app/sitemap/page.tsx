@@ -1,4 +1,5 @@
 import Header from '@/components/Header/Header';
+import SitemapHero from '@/components/SitemapHero/SitemapHero';
 import { allProjects } from '@/data/projects';
 import Link from 'next/link';
 import { Metadata } from 'next';
@@ -14,12 +15,7 @@ export default function SitemapPage() {
     <main className={styles.main}>
       <Header />
 
-      <div className={styles.hero} role="banner" aria-label="Sitemap introduction">
-        <h1 className={styles.title}>
-          <span className={styles.visuallyHidden}>Sitemap: </span>
-          AI wanted it to be here <br /> and I didn&apos;t argue.
-        </h1>
-      </div>
+      <SitemapHero />
 
       <div className={styles.container}>
         <ul className={styles.list}>
