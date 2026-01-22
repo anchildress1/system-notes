@@ -20,13 +20,16 @@ export default function About() {
       <AboutHero title={aboutData.heroTitle} image={aboutData.heroImage} />
       <div className={styles.container}>
         <div className={styles.content}>
-          {aboutData.sections.map((section, index) => (
-            <div key={index} className={styles.section}>
-              <h2 className={styles.name}>{section.title}</h2>
-              {section.subtitle && <span className={styles.subtitle}>{section.subtitle}</span>}
-              <TextContent text={section.content} />
-            </div>
-          ))}
+          {aboutData.sections.map((section, index) => {
+            const TitleTag = index === 0 ? 'h1' : 'h2';
+            return (
+              <div key={index} className={styles.section}>
+                <TitleTag className={styles.name}>{section.title}</TitleTag>
+                {section.subtitle && <span className={styles.subtitle}>{section.subtitle}</span>}
+                <TextContent text={section.content} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </main>

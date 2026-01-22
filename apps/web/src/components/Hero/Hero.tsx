@@ -12,9 +12,14 @@ export default function Hero() {
     let app: any;
     const particles: Particle[] = [];
 
+    // Feature detect mobile for optimizations
+    // "Mobile" here means small screen OR touch capability.
+    // We assume embedded views might trigger the width check.
+    const isMobile =
+      typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
+
     const initPixi = async () => {
-      // Disable interaction/animation on mobile
-      if (window.innerWidth < 768) return;
+      // Intentionally allowing initialization even on reduced motion/mobile, but with optimizations below.
 
       if (!containerRef.current) return;
       const PIXI = await import('pixi.js');
@@ -26,8 +31,11 @@ export default function Hero() {
         width: containerRef.current.clientWidth,
         height: containerRef.current.clientHeight,
         backgroundAlpha: 0,
-        resolution: window.devicePixelRatio || 1,
+        // Optimize resolution for mobile to save GPU (1x instead of Retina)
+        resolution: isMobile ? 1 : window.devicePixelRatio || 1,
         autoDensity: true,
+        // Disable antialias on mobile for performance
+        antialias: !isMobile,
       });
 
       if (!containerRef.current) {
@@ -75,7 +83,8 @@ export default function Hero() {
       const y = e.clientY - rect.top;
 
       // Spawn chaotic sparks
-      const count = 5; // Increased from 3
+      // Reduce count on mobile to maintain FPS
+      const count = isMobile ? 2 : 5;
       const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
 
       for (let i = 0; i < count; i++) {
@@ -83,7 +92,9 @@ export default function Hero() {
         const particle = new PIXI.Graphics() as any as Particle;
         const color = colors[Math.floor(Math.random() * colors.length)];
 
-        particle.circle(0, 0, Math.random() * 1.5 + 0.5); // "Dust" size
+        // Smaller particles on mobile
+        const baseSize = isMobile ? 1 : 1.5;
+        particle.circle(0, 0, Math.random() * baseSize + 0.5); // "Dust" size
         particle.fill(color);
         particle.x = x + (Math.random() - 0.5) * 20; // Jitter
         particle.y = y + (Math.random() - 0.5) * 20;
@@ -95,7 +106,9 @@ export default function Hero() {
         particle.direction = angle;
         particle.speed = velocity;
         particle.life = 1.0;
-        particle.decay = Math.random() * 0.03 + 0.01; // Slower decay
+
+        // Faster decay on mobile to clear buffer
+        particle.decay = Math.random() * (isMobile ? 0.05 : 0.03) + 0.01;
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         app.stage.addChild(particle as any);
@@ -107,6 +120,22 @@ export default function Hero() {
       containerRef.current.addEventListener('mousemove', handleMouseMove);
     }
 
+    // Add touch support: treat touch moves as mouse moves to spawn sparkles
+    const handleTouchMove = (e: TouchEvent) => {
+      // Only trigger on mobile to avoid double events on some devices
+      if (!isMobile) return;
+      const touch = e.touches[0];
+      // Create a fake MouseEvent structure for reuse
+      handleMouseMove({
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+      } as MouseEvent);
+    };
+
+    if (containerRef.current) {
+      containerRef.current.addEventListener('touchmove', handleTouchMove, { passive: true });
+    }
+
     return () => {
       if (app) {
         app.destroy(true, { children: true, texture: true, baseTexture: true });
@@ -114,6 +143,8 @@ export default function Hero() {
       if (containerRef.current) {
         // eslint-disable-next-line
         containerRef.current.removeEventListener('mousemove', handleMouseMove);
+        // eslint-disable-next-line
+        containerRef.current.removeEventListener('touchmove', handleTouchMove);
       }
     };
   }, []);

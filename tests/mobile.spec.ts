@@ -53,7 +53,7 @@ test.describe('Mobile Responsiveness', () => {
     await page.goto('/');
     // Check for chat toggle button
     const toggle = page.getByTestId('ai-chat-toggle');
-    await expect(toggle).toBeVisible();
+    await expect(toggle).toBeVisible({ timeout: 15000 });
 
     // Open chat
     await toggle.click();

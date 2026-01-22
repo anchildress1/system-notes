@@ -8,6 +8,7 @@ const mockProject: Project = {
   title: 'Benchmark Project',
   status: 'Active',
   description: 'A project for benchmarking performance',
+  purpose: 'Performance testing and benchmarking',
   longDescription:
     'A longer description for the benchmark project to test text rendering performance.',
   outcome: 'Valid benchmarks',

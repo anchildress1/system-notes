@@ -8,9 +8,7 @@ import { ChatProvider } from '@/context/ChatContext';
 const GlitterBomb = dynamic(() => import('@/components/GlitterBomb/GlitterBomb'), {
   ssr: false,
 });
-const AIChat = dynamic(() => import('@/components/AIChat/AIChat'), {
-  ssr: false,
-});
+import AIChat from '@/components/AIChat/AIChat';
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   return (

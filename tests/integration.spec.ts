@@ -96,7 +96,7 @@ test.describe('System Notes Integration', () => {
     // Check for "Project Output" or similar text to ensure content loaded
     // Verify content loaded - check for specific section title within expanded view
     const expandedContent = page
-      .locator('h3[class*="sectionTitle"]')
+      .locator('h2[class*="sectionTitle"]')
       .filter({ hasText: /Project Output|Outcome/ })
       .first();
     await expect(expandedContent).toBeVisible();
