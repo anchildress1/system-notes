@@ -31,6 +31,7 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
       tabIndex={0}
       onKeyDown={handleKeyDown}
       aria-label={`View details for ${project.title}`}
+      data-testid={`project-card-${project.id}`}
     >
       <div className={styles.imageContainer}>
         <div className={styles.imageWrapper}>

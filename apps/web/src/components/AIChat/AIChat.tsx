@@ -129,6 +129,7 @@ export default function AIChat() {
         className={`${styles.toggleButton} ${isOpen ? styles.stopPulse : ''}`}
         onClick={toggleChat}
         aria-label={isOpen ? 'Close AI Chat' : 'Open AI Chat'}
+        data-testid="ai-chat-toggle"
       >
         {isOpen ? '✕' : <LuBrain size={24} />}
       </button>

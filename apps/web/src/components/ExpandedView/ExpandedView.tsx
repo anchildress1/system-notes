@@ -64,12 +64,13 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         aria-modal="true"
         aria-labelledby="modal-title"
         tabIndex={-1} // Make focusable
+        data-testid="expanded-view-dialog"
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         transition={{ type: 'spring', stiffness: 350, damping: 25 }}
       >
-        <div className={styles.imageContainer}>
+        <div className={styles.imageContainer} data-testid="expanded-image-container">
           <div className={styles.imageWrapper}>
             <div
               className={styles.conceptBackground}

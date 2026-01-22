@@ -50,7 +50,7 @@ test.describe('System Notes Integration', () => {
   test('AIChat interaction', async ({ page }) => {
     await page.goto('/');
     // Open Chat
-    const toggle = page.getByLabel('Open AI Chat');
+    const toggle = page.getByTestId('ai-chat-toggle');
     await toggle.click();
 
     const input = page.getByPlaceholder('Type a message...');
@@ -83,11 +83,14 @@ test.describe('System Notes Integration', () => {
   test('should open expanded view and verify banner', async ({ page }) => {
     await page.goto('/');
     // Click first card
-    await page.locator('div[class*="card"]').first().click();
+    await page
+      .getByTestId(/^project-card-/)
+      .first()
+      .click();
 
     // Check for banner container
     // Use a more specific locator to avoid matching Project Cards
-    const banner = page.locator('div[class*="ExpandedView"] div[class*="imageContainer"]');
+    const banner = page.getByTestId('expanded-image-container');
     await expect(banner).toBeVisible();
 
     // Check for "Project Output" or similar text to ensure content loaded
@@ -134,7 +137,7 @@ test.describe('System Notes Integration', () => {
     await page.goto('/');
 
     // Open Chat
-    await page.getByLabel('Open AI Chat').click();
+    await page.getByTestId('ai-chat-toggle').click();
     const input = page.getByPlaceholder('Type a message...');
 
     // Send a message
@@ -146,7 +149,7 @@ test.describe('System Notes Integration', () => {
 
     // Navigate to /about
     // Close chat first to ensure link is clickable on mobile
-    await page.getByLabel('Close AI Chat').click();
+    await page.getByTestId('ai-chat-toggle').click();
     await page.getByRole('link', { name: 'About' }).click();
     await expect(page).toHaveURL('/about');
 
@@ -154,7 +157,7 @@ test.describe('System Notes Integration', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Re-open Chat to check history
-    await page.getByLabel('Open AI Chat').click();
+    await page.getByTestId('ai-chat-toggle').click();
 
     // Chat should be visible and contain history
     const chatContainer = page.locator('div[class*="chatWindow"]');
