@@ -61,6 +61,8 @@ export default function GlitterBomb() {
       // Function to trigger explosion
       const trigger = () => {
         if (!app.renderer) return;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((app as any)._destroyed) return; // Safety check
         if (!app.ticker.started) app.start();
 
         // --- Optimized Explosion Config ---
@@ -162,9 +164,11 @@ export default function GlitterBomb() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((window as any)._glitterCleanup) (window as any)._glitterCleanup();
       if (appRef.current) {
-        // Stop ticker first?
+        // Stop ticker first? YES.
         appRef.current.ticker?.stop();
-        appRef.current.destroy({ removeView: true });
+        if (appRef.current.renderer) {
+          appRef.current.destroy({ removeView: true });
+        }
         appRef.current = null;
       }
     };

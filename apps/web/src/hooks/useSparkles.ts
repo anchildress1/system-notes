@@ -63,10 +63,19 @@ export const useSparkles = ({
         app.canvas.style.pointerEvents = 'none';
 
         // Generate texture for Sprites
+        // Safety check: ensure renderer exists
+        if (!app.renderer) return;
+
         const circleGraphics = new PIXI.Graphics();
         circleGraphics.circle(0, 0, 4);
         circleGraphics.fill({ color: 0xffffff });
-        circleTexture = app.renderer.generateTexture(circleGraphics);
+
+        try {
+          circleTexture = app.renderer.generateTexture(circleGraphics);
+        } catch (e) {
+          console.warn('Failed to generate texture:', e);
+          return;
+        }
 
         // Animation Loop
         app.ticker.add(() => {
@@ -142,8 +151,8 @@ export const useSparkles = ({
         const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
 
         for (let i = 0; i < count; i++) {
-          // Double check app state
-          if (!app.renderer) return;
+          // Double check app state and texture
+          if (!app.renderer || !circleTexture) return;
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const particle = new PIXI.Sprite(circleTexture) as any as Particle;
@@ -203,8 +212,11 @@ export const useSparkles = ({
       clearTimeout(timeoutId);
       try {
         if (app) {
-          app.ticker?.stop();
-          app.destroy(true, { children: true, texture: true, baseTexture: true });
+          app.ticker?.stop(); // Stop ticker first to prevent 'clear' or 'geometry' errors
+          // Small delay or just destroy? safely destroy.
+          if (app.renderer) {
+            app.destroy(true, { children: true, texture: true, baseTexture: true });
+          }
           app = null;
           circleTexture = null;
         }
