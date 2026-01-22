@@ -5,20 +5,20 @@ test.describe('Primary Navigation Flows', () => {
     // Start at Home
     await page.goto('/');
     await expect(page).toHaveURL('/');
-    await expect(page.locator('h1')).toContainText("Ashley Childress' System Notes");
+    await expect(page.locator('h1')).first().toContainText("System Notes");
 
     // Navigate to About
-    await page.getByRole('link', { name: 'About Ashley' }).click();
+    await page.getByRole('link', { name: 'About' }).click();
     await expect(page).toHaveURL('/about');
 
     // Verify About Page Content
     // Update to match actual content
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: 'Ashley Childress' })).toBeVisible();
 
     // Navigate back to Home
     await page.getByRole('link', { name: 'Projects' }).first().click();
     await expect(page).toHaveURL('/');
-    await expect(page.locator('h1')).toContainText("Ashley Childress' System Notes");
+    await expect(page.locator('h1')).first().toContainText("System Notes");
   });
 
   test('should navigate to external links correctly', async ({ page }) => {

@@ -9,16 +9,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.left}>
         <span suppressHydrationWarning>&copy; {currentYear} Ashley Childress</span>
-        <a
-          href="/sitemap"
-          className={styles.footerLink}
-          style={{
-            marginLeft: '1rem',
-            color: 'hsl(var(--color-text-muted))',
-            textDecoration: 'none',
-            fontSize: '0.8rem',
-          }}
-        >
+        <a href="/sitemap" className={styles.link}>
           Sitemap
         </a>
       </div>

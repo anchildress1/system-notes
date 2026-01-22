@@ -1,4 +1,7 @@
 export interface AboutData {
+  name: string;
+  enunciation: string;
+  sitemapText: string;
   title: string;
   bio: string;
   themeSong: string;
@@ -11,6 +14,9 @@ export interface AboutData {
 }
 
 export const aboutData: AboutData = {
+  name: 'Ashley Childress',
+  enunciation: '/ ASH-lee CHIL-dres /',
+  sitemapText: 'System Topology / sitemap',
   title: "I design for the failure you haven't met yet.",
   bio: `## Ash-lee Chill-dress
 

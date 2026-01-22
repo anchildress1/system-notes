@@ -98,6 +98,7 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
           <h2 className={styles.title}>{project.title}</h2>
         </div>
 
+        <h3 className={styles.intentLabel}>Purpose</h3>
         <p className={styles.description}>{project.description}</p>
 
         <div className={styles.simpleTags}>

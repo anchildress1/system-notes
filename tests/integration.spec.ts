@@ -2,10 +2,10 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.describe('System Notes Integration', () => {
-  test('should load the homepage with correct metadata', async ({ page }) => {
+  test('loads homepage with correct metadata', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/Ashley Childress' System Notes/);
-    await expect(page.locator('h1')).toContainText("Ashley Childress' System Notes");
+    await expect(page).toHaveTitle(/System Notes/);
+    await expect(page.locator('h1')).first().toContainText("System Notes");
   });
 
   test('should display the footer', async ({ page }) => {
@@ -145,7 +145,7 @@ test.describe('System Notes Integration', () => {
     await expect(page.locator('text=Are you persistent?')).toBeVisible();
 
     // Navigate to /about
-    await page.getByRole('link', { name: 'About Ashley' }).click();
+    await page.getByRole('link', { name: 'About' }).click();
     await expect(page).toHaveURL('/about');
 
     // Wait for nav to complete

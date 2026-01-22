@@ -229,7 +229,7 @@
     text-transform: uppercase;
     font-size: 0.8rem;
     letter-spacing: 1px;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
     color: hsl(var(--color-text-muted));
 }
 
@@ -260,7 +260,7 @@
 }
 
 .actions {
-    margin-top: var(--space-lg);
+    margin-top: var(--space-md);
     display: flex;
     justify-content: flex-start;
 }
@@ -288,8 +288,6 @@
     font-size: 1rem;
     color: hsl(var(--color-text-secondary));
     line-height: 1.6;
-    border-left: 2px solid hsl(var(--color-accent-cyan));
-    padding-left: var(--space-md);
 }
 
 .mainColumn {
@@ -301,7 +299,7 @@
 .sideColumn {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xl);
+    gap: var(--space-md);
 }
 
 .blogList {

@@ -9,7 +9,8 @@
     "lint": "ESLINT_USE_FLAT_CONFIG=true eslint --config eslint.config.mjs .",
     "test": "vitest run --coverage --passWithNoTests",
     "test:watch": "vitest",
-    "bench": "vitest bench"
+    "bench": "vitest bench",
+    "test:perf": "lhci autorun --config=lighthouserc.mobile.json && lhci autorun --config=lighthouserc.desktop.json"
   },
   "dependencies": {
     "framer-motion": "^12.26.2",
@@ -21,6 +22,7 @@
     "react-markdown": "^10.1.0"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",

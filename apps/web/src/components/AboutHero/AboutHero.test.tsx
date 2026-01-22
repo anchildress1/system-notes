@@ -29,23 +29,32 @@ describe('AboutHero Component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders the title', () => {
-    const customTitle = 'Custom Project Title';
-    render(<AboutHero title={customTitle} />);
-    expect(screen.getByText(customTitle)).toBeInTheDocument();
+  it('renders the name and enunciation', () => {
+    render(<AboutHero name="Test Name" enunciation="/ Test Enunciation /" />);
+    expect(screen.getByText('Test Name')).toBeInTheDocument();
+    expect(screen.getByText('/ Test Enunciation /')).toBeInTheDocument();
   });
 
-  it('renders with default title if none provided', () => {
+  it('renders with default name and enunciation if none provided', () => {
     render(<AboutHero />);
-    expect(screen.getByText(/I design for the failure/i)).toBeInTheDocument();
+    expect(screen.getByText('Ashley Childress')).toBeInTheDocument();
+    expect(screen.getByText('/ ASH-lee CHIL-dres /')).toBeInTheDocument();
   });
 
-  it('dispatches trigger-glitter-bomb event on title click', () => {
+  it('renders the sitemap link', () => {
+    render(<AboutHero sitemapText="Test Sitemap" />);
+    const link = screen.getByText('Test Sitemap');
+    expect(link).toBeInTheDocument();
+    expect(link.closest('a')).toHaveAttribute('href', '/sitemap');
+  });
+
+  it('dispatches trigger-glitter-bomb event on name click', () => {
     const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
     render(<AboutHero />);
 
-    const titleContainer = screen.getByRole('button');
-    fireEvent.click(titleContainer);
+    // Click the name portion (which is now a role="button")
+    const nameButton = screen.getAllByRole('button')[0];
+    fireEvent.click(nameButton);
 
     expect(dispatchSpy).toHaveBeenCalled();
     const event = dispatchSpy.mock.calls[0][0] as Event;

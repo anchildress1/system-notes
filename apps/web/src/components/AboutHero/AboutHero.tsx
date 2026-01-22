@@ -6,6 +6,9 @@ import styles from './AboutHero.module.css';
 import { Particle } from '../GlitterBomb/GlitterBomb';
 
 interface AboutHeroProps {
+  name?: string;
+  enunciation?: string;
+  sitemapText?: string;
   title?: string;
   image?: {
     src: string;
@@ -15,7 +18,13 @@ interface AboutHeroProps {
   };
 }
 
-export default function AboutHero({ title, image }: AboutHeroProps) {
+export default function AboutHero({
+  name,
+  enunciation,
+  sitemapText,
+  title,
+  image,
+}: AboutHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
@@ -27,6 +36,9 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
     height: 400,
   };
 
+  const heroName = name || 'Ashley Childress';
+  const heroEnunciation = enunciation || '/ ASH-lee CHIL-dres /';
+  const heroSitemapText = sitemapText || 'System Topology / sitemap';
   const heroTitle = title || "I design for the failure \n you haven't met yet.";
 
   useEffect(() => {
@@ -149,20 +161,39 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
 
   return (
     <div className={styles.hero} ref={containerRef}>
-      <div
-        className={styles.titleContainer}
-        ref={textRef}
-        onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
-        style={{ cursor: 'pointer' }}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            window.dispatchEvent(new Event('trigger-glitter-bomb'));
-          }
-        }}
-      >
-        <div className={styles.title}>
+      <div className={styles.titleContainer} ref={textRef}>
+        <h1
+          className={styles.name}
+          onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              window.dispatchEvent(new Event('trigger-glitter-bomb'));
+            }
+          }}
+          tabIndex={0}
+          role="button"
+          style={{ cursor: 'pointer' }}
+        >
+          {heroName}
+        </h1>
+        <div className={styles.enunciation}>{heroEnunciation}</div>
+
+        <a href="/sitemap" className={styles.sitemapLink}>
+          {heroSitemapText}
+        </a>
+
+        <div
+          className={styles.title}
+          onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              window.dispatchEvent(new Event('trigger-glitter-bomb'));
+            }
+          }}
+          tabIndex={0}
+          role="button"
+          style={{ cursor: 'pointer' }}
+        >
           {heroTitle.split('\n').map((line, i) => (
             <span key={i}>
               {line}

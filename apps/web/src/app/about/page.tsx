@@ -10,7 +10,13 @@ export default function About() {
   return (
     <main>
       <Header />
-      <AboutHero title={aboutData.title} image={aboutData.image} />
+      <AboutHero
+        name={aboutData.name}
+        enunciation={aboutData.enunciation}
+        sitemapText={aboutData.sitemapText}
+        title={aboutData.title}
+        image={aboutData.image}
+      />
       <div className={styles.container}>
         <div className={styles.content}>
           <ReactMarkdown>{aboutData.bio}</ReactMarkdown>

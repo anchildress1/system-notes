@@ -25,6 +25,7 @@ describe('ProjectCard Component', () => {
     render(<ProjectCard project={mockProject} onSelect={() => {}} />);
 
     expect(screen.getByText('Test Project')).toBeInTheDocument();
+    expect(screen.getByText('Purpose')).toBeInTheDocument();
     expect(screen.getByText('This is a test project.')).toBeInTheDocument();
     expect(screen.getByText('React')).toBeInTheDocument();
     expect(screen.getByText('ANCHildress1')).toBeInTheDocument();

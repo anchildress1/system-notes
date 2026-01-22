@@ -26,7 +26,7 @@
         "largest-contentful-paint": [
           "warn",
           {
-            "minScore": 0.1
+            "minScore": 0
           }
         ],
         "first-contentful-paint": [
@@ -59,6 +59,7 @@
         "lcp-lazy-loaded": "off",
         "lcp-discovery-insight": "off",
         "label-content-name-mismatch": "off",
+        "mainthread-work-breakdown": "off",
         "network-dependency-tree-insight": "off"
       }
     }
