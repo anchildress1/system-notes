@@ -70,6 +70,19 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         transition={{ type: 'spring', stiffness: 350, damping: 25 }}
       >
+        <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
         <div className={styles.imageContainer} data-testid="expanded-image-container">
           <div className={styles.imageWrapper}>
             <div
@@ -84,23 +97,11 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
                 fill
                 style={{ objectFit: 'cover' }}
                 priority={false}
+                sizes="(max-width: 1200px) 100vw, 1200px"
               />
             )}
           </div>
         </div>
-        <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
 
         <div className={styles.content}>
           <div className={styles.header}>

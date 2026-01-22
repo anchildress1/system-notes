@@ -77,9 +77,11 @@ export const useSparkles = ({
           return;
         }
 
-        // Animation Loop
-        app.ticker.add(() => {
+        // Animation Loop Function
+        const animate = () => {
           if (isObserverPaused || !isMounted) return;
+          // Critical check: ensure app and renderer exist before attempting any render or update
+          if (!app || !app.renderer || !app.stage) return;
 
           for (let i = particles.length - 1; i >= 0; i--) {
             const p = particles[i];
@@ -95,10 +97,14 @@ export const useSparkles = ({
               p.y += Math.sin(p.direction) * p.speed;
               p.speed *= 0.9; // Drag
               p.alpha = p.life;
-              p.scale.set(p.life * 0.8);
+              p.scale.set(p.life * 0.4);
             }
           }
-        });
+        };
+
+        // Add ticker with named function so we can remove it explicitly?
+        // Actually app.destroy() handles ticker, but let's be safe.
+        app.ticker.add(animate);
       } catch (err) {
         console.error('Failed to initialize Pixi:', err);
       }
@@ -213,12 +219,16 @@ export const useSparkles = ({
       try {
         if (app) {
           app.ticker?.stop(); // Stop ticker first to prevent 'clear' or 'geometry' errors
-          // Small delay or just destroy? safely destroy.
+
           if (app.renderer) {
+            // Use minimal destroy options to avoid deeper glitches if textures are shared?
+            // Actually, full destroy is safer for cleanliness, but let's be super explicit.
             app.destroy(true, { children: true, texture: true, baseTexture: true });
           }
           app = null;
           circleTexture = null;
+          // Clear cached ref too if we are destroying the instance it created?
+          // No, pixiLibRef is the library not the app instance.
         }
       } catch (err) {
         console.warn('Failed to destroy Pixi app:', err);

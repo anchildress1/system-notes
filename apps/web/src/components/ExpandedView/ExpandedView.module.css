@@ -85,12 +85,14 @@
 .closeButton {
     position: sticky;
     top: 1rem;
-    margin-left: auto;
+    align-self: flex-end;
     margin-right: 1rem;
-    margin-top: -3.5rem;
-    /* Pull it up into the banner area initially */
+    margin-top: 1rem;
+    margin-bottom: calc(-1rem - 40px);
+    /* Overlay on top of image */
     width: 40px;
     height: 40px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.6);
     /* backdrop-filter: blur(4px); Removed for performance */

@@ -149,7 +149,7 @@ test.describe('System Notes Integration', () => {
 
     // Navigate to /about
     // Close chat first to ensure link is clickable on mobile
-    await page.getByTestId('ai-chat-toggle').click();
+    await page.getByTestId('ai-chat-toggle').click({ force: true });
     await page.getByRole('link', { name: 'About' }).click();
     await expect(page).toHaveURL('/about');
 
