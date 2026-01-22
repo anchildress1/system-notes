@@ -60,6 +60,18 @@
           {
             "minScore": 0
           }
+        ],
+        "legacy-javascript": [
+          "warn",
+          {
+            "maxLength": 5
+          }
+        ],
+        "network-dependency-tree-insight": [
+          "warn",
+          {
+            "minScore": 0
+          }
         ]
       }
     }
