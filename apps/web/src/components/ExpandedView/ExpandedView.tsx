@@ -119,23 +119,29 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
 
           <div className={styles.body}>
             <div className={styles.mainColumn}>
+              {project.purpose && (
+                <div className={styles.section}>
+                  <h2 className={styles.sectionTitle}>Purpose</h2>
+                  <p className={styles.bodyText}>{project.purpose}</p>
+                </div>
+              )}
               {project.longDescription && (
                 <div className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Project Output</h3>
-                  <p className={styles.longDescription}>{project.longDescription}</p>
+                  <h2 className={styles.sectionTitle}>Project Output</h2>
+                  <p className={styles.bodyText}>{project.longDescription}</p>
                 </div>
               )}
 
               {project.outcome && (
                 <div className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Outcome</h3>
-                  <p className={styles.outcome}>{project.outcome}</p>
+                  <h2 className={styles.sectionTitle}>Outcome</h2>
+                  <p className={styles.bodyText}>{project.outcome}</p>
                 </div>
               )}
 
               {project.blogs && project.blogs.length > 0 && (
                 <div className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Related Reading</h3>
+                  <h2 className={styles.sectionTitle}>Related Reading</h2>
                   <ul className={styles.blogList}>
                     {project.blogs.map((blog, i) => (
                       <li key={i} className={styles.blogItem}>
@@ -156,7 +162,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
 
             <div className={styles.sideColumn}>
               <div className={styles.techStack}>
-                <h3 className={styles.sectionTitle}>Tech Stack</h3>
+                <h2 className={styles.sectionTitle}>Tech Stack</h2>
                 <div className={styles.tags}>
                   {project.tech.map((t) => (
                     <div key={t.name} className={styles.tagItem}>

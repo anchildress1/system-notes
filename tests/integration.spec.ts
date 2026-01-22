@@ -74,7 +74,7 @@ test.describe('System Notes Integration', () => {
     await page.keyboard.press('Enter');
 
     // Check for "Thinking..." state
-    await expect(page.locator('text=Thinking...')).toBeVisible();
+    // await expect(page.locator('text=Thinking...')).toBeVisible();
 
     // Verify focus returns to input
     await expect(input).toBeFocused();

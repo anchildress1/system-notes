@@ -12,7 +12,8 @@ vi.mock('next/image', () => ({
 const mockProject: Project = {
   id: 'test-project',
   title: 'Test Project',
-  description: 'Short description.',
+  description: 'Short description tagline.',
+  purpose: 'The core purpose of the project.',
   longDescription: 'Long detailed description.',
   outcome: 'Great outcome.',
   tech: [{ name: 'React', role: 'Frontend' }],
@@ -27,6 +28,7 @@ describe('ExpandedView Component', () => {
     render(<ExpandedView project={mockProject} onClose={() => {}} />);
 
     expect(screen.getByText('Test Project')).toBeInTheDocument();
+    expect(screen.getByText('The core purpose of the project.')).toBeInTheDocument();
     expect(screen.getByText('Long detailed description.')).toBeInTheDocument();
     expect(screen.getByText('Great outcome.')).toBeInTheDocument();
     expect(screen.getByText('View Source on GitHub')).toBeInTheDocument();

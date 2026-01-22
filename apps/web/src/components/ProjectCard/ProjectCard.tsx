@@ -99,7 +99,7 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
         </div>
 
         <h3 className={styles.intentLabel}>Purpose</h3>
-        <p className={styles.description}>{project.description}</p>
+        <p className={styles.description}>{project.purpose}</p>
 
         <div className={styles.simpleTags}>
           {project.tech.map((t) => (

@@ -1,15 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import styles from './AboutHero.module.css';
 import { Particle } from '../GlitterBomb/GlitterBomb';
 
 interface AboutHeroProps {
-  name?: string;
-  enunciation?: string;
-  sitemapText?: string;
   title?: string;
   image?: {
     src: string;
@@ -19,13 +15,7 @@ interface AboutHeroProps {
   };
 }
 
-export default function AboutHero({
-  name,
-  enunciation,
-  sitemapText,
-  title,
-  image,
-}: AboutHeroProps) {
+export default function AboutHero({ title, image }: AboutHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
@@ -37,9 +27,6 @@ export default function AboutHero({
     height: 400,
   };
 
-  const heroName = name || 'Ashley Childress';
-  const heroEnunciation = enunciation || '/ ASH-lee CHIL-dres /';
-  const heroSitemapText = sitemapText || 'System Topology / sitemap';
   const heroTitle = title || "I design for the failure \n you haven't met yet.";
 
   useEffect(() => {
@@ -162,28 +149,6 @@ export default function AboutHero({
 
   return (
     <div className={styles.hero} ref={containerRef}>
-      <div className={styles.identityContainer}>
-        <h1 className={styles.name}>
-          <span
-            onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                window.dispatchEvent(new Event('trigger-glitter-bomb'));
-              }
-            }}
-            tabIndex={0}
-            role="button"
-            style={{ cursor: 'pointer' }}
-          >
-            {heroName}
-          </span>
-        </h1>
-        <div className={styles.enunciation}>{heroEnunciation}</div>
-        <Link href="/sitemap" className={styles.sitemapLink}>
-          {heroSitemapText}
-        </Link>
-      </div>
-
       <div className={styles.titleContainer} ref={textRef}>
         <div className={styles.title}>
           <span
