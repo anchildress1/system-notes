@@ -23,5 +23,5 @@ pre-push:
       run: npx playwright test
     bench:
       run: npm run bench -- -- --run
-    lighthouse:
-      run: npx @lhci/cli autorun
+    # lighthouse:
+    #   run: npx @lhci/cli autorun

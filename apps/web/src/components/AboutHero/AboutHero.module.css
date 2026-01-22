@@ -46,3 +46,9 @@
     height: auto;
     display: block;
 }
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 2rem 1rem;
+    }
+}
