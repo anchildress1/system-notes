@@ -11,7 +11,7 @@ graph TD
     classDef frontend fill:#E0F2FE,stroke:#0284C7,color:#000000,stroke-width:2px;
     classDef backend fill:#D1FAE5,stroke:#059669,color:#000000,stroke-width:2px;
     classDef external fill:#F3E8FF,stroke:#9333EA,color:#000000,stroke-width:2px;
-    classDef shared fill:#F1F5F9,stroke:#475569,color:#000000,stroke-width:2px;
+
 
     User([👤 User]) -->|Interacts| Web[Next.js Frontend]:::frontend
     
