@@ -1,7 +1,7 @@
 ![System Notes Banner](apps/web/public/projects/system-notes.jpg)
 
 <!-- Build & Status -->
-[![CI](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml/badge.svg)](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml) ![License](https://img.shields.io/badge/License-Polyform%20Shield%201.0.0-blue) ![Security: Lefthook](https://img.shields.io/badge/Security-Lefthook%20guarded-success)
+[![CI](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml/badge.svg)](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml) ![License](https://img.shields.io/badge/License-PolyForm%20Shield%201.0.0-blue) ![Security: Lefthook](https://img.shields.io/badge/Security-Lefthook%20guarded-success)
 
 <!-- Tech Stack -->
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white) ![Next JS](https://img.shields.io/badge/Next-black?logo=next.js&logoColor=white) ![Python](https://img.shields.io/badge/python-3670A0?logo=python&logoColor=ffdd54) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?logo=fastapi) ![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?logo=google-cloud&logoColor=white)
@@ -41,7 +41,7 @@ make ai-checks
 
 ## Mine. Read Before You Get Ideas. ⚖️
 
-This project is my work and it’s licensed under the [Polyform Shield License 1.0.0](./LICENSE).
+This project is my work and it’s licensed under the [PolyForm Shield License 1.0.0](./LICENSE).
 
 **Fork it?** Absolutely.  
 **Learn from it?** Please do.  
