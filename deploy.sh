@@ -99,22 +99,26 @@ EOF
     # 3. Deploy to Cloud Run
     echo "Deploying to Cloud Run..."
     
-    local DEPLOY_CMD="gcloud run deploy $SERVICE_NAME \
-        --image $IMAGE_URI \
-        --region $REGION \
-        --allow-unauthenticated \
-        --labels dev-tutorial=devnewyear2026 \
-        --port $PORT"
+    # Build arguments array to avoid eval/injection risks
+    DEPLOY_ARGS=(
+        "$SERVICE_NAME"
+        --image "$IMAGE_URI"
+        --region "$REGION"
+        --allow-unauthenticated
+        --labels dev-tutorial=devnewyear2026
+        --port "$PORT"
+    )
 
     if [ -n "$ENV_VARS" ]; then
-        DEPLOY_CMD="$DEPLOY_CMD --set-env-vars $ENV_VARS"
+        DEPLOY_ARGS+=(--set-env-vars "$ENV_VARS")
     fi
 
     if [ -n "$SERVICE_ACCOUNT" ]; then
-        DEPLOY_CMD="$DEPLOY_CMD --service-account $SERVICE_ACCOUNT"
+        DEPLOY_ARGS+=(--service-account "$SERVICE_ACCOUNT")
     fi
 
-    eval $DEPLOY_CMD
+    # Execute directly
+    gcloud run deploy "${DEPLOY_ARGS[@]}"
 }
 
 

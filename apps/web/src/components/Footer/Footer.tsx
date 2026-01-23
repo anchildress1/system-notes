@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -9,9 +10,9 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.left}>
         <span suppressHydrationWarning>&copy; {currentYear} Ashley Childress</span>
-        <a href="/sitemap" className={styles.link}>
+        <Link href="/sitemap" className={styles.link}>
           Sitemap
-        </a>
+        </Link>
       </div>
       <div className={styles.center}>
         <span className={styles.builtWith}>

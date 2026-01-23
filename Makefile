@@ -83,7 +83,7 @@ secret-scan:
 	fi
 
 # Run Playwright E2E tests
-test-e2e:
+test-e2e: build
 	@echo "🎭 Running Playwright E2E tests..."
 	npx playwright test
 

@@ -145,8 +145,8 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
                 <div className={styles.section}>
                   <h2 className={styles.sectionTitle}>Related Reading</h2>
                   <ul className={styles.blogList}>
-                    {project.blogs.map((blog, i) => (
-                      <li key={i} className={styles.blogItem}>
+                    {project.blogs.map((blog) => (
+                      <li key={blog.url} className={styles.blogItem}>
                         <a
                           href={blog.url}
                           target="_blank"

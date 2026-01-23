@@ -26,7 +26,7 @@ import ClientShell from '@/components/ClientShell/ClientShell';
 import { allProjects } from '@/data/projects';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://system-notes-ui-856401495068.us-east1.run.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
   title: {
     default: "Ashley Childress' System Notes",
     template: '%s | System Notes',

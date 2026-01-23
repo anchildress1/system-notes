@@ -10,7 +10,7 @@
     "test": "vitest run --coverage --passWithNoTests",
     "test:watch": "vitest",
     "bench": "vitest bench",
-    "test:perf": "lhci autorun --config=lighthouserc.mobile.json && lhci autorun --config=lighthouserc.desktop.json"
+    "test:perf": "npm run build && lhci autorun --config=lighthouserc.mobile.json && lhci autorun --config=lighthouserc.desktop.json"
   },
   "dependencies": {
     "framer-motion": "^12.26.2",

@@ -79,14 +79,18 @@
     }
 
     .chatWindow {
-        right: -1rem;
-        /* Offset the wrapper padding/right position to align with edge */
-        width: 100vw;
-        max-width: 100vw;
-        bottom: 70px;
-        /* Above the button */
-        border-radius: 12px 12px 0 0;
-        height: 60vh;
+        right: 0;
+        /* Aligned to wrapper right edge */
+        width: calc(100vw - 2rem);
+        max-width: 400px;
+        /* Cap width on larger mobile/tablets */
+        bottom: 85px;
+        /* Above the button with buffer */
+        border-radius: 12px;
+        /* Full rounded on mobile too, looks cleaner floating */
+        height: auto;
+        max-height: calc(100dvh - 150px);
+        /* Prevent cutting off top (100dvh - bottom space - top buffer) */
         display: flex;
         flex-direction: column;
     }

@@ -12,25 +12,13 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, onSelect, priority = false }: ProjectCardProps) {
-  const repoName = project.repoUrl.split('/').pop();
   const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'CheckMarK DevTools';
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onSelect(project);
-    }
-  };
 
   return (
     <motion.div
       className={styles.card}
       onClick={() => onSelect(project)}
       whileHover={{ y: -5 }}
-      role="button"
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-      aria-label={`View details for ${project.title}`}
       data-testid={`project-card-${project.id}`}
     >
       <div className={styles.imageContainer}>

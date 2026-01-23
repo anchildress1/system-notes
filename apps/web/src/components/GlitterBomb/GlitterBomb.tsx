@@ -15,7 +15,8 @@ export interface Particle {
   fill: (color: number) => void;
   tint: number;
   alpha: number;
-  scale: { x: number; y: number };
+  scale: { x: number; y: number; set: (v: number) => void };
+  anchor: { set: (v: number) => void };
   visible: boolean;
 }
 
