@@ -8,6 +8,6 @@
     "lint": "uv run ruff check .",
     "format": "uv run ruff format .",
     "setup": "uv sync",
-    "test": "PYTHONPATH=. uv run pytest --cov=."
+    "test": "OPENAI_API_KEY=dummy PYTHONPATH=. uv run pytest --cov=."
   }
 }
