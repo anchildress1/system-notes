@@ -12,7 +12,10 @@ vi.mock('next/image', () => ({
 const mockProject: Project = {
   id: 'test-project',
   title: 'Test Project',
-  description: 'This is a test project.',
+  description: 'This is a test tagline.',
+  purpose: 'This is a test purpose statement.',
+  longDescription: 'Long detailed description.',
+  outcome: 'Outcome details.',
   tech: [{ name: 'React', role: 'Frontend' }],
   repoUrl: 'https://github.com/test/test-project',
   owner: 'anchildress1',
@@ -25,7 +28,8 @@ describe('ProjectCard Component', () => {
     render(<ProjectCard project={mockProject} onSelect={() => {}} />);
 
     expect(screen.getByText('Test Project')).toBeInTheDocument();
-    expect(screen.getByText('This is a test project.')).toBeInTheDocument();
+    expect(screen.getByText('Purpose')).toBeInTheDocument();
+    expect(screen.getByText('This is a test purpose statement.')).toBeInTheDocument();
     expect(screen.getByText('React')).toBeInTheDocument();
     expect(screen.getByText('ANCHildress1')).toBeInTheDocument();
   });

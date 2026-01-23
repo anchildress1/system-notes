@@ -13,8 +13,10 @@ export interface Particle {
   // properties from PIXI.Graphics (partial)
   circle: (x: number, y: number, radius: number) => void;
   fill: (color: number) => void;
+  tint: number;
   alpha: number;
-  scale: { x: number; y: number };
+  scale: { x: number; y: number; set: (v: number) => void };
+  anchor: { set: (v: number) => void };
   visible: boolean;
 }
 
@@ -25,20 +27,22 @@ export default function GlitterBomb() {
 
   useEffect(() => {
     const initPixi = async () => {
-      // Check for mobile - disable if width < 768px
-      if (window.innerWidth < 768) return;
+      // Feature detect rather than just width check for better "lite" mode
+      const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
 
       const PIXI = await import('pixi.js');
 
       if (!containerRef.current) return;
 
-      // Create Pixi Application with transparent background
+      // Create Pixi Application
       const app = new PIXI.Application();
       await app.init({
         resizeTo: window,
         backgroundAlpha: 0,
-        resolution: window.devicePixelRatio || 1,
+        resolution: isMobile ? 1 : window.devicePixelRatio || 1, // Force 1x resolution on mobile
         autoDensity: true,
+        antialias: false, // Always disable antialias for performance
+        powerPreference: 'high-performance', // Hint to browser
       });
 
       if (!containerRef.current) {
@@ -49,26 +53,42 @@ export default function GlitterBomb() {
       containerRef.current.appendChild(app.canvas);
       appRef.current = app;
 
+      // Generate a simple circle texture to share across particles (BATCHING!)
+      const circleGraphics = new PIXI.Graphics();
+      circleGraphics.circle(0, 0, 4);
+      circleGraphics.fill({ color: 0xffffff });
+      const circleTexture = app.renderer.generateTexture(circleGraphics);
+
       // Function to trigger explosion
       const trigger = () => {
+        if (!app.renderer) return;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((app as any)._destroyed) return; // Safety check
         if (!app.ticker.started) app.start();
 
-        // --- Power Explosion Config ---
+        // --- Optimized Explosion Config ---
         const particles: Particle[] = [];
-        const colors = [0xffd700, 0xffec8b, 0xffffff, 0xb56bff]; // Gold, Light Gold, White, Purple
-        const particleCount = 200;
+        const colors = [0xffd700, 0xffec8b, 0xffffff, 0xb56bff];
+
+        // Massive reduction for mobile
+        const particleCount = isMobile ? 30 : 150;
 
         const centerX = app.screen.width / 2;
-        const centerY = app.screen.height / 3; // Explode from top-ish center
+        const centerY = app.screen.height / 3;
 
         for (let i = 0; i < particleCount; i++) {
+          // Use Sprite instead of Graphics for immense performance boost (batching)
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const particle = new PIXI.Graphics() as any as Particle;
+          const particle = new PIXI.Sprite(circleTexture) as any as Particle;
           const color = colors[Math.floor(Math.random() * colors.length)];
+          particle.tint = color; // Sprites use tint instead of fill
 
-          // Initial Draw
-          particle.circle(0, 0, Math.random() * 3 + 1); // Tiny particles
-          particle.fill(color);
+          // Center anchor for rotation/scaling
+          particle.anchor.set(0.5);
+
+          // Simpler layout for mobile
+          const scaleStart = Math.random() * (isMobile ? 0.3 : 0.5) + 0.2;
+          particle.scale.set(scaleStart);
 
           // Start at center
           particle.x = centerX;
@@ -77,39 +97,41 @@ export default function GlitterBomb() {
 
           // Explosion Physics
           const angle = Math.random() * Math.PI * 2;
-          const velocity = Math.random() * 10 + 4; // Much Faster/Bigger blast
+          const velocity = Math.random() * (isMobile ? 8 : 10) + 4;
 
           particle.direction = angle;
           particle.speed = velocity;
           particle.life = 1.0;
-          particle.decay = Math.random() * 0.01 + 0.005; // Faster fade
+          // Faster decay on mobile to clear buffer sooner
+          particle.decay = Math.random() * (isMobile ? 0.04 : 0.01) + 0.005;
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           app.stage.addChild(particle as unknown as any);
           particles.push(particle);
         }
 
-        // Animation Loop Logic (add to ticker if not already there, or just keep adding particles to existing ticker)
-        // We can just add a ticker callback that cleans itself up or manages these specific particles
         const tick = () => {
           let activeParticles = 0;
           particles.forEach((p) => {
             if (p.life > 0) {
               activeParticles++;
 
-              // Move outward
+              // Move
               p.x += Math.cos(p.direction) * p.speed;
               p.y += Math.sin(p.direction) * p.speed;
 
-              // Gravity / Drag
-              p.speed *= 0.98; // Gentle drag
-              p.y += 0.5; // Floaty gravity
+              // Simplified physics for mobile
+              if (!isMobile) {
+                p.speed *= 0.98; // Gentle drag
+                p.y += 0.5; // Floaty gravity
+              } else {
+                p.speed *= 0.95; // Stronger drag to stop movement faster
+              }
 
               // Fade out
               p.life -= p.decay;
               p.alpha = p.life;
-              p.scale.x = p.life;
-              p.scale.y = p.life;
+              p.scale.set(p.life * 0.5); // scaling down
             } else {
               p.visible = false;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -143,7 +165,12 @@ export default function GlitterBomb() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((window as any)._glitterCleanup) (window as any)._glitterCleanup();
       if (appRef.current) {
-        appRef.current.destroy({ removeView: true });
+        // Stop ticker first? YES.
+        appRef.current.ticker?.stop();
+        if (appRef.current.renderer) {
+          appRef.current.destroy({ removeView: true });
+        }
+        appRef.current = null;
       }
     };
   }, []);

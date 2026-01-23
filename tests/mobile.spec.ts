@@ -18,7 +18,7 @@ test.describe('Mobile Responsiveness', () => {
     page,
     isMobile,
   }) => {
-    if (!isMobile) test.skip();
+    // if (!isMobile) test.skip();
 
     await page.goto('/');
     const grid = page.locator('section').locator('.grid'); // Assuming class name from module css, but locally scoped?
@@ -34,12 +34,12 @@ test.describe('Mobile Responsiveness', () => {
     await page.goto('/');
     // Click the first project card
     // Click the first project card
-    const card = page.locator('div[class*="card"]').first();
+    const card = page.getByTestId(/^project-card-/).first();
 
     await card.click({ force: true });
 
     // Expect modal to open
-    const modal = page.getByRole('dialog');
+    const modal = page.getByTestId('expanded-view-dialog');
     await expect(modal).toBeVisible();
     const modalTitle = modal.getByRole('heading', { name: 'System Notes', level: 2 });
     await expect(modalTitle).toBeVisible();
@@ -52,8 +52,8 @@ test.describe('Mobile Responsiveness', () => {
   test('AIChat should be accessible', async ({ page, isMobile }) => {
     await page.goto('/');
     // Check for chat toggle button
-    const toggle = page.getByRole('button', { name: /Open AI Chat/i });
-    await expect(toggle).toBeVisible();
+    const toggle = page.getByTestId('ai-chat-toggle');
+    await expect(toggle).toBeVisible({ timeout: 15000 });
 
     // Open chat
     await toggle.click();

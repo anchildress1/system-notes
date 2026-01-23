@@ -10,19 +10,23 @@
     line-height: 1.6;
 }
 
-.content h1 {
-    font-size: 2.5rem;
-    color: var(--accent-cyan);
-    margin-bottom: 2rem;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 1rem;
+/* Main Name - styled like an H2 but specific */
+.name {
+    font-size: 2rem;
+    color: var(--accent-pink);
+    margin-top: 2rem;
+    margin-bottom: .75rem;
+    font-weight: 700;
 }
 
-.content h2 {
-    font-size: 1.5rem;
-    color: var(--accent-pink);
-    margin-top: 3rem;
-    margin-bottom: 1rem;
+/* Subtitle - styled like body text but slightly distinct */
+.subtitle {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    color: var(--muted-foreground);
+    margin-bottom: 1.25rem;
+    opacity: 0.8;
+    display: block;
 }
 
 .content p {
@@ -30,21 +34,7 @@
     font-size: 1.1rem;
 }
 
-.loading,
-.error {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 50vh;
-    font-family: var(--font-mono);
-    color: var(--muted-foreground);
-}
-
-.error {
-    color: var(--error);
-}
-
-.themeSong {
+.section:not(:first-child) {
     margin-top: 3rem;
     padding-top: 3rem;
     border-top: 1px solid var(--border);

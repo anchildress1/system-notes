@@ -19,11 +19,13 @@
 
 .title {
     font-family: var(--font-mono);
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    /* Reduced size since it is now a subtitle */
     font-weight: 800;
     color: var(--foreground);
-    line-height: 1.1;
+    line-height: 1.2;
     pointer-events: auto;
+    opacity: 0.9;
 }
 
 .imageContainer {
@@ -43,4 +45,10 @@
     width: 100%;
     height: auto;
     display: block;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 2rem 1rem;
+    }
 }

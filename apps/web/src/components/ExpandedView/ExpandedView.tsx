@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Project } from '@/data/projects';
 import styles from './ExpandedView.module.css';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 interface ExpandedViewProps {
@@ -12,15 +12,38 @@ interface ExpandedViewProps {
 }
 
 export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    // Focus the card on mount for accessibility and keyboard events
+    if (cardRef.current) {
+      cardRef.current.focus();
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      // Manual scroll handling for better UX since body scroll is locked
+      if (cardRef.current) {
+        const scrollAmount = 60;
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          cardRef.current.scrollBy({ top: scrollAmount, behavior: 'auto' });
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          cardRef.current.scrollBy({ top: -scrollAmount, behavior: 'auto' });
+        }
+      }
     };
+
     document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', handleEsc);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
       document.body.style.overflow = 'unset';
-      window.removeEventListener('keydown', handleEsc);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);
 
@@ -34,17 +57,33 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
       transition={{ duration: 0.2 }}
     >
       <motion.div
+        ref={cardRef}
         className={styles.expandedCard}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        tabIndex={-1} // Make focusable
+        data-testid="expanded-view-dialog"
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         transition={{ type: 'spring', stiffness: 350, damping: 25 }}
       >
-        <div className={styles.imageContainer}>
+        <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div className={styles.imageContainer} data-testid="expanded-image-container">
           <div className={styles.imageWrapper}>
             <div
               className={styles.conceptBackground}
@@ -58,22 +97,10 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
                 fill
                 style={{ objectFit: 'cover' }}
                 priority={false}
+                sizes="(max-width: 1200px) 100vw, 1200px"
               />
             )}
           </div>
-          <button className={styles.closeButton} onClick={onClose}>
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
         </div>
 
         <div className={styles.content}>
@@ -94,24 +121,50 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
 
           <div className={styles.body}>
             <div className={styles.mainColumn}>
+              {project.purpose && (
+                <div className={styles.section}>
+                  <h2 className={styles.sectionTitle}>Purpose</h2>
+                  <p className={styles.bodyText}>{project.purpose}</p>
+                </div>
+              )}
               {project.longDescription && (
                 <div className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Project Output</h3>
-                  <p className={styles.longDescription}>{project.longDescription}</p>
+                  <h2 className={styles.sectionTitle}>Project Output</h2>
+                  <p className={styles.bodyText}>{project.longDescription}</p>
                 </div>
               )}
 
               {project.outcome && (
                 <div className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Outcome</h3>
-                  <p className={styles.outcome}>{project.outcome}</p>
+                  <h2 className={styles.sectionTitle}>Outcome</h2>
+                  <p className={styles.bodyText}>{project.outcome}</p>
+                </div>
+              )}
+
+              {project.blogs && project.blogs.length > 0 && (
+                <div className={styles.section}>
+                  <h2 className={styles.sectionTitle}>Related Reading</h2>
+                  <ul className={styles.blogList}>
+                    {project.blogs.map((blog) => (
+                      <li key={blog.url} className={styles.blogItem}>
+                        <a
+                          href={blog.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.blogLink}
+                        >
+                          {blog.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
 
             <div className={styles.sideColumn}>
               <div className={styles.techStack}>
-                <h3 className={styles.sectionTitle}>Tech Stack</h3>
+                <h2 className={styles.sectionTitle}>Tech Stack</h2>
                 <div className={styles.tags}>
                   {project.tech.map((t) => (
                     <div key={t.name} className={styles.tagItem}>
@@ -120,31 +173,31 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
                     </div>
                   ))}
                 </div>
-              </div>
 
-              <div className={styles.actions}>
-                <a
-                  href={project.repoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.repoLink}
-                >
-                  View Source on GitHub
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                <div className={styles.actions}>
+                  <a
+                    href={project.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.repoLink}
                   >
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                  </svg>
-                </a>
+                    View Source on GitHub
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

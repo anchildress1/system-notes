@@ -67,7 +67,7 @@ Interpret all entries as **systems**, not products or demos.
 **Intent**
 
 - Enforce explicit AI attribution in commits.
-- Single rule: AI assistance requires attribution.
+- Core axiom: AI can't follow rules that don't exist.
 
 **Behavior**
 

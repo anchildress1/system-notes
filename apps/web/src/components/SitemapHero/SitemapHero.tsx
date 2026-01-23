@@ -1,17 +1,17 @@
 'use client';
 
 import { useRef } from 'react';
-import styles from './Hero.module.css';
+import styles from './SitemapHero.module.css';
 import { useSparkles } from '@/hooks/useSparkles';
 
-export default function Hero() {
+export default function SitemapHero() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useSparkles({ containerRef });
 
   return (
-    <div className={styles.hero} ref={containerRef}>
-      <div
+    <div className={styles.hero} ref={containerRef} role="banner" aria-label="Sitemap introduction">
+      <h1
         className={styles.title}
         onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
         style={{ cursor: 'pointer' }}
@@ -23,9 +23,9 @@ export default function Hero() {
           }
         }}
       >
-        Disruption is a feature, <br /> not a bug.
-      </div>
-      <div className={styles.subtitle}>Not here to play nice. Just to play loud.</div>
+        <span className={styles.visuallyHidden}>Sitemap: </span>
+        AI wanted it to be here <br /> and I didn&apos;t argue.
+      </h1>
     </div>
   );
 }

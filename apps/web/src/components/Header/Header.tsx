@@ -6,7 +6,10 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.identity}>
-        <h1 className={styles.name}>Ashley Childress&apos; System Notes</h1>
+        <h1 className={styles.name}>Ashley&apos;s System Notes</h1>
+        <p className={styles.subtitle}>
+          A living map of software systems, decisions, and AI-assisted work.
+        </p>
       </div>
 
       <nav className={styles.nav}>
@@ -14,7 +17,10 @@ export default function Header() {
           Projects
         </Link>
         <Link href="/about" className={styles.navItem}>
-          About Ashley
+          About
+        </Link>
+        <Link href="/sitemap" className={styles.navItem}>
+          Sitemap
         </Link>
         <a
           href="https://dev.to/anchildress1"

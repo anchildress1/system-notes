@@ -45,7 +45,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
           {project.imageUrl ? (
             <Image
               src={project.imageUrl}
-              alt={`Detailed view of ${project.title}`}
+              alt={project.imageAlt || `Detailed view of ${project.title}`}
               fill
               className={styles.bannerImage}
               sizes="(max-width: 800px) 100vw, 800px"

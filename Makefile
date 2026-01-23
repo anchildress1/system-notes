@@ -40,13 +40,32 @@ test:
 # Secret scanning (Non-interactive)
 secret-scan:
 	@echo "🔐 Scanning for secrets..."
-	@if command -v detect-secrets > /dev/null; then \
+	@if command -v uvx > /dev/null; then \
+		uvx detect-secrets scan --exclude-files 'node_modules|dist|.next|.turbo|.venv|.secrets.baseline|.secrets.baseline.tmp' > .secrets.baseline.tmp; \
+		if [ -f .secrets.baseline ]; then \
+			echo "Checking against baseline..."; \
+			uvx detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' > .secrets.baseline.tmp; \
+			DIFF=$$(jq '.results | length' .secrets.baseline.tmp 2>/dev/null || echo 0); \
+			if [ "$${DIFF:-0}" -gt 0 ]; then \
+				echo "❌ Secrets found! Check .secrets.baseline.tmp or run 'detect-secrets audit .secrets.baseline'"; \
+				jq '.results' .secrets.baseline.tmp; \
+				rm .secrets.baseline.tmp; \
+				exit 1; \
+			else \
+				echo "✅ No new secrets found."; \
+				rm .secrets.baseline.tmp; \
+			fi; \
+		else \
+			mv .secrets.baseline.tmp .secrets.baseline; \
+			echo "✅ Secrets baseline created at .secrets.baseline"; \
+		fi; \
+	elif command -v detect-secrets > /dev/null; then \
 		detect-secrets scan --exclude-files 'node_modules|dist|.next|.turbo|.venv|.secrets.baseline|.secrets.baseline.tmp' > .secrets.baseline.tmp; \
 		if [ -f .secrets.baseline ]; then \
 			echo "Checking against baseline..."; \
 			detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' > .secrets.baseline.tmp; \
-			DIFF=$$(jq '.results | length' .secrets.baseline.tmp); \
-			if [ "$$DIFF" -gt 0 ]; then \
+			DIFF=$$(jq '.results | length' .secrets.baseline.tmp 2>/dev/null || echo 0); \
+			if [ "$${DIFF:-0}" -gt 0 ]; then \
 				echo "❌ Secrets found! Check .secrets.baseline.tmp or run 'detect-secrets audit .secrets.baseline'"; \
 				jq '.results' .secrets.baseline.tmp; \
 				rm .secrets.baseline.tmp; \
@@ -63,11 +82,17 @@ secret-scan:
 		echo "⚠️ detect-secrets not found. Skipping scan."; \
 	fi
 
-# Run all AI checks (Scan -> Format -> Lint -> Test)
+# Run Playwright E2E tests
+test-e2e: build
+	@echo "🎭 Running Playwright E2E tests..."
+	npx playwright test
+
+# Run all AI checks (Scan -> Format -> Lint -> Test -> E2E)
 ai-checks: secret-scan
 	$(MAKE) format
 	$(MAKE) lint
 	$(MAKE) test
+	$(MAKE) test-e2e
 	@echo "🤖 AI Checks Complete: All Systems Nominal."
 
 # Build the project

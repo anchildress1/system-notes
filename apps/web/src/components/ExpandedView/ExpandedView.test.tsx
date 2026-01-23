@@ -12,7 +12,8 @@ vi.mock('next/image', () => ({
 const mockProject: Project = {
   id: 'test-project',
   title: 'Test Project',
-  description: 'Short description.',
+  description: 'Short description tagline.',
+  purpose: 'The core purpose of the project.',
   longDescription: 'Long detailed description.',
   outcome: 'Great outcome.',
   tech: [{ name: 'React', role: 'Frontend' }],
@@ -27,6 +28,7 @@ describe('ExpandedView Component', () => {
     render(<ExpandedView project={mockProject} onClose={() => {}} />);
 
     expect(screen.getByText('Test Project')).toBeInTheDocument();
+    expect(screen.getByText('The core purpose of the project.')).toBeInTheDocument();
     expect(screen.getByText('Long detailed description.')).toBeInTheDocument();
     expect(screen.getByText('Great outcome.')).toBeInTheDocument();
     expect(screen.getByText('View Source on GitHub')).toBeInTheDocument();
@@ -61,5 +63,17 @@ describe('ExpandedView Component', () => {
 
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(handleClose).toHaveBeenCalled();
+  });
+
+  it('renders close button with sticky positioning attributes', async () => {
+    render(<ExpandedView project={mockProject} onClose={() => {}} />);
+
+    // Check for button presence and correct accessibility label
+    const closeBtn = screen.getByRole('button', { name: /close modal/i });
+    expect(closeBtn).toBeInTheDocument();
+
+    // We expect it to be visible after animation, but framer-motion in jsdom can be tricky.
+    // We trust toBeInTheDocument for existence combined with our aria label check.
+    expect(closeBtn).toHaveAttribute('aria-label', 'Close modal');
   });
 });

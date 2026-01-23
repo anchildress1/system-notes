@@ -220,6 +220,16 @@
     overflow: hidden;
 }
 
+.intentLabel {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: hsl(var(--color-text-primary));
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.5px;
+}
+
 .loadoutGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));

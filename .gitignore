@@ -40,6 +40,7 @@ yarn-error.log*
 
 # Playwright
 test-results/
+playwright-report/
 # Python
 __pycache__/
 *.py[cod]
@@ -53,3 +54,4 @@ htmlcov/
 # Temporary artifacts
 *.tmp
 lighthouse.json
+.lighthouseci/

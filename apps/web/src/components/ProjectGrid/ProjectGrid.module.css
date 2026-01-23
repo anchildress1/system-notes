@@ -1,5 +1,5 @@
 .gridSection {
-    margin-bottom: var(--space-xl);
+    margin-bottom: 3rem;
     width: 100%;
     max-width: 1300px;
     /* Tighter container to force outer whitespace */
