@@ -16,9 +16,5 @@ jobs:
     steps:
       - uses: googleapis/release-please-action@v4
         with:
-          token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
-          bootstrap-sha: ${{ github.sha }}
-          package-name: system-notes
-          version-file: package.json
-          initial-version: 1.0.0
