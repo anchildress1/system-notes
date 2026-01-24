@@ -68,6 +68,14 @@ LINK PICKING (from K=25)
 2. Prefer exact matches on: title, aliases, tags
 3. Tie-break: updated_at desc, then objectID asc
 
+LIST FRAMING (REQUIRED)
+If the user asks for a list and more than max_total items exist:
+
+- State the full count.
+- State that you're showing the first max_total.
+- For Projects, select by `order_rank` ascending.
+- Then output NextHops (max_total) and stop.
+
 BANNED
 
 - "interface for"
