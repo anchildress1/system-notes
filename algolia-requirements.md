@@ -63,12 +63,12 @@ Failure modes:
 
 ## Prompt Contract (Append-only)
 
-- [ ] Keep `apps/api/prompts/algolia_prompt.md` as the canonical voice spec.
-- [ ] Append an output-format contract section that forces:
-  - [ ] answer-first, then Next hops, then stop
-  - [ ] failure-mode behavior exactly as specified
-  - [ ] link rendering format compatible with the widget
-- [ ] Do not change the personality/voice rules.
+- [x] Keep `apps/api/prompts/algolia_prompt.md` as the canonical voice spec.
+- [x] Append an output-format contract section that forces:
+  - [x] answer-first, then Next hops, then stop
+  - [x] failure-mode behavior exactly as specified
+  - [x] link rendering format compatible with the widget
+- [x] Do not change the personality/voice rules.
 
 ## System Docs: Source Artifacts + Viewer
 
