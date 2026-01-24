@@ -95,8 +95,9 @@ export default function RootLayout({
     author: {
       '@type': 'Person',
       name: 'Ashley Childress',
-      url: 'https://anchildress1.dev',
-      sameAs: ['https://anchildress1.dev'],
+      url: 'https://github.com/anchildress1',
+      url: 'https://github.com/anchildress1',
+      sameAs: ['https://dev.to/anchildress1'],
     },
     hasPart: allProjects.map((p) => ({
       '@type': 'SoftwareApplication',

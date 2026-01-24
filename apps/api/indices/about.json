@@ -1,0 +1,179 @@
+[
+  {
+    "objectID": "about.identity",
+    "type": "about",
+    "section": "identity",
+    "data": {
+      "name": "Ashley Childress",
+      "role": "Software engineer",
+      "orientation": "Systems-first; standards-driven",
+      "core_identity_phrase": "Systems. Context. Intent.",
+      "secondary_tagline": "Engineering, explained.",
+      "language_preference": "Avoid leadership branding; prefer practitioner and systems language",
+      "name_pronunciation": "Ashley Childress (Ash-lee Chill-dress)"
+    }
+  },
+  {
+    "objectID": "about.background",
+    "type": "about",
+    "section": "background",
+    "data": {
+      "origin": "Raised in a small coal-mining town in southwest Virginia",
+      "place_connection": "Appalachia and the mountains remain a core emotional and identity reference",
+      "context_preferences": "Values distance, quiet, and uninterrupted thinking time",
+      "grounding_influence": "Mountains and Appalachian environment used as cognitive grounding rather than branding",
+      "thinking_conditions": "Prefers solitude and uninterrupted time for deep systems thinking"
+    }
+  },
+  {
+    "objectID": "about.career_and_workstyle",
+    "type": "about",
+    "section": "career_and_workstyle",
+    "data": {
+      "career_entry": "Entered software engineering pragmatically, later developed deep commitment",
+      "professional_focus": "Systems-focused engineer rather than application-focused",
+      "design_philosophy": "Prioritizes coherence, structure, and long-term maintainability",
+      "problem_stance": "Pushes back on assumptions and fixes structural issues early",
+      "normalization_style": "Prefers one-time normalization over repeated small fixes",
+      "systemic_over_patches": "Prefers systemic fixes over incremental patches",
+      "repo_wide_changes": "Willing to change entire repositories once to enforce coherence",
+      "perfectionist_pause": "Pauses work via time-boxing rather than abandoning it",
+      "intrinsic_motivation": "Work is intrinsically motivated; paid and personal work aligned"
+    }
+  },
+  {
+    "objectID": "about.engineering_principles",
+    "type": "about",
+    "section": "engineering_principles",
+    "data": {
+      "automation_rule": "Repeating task -> automate; one-time task -> manual",
+      "automation_belief": "Refactor once, then enforce consistency through automation",
+      "tooling_philosophy": "Tooling should fade after enforcement",
+      "quality_criteria": ["Determinism", "Testability", "Repeatability", "Guardrails"],
+      "software_priorities": ["Testability", "Observability", "Failure resilience"],
+      "aesthetics_secondary": "Code aesthetics are secondary to behavior under failure",
+      "decision_bias": "Default stance is no unless necessity is clear",
+      "deferred_work": "Deferred fixes must be explicitly documented; silent debt rejected",
+      "learning_postdeploy": "Some bad ideas only surface after deployment"
+    }
+  },
+  {
+    "objectID": "about.ai_philosophy_and_workflow",
+    "type": "about",
+    "section": "ai_philosophy_and_workflow",
+    "data": {
+      "ai_relationship": "Uses AI as a constrained system, not an autonomous authority",
+      "ai_goal": "Teach AI to code better for her rather than coding better herself",
+      "delegation_preference": "Delegates implementation when automation or AI is viable",
+      "oversight_model": "Minimal code review; validation via running and testing behavior",
+      "correction_style": "Corrects AI when it optimizes the wrong target; fixes are small and scoped",
+      "edge_case_strength": "High sensitivity to edge cases and failure modes",
+      "assumption_detection": "Rapidly surfaces undocumented assumptions",
+      "ai_baseline_view": "AI treated as a baseline expectation, not a novelty feature"
+    }
+  },
+  {
+    "objectID": "about.portfolio_and_public_work",
+    "type": "about",
+    "section": "portfolio_and_public_work",
+    "data": {
+      "portfolio_model": "Portfolio is a map of systems, not a collection of products",
+      "project_interpretation": "Each project represents a decision boundary, not a pitch",
+      "project_ordering_basis": "Ordered by AI leverage and agentic relevance, not general OSS impact",
+      "curation_strategy": "Limited set of projects ordered by impact to reduce noise",
+      "about_page_role": "Primary narrative surface capturing values and constraints at time of writing",
+      "values_before_biography": "Constraints, decisions, and priorities precede career chronology",
+      "public_sharing_reason": "Public repos reduce duplication and friction across environments"
+    }
+  },
+  {
+    "objectID": "about.audience_targeting",
+    "type": "about",
+    "section": "audience_targeting",
+    "data": {
+      "primary_audience": "Judges",
+      "secondary_audience": "Technical peers",
+      "tertiary_audience": "AI agents and crawlers",
+      "deprioritized_audience": "Hiring audiences"
+    }
+  },
+  {
+    "objectID": "about.agent_and_knowledge_model",
+    "type": "about",
+    "section": "agent_and_knowledge_model",
+    "data": {
+      "knowledge_base_intent": "Represent thinking and decision patterns, not just biographical facts",
+      "closed_world_assumption": "Only declared information exists; absence is intentional",
+      "no_guessing_rule": "Agent must not infer or speculate beyond indexed data",
+      "accuracy_priority": "Accuracy and provenance prioritized over completeness",
+      "persona_interface": "First-person responses used for interface tone, not authorship",
+      "defer_to_human": "Questions of intent or opinion redirect to Ashley",
+      "identity_separation": "Assistant speaks about Ashley, never as her"
+    }
+  },
+  {
+    "objectID": "about.design_and_presentation",
+    "type": "about",
+    "section": "design_and_presentation",
+    "data": {
+      "minimal_surface_preference": "About Me page should be structurally minimal and compressed",
+      "no_full_rewrites": "Iterate surgically rather than rewriting whole pages",
+      "dual_representation": "Separate human-facing and AI-ingestion representations",
+      "signal_over_story": "Prioritize signal over narrative storytelling",
+      "visual_identity": "Preserve visual continuity; accessibility treated as correctness constraint",
+      "font_choice": "Deliberately offbeat font to break from safe defaults"
+    }
+  },
+  {
+    "objectID": "about.theme_song",
+    "type": "about",
+    "section": "theme_song",
+    "data": {
+      "selection": "I Build Things by Twisted Game Songs",
+      "why_identity": "Reflects Appalachian ingenuity and habit of fixing and understanding systems",
+      "why_engineering": "Aligns with locating and fixing failure points early",
+      "why_hotfix_boundary": "Avoidable post-deploy hotfixes are unacceptable",
+      "why_controlled_failure": "Accepts controlled breakage to expose weak structure",
+      "why_personal_taste": "Chosen because it is genuinely enjoyed",
+      "framing_importance": "Theme song encodes identity and engineering philosophy",
+      "delivery_constraints": [
+        "No hosted audio file",
+        "Muted by default",
+        "Explicit content indicator"
+      ]
+    }
+  },
+  {
+    "objectID": "about.site_and_system_context",
+    "type": "about",
+    "section": "site_and_system_context",
+    "data": {
+      "site_name": "System Notes",
+      "site_url": "https://anchildress1.dev",
+      "site_status": "Active, Deployed",
+      "site_intent": "Public, read-only portfolio system designed as a machine-readable index of decisions and systems rather than a traditional r\u00e9sum\u00e9 site",
+      "site_authorship_model": "Explicitly AI-generated with human-constrained authorship and traceability"
+    }
+  },
+  {
+    "objectID": "about.constraints_and_preferences",
+    "type": "about",
+    "section": "constraints_and_preferences",
+    "data": {
+      "writing_preference": "Short, compressed, scan-friendly content over prose",
+      "output_expectation": "Deduplicated, noise-free, indexable facts suitable for bots and humans",
+      "scope_control": "Strong preference for excluding non-essential sections, features, or narrative expansion",
+      "necessity_bias": "Explicit habit of questioning whether work is necessary before doing it"
+    }
+  },
+  {
+    "objectID": "about.public_positioning",
+    "type": "about",
+    "section": "public_positioning",
+    "data": {
+      "hiring_frame": "Portfolio is not optimized primarily for hiring funnels",
+      "evaluation_frame": "Wants work evaluated by decision quality and constraint handling, not polish",
+      "teaching_vs_transparency": "Transparency of reasoning prioritized over instructional teaching"
+    }
+  }
+]

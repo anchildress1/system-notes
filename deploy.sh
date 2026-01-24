@@ -64,9 +64,11 @@ deploy_service() {
     echo "--- Deploying $SERVICE_NAME ---"
 
     # 1. Ensure Artifact Registry Repo exists
-    if ! gcloud artifacts repositories describe "$SERVICE_NAME" --location="$REGION" --project "$PROJECT_ID" --quiet &>/dev/null; then
-        echo "Creating Artifact Registry repository: $SERVICE_NAME..."
-        gcloud artifacts repositories create "$SERVICE_NAME" \
+    REPO_NAME="$SERVICE_NAME"
+
+    if ! gcloud artifacts repositories describe "$REPO_NAME" --location="$REGION" &>/dev/null; then
+        echo "Creating Artifact Registry repository: $REPO_NAME..."
+        gcloud artifacts repositories create "$REPO_NAME" \
             --repository-format=docker \
             --location="$REGION" \
             --project "$PROJECT_ID" \
@@ -74,8 +76,8 @@ deploy_service() {
     fi
 
     # 2. Build and Push Image
-    local IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:latest"
-    echo "Building: $IMAGE_URI"
+    IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$SERVICE_NAME:latest"
+    echo "Building and pushing image: $IMAGE_URI"
 
     if [ -n "$DOCKERFILE_PATH" ]; then
         # Use provided cloudbuild configuration if Dockerfile path implies special handling (via config file)
@@ -92,8 +94,8 @@ deploy_service() {
 
     # 3. Deploy to Cloud Run
     echo "Deploying to Cloud Run..."
-    
-    # Use array to prevent word splitting issues
+
+    # Build arguments array to avoid eval/injection risks
     DEPLOY_ARGS=(
         "deploy" "$SERVICE_NAME"
         "--image" "$IMAGE_URI"
@@ -118,8 +120,8 @@ deploy_service() {
 # Execution
 # ==========================================
 
-# 1. Deploy API (No Env Vars needed, relies on defaults)
-deploy_service "$API_SERVICE" "$API_SOURCE" "$API_PORT" "$API_SA"
+# Define target regions (space separated)
+REGIONS=("europe-north1")
 
 # 2. Get API URL
 API_URL=$(gcloud run services describe "$API_SERVICE" --region "$REGION" --project "$PROJECT_ID" --format 'value(status.url)')
