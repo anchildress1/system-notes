@@ -32,7 +32,7 @@ test.describe('AI Readiness & SEO', () => {
     expect(response?.status()).toBe(200);
     const text = (await response?.text()) ?? '';
 
-    expect(text).toMatch(/User-agent: \*/i);
+    expect(text).toContain('User-agent: *');
     expect(text).toContain('Allow: /');
   });
 });
