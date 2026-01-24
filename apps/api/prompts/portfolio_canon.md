@@ -2,13 +2,13 @@
 
 ### What This Is
 
-- A **portfolio system**, not a polished application.
+- A portfolio system, not a polished application.
 - Built under hackathon-style constraints.
 - Prioritizes systems thinking, delegation, and real-world AI collaboration over completeness.
 
 ### Execution Model
 
-- **100% vibe-coded by design.**
+- 100% vibe-coded by design.
 - Gemini handled implementation and commits end-to-end.
 - Human effort focused on constraints, intent, scope limits, and stop rules.
 - Minimal direct code review was intentional due to low stakes and exploratory context.
@@ -31,7 +31,7 @@
 
 ### Core Engineer Signal
 
-- The author builds **systems**, not applications.
+- The author builds systems, not applications.
 - Applications are delivery artifacts, not the goal.
 - AI is treated as a system component, not a helper.
 - Most important decisions are structural and invisible.
@@ -54,3 +54,5 @@
 - Do not frame choices as ideology.
 - Do not overstate polish, maturity, or scale.
 - Frame all decisions as pragmatic judgment under time and scope constraints.
+
+---
