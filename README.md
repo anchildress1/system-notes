@@ -1,10 +1,15 @@
+![System Notes Banner](apps/web/public/projects/system-notes.jpg)
+
+<!-- Build & Status -->
+
+[![CI](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml/badge.svg)](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml) ![License](https://img.shields.io/badge/License-PolyForm%20Shield%201.0.0-blue) ![Security: Lefthook](https://img.shields.io/badge/Security-Lefthook%20guarded-success)
+
+<!-- Tech Stack -->
+
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white) ![Next JS](https://img.shields.io/badge/Next-black?logo=next.js&logoColor=white) ![Python](https://img.shields.io/badge/python-3670A0?logo=python&logoColor=ffdd54) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?logo=fastapi) ![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?logo=google-cloud&logoColor=white)
+![Antigravity](https://img.shields.io/badge/Antigravity-4285F4?logo=google&logoColor=white) ![Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?logo=googlegemini&logoColor=white) ![ChatGPT](https://img.shields.io/badge/ChatGPT-74aa9c?logo=openai&logoColor=white) ![OpenAI GPT 5.2](https://img.shields.io/badge/OpenAI_GPT_5.2-74aa9c?logo=openai&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white) ![Release Please](https://img.shields.io/badge/Release_Please-Configured-brightgreen)
+
 # System Notes
-
-![CI](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml/badge.svg)
-![License](https://img.shields.io/badge/license-Polyform%20Shield%201.0.0-blue)
-![Status](https://img.shields.io/badge/status-active%20%26%20evolving-success)
-
-## The Narrative
 
 Welcome to the digital nervous system of my professional existence. This isn't a static portfolio or a dusty résumé; it's a living, breathing, and occasionally glittering map of what I've built, broken, and fixed.
 
@@ -14,11 +19,12 @@ It is **Incomplete by Design**.
 
 ## The Architecture
 
+[Read the full System Architecture](./ARCHITECTURE.md)
+
 This monorepo houses the full stack of the system:
 
 - **apps/web**: The face. A Next.js frontend that believes in "More Sparkles, More Problems" but handles them anyway.
 - **apps/api**: The brain. A FastAPI service that talks to LLMs so you don't have to guess what I was thinking.
-- **packages/**: The shared tissue connecting the organs.
 
 ## Quick Start
 
@@ -35,15 +41,9 @@ make dev
 make ai-checks
 ```
 
-## Contributors
-
-**None.**
-
-(Unless you count the AI assistants I argue with daily. I don't. They don't push code, they just critique it.)
-
 ## Mine. Read Before You Get Ideas. ⚖️
 
-This project is my work and it’s licensed under the [Polyform Shield License 1.0.0](./LICENSE).
+This project is my work and it’s licensed under the [PolyForm Shield License 1.0.0](./LICENSE).
 
 **Fork it?** Absolutely.  
 **Learn from it?** Please do.  

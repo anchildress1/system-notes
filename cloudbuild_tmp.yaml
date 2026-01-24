@@ -1,9 +1,0 @@
-steps:
-- name: 'gcr.io/cloud-builders/docker'
-  entrypoint: 'bash'
-  args:
-  - '-c'
-  - |
-    docker build -t us-east1-docker.pkg.dev/anchildress1/system-notes-ui/system-notes-ui:latest -f apps/web/Dockerfile --build-arg NEXT_PUBLIC_API_URL=https://system-notes-api-b5cortkwia-ue.a.run.app .
-images:
-- 'us-east1-docker.pkg.dev/anchildress1/system-notes-ui/system-notes-ui:latest'
