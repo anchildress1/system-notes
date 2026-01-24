@@ -62,7 +62,7 @@ deploy_service() {
 
     # 1. Ensure Artifact Registry Repo exists
     REPO_NAME="$SERVICE_NAME"
-    
+
     if ! gcloud artifacts repositories describe "$REPO_NAME" --location="$REGION" &>/dev/null; then
         echo "Creating Artifact Registry repository: $REPO_NAME..."
         gcloud artifacts repositories create "$REPO_NAME" \
@@ -76,7 +76,7 @@ deploy_service() {
     # 2. Build and Push Image
     IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$SERVICE_NAME:latest"
     echo "Building and pushing image: $IMAGE_URI"
-    
+
     if [ -n "$DOCKERFILE_PATH" ]; then
         # Simpler approach: Create a temporary cloudbuild.yaml for this build
         cat > cloudbuild_tmp.yaml <<EOF
@@ -98,7 +98,7 @@ EOF
 
     # 3. Deploy to Cloud Run
     echo "Deploying to Cloud Run..."
-    
+
     # Build arguments array to avoid eval/injection risks
     DEPLOY_ARGS=(
         "$SERVICE_NAME"
@@ -123,7 +123,7 @@ EOF
 
 
 # Define target regions (space separated)
-REGIONS=("us-east1")
+REGIONS=("europe-north1")
 
 # Service Accounts
 API_SA="system-notes-api@anchildress1.iam.gserviceaccount.com"
