@@ -1,8 +1,12 @@
 [
   {
     "objectID": "about.identity",
-    "type": "about",
+    "node_type": "about",
     "section": "identity",
+    "title": "Identity & Role",
+    "aliases": ["Ashley", "Childress", "systems engineer", "developer"],
+    "tags": ["identity", "role", "engineer"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "name": "Ashley Childress",
       "role": "Software engineer",
@@ -15,20 +19,29 @@
   },
   {
     "objectID": "about.background",
-    "type": "about",
+    "node_type": "about",
     "section": "background",
+    "title": "Background & Place Connection",
+    "aliases": ["Appalachia", "Virginia", "mountains"],
+    "tags": ["background", "appalachia", "identity"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "origin": "Raised in a small coal-mining town in southwest Virginia",
       "place_connection": "Appalachia and the mountains remain a core emotional and identity reference",
       "context_preferences": "Values distance, quiet, and uninterrupted thinking time",
       "grounding_influence": "Mountains and Appalachian environment used as cognitive grounding rather than branding",
-      "thinking_conditions": "Prefers solitude and uninterrupted time for deep systems thinking"
+      "thinking_conditions": "Prefers solitude and uninterrupted time for deep systems thinking",
+      "cultural_influence": "Appalachian upbringing emphasizes practicality, repairability, reuse, and self-reliance"
     }
   },
   {
-    "objectID": "about.career_and_workstyle",
-    "type": "about",
-    "section": "career_and_workstyle",
+    "objectID": "about.career_workstyle",
+    "node_type": "about",
+    "section": "career_workstyle",
+    "title": "Career & Workstyle",
+    "aliases": ["workstyle", "career approach"],
+    "tags": ["career", "workstyle", "engineering"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "career_entry": "Entered software engineering pragmatically, later developed deep commitment",
       "professional_focus": "Systems-focused engineer rather than application-focused",
@@ -43,8 +56,12 @@
   },
   {
     "objectID": "about.engineering_principles",
-    "type": "about",
+    "node_type": "about",
     "section": "engineering_principles",
+    "title": "Engineering Principles",
+    "aliases": ["principles", "engineering philosophy"],
+    "tags": ["principles", "engineering", "quality"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "automation_rule": "Repeating task -> automate; one-time task -> manual",
       "automation_belief": "Refactor once, then enforce consistency through automation",
@@ -58,9 +75,13 @@
     }
   },
   {
-    "objectID": "about.ai_philosophy_and_workflow",
-    "type": "about",
-    "section": "ai_philosophy_and_workflow",
+    "objectID": "about.ai_philosophy",
+    "node_type": "about",
+    "section": "ai_philosophy",
+    "title": "AI Philosophy & Workflow",
+    "aliases": ["AI approach", "AI supervision"],
+    "tags": ["ai", "philosophy", "workflow"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "ai_relationship": "Uses AI as a constrained system, not an autonomous authority",
       "ai_goal": "Teach AI to code better for her rather than coding better herself",
@@ -69,13 +90,19 @@
       "correction_style": "Corrects AI when it optimizes the wrong target; fixes are small and scoped",
       "edge_case_strength": "High sensitivity to edge cases and failure modes",
       "assumption_detection": "Rapidly surfaces undocumented assumptions",
-      "ai_baseline_view": "AI treated as a baseline expectation, not a novelty feature"
+      "ai_baseline_view": "AI treated as a baseline expectation, not a novelty feature",
+      "supervision_posture": "Treats AI as a constrained actor; defines acceptable behavior before allowing output expansion",
+      "value_hierarchy": "Correctness and traceability over fluency or charm"
     }
   },
   {
-    "objectID": "about.portfolio_and_public_work",
-    "type": "about",
-    "section": "portfolio_and_public_work",
+    "objectID": "about.portfolio_public_work",
+    "node_type": "about",
+    "section": "portfolio_public_work",
+    "title": "Portfolio & Public Work",
+    "aliases": ["portfolio", "projects", "public work"],
+    "tags": ["portfolio", "projects", "public"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "portfolio_model": "Portfolio is a map of systems, not a collection of products",
       "project_interpretation": "Each project represents a decision boundary, not a pitch",
@@ -88,19 +115,28 @@
   },
   {
     "objectID": "about.audience_targeting",
-    "type": "about",
+    "node_type": "about",
     "section": "audience_targeting",
+    "title": "Audience Targeting",
+    "aliases": ["audience", "positioning"],
+    "tags": ["audience", "positioning"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "primary_audience": "Judges",
       "secondary_audience": "Technical peers",
       "tertiary_audience": "AI agents and crawlers",
-      "deprioritized_audience": "Hiring audiences"
+      "deprioritized_audience": "Hiring audiences",
+      "evaluation_frame": "Wants work evaluated by decision quality and constraint handling, not polish"
     }
   },
   {
-    "objectID": "about.agent_and_knowledge_model",
-    "type": "about",
-    "section": "agent_and_knowledge_model",
+    "objectID": "about.agent_knowledge_model",
+    "node_type": "about",
+    "section": "agent_knowledge_model",
+    "title": "Agent & Knowledge Model",
+    "aliases": ["knowledge model", "agent rules"],
+    "tags": ["agent", "knowledge", "rules"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "knowledge_base_intent": "Represent thinking and decision patterns, not just biographical facts",
       "closed_world_assumption": "Only declared information exists; absence is intentional",
@@ -112,9 +148,13 @@
     }
   },
   {
-    "objectID": "about.design_and_presentation",
-    "type": "about",
-    "section": "design_and_presentation",
+    "objectID": "about.design_presentation",
+    "node_type": "about",
+    "section": "design_presentation",
+    "title": "Design & Presentation",
+    "aliases": ["design", "presentation"],
+    "tags": ["design", "presentation", "ui"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "minimal_surface_preference": "About Me page should be structurally minimal and compressed",
       "no_full_rewrites": "Iterate surgically rather than rewriting whole pages",
@@ -126,8 +166,12 @@
   },
   {
     "objectID": "about.theme_song",
-    "type": "about",
+    "node_type": "about",
     "section": "theme_song",
+    "title": "Theme Song",
+    "aliases": ["I Build Things", "theme song"],
+    "tags": ["theme", "identity", "music"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "selection": "I Build Things by Twisted Game Songs",
       "why_identity": "Reflects Appalachian ingenuity and habit of fixing and understanding systems",
@@ -144,21 +188,29 @@
     }
   },
   {
-    "objectID": "about.site_and_system_context",
-    "type": "about",
-    "section": "site_and_system_context",
+    "objectID": "about.site_system_context",
+    "node_type": "about",
+    "section": "site_system_context",
+    "title": "Site & System Context",
+    "aliases": ["system notes", "anchildress1.dev"],
+    "tags": ["site", "system", "context"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "site_name": "System Notes",
       "site_url": "https://anchildress1.dev",
       "site_status": "Active, Deployed",
-      "site_intent": "Public, read-only portfolio system designed as a machine-readable index of decisions and systems rather than a traditional r\u00e9sum\u00e9 site",
+      "site_intent": "Public, read-only portfolio system designed as a machine-readable index of decisions and systems rather than a traditional résumé site",
       "site_authorship_model": "Explicitly AI-generated with human-constrained authorship and traceability"
     }
   },
   {
-    "objectID": "about.constraints_and_preferences",
-    "type": "about",
-    "section": "constraints_and_preferences",
+    "objectID": "about.constraints_preferences",
+    "node_type": "about",
+    "section": "constraints_preferences",
+    "title": "Constraints & Preferences",
+    "aliases": ["constraints", "preferences"],
+    "tags": ["constraints", "preferences"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
       "writing_preference": "Short, compressed, scan-friendly content over prose",
       "output_expectation": "Deduplicated, noise-free, indexable facts suitable for bots and humans",
@@ -167,13 +219,278 @@
     }
   },
   {
-    "objectID": "about.public_positioning",
-    "type": "about",
-    "section": "public_positioning",
+    "objectID": "about.decision_heuristics",
+    "node_type": "about",
+    "section": "decision_heuristics",
+    "title": "Decision Heuristics",
+    "aliases": ["heuristics", "decision rules"],
+    "tags": ["decision", "heuristics", "thinking"],
+    "updated_at": "2026-01-24T00:00:00Z",
     "data": {
-      "hiring_frame": "Portfolio is not optimized primarily for hiring funnels",
-      "evaluation_frame": "Wants work evaluated by decision quality and constraint handling, not polish",
-      "teaching_vs_transparency": "Transparency of reasoning prioritized over instructional teaching"
+      "evaluation_first": "Optimizes for external evaluation clarity over internal elegance when stakes are high",
+      "constraint_driven": "Uses explicit constraints to reduce decision entropy",
+      "timeboxing": "Treats timeboxing as a stop condition, not a failure",
+      "stability_over_improvement": "Prioritizes stability over improvement once a system enters evaluation",
+      "information_discipline": "Favors machine-readable structure as a first-class concern",
+      "working_heuristics": [
+        "If it can't be evaluated quickly, it won't be evaluated fairly",
+        "Constraints are communication tools",
+        "Stability beats cleverness under review",
+        "AI should explain uncertainty, not mask it",
+        "Stopping is a decision, not a lapse"
+      ]
+    }
+  },
+  {
+    "objectID": "about.project_selection",
+    "node_type": "about",
+    "section": "project_selection",
+    "title": "Project Selection Logic",
+    "aliases": ["project selection", "curation"],
+    "tags": ["project", "selection", "curation"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "framing": "Frames projects explicitly as decision-bearing systems, not deliverables",
+      "selection_basis": "Selects projects based on the signal they emit, not their completeness or polish",
+      "mix_strategy": "Maintains a deliberate mix of active, experimental, and concluded work to show judgment over time",
+      "failure_visibility": "Willing to keep non-showcase projects visible if they explain constraints, failures, or tradeoffs",
+      "learning_vs_signaling": "Distinguishes clearly between projects meant to signal competence and those meant to generate learning"
+    }
+  },
+  {
+    "objectID": "about.education",
+    "node_type": "about",
+    "section": "education",
+    "title": "Education & Early Technical Formation",
+    "aliases": ["education", "university", "BS computer science"],
+    "tags": ["education", "computer science", "academic"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "degree": "BS in Computer Science",
+      "institution": "University of West Georgia",
+      "years": "2010–2014",
+      "recognition": "Recognized for academic excellence and leadership throughout undergraduate studies",
+      "research": "Contributed to research in privacy-aware access control systems, helping design and implement a bitwise permission model to identify gaps and inconsistencies in external security policies",
+      "award": "James Emory Boyd Award in Computer Science (Mar 2014)"
+    }
+  },
+  {
+    "objectID": "about.certifications",
+    "node_type": "about",
+    "section": "certifications",
+    "title": "Certifications & Formal AI Validation",
+    "aliases": ["certifications", "google cloud", "github copilot"],
+    "tags": ["certifications", "ai", "google", "github"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "generative_ai_leader": {
+        "issuer": "Google Cloud",
+        "issued": "Oct 2025",
+        "expires": "Oct 2028",
+        "credential_id": "65fc9b4cdfbc4946a1011a70a99234d4",
+        "focus": "Responsible, real-world application of generative AI across teams and projects"
+      },
+      "github_copilot_certification": {
+        "issuer": "GitHub / Microsoft",
+        "issued": "Aug 2025",
+        "expires": "Aug 2027",
+        "credential_id": "1121633CBF5C85C",
+        "focus": "Hands-on experience with prompt design, IDE integration, and responsible AI usage in development workflows"
+      }
+    }
+  },
+  {
+    "objectID": "about.work_history_thd",
+    "node_type": "about",
+    "section": "work_history",
+    "title": "Work History: The Home Depot",
+    "aliases": ["home depot", "THD", "current employer"],
+    "tags": ["work", "history", "home depot", "backend"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "employer": "The Home Depot",
+      "location": "Atlanta, GA / Remote",
+      "roles": [
+        {
+          "title": "Senior Software Engineer",
+          "period": "Jun 2025 – Present"
+        },
+        {
+          "title": "Software Engineer II (Backend Systems)",
+          "period": "Oct 2022 – Jun 2025"
+        },
+        {
+          "title": "Software Engineer",
+          "period": "May 2018 – Oct 2022"
+        }
+      ],
+      "total_tenure": "~7 years 9 months",
+      "signal_summary": "Long-term ownership of large-scale backend and supply-chain systems; reliability, change safety, and production support under real business constraints; mentorship, tooling standards, and AI-enabled workflows used to scale engineering quality"
+    }
+  },
+  {
+    "objectID": "about.work_history_greenway",
+    "node_type": "about",
+    "section": "work_history",
+    "title": "Work History: Greenway Health",
+    "aliases": ["greenway", "greenway health", "first engineering role"],
+    "tags": ["work", "history", "greenway", "engineering"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "employer": "Greenway Health",
+      "location": "Carrollton, GA",
+      "roles": [
+        {
+          "title": "Software Engineer",
+          "period": "Jun 2014 – Jan 2018"
+        },
+        {
+          "title": "Junior Business Analyst",
+          "period": "Jun 2012 – Jun 2014"
+        }
+      ],
+      "total_tenure": "~5 years 8 months",
+      "signal_summary": "First industry engineering role following degree completion; strong foundation in TDD, production debugging, and defect ownership; transition from analysis to engineering reinforced system comprehension and requirement translation"
+    }
+  },
+  {
+    "objectID": "about.work_history_arbys",
+    "node_type": "about",
+    "section": "work_history",
+    "title": "Work History: Arby's",
+    "aliases": ["arbys", "arby's", "early leadership", "certified training manager"],
+    "tags": ["work", "history", "arbys", "leadership", "operations"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "employer": "Arby's Restaurant Group, Inc.",
+      "location": "Bremen, GA",
+      "roles": [
+        {
+          "title": "Certified Training Manager",
+          "period": "May 2003 – Jan 2010"
+        }
+      ],
+      "progression": "Progressed from cashier through multiple roles to certified training leadership",
+      "total_tenure": "~6 years 9 months",
+      "recognition": "Manager of the Year (Feb 2008)",
+      "signal_summary": "Progressed from cashier through seven roles to district-level responsibility for onboarding, process consistency, and people development; early operational leadership shaped coaching style, people-first mindset, and process discipline"
+    }
+  },
+  {
+    "objectID": "about.boundaries_nongals",
+    "node_type": "about",
+    "section": "boundaries",
+    "title": "Explicit Boundaries & Non-Goals",
+    "aliases": ["boundaries", "non-goals", "constraints"],
+    "tags": ["boundaries", "constraints", "limits"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "avoided_tech": "UI-heavy development work; prefers systems, platforms, and tooling where structure and behavior matter more than presentation",
+      "refused_practices": [
+        "Implementing changes without understanding underlying systems",
+        "Accepting known issues without documented follow-up or clear ownership"
+      ],
+      "ai_use_boundaries": "None categorically excluded. AI use is context-dependent and evaluated case by case"
+    }
+  },
+  {
+    "objectID": "about.failure_cases",
+    "node_type": "about",
+    "section": "failure_cases",
+    "title": "Formative Failure Case",
+    "aliases": ["checkmark copilot chat", "failure", "stopped project"],
+    "tags": ["failure", "learning", "project"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "project": "CheckMarK Copilot Chat",
+      "assumption": "Conversational context could be edited and persist reliably across the system",
+      "discovery": "Persistence constraints made the core premise impossible",
+      "decision": "Stopped the project once infeasibility was clear",
+      "learning": "Reinforced the importance of validating platform assumptions early"
+    }
+  },
+  {
+    "objectID": "about.decision_uncertainty",
+    "node_type": "about",
+    "section": "decision_making",
+    "title": "Decision-Making Under Uncertainty",
+    "aliases": ["uncertainty", "decision making"],
+    "tags": ["decision", "uncertainty", "process"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "incomplete_data": "Identifies what can be done now and executes that first, expanding scope incrementally",
+      "enough_criteria": "Determines 'enough' via explicit timeboxing or resolution of the triggering issue",
+      "conflict_resolution": "In solo work, cross-checks reasoning using multiple AI/LLM models to weigh tradeoffs before making a best-effort decision under constraints"
+    }
+  },
+  {
+    "objectID": "about.collaboration_style",
+    "node_type": "about",
+    "section": "collaboration",
+    "title": "Collaboration & Communication Style",
+    "aliases": ["communication", "collaboration"],
+    "tags": ["communication", "collaboration", "style"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "communication": "Communicates directly and factually, prioritizing clarity over cushioning",
+      "tone": "Criticism may sound blunt when stating facts; intent is understanding, not conflict",
+      "thinking_mode": "Thinks primarily in diagrams and mental models; verbal translation may lag behind internal reasoning",
+      "collaboration_needs": "Benefits from time to articulate complex thoughts fully and values collaborators who allow space for that process"
+    }
+  },
+  {
+    "objectID": "about.temporal_markers",
+    "node_type": "about",
+    "section": "temporal_markers",
+    "title": "Temporal Markers (Thinking Eras)",
+    "aliases": ["eras", "timeline", "thinking evolution"],
+    "tags": ["timeline", "eras", "evolution"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "pre_ai_tooling": "Before Feb 2025",
+      "ai_integrated_engineering": "Feb 2025 onward",
+      "indexing_first_phase": "Initiated approximately three weeks prior to Jan 2026, emphasizing machine-readable structure and retrieval"
+    }
+  },
+  {
+    "objectID": "about.automation_codegen",
+    "node_type": "about",
+    "section": "automation_philosophy",
+    "title": "Automation & Code Generation Philosophy",
+    "aliases": ["automation", "code generation"],
+    "tags": ["automation", "codegen", "philosophy"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "generation_preference": "Prefers designing systems that generate code rather than hand-authoring large volumes",
+      "refactor_strategy": "Refactors deliberately once for clarity, then enforces consistency through automation",
+      "governance_view": "Treats automation as a governance tool, not just a productivity boost"
+    }
+  },
+  {
+    "objectID": "about.quality_evaluation",
+    "node_type": "about",
+    "section": "quality_criteria",
+    "title": "Quality & Evaluation Criteria",
+    "aliases": ["quality", "evaluation"],
+    "tags": ["quality", "evaluation", "criteria"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "evaluation_basis": "Determinism, testability, repeatability, and constraint clarity",
+      "surfacing_preference": "Prefers early surfacing of issues over post-deploy hotfixes",
+      "controlled_breakage": "Accepts controlled breakage when it exposes weak structure and improves system outcomes"
+    }
+  },
+  {
+    "objectID": "about.differentiation",
+    "node_type": "about",
+    "section": "differentiation",
+    "title": "Differentiation Signals",
+    "aliases": ["differentiation", "unique approach"],
+    "tags": ["differentiation", "approach"],
+    "updated_at": "2026-01-24T00:00:00Z",
+    "data": {
+      "ai_teaching": "Differentiates by teaching AI within durable systems instead of using it opportunistically",
+      "portfolio_purpose": "Uses the portfolio to show how systems evolve, stabilize, and stop—not to enumerate features"
     }
   }
 ]

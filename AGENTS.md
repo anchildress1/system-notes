@@ -211,3 +211,21 @@ The UI should **support exploration**, not apologize for it.
 
 - Keep `algolia-requirements.md` updated as the single source of truth for the Algolia Agent Studio Challenge implementation checklist.
 - Prefer updating that file over creating new tracking docs.
+
+## 13. Documentation Rules (Permanent Directive)
+
+**Minimum viable docs only.**
+
+- No implementation summaries
+- No output reports
+- No "what we did" docs
+- Design info belongs in root (AGENTS.md, algolia-requirements.md)
+- Code and data are self-documenting
+- Target audience: tech readers and other devs who can read code
+
+**Delete on sight:**
+
+- Summary docs
+- Status reports
+- Change logs (unless versioned releases)
+- Implementation recaps

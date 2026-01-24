@@ -13,9 +13,9 @@ This is not contest-admin tracking.
 
 Chosen outcome: **3 small indices** (fast to reason about, easy to tune):
 
-- `projects` — systems/projects users can click into
-- `about` — Ashley facts + project decisioning rules
-- `system_docs` — JSON source artifacts with stable line anchors
+- [x] `projects` — systems/projects users can click into (9 records, avg 1.5KB)
+- [x] `about` — Ashley facts + project decisioning rules (27 records, avg 800 bytes)
+- [ ] `system_docs` — JSON source artifacts with stable line anchors (future)
 
 Rationale (pragmatic):
 
