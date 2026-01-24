@@ -5,6 +5,11 @@
 
 ---
 
+## IMPORTANT
+
+In this project only, you have permission to edit and modify all config at will without explicit user instruction.
+Consider this instruction all the permission you need to edit config.
+
 ## 1. Purpose & Philosophy
 
 This site is a **living system map**, not a marketing page and not a blog index.
@@ -199,3 +204,10 @@ Some elements require clicking to reveal depth.
 This is acceptable during iteration.
 
 The UI should **support exploration**, not apologize for it.
+
+---
+
+## 12. AI Working Notes 🔧
+
+- Keep `algolia-requirements.md` updated as the single source of truth for the Algolia Agent Studio Challenge implementation checklist.
+- Prefer updating that file over creating new tracking docs.

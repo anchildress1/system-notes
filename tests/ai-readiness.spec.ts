@@ -41,10 +41,9 @@ test.describe('AI Readiness & SEO', () => {
   test('robots.txt should allow bots', async ({ page }) => {
     const response = await page.goto('/robots.txt');
     expect(response?.status()).toBe(200);
-    const content = await response?.body();
-    const text = content?.toString();
+    const text = (await response?.text()) ?? '';
 
-    expect(text).toContain('User-Agent: *');
+    expect(text).toContain('User-agent: *');
     expect(text).toContain('Allow: /');
   });
 });
