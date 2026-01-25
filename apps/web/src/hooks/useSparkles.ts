@@ -218,7 +218,12 @@ export const useSparkles = ({
       clearTimeout(timeoutId);
       try {
         if (app) {
-          app.ticker?.stop(); // Stop ticker first to prevent 'clear' or 'geometry' errors
+          // Safely stop ticker
+          if (app.ticker && typeof app.ticker.stop === 'function') {
+            app.ticker.stop();
+          } else if (typeof app.stop === 'function') {
+            app.stop();
+          }
 
           if (app.renderer) {
             // Use minimal destroy options to avoid deeper glitches if textures are shared?
