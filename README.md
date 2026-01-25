@@ -6,8 +6,11 @@
 
 <!-- Tech Stack -->
 
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white) ![Next JS](https://img.shields.io/badge/Next-black?logo=next.js&logoColor=white) ![Python](https://img.shields.io/badge/python-3670A0?logo=python&logoColor=ffdd54) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?logo=fastapi) ![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?logo=google-cloud&logoColor=white)
-![Antigravity](https://img.shields.io/badge/Antigravity-4285F4?logo=google&logoColor=white) ![Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?logo=googlegemini&logoColor=white) ![ChatGPT](https://img.shields.io/badge/ChatGPT-74aa9c?logo=openai&logoColor=white) ![OpenAI GPT 5.2](https://img.shields.io/badge/OpenAI_GPT_5.2-74aa9c?logo=openai&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white) ![Release Please](https://img.shields.io/badge/Release_Please-Configured-brightgreen)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white) ![Next JS](https://img.shields.io/badge/Next-black?logo=next.js&logoColor=white) ![Python](https://img.shields.io/badge/python-3670A0?logo=python&logoColor=ffdd54) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?logo=fastapi)
+
+![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?logo=google-cloud&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white) ![Release Please](https://img.shields.io/badge/Release_Please-Configured-brightgreen)
+
+![Antigravity](https://img.shields.io/badge/Antigravity-4285F4?logo=google&logoColor=white) ![Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?logo=googlegemini&logoColor=white) ![ChatGPT](https://img.shields.io/badge/ChatGPT-74aa9c?logo=openai&logoColor=white) ![OpenAI GPT 5.2](https://img.shields.io/badge/OpenAI_GPT_5.2-74aa9c?logo=openai&logoColor=white)
 
 # System Notes
 
@@ -45,8 +48,8 @@ make ai-checks
 
 This project is my work and it’s licensed under the [PolyForm Shield License 1.0.0](./LICENSE).
 
-**Fork it?** Absolutely.  
-**Learn from it?** Please do.  
+**Fork it?** Absolutely.
+**Learn from it?** Please do.
 **Monetize it?** Absolutely not.
 
 If you’re selling it, bundling it, or otherwise profiting from my late-night coding sessions, we’re going to have a problem. Keep it open, keep it personal, and we'll be fine.

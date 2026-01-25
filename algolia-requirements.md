@@ -15,7 +15,7 @@ Chosen outcome: **3 small indices** (fast to reason about, easy to tune):
 
 - [x] `projects` — systems/projects users can click into (9 records, avg 1.5KB)
 - [x] `about` — Ashley facts + project decisioning rules (27 records, avg 800 bytes)
-- [] `system_docs` — JSON source artifacts with stable line anchors (future)
+- [x] `system_docs` — JSON source artifacts with stable line anchors (36 records)
 
 Rationale (pragmatic):
 
@@ -44,6 +44,7 @@ Rationale (pragmatic):
 ## Chat Experience Requirements
 
 - [ ] Research: in-chat navigation UI (clickable quick-prompts that send a preloaded message to the chatbot).
+- [ ] Research: user personalization based on previous interactions or session context (e.g. "Welcome back, [Name]" or referencing prior topics).
 
 - [ ] Keep existing chat icon behavior (open/close, placement).
 - [ ] Use Algolia embedded chat widget as the chat surface.
@@ -95,24 +96,24 @@ Failure modes:
 
 ### Canonical sources
 
-- [ ] Canonical doc JSON files live under `apps/api/algolia/*`.
+- [x] Canonical doc JSON files live under `apps/api/algolia/*`.
 - [ ] Old versions under `apps/api/prompts/*` are legacy and removed later.
 
 ### Viewer URL contract
 
-- [ ] Doc viewer URL format: `/system/doc/<doc_file>#Lx-Ly`.
-- [ ] Hard allowlist: only files under `apps/api/algolia` are valid.
+- [x] Doc viewer URL format: `/system/doc/<doc_file>#Lx-Ly`.
+- [x] Hard allowlist: only files under `apps/api/algolia` are valid.
 
 ### Viewer UX (Mode B)
 
-- [ ] Viewer renders per-record sections (1:1 with each JSON object).
-- [ ] Viewer has line-number gutter.
-- [ ] Viewer supports anchors to `#Lx-Ly`.
-- [ ] Viewer supports "copy link" for a section/line-range.
+- [x] Viewer renders per-record sections (1:1 with each JSON object).
+- [x] Viewer has line-number gutter.
+- [x] Viewer supports anchors to `#Lx-Ly`.
+- [x] Viewer is read-only (no click interaction, URL-driven only).
 
 ### Data source
 
-- [ ] Web app fetches doc data via an API endpoint (portable across deploy).
+- [x] Web app fetches doc data via an API endpoint (portable across deploy).
 
 ## Algolia Widget "Citations"
 

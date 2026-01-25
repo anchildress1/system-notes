@@ -1,0 +1,41 @@
+.viewer {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  width: 100%;
+}
+
+.line {
+  display: flex;
+}
+
+.line:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.lineNumber {
+  padding: 0 1rem;
+  color: rgba(255, 255, 255, 0.3);
+  user-select: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: right;
+  min-width: 4rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.lineContent {
+  padding: 0 1rem;
+  white-space: pre;
+  flex: 1;
+}
+
+.highlighted {
+  background: rgba(255, 215, 0, 0.15) !important;
+  border-left: 3px solid #ffd700;
+}
+
+

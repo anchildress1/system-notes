@@ -4,28 +4,28 @@ alt: "Algolia system data flow from source JSON to user interaction"
 graph TB
     accTitle: Algolia System Data Flow
     accDescr: End-to-end flow from JSON source files through Algolia upload to agent retrieval and user link generation
-    
+
     %% Data sources
-    AboutJSON["about/about.json<br/>27 records, ~800B avg"]:::source
-    ProjectsJSON["projects/projects.json<br/>9 records, ~1.5KB avg"]:::source
-    
+    AboutJSON["about/index.json<br/>27 records, ~800B avg"]:::source
+    ProjectsJSON["projects/index.json<br/>9 records, ~1.5KB avg"]:::source
+
     %% Upload methods
     MCP["MCP Tool<br/>(dev only)"]:::upload
     REST["REST API Script<br/>(reproducible)"]:::upload
     Dashboard["Dashboard Manual<br/>(fallback)"]:::upload
-    
+
     %% Algolia indices
     AboutIndex[("about index<br/>searchable: title, aliases, tags, section<br/>facets: node_type, section, tags")]:::index
     ProjectsIndex[("projects index<br/>searchable: title, aliases, tags, display_name, summary<br/>facets: node_type, status, kind, tags")]:::index
-    
+
     %% Agent retrieval
     Ruckus["Ruckus Agent<br/>conversational search"]:::agent
     FastPath{"Greeting?<br/>(hi, hello, hey)"}:::decision
     SearchPath["Search K=25<br/>userScore ≥ 50<br/>max_total=3"]:::search
-    
+
     %% Link generation
     Links["Deterministic Links<br/>2 projects max, 1 doc max<br/>tie-break: updated_at desc"]:::output
-    
+
     %% Flow
     AboutJSON -->|upload via| MCP
     AboutJSON -->|upload via| REST
@@ -33,24 +33,24 @@ graph TB
     ProjectsJSON -->|upload via| MCP
     ProjectsJSON -->|upload via| REST
     ProjectsJSON -->|upload via| Dashboard
-    
+
     MCP -->|batch update| AboutIndex
     MCP -->|batch update| ProjectsIndex
     REST -->|batch update| AboutIndex
     REST -->|batch update| ProjectsIndex
     Dashboard -->|manual edit| AboutIndex
     Dashboard -->|manual edit| ProjectsIndex
-    
+
     AboutIndex -->|retrieve| Ruckus
     ProjectsIndex -->|retrieve| Ruckus
-    
+
     Ruckus --> FastPath
     FastPath -->|yes| Links
     FastPath -->|no| SearchPath
     SearchPath --> Links
-    
+
     Links -->|"app_url (projects)<br/>or custom path (about)"| User[("User")]:::user
-    
+
     %% Styles - theme-agnostic grays and subtle blues
     classDef source fill:#6b7280,stroke:#4b5563,stroke-width:2px,color:#f9fafb
     classDef upload fill:#059669,stroke:#047857,stroke-width:2px,color:#f0fdf4

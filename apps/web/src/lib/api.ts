@@ -1,10 +1,17 @@
-const API_URL = process.env.API_URL || 'http://localhost:8000';
+const API_URL = process.env.API_URL || 'http://127.0.0.1:8000';
 
 export interface Project {
   id: string;
   title: string;
   description: string;
   github_url?: string;
+}
+
+export interface SystemDoc {
+  content: string;
+  format: string;
+  path: string;
+  error?: string;
 }
 
 export async function getProjects(): Promise<Project[]> {
@@ -17,5 +24,36 @@ export async function getProjects(): Promise<Project[]> {
   } catch (error) {
     console.error('API Error:', error);
     return [];
+  }
+}
+
+export async function getSystemDoc(path: string): Promise<SystemDoc | null> {
+  try {
+    const url = `${API_URL}/system/doc/${path}`;
+    console.log(`[SystemDoc] Fetching: ${url}`);
+
+    const res = await fetch(url, { cache: 'no-store' });
+
+    if (!res.ok) {
+      console.warn(`[SystemDoc] Error ${res.status}: ${res.statusText}`);
+      // Try to read body for detail
+      const text = await res.text();
+      console.warn(`[SystemDoc] Response: ${text}`);
+      return {
+        content: '',
+        format: 'text',
+        path,
+        error: `Error ${res.status}: ${text || res.statusText}`,
+      };
+    }
+    return res.json();
+  } catch (error) {
+    console.warn('[SystemDoc] Network/API Error:', error);
+    return {
+      content: '',
+      format: 'text',
+      path,
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 }

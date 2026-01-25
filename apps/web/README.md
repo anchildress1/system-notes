@@ -12,14 +12,14 @@ The visual cortex of the System Notes ecosystem. Built to look good while doing 
 ## Critical Commands
 
 ```bash
-# Wake up the UI
-npm run dev
+# Wake up the UI (via root Makefile)
+make dev
 
 # Run the test suite (now with coverage!)
-npm run test
+make test
 
 # Check if you broke the rules
-npm run lint
+make lint
 ```
 
 ## Contributors

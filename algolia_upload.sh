@@ -17,7 +17,7 @@ fi
 BASE_URL="https://${ALGOLIA_APPLICATION_ID}.algolia.net/1"
 
 echo "📤 Uploading projects index data..."
-cat apps/api/algolia/projects/projects.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
+cat apps/api/algolia/projects/index.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
   curl -X POST "${BASE_URL}/indexes/projects/batch" \
   -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
   -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
@@ -27,7 +27,7 @@ cat apps/api/algolia/projects/projects.json | jq '{requests: [.[] | {action: "up
   -s
 
 echo "📤 Uploading about index data..."
-cat apps/api/algolia/about/about.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
+cat apps/api/algolia/about/index.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
   curl -X POST "${BASE_URL}/indexes/about/batch" \
   -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
   -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
@@ -41,7 +41,7 @@ curl -X PUT "${BASE_URL}/indexes/projects/settings" \
   -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
   -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
   -H "Content-Type: application/json" \
-  --data @apps/api/algolia/projects/projects-settings.json \
+  --data @apps/api/algolia/projects/settings.json \
   -w "\n" \
   -s
 
@@ -50,7 +50,7 @@ curl -X PUT "${BASE_URL}/indexes/about/settings" \
   -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
   -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
   -H "Content-Type: application/json" \
-  --data @apps/api/algolia/about/about-settings.json \
+  --data @apps/api/algolia/about/settings.json \
   -w "\n" \
   -s
 

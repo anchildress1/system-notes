@@ -12,11 +12,11 @@ The cerebral cortex. Connects the dots, talks to the AI, and serves the data.
 ## Critical Commands
 
 ```bash
-# Start the brain
-uv run uvicorn main:app --reload
+# Start the brain (via root Makefile)
+make dev
 
 # Run tests (ensure logic is logical)
-uv run pytest --cov=.
+make test
 ```
 
 ## Contributors
