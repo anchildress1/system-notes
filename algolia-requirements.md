@@ -43,8 +43,8 @@ Rationale (pragmatic):
 
 ## Chat Experience Requirements
 
-- [ ] Research: in-chat navigation UI (clickable quick-prompts that send a preloaded message to the chatbot).
-- [ ] Research: user personalization based on previous interactions or session context (e.g. "Welcome back, [Name]" or referencing prior topics).
+- [x] Research: in-chat navigation UI (clickable quick-prompts that send a preloaded message to the chatbot).
+- [x] Research: user personalization based on previous interactions or session context (e.g. "Welcome back, [Name]" or referencing prior topics).
 
 - [ ] Keep existing chat icon behavior (open/close, placement).
 - [ ] Use Algolia embedded chat widget as the chat surface.

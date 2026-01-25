@@ -5,50 +5,10 @@ import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { Chat } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import styles from './AIChat.module.css';
-import dynamic from 'next/dynamic';
-
-import { IoClose } from 'react-icons/io5';
-import { GiBat } from 'react-icons/gi';
-import { FaBrain, FaUser } from 'react-icons/fa';
-
-const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
-const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-
-// Create searchClient at module level for stable reference (prevents unnecessary re-renders)
-const searchClient =
-  appId && apiKey
-    ? algoliasearch(appId, apiKey)
-    : {
-        search: () => Promise.resolve({ results: [] }),
-      };
-
-const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || '';
-
-const MusicPlayer = dynamic(() => import('../MusicPlayer/MusicPlayer'), {
-  ssr: false,
-});
-
-// Custom components to enrich the chat experience
-const HeaderIcon = () => <GiBat className={styles.headerIcon} />;
-const AssistantAvatar = () => (
-  <div className={styles.avatar}>
-    <GiBat />
-  </div>
-);
-const UserAvatar = () => (
-  <div className={styles.userAvatar}>
-    <FaUser />
-  </div>
-);
-const PromptFooter = () => (
-  <div className={styles.disclaimer}>Powered by Algolia—fast, relevant, still imperfect.</div>
-);
-const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
-  isOpen ? (
-    <IoClose size={24} className={styles.toggleIcon} />
-  ) : (
-    <FaBrain size={24} className={styles.toggleIcon} />
-  );
+import { API_URL } from '@/config';
+import { useChat } from '@/context/ChatContext';
+import MusicPlayer from '../MusicPlayer/MusicPlayer';
+import ReactMarkdown from 'react-markdown';
 
 export default function AIChat() {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -108,13 +68,60 @@ export default function AIChat() {
   }
 
   return (
-    <>
-      <div className={`${styles.musicWrapper} ${isChatOpen ? styles.musicPushed : ''}`}>
-        <MusicPlayer />
-      </div>
-      <InstantSearchNext
-        searchClient={searchClient}
-        future={{ preserveSharedStateOnUnmount: true }}
+    <div className={styles.chatWrapper}>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className={styles.chatWindow}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          >
+            <div className={styles.header}>
+              <span className={styles.ruckusName}>Ruckus</span>
+              <span className={styles.agentMeta}>no memory yet</span>
+            </div>
+            <div className={styles.messages}>
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`${styles.message} ${msg.role === 'bot' ? styles.botMessage : styles.userMessage}`}
+                >
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
+                </div>
+              ))}
+              {isLoading && (
+                <div className={`${styles.message} ${styles.botMessage}`}>Thinking...</div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+            <div className={styles.inputArea}>
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder="Type a message..."
+                className={styles.input}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                aria-label="Chat message"
+              />
+              <button onClick={handleSend} className={styles.sendButton} aria-label="Send">
+                <Send size={18} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <MusicPlayer />
+
+      <button
+        className={`${styles.toggleButton} ${isOpen ? styles.stopPulse : ''}`}
+        onClick={toggleChat}
+        aria-label={isOpen ? 'Close AI Chat' : 'Open AI Chat'}
+        data-testid="ai-chat-toggle"
       >
         <Chat
           agentId={AGENT_ID}

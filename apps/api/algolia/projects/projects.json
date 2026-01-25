@@ -6,7 +6,14 @@
     "repo_owner": "anchildress1",
     "display_name": "System Notes",
     "title": "System Notes",
-    "aliases": ["system notes", "portfolio site", "this site", "the system notes project"],
+    "aliases": [
+      "system notes",
+      "portfolio site",
+      "this site",
+      "the system notes project",
+      "this project",
+      "current project"
+    ],
     "tags": ["Next.js", "Python", "Markdown", "Google Cloud Run", "portfolio", "web"],
     "updated_at": "2026-01-24T00:00:00Z",
     "slug": "system-notes",
