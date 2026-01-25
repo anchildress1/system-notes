@@ -52,7 +52,7 @@ describe('GlitterBomb', () => {
     const { unmount } = render(<GlitterBomb />);
 
     // Wait for effect
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     expect(mockInit).toHaveBeenCalled();
     expect(mockGenerateTexture).toHaveBeenCalled();

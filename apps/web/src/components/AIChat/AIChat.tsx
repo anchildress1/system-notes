@@ -34,10 +34,16 @@ function ChatContent() {
     scrollToBottom();
   }, [messages]);
 
-  // Focus input on mount
+  // Focus input on mount and when loading finishes
   useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+    if (!isLoading) {
+      // Timeout ensures the disabled attribute is fully removed from DOM before focusing
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
 
   const handleSend = () => {
     const input = inputRef.current?.value;

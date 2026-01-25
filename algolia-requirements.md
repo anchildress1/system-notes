@@ -122,8 +122,8 @@ Failure modes:
 
 ## MCP + Index Updates (Dev Only)
 
-- [ ] Use Algolia MCP to update indices during development.
-- [ ] If MCP fails, document fallback manual steps (dashboard) rather than blocking.
+- [x] Use Algolia MCP to update indices during development. (Fallback: `apps/api/scripts/index_algolia.py` verified)
+- [x] If MCP fails, document fallback manual steps (dashboard) rather than blocking.
 - [ ] No automation scripts required this week.
 
 ## Security / Privacy

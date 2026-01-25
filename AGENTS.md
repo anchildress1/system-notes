@@ -207,17 +207,134 @@ The UI should **support exploration**, not apologize for it.
 
 ---
 
-## 12. AI Working Notes 🔧
+## 12. Ruckus 2.0 (Chatbot Architecture) 🔧
+
+### Purpose
+
+System Map Navigator chatbot powered by Algolia Agent Studio. Replaces general-purpose LLM chat with **grounded, indexed navigation** that beats traditional nav menus, search bars, and related-content widgets.
+
+**Core principle:** Deterministic, useful failure over vague helpfulness.
+
+### System Map Navigator Concept
+
+Chat output follows a strict interaction pattern:
+
+1. **Direct answer first** (short, declarative)
+2. **Next hops** as deterministic links (max 3, bucketed)
+3. **Stop**
+
+No filler. No help menus. No instructional copy for obvious interactions.
+
+### Deterministic Links
+
+**Hard constraints:**
+
+- Total links shown: `max_total = 3`
+- Retrieval: `K = 25`
+- Buckets & caps:
+  - **Project**: max 2 (include repo link when available)
+  - **System Doc**: max 1 (only if URL resolves with line-range anchor)
+  - **Post**: 0 (until future indexing)
+
+**Ordering:** Projects first, then System Doc
+
+**Ranking determinism:**
+
+- Boost by `node_type`: Project > System Doc > Post
+- Boost exact matches on: `title`, `aliases`, `tags`
+- Stable tie-break: `updated_at` desc → `slug` asc (or `objectID` asc)
+
+### Failure as a Feature
+
+**Strong match rule:**
+
+- A result is a strong match if `rankingInfo.userScore >= 50`
+- If `userScore` unavailable, any hit counts as strong
+- If `nbHits == 0`, trigger failure mode
+
+**Codified failure modes:**
+
+- **0 strong matches:**
+  - Output: "No strong matches."
+  - Ask exactly one clarifying question
+  - Stop
+- **1 strong match:**
+  - Output: "Only one strong match."
+  - Show the single result + link
+  - Stop
+- **Otherwise:**
+  - Normal answer + Next hops
+
+No "nearest context" padding when confidence is low.
+
+### Index Architecture
+
+Three isolated indices (fast to reason about, easy to tune):
+
+1. **`projects`** — systems/projects users can click into (9 records, avg 1.5KB)
+2. **`about`** — Ashley facts + project decisioning rules (27 records, avg 800 bytes)
+3. **`system_docs`** — JSON source artifacts with stable line anchors (36 records)
+
+**Rationale:** Separate indices keep schemas clean and tuning isolated. No cross-index global search UI needed; only capped "Links."
+
+### System Docs Viewer Contract
+
+Docs are JSON artifacts displayed as:
+
+- Rendered **sections** (1:1 with each JSON object)
+- **Line-number gutter**
+- Stable anchors: `#Lx-Ly`
+- Read-only, URL-driven navigation
+
+**URL format:** `/system/doc/<doc_file>#Lx-Ly`
+
+**Hard allowlist:** Only files under `apps/api/algolia` are valid.
+
+**Record schema (per section):**
+
+- `objectID` (stable)
+- `node_type = "system_doc"`
+- `doc_file`
+- `section_id`
+- `title`
+- `text` (retrieval body)
+- `updated_at`
+- `url` (viewer route + `#Lx-Ly`)
+- `line_start`, `line_end`
+
+Line numbers computed from canonical JSON at indexing time.
+
+### Prompt Contract
+
+**Canonical voice:** `apps/api/prompts/algolia_prompt.md`
+
+**Append-only extensions enforce:**
+
+- Answer-first, then Links, then stop
+- Failure-mode behavior exactly as specified
+- Link rendering format compatible with Algolia widget
+- No changes to personality/voice rules
+
+### Data Integrity Rules
+
+- Source of truth for indexed content: `apps/api/algolia/`
+- If anything under `apps/api/algolia/` changes, corresponding Algolia indices **MUST** be updated in the same work session
+- Dev: MCP preferred; fallback: dashboard/manual
+- No facts claimed outside indexed content
+
+---
+
+## 13. AI Working Notes 🔧
 
 - Keep `algolia-requirements.md` updated as the single source of truth for the Algolia Agent Studio Challenge implementation checklist.
 - Prefer updating that file over creating new tracking docs.
-- Source of truth for indexed content is `apps/api/algolia/`.
-- If anything under `apps/api/algolia/` changes, the corresponding Algolia indices MUST be updated in the same work session (dev: MCP preferred; fallback: dashboard/manual).
 - Quality gates:
   - Accessibility (desktop): keep 98+
   - Performance (mobile): 75+ is acceptable for now
 
-## 13. Documentation Rules (Permanent Directive)
+---
+
+## 14. Documentation Rules (Permanent Directive)
 
 **Minimum viable docs only.**
 

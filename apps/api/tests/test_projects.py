@@ -4,16 +4,19 @@ from main import app
 
 client = TestClient(app)
 
-MOCK_PROJECTS_MD = """
-## Project One
-**Description**
-A test project description.
-- **Tech Stack**: Python, FastAPI
-- **Outcome**: Success
+MOCK_PROJECTS_JSON = """
+[
+  {
+    "objectID": "1",
+    "title": "Project One",
+    "summary": "A test project description",
+    "url": "http://example.com"
+  }
+]
 """
 
 def test_get_projects_success():
-    with patch("builtins.open", mock_open(read_data=MOCK_PROJECTS_MD)):
+    with patch("builtins.open", mock_open(read_data=MOCK_PROJECTS_JSON)):
         response = client.get("/projects")
         assert response.status_code == 200
         data = response.json()
