@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Project, allProjects } from '@/data/projects';
 import ProjectCard from '@/components/ProjectCard/ProjectCard';
@@ -17,8 +17,46 @@ const container = {
   },
 };
 
+function parseProjectIdFromHash(hash: string): string | null {
+  const cleaned = hash.startsWith('#') ? hash.slice(1) : hash;
+  if (!cleaned) return null;
+
+  const params = new URLSearchParams(cleaned);
+  const projectId = params.get('project');
+  if (!projectId) return null;
+
+  return projectId;
+}
+
 export default function ProjectGrid() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  useEffect(() => {
+    const applyHash = () => {
+      const projectId = parseProjectIdFromHash(window.location.hash);
+      if (!projectId) {
+        setSelectedProject(null);
+        return;
+      }
+
+      const match = allProjects.find((p) => p.id === projectId);
+      setSelectedProject(match ?? null);
+    };
+
+    applyHash();
+    window.addEventListener('hashchange', applyHash);
+    return () => window.removeEventListener('hashchange', applyHash);
+  }, []);
+
+  const handleSelect = (project: Project) => {
+    window.location.hash = `project=${encodeURIComponent(project.id)}`;
+    setSelectedProject(project);
+  };
+
+  const handleClose = () => {
+    setSelectedProject(null);
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+  };
 
   return (
     <>
@@ -38,7 +76,7 @@ export default function ProjectGrid() {
             >
               <ProjectCard
                 project={p}
-                onSelect={setSelectedProject}
+                onSelect={handleSelect}
                 priority={allProjects.indexOf(p) < 2}
               />
             </motion.div>
@@ -47,9 +85,7 @@ export default function ProjectGrid() {
       </section>
 
       <AnimatePresence>
-        {selectedProject && (
-          <ExpandedView project={selectedProject} onClose={() => setSelectedProject(null)} />
-        )}
+        {selectedProject && <ExpandedView project={selectedProject} onClose={handleClose} />}
       </AnimatePresence>
     </>
   );

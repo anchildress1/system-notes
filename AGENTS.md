@@ -211,6 +211,11 @@ The UI should **support exploration**, not apologize for it.
 
 - Keep `algolia-requirements.md` updated as the single source of truth for the Algolia Agent Studio Challenge implementation checklist.
 - Prefer updating that file over creating new tracking docs.
+- Source of truth for indexed content is `apps/api/algolia/`.
+- If anything under `apps/api/algolia/` changes, the corresponding Algolia indices MUST be updated in the same work session (dev: MCP preferred; fallback: dashboard/manual).
+- Quality gates:
+  - Accessibility (desktop): keep 98+
+  - Performance (mobile): 75+ is acceptable for now
 
 ## 13. Documentation Rules (Permanent Directive)
 

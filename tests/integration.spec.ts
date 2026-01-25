@@ -168,4 +168,46 @@ test.describe('System Notes Integration', () => {
     // Check history
     await expect(page.locator('text=Are you persistent?')).toBeVisible();
   });
+
+  test('clicking project link in homepage navigates with hash', async ({ page }) => {
+    await page.goto('/');
+
+    // Click first project card
+    const firstCard = page.getByTestId(/^project-card-/).first();
+    await firstCard.click();
+
+    // Verify hash is written
+    await expect(page).toHaveURL(/#project=.+/);
+
+    // Verify modal opens
+    const modal = page.getByTestId('expanded-view-dialog');
+    await expect(modal).toBeVisible();
+  });
+
+  test('navigating to app_url from external source opens modal', async ({ page }) => {
+    // Simulate arriving at the site with a hash
+    await page.goto('/#project=system-notes');
+
+    // Verify modal opens
+    const modal = page.getByTestId('expanded-view-dialog');
+    await expect(modal).toBeVisible({ timeout: 5000 });
+
+    // Verify correct project loaded (use modal-scoped heading)
+    await expect(modal.getByRole('heading', { name: 'System Notes' })).toBeVisible();
+  });
+
+  test('closing modal hides the modal', async ({ page }) => {
+    await page.goto('/#project=delegate-action');
+
+    // Wait for modal
+    const modal = page.getByTestId('expanded-view-dialog');
+    await expect(modal).toBeVisible();
+
+    // Close modal
+    const closeButton = page.getByRole('button', { name: 'Close modal' });
+    await closeButton.click();
+
+    // Verify modal closed
+    await expect(modal).not.toBeVisible();
+  });
 });

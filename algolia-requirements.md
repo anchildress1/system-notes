@@ -7,7 +7,7 @@ This is not contest-admin tracking.
 
 - [ ] Ship a **single consumer-facing chat experience** that beats nav/search/related widgets.
 - [ ] Keep scope brutally small: deterministic links, explicit failure, fast retrieval.
-- [ ] Accept “best effort” where the Algolia widget constrains us.
+- [ ] Accept "best effort" where the Algolia widget constrains us.
 
 ## Index Strategy (Pick One: do the simplest thing)
 
@@ -15,24 +15,45 @@ Chosen outcome: **3 small indices** (fast to reason about, easy to tune):
 
 - [x] `projects` — systems/projects users can click into (9 records, avg 1.5KB)
 - [x] `about` — Ashley facts + project decisioning rules (27 records, avg 800 bytes)
-- [ ] `system_docs` — JSON source artifacts with stable line anchors (future)
+- [] `system_docs` — JSON source artifacts with stable line anchors (future)
 
 Rationale (pragmatic):
 
 - Separate indices keep schemas clean and tuning isolated.
-- We are not building cross-index global search UI; we only need capped “Next hops”.
+- We are not building cross-index global search UI; we only need capped "Links".
+
+### Searchable Attributes (Normalized, Top-Level Only)
+
+**`projects` index:**
+
+- Tier 1: `title`
+- Tier 2: `aliases`
+- Tier 3: `tags`
+- Tier 4: `display_name`
+- Tier 5: `summary`
+
+**`about` index:**
+
+- Tier 1: `title`
+- Tier 2: `aliases`
+- Tier 3: `tags`
+- Tier 4: `section`
+
+**`data` object:** opaque (not searchable). If specific `data.*` keys need search, extract to top-level or create separate index.
 
 ## Chat Experience Requirements
+
+- [ ] Research: in-chat navigation UI (clickable quick-prompts that send a preloaded message to the chatbot).
 
 - [ ] Keep existing chat icon behavior (open/close, placement).
 - [ ] Use Algolia embedded chat widget as the chat surface.
 - [ ] Customize widget styling to match System Notes.
-- [ ] Chat output supports the “System Map Navigator” interaction:
+- [ ] Chat output supports the "System Map Navigator" interaction:
   - [ ] Direct answer first (short, declarative).
-  - [ ] Then deterministic “Next hops” links.
+  - [ ] Then deterministic "Links" links.
   - [ ] Then stop.
 
-## Deterministic “Next hops” (Hard Rules)
+## Deterministic "Links" (Hard Rules)
 
 - [ ] Retrieval: `K=25`.
 - [ ] Total links shown: `max_total=3`.
@@ -57,15 +78,15 @@ Strong match rule (short, no fluff):
 
 Failure modes:
 
-- [ ] **0 strong matches**: output “No strong matches.” Ask exactly one clarifying question. Stop.
-- [ ] **1 strong match**: output “Only one strong match.” Show the single result. Stop.
-- [ ] Otherwise: normal answer + Next hops.
+- [ ] **0 strong matches**: output "No strong matches." Ask exactly one clarifying question. Stop.
+- [ ] **1 strong match**: output "Only one strong match." Show the single result. Stop.
+- [ ] Otherwise: normal answer + Links.
 
 ## Prompt Contract (Append-only)
 
 - [x] Keep `apps/api/prompts/algolia_prompt.md` as the canonical voice spec.
 - [x] Append an output-format contract section that forces:
-  - [x] answer-first, then Next hops, then stop
+  - [x] answer-first, then Links, then stop
   - [x] failure-mode behavior exactly as specified
   - [x] link rendering format compatible with the widget
 - [x] Do not change the personality/voice rules.
@@ -74,26 +95,26 @@ Failure modes:
 
 ### Canonical sources
 
-- [ ] Canonical doc JSON files live under `apps/api/indices/*`.
+- [ ] Canonical doc JSON files live under `apps/api/algolia/*`.
 - [ ] Old versions under `apps/api/prompts/*` are legacy and removed later.
 
 ### Viewer URL contract
 
 - [ ] Doc viewer URL format: `/system/doc/<doc_file>#Lx-Ly`.
-- [ ] Hard allowlist: only files under `apps/api/indices` are valid.
+- [ ] Hard allowlist: only files under `apps/api/algolia` are valid.
 
 ### Viewer UX (Mode B)
 
 - [ ] Viewer renders per-record sections (1:1 with each JSON object).
 - [ ] Viewer has line-number gutter.
 - [ ] Viewer supports anchors to `#Lx-Ly`.
-- [ ] Viewer supports “copy link” for a section/line-range.
+- [ ] Viewer supports "copy link" for a section/line-range.
 
 ### Data source
 
 - [ ] Web app fetches doc data via an API endpoint (portable across deploy).
 
-## Algolia Widget “Citations”
+## Algolia Widget "Citations"
 
 - [ ] Citations/snippets are allowed for now.
 - [ ] Track future option: show title+link only (no snippet), if needed.

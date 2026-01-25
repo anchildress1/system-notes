@@ -55,3 +55,6 @@ htmlcov/
 *.tmp
 lighthouse.json
 .lighthouseci/
+commit.tmp
+*.log
+.verdent/
