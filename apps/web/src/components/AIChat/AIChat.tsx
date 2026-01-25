@@ -1,71 +1,135 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
-import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { Chat } from 'react-instantsearch';
-import { InstantSearchNext } from 'react-instantsearch-nextjs';
+import { useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send } from 'lucide-react';
+import { LuBrain } from 'react-icons/lu';
 import styles from './AIChat.module.css';
-import { API_URL } from '@/config';
-import { useChat } from '@/context/ChatContext';
+import { useChat as useUI } from '@/context/ChatContext';
 import MusicPlayer from '../MusicPlayer/MusicPlayer';
 import ReactMarkdown from 'react-markdown';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import { InstantSearch, useChat as useAlgoliaChat } from 'react-instantsearch';
+
+const searchClient = algoliasearch(
+  process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '',
+  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || ''
+);
+
+const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || 'ruckus_agent';
+
+function ChatContent() {
+  const { messages, status, sendMessage } = useAlgoliaChat({ agentId: AGENT_ID });
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const isLoading = status === 'streaming' || status === 'submitted';
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Focus input on mount
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  const handleSend = () => {
+    const input = inputRef.current?.value;
+    if (!input?.trim()) return;
+    sendMessage({ text: input }); // Use object with text property
+    if (inputRef.current) inputRef.current.value = '';
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  // Helper to extract text from message parts
+  interface MessagePart {
+    type: string;
+    text?: string;
+  }
+
+  interface ChatMessage {
+    content?: string;
+    parts?: MessagePart[];
+  }
+
+  const getMessageText = (msg: unknown) => {
+    const message = msg as ChatMessage;
+    if (message.content) return message.content;
+    if (message.parts && Array.isArray(message.parts)) {
+      return message.parts
+        .filter((p) => p.type === 'text')
+        .map((p) => p.text)
+        .join('');
+    }
+    return '';
+  };
+
+  return (
+    <>
+      <div className={styles.header}>
+        <span className={styles.ruckusName}>Ruckus 2.0</span>
+        <span className={styles.agentMeta}>powered by algolia</span>
+      </div>
+      <div className={styles.messages}>
+        {messages.length === 0 && (
+          <div className={`${styles.message} ${styles.botMessage}`}>
+            I&apos;m here. I&apos;m listening. Ask me anything about Ashley&apos;s work or
+            philosophy.
+          </div>
+        )}
+        {messages.map((msg) => {
+          const text = getMessageText(msg);
+          if (!text) return null;
+          return (
+            <div
+              key={msg.id}
+              className={`${styles.message} ${msg.role === 'user' ? styles.userMessage : styles.botMessage}`}
+            >
+              <ReactMarkdown>{text}</ReactMarkdown>
+            </div>
+          );
+        })}
+        {isLoading && <div className={`${styles.message} ${styles.botMessage}`}>Thinking...</div>}
+        <div ref={messagesEndRef} />
+      </div>
+
+      <div className={styles.inputArea}>
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Type a message..."
+          className={styles.input}
+          onKeyDown={handleKeyDown}
+          disabled={isLoading}
+          aria-label="Chat message"
+        />
+        <button
+          onClick={handleSend}
+          className={styles.sendButton}
+          aria-label="Send"
+          disabled={isLoading}
+        >
+          <Send size={18} />
+        </button>
+      </div>
+    </>
+  );
+}
 
 export default function AIChat() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-
-  useEffect(() => {
-    if (!AGENT_ID && process.env.NODE_ENV !== 'production') {
-      console.warn(
-        'AIChat: NEXT_PUBLIC_ALGOLIA_AGENT_ID is missing. Chat widget will be disabled.'
-      );
-    }
-  }, []);
-
-  // Memoize translations to prevent unnecessary re-renders of the Chat widget
-  const translations = useMemo(
-    () => ({
-      header: {
-        title: 'Ruckus 2.0',
-      },
-      toggleButtonTitle: 'Open AI Chat',
-    }),
-    []
-  );
-
-  useEffect(() => {
-    // Accessibility fix: Inject aria-label into Algolia's Chat toggle button
-    const observer = new MutationObserver(() => {
-      if (typeof document === 'undefined') return;
-
-      const chatWindow = document.querySelector('.ais-Chat-window');
-      const isWindowOpen = !!chatWindow;
-      setIsChatOpen((prev) => (prev === isWindowOpen ? prev : isWindowOpen));
-
-      const toggleBtn = document.querySelector(
-        '.ais-ChatToggleButton, .ais-Chat-toggleButton, [class*="ChatToggleButton"]'
-      );
-      if (toggleBtn) {
-        if (!toggleBtn.hasAttribute('aria-label')) {
-          toggleBtn.setAttribute('aria-label', 'Open AI Chat');
-        }
-        if (!toggleBtn.hasAttribute('data-testid')) {
-          toggleBtn.setAttribute('data-testid', 'ai-chat-toggle');
-        }
-      }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    return () => observer.disconnect();
-  }, []);
-
-  if (!AGENT_ID) {
-    return (
-      <div className={styles.musicWrapper}>
-        <MusicPlayer />
-      </div>
-    );
-  }
+  const { isOpen, toggleChat } = useUI();
 
   return (
     <div className={styles.chatWrapper}>
@@ -78,61 +142,26 @@ export default function AIChat() {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
-            <div className={styles.header}>
-              <span className={styles.ruckusName}>Ruckus</span>
-              <span className={styles.agentMeta}>no memory yet</span>
-            </div>
-            <div className={styles.messages}>
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`${styles.message} ${msg.role === 'bot' ? styles.botMessage : styles.userMessage}`}
-                >
-                  <ReactMarkdown>{msg.text}</ReactMarkdown>
-                </div>
-              ))}
-              {isLoading && (
-                <div className={`${styles.message} ${styles.botMessage}`}>Thinking...</div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-            <div className={styles.inputArea}>
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder="Type a message..."
-                className={styles.input}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                aria-label="Chat message"
-              />
-              <button onClick={handleSend} className={styles.sendButton} aria-label="Send">
-                <Send size={18} />
-              </button>
-            </div>
+            <InstantSearch searchClient={searchClient} indexName="projects">
+              {/* Configure removed to prevent auto-search on 404 index */}
+              <ChatContent />
+            </InstantSearch>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <MusicPlayer />
+      <div className={styles.controlsRow}>
+        <MusicPlayer />
 
-      <button
-        className={`${styles.toggleButton} ${isOpen ? styles.stopPulse : ''}`}
-        onClick={toggleChat}
-        aria-label={isOpen ? 'Close AI Chat' : 'Open AI Chat'}
-        data-testid="ai-chat-toggle"
-      >
-        <Chat
-          agentId={AGENT_ID}
-          translations={translations}
-          headerTitleIconComponent={HeaderIcon}
-          assistantMessageLeadingComponent={AssistantAvatar}
-          userMessageLeadingComponent={UserAvatar}
-          promptFooterComponent={PromptFooter}
-          toggleButtonIconComponent={ToggleIcon}
-        />
-      </InstantSearchNext>
-    </>
+        <button
+          className={`${styles.toggleButton} ${isOpen ? styles.stopPulse : ''}`}
+          onClick={toggleChat}
+          aria-label={isOpen ? 'Close AI Chat' : 'Open AI Chat'}
+          data-testid="ai-chat-toggle"
+        >
+          {isOpen ? '✕' : <LuBrain size={24} />}
+        </button>
+      </div>
+    </div>
   );
 }
