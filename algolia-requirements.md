@@ -49,7 +49,7 @@ Rationale (pragmatic):
 - [ ] Keep existing chat icon behavior (open/close, placement).
 - [x] Use Algolia embedded chat widget as the chat surface.
 - [x] Customize widget styling to match System Notes.
-- [ ] Chat output supports the "System Map Navigator" interaction:
+- [x] Chat output supports the "System Map Navigator" interaction:
   - [x] Direct answer first (short, declarative).
   - [x] Then deterministic "Links" links.
   - [x] Then stop.
@@ -58,7 +58,7 @@ Rationale (pragmatic):
 
 - [x] Retrieval: `K=25`.
 - [x] Total links shown: `max_total=3`.
-- [ ] Buckets and caps:
+- [x] Buckets and caps:
   - [x] **Project**: max 2
   - [x] **System Doc**: max 1
   - [x] **Post**: 0 (future indexing only)
