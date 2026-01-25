@@ -8,6 +8,7 @@ import styles from './AIChat.module.css';
 import { API_URL } from '@/config';
 import { useChat } from '@/context/ChatContext';
 import MusicPlayer from '../MusicPlayer/MusicPlayer';
+import ReactMarkdown from 'react-markdown';
 
 export default function AIChat() {
   const { isOpen, toggleChat, messages, addMessage, isLoading, setIsLoading } = useChat();
@@ -96,7 +97,7 @@ export default function AIChat() {
                   key={index}
                   className={`${styles.message} ${msg.role === 'bot' ? styles.botMessage : styles.userMessage}`}
                 >
-                  {msg.text}
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
                 </div>
               ))}
               {isLoading && (

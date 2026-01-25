@@ -47,4 +47,4 @@ def test_chat_endpoint_failsafe():
         assert response.status_code == 200
         data = response.json()
         assert "reply" in data
-        assert "outside what I know" in data["reply"]
+        assert "network glitch" in data["reply"]

@@ -3,12 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional, Any, Dict, Union
 import os
+import json
 from openai import OpenAI
 import logging
 from dotenv import load_dotenv
 from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
+from algoliasearch.search.client import SearchClient
 
 # Load environment variables
 load_dotenv()
@@ -47,32 +49,21 @@ app.add_middleware(
 # Note: Expects OPENAI_API_KEY environment variable
 client = OpenAI()
 
+# Initialize Algolia client
+ALGOLIA_APP_ID = os.getenv("ALGOLIA_APPLICATION_ID")
+ALGOLIA_API_KEY = os.getenv("ALGOLIA_ADMIN_API_KEY") 
+algolia_client = SearchClient(ALGOLIA_APP_ID, ALGOLIA_API_KEY) if ALGOLIA_APP_ID and ALGOLIA_API_KEY else None
+
+
 # Load system prompt
 # Load system prompt and context
 try:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Base Prompt
-    prompt_path = os.path.join(current_dir, "prompts", "system_prompt.md")
-    with open(prompt_path, "r") as f:
-        base_prompt = f.read()
-
-    # Dynamic Context (Project Narratives)
-    projects_path = os.path.join(current_dir, "prompts", "projects.md")
-    with open(projects_path, "r") as f:
-        projects_content = f.read()
-
-    # Persona Context
-    ashley_path = os.path.join(current_dir, "prompts", "about_ashley.md")
-    with open(ashley_path, "r") as f:
-        ashley_content = f.read()
-
-    # Portfolio Canon
-    portfolio_path = os.path.join(current_dir, "prompts", "portfolio_canon.md")
-    with open(portfolio_path, "r") as f:
-        portfolio_content = f.read()
-        
-    SYSTEM_PROMPT = f"{base_prompt}\n\n{projects_content}\n\n{ashley_content}\n\n{portfolio_content}"
+    # Load RAG System Prompt
+    rag_prompt_path = os.path.join(current_dir, "algolia", "algolia_prompt.md")
+    with open(rag_prompt_path, "r") as f:
+        SYSTEM_PROMPT = f.read()
     
 except FileNotFoundError as e:
     logger.warning(f"File not found during system prompt init: {e}")
@@ -107,20 +98,121 @@ async def health_check():
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     try:
+        messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": request.message},
+        ]
+
+        # Define tools
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "search_indices",
+                    "description": "Search for projects, about info, or system docs. Use this when the user asks a question that requires factual knowledge.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "query": {
+                                "type": "string",
+                                "description": "The search query string",
+                            },
+                            "indices": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "enum": ["projects", "about", "system_docs"],
+                                },
+                                "description": "List of indices to search. Defaults to all if unspecified.",
+                            },
+                        },
+                        "required": ["query"],
+                    },
+                },
+            }
+        ]
+
+        # First LLM call to decide if tools are needed
         completion = client.chat.completions.create(
-            model="gpt-5.2",  # Production model (System Notes Vibe Check approved)
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": request.message},
-            ],
+            model="gpt-4o",  # Using 4o for better tool calling
+            messages=messages,
+            tools=tools,
+            tool_choice="auto",
         )
-        reply = completion.choices[0].message.content
+
+        response_message = completion.choices[0].message
+        tool_calls = response_message.tool_calls
+
+        if tool_calls:
+            # Append assistant's tool call request to history
+            messages.append(response_message)
+
+            for tool_call in tool_calls:
+                function_name = tool_call.function.name
+                function_args = json.loads(tool_call.function.arguments)
+                
+                if function_name == "search_indices":
+                    query = function_args.get("query")
+                    indices_to_search = function_args.get("indices", ["projects", "about", "system_docs"])
+                    
+                    search_results = {}
+                    
+                    if algolia_client:
+                        try:
+                            # Construct multi-search requests
+                            requests = [
+                                {
+                                    "indexName": index_name,
+                                    "query": query,
+                                    "hitsPerPage": 25,
+                                }
+                                for index_name in indices_to_search
+                            ]
+                            
+                            # Execute multi-search
+                            response = await algolia_client.search({"requests": requests})
+                            
+                            # Map results back to index names
+                            # response.results is a list corresponding to requests
+                            if hasattr(response, 'results'):
+                                for i, result in enumerate(response.results):
+                                    index_name = indices_to_search[i]
+                                    search_results[index_name] = result.hits
+                            else:
+                                search_results = {"error": "Unexpected response format from Algolia"}
+                                
+                        except Exception as e:
+                            logger.error(f"Algolia search error: {e}")
+                            search_results = {"error": str(e)}
+                    else:
+                        search_results = {"error": "Algolia client not initialized"}
+
+                    # Append tool result to history
+                    messages.append(
+                        {
+                            "tool_call_id": tool_call.id,
+                            "role": "tool",
+                            "name": function_name,
+                            "content": json.dumps(search_results, default=str),
+                        }
+                    )
+
+            # Second LLM call to generate final answer with tool outputs
+            second_completion = client.chat.completions.create(
+                model="gpt-4o",
+                messages=messages,
+            )
+            reply = second_completion.choices[0].message.content
+        else:
+            # No tool called (Fast Path)
+            reply = response_message.content
+
         return ChatResponse(reply=reply)
+
     except Exception as e:
         logger.error(f"OpenAI API error: {str(e)}")
-        # Fail-safe behavior: graceful degradation
         return ChatResponse(
-            reply="That’s outside what I know right now. This chatbot only knows what Ashley explicitly wired in, and she hasn’t taught me that yet."
+             reply="I seem to be having trouble connecting to my brain. Must be a network glitch."
         )
 
 
