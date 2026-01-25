@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Project, allProjects } from '@/data/projects';
 import ProjectCard from '@/components/ProjectCard/ProjectCard';
 import dynamic from 'next/dynamic';
@@ -10,6 +10,17 @@ import styles from './ProjectGrid.module.css';
 const ExpandedView = dynamic(() => import('@/components/ExpandedView/ExpandedView'), {
   ssr: false,
 });
+
+function parseProjectIdFromHash(hash: string): string | null {
+  const cleaned = hash.startsWith('#') ? hash.slice(1) : hash;
+  if (!cleaned) return null;
+
+  const params = new URLSearchParams(cleaned);
+  const projectId = params.get('project');
+  if (!projectId) return null;
+
+  return projectId;
+}
 
 function parseProjectIdFromHash(hash: string): string | null {
   const cleaned = hash.startsWith('#') ? hash.slice(1) : hash;

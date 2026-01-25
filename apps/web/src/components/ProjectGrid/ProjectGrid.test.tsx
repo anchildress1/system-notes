@@ -5,10 +5,7 @@ import ProjectGrid from './ProjectGrid';
 
 vi.mock('next/image', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  default: ({ fill: _fill, priority: _priority, ...props }: any) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img {...props} alt={props.alt} />
-  ),
+  default: (props: any) => <img {...props} alt={props.alt} />,
 }));
 
 describe('ProjectGrid', () => {
