@@ -222,7 +222,12 @@ export const useSparkles = ({
       clearTimeout(timeoutId);
       try {
         if (app) {
-          if (app.ticker) app.ticker.stop();
+          // Safely stop ticker
+          if (app.ticker && typeof app.ticker.stop === 'function') {
+            app.ticker.stop();
+          } else if (typeof app.stop === 'function') {
+            app.stop();
+          }
 
           try {
             // PIXI v8 destruction - use options object

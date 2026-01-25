@@ -31,6 +31,7 @@ import React from 'react';
 vi.mock('next/image', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   default: ({ src, alt, fill, priority, ...props }: any) => {
+    // eslint-disable-next-line @next/next/no-img-element
     return React.createElement('img', { src, alt, ...props });
   },
 }));
