@@ -171,12 +171,74 @@ async def chat(request: ChatRequest):
                             # Execute multi-search
                             response = await algolia_client.search({"requests": requests})
                             
-                            # Map results back to index names
-                            # response.results is a list corresponding to requests
+                            # Process results
+                            all_hits = []
+                            project_hits = []
+                            doc_hits = []
+                            about_hits = []
+                            
                             if hasattr(response, 'results'):
                                 for i, result in enumerate(response.results):
                                     index_name = indices_to_search[i]
-                                    search_results[index_name] = result.hits
+                                    hits = result.hits
+                                    all_hits.extend(hits)
+                                    
+                                    if index_name == "projects":
+                                        project_hits.extend(hits)
+                                    elif index_name == "system_docs":
+                                        doc_hits.extend(hits)
+                                    elif index_name == "about":
+                                        about_hits.extend(hits)
+                                        
+                                # --- 1. Failure Modes ---
+                                # "Strong match" rule: userScore >= 50 OR unavailable.
+                                strong_matches = []
+                                for hit in all_hits:
+                                    ranking_info = hit.get('_rankingInfo', {})
+                                    user_score = ranking_info.get('userScore')
+                                    if user_score is None or user_score >= 50:
+                                        strong_matches.append(hit)
+                                        
+                                strong_count = len(strong_matches)
+                                
+                                if strong_count == 0:
+                                    # FAILURE MODE: 0 Matches
+                                    search_results = {
+                                        "system_instruction": "SYSTEM INSTRUCTION: No strong matches found. Output 'No strong matches.' as the answer and ask exactly one clarifying question. STOP."
+                                    }
+                                    
+                                elif strong_count == 1:
+                                    # FAILURE MODE: 1 Match
+                                    search_results = {
+                                        "system_instruction": "SYSTEM INSTRUCTION: Only one strong match found. Output 'Only one strong match.' as the first line. Then show the result and ask one follow-up. STOP.",
+                                        "match": strong_matches[0]
+                                    }
+                                    
+                                else:
+                                    # --- 2. Deterministic Links (Capping & Ranking) ---
+                                    # Logic: Projects > System Docs
+                                    # Caps: Max 2 Projects, Max 1 Doc. Total Max 3.
+                                    
+                                    # Sort Projects (tie-break by objectID if needed, but Algolia rank usually suffices)
+                                    # Taking top 2 projects
+                                    top_projects = project_hits[:2]
+                                    
+                                    # Sort Docs (taking top 1)
+                                    top_docs = doc_hits[:1]
+                                    
+                                    # Combine for "Links" section
+                                    links_candidates = top_projects + top_docs
+                                    
+                                    search_results = {
+                                        "context": {
+                                            "about": about_hits,
+                                            "projects": project_hits, # contextual info for answer (all, uncapped)
+                                            "system_docs": doc_hits   # contextual info for answer (all, uncapped)
+                                        },
+                                        "links_candidates": links_candidates,
+                                        "system_instruction": "Use 'context' to answer the user's question. Then, strictly use 'links_candidates' to generate the Links section. Do not link to items not in 'links_candidates'."
+                                    }
+
                             else:
                                 search_results = {"error": "Unexpected response format from Algolia"}
                                 
