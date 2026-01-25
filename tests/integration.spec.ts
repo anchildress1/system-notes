@@ -42,6 +42,41 @@ test.describe('System Notes Integration', () => {
     await expect(roleBadge).toHaveCount(0); // Should be 0 in primary view
   });
 
+  test('accessibility accessiblity check', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .disableRules(['region', 'nested-interactive'])
+      .analyze();
+    expect(accessibilityScanResults.violations).toEqual([]);
+  });
+
+  test('AIChat interaction', async ({ page }) => {
+    await page.goto('/');
+    // Open Chat
+    const toggle = page.getByTestId('ai-chat-toggle');
+    await toggle.click();
+
+    const input = page.getByPlaceholder('Type a message...');
+    await expect(input).toBeVisible();
+
+    // Verify initial focus
+    await expect(input).toBeFocused();
+
+    await input.fill('Hello AI');
+    await page.keyboard.press('Enter');
+
+    // Wait for "Thinking..." to appear (confirm request sent)
+    await expect(page.locator('text=Thinking...')).toBeVisible({ timeout: 10000 });
+
+    // Wait for "Thinking..." to disappear (confirm response received)
+    await expect(page.locator('text=Thinking...')).not.toBeVisible({ timeout: 15000 });
+
+    // Verify focus returns to input (check enabled state as proxy for usability)
+    await expect(input).toBeEnabled();
+  });
+
   test('should open expanded view and verify banner', async ({ page }) => {
     await page.goto('/');
     // Click first card

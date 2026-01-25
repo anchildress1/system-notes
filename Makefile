@@ -20,7 +20,7 @@ setup-python:
 # Run the development environment (Turbo)
 dev:
 	@echo "🚀 Starting development servers..."
-	npm run dev -- --parallel
+	npx turbo run dev --parallel
 
 # Format code (Prettier)
 format:

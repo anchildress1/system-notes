@@ -4,13 +4,11 @@ from pydantic import BaseModel
 from typing import List, Optional, Any, Dict, Union
 import os
 import json
-from openai import OpenAI
 import logging
 from dotenv import load_dotenv
 from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
-from algoliasearch.search.client import SearchClient
 
 # Load environment variables
 from pathlib import Path
@@ -52,31 +50,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize OpenAI client
-# Note: Expects OPENAI_API_KEY environment variable
-client = OpenAI()
-
-# Initialize Algolia client
-ALGOLIA_APP_ID = os.getenv("ALGOLIA_APPLICATION_ID")
-ALGOLIA_API_KEY = os.getenv("ALGOLIA_ADMIN_API_KEY") 
-algolia_client = SearchClient(ALGOLIA_APP_ID, ALGOLIA_API_KEY) if ALGOLIA_APP_ID and ALGOLIA_API_KEY else None
-
-
-# Load system prompt
-# Load system prompt and context
-try:
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Load RAG System Prompt
-    rag_prompt_path = os.path.join(current_dir, "algolia", "algolia_prompt.md")
-    with open(rag_prompt_path, "r") as f:
-        SYSTEM_PROMPT = f.read()
-    
-except FileNotFoundError as e:
-    logger.warning(f"File not found during system prompt init: {e}")
-    SYSTEM_PROMPT = "You are a helpful assistant."
-
-
 class Project(BaseModel):
     id: str
     title: str
@@ -94,238 +67,11 @@ async def health_check():
     return {"status": "ok"}
 
 
-@app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
-    try:
-        messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": request.message},
-        ]
-
-        # Define tools
-        tools = [
-            {
-                "type": "function",
-                "function": {
-                    "name": "search_indices",
-                    "description": "Search for projects, about info, or system docs. Use this when the user asks a question that requires factual knowledge.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "The search query string",
-                            },
-                            "indices": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string",
-                                    "enum": ["projects", "about", "system_docs"],
-                                },
-                                "description": "List of indices to search. Defaults to all if unspecified.",
-                            },
-                        },
-                        "required": ["query"],
-                    },
-                },
-            }
-        ]
-
-        # First LLM call to decide if tools are needed
-        completion = client.chat.completions.create(
-            model="gpt-4o",  # Using 4o for better tool calling
-            messages=messages,
-            tools=tools,
-            tool_choice="auto",
-        )
-
-        response_message = completion.choices[0].message
-        tool_calls = response_message.tool_calls
-
-        if tool_calls:
-            # Append assistant's tool call request to history
-            messages.append(response_message)
-
-            for tool_call in tool_calls:
-                function_name = tool_call.function.name
-                function_args = json.loads(tool_call.function.arguments)
-                
-                if function_name == "search_indices":
-                    query = function_args.get("query")
-                    indices_to_search = function_args.get("indices", ["projects", "about", "system_docs"])
-                    
-                    search_results = {}
-                    
-                    if algolia_client:
-                        try:
-                            # Construct multi-search requests
-                            requests = [
-                                {
-                                    "indexName": index_name,
-                                    "query": query,
-                                    "hitsPerPage": 25,
-                                }
-                                for index_name in indices_to_search
-                            ]
-                            
-                            # Execute multi-search
-                            response = await algolia_client.search({"requests": requests})
-                            
-                            # Process results
-                            all_hits = []
-                            project_hits = []
-                            doc_hits = []
-                            about_hits = []
-                            
-                            if hasattr(response, 'results'):
-                                for i, result in enumerate(response.results):
-                                    index_name = indices_to_search[i]
-                                    hits = result.hits
-                                    all_hits.extend(hits)
-                                    
-                                    if index_name == "projects":
-                                        project_hits.extend(hits)
-                                    elif index_name == "system_docs":
-                                        doc_hits.extend(hits)
-                                    elif index_name == "about":
-                                        about_hits.extend(hits)
-                                        
-                                # --- 1. Failure Modes ---
-                                # "Strong match" rule: userScore >= 50 OR unavailable.
-                                strong_matches = []
-                                for hit in all_hits:
-                                    ranking_info = hit.get('_rankingInfo', {})
-                                    user_score = ranking_info.get('userScore')
-                                    if user_score is None or user_score >= 50:
-                                        strong_matches.append(hit)
-                                        
-                                strong_count = len(strong_matches)
-                                
-                                if strong_count == 0:
-                                    # FAILURE MODE: 0 Matches
-                                    search_results = {
-                                        "system_instruction": "SYSTEM INSTRUCTION: No strong matches found. Output 'No strong matches.' as the answer and ask exactly one clarifying question. STOP."
-                                    }
-                                    
-                                elif strong_count == 1:
-                                    # FAILURE MODE: 1 Match
-                                    search_results = {
-                                        "system_instruction": "SYSTEM INSTRUCTION: Only one strong match found. Output 'Only one strong match.' as the first line. Then show the result and ask one follow-up. STOP.",
-                                        "match": strong_matches[0]
-                                    }
-                                    
-                                else:
-                                    # --- 2. Deterministic Links (Capping & Ranking) ---
-                                    # Logic: Projects > System Docs
-                                    # Caps: Max 2 Projects, Max 1 Doc. Total Max 3.
-                                    
-                                    # Sort Projects (tie-break by objectID if needed, but Algolia rank usually suffices)
-                                    # Taking top 2 projects
-                                    top_projects = project_hits[:2]
-                                    
-                                    # Sort Docs (taking top 1)
-                                    top_docs = doc_hits[:1]
-                                    
-                                    # Combine for "Links" section
-                                    links_candidates = top_projects + top_docs
-                                    
-                                    search_results = {
-                                        "context": {
-                                            "about": about_hits,
-                                            "projects": project_hits, # contextual info for answer (all, uncapped)
-                                            "system_docs": doc_hits   # contextual info for answer (all, uncapped)
-                                        },
-                                        "links_candidates": links_candidates,
-                                        "system_instruction": "Use 'context' to answer the user's question. Then, strictly use 'links_candidates' to generate the Links section. Do not link to items not in 'links_candidates'."
-                                    }
-
-                            else:
-                                search_results = {"error": "Unexpected response format from Algolia"}
-                                
-                        except Exception as e:
-                            logger.error(f"Algolia search error: {e}")
-                            search_results = {"error": str(e)}
-                    else:
-                        search_results = {"error": "Algolia client not initialized"}
-
-                    # Append tool result to history
-                    messages.append(
-                        {
-                            "tool_call_id": tool_call.id,
-                            "role": "tool",
-                            "name": function_name,
-                            "content": json.dumps(search_results, default=str),
-                        }
-                    )
-
-            # Second LLM call to generate final answer with tool outputs
-            second_completion = client.chat.completions.create(
-                model="gpt-4o",
-                messages=messages,
-            )
-            reply = second_completion.choices[0].message.content
-        else:
-            # No tool called (Fast Path)
-            reply = response_message.content
-
-        return ChatResponse(reply=reply)
-
-    except Exception as e:
-        logger.error(f"OpenAI API error: {str(e)}")
-        return ChatResponse(
-             reply="I seem to be having trouble connecting to my brain. Must be a network glitch."
-        )
-
-
-def parse_projects(content: str) -> List[Project]:
-    projects = []
-    current_project = {}
-    lines = content.split("\n")
-
-    for line in lines:
-        line = line.strip()
-        if not line:
-            continue
-
-        if line.startswith("## "):
-            if current_project:
-                projects.append(Project(**current_project))
-            current_project = {
-                "id": line[3:]
-                .strip()
-                .lower()
-                .replace(" ", "-")
-                .replace(".", "")
-                .replace("(", "")
-                .replace(")", ""),
-                "title": line[3:].strip(),
-                "description": "",
-                "github_url": None,
-            }
-        elif line.startswith("**Description**"):
-            pass  # Skip the header
-        elif line.startswith("**") and not line.startswith("**Description**"):
-            pass  # Skip other headers for now
-        elif current_project and "description" in current_project:
-            # Simple heuristic: append to description if not a header
-            if not line.startswith("**") and not line.startswith("---"):
-                current_project["description"] += line + " "
-
-    if current_project:
-        projects.append(Project(**current_project))
-
-    # Clean up descriptions
-    for p in projects:
-        p.description = p.description.strip()
-
-    return projects
-
-
 @app.get("/projects", response_model=List[Project])
 async def get_projects():
     try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(current_dir, "data", "projects.json")
+        file_path = os.path.join(current_dir, "algolia", "projects", "projects.json")
         
         if not os.path.exists(file_path):
              logger.error("projects.json not found")
@@ -343,29 +89,15 @@ async def get_projects():
             # url -> github_url
             projects.append(Project(
                 id=item.get("objectID"),
-                title=item.get("title") or item.get("name"),
-                description=item.get("summary") or item.get("what_it_is", ""),
-                github_url=item.get("url") or item.get("repo_url")
+                title=item.get("title"),
+                description=item.get("summary", ""),
+                github_url=item.get("url")
             ))
             
         return projects
     except Exception as e:
         logger.error(f"Error loading projects: {e}")
         return []
-
-
-@app.get("/system/doc/{doc_path:path}")
-async def get_system_doc(doc_path: str):
-    try:
-        # Security Rule: Use Library Sanitization (Werkzeug)
-        # We split the path user provided and sanitize each component.
-        # secure_filename() ensures no component contains separators or traversal chars ('..')
-        parts = doc_path.split("/")
-        safe_parts = [secure_filename(part) for part in parts if part and part not in (".", "..")]
-        
-        # If the resulting path list is empty (e.g. user sent "///" or ".."), return error
-        if not safe_parts:
-             return JSONResponse(status_code=400, content={"error": "Invalid path components"})
 
 
 @app.get("/system/doc/{file_path:path}")
@@ -405,4 +137,5 @@ async def get_system_doc(file_path: str) -> Union[List[Any], Dict[str, Any]]:
     except Exception as e:
         logger.error(f"Error serving system doc: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
 

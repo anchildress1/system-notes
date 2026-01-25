@@ -8,9 +8,9 @@ MOCK_PROJECTS_JSON = """
 [
   {
     "objectID": "1",
-    "name": "Project One",
-    "what_it_is": "A test project description",
-    "repo_url": "http://example.com"
+    "title": "Project One",
+    "summary": "A test project description",
+    "url": "http://example.com"
   }
 ]
 """
