@@ -83,7 +83,8 @@
     display: inline-flex;
     align-items: center;
     padding: 0.35rem 0.8rem;
-    height: 32px;
+    min-height: 32px;
+    height: auto;
     font-size: 0.85rem;
     background: hsl(270, 70%, 40%);
     /* Darkened for A11y */

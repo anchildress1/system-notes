@@ -24,7 +24,7 @@ export default function MusicPlayer() {
   };
 
   return (
-    <div className={styles.playerWrapper}>
+    <div className={styles.playerWrapper} data-testid="music-player">
       <button
         className={`${styles.playButton} ${isPlaying ? styles.active : ''}`}
         onClick={togglePlay}
@@ -33,6 +33,7 @@ export default function MusicPlayer() {
             ? "Pause 'I Build Things' by Twisted Game Songs"
             : "Play 'I Build Things' by Twisted Game Songs (Explicit Content). Muted by default."
         }
+        data-testid="play-button"
       >
         {isPlaying ? <LuPause size={24} /> : <LuPlay size={24} />}
         <span className={styles.explicitBadge} aria-hidden="true">
@@ -50,7 +51,7 @@ export default function MusicPlayer() {
         ref={audioRef}
         src="/audio/Twisted Game Songs - I Build Things.mp3"
         onEnded={handleEnded}
-        preload="none"
+        preload="metadata"
       />
     </div>
   );

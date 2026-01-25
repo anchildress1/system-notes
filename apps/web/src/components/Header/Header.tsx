@@ -26,6 +26,7 @@ export default function Header() {
           href="https://dev.to/anchildress1"
           target="_blank"
           rel="noopener noreferrer"
+          data-testid="blog-link"
           className={styles.ctaButton}
         >
           <Code size={16} style={{ marginRight: '0.5rem' }} />
