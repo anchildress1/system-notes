@@ -15,13 +15,15 @@ commit-msg:
       run: npx --no-install commitlint --edit
 
 pre-push:
-  parallel: true
+  parallel: false
   commands:
+    build:
+      run: npm run build
     test:
       run: npm run test
-    e2e:
-      run: npx playwright test
     bench:
       run: npm run bench -- -- --run
+    e2e:
+      run: npx playwright test
     # lighthouse:
     #   run: npx @lhci/cli autorun
