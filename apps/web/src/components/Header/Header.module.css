@@ -86,14 +86,14 @@
     min-height: 32px;
     height: auto;
     font-size: 0.85rem;
-    background: hsl(270, 70%, 40%);
+    background: hsl(var(--color-bg-elevated));
     /* Darkened for A11y */
     color: white;
     border-radius: 4px;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s ease;
-    border: 1px solid transparent;
+    border: 1px solid hsl(var(--color-border));
 }
 
 .ctaButton:hover {
