@@ -50,38 +50,38 @@ Rationale (pragmatic):
 - [x] Use Algolia embedded chat widget as the chat surface.
 - [x] Customize widget styling to match System Notes.
 - [ ] Chat output supports the "System Map Navigator" interaction:
-  - [ ] Direct answer first (short, declarative).
-  - [ ] Then deterministic "Links" links.
-  - [ ] Then stop.
+  - [x] Direct answer first (short, declarative).
+  - [x] Then deterministic "Links" links.
+  - [x] Then stop.
 
 ## Deterministic "Links" (Hard Rules)
 
-- [ ] Retrieval: `K=25`.
-- [ ] Total links shown: `max_total=3`.
+- [x] Retrieval: `K=25`.
+- [x] Total links shown: `max_total=3`.
 - [ ] Buckets and caps:
-  - [ ] **Project**: max 2
-  - [ ] **System Doc**: max 1
-  - [ ] **Post**: 0 (future indexing only)
-- [ ] Ordering:
-  - [ ] Projects first, then System Doc.
-- [ ] Ranking determinism:
-  - [ ] Boost by `node_type`: Project > System Doc > Post
-  - [ ] Boost exact matches on: `title`, `aliases`, `tags`
-  - [ ] Stable tie-break: `updated_at` desc, then `slug` asc (or `objectID` asc)
+  - [x] **Project**: max 2
+  - [x] **System Doc**: max 1
+  - [x] **Post**: 0 (future indexing only)
+- [x] Ordering:
+  - [x] Projects first, then System Doc.
+- [x] Ranking determinism:
+  - [x] Boost by `node_type`: Project > System Doc > Post
+  - [x] Boost exact matches on: `title`, `aliases`, `tags`
+  - [x] Stable tie-break: `updated_at` desc, then `slug` asc (or `objectID` asc)
 
 ## Failure Is A Feature (Codified)
 
 Strong match rule (short, no fluff):
 
-- [ ] A result is a strong match if `rankingInfo.userScore >= 50`.
-- [ ] If `userScore` is unavailable, any hit counts as strong.
-- [ ] If `nbHits == 0`, trigger failure mode.
+- [x] A result is a strong match if `rankingInfo.userScore >= 50`.
+- [x] If `userScore` is unavailable, any hit counts as strong.
+- [x] If `nbHits == 0`, trigger failure mode.
 
 Failure modes:
 
-- [ ] **0 strong matches**: output "No strong matches." Ask exactly one clarifying question. Stop.
-- [ ] **1 strong match**: output "Only one strong match." Show the single result. Stop.
-- [ ] Otherwise: normal answer + Links.
+- [x] **0 strong matches**: output "No strong matches." Ask exactly one clarifying question. Stop.
+- [x] **1 strong match**: output "Only one strong match." Show the single result. Stop.
+- [x] Otherwise: normal answer + Links.
 
 ## Prompt Contract (Append-only)
 
