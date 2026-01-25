@@ -1,8 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
-from werkzeug.utils import secure_filename
+from typing import List, Optional, Any, Dict, Union
 import os
 import json
 import logging
@@ -114,28 +113,42 @@ async def get_system_doc(doc_path: str):
         if not safe_parts:
              return JSONResponse(status_code=400, content={"error": "Invalid path components"})
 
-        # Reconstruct path using pathlib, anchored to api_root
-        api_root = Path(__file__).resolve().parent
-        target_path = api_root.joinpath(*safe_parts).resolve()
+
+@app.get("/system/doc/{file_path:path}")
+async def get_system_doc(file_path: str) -> Union[List[Any], Dict[str, Any]]:
+    try:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        base_dir = os.path.join(current_dir, "algolia")
+        # sanitize and join path
+        target_path = os.path.abspath(os.path.join(base_dir, file_path))
         
-        # Security Rule 2.1: Safe Extensions Only
-        # Check the *resolved* path's extension/name just to be sure, although secure_filename handles strictness.
-        ALLOWED_EXTENSIONS = {".md", ".json", ".txt"}
-        if not any(str(target_path.name).endswith(ext) for ext in ALLOWED_EXTENSIONS):
-             logger.warning(f"File access blocked (disallowed extension): {target_path}")
-             return JSONResponse(status_code=400, content={"error": "File type not allowed"})
-             
-        # Security Rule 1.4: Resolve and Verify Root (Defense in Depth)
-        if not target_path.is_relative_to(api_root):
-             logger.warning(f"Path traversal attempt blocked (escaped root): {doc_path}")
-             return JSONResponse(status_code=400, content={"error": "Invalid path resolution"})
-        
-        if not target_path.is_file():
-             return JSONResponse(status_code=404, content={"error": "Document not found"})
-             
-        content = target_path.read_text(encoding="utf-8")
+        logger.info(f"Docs Debug - Request: {file_path}")
+        logger.info(f"Docs Debug - Base: {base_dir}")
+        logger.info(f"Docs Debug - Target: {target_path}")
+        logger.info(f"Docs Debug - Exists: {os.path.exists(target_path)}")
+
+        # Security check: ensure target_path is within base_dir
+        if not target_path.startswith(base_dir):
+            logger.warning(f"Access attempt outside algolia directory: {file_path}")
+            raise HTTPException(status_code=403, detail="Access denied")
             
-        return {"content": content, "format": "markdown", "path": "/".join(safe_parts)}
+        if not os.path.exists(target_path):
+            raise HTTPException(status_code=404, detail="Document not found")
+            
+        if not os.path.isfile(target_path):
+             raise HTTPException(status_code=400, detail="Not a file")
+
+        # Basic extension check - can be expanded
+        if not target_path.lower().endswith(('.json', '.md', '.mmd')):
+             raise HTTPException(status_code=400, detail="Unsupported file type")
+
+        with open(target_path, "r") as f:
+            # Return raw content to preserve line numbers and formatting for the viewer
+            return {"content": f.read(), "format": "text", "path": file_path}
+
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"Error serving doc: {e}")
-        return JSONResponse(status_code=500, content={"error": "Internal server error"})
+        logger.error(f"Error serving system doc: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+

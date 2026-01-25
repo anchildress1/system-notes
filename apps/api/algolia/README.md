@@ -6,14 +6,15 @@ This folder tracks all Algolia index settings for reproducibility.
 
 - **`projects`** — 9 records, avg 1.5KB
 - **`about`** — 27 records, avg 800 bytes
+- **`system_docs`** — 36 records, JSON source artifacts with line anchors
 
 ## Files
 
-- `about/` — About index data + tests (about.json, about.test.js)
-- `projects/` — Projects index data + tests (projects.json, projects.test.js)
+- `about/` — About index data + tests (index.json, about.test.js)
+- `projects/` — Projects index data + tests (index.json, projects.test.js)
 - `projects-settings.json` — Full index settings for `projects`
 - `about-settings.json` — Full index settings for `about`
-- `upload.sh` — Script to upload indices + settings via REST API
+- `upload.sh` — Script to upload indices + settings via REST API (Deprecated, use MCP or root scripts)
 
 ## Searchable Attributes (Tier Order)
 
@@ -32,6 +33,12 @@ This folder tracks all Algolia index settings for reproducibility.
 3. `tags`
 4. `section`
 
+### `system_docs`
+
+1. `title`
+2. `tags`
+3. `content`
+
 **Note:** The `data` object in `about` records is opaque (not searchable). Extract to top-level or create a separate index if specific `data.*` keys need search.
 
 ## Manual Upload (REST API)
@@ -40,7 +47,7 @@ This folder tracks all Algolia index settings for reproducibility.
 
 ```bash
 # Projects index
-cat projects/projects.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
+cat projects/index.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
   curl -X POST "https://${ALGOLIA_APPLICATION_ID}.algolia.net/1/indexes/projects/batch" \
   -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
   -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
@@ -48,7 +55,7 @@ cat projects/projects.json | jq '{requests: [.[] | {action: "updateObject", body
   --data-binary @-
 
 # About index
-cat about/about.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
+cat about/index.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
   curl -X POST "https://${ALGOLIA_APPLICATION_ID}.algolia.net/1/indexes/about/batch" \
   -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
   -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \

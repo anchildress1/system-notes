@@ -30,11 +30,15 @@ export async function getProjects(): Promise<Project[]> {
 export async function getSystemDoc(path: string): Promise<SystemDoc | null> {
   try {
     const url = `${API_URL}/system/doc/${path}`;
+    console.log(`[SystemDoc] Fetching: ${url}`);
 
     const res = await fetch(url, { cache: 'no-store' });
 
     if (!res.ok) {
-      const text = await res.text().catch(() => '');
+      console.warn(`[SystemDoc] Error ${res.status}: ${res.statusText}`);
+      // Try to read body for detail
+      const text = await res.text();
+      console.warn(`[SystemDoc] Response: ${text}`);
       return {
         content: '',
         format: 'text',
