@@ -47,8 +47,8 @@ Rationale (pragmatic):
 - [x] Research: user personalization based on previous interactions or session context (e.g. "Welcome back, [Name]" or referencing prior topics).
 
 - [ ] Keep existing chat icon behavior (open/close, placement).
-- [ ] Use Algolia embedded chat widget as the chat surface.
-- [ ] Customize widget styling to match System Notes.
+- [x] Use Algolia embedded chat widget as the chat surface.
+- [x] Customize widget styling to match System Notes.
 - [ ] Chat output supports the "System Map Navigator" interaction:
   - [ ] Direct answer first (short, declarative).
   - [ ] Then deterministic "Links" links.
@@ -128,6 +128,6 @@ Failure modes:
 
 ## Security / Privacy
 
-- [ ] No secrets committed.
-- [ ] If any auth/memory features require keys, they live in `.env` only.
-- [ ] Chat must not claim facts not present in `about`/`projects`/`system_docs`.
+- [x] No secrets committed.
+- [x] If any auth/memory features require keys, they live in `.env` only.
+- [x] Chat must not claim facts not present in `about`/`projects`/`system_docs`.

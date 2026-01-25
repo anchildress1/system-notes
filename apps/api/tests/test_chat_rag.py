@@ -1,4 +1,5 @@
 import pytest
+import json
 from unittest.mock import MagicMock, patch
 from fastapi.testclient import TestClient
 from main import app
@@ -46,25 +47,21 @@ def test_chat_search_path(mock_openai, mock_algolia):
 
     # Mock Algolia search result
     # response.results needs to be a list of objects with .hits property
-    mock_result = MagicMock()
-    mock_result.hits = [{"title": "System Notes"}]
+    # We need to simulate the multi-search response structure: results array corresponding to indices
+    # indices: ["projects", "about", "system_docs"]
+    
+    mock_result_proj = MagicMock()
+    mock_result_proj.hits = [{"title": "System Notes Project", "objectID": "1", "_rankingInfo": {"userScore": 100}}]
+    
+    mock_result_about = MagicMock()
+    mock_result_about.hits = []
+    
+    mock_result_docs = MagicMock()
+    mock_result_docs.hits = [{"title": "Doc 1", "_rankingInfo": {"userScore": 60}}]
     
     mock_search_response = MagicMock()
-    mock_search_response.results = [mock_result]
+    mock_search_response.results = [mock_result_proj, mock_result_about, mock_result_docs]
     
-    mock_algolia.search.return_value = mock_search_response
-
-    # Since main.py uses await, we need the mock return value to be awaitable if it wasn't mocked as AsyncMock automatically
-    # But usually MagicMock isn't awaitable. We should use AsyncMock if possible or simulate it.
-    # However, patch("main.algolia_client") creates a MagicMock.
-    # To fix await in main.py call: await algolia_client.search(...)
-    # We need mock_algolia.search to be an AsyncMock or return a future.
-    # We can use AsyncMock explicitly in the fixture or here.
-
-    # Let's verify if main.py imports SearchClient which is a class.
-    # The fixture mocks the instance 'algolia_client'.
-    
-    # We need to make sure search returns an awaitable.
     async def async_return(*args, **kwargs):
         return mock_search_response
     mock_algolia.search.side_effect = async_return
@@ -76,6 +73,88 @@ def test_chat_search_path(mock_openai, mock_algolia):
     
     # Verify Algolia was called
     mock_algolia.search.assert_called_once()
+
+
+def test_chat_failure_mode_zero_matches(mock_openai, mock_algolia):
+    # Simulate search tool call
+    tool_call = MagicMock()
+    tool_call.function.name = "search_indices"
+    tool_call.function.arguments = '{"query": "unknown"}'
+
+    first_response = MagicMock()
+    first_response.choices[0].message.tool_calls = [tool_call]
+    first_response.choices[0].message.content = None
+    
+    # Second response (simulated LLM reading the system instruction)
+    second_response = MagicMock()
+    second_response.choices[0].message.content = "No strong matches. Can you clarify?"
+
+    mock_openai.chat.completions.create.side_effect = [first_response, second_response]
+    
+    # Mock Zero hits
+    mock_result_empty = MagicMock()
+    mock_result_empty.hits = []
+    
+    mock_search_response = MagicMock()
+    mock_search_response.results = [mock_result_empty, mock_result_empty, mock_result_empty]
+    
+    async def async_return(*args, **kwargs):
+        return mock_search_response
+    mock_algolia.search.side_effect = async_return
+
+    response = client.post("/chat", json={"message": "Search unknown"})
+    assert response.status_code == 200
+    assert "No strong matches" in response.json()["reply"]
+
+
+def test_chat_capping_logic(mock_openai, mock_algolia):
+    # Simulate search tool call
+    tool_call = MagicMock()
+    tool_call.function.name = "search_indices"
+    tool_call.function.arguments = '{"query": "many projects"}'
+
+    first_response = MagicMock()
+    first_response.choices[0].message.tool_calls = [tool_call]
+    first_response.choices[0].message.content = None
+    
+    second_response = MagicMock()
+    second_response.choices[0].message.content = "Here are the links."
+    
+    mock_openai.chat.completions.create.side_effect = [first_response, second_response]
+    
+    # Mock 5 projects (should cap at 2)
+    projects = [{"title": f"Proj {i}", "_rankingInfo": {"userScore": 80}} for i in range(5)]
+    mock_result_proj = MagicMock()
+    mock_result_proj.hits = projects
+    
+    # Mock 2 Docs (should cap at 1)
+    docs = [{"title": f"Doc {i}", "_rankingInfo": {"userScore": 70}} for i in range(2)]
+    mock_result_docs = MagicMock()
+    mock_result_docs.hits = docs
+    
+    mock_result_about = MagicMock()
+    mock_result_about.hits = []
+    
+    mock_search_response = MagicMock()
+    mock_search_response.results = [mock_result_proj, mock_result_about, mock_result_docs]
+    
+    async def async_return(*args, **kwargs):
+        return mock_search_response
+    mock_algolia.search.side_effect = async_return
+
+    client.post("/chat", json={"message": "Show limits"})
+    
+    # Inspect the tool output passed back to LLM
+    # The last call to openai.create contains the history including tool output
+    call_args = mock_openai.chat.completions.create.call_args
+    messages = call_args[1]["messages"]
+    tool_msg = messages[-1]
+    content = json.loads(tool_msg["content"])
+    
+    # Verify Capping
+    assert len(content["links_candidates"]) == 3 # 2 proj + 1 doc
+    assert len([link for link in content["links_candidates"] if "Proj" in link["title"]]) == 2
+    assert len([link for link in content["links_candidates"] if "Doc" in link["title"]]) == 1
 
 
 def test_chat_algolia_error_handling(mock_openai, mock_algolia):
