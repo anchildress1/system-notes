@@ -17,6 +17,7 @@ vi.mock('react-instantsearch', async (importOriginal) => {
     InstantSearch: ({ children }: { children: React.ReactNode }) => (
       <div data-testid="instant-search-mock">{children}</div>
     ),
+    Configure: () => null,
     useChat: () => mockUseChat(),
   };
 });
@@ -39,6 +40,8 @@ describe('AIChat Widget Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     window.HTMLElement.prototype.scrollIntoView = vi.fn();
+    // Clear sessionStorage to ensure clean test state
+    window.sessionStorage.clear();
   });
 
   const renderComponent = () => {

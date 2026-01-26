@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
 import { LuBrain } from 'react-icons/lu';
@@ -9,7 +9,8 @@ import { useChat as useUI } from '@/context/ChatContext';
 import MusicPlayer from '../MusicPlayer/MusicPlayer';
 import ReactMarkdown from 'react-markdown';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { InstantSearch, useChat as useAlgoliaChat } from 'react-instantsearch';
+import { InstantSearch, useChat as useAlgoliaChat, Configure } from 'react-instantsearch';
+import { getOrCreateUserToken } from '@/utils/userToken';
 
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '',
@@ -20,6 +21,7 @@ const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || 'ruckus_agent';
 
 function ChatContent() {
   const { messages, status, sendMessage } = useAlgoliaChat({ agentId: AGENT_ID });
+  const [userToken] = useState(() => getOrCreateUserToken());
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -84,6 +86,7 @@ function ChatContent() {
 
   return (
     <>
+      <Configure userToken={userToken} clickAnalytics />
       <div className={styles.header}>
         <span className={styles.ruckusName}>Ruckus 2.0</span>
         <span className={styles.agentMeta}>powered by algolia</span>
@@ -103,7 +106,44 @@ function ChatContent() {
               key={msg.id}
               className={`${styles.message} ${msg.role === 'user' ? styles.userMessage : styles.botMessage}`}
             >
-              <ReactMarkdown>{text}</ReactMarkdown>
+              <ReactMarkdown
+                components={{
+                  a: ({ href, children }) => {
+                    const isInternal =
+                      href?.startsWith('/') || href?.startsWith(window.location.origin);
+                    if (isInternal && href) {
+                      return (
+                        <a
+                          href={href}
+                          onClick={(e) => {
+                            // Let the browser handle the navigation, but don't close the chat
+                            // Actually, Next.js 'Link' or router push is better but we are inside Markdown
+                            // Standard <a> will cause full reload.
+                            // We should use next/router or window.location if we want full reload (which preserves state now)
+                            // or preventDefault and use router.push for SPA nav (preferred).
+                            // BUT, the user said "link is broken and agent is not opening on the same page"
+                            // If we use standard <a>, it reloads. Since we persist isOpen now, it will reopen.
+                            // However, SPA nav is smoother.
+                            // Let's use standard anchor behavior because we fixed persistence.
+                            // The user's issue was likely that the reload *closed* the chat.
+                            // Now that we persist isOpen, a reload is fine, but SPA is better.
+                            // Let's stick to standard behavior for simplicity/robustness first.
+                          }}
+                        >
+                          {children}
+                        </a>
+                      );
+                    }
+                    return (
+                      <a href={href} target="_blank" rel="noopener noreferrer">
+                        {children}
+                      </a>
+                    );
+                  },
+                }}
+              >
+                {text}
+              </ReactMarkdown>
             </div>
           );
         })}
