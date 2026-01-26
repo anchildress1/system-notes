@@ -14,18 +14,20 @@
 }
 
 .title {
-    font-family: var(--font-mono);
+    /* font-family: var(--font-mono), 'Courier New', monospace; */
+    font-family: monospace;
     /* Or a heavier display font if available */
     font-size: clamp(2rem, 5vw, 4rem);
     font-weight: 800;
-    color: var(--foreground);
-    text-transform: uppercase;
-    letter-spacing: -0.05em;
+    color: #ffffff;
+    /* hsl(var(--color-text-primary)); */
     line-height: 0.9;
     position: relative;
     z-index: 10;
     pointer-events: auto;
     /* Allow hover */
+    opacity: 1;
+    visibility: visible;
 }
 
 .subtitle {
@@ -39,7 +41,8 @@
     font-style: italic;
     transform: rotate(-2deg);
     /* "Note" style */
-    opacity: 0.8;
+    opacity: 1 !important;
+    visibility: visible !important;
     position: relative;
     z-index: 10;
 }

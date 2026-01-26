@@ -1,21 +1,20 @@
 .card {
     position: relative;
-    background: hsl(var(--color-bg-surface));
-    border-radius: 12px;
+    background: rgba(30, 31, 36, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
     /* Sharper, more technical */
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: transform 0.4s var(--ease-morph), box-shadow 0.4s var(--ease-morph);
-    cursor: pointer;
     height: 100%;
+    cursor: pointer;
     box-shadow: var(--shadow-card);
-    border: 1px solid transparent;
+    transition: transform 0.3s var(--ease-spring), box-shadow 0.3s ease;
 }
 
 .card:hover {
-    transform: translateY(-4px);
-    /* Subtler lift */
     background: hsl(var(--color-bg-elevated));
     box-shadow: var(--shadow-bento), 0 0 20px hsl(var(--color-accent-purple) / 0.1);
     border-color: hsl(var(--color-accent-purple) / 0.3);

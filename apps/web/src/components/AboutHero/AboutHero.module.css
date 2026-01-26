@@ -22,7 +22,7 @@
     font-size: clamp(1.5rem, 3vw, 2.5rem);
     /* Reduced size since it is now a subtitle */
     font-weight: 800;
-    color: var(--foreground);
+    color: hsl(var(--color-text-primary));
     line-height: 1.2;
     pointer-events: auto;
     opacity: 0.9;

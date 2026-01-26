@@ -11,7 +11,9 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
 # Load environment variables
-load_dotenv()
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_env = os.path.join(current_dir, "../../.env")
+load_dotenv(root_env)
 
 app = FastAPI(title="System Notes API", version="0.1.0")
 
@@ -108,7 +110,7 @@ async def health_check():
 async def chat(request: ChatRequest):
     try:
         completion = client.chat.completions.create(
-            model="gpt-5.2",  # Production model (System Notes Vibe Check approved)
+            model="gpt-4o",  # Production model (System Notes Vibe Check approved)
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": request.message},

@@ -10,7 +10,7 @@
     position: relative;
     z-index: 10000;
     font-size: 0.85rem;
-    color: hsl(var(--color-text-muted));
+    color: hsl(var(--color-text-secondary));
 }
 
 .left {

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Particle } from '../components/GlitterBomb/GlitterBomb';
+import { Particle } from '@/types/sparkles';
 
 interface UseSparklesOptions {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -27,6 +27,9 @@ export const useSparkles = ({
     // Feature detect mobile for optimizations
     const isMobile =
       typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
+
+    // Completely disable sparkles on mobile for maximum performance
+    if (isMobile) return;
 
     const initPixi = async () => {
       try {
@@ -112,7 +115,7 @@ export const useSparkles = ({
 
     // Use simple setTimeout for lazy load to avoid requestIdleCallback instability
     // Delay longer on mobile to avoid blocking main thread during initial load (improves Lighthouse Performance)
-    const timeoutId = setTimeout(initPixi, isMobile ? 2500 : 100);
+    const timeoutId = setTimeout(initPixi, isMobile ? 5000 : 100);
 
     // Intersection Observer to pause rendering when out of view
     const observer = new IntersectionObserver(

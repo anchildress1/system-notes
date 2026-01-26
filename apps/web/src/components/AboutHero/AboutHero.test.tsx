@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import AboutHero from './AboutHero';
 
 // Mock PIXI.js
@@ -14,6 +14,7 @@ vi.mock('pixi.js', () => {
       };
       ticker = {
         add: vi.fn(),
+        stop: vi.fn(),
       };
       destroy = vi.fn();
     },
@@ -27,6 +28,14 @@ vi.mock('pixi.js', () => {
 describe('AboutHero Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Ensure desktop environment for sparkles to init
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 1024,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (window as any).ontouchstart;
   });
 
   // Glitter bomb test removed as it depended on clicking the name which is moved out of AboutHero
@@ -45,20 +54,20 @@ describe('AboutHero Component', () => {
     expect(img).toHaveAttribute('src');
 
     // Wait for sparkles to init (increases coverage)
-    // Wait for sparkles to init (increases coverage)
-    await import('@testing-library/react').then(async ({ waitFor, fireEvent }) => {
-      await waitFor(() => {
+    await waitFor(
+      () => {
         const canvas = container.querySelector('canvas');
         expect(canvas).toBeInTheDocument();
-      });
+      },
+      { timeout: 3000 }
+    );
 
-      const hero = container.firstChild;
-      if (hero) {
-        fireEvent.mouseMove(hero, { clientX: 50, clientY: 50 });
-        fireEvent.touchMove(hero, { touches: [{ clientX: 50, clientY: 50 }] });
-        // Wait for async interaction loop (import('pixi.js') is async)
-        await new Promise((resolve) => setTimeout(resolve, 50));
-      }
-    });
+    const hero = container.firstChild;
+    if (hero) {
+      fireEvent.mouseMove(hero, { clientX: 50, clientY: 50 });
+      fireEvent.touchMove(hero, { touches: [{ clientX: 50, clientY: 50 }] });
+      // Wait for async interaction loop (import('pixi.js') is async)
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
   });
 });

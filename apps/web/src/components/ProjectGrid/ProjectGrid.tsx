@@ -4,8 +4,12 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Project, allProjects } from '@/data/projects';
 import ProjectCard from '@/components/ProjectCard/ProjectCard';
-import ExpandedView from '@/components/ExpandedView/ExpandedView';
+import dynamic from 'next/dynamic';
 import styles from './ProjectGrid.module.css';
+
+const ExpandedView = dynamic(() => import('@/components/ExpandedView/ExpandedView'), {
+  ssr: false,
+});
 
 const container = {
   hidden: { opacity: 0 },
@@ -23,27 +27,17 @@ export default function ProjectGrid() {
   return (
     <>
       <section className={styles.gridSection}>
-        <motion.div
-          className={styles.grid}
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-        >
+        <div className={styles.grid}>
           {allProjects.map((p) => (
-            <motion.div
-              key={p.id}
-              variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
-              className={styles.cardWrapper}
-            >
+            <div key={p.id} className={styles.cardWrapper}>
               <ProjectCard
                 project={p}
                 onSelect={setSelectedProject}
                 priority={allProjects.indexOf(p) < 2}
               />
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </section>
 
       <AnimatePresence>
