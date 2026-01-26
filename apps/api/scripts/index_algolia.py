@@ -1,5 +1,6 @@
 import os
 import json
+import asyncio
 from algoliasearch.search.client import SearchClient
 from dotenv import load_dotenv
 
@@ -19,83 +20,78 @@ def load_json(path):
     with open(path, 'r') as f:
         return json.load(f)
 
-def index_data(index_name, data):
+async def index_data(index_name, data, settings=None):
+    """
+    Index data to Algolia and optionally apply settings.
+    
+    Args:
+        index_name: Name of the Algolia index
+        data: List of records to index
+        settings: Optional dict of index settings
+    """
     if not data:
         print(f"No data for index: {index_name}")
         return
     
     print(f"Indexing {len(data)} records to {index_name}...")
-    # Initialize the index (in v4 checking/creating might differ, but saveObjects should work)
-    # The sync client in python v4: client.save_objects(index_name, objects)
-    
-    # We'll validte if the index needs creation or clearing?
-    # For now, let's just saveObjects (replace). 
-    # To fully replace, we might want to clear first or use replace_all_objects if available.
-    
-    # In v4 python client:
-    # client.replace_all_objects(index_name, data) 
-    # But let's check if that method exists or if we need to implement it.
-    # The documentation for algoliasearch-python v4 usually involves 'save_objects' or 'replace_all_objects'.
-    # If using 'algoliasearch' standard package, usually:
-    # index = client.init_index(index_name)
-    # index.replace_all_objects(data)
-    
-    # Wait, the main.py imports `from algoliasearch.search.client import SearchClient`
-    # This suggests v3 or v4.
-    # If v4: client.save_objects(index_name, data)
-    
-    # Let's try the standard v3/v4 way using `init_index` if available, or client methods.
-    # Actually, main.py uses `await algolia_client.search(...)`. This is async.
-    # My script will be sync for simplicity.
-    
-    # Let's assume v4 layout if `search.client` is used.
-    # But usually one does `from algoliasearch.search_client import SearchClient` in v4?
-    # main.py has `from algoliasearch.search.client import SearchClient`.
-    
-    # Using `algoliasearch` package (v2/v3 style):
-    # client = SearchClient.create(APP_ID, API_KEY)
-    # index = client.init_index(index_name)
-    # index.replace_all_objects(data, {'autoGenerateObjectIDIfNotExist': True})
-    
-    # Let's write code that attempts to use the standard pattern.
     
     try:
-         # Try v3/standard pattern
-         index = client.init_index(index_name)
-         index.replace_all_objects(data)
-         print(f"Successfully indexed {index_name}")
-    except AttributeError:
-         # Fallback or v4 specific? 
-         # If `client.init_index` fails, maybe it's the new v4 which is different.
-         # But usually existing code (`main.py`) using `algoliasearch.search.client` means it's the official python client.
-         pass
+        # Apply settings if provided
+        if settings:
+            print(f"Applying settings to {index_name}...")
+            response = await client.set_settings(index_name, settings)
+            await client.wait_for_task(index_name, response.task_id)
+            print(f"Settings applied to {index_name}")
+        
+        # Replace all objects in the index
+        # replace_all_objects is a helper that handles batching and waiting internally
+        await client.replace_all_objects(index_name, data)
+        print(f"Successfully indexed {len(data)} records to {index_name}")
+        
+    except Exception as e:
+        print(f"Error indexing {index_name}: {e}")
+        raise
 
-def main():
+async def main():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
-    # Projects
+    # Projects index
     projects_path = os.path.join(root_dir, 'algolia', 'projects', 'projects.json')
+    projects_settings_path = os.path.join(root_dir, 'algolia', 'projects', 'settings.json')
+    
     if os.path.exists(projects_path):
         projects_data = load_json(projects_path)
-        index_data('projects', projects_data)
+        projects_settings = load_json(projects_settings_path) if os.path.exists(projects_settings_path) else None
+        await index_data('projects', projects_data, projects_settings)
     else:
         print(f"Projects file not found: {projects_path}")
 
-    # About
+    # About index
     about_path = os.path.join(root_dir, 'algolia', 'about', 'index.json')
+    about_settings_path = os.path.join(root_dir, 'algolia', 'about', 'settings.json')
+    
     if os.path.exists(about_path):
         about_data = load_json(about_path)
-        index_data('about', about_data)
+        about_settings = load_json(about_settings_path) if os.path.exists(about_settings_path) else None
+        await index_data('about', about_data, about_settings)
     else:
         print(f"About file not found: {about_path}")
 
-    # System Docs
+    # System Docs index
     docs_path = os.path.join(root_dir, 'algolia', 'system_docs.json')
+    docs_settings_path = os.path.join(root_dir, 'algolia', 'system_docs_settings.json')
+    
     if os.path.exists(docs_path):
         docs_data = load_json(docs_path)
-        index_data('system_docs', docs_data)
+        docs_settings = load_json(docs_settings_path) if os.path.exists(docs_settings_path) else None
+        await index_data('system_docs', docs_data, docs_settings)
     else:
         print(f"System docs file not found: {docs_path}")
+    
+    print("\nIndexing complete!")
+    
+    # Close the client
+    await client.close()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

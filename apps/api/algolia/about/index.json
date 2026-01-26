@@ -2,6 +2,7 @@
   {
     "objectID": "about.identity",
     "node_type": "about",
+    "url": "/about",
     "section": "identity",
     "title": "Identity & Role",
     "aliases": ["Ashley", "Childress", "systems engineer", "developer"],
@@ -20,6 +21,7 @@
   {
     "objectID": "about.background",
     "node_type": "about",
+    "url": "/about",
     "section": "background",
     "title": "Background & Place Connection",
     "aliases": ["Appalachia", "Virginia", "mountains"],
@@ -37,6 +39,7 @@
   {
     "objectID": "about.career_workstyle",
     "node_type": "about",
+    "url": "/about",
     "section": "career_workstyle",
     "title": "Career & Workstyle",
     "aliases": ["workstyle", "career approach"],
@@ -57,6 +60,7 @@
   {
     "objectID": "about.engineering_principles",
     "node_type": "about",
+    "url": "/about",
     "section": "engineering_principles",
     "title": "Engineering Principles",
     "aliases": ["principles", "engineering philosophy"],
@@ -77,6 +81,7 @@
   {
     "objectID": "about.ai_philosophy",
     "node_type": "about",
+    "url": "/about",
     "section": "ai_philosophy",
     "title": "AI Philosophy & Workflow",
     "aliases": ["AI approach", "AI supervision"],
@@ -98,6 +103,7 @@
   {
     "objectID": "about.portfolio_public_work",
     "node_type": "about",
+    "url": "/about",
     "section": "portfolio_public_work",
     "title": "Portfolio & Public Work",
     "aliases": ["portfolio", "projects", "public work"],
@@ -116,6 +122,7 @@
   {
     "objectID": "about.audience_targeting",
     "node_type": "about",
+    "url": "/about",
     "section": "audience_targeting",
     "title": "Audience Targeting",
     "aliases": ["audience", "positioning"],
@@ -132,6 +139,7 @@
   {
     "objectID": "about.agent_knowledge_model",
     "node_type": "about",
+    "url": "/about",
     "section": "agent_knowledge_model",
     "title": "Agent & Knowledge Model",
     "aliases": ["knowledge model", "agent rules"],
@@ -150,6 +158,7 @@
   {
     "objectID": "about.design_presentation",
     "node_type": "about",
+    "url": "/about",
     "section": "design_presentation",
     "title": "Design & Presentation",
     "aliases": ["design", "presentation"],
@@ -167,6 +176,7 @@
   {
     "objectID": "about.theme_song",
     "node_type": "about",
+    "url": "/about",
     "section": "theme_song",
     "title": "Theme Song",
     "aliases": ["I Build Things", "theme song"],
@@ -190,6 +200,7 @@
   {
     "objectID": "about.site_system_context",
     "node_type": "about",
+    "url": "/about",
     "section": "site_system_context",
     "title": "Site & System Context",
     "aliases": ["system notes", "anchildress1.dev"],
@@ -206,6 +217,7 @@
   {
     "objectID": "about.constraints_preferences",
     "node_type": "about",
+    "url": "/about",
     "section": "constraints_preferences",
     "title": "Constraints & Preferences",
     "aliases": ["constraints", "preferences"],
@@ -221,6 +233,7 @@
   {
     "objectID": "about.decision_heuristics",
     "node_type": "about",
+    "url": "/about",
     "section": "decision_heuristics",
     "title": "Decision Heuristics",
     "aliases": ["heuristics", "decision rules"],
@@ -244,6 +257,7 @@
   {
     "objectID": "about.project_selection",
     "node_type": "about",
+    "url": "/about",
     "section": "project_selection",
     "title": "Project Selection Logic",
     "aliases": ["project selection", "curation"],
@@ -260,6 +274,7 @@
   {
     "objectID": "about.education",
     "node_type": "about",
+    "url": "/about",
     "section": "education",
     "title": "Education & Early Technical Formation",
     "aliases": ["education", "university", "BS computer science"],
@@ -277,6 +292,7 @@
   {
     "objectID": "about.certifications",
     "node_type": "about",
+    "url": "/about",
     "section": "certifications",
     "title": "Certifications & Formal AI Validation",
     "aliases": ["certifications", "google cloud", "github copilot"],
@@ -302,6 +318,7 @@
   {
     "objectID": "about.work_history_thd",
     "node_type": "about",
+    "url": "/about",
     "section": "work_history",
     "title": "Work History: The Home Depot",
     "aliases": ["home depot", "THD", "current employer"],
@@ -331,6 +348,7 @@
   {
     "objectID": "about.work_history_greenway",
     "node_type": "about",
+    "url": "/about",
     "section": "work_history",
     "title": "Work History: Greenway Health",
     "aliases": ["greenway", "greenway health", "first engineering role"],
@@ -356,6 +374,7 @@
   {
     "objectID": "about.work_history_arbys",
     "node_type": "about",
+    "url": "/about",
     "section": "work_history",
     "title": "Work History: Arby's",
     "aliases": ["arbys", "arby's", "early leadership", "certified training manager"],
@@ -379,6 +398,7 @@
   {
     "objectID": "about.boundaries_nongals",
     "node_type": "about",
+    "url": "/about",
     "section": "boundaries",
     "title": "Explicit Boundaries & Non-Goals",
     "aliases": ["boundaries", "non-goals", "constraints"],
@@ -396,6 +416,7 @@
   {
     "objectID": "about.failure_cases",
     "node_type": "about",
+    "url": "/about",
     "section": "failure_cases",
     "title": "Formative Failure Case",
     "aliases": ["checkmark copilot chat", "failure", "stopped project"],
@@ -412,6 +433,7 @@
   {
     "objectID": "about.decision_uncertainty",
     "node_type": "about",
+    "url": "/about",
     "section": "decision_making",
     "title": "Decision-Making Under Uncertainty",
     "aliases": ["uncertainty", "decision making"],
@@ -426,6 +448,7 @@
   {
     "objectID": "about.collaboration_style",
     "node_type": "about",
+    "url": "/about",
     "section": "collaboration",
     "title": "Collaboration & Communication Style",
     "aliases": ["communication", "collaboration"],
@@ -441,6 +464,7 @@
   {
     "objectID": "about.temporal_markers",
     "node_type": "about",
+    "url": "/about",
     "section": "temporal_markers",
     "title": "Temporal Markers (Thinking Eras)",
     "aliases": ["eras", "timeline", "thinking evolution"],
@@ -455,6 +479,7 @@
   {
     "objectID": "about.automation_codegen",
     "node_type": "about",
+    "url": "/about",
     "section": "automation_philosophy",
     "title": "Automation & Code Generation Philosophy",
     "aliases": ["automation", "code generation"],
@@ -469,6 +494,7 @@
   {
     "objectID": "about.quality_evaluation",
     "node_type": "about",
+    "url": "/about",
     "section": "quality_criteria",
     "title": "Quality & Evaluation Criteria",
     "aliases": ["quality", "evaluation"],
@@ -483,6 +509,7 @@
   {
     "objectID": "about.differentiation",
     "node_type": "about",
+    "url": "/about",
     "section": "differentiation",
     "title": "Differentiation Signals",
     "aliases": ["differentiation", "unique approach"],

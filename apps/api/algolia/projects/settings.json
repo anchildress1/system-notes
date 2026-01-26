@@ -1,11 +1,13 @@
 {
-  "searchableAttributes": ["title", "aliases", "tags", "section", "unordered(data)"],
-  "attributesForFaceting": ["node_type", "section", "tags"],
-  "customRanking": ["desc(updated_at)"],
+  "searchableAttributes": [
+    "unordered(title, display_name, aliases, tags, summary, purpose_short, outcome_short)"
+  ],
+  "attributesForFaceting": ["node_type", "status", "tags", "kind", "role", "scope"],
+  "customRanking": ["asc(order_rank)", "desc(updated_at)"],
   "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
   "attributesToRetrieve": ["*"],
-  "attributesToHighlight": ["title", "aliases"],
-  "attributesToSnippet": [],
+  "attributesToHighlight": ["title", "display_name", "aliases", "summary"],
+  "attributesToSnippet": ["summary:30"],
   "hitsPerPage": 25,
   "maxValuesPerFacet": 100,
   "typoTolerance": true,

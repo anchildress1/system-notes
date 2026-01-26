@@ -17,7 +17,7 @@ fi
 BASE_URL="https://${ALGOLIA_APPLICATION_ID}.algolia.net/1"
 
 echo "📤 Uploading projects index data..."
-cat apps/api/algolia/projects/index.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
+cat apps/api/algolia/projects/projects.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
   curl -X POST "${BASE_URL}/indexes/projects/batch" \
   -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
   -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
