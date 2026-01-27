@@ -16,7 +16,8 @@ export default function GlitterBomb() {
       const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
 
       // Disable entirely on mobile
-      // if (isMobile) return; // Restored per user request
+      // Disable entirely on mobile
+      // feature flag logic removed per user request
 
       const PIXI = await import('pixi.js');
 
@@ -137,7 +138,6 @@ export default function GlitterBomb() {
       };
 
       // Trigger initial explosion - REMOVED for performance
-      // trigger();
 
       // Listen for custom event
       window.addEventListener('trigger-glitter-bomb', trigger);

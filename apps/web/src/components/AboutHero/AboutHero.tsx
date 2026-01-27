@@ -39,6 +39,7 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
           role="button"
           tabIndex={0}
           className={styles.interactiveContainer}
+          aria-label="Click to trigger a glitter effect"
           onClick={() => {
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new Event('trigger-glitter-bomb'));

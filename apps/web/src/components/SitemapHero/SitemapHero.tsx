@@ -15,11 +15,18 @@ export default function SitemapHero() {
         role="button"
         tabIndex={0}
         className={styles.interactiveContainer}
-        onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
+        aria-label="Click to trigger a glitter effect"
+        onClick={() => {
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new Event('trigger-glitter-bomb'));
+          }
+        }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            window.dispatchEvent(new Event('trigger-glitter-bomb'));
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('trigger-glitter-bomb'));
+            }
           }
         }}
       >

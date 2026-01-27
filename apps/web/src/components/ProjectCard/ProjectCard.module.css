@@ -11,7 +11,7 @@
     height: 100%;
     cursor: pointer;
     box-shadow: var(--shadow-card);
-    transition: transform 0.3s var(--ease-spring), box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease;
 }
 
 .card:hover {

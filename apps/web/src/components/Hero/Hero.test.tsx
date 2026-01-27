@@ -47,4 +47,16 @@ describe('Hero Component', () => {
     const event = dispatchSpy.mock.calls[0][0] as Event;
     expect(event.type).toBe('trigger-glitter-bomb');
   });
+
+  it('active on Enter key', () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    render(<Hero />);
+
+    const title = screen.getByRole('button', { name: /Click to trigger/i });
+    fireEvent.keyDown(title, { key: 'Enter', code: 'Enter' });
+
+    expect(dispatchSpy).toHaveBeenCalled();
+    const event = dispatchSpy.mock.calls[0][0] as Event;
+    expect(event.type).toBe('trigger-glitter-bomb');
+  });
 });
