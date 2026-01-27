@@ -16,7 +16,7 @@ export default function GlitterBomb() {
       const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
 
       // Disable entirely on mobile
-      if (isMobile) return;
+      // if (isMobile) return; // Restored per user request
 
       const PIXI = await import('pixi.js');
 

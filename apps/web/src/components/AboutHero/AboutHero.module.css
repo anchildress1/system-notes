@@ -1,31 +1,24 @@
 .hero {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 8rem 2rem 2rem 2rem;
-    overflow: hidden;
-    user-select: none;
-    cursor: default;
+    composes: hero from "@/styles/SharedHero.module.css";
+    padding-bottom: 2rem;
+    /* Override large shared padding to manage gap manually */
+}
+
+.interactiveContainer {
+    composes: interactiveContainer from "@/styles/SharedHero.module.css";
 }
 
 .titleContainer {
     position: relative;
     z-index: 10;
-    margin-bottom: 2rem;
 }
 
 .title {
-    font-family: var(--font-mono);
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
-    /* Reduced size since it is now a subtitle */
-    font-weight: 800;
-    color: hsl(var(--color-text-primary));
-    line-height: 1.2;
-    pointer-events: auto;
-    opacity: 0.9;
+    composes: title from "@/styles/SharedHero.module.css";
+}
+
+.subtitle {
+    composes: subtitle from "@/styles/SharedHero.module.css";
 }
 
 .imageContainer {
@@ -34,7 +27,8 @@
     max-width: 450px;
     border-radius: 8px;
     overflow: hidden;
-    margin-top: 1rem;
+    margin-top: 6rem;
+    /* Standard shared hero spacing applied here */
     z-index: 5;
     /* Optional: Add a subtle border or glow */
     border: 1px solid var(--border);

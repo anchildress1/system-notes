@@ -27,32 +27,39 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
     height: 400,
   };
 
-  const heroTitle = title || "I design for the failure \n you haven't met yet.";
+  const heroTitle = title || "Designing for the failures \n you haven't met yet";
+  const [mainTitle, subTitle] = heroTitle.split('\n').map((s) => s.trim());
 
   useSparkles({ containerRef, textRef, sparkleNearText: true });
 
   return (
     <div className={styles.hero} ref={containerRef}>
       <div className={styles.titleContainer} ref={textRef}>
-        <div className={styles.title}>
-          <span
-            onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
+        <div
+          role="button"
+          tabIndex={0}
+          className={styles.interactiveContainer}
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('trigger-glitter-bomb'));
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              if (typeof window !== 'undefined') {
                 window.dispatchEvent(new Event('trigger-glitter-bomb'));
               }
-            }}
-            tabIndex={0}
-            role="button"
-            style={{ cursor: 'pointer', display: 'inline-block' }}
-          >
-            {heroTitle.split('\n').map((line, i) => (
-              <span key={i}>
-                {line}
-                {i < heroTitle.split('\n').length - 1 && <br />}
-              </span>
-            ))}
-          </span>
+            }
+          }}
+          style={{
+            cursor: 'pointer',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <h1 className={styles.title}>{mainTitle}</h1>
+          {subTitle && <div className={styles.subtitle}>{subTitle}</div>}
         </div>
       </div>
 

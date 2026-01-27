@@ -53,11 +53,15 @@
     color: rgba(255, 255, 255, 0.9);
     margin-top: 0;
     font-weight: 400;
+    align-self: flex-end;
+    padding-bottom: 4px;
+    /* subtle adjustment to match baseline roughly */
 }
 
 .nav {
     display: flex;
     gap: var(--space-md);
+    align-items: center;
 }
 
 .navLink {
@@ -95,8 +99,8 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    min-height: 40px;
-    height: auto;
+    /* min-height: 40px; Removed to fix text expansion/wrapping issue */
+    /* height: auto; */
     font-size: 0.9rem;
     background: hsl(var(--color-accent-purple));
     /* Original Purple */

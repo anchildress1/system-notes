@@ -11,21 +11,23 @@ export default function SitemapHero() {
 
   return (
     <div className={styles.hero} ref={containerRef} role="banner" aria-label="Sitemap introduction">
-      <h1
-        className={styles.title}
-        onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
-        style={{ cursor: 'pointer' }}
+      <div
         role="button"
         tabIndex={0}
+        className={styles.interactiveContainer}
+        onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             window.dispatchEvent(new Event('trigger-glitter-bomb'));
           }
         }}
       >
-        <span className={styles.visuallyHidden}>Sitemap: </span>
-        AI wanted it to be here <br /> and I didn&apos;t argue.
-      </h1>
+        <h1 className={styles.title}>
+          <span className={styles.visuallyHidden}>Sitemap: </span>
+          AI wanted this here
+        </h1>
+        <div className={styles.subtitle}>I didn&apos;t argue</div>
+      </div>
     </div>
   );
 }

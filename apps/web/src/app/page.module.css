@@ -1,7 +1,7 @@
 .main {
     min-height: 100vh;
-    padding-top: 120px;
-    /* Offset for fixed header */
+    /* padding-top: 120px; Removed to let Hero handle spacing */
+    /* Offset for fixed header is now in Hero padding */
     padding-bottom: var(--space-xl);
     position: relative;
     z-index: 1;
@@ -9,7 +9,7 @@
 
 @media (max-width: 768px) {
     .main {
-        padding-top: 0;
+        /* padding-top: 0; */
     }
 }
 
