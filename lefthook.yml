@@ -15,7 +15,7 @@ commit-msg:
       run: npx --no-install commitlint --edit
 
 pre-push:
-  parallel: false
+  parallel: true
   commands:
     test:
       run: npm run test

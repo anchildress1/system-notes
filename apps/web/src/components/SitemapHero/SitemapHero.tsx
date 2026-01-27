@@ -18,6 +18,7 @@ export default function SitemapHero() {
         onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
             window.dispatchEvent(new Event('trigger-glitter-bomb'));
           }
         }}

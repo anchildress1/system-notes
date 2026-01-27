@@ -11,9 +11,9 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
 # Load environment variables
-current_dir = os.path.dirname(os.path.abspath(__file__))
-root_env = os.path.join(current_dir, "../../.env")
-load_dotenv(root_env)
+from pathlib import Path
+env_path = Path(__file__).resolve().parents[2] / ".env"
+load_dotenv(env_path)
 
 app = FastAPI(title="System Notes API", version="0.1.0")
 

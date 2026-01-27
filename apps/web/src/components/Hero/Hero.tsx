@@ -22,6 +22,7 @@ export default function Hero() {
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new Event('trigger-glitter-bomb'));
             }
