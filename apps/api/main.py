@@ -39,6 +39,7 @@ app.add_middleware(
         "https://anchildress1.dev",
         "https://www.anchildress1.dev",
         "https://system-notes-ui-288489184837.us-east1.run.app",
+        "https://system-notes-ui-288489184837.europe-north1.run.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
