@@ -127,7 +127,7 @@ async def health_check():
 async def chat(request: ChatRequest):
     try:
         completion = client.chat.completions.create(
-            model="gpt-4o",  # Production model (System Notes Vibe Check approved)
+            model="gpt-5.2",  # Production model (System Notes Vibe Check approved)
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": request.message},
