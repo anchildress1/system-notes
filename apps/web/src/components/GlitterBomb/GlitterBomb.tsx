@@ -34,6 +34,7 @@ export default function GlitterBomb() {
       });
 
       if (!containerRef.current) {
+        if (app.ticker) app.ticker.stop();
         app.destroy({ removeView: true });
         return;
       }
@@ -153,10 +154,12 @@ export default function GlitterBomb() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((window as any)._glitterCleanup) (window as any)._glitterCleanup();
       if (appRef.current) {
-        // Stop ticker first? YES.
-        appRef.current.ticker?.stop();
-        if (appRef.current.renderer) {
-          appRef.current.destroy({ removeView: true });
+        const app = appRef.current;
+        if (app.ticker) app.ticker.stop();
+        try {
+          app.destroy({ removeView: true, children: true });
+        } catch (e) {
+          console.warn('GlitterBomb destroy error:', e);
         }
         appRef.current = null;
       }

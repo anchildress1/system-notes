@@ -54,8 +54,8 @@ export const useSparkles = ({
 
         if (!containerRef.current || !isMounted) {
           // Stop ticker before destroy if init happened partially
-          app.ticker?.stop();
-          app.destroy(true, { children: true, texture: true, baseTexture: true });
+          if (app.ticker) app.ticker.stop();
+          app.destroy({ removeView: true, children: true });
           return;
         }
 
@@ -222,17 +222,21 @@ export const useSparkles = ({
       clearTimeout(timeoutId);
       try {
         if (app) {
-          app.ticker?.stop(); // Stop ticker first to prevent 'clear' or 'geometry' errors
+          if (app.ticker) app.ticker.stop();
 
-          if (app.renderer) {
-            // Use minimal destroy options to avoid deeper glitches if textures are shared?
-            // Actually, full destroy is safer for cleanliness, but let's be super explicit.
-            app.destroy(true, { children: true, texture: true, baseTexture: true });
+          try {
+            // PIXI v8 destruction - use options object
+            app.destroy({
+              removeView: true,
+              children: true,
+              texture: true,
+              baseTexture: true,
+            });
+          } catch (e) {
+            console.warn('PIXI destroy error:', e);
           }
           app = null;
           circleTexture = null;
-          // Clear cached ref too if we are destroying the instance it created?
-          // No, pixiLibRef is the library not the app instance.
         }
       } catch (err) {
         console.warn('Failed to destroy Pixi app:', err);

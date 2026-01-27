@@ -49,7 +49,7 @@ export default function MusicPlayer() {
 
       <audio
         ref={audioRef}
-        src="/audio/Twisted Game Songs - I Build Things.mp3"
+        src="/audio/twisted-game-songs-i-build-things.mp3"
         onEnded={handleEnded}
         preload="metadata"
         playsInline
