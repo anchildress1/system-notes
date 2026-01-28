@@ -7,11 +7,7 @@
     z-index: 1;
 }
 
-@media (max-width: 768px) {
-    .main {
-        /* Mobile styles */
-    }
-}
+
 
 .introSection {
     padding: 0 var(--space-lg);
