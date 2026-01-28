@@ -29,17 +29,18 @@ describe('Hero Component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders the title and subtitle', () => {
+  it('renders the title as an accessible button', () => {
     render(<Hero />);
-    expect(screen.getByText(/Disruption is a feature/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Click to trigger/i })).toBeInTheDocument();
     expect(screen.getByText(/Not here to play nice/i)).toBeInTheDocument();
+    expect(screen.getByText(/Disruption is the feature—loud by design/i)).toBeInTheDocument();
   });
 
   it('dispatches trigger-glitter-bomb event on title click', () => {
     const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
     render(<Hero />);
 
-    const title = screen.getByText(/Disruption is a feature/i);
+    const title = screen.getByRole('button', { name: /Click to trigger/i });
     fireEvent.click(title);
 
     expect(dispatchSpy).toHaveBeenCalled();
@@ -47,12 +48,12 @@ describe('Hero Component', () => {
     expect(event.type).toBe('trigger-glitter-bomb');
   });
 
-  it('dispatches trigger-glitter-bomb event on Enter key', () => {
+  it('activates on Enter key press', () => {
     const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
     render(<Hero />);
 
-    const title = screen.getByText(/Disruption is a feature/i);
-    fireEvent.keyDown(title, { key: 'Enter' });
+    const title = screen.getByRole('button', { name: /Click to trigger/i });
+    fireEvent.keyDown(title, { key: 'Enter', code: 'Enter' });
 
     expect(dispatchSpy).toHaveBeenCalled();
     const event = dispatchSpy.mock.calls[0][0] as Event;

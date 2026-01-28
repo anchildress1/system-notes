@@ -15,7 +15,7 @@ const TextContent = ({ text }: { text: string }) => (
 
 export default function About() {
   return (
-    <main>
+    <main id="main-content">
       <Header />
       <AboutHero title={aboutData.heroTitle} image={aboutData.heroImage} />
       <div className={styles.container}>

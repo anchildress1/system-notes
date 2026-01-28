@@ -111,7 +111,7 @@ test.describe('System Notes Integration', () => {
     await expect(heroImage).toBeVisible();
 
     // Check Hero Text
-    await expect(page.locator("text=failure you haven't met yet")).toBeVisible();
+    await expect(page.locator('text=Designing for the failures')).toBeVisible();
 
     // Check API Content Loading (wait for it)
     await expect(page.locator('text=Initializing identity protocol')).not.toBeVisible({

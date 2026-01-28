@@ -44,6 +44,16 @@ make dev
 make ai-checks
 ```
 
+## Performance & Accessibility
+
+Recent updates have focused on creating an experience that is both **lightning-fast for users** and **transparently readable for AI agents**.
+
+- **Optimized Assets**: Audio and visual assets are lazy-loaded or pre-loaded intelligently to respect user bandwidth (especially on mobile).
+- **Interactive Glitter**: Particle effects are batched and scaled based on device capabilities, ensuring high-fidelity fun without the frame drops.
+- **AI-Ready Context**: System prompts and project data are structured to be ingested by LLMs, making this entire repository a queryable knowledge base.
+
+This aims to provide **AI accessible info at a speed users can enjoy**, without overloading the developer (me) or your browser.
+
 ## Mine. Read Before You Get Ideas. ⚖️
 
 This project is my work and it’s licensed under the [PolyForm Shield License 1.0.0](./LICENSE).

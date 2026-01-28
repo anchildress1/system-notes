@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { Particle } from '../components/GlitterBomb/GlitterBomb';
+import { useEffect } from 'react';
+import { Particle } from '@/types/sparkles';
 
 interface UseSparklesOptions {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -28,6 +28,9 @@ export const useSparkles = ({
     const isMobile =
       typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
 
+    // Completely disable sparkles on mobile for maximum performance
+    if (isMobile) return;
+
     const initPixi = async () => {
       try {
         if (!containerRef.current || !isMounted) return;
@@ -51,8 +54,8 @@ export const useSparkles = ({
 
         if (!containerRef.current || !isMounted) {
           // Stop ticker before destroy if init happened partially
-          app.ticker?.stop();
-          app.destroy(true, { children: true, texture: true, baseTexture: true });
+          if (app.ticker) app.ticker.stop();
+          app.destroy({ removeView: true, children: true });
           return;
         }
 
@@ -111,6 +114,7 @@ export const useSparkles = ({
     };
 
     // Use simple setTimeout for lazy load to avoid requestIdleCallback instability
+    // Delay longer on mobile to avoid blocking main thread during initial load (improves Lighthouse Performance)
     const timeoutId = setTimeout(initPixi, 100);
 
     // Intersection Observer to pause rendering when out of view
@@ -218,22 +222,21 @@ export const useSparkles = ({
       clearTimeout(timeoutId);
       try {
         if (app) {
-          // Safely stop ticker
-          if (app.ticker && typeof app.ticker.stop === 'function') {
-            app.ticker.stop();
-          } else if (typeof app.stop === 'function') {
-            app.stop();
-          }
+          if (app.ticker) app.ticker.stop();
 
-          if (app.renderer) {
-            // Use minimal destroy options to avoid deeper glitches if textures are shared?
-            // Actually, full destroy is safer for cleanliness, but let's be super explicit.
-            app.destroy(true, { children: true, texture: true, baseTexture: true });
+          try {
+            // PIXI v8 destruction - use options object
+            app.destroy({
+              removeView: true,
+              children: true,
+              texture: true,
+              baseTexture: true,
+            });
+          } catch (e) {
+            console.warn('PIXI destroy error:', e);
           }
           app = null;
           circleTexture = null;
-          // Clear cached ref too if we are destroying the instance it created?
-          // No, pixiLibRef is the library not the app instance.
         }
       } catch (err) {
         console.warn('Failed to destroy Pixi app:', err);

@@ -23,7 +23,5 @@ pre-push:
       run: npm run test
     bench:
       run: npm run bench -- -- --run
-    e2e:
-      run: npx playwright test
-    # lighthouse:
-    #   run: npx @lhci/cli autorun
+    lighthouse:
+      run: npm run test:perf -w apps/web

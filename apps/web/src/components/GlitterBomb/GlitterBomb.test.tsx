@@ -46,16 +46,26 @@ vi.mock('pixi.js', () => {
 describe('GlitterBomb', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Ensure desktop environment
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 1024,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (window as any).ontouchstart;
   });
 
   it('renders and initializes pixi app', async () => {
     const { unmount } = render(<GlitterBomb />);
 
     // Wait for effect
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    expect(mockInit).toHaveBeenCalled();
-    expect(mockGenerateTexture).toHaveBeenCalled();
+    await import('@testing-library/react').then(async ({ waitFor }) => {
+      await waitFor(() => {
+        expect(mockInit).toHaveBeenCalled();
+      });
+      expect(mockGenerateTexture).toHaveBeenCalled();
+    });
 
     unmount();
 

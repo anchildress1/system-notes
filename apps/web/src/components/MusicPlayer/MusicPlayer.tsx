@@ -8,15 +8,21 @@ export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (!audioRef.current) return;
 
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(false);
     } else {
-      audioRef.current.play().catch((e) => console.error('Playback failed:', e));
+      try {
+        await audioRef.current.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error('Playback failed:', error);
+        setIsPlaying(false);
+      }
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleEnded = () => {
@@ -24,8 +30,9 @@ export default function MusicPlayer() {
   };
 
   return (
-    <div className={styles.playerWrapper}>
+    <div className={styles.playerWrapper} data-testid="music-player">
       <button
+        type="button"
         className={`${styles.playButton} ${isPlaying ? styles.active : ''}`}
         onClick={togglePlay}
         aria-label={
@@ -33,6 +40,7 @@ export default function MusicPlayer() {
             ? "Pause 'I Build Things' by Twisted Game Songs"
             : "Play 'I Build Things' by Twisted Game Songs (Explicit Content). Muted by default."
         }
+        data-testid="play-button"
       >
         {isPlaying ? <LuPause size={24} /> : <LuPlay size={24} />}
         <span className={styles.explicitBadge} aria-hidden="true">
@@ -48,9 +56,10 @@ export default function MusicPlayer() {
 
       <audio
         ref={audioRef}
-        src="/audio/Twisted Game Songs - I Build Things.mp3"
+        src="/audio/twisted-game-songs-i-build-things.mp3"
         onEnded={handleEnded}
         preload="none"
+        playsInline
       />
     </div>
   );

@@ -53,7 +53,7 @@ htmlcov/
 .pytest_cache/
 
 # Temporary artifacts
-*.tmp
+*tmp*
 lighthouse.json
 .lighthouseci/
 commit.tmp

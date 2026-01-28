@@ -5,7 +5,7 @@ import { Project } from '@/data/projects';
 
 // Mock Next.js Image
 vi.mock('next/image', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @next/next/no-img-element
   default: (props: any) => <img {...props} alt={props.alt} />,
 }));
 

@@ -3,22 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 // Define Particle interface locally
-export interface Particle {
-  x: number;
-  y: number;
-  speed: number;
-  direction: number;
-  life: number; // Current life
-  decay: number; // Fade speed
-  // properties from PIXI.Graphics (partial)
-  circle: (x: number, y: number, radius: number) => void;
-  fill: (color: number) => void;
-  tint: number;
-  alpha: number;
-  scale: { x: number; y: number; set: (v: number) => void };
-  anchor: { set: (v: number) => void };
-  visible: boolean;
-}
+import { Particle } from '@/types/sparkles';
 
 export default function GlitterBomb() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -29,6 +14,9 @@ export default function GlitterBomb() {
     const initPixi = async () => {
       // Feature detect rather than just width check for better "lite" mode
       const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
+
+      // Disable entirely on mobile
+      // feature flag logic removed per user request
 
       const PIXI = await import('pixi.js');
 
@@ -46,6 +34,7 @@ export default function GlitterBomb() {
       });
 
       if (!containerRef.current) {
+        if (app.ticker) app.ticker.stop();
         app.destroy({ removeView: true });
         return;
       }
@@ -147,8 +136,7 @@ export default function GlitterBomb() {
         app.ticker.add(tick);
       };
 
-      // Trigger initial explosion
-      trigger();
+      // Trigger initial explosion - REMOVED for performance
 
       // Listen for custom event
       window.addEventListener('trigger-glitter-bomb', trigger);
@@ -165,10 +153,12 @@ export default function GlitterBomb() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((window as any)._glitterCleanup) (window as any)._glitterCleanup();
       if (appRef.current) {
-        // Stop ticker first? YES.
-        appRef.current.ticker?.stop();
-        if (appRef.current.renderer) {
-          appRef.current.destroy({ removeView: true });
+        const app = appRef.current;
+        if (app.ticker) app.ticker.stop();
+        try {
+          app.destroy({ removeView: true, children: true });
+        } catch (e) {
+          console.warn('GlitterBomb destroy error:', e);
         }
         appRef.current = null;
       }
