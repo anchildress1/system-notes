@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import styles from './Hero.module.css';
+import styles from '@/styles/SharedHero.module.css';
 import { useSparkles } from '@/hooks/useSparkles';
 
 export default function Hero() {
@@ -12,20 +12,27 @@ export default function Hero() {
   return (
     <div className={styles.hero} ref={containerRef}>
       <div
-        className={styles.title}
-        onClick={() => window.dispatchEvent(new Event('trigger-glitter-bomb'))}
-        style={{ cursor: 'pointer' }}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+        className={styles.interactiveContainer}
+        onClick={() => {
+          if (typeof window !== 'undefined') {
             window.dispatchEvent(new Event('trigger-glitter-bomb'));
           }
         }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('trigger-glitter-bomb'));
+            }
+          }
+        }}
+        aria-label="Click to trigger a glitter effect"
       >
-        Disruption is a feature, <br /> not a bug.
+        <h1 className={styles.title}>Not here to play nice</h1>
+        <div className={styles.subtitle}>Disruption is the feature—loud by design</div>
       </div>
-      <div className={styles.subtitle}>Not here to play nice. Just to play loud.</div>
     </div>
   );
 }

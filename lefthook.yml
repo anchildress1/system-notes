@@ -15,7 +15,7 @@ commit-msg:
       run: npx --no-install commitlint --edit
 
 pre-push:
-  parallel: true
+  parallel: false
   commands:
     test:
       run: npm run test
@@ -23,5 +23,5 @@ pre-push:
       run: npx playwright test
     bench:
       run: npm run bench -- -- --run
-    # lighthouse:
-    #   run: npx @lhci/cli autorun
+    lighthouse:
+      run: npm run test:perf -w apps/web

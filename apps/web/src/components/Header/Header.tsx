@@ -5,30 +5,36 @@ import styles from './Header.module.css';
 export default function Header() {
   return (
     <header className={styles.header}>
+      <a href="#main-content" className={styles.skipLink}>
+        Skip to main content
+      </a>
       <div className={styles.identity}>
-        <h1 className={styles.name}>Ashley&apos;s System Notes</h1>
+        <Link href="/" className={styles.logoLink}>
+          <h1 className={styles.name}>Ashley&apos;s System Notes</h1>
+        </Link>
         <p className={styles.subtitle}>
           A living map of software systems, decisions, and AI-assisted work.
         </p>
       </div>
 
-      <nav className={styles.nav}>
-        <Link href="/" className={`${styles.navItem} ${styles.active}`}>
+      <nav className={styles.nav} aria-label="Main Navigation">
+        <Link href="/" className={styles.navLink}>
           Projects
         </Link>
-        <Link href="/about" className={styles.navItem}>
+        <Link href="/about" className={styles.navLink}>
           About
         </Link>
-        <Link href="/sitemap" className={styles.navItem}>
+        <Link href="/sitemap" className={styles.navLink}>
           Sitemap
         </Link>
         <a
           href="https://dev.to/anchildress1"
           target="_blank"
           rel="noopener noreferrer"
+          data-testid="blog-link"
           className={styles.ctaButton}
         >
-          <Code size={16} style={{ marginRight: '0.5rem' }} />
+          <Code size={16} />
           Read My Blog
         </a>
       </nav>

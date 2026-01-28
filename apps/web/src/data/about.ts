@@ -16,7 +16,7 @@ export interface AboutData {
 }
 
 export const aboutData: AboutData = {
-  heroTitle: "I design for the failure you haven't met yet.",
+  heroTitle: "Designing for the failures \n you haven't met yet",
   heroImage: {
     src: '/ashley-gen-2.jpg',
     alt: 'Ashley Childress profile picture showing a stylized, AI-generated portrait of a woman with red hair and glasses',

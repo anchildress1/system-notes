@@ -7,7 +7,11 @@ import { LuBrain } from 'react-icons/lu';
 import styles from './AIChat.module.css';
 import { API_URL } from '@/config';
 import { useChat } from '@/context/ChatContext';
-import MusicPlayer from '../MusicPlayer/MusicPlayer';
+import dynamic from 'next/dynamic';
+
+const MusicPlayer = dynamic(() => import('../MusicPlayer/MusicPlayer'), {
+  ssr: false,
+});
 
 export default function AIChat() {
   const { isOpen, toggleChat, messages, addMessage, isLoading, setIsLoading } = useChat();

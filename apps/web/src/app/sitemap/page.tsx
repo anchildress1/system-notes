@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function SitemapPage() {
   return (
-    <main className={styles.main}>
+    <main className={styles.main} id="main-content">
       <Header />
 
       <SitemapHero />

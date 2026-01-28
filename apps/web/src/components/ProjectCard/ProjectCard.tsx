@@ -1,6 +1,3 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { Project } from '@/data/projects';
 import Image from 'next/image';
 import styles from './ProjectCard.module.css';
@@ -15,10 +12,9 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
   const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'CheckMarK DevTools';
 
   return (
-    <motion.div
+    <div
       className={styles.card}
       onClick={() => onSelect(project)}
-      whileHover={{ y: -5 }}
       data-testid={`project-card-${project.id}`}
     >
       <div className={styles.imageContainer}>
@@ -34,7 +30,7 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
               fill
               className={styles.image}
               priority={priority}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 350px"
             />
           ) : (
             <div
@@ -101,6 +97,6 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

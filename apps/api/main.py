@@ -11,7 +11,14 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
 # Load environment variables
-load_dotenv()
+from pathlib import Path
+# Load environment variables
+# Look for .env in the current directory or parents
+env_path = Path(__file__).resolve().parent / ".env"
+if env_path.exists():
+    load_dotenv(env_path)
+else:
+    load_dotenv()
 
 app = FastAPI(title="System Notes API", version="0.1.0")
 
@@ -36,8 +43,8 @@ app.add_middleware(
         "http://localhost:3000",
         "https://anchildress1.dev",
         "https://www.anchildress1.dev",
-        "https://system-notes-ui-288489184837.us-east1.run.app",
     ],
+    allow_origin_regex=r"https://system-notes-ui-288489184837\..*\.run\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
