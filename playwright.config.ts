@@ -10,6 +10,7 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3001',
     trace: 'on-first-retry',
+    headless: true,
   },
   projects: [
     {
@@ -26,7 +27,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run start -- -p 3001',
+    command: 'PORT=3001 node .next/standalone/apps/web/server.js',
     url: 'http://localhost:3001',
     cwd: './apps/web',
     reuseExistingServer: !process.env.CI,
