@@ -10,7 +10,7 @@ export default function Header() {
       </a>
       <div className={styles.identity}>
         <Link href="/" className={styles.logoLink}>
-          <h1 className={styles.name}>Ashley&apos;s System Notes</h1>
+          <span className={styles.name}>Ashley&apos;s System Notes</span>
         </Link>
         <p className={styles.subtitle}>
           A living map of software systems, decisions, and AI-assisted work.

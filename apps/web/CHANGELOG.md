@@ -1,10 +1,10 @@
 # Changelog
 
-## [1.2.0](https://github.com/anchildress1/system-notes/compare/system-notes-v1.1.0...system-notes-v1.2.0) (2026-01-28)
+## [1.2.0](https://github.com/anchildress1/system-notes/compare/web-v1.1.0...web-v1.2.0) (2026-01-28)
 
-> _In which we pretend that adding a music player counts as "system architecture"._
+> _Now with 100% more sparkles and significantly less hydration errors._
 
-We released version 1.2.0, primarily because the commit history was getting embarrassed by how long it had been since the last tag. This update brings a music player — because nothing says "serious technical documentation" like background beats — and a comprehensive UI overhaul that hopefully distracts from the backend complexity. We also fixed a litany of CORS issues that I am choosing to believe were caused by cosmic rays rather than my own configuration errors.
+The web client has been updated to support the new music player, because apparently, silence is a bug. We also spent a concerning amount of time polishing "sparkle effects" and making the footer behave itself. If you notice the UI implies I know what I'm doing with CSS — that is a happy accident.
 
 <details>
 <summary>The boring technical details that you probably don't read</summary>
@@ -12,14 +12,12 @@ We released version 1.2.0, primarily because the commit history was getting emba
 ### Features
 
 - add music player, update about page, and make hero text interactive ([8083e0f](https://github.com/anchildress1/system-notes/commit/8083e0f99af80a6abb24a6e7ed41ab2da64ef1c6))
-- **docs:** overhaul README and add architecture docs ([#3](https://github.com/anchildress1/system-notes/issues/3)) ([a376713](https://github.com/anchildress1/system-notes/commit/a37671396065cfb475ed4ab03c0ea17b3bfa89af))
 - enhance sparkle effects and add comprehensive test coverage ([b3a57fa](https://github.com/anchildress1/system-notes/commit/b3a57faf3e3705192e0b64d1036d7b739ec08022))
 - integrate persona content and add UI benchmarks ([03927e0](https://github.com/anchildress1/system-notes/commit/03927e051d06e5310b4d55d51f9205b17a830d3b))
 - make footer non-sticky and finalize UI V4 polish ([edc1295](https://github.com/anchildress1/system-notes/commit/edc1295321cd44239eedfa3eabc7ab4d01ebc58c))
 - multi-region deployment, interactive heroes, and music player polish ([f3edb82](https://github.com/anchildress1/system-notes/commit/f3edb82d8a95146564f61f0f767fcb5a1cb7c61d))
 - optimize ruckus poc, fix formatting, and secure backend ([e92ccb1](https://github.com/anchildress1/system-notes/commit/e92ccb129905ccaed22d5c0e0b85981cf156dad9))
 - replace chat icon with Google Smart Toy and update project data ([fc618cd](https://github.com/anchildress1/system-notes/commit/fc618cd9b763b772faf192cfd6fbe200bd85b3cb))
-- sync project narratives to permanent system prompt injection ([5eb3e58](https://github.com/anchildress1/system-notes/commit/5eb3e5874ffdac0b5bf3d60188d7040ed264de6e))
 - sync project narratives to system prompt and prepare for deployment ([85f2881](https://github.com/anchildress1/system-notes/commit/85f2881c6021c35d38e1faa815fec0e42cc05e4f))
 - turbo config, seo, and build fixes ([65fef25](https://github.com/anchildress1/system-notes/commit/65fef25b815c2c992331683d400595eb2d01fd30))
 - **ui:** add Hero section and About page ([4b13df1](https://github.com/anchildress1/system-notes/commit/4b13df1fae9b0f2b89045f970de64850ffb0d0e8))
@@ -35,12 +33,7 @@ We released version 1.2.0, primarily because the commit history was getting emba
 ### Bug Fixes
 
 - **agent:** inject API URL via env var to resolve connection error ([b51e231](https://github.com/anchildress1/system-notes/commit/b51e231706a0442dc6c303eba8b6a9454b8b1914))
-- **api:** disable CORS credentials to allow wildcard origins ([1713a38](https://github.com/anchildress1/system-notes/commit/1713a384feec458ed12aeff3c1bb15b735afbd57))
-- **api:** use explicit CORS origins with credentials ([0529a4b](https://github.com/anchildress1/system-notes/commit/0529a4b30222eec34187c468dbed6b42c2343142))
-- **cloud-run:** finalize CORS fix and restore backend tests ([07e341c](https://github.com/anchildress1/system-notes/commit/07e341c20bda3dfa00054dd9b4cfe8ba7d175027))
-- **cloud-run:** resolve agent chat connectivity issues ([6874522](https://github.com/anchildress1/system-notes/commit/6874522e2c0f8b2e7b86b7a5d6e16cd9f7c29428))
 - mobile music blog btn and performance ([#6](https://github.com/anchildress1/system-notes/issues/6)) ([69f0c7d](https://github.com/anchildress1/system-notes/commit/69f0c7d46c393b879c4f07e3c2c0136716a1216e))
-- **ops:** remove duplicate deploy labels and enforce pre-push tests ([f624e4e](https://github.com/anchildress1/system-notes/commit/f624e4e0dd1f380d499d4069a63d340e1c389a07))
 - optimize images using next/image and improve color contrast ([416ef5c](https://github.com/anchildress1/system-notes/commit/416ef5c6113839e5b634d7531e4b70e75bd0b167))
 - **perf:** optimize expanded view animation and verify bundle ([435c481](https://github.com/anchildress1/system-notes/commit/435c481550d7b6a6104cd3f19f875276fba3e1a7))
 - resolve accessibility issues and update lint configuration ([59180c0](https://github.com/anchildress1/system-notes/commit/59180c08bf103fd653e73b6bd8396eb258490706))
@@ -58,9 +51,3 @@ We released version 1.2.0, primarily because the commit history was getting emba
 - **web:** optimize ExpandedView rendering and animations ([e484cd2](https://github.com/anchildress1/system-notes/commit/e484cd271336dd61be1d9987e7697f4a794331ac))
 
 </details>
-
-## [1.1.0](https://github.com/anchildress1/system-notes/compare/v1.0.0...v1.1.0) (2026-01-24)
-
-### Features
-
-- **docs:** overhaul README and add architecture docs ([#3](https://github.com/anchildress1/system-notes/issues/3)) ([a376713](https://github.com/anchildress1/system-notes/commit/a37671396065cfb475ed4ab03c0ea17b3bfa89af))
