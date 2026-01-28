@@ -48,7 +48,7 @@ describe('Hero Component', () => {
     expect(event.type).toBe('trigger-glitter-bomb');
   });
 
-  it('active on Enter key', () => {
+  it('activates on Enter key press', () => {
     const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
     render(<Hero />);
 

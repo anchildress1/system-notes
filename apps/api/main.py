@@ -12,22 +12,12 @@ from fastapi.responses import JSONResponse
 
 # Load environment variables
 from pathlib import Path
-# Look for .env in current directory (prod/container) or workspace root (local)
-env_file = ".env"
-current_dir = Path(__file__).resolve().parent
-search_path = current_dir
-
-# Check current, parent, and grandparent directories
-for _ in range(3):
-    env_path = search_path / env_file
-    if env_path.exists():
-        load_dotenv(env_path)
-        break
-    if search_path.parent == search_path:
-        break
-    search_path = search_path.parent
+# Load environment variables
+# Look for .env in the current directory or parents
+env_path = Path(__file__).resolve().parent / ".env"
+if env_path.exists():
+    load_dotenv(env_path)
 else:
-    # Default fallback: look in current working directory
     load_dotenv()
 
 app = FastAPI(title="System Notes API", version="0.1.0")

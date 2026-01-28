@@ -14,7 +14,7 @@
         "categories:performance": [
           "error",
           {
-            "minScore": 0.95,
+            "minScore": 1,
             "aggregationMethod": "optimistic"
           }
         ],

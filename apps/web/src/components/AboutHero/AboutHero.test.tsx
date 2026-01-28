@@ -70,4 +70,33 @@ describe('AboutHero Component', () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
   });
+  it('triggers glitter bomb on click', async () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    render(<AboutHero />);
+
+    // The interactive container is the div wrapping the title
+    const trigger = screen.getByRole('button', { name: /Click to trigger/i });
+    fireEvent.click(trigger);
+
+    expect(dispatchSpy).toHaveBeenCalled();
+    const event = dispatchSpy.mock.calls.find(
+      (call) => (call[0] as Event).type === 'trigger-glitter-bomb'
+    );
+    expect(event).toBeTruthy();
+  });
+
+  it('triggers glitter bomb on Enter/Space key', () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    render(<AboutHero />);
+
+    const trigger = screen.getByRole('button', { name: /Click to trigger/i });
+
+    // Enter
+    fireEvent.keyDown(trigger, { key: 'Enter' });
+    expect(dispatchSpy).toHaveBeenCalled(); // +1
+
+    // Space
+    fireEvent.keyDown(trigger, { key: ' ' });
+    expect(dispatchSpy).toHaveBeenCalledTimes(2); // +1
+  });
 });

@@ -52,12 +52,6 @@ export default function AboutHero({ title, image }: AboutHeroProps) {
               }
             }
           }}
-          style={{
-            cursor: 'pointer',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
         >
           <h1 className={styles.title}>{mainTitle}</h1>
           {subTitle && <div className={styles.subtitle}>{subTitle}</div>}
