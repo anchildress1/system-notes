@@ -45,7 +45,7 @@ export const useSparkles = ({
           height: containerRef.current.clientHeight,
           backgroundAlpha: 0,
           // Optimize resolution for mobile to save GPU (1x instead of Retina)
-          resolution: isMobile ? 1 : window.devicePixelRatio || 1,
+          resolution: isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2),
           autoDensity: true,
           // Disable antialias on mobile for performance
           antialias: false,
