@@ -81,6 +81,12 @@ export const viewport: Viewport = {
   themeColor: '#000000',
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#000000',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

@@ -13,7 +13,7 @@ test.describe('AI Readiness & SEO', () => {
     expect(response?.status()).toBe(200);
 
     // Verify main content is visible to the bot
-    await expect(page.getByText('Disruption is the feature')).toBeVisible();
+    await expect(page.getByText('Disruption is the feature—loud by design')).toBeVisible();
     await expect(page.getByText('Not here to play nice')).toBeVisible();
   });
   test('should contain valid JSON-LD structure', async ({ page }) => {
