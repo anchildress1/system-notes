@@ -60,10 +60,12 @@ describe('GlitterBomb', () => {
     const { unmount } = render(<GlitterBomb />);
 
     // Wait for effect
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    expect(mockInit).toHaveBeenCalled();
-    expect(mockGenerateTexture).toHaveBeenCalled();
+    await import('@testing-library/react').then(async ({ waitFor }) => {
+      await waitFor(() => {
+        expect(mockInit).toHaveBeenCalled();
+      });
+      expect(mockGenerateTexture).toHaveBeenCalled();
+    });
 
     unmount();
 

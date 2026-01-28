@@ -121,7 +121,7 @@ deploy_service() {
 # ==========================================
 
 # Define target regions (space separated)
-REGIONS=("europe-north1")
+REGIONS=("us-east1" "europe-north1")
 
 # 2. Get API URL
 API_URL=$(gcloud run services describe "$API_SERVICE" --region "$REGION" --project "$PROJECT_ID" --format 'value(status.url)')

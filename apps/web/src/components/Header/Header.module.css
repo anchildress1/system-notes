@@ -129,9 +129,7 @@
         /* More opaque for mobile readability */
         backdrop-filter: none;
         /* Perf optimization */
-        position: sticky;
-        top: 0;
-        /* Fixed: Ensure header stays on top and handles stacking correctly */
+        position: relative;
         /* Force flow layout on mobile to prevent overlap */
     }
 

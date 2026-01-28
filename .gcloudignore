@@ -18,6 +18,3 @@ out/
 *.tmp
 lighthouse.json
 .lighthouseci/
-
-apps/api/algolia/
-algolia_upload.sh

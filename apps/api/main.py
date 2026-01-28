@@ -44,7 +44,7 @@ app.add_middleware(
         "https://anchildress1.dev",
         "https://www.anchildress1.dev",
     ],
-    allow_origin_regex=r"https://system-notes-ui-800441415595\..*\.run\.app",
+    allow_origin_regex=r"https://system-notes-ui-288489184837\..*\.run\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
