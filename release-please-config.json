@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "system-notes",
+      "group-id": "system-notes"
+    },
+    "apps/web": {
+      "release-type": "node",
+      "package-name": "web",
+      "group-id": "system-notes"
+    },
+    "apps/api": {
+      "release-type": "python",
+      "package-name": "api",
+      "group-id": "system-notes",
+      "extra-files": ["package.json"]
+    }
+  }
+}
