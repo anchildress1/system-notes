@@ -32,5 +32,9 @@
   "packageManager": "npm@10.0.0",
   "dependencies": {
     "lucide-react": "^0.562.0"
+  },
+  "overrides": {
+    "inquirer": "^8.2.7",
+    "tmp": "^0.2.5"
   }
 }
