@@ -27,7 +27,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'PORT=3001 node .next/standalone/apps/web/server.js',
+    command: 'npm run build && npm run start:standalone',
     url: 'http://localhost:3001',
     cwd: './apps/web',
     reuseExistingServer: !process.env.CI,

@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:standalone": "node .next/standalone/apps/web/server.js",
     "lint": "ESLINT_USE_FLAT_CONFIG=true eslint --config eslint.config.mjs .",
     "test": "vitest run --coverage --passWithNoTests",
     "test:watch": "vitest",
