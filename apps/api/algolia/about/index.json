@@ -76,7 +76,8 @@
       "decision_bias": "Default stance is no unless necessity is clear",
       "deferred_work": "Deferred fixes must be explicitly documented; silent debt rejected",
       "learning_postdeploy": "Some bad ideas only surface after deployment"
-    }
+    },
+    "related_project_ids": ["rai-lint", "eslint-config-echo"]
   },
   {
     "objectID": "about.ai_philosophy",
@@ -98,7 +99,8 @@
       "ai_baseline_view": "AI treated as a baseline expectation, not a novelty feature",
       "supervision_posture": "Treats AI as a constrained actor; defines acceptable behavior before allowing output expansion",
       "value_hierarchy": "Correctness and traceability over fluency or charm"
-    }
+    },
+    "related_project_ids": ["rai-lint", "delegate-action"]
   },
   {
     "objectID": "about.portfolio_public_work",
@@ -117,7 +119,8 @@
       "about_page_role": "Primary narrative surface capturing values and constraints at time of writing",
       "values_before_biography": "Constraints, decisions, and priorities precede career chronology",
       "public_sharing_reason": "Public repos reduce duplication and friction across environments"
-    }
+    },
+    "related_project_ids": ["system-notes", "devto-mirror"]
   },
   {
     "objectID": "about.audience_targeting",
@@ -212,7 +215,8 @@
       "site_status": "Active, Deployed",
       "site_intent": "Public, read-only portfolio system designed as a machine-readable index of decisions and systems rather than a traditional résumé site",
       "site_authorship_model": "Explicitly AI-generated with human-constrained authorship and traceability"
-    }
+    },
+    "related_project_ids": ["system-notes"]
   },
   {
     "objectID": "about.constraints_preferences",
@@ -313,7 +317,8 @@
         "credential_id": "1121633CBF5C85C",
         "focus": "Hands-on experience with prompt design, IDE integration, and responsible AI usage in development workflows"
       }
-    }
+    },
+    "related_project_ids": ["awesome-github-copilot", "rai-lint"]
   },
   {
     "objectID": "about.work_history_thd",
@@ -428,7 +433,8 @@
       "discovery": "Persistence constraints made the core premise impossible",
       "decision": "Stopped the project once infeasibility was clear",
       "learning": "Reinforced the importance of validating platform assumptions early"
-    }
+    },
+    "related_project_ids": ["checkmark-copilot-chat", "underfoot-underground-travel-planner"]
   },
   {
     "objectID": "about.decision_uncertainty",
@@ -489,7 +495,8 @@
       "generation_preference": "Prefers designing systems that generate code rather than hand-authoring large volumes",
       "refactor_strategy": "Refactors deliberately once for clarity, then enforces consistency through automation",
       "governance_view": "Treats automation as a governance tool, not just a productivity boost"
-    }
+    },
+    "related_project_ids": ["rai-lint", "delegate-action"]
   },
   {
     "objectID": "about.quality_evaluation",

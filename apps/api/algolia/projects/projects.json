@@ -20,7 +20,17 @@
     "repo_url": "https://github.com/anchildress1/system-notes",
     "app_url": "https://system-notes.anchildress1.dev",
     "order_rank": 10,
-    "updated_at": "2026-01-25T00:00:00Z"
+    "updated_at": "2026-01-25T00:00:00Z",
+    "related_links": [
+      "https://dev.to/anchildress1/can-we-set-the-record-straight-ai-content-and-a-bit-of-sanity-1inj",
+      "https://dev.to/anchildress1/waiting-with-intent-designing-ai-systems-for-the-long-game-1abg",
+      "https://dev.to/anchildress1/fact-checking-the-fear-behind-the-dark-side-of-ai-the-real-story-366p"
+    ],
+    "related_project_ids": [
+      "underfoot-underground-travel-planner",
+      "delegate-action",
+      "devto-mirror"
+    ]
   },
   {
     "objectID": "delegate-action",
@@ -34,7 +44,9 @@
     "outcome_short": "A working stopgap that enables AI-generated PRs today while waiting for native platform support.",
     "repo_url": "https://github.com/CheckMarKDevTools/delegate-action",
     "order_rank": 20,
-    "updated_at": "2026-01-25T00:00:00Z"
+    "updated_at": "2026-01-25T00:00:00Z",
+    "related_links": [],
+    "related_project_ids": ["rai-lint", "awesome-github-copilot"]
   },
   {
     "objectID": "my-hermantic-agent",
@@ -48,7 +60,9 @@
     "outcome_short": "A functional local sandbox that informs future agent and memory design decisions.",
     "repo_url": "https://github.com/anchildress1/my-hermantic-agent",
     "order_rank": 30,
-    "updated_at": "2026-01-25T00:00:00Z"
+    "updated_at": "2026-01-25T00:00:00Z",
+    "related_links": [],
+    "related_project_ids": ["underfoot-underground-travel-planner"]
   },
   {
     "objectID": "rai-lint",
@@ -62,7 +76,13 @@
     "outcome_short": "Live adoption that turns invisible AI assistance into explicit, auditable data.",
     "repo_url": "https://github.com/CheckMarKDevTools/rai-lint",
     "order_rank": 40,
-    "updated_at": "2026-01-25T00:00:00Z"
+    "updated_at": "2026-01-25T00:00:00Z",
+    "related_links": [
+      "https://dev.to/anchildress1/is-github-copilot-safe-the-fun-and-hard-truth-about-responsible-ai-3b95",
+      "https://dev.to/anchildress1/did-ai-erase-attribution-your-git-history-is-missing-a-co-author-1m2l",
+      "https://dev.to/anchildress1/signing-your-name-on-ai-assisted-commits-with-rai-footers-2b0o"
+    ],
+    "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"]
   },
   {
     "objectID": "underfoot-underground-travel-planner",
@@ -76,7 +96,12 @@
     "outcome_short": "An unfinished but instructive experiment that reframed cost failure as an orchestration problem.",
     "repo_url": "https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner",
     "order_rank": 50,
-    "updated_at": "2026-01-25T00:00:00Z"
+    "updated_at": "2026-01-25T00:00:00Z",
+    "related_links": [
+      "https://dev.to/anchildress1/underfoot-the-chatpot-for-hidden-places-and-why-i-dont-do-hackathons-2684",
+      "https://dev.to/anchildress1/the-hackathon-i-swore-off-and-the-exhaustion-that-mostly-compiled-c4l"
+    ],
+    "related_project_ids": ["my-hermantic-agent"]
   },
   {
     "objectID": "awesome-github-copilot",
@@ -90,7 +115,15 @@
     "outcome_short": "A widely adopted resource that favors practical utility over volume.",
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
     "order_rank": 60,
-    "updated_at": "2026-01-25T00:00:00Z"
+    "updated_at": "2026-01-25T00:00:00Z",
+    "related_links": [
+      "https://dev.to/anchildress1/troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o",
+      "https://dev.to/anchildress1/oh-i-have-big-news-guess-what-i-got-yesterday-1jca",
+      "https://dev.to/anchildress1/everything-i-know-about-github-copilot-instructions-from-zero-to-onboarded-for-real-4nb0",
+      "https://dev.to/anchildress1/github-copilot-chat-modes-explained-with-personality-2f4c",
+      "https://dev.to/anchildress1/leash-not-autopilot-building-predictable-ai-behavior-with-copilot-instructions-14ip"
+    ],
+    "related_project_ids": ["delegate-action", "checkmark-copilot-chat"]
   },
   {
     "objectID": "devto-mirror",
@@ -104,7 +137,10 @@
     "outcome_short": "Increased AI discoverability with zero ongoing maintenance.",
     "repo_url": "https://github.com/CheckMarKDevTools/devto-mirror",
     "order_rank": 70,
-    "updated_at": "2026-01-25T00:00:00Z"
+    "updated_at": "2026-01-25T00:00:00Z",
+    "related_links": [
+      "https://dev.to/anchildress1/weekend-hack-making-my-blog-ai-searchable-no-flames-required-16h5"
+    ]
   },
   {
     "objectID": "eslint-config-echo",
@@ -118,7 +154,8 @@
     "outcome_short": "Reduced drift and predictable AI-assisted code output.",
     "repo_url": "https://github.com/CheckMarKDevTools/eslint-config-echo",
     "order_rank": 80,
-    "updated_at": "2026-01-25T00:00:00Z"
+    "updated_at": "2026-01-25T00:00:00Z",
+    "related_links": []
   },
   {
     "objectID": "checkmark-copilot-chat",
@@ -132,6 +169,7 @@
     "outcome_short": "A falsified hypothesis that redirected focus to more viable Copilot tooling.",
     "repo_url": "https://github.com/CheckMarKDevTools/checkmark-copilot-chat",
     "order_rank": 90,
-    "updated_at": "2026-01-25T00:00:00Z"
+    "updated_at": "2026-01-25T00:00:00Z",
+    "related_links": []
   }
 ]
