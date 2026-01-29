@@ -1,43 +1,43 @@
 # Algolia Index Design Rationale
 
-This diagram explains the design evolution: from strict normalization to a **Granular Fact Architecture**.
-We split monolithic biographies into atomic facts to enable precise RAG retrieval without loading irrelevant context.
+This diagram explains the design evolution: from strict normalization to a **Hybrid Graph Architecture**.
+We maintain a clean schema but "bake" (denormalize) the graph context to enable single-shot retrieval.
 
 ```mermaid
 graph TD
     accTitle: Algolia Index Design Rationale
-    accDescr: Decision tree showing the evolution from monolithic schema to granular fact architecture
+    accDescr: Decision tree showing the evolution from normalized schema to hybrid graph denormalization
 
     Start["Index Design Strategy"]:::start
 
     %% Phase 1: Structure
     Q1{"One index or multiple?"}:::question
-    Unified["Unified Index (system-notes)<br/>pros: unified retrieval, simple config<br/>cons: single ranking strategy"]:::chosen
+    Multiple["Multiple indices (Projects, About)<br/>pros: per-type tuning<br/>cons: more config"]:::chosen
 
-    %% Phase 2: Content Granularity
-    Q2{"Monolithic vs Granular?"}:::question
-    Granular["Granular Records<br/>pros: precise retrieval<br/>cons: requires signal balancing"]:::chosen
+    %% Phase 2: Content
+    Q2{"Flatten nested 'data'?"}:::question
+    Normalize["Keep 'data' opaque<br/>pros: clean search surface<br/>cons: retrieve-only specifics"]:::chosen
 
-    %% Phase 3: The Context Problem
-    Q3{"How to maintain context?"}:::problem
-    OldWay["Siloed Indices<br/>(Hard to cross-reference)"]:::cons
-    NewWay["Graph Linking in One Index<br/>(Shared facets & tags)"]:::solution
+    %% Phase 3: The Graph Problem
+    Q3{"How to handle relationships?"}:::problem
+    OldWay["Agent Search Loop<br/>(Query -> Result -> Query again)"]:::cons
+    NewWay["Graph Denormalization<br/>(Bake neighbors into 'graph_context')"]:::solution
 
     %% Final decision
-    Decision["CURRENT ARCHITECTURE<br/>Unified System Notes<br/>1. Facts & Narratives in one graph<br/>2. Differentiated by facet_domain"]:::final
+    Decision["CURRENT ARCHITECTURE<br/>Hybrid Schema<br/>1. Normalized 'data' (clean)<br/>2. Denormalized 'graph_context' (smart)"]:::final
 
     %% Rationale
-    Why1["WHY: Silos fragment the agent's<br/>understanding of the system"]:::rationale
-    Why2["WHY: Unified index allows<br/>holistic retrieval"]:::rationale
+    Why1["WHY: Strict normalization prevented hallucination<br/>but broke 'discovery' queries"]:::rationale
+    Why2["WHY: 'Graph Context' provides O(1) retrieval<br/>of the local semantic neighborhood"]:::rationale
 
     %% Flow
     Start --> Q1
-    Q1 --> Unified
-    Unified --> Q2
-    Q2 --> Granular
-    Granular --> Q3
-    Q3 -->|Old: Fragmented| OldWay
-    Q3 -->|New: Holistic| NewWay
+    Q1 --> Multiple
+    Multiple --> Q2
+    Q2 --> Normalize
+    Normalize --> Q3
+    Q3 -->|Old: Slow/Fragile| OldWay
+    Q3 -->|New: Fast/Robust| NewWay
     NewWay --> Decision
     Decision --> Why1
     Decision --> Why2

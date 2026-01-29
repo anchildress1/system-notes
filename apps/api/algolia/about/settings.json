@@ -1,5 +1,5 @@
 {
-  "searchableAttributes": ["title", "aliases", "tags", "section", "unordered(data)"],
+  "searchableAttributes": ["title", "aliases", "tags", "section"],
   "attributesForFaceting": ["node_type", "section", "tags"],
   "customRanking": ["desc(updated_at)"],
   "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],

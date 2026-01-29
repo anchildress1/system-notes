@@ -11,12 +11,13 @@ graph TD
     Trigger["Deploy / Update Trigger"]:::trigger
 
     %% Script path
-    Script["Deploy Script<br/>(algolia_upload.sh)"]:::method
+    Script["Python Script<br/>(index_algolia.py)"]:::method
 
     %% Steps
     Validation{"Env Vars Set?<br/>(API Keys)"}:::decision
-    IndexSync["Index Data<br/>(system-notes)"]:::step
-    SynonymSync["Synonym Sync<br/>(system-notes)"]:::step
+    GraphBuild["Graph Enrichment<br/>(Denormalization)"]:::step
+    SynonymSync["Synonym Sync<br/>(projects only)"]:::step
+    IndexSync["Index Data<br/>(Replace All)"]:::step
 
     %% Outcomes
     Success["Graph Index Live"]:::success
@@ -25,11 +26,12 @@ graph TD
     %% Flow
     Trigger --> Script
     Script --> Validation
-    Validation -->|yes| IndexSync
+    Validation -->|yes| GraphBuild
     Validation -->|no| Fail
 
-    IndexSync --> SynonymSync
-    SynonymSync --> Success
+    GraphBuild --> SynonymSync
+    SynonymSync --> IndexSync
+    IndexSync --> Success
 
     %% Styles
     classDef trigger fill:#6b7280,stroke:#4b5563,stroke-width:3px,color:#f9fafb

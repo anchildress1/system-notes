@@ -8,20 +8,39 @@ graph TB
     accDescr: Data flow showing how the Python script enriches JSON data with graph context before indexing
 
     %% Data sources
-    UnifiedJSON["sources/index.json<br/>(Unified Knowledge Graph)"]:::source
+    AboutJSON["about/index.json<br/>(Concepts)"]:::source
+    ProjectsJSON["projects/index.json<br/>(Proofs)"]:::source
+
+    %% The Builder
+    subgraph "Builder: index_algolia.py"
+        Map["Build Lookup Map<br/>(ID -> Summary)"]:::process
+        EnrichProjects["Enrich Projects<br/>(Add graph_context)"]:::process
+        EnrichAbout["Enrich About<br/>(Add graph_context)"]:::process
+    end
 
     %% Algolia indices
-    UnifiedIndex[("system-notes index<br/>(Unified)")]:::index
+    AboutIndex[("about index<br/>+ graph_context")]:::index
+    ProjectsIndex[("projects index<br/>+ graph_context<br/>+ synonyms")]:::index
 
     %% Retrieval
-    Ruckus["Ruckus Agent<br/>(RAG Retrieval)"]:::agent
+    Ruckus["Ruckus Agent<br/>(One-Shot Search)"]:::agent
 
     %% Link generation
     Links["Deterministic Links"]:::output
 
     %% Flow
-    UnifiedJSON --> UnifiedIndex
-    UnifiedIndex -->|retrieve| Ruckus
+    ProjectsJSON --> Map
+    Map --> EnrichProjects
+    Map --> EnrichAbout
+
+    ProjectsJSON --> EnrichProjects
+    AboutJSON --> EnrichAbout
+
+    EnrichProjects -->|upload| ProjectsIndex
+    EnrichAbout -->|upload| AboutIndex
+
+    AboutIndex -->|retrieve| Ruckus
+    ProjectsIndex -->|retrieve| Ruckus
 
     Ruckus --> Links
     Links --> User

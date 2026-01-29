@@ -59,34 +59,65 @@ async def main():
     projects_path = os.path.join(root_dir, 'algolia', 'projects', 'projects.json')
     projects_settings_path = os.path.join(root_dir, 'algolia', 'projects', 'settings.json')
     
+    # Build Lookup Map (Projects are the source of truth for graph nodes)
+    project_map = {}
     if os.path.exists(projects_path):
         projects_data = load_json(projects_path)
+        project_map = {p['objectID']: p for p in projects_data}
+
+    def enrich_with_graph_context(records):
+        for record in records:
+            graph_context = []
+            related_ids = record.get('related_project_ids', [])
+            
+            for rel_id in related_ids:
+                related_project = project_map.get(rel_id)
+                if related_project:
+                    context_str = f"Related Project: {related_project.get('title')} - {related_project.get('summary')}"
+                    graph_context.append(context_str)
+            
+            if graph_context:
+                record['graph_context'] = "\n".join(graph_context)
+
+    # Process Projects
+    if os.path.exists(projects_path):
         projects_settings = load_json(projects_settings_path) if os.path.exists(projects_settings_path) else None
+        
+        # Enrich projects with their own internal links
+        enrich_with_graph_context(projects_data)
+        
+        # Index data
         await index_data('projects', projects_data, projects_settings)
+        
+        # Update Synonyms
+        synonyms_path = os.path.join(root_dir, 'algolia', 'projects', 'synonyms.json')
+        if os.path.exists(synonyms_path):
+            print("Updating synonyms for projects...")
+            synonyms = load_json(synonyms_path)
+            try:
+                await client.save_synonyms('projects', synonyms, replace_existing_synonyms=True)
+                print("Synonyms updated for projects")
+            except Exception as e:
+                print(f"Error updating synonyms: {e}")
     else:
         print(f"Projects file not found: {projects_path}")
 
-    # About index
+    # Process About
     about_path = os.path.join(root_dir, 'algolia', 'about', 'index.json')
     about_settings_path = os.path.join(root_dir, 'algolia', 'about', 'settings.json')
     
     if os.path.exists(about_path):
         about_data = load_json(about_path)
         about_settings = load_json(about_settings_path) if os.path.exists(about_settings_path) else None
+        
+        # Enrich about records with links to projects
+        enrich_with_graph_context(about_data)
+
         await index_data('about', about_data, about_settings)
     else:
         print(f"About file not found: {about_path}")
 
-    # System Docs index
-    docs_path = os.path.join(root_dir, 'algolia', 'system_docs.json')
-    docs_settings_path = os.path.join(root_dir, 'algolia', 'system_docs_settings.json')
-    
-    if os.path.exists(docs_path):
-        docs_data = load_json(docs_path)
-        docs_settings = load_json(docs_settings_path) if os.path.exists(docs_settings_path) else None
-        await index_data('system_docs', docs_data, docs_settings)
-    else:
-        print(f"System docs file not found: {docs_path}")
+
     
     print("\nIndexing complete!")
     

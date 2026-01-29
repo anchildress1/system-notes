@@ -1,7 +1,5 @@
 {
-  "searchableAttributes": [
-    "unordered(title, display_name, aliases, tags, summary, purpose_short, outcome_short)"
-  ],
+  "searchableAttributes": ["title", "aliases", "tags", "display_name", "summary"],
   "attributesForFaceting": ["node_type", "status", "tags", "kind", "role", "scope"],
   "customRanking": ["asc(order_rank)", "desc(updated_at)"],
   "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
