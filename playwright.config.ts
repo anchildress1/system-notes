@@ -27,7 +27,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run build && npm run start:standalone',
+    command: 'npm run build && npm start -- -p 3001',
     url: 'http://localhost:3001',
     cwd: './apps/web',
     reuseExistingServer: !process.env.CI,
