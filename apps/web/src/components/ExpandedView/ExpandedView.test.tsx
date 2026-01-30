@@ -38,20 +38,14 @@ describe('ExpandedView Component', () => {
     const handleClose = vi.fn();
     render(<ExpandedView project={mockProject} onClose={handleClose} />);
 
-    // Assuming the close button is the one with the svg icon, or we can look for role="button" if accessible.
-    // The close button is a <button> with an svg inside.
+    // Assuming the close button is the one with the svg icon
     const closeButtons = screen.getAllByRole('button');
-    // There might be multiple buttons if we count the link (usually links are role link, but let's be specific).
-    // The close button has the svg.
     const closeBtn = closeButtons.find((btn) => btn.querySelector('svg'));
 
     if (closeBtn) {
       fireEvent.click(closeBtn);
       expect(handleClose).toHaveBeenCalled();
     } else {
-      // Fallback if role lookup fails (though it shouldn't)
-      // Check for click on overlay/background if specifically testing that behavior.
-      // For now, let's try to find it by class or just rely on the first button if it's the only one.
       fireEvent.click(screen.getAllByRole('button')[0]);
       expect(handleClose).toHaveBeenCalled();
     }
@@ -68,12 +62,33 @@ describe('ExpandedView Component', () => {
   it('renders close button with sticky positioning attributes', async () => {
     render(<ExpandedView project={mockProject} onClose={() => {}} />);
 
-    // Check for button presence and correct accessibility label
     const closeBtn = screen.getByRole('button', { name: /close modal/i });
     expect(closeBtn).toBeInTheDocument();
-
-    // We expect it to be visible after animation, but framer-motion in jsdom can be tricky.
-    // We trust toBeInTheDocument for existence combined with our aria label check.
     expect(closeBtn).toHaveAttribute('aria-label', 'Close modal');
+  });
+
+  it('renders blog links if provided', () => {
+    const projectWithBlogs = {
+      ...mockProject,
+      blogs: [{ title: 'Blog 1', url: 'https://blog1.com' }],
+    };
+    render(<ExpandedView project={projectWithBlogs} onClose={() => {}} />);
+    expect(screen.getByText('Related Reading')).toBeInTheDocument();
+    expect(screen.getByText('Blog 1')).toHaveAttribute('href', 'https://blog1.com');
+  });
+
+  it('handles keyboard scrolling', () => {
+    // Mock scrollBy
+    const scrollByMock = vi.fn();
+    Element.prototype.scrollBy = scrollByMock;
+
+    render(<ExpandedView project={mockProject} onClose={() => {}} />);
+
+    // Dispatch events on window
+    fireEvent.keyDown(window, { key: 'ArrowDown' });
+    expect(scrollByMock).toHaveBeenCalledWith(expect.objectContaining({ top: 60 }));
+
+    fireEvent.keyDown(window, { key: 'ArrowUp' });
+    expect(scrollByMock).toHaveBeenCalledWith(expect.objectContaining({ top: -60 }));
   });
 });
