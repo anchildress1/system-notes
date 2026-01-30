@@ -20,8 +20,8 @@ describe('SitemapHero', () => {
 
   it('renders correctly', () => {
     render(<SitemapHero />);
-    expect(screen.getByRole('banner', { name: /Sitemap introduction/i })).toBeInTheDocument();
-    expect(screen.getByText(/AI wanted this here/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /AI wanted this here/i })).toBeInTheDocument();
+    expect(screen.getByText(/I didn't argue/i)).toBeInTheDocument();
   });
 
   it('triggers glitter bomb on click', () => {
