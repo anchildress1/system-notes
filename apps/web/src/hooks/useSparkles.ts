@@ -243,7 +243,6 @@ export const useSparkles = ({
       }
       observer.disconnect();
       if (containerRef.current) {
-        // eslint-disable-next-line
         containerRef.current.removeEventListener('mousemove', handleMouseMove);
         // eslint-disable-next-line
         containerRef.current.removeEventListener('touchmove', handleTouchMove);

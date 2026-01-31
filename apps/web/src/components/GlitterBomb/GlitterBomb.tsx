@@ -123,7 +123,7 @@ export default function GlitterBomb() {
               p.scale.set(p.life * 0.5); // scaling down
             } else {
               p.visible = false;
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               if ((p as any).parent) (p as any).parent.removeChild(p as any);
             }

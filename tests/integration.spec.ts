@@ -5,7 +5,7 @@ test.describe('System Notes Integration', () => {
   test('loads homepage with correct metadata', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/System Notes/);
-    await expect(page.locator('h1').first()).toContainText('System Notes');
+    await expect(page.locator('h1').first()).toContainText('Not here to play nice');
   });
 
   test('should display the footer', async ({ page }) => {

@@ -171,6 +171,10 @@
   transition: all 0.2s ease;
 }
 
+.input::placeholder {
+  color: hsl(var(--color-text-secondary));
+}
+
 .input:focus {
   border-color: hsl(var(--color-accent-teal));
   box-shadow: 0 0 0 4px hsl(var(--color-accent-teal) / 0.1), 0 0 20px hsl(var(--color-accent-teal) / 0.1);

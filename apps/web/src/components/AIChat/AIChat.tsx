@@ -115,7 +115,7 @@ function ChatContent() {
                       return (
                         <a
                           href={href}
-                          onClick={(e) => {
+                          onClick={(_e) => {
                             // Let the browser handle the navigation, but don't close the chat
                             // Actually, Next.js 'Link' or router push is better but we are inside Markdown
                             // Standard <a> will cause full reload.
