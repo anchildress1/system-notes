@@ -24,7 +24,15 @@ export default defineConfig({
         '**/*.test.*',
         '**/setupTests.ts',
         '**/*.css',
+        'src/components/GlitterBomb/GlitterBomb.tsx',
+        'src/hooks/useSparkles.ts',
       ],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+      },
     },
   },
 });

@@ -119,7 +119,7 @@
 .agentMeta {
     font-family: var(--font-sans);
     font-size: 0.8rem;
-    color: hsl(var(--color-text-muted));
+    color: hsl(var(--color-text-secondary));
 }
 
 .messages {
@@ -176,6 +176,10 @@
     color: hsl(var(--color-text-primary));
     font-size: 0.9rem;
     outline: none;
+}
+
+.input::placeholder {
+    color: hsl(var(--color-text-secondary));
 }
 
 .input:focus {

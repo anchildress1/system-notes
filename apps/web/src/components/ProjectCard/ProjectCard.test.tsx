@@ -52,4 +52,31 @@ describe('ProjectCard Component', () => {
     // Checks for initials
     expect(screen.getByText('TE')).toBeInTheDocument();
   });
+  it('opens GitHub URL on link click and stops propagation', () => {
+    const handleSelect = vi.fn();
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    render(<ProjectCard project={mockProject} onSelect={handleSelect} />);
+
+    const link = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
+    fireEvent.click(link);
+
+    expect(openSpy).toHaveBeenCalledWith(mockProject.repoUrl, '_blank', 'noopener,noreferrer');
+    expect(handleSelect).not.toHaveBeenCalled();
+    openSpy.mockRestore();
+  });
+
+  it('opens GitHub URL on Enter/Space key', () => {
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    render(<ProjectCard project={mockProject} onSelect={() => {}} />);
+
+    const link = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
+
+    fireEvent.keyDown(link, { key: 'Enter' });
+    expect(openSpy).toHaveBeenCalledWith(mockProject.repoUrl, '_blank', 'noopener,noreferrer');
+
+    fireEvent.keyDown(link, { key: ' ' });
+    expect(openSpy).toHaveBeenCalledTimes(2);
+
+    openSpy.mockRestore();
+  });
 });

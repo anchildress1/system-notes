@@ -10,7 +10,7 @@ export default function SitemapHero() {
   useSparkles({ containerRef });
 
   return (
-    <div className={styles.hero} ref={containerRef} role="banner" aria-label="Sitemap introduction">
+    <div className={styles.hero} ref={containerRef}>
       <div
         role="button"
         tabIndex={0}
