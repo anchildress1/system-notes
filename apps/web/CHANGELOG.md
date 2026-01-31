@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/anchildress1/system-notes/compare/web-v1.2.0...web-v1.2.1) (2026-01-31)
+
+
+### Bug Fixes
+
+* **ci:** use npm start for lighthouse ci to fix static asset loading ([dc1d9aa](https://github.com/anchildress1/system-notes/commit/dc1d9aa8d8881d0317d939e1eedc7d094de680a4))
+
 ## [1.2.0](https://github.com/anchildress1/system-notes/compare/web-v1.1.0...web-v1.2.0) (2026-01-28)
 
 > _Now with 100% more sparkles and significantly less hydration errors._
