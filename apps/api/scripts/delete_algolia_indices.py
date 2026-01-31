@@ -22,7 +22,7 @@ async def delete_all_indices():
     client = SearchClient(ALGOLIA_APP_ID, ALGOLIA_API_KEY)
     
     # List of indices to delete
-    indices_to_delete = ['projects', 'about', 'blog_posts', 'system-notes']
+    indices_to_delete = ['projects', 'about', 'facts', 'artwork', 'blog_posts']
     
     print("🗑️  Deleting all existing indices...")
     

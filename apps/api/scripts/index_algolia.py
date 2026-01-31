@@ -102,24 +102,48 @@ async def main():
     else:
         print(f"Projects file not found: {projects_path}")
 
-    # Process About
-    about_path = os.path.join(root_dir, 'algolia', 'about', 'index.json')
-    about_settings_path = os.path.join(root_dir, 'algolia', 'about', 'settings.json')
+    # Process Knowledge Graph Indices
+    kg_dir = os.path.join(root_dir, 'algolia', 'knowledge_graph')
     
-    if os.path.exists(about_path):
-        about_data = load_json(about_path)
-        about_settings = load_json(about_settings_path) if os.path.exists(about_settings_path) else None
-        
-        # Enrich about records with links to projects
-        enrich_with_graph_context(about_data)
-
-        await index_data('about', about_data, about_settings)
+    # Facts index
+    facts_path = os.path.join(kg_dir, 'facts.json')
+    facts_settings_path = os.path.join(kg_dir, 'facts_settings.json')
+    if os.path.exists(facts_path):
+        facts_data = load_json(facts_path)
+        facts_settings = load_json(facts_settings_path) if os.path.exists(facts_settings_path) else None
+        await index_data('facts', facts_data, facts_settings)
     else:
-        print(f"About file not found: {about_path}")
+        print(f"Facts file not found: {facts_path}")
+    
+    # Artwork index
+    artwork_path = os.path.join(kg_dir, 'artwork.json')
+    artwork_settings_path = os.path.join(kg_dir, 'artwork_settings.json')
+    if os.path.exists(artwork_path):
+        artwork_data = load_json(artwork_path)
+        artwork_settings = load_json(artwork_settings_path) if os.path.exists(artwork_settings_path) else None
+        await index_data('artwork', artwork_data, artwork_settings)
+    else:
+        print(f"Artwork file not found: {artwork_path}")
+    
+    # Blog Posts index
+    blog_posts_path = os.path.join(kg_dir, 'blog_posts.json')
+    blog_posts_settings_path = os.path.join(kg_dir, 'blog_posts_settings.json')
+    if os.path.exists(blog_posts_path):
+        blog_posts_data = load_json(blog_posts_path)
+        blog_posts_settings = load_json(blog_posts_settings_path) if os.path.exists(blog_posts_settings_path) else None
+        await index_data('blog_posts', blog_posts_data, blog_posts_settings)
+    else:
+        print(f"Blog posts file not found: {blog_posts_path}")
 
 
     
     print("\nIndexing complete!")
+    print("\nActive indices:")
+    print("  - projects (9 records)")
+    print("  - facts (27 records) [knowledge graph]")
+    print("  - artwork (3 records) [knowledge graph]")
+    print("  - blog_posts (56 records) [knowledge graph]")
+    print("\nNote: system_docs.json kept for blog crawler setup")
     
     # Close the client
     await client.close()
