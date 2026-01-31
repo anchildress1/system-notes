@@ -14,18 +14,16 @@ vi.mock('next/image', () => ({
 const mockProject: Project = {
   id: 'test-project',
   title: 'Test Project',
+  status: 'Active · Testing',
   description: 'Short description',
+  purpose: 'Test purpose for the project',
   longDescription: 'Long description',
+  outcome: 'Test outcome for the project',
   imageUrl: '/test-image.jpg',
   imageAlt: 'Test Image',
-  technologies: ['React', 'TypeScript'],
-  repoUrl: 'https://github.com/test/repo',
-  demoUrl: 'https://test.com',
-  featured: true,
-  owner: 'anchildress1',
-  category: 'Web App',
-  status: 'In Development',
   tech: [{ name: 'React', role: 'Frontend' }],
+  repoUrl: 'https://github.com/test/repo',
+  owner: 'anchildress1',
 };
 
 describe('ProjectModal Component', () => {

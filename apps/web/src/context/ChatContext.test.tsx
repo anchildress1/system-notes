@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, renderHook } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { ChatProvider, useChat } from './ChatContext';
 
 const TestComponent = () => {
