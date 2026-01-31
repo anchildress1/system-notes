@@ -1,27 +1,114 @@
 # AGENTS.md for Algolia files
 
-- When working in `./algolia_prompt.md`:
-  - Never emphasize with formatting
-  - Use all caps as section headers
+**Purpose:** AI-specific context for agents working in this repository. Focus on non-obvious implementation details and gotchas.
+
+## Formatting Rules for `algolia_prompt.md`
+
+- Never emphasize with formatting (no bold, italic, etc.)
+- Use all caps as section headers
+- Keep responses conversational and authentic to Ashley's voice
+
+## Knowledge Graph Architecture
+
+### Index Structure (Current)
+
+The system uses **4 active indices** (as of Jan 2026):
+
+1. **`projects`** - 9 records with visual assets
+2. **`facts`** - 27 records extracted from `about.json`
+3. **`blog_posts`** - 56 records from sitemap
+4. **`artwork`** - 3 digital art pieces (metadata only)
+
+### Deprecated Indices
+
+- **`about`** - Replaced by `facts` index (Jan 2026)
+- **`system_docs`** - Kept for blog crawler setup, not actively indexed
+
+### Visual Asset Handling
+
+**Critical Implementation Detail:**
+
+- Project banners are stored in `apps/web/public/projects/`
+- Artwork files are in `apps/web/public/artwork/`
+- The `build_knowledge_graph.py` script scans these directories to generate metadata
+- Images are served at `/projects/{filename}` and `/artwork/{filename}` URLs
+- **Image display in Algolia UI requires manual dashboard configuration** - there's no public API endpoint for Agent Studio settings
+
+### Data Flow
+
+```
+about.json → extract_facts_from_about() → facts.json
+sitemap.xml → fetch_blog_posts_from_sitemap() → blog_posts.json
+projects.json + /public/projects/ → enrich_projects_with_visuals() → projects_enriched.json
+/public/artwork/ → scan_artwork_directory() → artwork.json
+```
 
 ## Index Descriptions
 
-These descriptions are designed to help AI agents (like Ruckus) understand _when_ and _why_ to query specific indices.
-
 ### `projects`
 
-**Description:** Contains structured data on software projects, portfolios, tools, and experiments built by the author.
-**When to use:** Query this index when the user asks about specific work, codebases, repositories, "this project", "what have you built", or technical implementations of specific apps.
-**Key Attributes:** `title`, `aliases` (e.g., "hermes agent"), `tags` (e.g., "Next.js", "Python"), `summary`, `status`.
+**Description:** Software projects with visual assets (banners, thumbnails)
+**When to use:** User asks about work, codebases, "what have you built", specific tools
+**Key Attributes:** `title`, `aliases`, `tags`, `summary`, `status`, `banner_image`, `thumbnail_url`
+**Visual Context:** Always include banner images in responses when available
 
-### `about`
+### `facts`
 
-**Description:** Contains biographical information, professional work style, career history, identity, and personal context about Ashley.
-**When to use:** Query this index when the user asks about the author's background, "who is Ashley", "resume", "work style", "where are you from", or "contact info".
-**Key Attributes:** `section` (e.g., "identity", "background"), `data` (key-value pairs of facts).
+**Description:** Biographical facts, identity, principles, philosophy extracted from about.json
+**When to use:** User asks about Ashley's background, identity, work style, values
+**Key Attributes:** `category`, `content`, `tags`, `related_projects`
+**Note:** Replaces the old `about` index structure
 
-### `system_docs`
+### `blog_posts`
 
-**Description:** Contains indexed chunks of architectural documentation, design patterns, system flows, and technical rationale.
-**When to use:** Query this index when the user asks deep-dive technical questions about _how_ the system works, "why was this decision made", "architecture", or specific code patterns not covered by high-level project summaries.
-**Key Attributes:** `content` (raw text chunks), `doc_path` (source file), `title` (document section).
+**Description:** Blog articles from ashleychildress.com with cover images
+**When to use:** User asks about writing, articles, specific topics Ashley has written about
+**Key Attributes:** `title`, `url`, `published_date`, `cover_image`, `excerpt`
+**Visual Context:** Include cover images when displaying blog posts
+
+### `artwork`
+
+**Description:** Digital art pieces with themes and connections to facts/projects
+**When to use:** User asks about visual work, art, or when enriching responses with relevant imagery
+**Key Attributes:** `title`, `image_url`, `thumbnail_url`, `themes`, `connected_to`
+**Note:** Only 3 pieces currently (appalachian_mountains, systems_thinking, transparency)
+
+## Scripts & Maintenance
+
+### `build_knowledge_graph.py`
+
+Regenerates all knowledge graph indices from source data. Run when:
+
+- Adding new artwork to `/public/artwork/`
+- Updating `about.json` or `projects.json`
+- Blog posts change significantly
+
+### `index_algolia.py`
+
+Uploads indices to Algolia with settings. Processes in order:
+
+1. Projects
+2. Facts
+3. Artwork
+4. Blog posts
+
+### `delete_algolia_indices.py`
+
+Clean slate - deletes all indices. Use before major schema changes.
+
+## Agent Configuration (Manual)
+
+**Algolia Agent Studio** (ID: `11caec4a-abd5-439a-a66a-3c26562de5c1`)
+
+- Dashboard: https://dashboard.algolia.com/apps/EXKENZ9FHJ/agent-studio
+- System prompt source: `algolia_prompt.md`
+- **No public API** for updating agent config - must use dashboard
+- Image display fields must be configured manually in UI settings
+
+## Common Gotchas
+
+1. **Image URLs are relative** - stored as `/projects/banner.jpg`, not full URLs
+2. **Artwork metadata only** - actual image files must exist in `/public/artwork/`
+3. **Blog post extraction** - relies on sitemap.xml structure, may break if blog platform changes
+4. **Connection graph** - built but not actively used in search (future enhancement)
+5. **Agent Studio API** - doesn't exist for configuration updates despite being "API-first"

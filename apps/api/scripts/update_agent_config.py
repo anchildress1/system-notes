@@ -39,7 +39,10 @@ headers = {
 payload = {
     "systemPrompt": prompt_content,
     "indices": [
-        {"indexName": "system-notes"}
+        {"indexName": "projects"},
+        {"indexName": "facts"},
+        {"indexName": "artwork"},
+        {"indexName": "blog_posts"}
     ]
 }
 
@@ -55,7 +58,7 @@ try:
         print()
         print("Updated settings:")
         print(f"  - System prompt: {len(prompt_content)} chars")
-        print("  - Indices: projects, about, blog_posts")
+        print("  - Indices: projects, facts, artwork, blog_posts")
     else:
         print(f"❌ Failed to update agent: {response.status_code}")
         print(f"Response: {response.text}")
