@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.1](https://github.com/anchildress1/system-notes/compare/system-notes-v1.2.0...system-notes-v1.2.1) (2026-01-31)
+
+
+### Bug Fixes
+
+* **ci:** use npm start for lighthouse ci to fix static asset loading ([dc1d9aa](https://github.com/anchildress1/system-notes/commit/dc1d9aa8d8881d0317d939e1eedc7d094de680a4))
+* **e2e:** update homepage expectation to match new hero content ([d87e61c](https://github.com/anchildress1/system-notes/commit/d87e61c43b15987f3528d494c533210b8f2c747e))
+* **e2e:** use npm start for playwright webServer to fix static asset loading ([a1e684c](https://github.com/anchildress1/system-notes/commit/a1e684ccda586e0c2719d18efb38404f2e187a1b))
+
 ## [1.2.0](https://github.com/anchildress1/system-notes/compare/system-notes-v1.1.0...system-notes-v1.2.0) (2026-01-28)
 
 > _In which we pretend that adding a music player counts as "system architecture"._
