@@ -89,9 +89,9 @@ async def get_projects():
             # url -> github_url
             projects.append(Project(
                 id=item.get("objectID"),
-                title=item.get("title"),
-                description=item.get("summary", ""),
-                github_url=item.get("url")
+                title=item.get("title") or item.get("name"),
+                description=item.get("summary") or item.get("what_it_is", ""),
+                github_url=item.get("url") or item.get("repo_url")
             ))
             
         return projects
@@ -100,3 +100,24 @@ async def get_projects():
         return []
 
 
+@app.get("/system/doc/{doc_path:path}")
+async def get_system_doc(doc_path: str):
+    try:
+        # Security: prevent traversing up
+        if ".." in doc_path:
+             return JSONResponse(status_code=400, content={"error": "Invalid path"})
+        
+        current_dir = Path(__file__).resolve().parent
+        # Try to find the file relative to apps/api root
+        target_file = current_dir / doc_path
+        
+        if not target_file.exists():
+             return JSONResponse(status_code=404, content={"error": "Document not found"})
+             
+        with open(target_file, "r") as f:
+            content = f.read()
+            
+        return {"content": content, "format": "markdown", "path": doc_path}
+    except Exception as e:
+        logger.error(f"Error serving doc: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
