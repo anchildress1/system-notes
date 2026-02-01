@@ -28,6 +28,12 @@
     "react-instantsearch-core": "^7.22.1",
     "react-markdown": "^10.1.0"
   },
+  "optionalDependencies": {
+    "lightningcss-linux-x64-gnu": "1.31.1",
+    "lightningcss-linux-x64-musl": "1.31.1",
+    "@tailwindcss/oxide-linux-x64-gnu": "4.1.18",
+    "@tailwindcss/oxide-linux-x64-musl": "4.1.18"
+  },
   "devDependencies": {
     "@lhci/cli": "^0.15.1",
     "@tailwindcss/postcss": "^4",

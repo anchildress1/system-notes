@@ -26,7 +26,7 @@ import ClientShell from '@/components/ClientShell/ClientShell';
 import { allProjects } from '@/data/projects';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+  metadataBase: new URL('http://anchildress1.dev'),
   title: {
     default: "Ashley Childress' System Notes",
     template: '%s | System Notes',
@@ -95,7 +95,7 @@ export default function RootLayout({
       '@type': 'Person',
       name: 'Ashley Childress',
       url: 'https://anchildress1.dev',
-      sameAs: ['https://system-notes-ui-288489184837.us-east1.run.app'],
+      sameAs: ['https://anchildress1.dev'],
     },
     hasPart: allProjects.map((p) => ({
       '@type': 'SoftwareApplication',

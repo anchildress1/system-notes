@@ -1,4 +1,4 @@
-.PHONY: setup setup-python setup-node dev build clean ai-checks secret-scan
+.PHONY: setup setup-python setup-node dev build deploy clean ai-checks secret-scan test test-e2e format lint
 
 # Default target
 all: setup
@@ -20,7 +20,7 @@ setup-python:
 # Run the development environment (Turbo)
 dev:
 	@echo "🚀 Starting development servers..."
-	npx turbo run dev --parallel
+	npm run dev -- --parallel
 
 # Format code (Prettier)
 format:
@@ -85,7 +85,7 @@ secret-scan:
 # Run Playwright E2E tests
 test-e2e: build
 	@echo "🎭 Running Playwright E2E tests..."
-	npx playwright test
+	npm exec playwright test
 
 # Run all AI checks (Scan -> Format -> Lint -> Test -> E2E)
 ai-checks: secret-scan
@@ -99,6 +99,13 @@ ai-checks: secret-scan
 build:
 	@echo "🏗️ Building project..."
 	npm run build
+
+# Deploy the application to Google Cloud
+deploy:
+	@echo "🚀 Deploying to Google Cloud..."
+	cd apps/api && uv sync --no-dev
+	npm install
+	./deploy.sh
 
 # Clean up all dependencies and build artifacts
 clean:
