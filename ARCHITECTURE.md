@@ -8,10 +8,10 @@ System Notes is a monorepo designed to act as a "digital nervous system," bridgi
 
 ```mermaid
 graph TD
-    %% Styling for Light Mode
-    classDef frontend fill:#E0F2FE,stroke:#0284C7,color:#000000,stroke-width:2px;
-    classDef backend fill:#D1FAE5,stroke:#059669,color:#000000,stroke-width:2px;
-    classDef external fill:#F3E8FF,stroke:#9333EA,color:#000000,stroke-width:2px;
+    %% Theme-agnostic styling
+    classDef frontend stroke:#0284C7,stroke-width:2px;
+    classDef backend stroke:#059669,stroke-width:2px;
+    classDef external stroke:#9333EA,stroke-width:2px;
 
 
     User([👤 User]) -->|Interacts| Web[Next.js Frontend]:::frontend
