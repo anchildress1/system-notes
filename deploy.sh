@@ -18,18 +18,11 @@ if ! command -v gcloud &> /dev/null; then
     exit 1
 fi
 
-# Load environment variables from apps/api/.env if present
-if [ -f "apps/api/.env" ]; then
-    echo "Loading environment variables from apps/api/.env..."
-    export $(grep -v '^#' apps/api/.env | xargs)
+PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
+if [ "$PROJECT_ID" == "(unset)" ] || [ -z "$PROJECT_ID" ]; then
+    echo "Error: No Google Cloud Project ID set."
+    exit 1
 fi
-
-
-# if [ -z "$OPENAI_API_KEY" ]; then
-#     echo "Error: OPENAI_API_KEY environment variable is not set."
-#     echo "Export it: export OPENAI_API_KEY='your-key'"
-#     exit 1
-# fi
 
 PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')
 
@@ -71,11 +64,9 @@ deploy_service() {
     echo "--- Deploying $SERVICE_NAME ---"
 
     # 1. Ensure Artifact Registry Repo exists
-    REPO_NAME="$SERVICE_NAME"
-
-    if ! gcloud artifacts repositories describe "$REPO_NAME" --location="$REGION" &>/dev/null; then
-        echo "Creating Artifact Registry repository: $REPO_NAME..."
-        gcloud artifacts repositories create "$REPO_NAME" \
+    if ! gcloud artifacts repositories describe "$SERVICE_NAME" --location="$REGION" --project "$PROJECT_ID" --quiet &>/dev/null; then
+        echo "Creating Artifact Registry repository: $SERVICE_NAME..."
+        gcloud artifacts repositories create "$SERVICE_NAME" \
             --repository-format=docker \
             --location="$REGION" \
             --project "$PROJECT_ID" \
@@ -83,8 +74,8 @@ deploy_service() {
     fi
 
     # 2. Build and Push Image
-    IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$SERVICE_NAME:latest"
-    echo "Building and pushing image: $IMAGE_URI"
+    local IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:latest"
+    echo "Building: $IMAGE_URI"
 
     if [ -n "$DOCKERFILE_PATH" ]; then
         # Use provided cloudbuild configuration if Dockerfile path implies special handling (via config file)
@@ -101,37 +92,29 @@ deploy_service() {
 
     # 3. Deploy to Cloud Run
     echo "Deploying to Cloud Run..."
-
-    # Build arguments array to avoid eval/injection risks
-    DEPLOY_ARGS=(
-        "$SERVICE_NAME"
-        --image "$IMAGE_URI"
-        --region "$REGION"
-        --allow-unauthenticated
-        --port "$PORT"
-    )
-
+    local CMD="gcloud run deploy $SERVICE_NAME --image $IMAGE_URI --region $REGION --project $PROJECT_ID --allow-unauthenticated --port $PORT"
+    
     if [ -n "$SERVICE_ACCOUNT" ]; then
-        DEPLOY_ARGS+=("--service-account" "$SERVICE_ACCOUNT")
+        CMD="$CMD --service-account $SERVICE_ACCOUNT"
     fi
 
     if [ -n "$ENV_VARS" ]; then
-        DEPLOY_ARGS+=("--set-env-vars" "$ENV_VARS")
+        CMD="$CMD --set-env-vars $ENV_VARS"
     fi
 
-    gcloud run "${DEPLOY_ARGS[@]}"
+    $CMD
 }
 
 # ==========================================
 # Execution
 # ==========================================
 
-# Define target regions (space separated)
-REGIONS=("us-east1")
+# 1. Deploy API (No Env Vars needed, relies on defaults)
+deploy_service "$API_SERVICE" "$API_SOURCE" "$API_PORT" "$API_SA"
 
-# Service Accounts
-API_SA="system-notes-api@anchildress1-unstable.iam.gserviceaccount.com"
-UI_SA="system-notes-ui@anchildress1-unstable.iam.gserviceaccount.com"
+# 2. Get API URL
+API_URL=$(gcloud run services describe "$API_SERVICE" --region "$REGION" --project "$PROJECT_ID" --format 'value(status.url)')
+echo "API URL: $API_URL"
 
 deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "" "apps/web/Dockerfile"
 

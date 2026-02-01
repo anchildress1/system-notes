@@ -20,7 +20,7 @@ setup-python:
 # Run the development environment (Turbo)
 dev:
 	@echo "🚀 Starting development servers..."
-	npx turbo run dev --parallel
+	npm run dev -- --parallel
 
 # Format code (Prettier)
 format:
@@ -85,15 +85,7 @@ secret-scan:
 # Run Playwright E2E tests
 test-e2e:
 	@echo "🎭 Running Playwright E2E tests..."
-	@lsof -ti:3002 | xargs kill -9 2>/dev/null || true
-	@cd apps/web && if [ -e .env.local.bak ]; then echo "Error: .env.local.bak already exists. Please restore or remove it before running 'make test-e2e'." >&2; exit 1; fi; if [ -e .env.local ]; then mv .env.local .env.local.bak; fi
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=test_app_id" > .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key" >> .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id" >> .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes" >> .env.local
-	npm run build
-	@cd apps/web && rm -f .env.local; if [ -e .env.local.bak ]; then mv .env.local.bak .env.local; fi
-	CI=true npm exec playwright test
+	npm exec playwright test
 
 # Run Performance tests
 test-perf:
