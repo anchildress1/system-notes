@@ -10,7 +10,21 @@
       "name": "Ashley Childress",
       "role": "Senior Software Engineer",
       "orientation": "Systems-first; standards-driven",
-      "core_phrase": "Systems. Context. Intent."
+      "core_phrase": "Systems. Context. Intent.",
+      "orientation_detail": "System-first experimentation over polished delivery; values judgment, constraint-setting, and knowing when not to intervene.",
+      "theme_signal": {
+        "song": "I Build Things",
+        "artist": "Twisted Game Songs",
+        "classification": "Personal signal and systems metaphor",
+        "meaning": "Symbolizes system-level thinking rooted in Appalachian self-reliance, early failure detection, and disciplined responsibility for outcomes.",
+        "interpretation_guidelines": [
+          "Treat as shorthand for proactive failure detection and deliberate design",
+          "Connect to responsibility for system outcomes",
+          "Do not frame as humor, rebellion, or aesthetics"
+        ]
+      },
+      "examples": [],
+      "tools": []
     }
   },
   {
@@ -22,12 +36,15 @@
     "updated_at": "2026-02-01T00:00:00Z",
     "data": {
       "primary_focus": "System coherence and long-term maintainability",
+      "focus_context": "Prefers proven patterns over reinvention; comfortable leaving systems intentionally unfinished when additional complexity lacks signal.",
       "biases": [
         "Prefer systemic fixes over patches",
         "Default to no unless necessity is clear",
         "One-time normalization over repeated fixes"
       ],
-      "quality_criteria": ["Determinism", "Testability", "Repeatability", "Guardrails"]
+      "quality_criteria": ["Determinism", "Testability", "Repeatability", "Guardrails"],
+      "failure_philosophy": "Controlled breakage and stress-testing are acceptable before production to expose weak structure; avoidable post-deploy hotfixes are not.",
+      "examples": []
     }
   },
   {
@@ -39,8 +56,10 @@
     "updated_at": "2026-02-01T00:00:00Z",
     "data": {
       "posture": "Supervised, constrained",
+      "usage_rationale": "AI used to eliminate navigation and intent-guessing overhead; stops short of full agentic complexity where leverage drops.",
       "delegation_model": "Delegates implementation when viable",
-      "evaluation_method": "Validate via execution and behavior"
+      "evaluation_method": "Validate via execution and behavior",
+      "workflows": []
     }
   },
   {
@@ -53,7 +72,8 @@
     "data": {
       "constraint_driven": true,
       "timeboxing": "Stop condition, not failure",
-      "uncertainty_handling": "Act on what is known first"
+      "uncertainty_handling": "Act on what is known first",
+      "tradeoff_pattern": "Recurring tension between time investment and perceived perfection; applies stop rules when marginal value drops."
     }
   },
   {
@@ -66,7 +86,143 @@
     "data": {
       "current_employer": "The Home Depot",
       "primary_domain": "Large-scale backend systems",
-      "tenure_years": 7
+      "portfolio_context": "Personal utilities and system experiments built in public to centralize decisions, reduce cognitive overhead, and test AI collaboration under constraint.",
+      "role_summary": "Senior Software Engineer focused on shipping stable, distributed backend systems and enabling teams through better tooling, reliability practices, and platform improvements.",
+      "growth_path": "Joined as an entry-level developer with no supply-chain background; grew into a trusted Senior Software Engineer by owning production issues, modernizing data pipelines, shaping platform migrations, and delivering durable fixes and features.",
+      "work_focus": "Reliability, platforms, and enablement across event-driven architectures, cloud-native services, observability, alerting, and AI/Copilot-assisted workflows.",
+      "collaboration_style": "Comfortable operating with people and systems; turns ambiguous operational pain into clear patterns such as runbooks, migration playbooks, documentation, and guardrails that make complex systems boring and dependable.",
+      "tenure_years": 7,
+      "tools": [
+        "Event-driven architectures",
+        "Cloud-native services",
+        "Observability tooling",
+        "Production alerting",
+        "AI and Copilot workflows"
+      ],
+      "systems": [
+        "Distributed data pipelines",
+        "Backend platform services",
+        "Production support and on-call systems"
+      ],
+      "role_levels": [
+        {
+          "title": "Senior Software Engineer",
+          "period": "Jun 2025 - Present",
+          "scope": "Leads reliability, production support, and engineering standards; provides peer reviews, mentoring, and pragmatic AI-driven workflow enablement.",
+          "key_contributions": [
+            "Led end-to-end resolution of high-impact production incidents with clear rollback and roll-forward decisions",
+            "Improved change safety through alerting, dashboards, and unified schema/migration patterns",
+            "Raised engineering quality via linting, conventional commits, and improved CI workflows",
+            "Acted as subject matter expert for GitHub Copilot and GenAI enablement across teams"
+          ]
+        },
+        {
+          "title": "Software Engineer II",
+          "period": "Oct 2022 - Jun 2025",
+          "scope": "Built and operated secure, scalable backend systems across cloud and on-prem environments while mentoring and sharing knowledge.",
+          "key_contributions": [
+            "Modernized supply-chain platforms and resolved performance bottlenecks",
+            "Diagnosed production issues and delivered sustainable reliability improvements",
+            "Championed GitHub Copilot adoption and consistent development practices"
+          ]
+        },
+        {
+          "title": "Software Engineer",
+          "period": "May 2018 - Oct 2022",
+          "scope": "Supported internal supply-chain modernization while building backend proficiency and system-level awareness.",
+          "key_contributions": [
+            "Delivered features supporting internal KPIs",
+            "Improved code quality and process stability across multiple applications",
+            "Provided production support focused on prevention and early detection"
+          ]
+        },
+        {
+          "title": "Software Engineer",
+          "period": "Jun 2014 - Jan 2018",
+          "scope": "First industry software engineering role; contributed to a newly launched billing platform using C# with strong emphasis on test-driven development and ownership.",
+          "key_contributions": [
+            "Applied test-driven development to deliver reliable features with minimal oversight",
+            "Identified and fixed a persistent defect previously considered unfixable by deeply understanding the print service architecture",
+            "Built foundational engineering habits through early exposure to production systems"
+          ]
+        },
+        {
+          "title": "Junior Business Analyst",
+          "period": "Jun 2012 - Jun 2014",
+          "scope": "Entered the software industry while completing a degree; supported billing system transition through requirements analysis, testing, and documentation.",
+          "key_contributions": [
+            "Collaborated with cross-functional teams to design, test, and refine new and existing functionality",
+            "Produced comprehensive documentation including design specs, implementation plans, and release materials",
+            "Built analytical and process-oriented foundations that enabled transition into software engineering"
+          ]
+        },
+        {
+          "title": "Certified Training Manager",
+          "period": "May 2003 - Jan 2010",
+          "scope": "Advanced from cashier to Certified Training Manager (GM-equivalent with district-level training responsibilities), focused on people development, operational consistency, and performance improvement.",
+          "key_contributions": [
+            "Promoted through seven roles to top-performing general manager with certified training status",
+            "Led onboarding and skills development across all store positions",
+            "Hosted district-wide training sessions to share operational best practices",
+            "Improved team accountability and morale through consistent coaching and support"
+          ],
+          "foundational_takeaways": [
+            "Developed strong people-first leadership instincts",
+            "Learned to identify root causes and establish repeatable processes",
+            "Built durable habits around expectation-setting, coaching, and accountability"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "objectID": "about.education",
+    "node_type": "about",
+    "slug": "education",
+    "title": "Education",
+    "tags": ["education", "academics", "foundations"],
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "institution": "University of West Georgia",
+      "degree": "Bachelor of Science",
+      "field": "Computer Science",
+      "period": "2010 - 2014",
+      "honors": "Graduated with honors; 4.0 major GPA",
+      "leadership": [
+        "President, Computer Science Women of West Georgia (CS WoW)",
+        "Member, ACM",
+        "Member, UPE Honor Society"
+      ],
+      "research": "Contributed to research in privacy-aware access control systems, designing and implementing a bitwise permission model to identify gaps and inconsistencies in external security policies.",
+      "focus_areas": ["Software Systems Engineering", "Object-Oriented Programming"]
+    }
+  },
+  {
+    "objectID": "about.certifications",
+    "node_type": "about",
+    "slug": "certifications",
+    "title": "Certifications",
+    "tags": ["certifications", "ai", "credentials"],
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "certifications": [
+        {
+          "name": "Generative AI Leader",
+          "issuer": "Google Cloud",
+          "issued": "Oct 2025",
+          "expires": "Oct 2028",
+          "credential_id": "65fc9b4cdfbc4946a1011a70a99234d4",
+          "focus": "Guiding real teams and projects in responsible, production-oriented AI adoption"
+        },
+        {
+          "name": "GitHub Copilot Certification",
+          "issuer": "GitHub (Microsoft)",
+          "issued": "Aug 2025",
+          "expires": "Aug 2027",
+          "credential_id": "1121633CBF5C85C",
+          "focus": "Hands-on Copilot usage, prompt design, IDE integration, and responsible AI practices"
+        }
+      ]
     }
   },
   {
@@ -81,6 +237,11 @@
       "refuses": [
         "Implementing without system understanding",
         "Accepting known issues without documented follow-up"
+      ],
+      "explicit_omissions": [
+        "Fully agentic AI systems",
+        "Session memory and long-term guardrails",
+        "UI-heavy polish"
       ]
     }
   }
