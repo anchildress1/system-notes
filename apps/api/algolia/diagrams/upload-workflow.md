@@ -15,9 +15,8 @@ graph TD
 
     %% Steps
     Validation{"Env Vars Set?<br/>(API Keys)"}:::decision
-    GraphBuild["Graph Enrichment<br/>(Denormalization)"]:::step
-    SynonymSync["Synonym Sync<br/>(projects only)"]:::step
     IndexSync["Index Data<br/>(Replace All)"]:::step
+    SynonymSync["Synonym Sync<br/>(projects & about)"]:::step
 
     %% Outcomes
     Success["Graph Index Live"]:::success
@@ -26,12 +25,11 @@ graph TD
     %% Flow
     Trigger --> Script
     Script --> Validation
-    Validation -->|yes| GraphBuild
+    Validation -->|yes| IndexSync
     Validation -->|no| Fail
 
-    GraphBuild --> SynonymSync
-    SynonymSync --> IndexSync
-    IndexSync --> Success
+    IndexSync --> SynonymSync
+    SynonymSync --> Success
 
     %% Styles
     classDef trigger fill:#6b7280,stroke:#4b5563,stroke-width:3px,color:#f9fafb

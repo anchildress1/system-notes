@@ -11,13 +11,6 @@ graph TB
     AboutJSON["sources/about.json<br/>(Granular Facts)"]:::source
     ProjectsJSON["sources/projects.json<br/>(Narrative Objects)"]:::source
 
-    %% The Builder
-    subgraph "Builder: apps/api/scripts/build_knowledge_graph.py"
-        EnrichProjects["Enrich Projects<br/>(Add banner_image)"]:::process
-        FactExtract["Extract Facts<br/>(Add visual_refs)"]:::process
-        GraphBuild["Build Connections<br/>(Link via tags)"]:::process
-    end
-
     %% Algolia indices
     AboutIndex[("about index<br/>(Granular)")]:::index
     ProjectsIndex[("projects index<br/>(Narrative)")]:::index
@@ -29,14 +22,8 @@ graph TB
     Links["Deterministic Links"]:::output
 
     %% Flow
-    ProjectsJSON --> EnrichProjects
-    AboutJSON --> FactExtract
-
-    EnrichProjects --> GraphBuild
-    FactExtract --> GraphBuild
-
-    EnrichProjects -->|upload| ProjectsIndex
-    FactExtract -->|upload| AboutIndex
+    ProjectsJSON --> ProjectsIndex
+    AboutJSON --> AboutIndex
 
     AboutIndex -->|retrieve| Ruckus
     ProjectsIndex -->|retrieve| Ruckus
