@@ -85,7 +85,7 @@ secret-scan:
 # Run Playwright E2E tests
 test-e2e: build
 	@echo "🎭 Running Playwright E2E tests..."
-	npm exec playwright test
+	CI=true npm exec playwright test
 
 # Run all AI checks (Scan -> Format -> Lint -> Test -> E2E)
 ai-checks: secret-scan
