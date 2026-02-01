@@ -28,12 +28,7 @@
     "synonyms": ["GitHub Copilot", "Copilot", "copilot", "GH Copilot"]
   },
   {
-    "objectID": "syn_tech_stack",
-    "type": "synonym",
-    "synonyms": ["Next.js", "NextJS", "React", "TypeScript", "TS", "JavaScript", "JS"]
-  },
-  {
-    "objectID": "syn_project_names",
+    "objectID": "syn_website_names",
     "type": "synonym",
     "synonyms": ["System Notes", "system-notes", "portfolio", "challenge site"]
   },

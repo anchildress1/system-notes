@@ -1,18 +1,25 @@
 {
   "searchableAttributes": [
-    "name",
-    "aliases",
-    "tech_stack",
-    "what_it_is",
-    "why_it_exists",
-    "what_happened",
-    "project_type"
+    "title",
+    "tags",
+    "data.name",
+    "data.what_it_is",
+    "data.why_it_exists",
+    "data.what_happened",
+    "data.tech_stack",
+    "data.project_type"
   ],
-  "attributesForFaceting": ["node_type", "project_type", "completion_state", "tech_stack"],
+  "attributesForFaceting": [
+    "node_type",
+    "tags",
+    "data.project_type",
+    "data.completion_state",
+    "data.tech_stack"
+  ],
   "customRanking": ["asc(order_rank)", "desc(updated_at)"],
-  "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
+  "ranking": ["typo", "words", "filters", "attribute", "exact", "custom"],
   "attributesToRetrieve": ["*"],
-  "attributesToHighlight": ["name", "aliases", "what_it_is", "why_it_exists"],
+  "attributesToHighlight": ["title", "data.name", "data.what_it_is", "data.why_it_exists"],
   "hitsPerPage": 25,
   "typoTolerance": true
 }
