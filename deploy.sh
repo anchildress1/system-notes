@@ -24,11 +24,11 @@ if [ -f "apps/api/.env" ]; then
 fi
 
 
-if [ -z "$OPENAI_API_KEY" ]; then
-    echo "Error: OPENAI_API_KEY environment variable is not set."
-    echo "Export it: export OPENAI_API_KEY='your-key'"
-    exit 1
-fi
+# if [ -z "$OPENAI_API_KEY" ]; then
+#     echo "Error: OPENAI_API_KEY environment variable is not set."
+#     echo "Export it: export OPENAI_API_KEY='your-key'"
+#     exit 1
+# fi
 
 # Setup Project
 PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
@@ -105,7 +105,6 @@ EOF
         --image "$IMAGE_URI"
         --region "$REGION"
         --allow-unauthenticated
-        --labels dev-tutorial=devnewyear2026
         --port "$PORT"
     )
 
@@ -123,11 +122,11 @@ EOF
 
 
 # Define target regions (space separated)
-REGIONS=("us-east1" "europe-north1")
+REGIONS=("us-east1")
 
 # Service Accounts
-API_SA="system-notes-api@anchildress1.iam.gserviceaccount.com"
-UI_SA="system-notes-ui@anchildress1.iam.gserviceaccount.com"
+API_SA="system-notes-api@anchildress1-unstable.iam.gserviceaccount.com"
+UI_SA="system-notes-ui@anchildress1-unstable.iam.gserviceaccount.com"
 
 for REGION in "${REGIONS[@]}"; do
     echo ""

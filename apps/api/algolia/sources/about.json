@@ -1,0 +1,87 @@
+[
+  {
+    "objectID": "about.identity",
+    "node_type": "about",
+    "slug": "identity",
+    "title": "Identity & Role",
+    "tags": ["identity", "role", "core"],
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "name": "Ashley Childress",
+      "role": "Senior Software Engineer",
+      "orientation": "Systems-first; standards-driven",
+      "core_phrase": "Systems. Context. Intent."
+    }
+  },
+  {
+    "objectID": "about.engineering_principles",
+    "node_type": "about",
+    "slug": "principles",
+    "title": "Engineering Principles",
+    "tags": ["principles", "engineering", "quality"],
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "primary_focus": "System coherence and long-term maintainability",
+      "biases": [
+        "Prefer systemic fixes over patches",
+        "Default to no unless necessity is clear",
+        "One-time normalization over repeated fixes"
+      ],
+      "quality_criteria": ["Determinism", "Testability", "Repeatability", "Guardrails"]
+    }
+  },
+  {
+    "objectID": "about.ai_usage",
+    "node_type": "about",
+    "slug": "ai_usage",
+    "title": "AI Usage & Delegation",
+    "tags": ["ai", "delegation", "workflow"],
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "posture": "Supervised, constrained",
+      "delegation_model": "Delegates implementation when viable",
+      "evaluation_method": "Validate via execution and behavior"
+    }
+  },
+  {
+    "objectID": "about.decision_style",
+    "node_type": "about",
+    "slug": "decision_style",
+    "title": "Decision Style",
+    "tags": ["decision", "style", "methodology"],
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "constraint_driven": true,
+      "timeboxing": "Stop condition, not failure",
+      "uncertainty_handling": "Act on what is known first"
+    }
+  },
+  {
+    "objectID": "about.work_context",
+    "node_type": "about",
+    "slug": "work_context",
+    "title": "Work Context",
+    "tags": ["work", "career", "context"],
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "current_employer": "The Home Depot",
+      "primary_domain": "Large-scale backend systems",
+      "tenure_years": 7
+    }
+  },
+  {
+    "objectID": "about.boundaries",
+    "node_type": "about",
+    "slug": "boundaries",
+    "title": "Boundaries & Refusals",
+    "tags": ["boundaries", "refusals", "constraints"],
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "avoids": ["UI-heavy development"],
+      "refuses": [
+        "Implementing without system understanding",
+        "Accepting known issues without documented follow-up"
+      ]
+    }
+  }
+]

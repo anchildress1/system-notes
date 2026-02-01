@@ -18,21 +18,16 @@ from urllib.error import URLError
 # Paths
 API_DIR = Path(__file__).parent.parent
 ALGOLIA_DIR = API_DIR / "algolia"
-OUTPUT_DIR = ALGOLIA_DIR / "knowledge_graph"
+OUTPUT_DIR = ALGOLIA_DIR / "build"
 PUBLIC_DIR = API_DIR.parent / "web" / "public"
 
 # Input files
-ABOUT_JSON = ALGOLIA_DIR / "about" / "index.json"
-SYSTEM_DOCS_JSON = ALGOLIA_DIR / "system_docs.json"
-PROJECTS_DIR = ALGOLIA_DIR / "projects"
-
-# Blog sitemap
-BLOG_SITEMAP_URL = "https://checkmarkdevtools.dev/sitemap.xml"
+ABOUT_JSON = ALGOLIA_DIR / "sources" / "about.json"
+PROJECTS_JSON = ALGOLIA_DIR / "sources" / "projects.json"
 
 # Output files
 OUTPUT_DIR.mkdir(exist_ok=True)
-FACTS_JSON = OUTPUT_DIR / "facts.json"
-ARTWORK_JSON = OUTPUT_DIR / "artwork.json"
+ABOUT_JSON_OUT = OUTPUT_DIR / "about.json"
 CONNECTIONS_JSON = OUTPUT_DIR / "connections.json"
 ENRICHED_PROJECTS_JSON = OUTPUT_DIR / "projects_enriched.json"
 BLOG_POSTS_JSON = OUTPUT_DIR / "blog_posts.json"
@@ -98,6 +93,7 @@ def enrich_projects_with_visuals(projects_data: List[Dict], banners: Dict[str, D
         slug = project.get("objectID", "")  # Use objectID as slug
         enriched_project = {**project}
         
+        # Add visual logic here if needed, keeping banners logic
         # Add banner and thumbnail if exists
         if slug in banners:
             enriched_project["banner_image"] = banners[slug]["banner_image"]
@@ -106,6 +102,15 @@ def enrich_projects_with_visuals(projects_data: List[Dict], banners: Dict[str, D
             enriched_project["banner_image"] = None
             enriched_project["thumbnail_url"] = None
         
+        # Ensure new fields are present (they are in the source, just pass through)
+        
+        # Construct tags for graph connection if not present
+        if "tags" not in enriched_project:
+            tech = enriched_project.get("tech_stack", [])
+            p_type = enriched_project.get("project_type", "")
+            # Combine tech stack and project type into tags for graph logic
+            enriched_project["tags"] = tech + ([p_type] if p_type else [])
+
         # Placeholder for screenshots (to be added manually later)
         enriched_project["screenshots"] = []
         
@@ -230,15 +235,13 @@ def fetch_blog_posts_from_sitemap() -> List[Dict]:
     return blog_posts
 
 
-def scan_artwork_directory() -> List[Dict]:
-    """Scan for existing artwork files and create records."""
-    artwork = []
+def scan_artwork_files() -> Dict[str, str]:
+    """Scan for existing artwork files and return URL mapping."""
+    artwork_urls = {}
     artwork_dir = PUBLIC_DIR / "artwork"
     
-    # If artwork directory doesn't exist, create placeholder structure
     if not artwork_dir.exists():
-        print("  ℹ️  No artwork directory found, will create placeholders")
-        return create_placeholder_artwork()
+        return artwork_urls
     
     # Scan for image files (multiple extensions)
     image_extensions = ['*.jpg', '*.jpeg', '*.png', '*.gif', '*.webp']
@@ -247,92 +250,38 @@ def scan_artwork_directory() -> List[Dict]:
             # Skip thumbnails directory
             if 'thumbnails' in str(img_file):
                 continue
-                
-            # Extract metadata from filename (e.g., "appalachian_mountains.jpg")
+            
             stem = img_file.stem
-            parts = stem.split('_')
-            
-            # Always use .jpg for URLs (compressed format)
             base_name = f"{stem}.jpg"
-            
-            artwork_record = {
-                "objectID": f"artwork_{stem}",
-                "node_type": "artwork",
-                "title": " ".join(parts).title(),
-                "medium": "digital",
-                "date": datetime.now().strftime("%Y-%m"),
-                "theme": parts,  # Use filename parts as themes
-                "image_url": f"/artwork/{base_name}",
-                "thumbnail_url": f"/artwork/thumbnails/{base_name}",
-                "related_facts": [],
-                "related_projects": [],
-                "description": f"Digital artwork: {' '.join(parts).title()}",
-                "tags": ["art", "digital"] + parts,
-                "updated_at": datetime.fromtimestamp(img_file.stat().st_mtime).isoformat(),
-            }
-            artwork.append(artwork_record)
+            artwork_urls[stem] = f"/artwork/{base_name}"
     
-    # If no artwork found, create placeholders
-    if not artwork:
-        return create_placeholder_artwork()
-    
-    return artwork
+    return artwork_urls
 
 
-def create_placeholder_artwork() -> List[Dict]:
-    """Create placeholder artwork records for key themes."""
-    artwork = [
-        {
-            "objectID": "artwork_appalachia_mountains",
-            "node_type": "artwork",
-            "title": "Appalachian Mountains",
-            "medium": "digital",
-            "date": "2024-01",
-            "theme": ["appalachia", "mountains", "identity", "background"],
-            "image_url": "/artwork/appalachia_mountains.jpg",
-            "thumbnail_url": "/artwork/thumbnails/appalachia_mountains.jpg",
-            "related_facts": ["fact_about.background", "fact_about.identity"],
-            "related_projects": ["system-notes"],
-            "description": "Digital representation of Appalachian mountain themes and identity connection",
-            "tags": ["art", "appalachia", "personal", "identity"],
-            "updated_at": "2024-01-01T00:00:00Z",
-            "placeholder": True,
-        },
-        {
-            "objectID": "artwork_code_transparency",
-            "node_type": "artwork",
-            "title": "Code Transparency & Attribution",
-            "medium": "digital",
-            "date": "2025-01",
-            "theme": ["attribution", "transparency", "ai", "visibility"],
-            "image_url": "/artwork/code_transparency.jpg",
-            "thumbnail_url": "/artwork/thumbnails/code_transparency.jpg",
-            "related_facts": ["fact_about.ai_philosophy", "fact_about.engineering_principles"],
-            "related_projects": ["rai-lint"],
-            "description": "Abstract visualization of AI attribution and code transparency principles",
-            "tags": ["art", "ai", "attribution", "engineering"],
-            "updated_at": "2025-01-01T00:00:00Z",
-            "placeholder": True,
-        },
-        {
-            "objectID": "artwork_systems_thinking",
-            "node_type": "artwork",
-            "title": "Systems Thinking",
-            "medium": "digital",
-            "date": "2025-06",
-            "theme": ["systems", "architecture", "engineering", "structure"],
-            "image_url": "/artwork/systems_thinking.jpg",
-            "thumbnail_url": "/artwork/thumbnails/systems_thinking.jpg",
-            "related_facts": ["fact_about.engineering_principles", "fact_about.career_workstyle"],
-            "related_projects": ["system-notes"],
-            "description": "Visual representation of systems-first engineering approach",
-            "tags": ["art", "systems", "engineering", "architecture"],
-            "updated_at": "2025-06-01T00:00:00Z",
-            "placeholder": True,
-        },
-    ]
+def embed_visual_refs_in_facts(facts: List[Dict], artwork_urls: Dict[str, str]) -> List[Dict]:
+    """Embed visual asset references in fact records based on themes."""
+    # Map themes to artwork
+    theme_artwork_map = {
+        "background": ["appalachia_mountains"],
+        "identity": ["appalachia_mountains"],
+        "ai_philosophy": ["code_transparency"],
+        "engineering_principles": ["code_transparency", "systems_thinking"],
+        "career_workstyle": ["systems_thinking"],
+    }
     
-    return artwork
+    for fact in facts:
+        category = fact.get("category", "")
+        visual_refs = []
+        
+        # Add artwork URLs if they exist
+        if category in theme_artwork_map:
+            for artwork_key in theme_artwork_map[category]:
+                if artwork_key in artwork_urls:
+                    visual_refs.append(artwork_urls[artwork_key])
+        
+        fact["visual_refs"] = visual_refs
+    
+    return facts
 
 
 def main():
@@ -340,28 +289,26 @@ def main():
     print("🔧 Building Knowledge Graph...")
     print()
     
-    # Load existing data
     print("📖 Loading existing data...")
     about_data = load_json(ABOUT_JSON)
-    system_docs_data = load_json(SYSTEM_DOCS_JSON)
-    
-    # Load projects data
-    projects_data_file = ALGOLIA_DIR / "projects" / "projects.json"
-    
-    if projects_data_file.exists():
-        projects_data = load_json(projects_data_file)
-    else:
-        print(f"⚠️  Projects data file not found at {projects_data_file}, using system_docs project records")
-        projects_data = [r for r in system_docs_data if r.get("node_type") == "project"]
+    projects_data = load_json(PROJECTS_JSON)
     
     print(f"  - {len(about_data)} about records")
-    print(f"  - {len(system_docs_data)} system doc records")
     print(f"  - {len(projects_data)} project records")
     print()
     
     # Extract facts
     print("🔍 Extracting facts from about data...")
     facts = extract_facts_from_about(about_data)
+    
+    # Scan artwork files
+    print("🎨 Scanning artwork files...")
+    artwork_urls = scan_artwork_files()
+    print(f"  - Found {len(artwork_urls)} artwork files")
+    
+    # Embed visual refs in facts
+    print("🖼️  Embedding visual references in facts...")
+    facts = embed_visual_refs_in_facts(facts, artwork_urls)
     
     # Fetch blog posts
     print("📝 Fetching blog posts from sitemap...")
@@ -372,11 +319,7 @@ def main():
     print("🖼️  Mapping project banners...")
     banners = extract_project_banners()
     print(f"  - Found {len(banners)} project banners")
-    
-    # Scan artwork
-    print("🎨 Scanning artwork directory...")
-    artwork = scan_artwork_directory()
-    print(f"  - Found {len(artwork)} artwork pieces")
+
     
     # Enrich projects
     print("✨ Enriching projects with visual assets...")
@@ -390,10 +333,9 @@ def main():
     # Save outputs
     print()
     print("💾 Saving knowledge graph data...")
-    save_json(FACTS_JSON, facts)
+    save_json(ABOUT_JSON_OUT, facts)
     save_json(ENRICHED_PROJECTS_JSON, enriched_projects)
     save_json(CONNECTIONS_JSON, connections)
-    save_json(ARTWORK_JSON, artwork)
     save_json(BLOG_POSTS_JSON, blog_posts)
     
     print()
@@ -401,17 +343,16 @@ def main():
     print(f"📁 Output directory: {OUTPUT_DIR}")
     print()
     print("Summary:")
-    print(f"  - {len(facts)} facts extracted")
-    print(f"  - {len(enriched_projects)} projects enriched")
+    print(f"  - {len(facts)} facts extracted (with visual refs)")
+    print(f"  - {len(enriched_projects)} projects enriched (with banners)")
     print(f"  - {len(blog_posts)} blog posts indexed")
-    print(f"  - {len(artwork)} artwork pieces catalogued")
     print(f"  - {len(connections)} connections mapped")
+    print(f"  - {len(artwork_urls)} artwork files scanned (embedded in facts)")
     print()
     print("Next steps:")
     print("  1. Review generated files in apps/api/algolia/knowledge_graph/")
-    print("  2. Add your digital artwork to apps/web/public/artwork/")
-    print("  3. Re-run script to pick up artwork files")
-    print("  4. Upload to Algolia indices")
+    print("  2. Upload to Algolia indices (index_algolia.py)")
+    print("  3. Note: Artwork embedded as visual_refs, not separate index")
 
 
 if __name__ == "__main__":

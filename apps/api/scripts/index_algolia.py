@@ -55,9 +55,11 @@ async def index_data(index_name, data, settings=None):
 async def main():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
-    # Projects index
-    projects_path = os.path.join(root_dir, 'algolia', 'projects', 'projects.json')
-    projects_settings_path = os.path.join(root_dir, 'algolia', 'projects', 'settings.json')
+    # Projects source data (enriched for build)
+    build_dir = os.path.join(root_dir, 'algolia', 'build')
+    projects_path = os.path.join(build_dir, 'projects_enriched.json')
+    config_dir = os.path.join(root_dir, 'algolia', 'config')
+    projects_settings_path = os.path.join(config_dir, 'projects_settings.json')
     
     # Build Lookup Map (Projects are the source of truth for graph nodes)
     project_map = {}
@@ -89,61 +91,59 @@ async def main():
         # Index data
         await index_data('projects', projects_data, projects_settings)
         
-        # Update Synonyms
-        synonyms_path = os.path.join(root_dir, 'algolia', 'projects', 'synonyms.json')
-        if os.path.exists(synonyms_path):
+        if os.path.exists(projects_path):
             print("Updating synonyms for projects...")
-            synonyms = load_json(synonyms_path)
-            try:
-                await client.save_synonyms('projects', synonyms, replace_existing_synonyms=True)
-                print("Synonyms updated for projects")
-            except Exception as e:
-                print(f"Error updating synonyms: {e}")
+            synonyms_path = os.path.join(config_dir, 'projects_synonyms.json')
+            if os.path.exists(synonyms_path):
+                synonyms = load_json(synonyms_path)
+                try:
+                    await client.save_synonyms('projects', synonyms, replace_existing_synonyms=True)
+                    print("Synonyms updated for projects")
+                except Exception as e:
+                    print(f"Error updating synonyms: {e}")
     else:
         print(f"Projects file not found: {projects_path}")
 
-    # Process Knowledge Graph Indices
-    kg_dir = os.path.join(root_dir, 'algolia', 'knowledge_graph')
+    # Process build artifacts
+    build_dir = os.path.join(root_dir, 'algolia', 'build')
+    config_dir = os.path.join(root_dir, 'algolia', 'config')
     
-    # Facts index
-    facts_path = os.path.join(kg_dir, 'facts.json')
-    facts_settings_path = os.path.join(kg_dir, 'facts_settings.json')
-    if os.path.exists(facts_path):
-        facts_data = load_json(facts_path)
-        facts_settings = load_json(facts_settings_path) if os.path.exists(facts_settings_path) else None
-        await index_data('facts', facts_data, facts_settings)
+    # About index
+    about_path = os.path.join(build_dir, 'about.json')
+    about_settings_path = os.path.join(config_dir, 'about_settings.json')
+    if os.path.exists(about_path):
+        about_data = load_json(about_path)
+        about_settings = load_json(about_settings_path) if os.path.exists(about_settings_path) else None
+        await index_data('about', about_data, about_settings)
+        
+        # Update synonyms for about
+        print("Updating synonyms for about...")
+        about_synonyms_path = os.path.join(config_dir, 'about_synonyms.json')
+        if os.path.exists(about_synonyms_path):
+            about_synonyms = load_json(about_synonyms_path)
+            try:
+                await client.save_synonyms('about', about_synonyms, replace_existing_synonyms=True)
+                print("Synonyms updated for about")
+            except Exception as e:
+                print(f"Error updating about synonyms: {e}")
     else:
-        print(f"Facts file not found: {facts_path}")
-    
-    # Artwork index
-    artwork_path = os.path.join(kg_dir, 'artwork.json')
-    artwork_settings_path = os.path.join(kg_dir, 'artwork_settings.json')
-    if os.path.exists(artwork_path):
-        artwork_data = load_json(artwork_path)
-        artwork_settings = load_json(artwork_settings_path) if os.path.exists(artwork_settings_path) else None
-        await index_data('artwork', artwork_data, artwork_settings)
-    else:
-        print(f"Artwork file not found: {artwork_path}")
+        print(f"About file not found: {about_path}")
     
     # Blog Posts index
-    blog_posts_path = os.path.join(kg_dir, 'blog_posts.json')
-    blog_posts_settings_path = os.path.join(kg_dir, 'blog_posts_settings.json')
+    blog_posts_path = os.path.join(build_dir, 'blog_posts.json')
+    blog_posts_settings_path = os.path.join(config_dir, 'blog_posts_settings.json')
     if os.path.exists(blog_posts_path):
         blog_posts_data = load_json(blog_posts_path)
         blog_posts_settings = load_json(blog_posts_settings_path) if os.path.exists(blog_posts_settings_path) else None
         await index_data('blog_posts', blog_posts_data, blog_posts_settings)
     else:
         print(f"Blog posts file not found: {blog_posts_path}")
-
-
     
     print("\nIndexing complete!")
-    print("\nActive indices:")
-    print("  - projects (9 records)")
-    print("  - facts (27 records) [knowledge graph]")
-    print("  - artwork (3 records) [knowledge graph]")
-    print("  - blog_posts (56 records) [knowledge graph]")
-    print("\nNote: system_docs.json kept for blog crawler setup")
+    print("\nKnowledge Graph Indices:")
+    print("  - about (identity facts with visual refs)")
+    print("  - projects (with banners and graph connections)")
+    print("  - blog_posts (writing and explanations)")
     
     # Close the client
     await client.close()

@@ -40,8 +40,7 @@ payload = {
     "systemPrompt": prompt_content,
     "indices": [
         {"indexName": "projects"},
-        {"indexName": "facts"},
-        {"indexName": "artwork"},
+        {"indexName": "about"},
         {"indexName": "blog_posts"}
     ]
 }

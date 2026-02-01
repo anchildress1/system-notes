@@ -1,0 +1,10 @@
+{
+  "searchableAttributes": ["title", "tags", "content"],
+  "attributesForFaceting": ["node_type", "tags", "category"],
+  "customRanking": ["desc(updated_at)"],
+  "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
+  "attributesToRetrieve": ["*"],
+  "attributesToHighlight": ["title", "content"],
+  "hitsPerPage": 25,
+  "typoTolerance": true
+}

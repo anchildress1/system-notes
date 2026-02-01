@@ -1,0 +1,45 @@
+[
+  {
+    "objectID": "syn_ai_safety",
+    "type": "synonym",
+    "synonyms": [
+      "AI safety",
+      "safety",
+      "attribution",
+      "responsible ai",
+      "guardrails",
+      "rai",
+      "traceability"
+    ]
+  },
+  {
+    "objectID": "syn_memory",
+    "type": "synonym",
+    "synonyms": ["memory", "recall", "context", "context window", "drift", "forgetting"]
+  },
+  {
+    "objectID": "syn_agent_identity",
+    "type": "synonym",
+    "synonyms": ["agent", "assistant", "bot", "Ruckus", "ruckus", "system", "you"]
+  },
+  {
+    "objectID": "syn_github_copilot",
+    "type": "synonym",
+    "synonyms": ["GitHub Copilot", "Copilot", "copilot", "GH Copilot"]
+  },
+  {
+    "objectID": "syn_tech_stack",
+    "type": "synonym",
+    "synonyms": ["Next.js", "NextJS", "React", "TypeScript", "TS", "JavaScript", "JS"]
+  },
+  {
+    "objectID": "syn_project_names",
+    "type": "synonym",
+    "synonyms": ["System Notes", "system-notes", "portfolio", "challenge site"]
+  },
+  {
+    "objectID": "syn_appalachia",
+    "type": "synonym",
+    "synonyms": ["Appalachia", "mountains", "Virginia", "origin", "background"]
+  }
+]
