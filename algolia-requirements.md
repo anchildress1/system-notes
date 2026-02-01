@@ -5,8 +5,8 @@ This is not contest-admin tracking.
 
 ## Best Outcome (1-week constraints)
 
-- [ ] Ship a **single consumer-facing chat experience** that beats nav/search/related widgets.
-- [ ] Keep scope brutally small: deterministic links, explicit failure, fast retrieval.
+- [x] Ship a **single consumer-facing chat experience** that beats nav/search/related widgets.
+- [x] Keep scope brutally small: deterministic links, explicit failure, fast retrieval.
 - [ ] Accept "best effort" where the Algolia widget constrains us.
 
 ## Index Strategy (Pick One: do the simplest thing)
@@ -16,6 +16,7 @@ Chosen outcome: **3 small indices** (fast to reason about, easy to tune):
 - [x] `projects` — systems/projects users can click into (9 records, avg 1.5KB)
 - [x] `about` — Ashley facts + project decisioning rules (27 records, avg 800 bytes)
 - [x] `system_docs` — JSON source artifacts with stable line anchors (36 records)
+- [x] `blog_posts` — 56 blog posts fetched from sitemap
 
 Rationale (pragmatic):
 
@@ -46,7 +47,7 @@ Rationale (pragmatic):
 - [x] Research: in-chat navigation UI (clickable quick-prompts that send a preloaded message to the chatbot).
 - [x] Research: user personalization based on previous interactions or session context (e.g. "Welcome back, [Name]" or referencing prior topics).
 
-- [ ] Keep existing chat icon behavior (open/close, placement).
+- [x] Keep existing chat icon behavior (open/close, placement).
 - [x] Use Algolia embedded chat widget as the chat surface.
 - [x] Customize widget styling to match System Notes.
 - [x] Chat output supports the "System Map Navigator" interaction:
@@ -61,7 +62,7 @@ Rationale (pragmatic):
 - [x] Buckets and caps:
   - [x] **Project**: max 2
   - [x] **System Doc**: max 1
-  - [x] **Post**: 0 (future indexing only)
+  - [x] **Post**: max 1
 - [x] Ordering:
   - [x] Projects first, then System Doc.
 - [x] Ranking determinism:
@@ -97,7 +98,7 @@ Failure modes:
 ### Canonical sources
 
 - [x] Canonical doc JSON files live under `apps/api/algolia/*`.
-- [ ] Old versions under `apps/api/prompts/*` are legacy and removed later.
+- [x] Old versions under `apps/api/prompts/*` are legacy and removed later.
 
 ### Viewer URL contract
 
