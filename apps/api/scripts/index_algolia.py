@@ -55,38 +55,17 @@ async def index_data(index_name, data, settings=None):
 async def main():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
-    # Projects source data (enriched for build)
-    build_dir = os.path.join(root_dir, 'algolia', 'build')
-    projects_path = os.path.join(build_dir, 'projects_enriched.json')
+    # Projects source data
+    source_dir = os.path.join(root_dir, 'algolia', 'sources')
+    projects_path = os.path.join(source_dir, 'projects.json')
     config_dir = os.path.join(root_dir, 'algolia', 'config')
     projects_settings_path = os.path.join(config_dir, 'projects_settings.json')
     
-    # Build Lookup Map (Projects are the source of truth for graph nodes)
-    project_map = {}
-    if os.path.exists(projects_path):
-        projects_data = load_json(projects_path)
-        project_map = {p['objectID']: p for p in projects_data}
-
-    def enrich_with_graph_context(records):
-        for record in records:
-            graph_context = []
-            related_ids = record.get('related_project_ids', [])
-            
-            for rel_id in related_ids:
-                related_project = project_map.get(rel_id)
-                if related_project:
-                    context_str = f"Related Project: {related_project.get('title')} - {related_project.get('summary')}"
-                    graph_context.append(context_str)
-            
-            if graph_context:
-                record['graph_context'] = "\n".join(graph_context)
-
+    
     # Process Projects
     if os.path.exists(projects_path):
+        projects_data = load_json(projects_path)
         projects_settings = load_json(projects_settings_path) if os.path.exists(projects_settings_path) else None
-        
-        # Enrich projects with their own internal links
-        enrich_with_graph_context(projects_data)
         
         # Index data
         await index_data('projects', projects_data, projects_settings)
@@ -104,12 +83,8 @@ async def main():
     else:
         print(f"Projects file not found: {projects_path}")
 
-    # Process build artifacts
-    build_dir = os.path.join(root_dir, 'algolia', 'build')
-    config_dir = os.path.join(root_dir, 'algolia', 'config')
-    
     # About index
-    about_path = os.path.join(build_dir, 'about.json')
+    about_path = os.path.join(source_dir, 'about.json')
     about_settings_path = os.path.join(config_dir, 'about_settings.json')
     if os.path.exists(about_path):
         about_data = load_json(about_path)
@@ -129,21 +104,7 @@ async def main():
     else:
         print(f"About file not found: {about_path}")
     
-    # Blog Posts index
-    blog_posts_path = os.path.join(build_dir, 'blog_posts.json')
-    blog_posts_settings_path = os.path.join(config_dir, 'blog_posts_settings.json')
-    if os.path.exists(blog_posts_path):
-        blog_posts_data = load_json(blog_posts_path)
-        blog_posts_settings = load_json(blog_posts_settings_path) if os.path.exists(blog_posts_settings_path) else None
-        await index_data('blog_posts', blog_posts_data, blog_posts_settings)
-    else:
-        print(f"Blog posts file not found: {blog_posts_path}")
-    
     print("\nIndexing complete!")
-    print("\nKnowledge Graph Indices:")
-    print("  - about (identity facts with visual refs)")
-    print("  - projects (with banners and graph connections)")
-    print("  - blog_posts (writing and explanations)")
     
     # Close the client
     await client.close()

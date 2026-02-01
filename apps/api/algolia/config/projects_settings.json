@@ -20,6 +20,6 @@
   "ranking": ["typo", "words", "filters", "attribute", "exact", "custom"],
   "attributesToRetrieve": ["*"],
   "attributesToHighlight": ["title", "data.name", "data.what_it_is", "data.why_it_exists"],
-  "hitsPerPage": 25,
+  "hitsPerPage": 5,
   "typoTolerance": true
 }

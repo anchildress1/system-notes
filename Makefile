@@ -120,3 +120,8 @@ clean:
 	rm -rf apps/api/__pycache__
 	rm -f .secrets.baseline.tmp
 	@echo "✨ Clean complete."
+
+# Deploy Algolia indices
+algolia_deploy:
+	@echo "🔍 indexing algolia..."
+	cd apps/api && uv run python scripts/index_algolia.py

@@ -5,6 +5,6 @@
   "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
   "attributesToRetrieve": ["*"],
   "attributesToHighlight": ["title"],
-  "hitsPerPage": 25,
+  "hitsPerPage": 3,
   "typoTolerance": true
 }
