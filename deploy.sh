@@ -18,11 +18,18 @@ if ! command -v gcloud &> /dev/null; then
     exit 1
 fi
 
-PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
-if [ "$PROJECT_ID" == "(unset)" ] || [ -z "$PROJECT_ID" ]; then
-    echo "Error: No Google Cloud Project ID set."
-    exit 1
+# Load environment variables from apps/api/.env if present
+if [ -f "apps/api/.env" ]; then
+    echo "Loading environment variables from apps/api/.env..."
+    export $(grep -v '^#' apps/api/.env | xargs)
 fi
+
+
+# if [ -z "$OPENAI_API_KEY" ]; then
+#     echo "Error: OPENAI_API_KEY environment variable is not set."
+#     echo "Export it: export OPENAI_API_KEY='your-key'"
+#     exit 1
+# fi
 
 PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')
 
@@ -97,12 +104,11 @@ deploy_service() {
 
     # Build arguments array to avoid eval/injection risks
     DEPLOY_ARGS=(
-        "deploy" "$SERVICE_NAME"
-        "--image" "$IMAGE_URI"
-        "--region" "$REGION"
-        "--project" "$PROJECT_ID"
-        "--allow-unauthenticated"
-        "--port" "$PORT"
+        "$SERVICE_NAME"
+        --image "$IMAGE_URI"
+        --region "$REGION"
+        --allow-unauthenticated
+        --port "$PORT"
     )
 
     if [ -n "$SERVICE_ACCOUNT" ]; then
@@ -121,11 +127,11 @@ deploy_service() {
 # ==========================================
 
 # Define target regions (space separated)
-REGIONS=("us-east1" "europe-north1")
+REGIONS=("us-east1")
 
-# 2. Get API URL
-API_URL=$(gcloud run services describe "$API_SERVICE" --region "$REGION" --project "$PROJECT_ID" --format 'value(status.url)')
-echo "API URL: $API_URL"
+# Service Accounts
+API_SA="system-notes-api@anchildress1-unstable.iam.gserviceaccount.com"
+UI_SA="system-notes-ui@anchildress1-unstable.iam.gserviceaccount.com"
 
 deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "" "apps/web/Dockerfile"
 

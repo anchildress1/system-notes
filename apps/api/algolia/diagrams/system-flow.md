@@ -8,36 +8,35 @@ graph TB
     accDescr: Data flow showing how the Python script enriches JSON data with graph context before indexing
 
     %% Data sources
-    AboutJSON["about/index.json<br/>(Concepts)"]:::source
-    ProjectsJSON["projects/index.json<br/>(Proofs)"]:::source
+    AboutJSON["sources/about.json<br/>(Granular Facts)"]:::source
+    ProjectsJSON["sources/projects.json<br/>(Narrative Objects)"]:::source
 
     %% The Builder
-    subgraph "Builder: index_algolia.py"
-        Map["Build Lookup Map<br/>(ID -> Summary)"]:::process
-        EnrichProjects["Enrich Projects<br/>(Add graph_context)"]:::process
-        EnrichAbout["Enrich About<br/>(Add graph_context)"]:::process
+    subgraph "Builder: apps/api/scripts/build_knowledge_graph.py"
+        EnrichProjects["Enrich Projects<br/>(Add banner_image)"]:::process
+        FactExtract["Extract Facts<br/>(Add visual_refs)"]:::process
+        GraphBuild["Build Connections<br/>(Link via tags)"]:::process
     end
 
     %% Algolia indices
-    AboutIndex[("about index<br/>+ graph_context")]:::index
-    ProjectsIndex[("projects index<br/>+ graph_context<br/>+ synonyms")]:::index
+    AboutIndex[("about index<br/>(Granular)")]:::index
+    ProjectsIndex[("projects index<br/>(Narrative)")]:::index
 
     %% Retrieval
-    Ruckus["Ruckus Agent<br/>(One-Shot Search)"]:::agent
+    Ruckus["Ruckus Agent<br/>(RAG Retrieval)"]:::agent
 
     %% Link generation
     Links["Deterministic Links"]:::output
 
     %% Flow
-    ProjectsJSON --> Map
-    Map --> EnrichProjects
-    Map --> EnrichAbout
-
     ProjectsJSON --> EnrichProjects
-    AboutJSON --> EnrichAbout
+    AboutJSON --> FactExtract
+
+    EnrichProjects --> GraphBuild
+    FactExtract --> GraphBuild
 
     EnrichProjects -->|upload| ProjectsIndex
-    EnrichAbout -->|upload| AboutIndex
+    FactExtract -->|upload| AboutIndex
 
     AboutIndex -->|retrieve| Ruckus
     ProjectsIndex -->|retrieve| Ruckus

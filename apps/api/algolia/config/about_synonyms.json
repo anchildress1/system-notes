@@ -1,0 +1,66 @@
+[
+  {
+    "objectID": "syn_ashley_identity",
+    "type": "synonym",
+    "synonyms": [
+      "Ashley",
+      "Childress",
+      "Ashley Childress",
+      "she",
+      "her",
+      "owner",
+      "creator",
+      "author",
+      "engineer",
+      "developer"
+    ]
+  },
+  {
+    "objectID": "syn_ruckus_agent",
+    "type": "synonym",
+    "synonyms": ["Ruckus", "agent", "assistant", "bot", "system", "you"]
+  },
+  {
+    "objectID": "syn_appalachia",
+    "type": "synonym",
+    "synonyms": ["Appalachia", "mountains", "Virginia", "origin", "background", "Appalachian"]
+  },
+  {
+    "objectID": "syn_ai_attribution",
+    "type": "synonym",
+    "synonyms": [
+      "attribution",
+      "transparency",
+      "responsible AI",
+      "RAI",
+      "safety",
+      "guardrails",
+      "traceability",
+      "AI safety"
+    ]
+  },
+  {
+    "objectID": "syn_systems_thinking",
+    "type": "synonym",
+    "synonyms": [
+      "systems",
+      "architecture",
+      "structure",
+      "systems thinking",
+      "systems-first",
+      "systemic"
+    ]
+  },
+  {
+    "objectID": "syn_engineering_quality",
+    "type": "synonym",
+    "synonyms": [
+      "quality",
+      "testability",
+      "determinism",
+      "repeatability",
+      "reliability",
+      "observability"
+    ]
+  }
+]

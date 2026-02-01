@@ -1,0 +1,18 @@
+{
+  "searchableAttributes": [
+    "name",
+    "aliases",
+    "tech_stack",
+    "what_it_is",
+    "why_it_exists",
+    "what_happened",
+    "project_type"
+  ],
+  "attributesForFaceting": ["node_type", "project_type", "completion_state", "tech_stack"],
+  "customRanking": ["asc(order_rank)", "desc(updated_at)"],
+  "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
+  "attributesToRetrieve": ["*"],
+  "attributesToHighlight": ["name", "aliases", "what_it_is", "why_it_exists"],
+  "hitsPerPage": 25,
+  "typoTolerance": true
+}

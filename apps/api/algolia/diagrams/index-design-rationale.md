@@ -1,12 +1,12 @@
 # Algolia Index Design Rationale
 
-This diagram explains the design evolution: from strict normalization to a **Hybrid Graph Architecture**.
-We maintain a clean schema but "bake" (denormalize) the graph context to enable single-shot retrieval.
+This diagram explains the design evolution: from strict normalization to a **Granular Fact Architecture**.
+We split monolithic biographies into atomic facts to enable precise RAG retrieval without loading irrelevant context.
 
 ```mermaid
 graph TD
     accTitle: Algolia Index Design Rationale
-    accDescr: Decision tree showing the evolution from normalized schema to hybrid graph denormalization
+    accDescr: Decision tree showing the evolution from monolithic schema to granular fact architecture
 
     Start["Index Design Strategy"]:::start
 
@@ -14,30 +14,30 @@ graph TD
     Q1{"One index or multiple?"}:::question
     Multiple["Multiple indices (Projects, About)<br/>pros: per-type tuning<br/>cons: more config"]:::chosen
 
-    %% Phase 2: Content
-    Q2{"Flatten nested 'data'?"}:::question
-    Normalize["Keep 'data' opaque<br/>pros: clean search surface<br/>cons: retrieve-only specifics"]:::chosen
+    %% Phase 2: Content Granularity
+    Q2{"Monolithic vs Granular?"}:::question
+    Granular["Granular Records<br/>pros: precise retrieval<br/>cons: lost context"]:::chosen
 
-    %% Phase 3: The Graph Problem
-    Q3{"How to handle relationships?"}:::problem
-    OldWay["Agent Search Loop<br/>(Query -> Result -> Query again)"]:::cons
-    NewWay["Graph Denormalization<br/>(Bake neighbors into 'graph_context')"]:::solution
+    %% Phase 3: The Context Problem
+    Q3{"How to maintain context?"}:::problem
+    OldWay["Load Full Bio<br/>(High token cost)"]:::cons
+    NewWay["Graph Linking<br/>(Link via tags/slugs)"]:::solution
 
     %% Final decision
-    Decision["CURRENT ARCHITECTURE<br/>Hybrid Schema<br/>1. Normalized 'data' (clean)<br/>2. Denormalized 'graph_context' (smart)"]:::final
+    Decision["CURRENT ARCHITECTURE<br/>Granular Facts<br/>1. Atomic 'about' records<br/>2. Narrative 'project' records"]:::final
 
     %% Rationale
-    Why1["WHY: Strict normalization prevented hallucination<br/>but broke 'discovery' queries"]:::rationale
-    Why2["WHY: 'Graph Context' provides O(1) retrieval<br/>of the local semantic neighborhood"]:::rationale
+    Why1["WHY: Monoliths waste context window<br/>and confuse retrieval ranking"]:::rationale
+    Why2["WHY: Atomic facts allow the agent<br/>to compose precise answers"]:::rationale
 
     %% Flow
     Start --> Q1
     Q1 --> Multiple
     Multiple --> Q2
-    Q2 --> Normalize
-    Normalize --> Q3
-    Q3 -->|Old: Slow/Fragile| OldWay
-    Q3 -->|New: Fast/Robust| NewWay
+    Q2 --> Granular
+    Granular --> Q3
+    Q3 -->|Old: Expensive| OldWay
+    Q3 -->|New: Efficient| NewWay
     NewWay --> Decision
     Decision --> Why1
     Decision --> Why2
