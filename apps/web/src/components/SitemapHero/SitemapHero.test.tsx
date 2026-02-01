@@ -20,7 +20,7 @@ describe('SitemapHero', () => {
 
   it('renders correctly', () => {
     render(<SitemapHero />);
-    expect(screen.getByRole('banner', { name: /Sitemap introduction/i })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: /Sitemap introduction/i })).toBeInTheDocument();
     expect(screen.getByText(/AI wanted this here/i)).toBeInTheDocument();
   });
 

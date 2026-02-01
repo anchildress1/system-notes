@@ -57,7 +57,7 @@ try:
         print()
         print("Updated settings:")
         print(f"  - System prompt: {len(prompt_content)} chars")
-        print("  - Indices: projects, facts, artwork, blog_posts")
+        print("  - Indices: projects, about, blog_posts")
     else:
         print(f"❌ Failed to update agent: {response.status_code}")
         print(f"Response: {response.text}")

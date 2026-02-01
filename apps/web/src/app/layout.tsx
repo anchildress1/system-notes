@@ -26,7 +26,7 @@ import ClientShell from '@/components/ClientShell/ClientShell';
 import { allProjects } from '@/data/projects';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('http://anchildress1.dev'),
+  metadataBase: new URL('https://anchildress1.dev'),
   title: {
     default: "Ashley Childress' System Notes",
     template: '%s | System Notes',

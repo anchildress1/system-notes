@@ -49,6 +49,36 @@ test.describe('System Notes Integration', () => {
 
   test('AIChat interaction', async ({ page }) => {
     await page.goto('/');
+
+    // Mock Algolia to ensure deterministic tests without external calls
+    await page.route('**/*algolia.net/**', async (route) => {
+      // Small delay to ensure "Thinking..." UI state is observable
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          results: [
+            {
+              hits: [
+                {
+                  objectID: 'mock-1',
+                  _snippetResult: {
+                    content: {
+                      value: 'I am a mock Ruckus agent.',
+                      matchLevel: 'none',
+                    },
+                  },
+                },
+              ],
+              nbHits: 1,
+            },
+          ],
+        }),
+      });
+    });
+
     // Open Chat
     const toggle = page.getByTestId('ai-chat-toggle');
     await toggle.click();

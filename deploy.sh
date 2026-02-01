@@ -92,17 +92,26 @@ deploy_service() {
 
     # 3. Deploy to Cloud Run
     echo "Deploying to Cloud Run..."
-    local CMD="gcloud run deploy $SERVICE_NAME --image $IMAGE_URI --region $REGION --project $PROJECT_ID --allow-unauthenticated --port $PORT"
     
+    # Use array to prevent word splitting issues
+    DEPLOY_ARGS=(
+        "deploy" "$SERVICE_NAME"
+        "--image" "$IMAGE_URI"
+        "--region" "$REGION"
+        "--project" "$PROJECT_ID"
+        "--allow-unauthenticated"
+        "--port" "$PORT"
+    )
+
     if [ -n "$SERVICE_ACCOUNT" ]; then
-        CMD="$CMD --service-account $SERVICE_ACCOUNT"
+        DEPLOY_ARGS+=("--service-account" "$SERVICE_ACCOUNT")
     fi
 
     if [ -n "$ENV_VARS" ]; then
-        CMD="$CMD --set-env-vars $ENV_VARS"
+        DEPLOY_ARGS+=("--set-env-vars" "$ENV_VARS")
     fi
 
-    $CMD
+    gcloud run "${DEPLOY_ARGS[@]}"
 }
 
 # ==========================================

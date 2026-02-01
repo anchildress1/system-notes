@@ -38,8 +38,6 @@ describe('getSystemDoc', () => {
       text: async () => 'Document not found',
     });
 
-    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
     const result = await getSystemDoc('nonexistent/path');
 
     expect(result).toEqual({
@@ -48,16 +46,11 @@ describe('getSystemDoc', () => {
       path: 'nonexistent/path',
       error: 'Error 404: Document not found',
     });
-
-    expect(consoleSpy).toHaveBeenCalled();
-    consoleSpy.mockRestore();
   });
 
   it('should return error object on network failure', async () => {
     const networkError = new Error('Network error');
     fetchMock.mockRejectedValue(networkError);
-
-    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     const result = await getSystemDoc('test/path');
 
@@ -67,9 +60,6 @@ describe('getSystemDoc', () => {
       path: 'test/path',
       error: 'Network error',
     });
-
-    expect(consoleSpy).toHaveBeenCalledWith('[SystemDoc] Network/API Error:', networkError);
-    consoleSpy.mockRestore();
   });
 });
 

@@ -86,7 +86,6 @@ function ChatContent() {
 
   return (
     <>
-      <Configure userToken={userToken} clickAnalytics />
       <div className={styles.header}>
         <span className={styles.ruckusName}>Ruckus 2.0</span>
         <span className={styles.agentMeta}>powered by algolia</span>
