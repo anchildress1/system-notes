@@ -37,10 +37,20 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Run AI Checks
-        env:
-          OPENAI_API_KEY: "dummy"
-        run: make ai-checks
+      - name: Lint Code
+        run: make lint
+
+      - name: Run Unit Tests
+        run: make test
+
+      - name: Run E2E Tests
+        run: make test-e2e
+
+      - name: Run Performance Tests
+        run: npm run test:perf -w apps/web
+
+      - name: Security Scan
+        run: make secret-scan
 
       - name: Store Playwright Report
         uses: actions/upload-artifact@v6

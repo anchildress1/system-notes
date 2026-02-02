@@ -19,9 +19,11 @@ pre-push:
   commands:
     build:
       run: npm run build
-    test:
-      run: npm run test
-    bench:
-      run: npm run bench -- -- --run
-    lighthouse:
+    unit-tests:
+      run: make test
+    e2e-tests:
+      run: make test-e2e
+    performance-tests:
       run: npm run test:perf -w apps/web
+    security-scan:
+      run: make secret-scan
