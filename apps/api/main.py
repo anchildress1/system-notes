@@ -104,22 +104,24 @@ async def get_projects():
 async def get_system_doc(doc_path: str):
     try:
         # Security: prevent traversing up and ensure path is within apps/api
-        api_root = Path(__file__).resolve().parent
+        # Use os.path.abspath to resolve symlinks and '..' components
+        api_root = os.path.dirname(os.path.abspath(__file__))
         
-        # doc_path is relative to apps/api
-        # Remove leading slash if present to prevent absolute path joining issues
-        safe_path = doc_path.lstrip("/")
-        target_file = (api_root / safe_path).resolve()
+        # Join path and resolve it
+        # Remove leading slash to prevent absolute path joining
+        safe_rel_path = doc_path.lstrip("/")
+        target_path = os.path.abspath(os.path.join(api_root, safe_rel_path))
         
-        # Verify the resolved path starts with the api_root
-        if not target_file.is_relative_to(api_root):
+        # Verify that the target path is inside the api_root
+        # os.path.commonpath returns the longest common sub-path
+        if os.path.commonpath([api_root, target_path]) != api_root:
              logger.warning(f"Path traversal attempt blocked: {doc_path}")
              return JSONResponse(status_code=400, content={"error": "Invalid path"})
         
-        if not target_file.exists() or not target_file.is_file():
+        if not os.path.isfile(target_path):
              return JSONResponse(status_code=404, content={"error": "Document not found"})
              
-        with open(target_file, "r") as f:
+        with open(target_path, "r") as f:
             content = f.read()
             
         return {"content": content, "format": "markdown", "path": doc_path}

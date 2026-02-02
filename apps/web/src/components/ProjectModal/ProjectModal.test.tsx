@@ -5,11 +5,7 @@ import { Project } from '@/data/projects';
 
 // Mock next/image
 vi.mock('next/image', () => ({
-  default: ({
-    fill: _fill,
-    priority: _priority,
-    ...props
-  }: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean; priority?: boolean }) => (
+  default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img {...props} alt={props.alt || ''} />
   ),
