@@ -13,11 +13,6 @@
     ]
   },
   {
-    "objectID": "syn_memory",
-    "type": "synonym",
-    "synonyms": ["memory", "recall", "context", "context window", "drift", "forgetting"]
-  },
-  {
     "objectID": "syn_agent_identity",
     "type": "synonym",
     "synonyms": ["agent", "assistant", "bot", "Ruckus", "ruckus", "system", "you"]
@@ -30,11 +25,11 @@
   {
     "objectID": "syn_website_names",
     "type": "synonym",
-    "synonyms": ["System Notes", "system-notes", "portfolio", "challenge site"]
+    "synonyms": ["System Notes", "system-notes", "portfolio", "challenge site", "hackathon"]
   },
   {
-    "objectID": "syn_appalachia",
+    "objectID": "syn_hermes_agent",
     "type": "synonym",
-    "synonyms": ["Appalachia", "mountains", "Virginia", "origin", "background"]
+    "synonyms": ["my-hermatic-agent", "hermes", "Hermes Agent"]
   }
 ]
