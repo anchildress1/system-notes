@@ -48,6 +48,22 @@ jobs:
       - name: Run Unit Tests
         run: make test
 
+      - name: Store Web Unit Tests
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: web-unit-tests
+          path: apps/web/coverage/
+          retention-days: 30
+
+      - name: Store API Unit Tests
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: api-unit-tests
+          path: apps/api/htmlcov/
+          retention-days: 30
+
       - name: Run E2E Tests
         run: make test-e2e
 
