@@ -28,7 +28,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run build && PORT=3001 npm run start:standalone',
+    command: 'PORT=3001 npm run start:standalone',
     url: 'http://localhost:3001',
     cwd: './apps/web',
     reuseExistingServer: !process.env.CI,
