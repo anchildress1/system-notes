@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from unittest.mock import patch, mock_open
+from unittest.mock import patch
 from main import app
 
 client = TestClient(app)
@@ -14,73 +14,56 @@ def test_health_check():
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
-def test_get_system_doc_success():
-    with patch("os.path.abspath") as mock_abspath, \
-         patch("os.path.dirname") as mock_dirname, \
-         patch("os.path.join") as mock_join, \
-         patch("os.path.commonpath") as mock_commonpath, \
-         patch("os.path.isfile") as mock_isfile, \
-         patch("builtins.open", mock_open(read_data="# Test Content")):
-        
-        # Setup path mocks
-        mock_abspath.side_effect = lambda p: f"/root/{p}" if not p.startswith("/") else p
-        mock_dirname.return_value = "/root/apps/api"
-        mock_join.return_value = "/root/apps/api/test.md"
-        mock_commonpath.return_value = "/root/apps/api" # Matches root, so valid
-        mock_isfile.return_value = True
-        
-        response = client.get("/system/doc/test.md")
-        assert response.status_code == 200
-        data = response.json()
-        assert data["content"] == "# Test Content"
+# Tests use mocking for pathlib to verify logic without filesystem dependency
+# This ensures we test the security controls specifically
+@patch("main.Path")
+def test_get_system_doc_success(MockPath):
+    # Setup the api_root
+    mock_root = MockPath.return_value.resolve.return_value.parent
+    
+    # Setup target path
+    mock_target = mock_root.__truediv__.return_value.resolve.return_value
+    mock_target.is_relative_to.return_value = True
+    mock_target.is_file.return_value = True
+    mock_target.read_text.return_value = "# Test Content"
+    
+    response = client.get("/system/doc/test.md")
+    assert response.status_code == 200
+    assert response.json()["content"] == "# Test Content"
 
-def test_get_system_doc_not_found():
-    with patch("os.path.abspath") as mock_abspath, \
-         patch("os.path.dirname") as mock_dirname, \
-         patch("os.path.join") as mock_join, \
-         patch("os.path.commonpath") as mock_commonpath, \
-         patch("os.path.isfile") as mock_isfile:
-        
-        mock_abspath.side_effect = lambda p: f"/root/{p}" if not p.startswith("/") else p
-        mock_dirname.return_value = "/root/apps/api"
-        mock_join.return_value = "/root/apps/api/missing.md"
-        mock_commonpath.return_value = "/root/apps/api"
-        mock_isfile.return_value = False # File not found
-        
-        response = client.get("/system/doc/missing.md")
-        assert response.status_code == 404
-        assert response.json()["error"] == "Document not found"
+@patch("main.Path")
+def test_get_system_doc_not_found(MockPath):
+    mock_root = MockPath.return_value.resolve.return_value.parent
+    mock_target = mock_root.__truediv__.return_value.resolve.return_value
+    mock_target.is_relative_to.return_value = True
+    mock_target.is_file.return_value = False # File not found
+    
+    response = client.get("/system/doc/missing.md")
+    assert response.status_code == 404
+    assert response.json()["error"] == "Document not found"
 
-def test_get_system_doc_traversal_attempt():
-    with patch("os.path.abspath") as mock_abspath, \
-         patch("os.path.dirname") as mock_dirname, \
-         patch("os.path.join") as mock_join, \
-         patch("os.path.commonpath") as mock_commonpath:
-        
-        mock_abspath.side_effect = lambda p: f"/root/{p}" if not p.startswith("/") else p
-        mock_dirname.return_value = "/root/apps/api"
-        mock_join.return_value = "/root/secret.env"
-        # commonpath returns /root, which is NOT /root/apps/api
-        mock_commonpath.return_value = "/root" 
-        
-        response = client.get("/system/doc/%2E%2E/secret.env")
-        assert response.status_code == 400
-        assert response.json()["error"] == "Invalid path"
+@patch("main.Path")
+def test_get_system_doc_traversal_attempt(MockPath):
+    mock_root = MockPath.return_value.resolve.return_value.parent
+    mock_target = mock_root.__truediv__.return_value.resolve.return_value
+    
+    # Simulate traversal detection logic
+    # We use a simple path to ensure the request reaches the handler, 
+    # but the mock forces 'is_relative_to' to be False to test the security check.
+    mock_target.is_relative_to.return_value = False
+    
+    response = client.get("/system/doc/suspicious.env")
+    assert response.status_code == 400
+    assert response.json()["error"] == "Invalid path"
 
-def test_get_system_doc_error_handling():
-    with patch("os.path.abspath") as mock_abspath, \
-         patch("os.path.dirname") as mock_dirname, \
-         patch("os.path.join") as mock_join, \
-         patch("os.path.commonpath") as mock_commonpath, \
-         patch("os.path.isfile") as mock_isfile, \
-         patch("builtins.open", side_effect=Exception("Disk error")):
-        
-        mock_abspath.side_effect = lambda p: f"/root/{p}" if not p.startswith("/") else p
-        mock_dirname.return_value = "/root/apps/api"
-        mock_join.return_value = "/root/apps/api/fail.md"
-        mock_commonpath.return_value = "/root/apps/api"
-        mock_isfile.return_value = True
-        
-        response = client.get("/system/doc/fail.md")
-        assert response.status_code == 500
-        assert response.json()["error"] == "Internal server error"
+@patch("main.Path")
+def test_get_system_doc_error_handling(MockPath):
+    mock_root = MockPath.return_value.resolve.return_value.parent
+    mock_target = mock_root.__truediv__.return_value.resolve.return_value
+    mock_target.is_relative_to.return_value = True
+    mock_target.is_file.return_value = True
+    mock_target.read_text.side_effect = Exception("Disk error")
+    
+    response = client.get("/system/doc/fail.md")
+    assert response.status_code == 500
+    assert response.json()["error"] == "Internal server error"
