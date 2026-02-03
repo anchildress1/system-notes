@@ -71,11 +71,11 @@
   {
     "objectID": "syn_website_names",
     "type": "synonym",
-    "synonyms": ["System Notes", "system-notes", "portfolio"]
+    "synonyms": ["System Notes", "system-notes", "portfolio", "challenge site", "hackathon"]
   },
   {
     "objectID": "syn_hermes_agent",
     "type": "synonym",
-    "synonyms": ["my-hermetic-agent", "hermes", "Hermes Agent"]
+    "synonyms": ["my-hermatic-agent", "hermes", "Hermes Agent"]
   }
 ]

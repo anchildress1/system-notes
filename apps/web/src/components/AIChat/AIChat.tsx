@@ -148,7 +148,7 @@ export default function AIChat() {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
-            <InstantSearch searchClient={searchClient} indexName="projects">
+            <InstantSearch searchClient={searchClient} indexName="system-notes">
               {/* Configure removed to prevent auto-search on 404 index */}
               <ChatContent />
             </InstantSearch>

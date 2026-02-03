@@ -4,13 +4,14 @@ This folder tracks all Algolia index settings for reproducibility.
 
 ## Indices
 
-- **`projects`** — 9 records, single granular objects with narrative fields (`what_it_is`, `why_it_exists`, `what_happened`).
-- **`about`** — ~6 records, granular "fact" objects (Identity, Principles, etc.) for targeted retrieval.
+- **`system-notes`** — Unified index containing "fact" objects and narrative records (Identity, Principles, Projects, etc.) for targeted retrieval.
+- **`projects`** — (Deprecated) legacy project records.
+- **`about`** — (Deprecated) legacy identity records.
 
 ## Files
 
-- `sources/` — Source of truth JSON files (`about.json`, `projects.json`).
-- `config/` — Index settings and synonym files (`projects_settings.json`, `about_settings.json`).
+- `sources/` — Source of truth JSON files (`index.json`).
+- `config/` — Index settings and synonym files (`settings.json`, `synonyms.json`).
 - `algolia_prompt.md` — The unified system prompt for the agent.
 
 ## Searchable Attributes (Tier Order)
