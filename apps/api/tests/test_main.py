@@ -44,17 +44,33 @@ def test_get_system_doc_not_found(MockPath):
 
 @patch("main.Path")
 def test_get_system_doc_traversal_attempt(MockPath):
-    mock_root = MockPath.return_value.resolve.return_value.parent
-    mock_target = mock_root.__truediv__.return_value.resolve.return_value
+    # mock_root = MockPath.return_value.resolve.return_value.parent
     
-    # Simulate traversal detection logic
-    # We use a simple path to ensure the request reaches the handler, 
-    # but the mock forces 'is_relative_to' to be False to test the security check.
-    mock_target.is_relative_to.return_value = False
+    # Simulate traversal detection logic (Invalid characters)
+    # We test that ".." or other characters are caught BEFORE path resolution
     
-    response = client.get("/system/doc/suspicious.env")
+    # Check 1.2: Ban ".."
+    # Note: TestClient/FastAPI might normalize paths with "..", so we need to ensure the ".." 
+    # reaches our endpoint logic if possible, or use a path component that triggers the regex check.
+    # However, our regex `^[a-zA-Z0-9_./-]+$` allows dots but forbids anything not in that set.
+    # ".." is allowed by the regex char set, but forbidden by the explicit ".." check.
+    # But URLs like /../ are often normalized before reaching app code.
+    # Let's try passing it URL encoded or verify the logic independently if integration test fails.
+    # Or test a case where ".." is part of a filename, like "foo..bar" which is valid path char set but invalid by our rule.
+    
+    response = client.get("/system/doc/foo..bar.md")
     assert response.status_code == 400
-    assert response.json()["error"] == "Invalid path"
+    assert response.json()["error"] == "Invalid path components"
+
+    # Check 1.3: Strict chars
+    response = client.get("/system/doc/invalid$file.md")
+    assert response.status_code == 400
+    assert response.json()["error"] == "Invalid characters in path"
+
+    # Check 2.1: Safe extensions
+    response = client.get("/system/doc/safe.py")
+    assert response.status_code == 400
+    assert response.json()["error"] == "File type not allowed"
 
 @patch("main.Path")
 def test_get_system_doc_error_handling(MockPath):

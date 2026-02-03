@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
+import re
 import os
 import json
 import logging
@@ -103,19 +104,35 @@ async def get_projects():
 @app.get("/system/doc/{doc_path:path}")
 async def get_system_doc(doc_path: str):
     try:
+        # Security Rule 1.2: Ban ".."
+        if ".." in doc_path:
+             logger.warning(f"Path traversal attempt blocked (contains '..'): {doc_path}")
+             return JSONResponse(status_code=400, content={"error": "Invalid path components"})
+        
+        # Security Rule 1.3: Strict character set
+        # Allow alphanumeric, underscore, hyphen, slash, and dot
+        if not re.match(r"^[a-zA-Z0-9_./-]+$", doc_path):
+             logger.warning(f"Path traversal attempt blocked (invalid chars): {doc_path}")
+             return JSONResponse(status_code=400, content={"error": "Invalid characters in path"})
+
+        # Security Rule 2.1: Safe Extensions Only
+        ALLOWED_EXTENSIONS = {".md", ".json", ".txt"}
+        if not any(doc_path.endswith(ext) for ext in ALLOWED_EXTENSIONS):
+             logger.warning(f"File access blocked (disallowed extension): {doc_path}")
+             return JSONResponse(status_code=400, content={"error": "File type not allowed"})
+             
         # Security: prevent traversing up and ensure path is within apps/api
         api_root = Path(__file__).resolve().parent
         
         # Join path and resolve it
-        # Remove leading slash to prevent absolute path joining
+        # We've already validated the string content, but we still verify the final resolved path
         safe_rel_path = doc_path.lstrip("/")
         target_path = (api_root / safe_rel_path).resolve()
         
-        # Verify that the target path is inside the api_root
-        # pathlib.Path.is_relative_to() was added in Python 3.9
+        # Security Rule 1.4: Resolve and Verify Root
         if not target_path.is_relative_to(api_root):
-             logger.warning(f"Path traversal attempt blocked: {doc_path}")
-             return JSONResponse(status_code=400, content={"error": "Invalid path"})
+             logger.warning(f"Path traversal attempt blocked (escaped root): {doc_path}")
+             return JSONResponse(status_code=400, content={"error": "Invalid path resolution"})
         
         if not target_path.is_file():
              return JSONResponse(status_code=404, content={"error": "Document not found"})
@@ -125,5 +142,4 @@ async def get_system_doc(doc_path: str):
         return {"content": content, "format": "markdown", "path": doc_path}
     except Exception as e:
         logger.error(f"Error serving doc: {e}")
-        # Security: Do not expose raw exception strings to the client
         return JSONResponse(status_code=500, content={"error": "Internal server error"})
