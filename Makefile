@@ -87,12 +87,18 @@ test-e2e: build
 	@echo "🎭 Running Playwright E2E tests..."
 	CI=true npm exec playwright test
 
-# Run all AI checks (Scan -> Format -> Lint -> Test -> E2E)
+# Run Performance tests
+test-perf:
+	@echo "🚀 Running Performance tests..."
+	npm run test:perf -w apps/web
+
+# Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
 ai-checks: secret-scan
 	$(MAKE) format
 	$(MAKE) lint
 	$(MAKE) test
 	$(MAKE) test-e2e
+	$(MAKE) test-perf
 	@echo "🤖 AI Checks Complete: All Systems Nominal."
 
 # Build the project
