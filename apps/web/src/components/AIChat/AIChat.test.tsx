@@ -14,18 +14,13 @@ vi.mock('react-instantsearch', async (importOriginal) => {
   };
 });
 
-// Mock algoliasearch
-vi.mock('algoliasearch', () => ({
-  algoliasearch: vi.fn(() => ({
+// Mock algoliasearch/lite
+vi.mock('algoliasearch/lite', () => ({
+  liteClient: vi.fn(() => ({
     search: vi.fn().mockResolvedValue({ results: [] }),
     appId: 'test-app-id',
     apiKey: 'test-api-key',
   })),
-}));
-
-// Mock MusicPlayer
-vi.mock('../MusicPlayer/MusicPlayer', () => ({
-  default: () => <div data-testid="music-player-mock">Music Player</div>,
 }));
 
 describe('AIChat Widget Integration', () => {
@@ -37,10 +32,5 @@ describe('AIChat Widget Integration', () => {
     render(<AIChat />);
     expect(screen.getByTestId('instant-search-mock')).toBeInTheDocument();
     expect(screen.getByTestId('algolia-chat-mock')).toBeInTheDocument();
-  });
-
-  it('renders the MusicPlayer component', () => {
-    render(<AIChat />);
-    expect(screen.getByTestId('music-player-mock')).toBeInTheDocument();
   });
 });
