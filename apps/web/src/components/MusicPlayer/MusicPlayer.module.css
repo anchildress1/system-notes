@@ -1,12 +1,14 @@
 .playerWrapper {
     position: fixed;
     bottom: 24px;
-    right: 104px; /* 24px (margin) + 56px (chat button width) + 24px (gap) */
+    right: 98px;
+    /* 24px (margin) + 50px (chat button width) + 24px (gap) */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    z-index: 999; /* Just below chat (1000) */
+    z-index: 999;
+    /* Just below chat (1000) */
 }
 
 .playButton {

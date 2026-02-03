@@ -145,28 +145,66 @@ button {
   background: hsl(var(--color-accent-purple) / 0.5);
 }
 
-/* Algolia Chat Widget - Minimal Overrides */
+/* Algolia Chat Widget Overrides (Global Scope) */
 
-/* Theme variable overrides */
-.ais-Chat {
-  --ais-primary-color-rgb: 47, 182, 178 !important;
-  --ais-background-color-rgb: 255, 255, 255 !important;
-  --ais-text-color-rgb: 38, 38, 38 !important;
+/* 1. Force Pink Accent Color & Fix Clickability & Z-Index */
+.ais-Chat,
+.ais-Chat-toggleButtonWrapper,
+.ais-Chat-toggleButton-wrapper,
+.ais-ChatToggleButtonWrapper,
+.ais-Chat-container {
+  pointer-events: none !important;
+  --ais-chat-primary-color: hsl(338 78% 61%) !important;
+  /* Explicit Pink Accent */
+  --ais-primary-color: hsl(338 78% 61%) !important;
+  z-index: 9999 !important;
+  /* Ensure it's on top */
 }
 
-/* Visual Overrides */
-.ais-Chat-toggleButton {
-  width: 60px !important;
-  height: 60px !important;
-  background-color: hsl(178, 59%, 45%) !important;
+/* 2. Re-enable interactive elements - SCOPED STRICTLY */
+.ais-Chat-toggleButton,
+.ais-ChatToggleButton,
+.ais-Chat-window,
+.ais-ChatWindow,
+.ais-Chat-inputForm,
+/* Ensure window contents are interactive */
+.ais-Chat-window *,
+.ais-ChatWindow *,
+[class*="ais-Chat-toggleButton"],
+[class*="ais-ChatToggleButton"] {
+  pointer-events: auto !important;
 }
 
-.ais-Chat-toggleButton svg {
-  width: 30px !important;
-  height: 30px !important;
+/* 3. Fix Toggle Button Color & Size */
+.ais-Chat-toggleButton,
+.ais-ChatToggleButton,
+[class*="ais-Chat-toggleButton"],
+[class*="ais-ChatToggleButton"] {
+  width: 50px !important;
+  height: 50px !important;
+  background-color: hsl(338 78% 61%) !important;
+  background: hsl(338 78% 61%) !important;
+  color: white !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 20px rgba(233, 77, 136, 0.4) !important;
 }
 
-/* Header Icon Color */
-.ais-ChatHeader-titleIcon {
+.ais-Chat-toggleButton:hover,
+.ais-ChatToggleButton:hover {
+  background-color: hsl(338 78% 71%) !important;
+  transform: scale(1.05) !important;
+}
+
+/* 4. Fix Header Icon & Title Color */
+.ais-ChatHeader-titleIcon,
+.aspect-square {
   color: hsl(338 78% 61%) !important;
+}
+
+/* 5. Clean up Focus */
+.ais-Chat *:focus-visible,
+.ais-ChatToggleButton:focus-visible,
+.ais-Chat-toggleButton:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }

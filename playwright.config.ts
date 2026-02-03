@@ -31,7 +31,7 @@ export default defineConfig({
     command: 'PORT=3001 npm run start:standalone',
     url: 'http://localhost:3001',
     cwd: './apps/web',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 120000,
   },
 });
