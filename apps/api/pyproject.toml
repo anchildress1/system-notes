@@ -22,4 +22,4 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--cov=. --cov-report=term-missing --cov-fail-under=80"
+addopts = "--cov=main --cov-report=term-missing --cov-fail-under=80"
