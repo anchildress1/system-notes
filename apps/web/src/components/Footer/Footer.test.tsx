@@ -12,15 +12,15 @@ describe('Footer Component', () => {
 
   it('renders social links', () => {
     render(<Footer />);
-    expect(screen.getByRole('link', { name: /GitHub/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Visit my GitHub profile/i })).toHaveAttribute(
       'href',
       'https://github.com/anchildress1'
     );
-    expect(screen.getByRole('link', { name: /LinkedIn/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Visit my LinkedIn profile/i })).toHaveAttribute(
       'href',
       'https://linkedin.com/in/anchildress1'
     );
-    expect(screen.getByRole('link', { name: /Dev.to/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Visit my Dev.to profile/i })).toHaveAttribute(
       'href',
       'https://dev.to/anchildress1'
     );

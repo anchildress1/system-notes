@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { FaGithub, FaLinkedin, FaDev } from 'react-icons/fa';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -26,25 +27,28 @@ export default function Footer() {
           href="https://github.com/anchildress1"
           target="_blank"
           rel="noopener noreferrer"
-          className={styles.link}
+          className={styles.socialLink}
+          aria-label="Visit my GitHub profile"
         >
-          GitHub
+          <FaGithub aria-hidden="true" />
         </a>
         <a
           href="https://linkedin.com/in/anchildress1"
           target="_blank"
           rel="noopener noreferrer"
-          className={styles.link}
+          className={styles.socialLink}
+          aria-label="Visit my LinkedIn profile"
         >
-          LinkedIn
+          <FaLinkedin aria-hidden="true" />
         </a>
         <a
           href="https://dev.to/anchildress1"
           target="_blank"
           rel="noopener noreferrer"
-          className={styles.link}
+          className={styles.socialLink}
+          aria-label="Visit my Dev.to profile"
         >
-          Follow me on Dev.to
+          <FaDev aria-hidden="true" />
         </a>
       </div>
     </footer>
