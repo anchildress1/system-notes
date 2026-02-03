@@ -56,7 +56,7 @@ test.describe('System Notes Integration', () => {
     await page.goto('/');
 
     // Mock Algolia to ensure deterministic tests without external calls
-    await page.route('**/*algolia.net/**', async (route) => {
+    await page.route('**/*algolia*/**', async (route) => {
       // Small delay to ensure "Thinking..." UI state is observable
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
