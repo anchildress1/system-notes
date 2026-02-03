@@ -1,0 +1,39 @@
+# AI.txt - AI Discoverability and Permissions
+# See: https://github.com/ai-txt/ai-txt
+
+# Contact Information
+Contact: Ashley Childress
+Contact-Email: contact@anchildress1.dev
+Preferred-Contact: Email
+
+# Crawling Permissions
+User-agent: *
+Allow: /
+
+# Specific AI Bots
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+# Content Information
+Content-Type: Portfolio, Projects, Technical Documentation
+Language: en-US
+Primary-Purpose: Professional portfolio and project showcase
+
+# Sitemap
+Sitemap: /sitemap.xml
+
+# Metadata
+Last-Updated: 2026-02-02
+Version: 1.0

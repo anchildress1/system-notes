@@ -161,7 +161,10 @@ export default function AIChat() {
 
         <button
           className={`${styles.toggleButton} ${isOpen ? styles.stopPulse : ''}`}
-          onClick={toggleChat}
+          onClick={(e) => {
+            e.preventDefault();
+            toggleChat();
+          }}
           aria-label={isOpen ? 'Close AI Chat' : 'Open AI Chat'}
           data-testid="ai-chat-toggle"
         >
