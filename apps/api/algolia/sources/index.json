@@ -1,43 +1,32 @@
 [
   {
     "objectID": "card:philosophy:principles:0001",
-
     "title": "A portfolio does not need polish to be honest",
     "blurb": "Polish is not required for work to be meaningful or instructive.",
     "fact": "I believe a portfolio can be valuable without polished outputs if it accurately reflects real-world constraints, experimentation, and learning.",
-
     "tags": ["portfolio", "experimentation", "systems-thinking"],
-
     "entities": ["System Notes"],
-
     "facet_domain": "philosophy",
     "facet_category": "principles",
     "facet_signal_level": "high"
   },
   {
     "objectID": "card:work_style:workflow:0002",
-
     "title": "Polish is deprioritized during exploration",
     "blurb": "Time is spent learning and testing ideas rather than refining presentation.",
     "fact": "In practice, I intentionally deprioritize polish while exploring ideas so effort goes toward understanding systems and constraints instead of presentation.",
-
     "tags": ["portfolio", "experimentation", "systems-thinking"],
-
     "entities": ["System Notes"],
-
     "facet_domain": "work_style",
     "facet_category": "workflow",
     "facet_signal_level": "high"
   },
   {
     "objectID": "card:work_style:ai_collaboration:0003",
-
     "title": "AI is used as a challenging collaborator",
     "blurb": "AI is engaged continuously, even when it disagrees or produces friction.",
     "fact": "I work with AI tools in an ongoing, sometimes adversarial way to test whether collaboration under imperfect conditions can still produce functional results.",
-
     "tags": ["experimentation", "systems-thinking", "ai-collaboration"],
-
     "entities": [
       "System Notes",
       "ChatGPT",
@@ -46,20 +35,16 @@
       "Hermes Agent",
       "Underfoot Travel"
     ],
-
     "facet_domain": "work_style",
     "facet_category": "workflow",
     "facet_signal_level": "high"
   },
   {
     "objectID": "card:philosophy:principles:0002",
-
     "title": "Restraint is a deliberate engineering choice",
     "blurb": "Good engineering includes knowing when not to act.",
     "fact": "I believe strong engineering judgment includes recognizing when not to intervene, especially when additional complexity does not meaningfully improve outcomes.",
-
     "tags": ["engineering-judgment", "restraint", "systems-thinking"],
-
     "entities": [
       "System Notes",
       "Copilot Chat Extension",
@@ -67,24 +52,1242 @@
       "RAI Lint",
       "DevTO Mirror"
     ],
-
     "facet_domain": "philosophy",
     "facet_category": "principles",
     "facet_signal_level": "high"
   },
   {
     "objectID": "card:work_style:workflow:0004",
-
     "title": "Proven patterns are preferred over reinvention",
     "blurb": "Existing solutions are favored unless there is a clear reason not to use them.",
     "fact": "In practice, I prefer proven patterns and existing solutions over reinvention unless there is a clear signal that a custom approach is justified.",
-
     "tags": ["proven-patterns", "pragmatism", "systems-design"],
-
     "entities": ["System Notes", "Delegate Action", "RAI Lint", "Echo ESLint", "Awesome Copilot"],
-
     "facet_domain": "work_style",
     "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:public-by-design",
+    "title": "Work is public to reduce duplicated effort",
+    "blurb": "Shared abstractions prevent others from rebuilding the same solutions.",
+    "fact": "Although these tools are built to simplify my own work, they are public because the same abstractions tend to repeat across environments, and sharing them avoids duplication.",
+    "tags": ["reuse", "abstractions", "efficiency"],
+    "entities": [
+      "System Notes",
+      "Delegate Action",
+      "Hermes Agent",
+      "RAI Lint",
+      "Underfoot Travel",
+      "Awesome Copilot",
+      "DevTO Mirror",
+      "Echo ESLint",
+      "Copilot Chat Extension"
+    ],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:environment-agnostic-sharing",
+    "title": "Abstractions are shared across environments",
+    "blurb": "The work is applicable beyond a single setup or organization.",
+    "fact": "The tools are public because the abstractions they encode tend to repeat across different environments rather than being specific to one context.",
+    "tags": ["systems-thinking", "abstractions", "portability"],
+    "entities": [
+      "System Notes",
+      "Delegate Action",
+      "Hermes Agent",
+      "RAI Lint",
+      "Underfoot Travel",
+      "Awesome Copilot",
+      "DevTO Mirror",
+      "Echo ESLint",
+      "Copilot Chat Extension"
+    ],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:optional-adoption",
+    "title": "Public does not imply required adoption",
+    "blurb": "Others are free to reuse or ignore the work.",
+    "fact": "Making the work public is intended to leave room for others to reuse the tools if helpful, or ignore them entirely if not.",
+    "tags": ["autonomy", "pragmatism", "open-sharing"],
+    "entities": [
+      "System Notes",
+      "Delegate Action",
+      "Hermes Agent",
+      "RAI Lint",
+      "Underfoot Travel",
+      "Awesome Copilot",
+      "DevTO Mirror",
+      "Echo ESLint",
+      "Copilot Chat Extension"
+    ],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:work_style:workflow:day-to-day-representation",
+    "title": "System Notes and Hermes best reflect day-to-day work",
+    "blurb": "These projects most closely mirror how work is actually done.",
+    "fact": "System Notes, along with Hermes Agent, best represents how I work day to day because the real work happens up front through deliberate design, analysis, and decision-making.",
+    "tags": ["work-style", "systems-design", "daily-practice"],
+    "entities": ["System Notes", "Hermes Agent"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:design-first-process",
+    "title": "Design and reasoning precede implementation",
+    "blurb": "Most effort is spent before any code is written.",
+    "fact": "My workflow emphasizes thinking through design, identifying edge cases, mapping patterns, and making deliberate build-versus-delegate decisions before implementation begins.",
+    "tags": ["design-first", "engineering-judgment", "systems-thinking"],
+    "entities": ["System Notes", "Hermes Agent"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:ai_collaboration:co-developed-systems",
+    "title": "AI systems are built alongside the project",
+    "blurb": "The AI workflow is designed, not assumed.",
+    "fact": "The work is not prompt-and-go; it involves building the AI system alongside the project, with decisions about what the AI should implement made deliberately as part of the design process.",
+    "tags": ["ai-collaboration", "intentional-design", "process"],
+    "entities": ["System Notes", "Hermes Agent"],
+    "facet_domain": "work_style",
+    "facet_category": "ai_collaboration",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:rigor-after-design",
+    "title": "Rigor follows once core design is clear",
+    "blurb": "Validation and guardrails are added after foundational decisions.",
+    "fact": "Validation, guardrails, testing, and other rigor are added after the core design is established rather than being imposed prematurely.",
+    "tags": ["validation", "testing", "engineering-discipline"],
+    "entities": ["System Notes", "Hermes Agent"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:work_style:learning:post-ship-constraints",
+    "title": "Underfoot revealed real-world constraints after shipping",
+    "blurb": "The most meaningful lessons emerged once the system was live.",
+    "fact": "Underfoot taught me the most after it shipped, particularly around constraint, cost control, and the realities introduced by running the system in practice rather than in theory.",
+    "tags": ["post-ship-learning", "constraints", "cost-control"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "work_style",
+    "facet_category": "learning",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:ai_collaboration:parallel-autonomy-limits",
+    "title": "Autonomous and parallel AI coding exposed tooling limits",
+    "blurb": "Parallel AI work does not yet produce cohesive systems.",
+    "fact": "The project highlighted how autonomous and parallel AI-assisted coding still falls short of producing cohesive, fully integrated systems with current tooling.",
+    "tags": ["ai-collaboration", "autonomy", "tooling-limits"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "work_style",
+    "facet_category": "ai_collaboration",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:intentional-piecewise-systems",
+    "title": "Leaving systems intentionally piecewise is sometimes correct",
+    "blurb": "Incomplete integration can be a deliberate decision.",
+    "fact": "As a result of these limitations, Underfoot was left intentionally piecewise until the gap between autonomous AI output and cohesive system integration can be meaningfully addressed.",
+    "tags": ["restraint", "systems-thinking", "intentional-incompleteness"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:time-vs-perfection",
+    "title": "Time investment is weighed against perceived perfection",
+    "blurb": "Refinement is evaluated against diminishing returns.",
+    "fact": "A recurring tradeoff across my projects is deciding how much time to invest refining details versus accepting that nothing is ever truly finished.",
+    "tags": ["tradeoffs", "perfection", "time-investment"],
+    "entities": [
+      "System Notes",
+      "Delegate Action",
+      "Hermes Agent",
+      "RAI Lint",
+      "Underfoot Travel",
+      "Awesome Copilot",
+      "DevTO Mirror",
+      "Echo ESLint",
+      "Copilot Chat Extension"
+    ],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:diminishing-returns-awareness",
+    "title": "Additional effort is evaluated for meaningful value",
+    "blurb": "Not all refinement justifies its cost.",
+    "fact": "I regularly evaluate whether additional effort meaningfully improves a project or simply satisfies personal standards that may not add real value.",
+    "tags": ["engineering-judgment", "prioritization", "pragmatism"],
+    "entities": [
+      "System Notes",
+      "Delegate Action",
+      "Hermes Agent",
+      "RAI Lint",
+      "Underfoot Travel",
+      "Awesome Copilot",
+      "DevTO Mirror",
+      "Echo ESLint",
+      "Copilot Chat Extension"
+    ],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:unfinished-is-acceptable",
+    "title": "Unfinished does not imply incorrect",
+    "blurb": "Completion is contextual, not absolute.",
+    "fact": "I am comfortable knowing that projects may remain unfinished if further refinement no longer justifies the time required.",
+    "tags": ["restraint", "systems-thinking", "acceptance"],
+    "entities": [
+      "System Notes",
+      "Delegate Action",
+      "Hermes Agent",
+      "RAI Lint",
+      "Underfoot Travel",
+      "Awesome Copilot",
+      "DevTO Mirror",
+      "Echo ESLint",
+      "Copilot Chat Extension"
+    ],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:work_style:workflow:ui-polish-cutoff",
+    "title": "UI refinements were intentionally capped early",
+    "blurb": "Low-impact polish was deprioritized to protect time.",
+    "fact": "I consciously stopped adding UI refinements early after learning from a previous hackathon how easily time can disappear into low-impact polish.",
+    "tags": ["ui-restraint", "time-management", "prioritization"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:constraints:time-boxed-build",
+    "title": "Time and skill constraints shaped feature decisions",
+    "blurb": "Scope was adjusted based on realistic limits.",
+    "fact": "Knowing I was starting late, working within a single weekend, and operating outside my primary skill set, I focused on delivering core functionality instead of over-optimizing the interface.",
+    "tags": ["constraints", "time-boxing", "scope-control"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "work_style",
+    "facet_category": "constraints",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:ai_collaboration:delegated-commits",
+    "title": "Lower rigor and AI-delegated commits were accepted",
+    "blurb": "Process rigor was adjusted to match project stakes.",
+    "fact": "I accepted lower review rigor and delegated commits to the AI because the project stakes were intentionally low and the work was exploratory.",
+    "tags": ["ai-collaboration", "risk-calibration", "pragmatism"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "work_style",
+    "facet_category": "ai_collaboration",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:philosophy:principles:iterative-documentation-over-production",
+    "title": "The project was treated as iterative documentation",
+    "blurb": "Learning and capture took precedence over production readiness.",
+    "fact": "Rather than treating the work as a production-grade deliverable, I approached it as iterative documentation intended to capture decisions and lessons under intentionally low stakes.",
+    "tags": ["documentation", "learning", "intentional-low-stakes"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:built-public-from-start",
+    "title": "Projects were created in public from the start",
+    "blurb": "There was no private-to-public transition.",
+    "fact": "None of these projects originated as private tools that later went public; they were created in public from the beginning rather than evolving out of private work.",
+    "tags": ["public-build", "process", "portfolio-history"],
+    "entities": [
+      "System Notes",
+      "Delegate Action",
+      "Hermes Agent",
+      "RAI Lint",
+      "Underfoot Travel",
+      "Awesome Copilot",
+      "DevTO Mirror",
+      "Echo ESLint",
+      "Copilot Chat Extension"
+    ],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:internal-work-not-represented",
+    "title": "Earlier work lived on internal systems",
+    "blurb": "Public repositories did not reflect prior experience.",
+    "fact": "For over a decade, my GitHub was largely unused because my professional work lived on internal systems rather than in public repositories.",
+    "tags": ["career-context", "internal-systems", "work-history"],
+    "entities": [
+      "System Notes",
+      "Delegate Action",
+      "Hermes Agent",
+      "RAI Lint",
+      "Underfoot Travel",
+      "Awesome Copilot",
+      "DevTO Mirror",
+      "Echo ESLint",
+      "Copilot Chat Extension"
+    ],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:philosophy:principles:public-ai-experimentation",
+    "title": "Public building coincided with AI experimentation",
+    "blurb": "Public repos reduced friction and enabled better tooling.",
+    "fact": "My return to building coincided directly with experimenting publicly with AI, in part because public repositories reduce friction and provide access to better tooling.",
+    "tags": ["ai-experimentation", "tooling", "low-friction"],
+    "entities": [
+      "System Notes",
+      "Delegate Action",
+      "Hermes Agent",
+      "RAI Lint",
+      "Underfoot Travel",
+      "Awesome Copilot",
+      "DevTO Mirror",
+      "Echo ESLint",
+      "Copilot Chat Extension"
+    ],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:constraints:ui-avoidance-forced-decision",
+    "title": "UI avoidance required an external forcing function",
+    "blurb": "A deadline was needed to unblock frontend work.",
+    "fact": "System Notes is a portfolio website I had been procrastinating building because I do not do UI work, and it only moved forward once a hackathon imposed an external deadline that forced the decision.",
+    "tags": ["constraints", "ui-work", "forced-decisions"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "constraints",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:shipping-over-readiness",
+    "title": "Shipping under a real timeline was prioritized",
+    "blurb": "Completion mattered more than personal readiness.",
+    "fact": "The primary goal was to ship a real site under an external timeline instead of waiting for a subjective sense of readiness to do frontend work.",
+    "tags": ["shipping", "time-boxing", "execution"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:existence-over-polish",
+    "title": "Existence was the success condition",
+    "blurb": "The outcome was a deployed system, not refined UI.",
+    "fact": "The successful outcome of the project was that the website exists and is deployed, rather than achieving a high level of frontend polish.",
+    "tags": ["pragmatism", "deployment", "outcomes"],
+    "entities": ["System Notes"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:ai_collaboration:ai-paired-by-opportunity",
+    "title": "AI was paired due to challenge alignment, not preference",
+    "blurb": "Tooling choices were shaped by external context.",
+    "fact": "AI was included in System Notes because the next challenge focus made pairing them worthwhile, even though frontend work itself was never an area of personal interest.",
+    "tags": ["ai-collaboration", "context-driven-decisions", "tooling"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "ai_collaboration",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:work_style:constraints:missing-platform-capability",
+    "title": "Delegate Action exists to bridge missing GitHub functionality",
+    "blurb": "The project fills a specific platform gap.",
+    "fact": "Delegate Action was built as a temporary GitHub Action to stand in for missing GitHub functionality, specifically the inability to call a coding agent from within an existing GitHub Actions workflow.",
+    "tags": ["platform-gaps", "constraints", "glue-code"],
+    "entities": ["Delegate Action"],
+    "facet_domain": "work_style",
+    "facet_category": "constraints",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:workflow-first-design",
+    "title": "The workflow logic existed before the action",
+    "blurb": "The action is an implementation detail, not the core idea.",
+    "fact": "The workflow logic was already designed, and Delegate Action exists only to invoke that logic in a narrow, controlled way rather than to introduce new behavior.",
+    "tags": ["workflow-first", "systems-design", "minimal-scope"],
+    "entities": ["Delegate Action"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:ai_collaboration:documentation-updates-via-agent",
+    "title": "AI is used narrowly for documentation updates",
+    "blurb": "Agent use is constrained and prompt-driven.",
+    "fact": "Delegate Action is currently focused on updating documentation per pull request using prompts defined in Awesome GitHub Copilot rather than broad or autonomous code changes.",
+    "tags": ["ai-collaboration", "documentation", "scoped-automation"],
+    "entities": ["Delegate Action", "Awesome Copilot"],
+    "facet_domain": "work_style",
+    "facet_category": "ai_collaboration",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:philosophy:principles:intentionally-disposable",
+    "title": "The project is intentionally disposable",
+    "blurb": "Its lifespan is expected to be limited.",
+    "fact": "The project is still in testing and intentionally scoped as disposable, with the expectation that GitHub will eventually support this capability natively and eliminate the need for custom glue.",
+    "tags": ["intentional-temporariness", "restraint", "platform-evolution"],
+    "entities": ["Delegate Action"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:local-agent-playground",
+    "title": "Hermantic Agent is a local experimentation playground",
+    "blurb": "The project is designed for hands-on agent experimentation.",
+    "fact": "My Hermantic Agent is a custom local playground built on my own machine for experimenting with ADK and personal agent design rather than a hosted or production system.",
+    "tags": ["local-development", "experimentation", "agent-design"],
+    "entities": ["Hermes Agent"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:ai_collaboration:workflow-memorization",
+    "title": "The agent is designed to learn personal workflows",
+    "blurb": "Adaptation replaces generic prompting.",
+    "fact": "The intended design focuses on allowing the agent to learn and memorize my specific workflows over time instead of relying on generic prompts or stateless interactions.",
+    "tags": ["adaptive-systems", "personalization", "ai-collaboration"],
+    "entities": ["Hermes Agent"],
+    "facet_domain": "work_style",
+    "facet_category": "ai_collaboration",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:stateful-over-stateless",
+    "title": "Stateful interaction is preferred over stateless prompts",
+    "blurb": "Memory is treated as a first-class capability.",
+    "fact": "The project is intentionally designed around stateful learning and memory rather than repeated prompt-based interactions.",
+    "tags": ["statefulness", "memory", "systems-thinking"],
+    "entities": ["Hermes Agent"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:constraints:design-phase-only",
+    "title": "The project is currently design-only",
+    "blurb": "Implementation has not yet begun.",
+    "fact": "Hermantic Agent is still in the design phase and has not yet been implemented, with effort focused on defining intent and architecture.",
+    "tags": ["design-phase", "intent-first", "constraints"],
+    "entities": ["Hermes Agent"],
+    "facet_domain": "work_style",
+    "facet_category": "constraints",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:philosophy:principles:locally-grounded-agency",
+    "title": "The agent is intended to be locally grounded",
+    "blurb": "Control and context remain on the developer’s machine.",
+    "fact": "The intended outcome is a locally grounded agent that adapts to how I actually work, rather than relying on external or abstracted execution environments.",
+    "tags": ["local-control", "developer-agency", "grounded-systems"],
+    "entities": ["Hermes Agent"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:ai-authorship-disclosure",
+    "title": "AI involvement in code must be explicitly disclosed",
+    "blurb": "Authorship transparency is treated as a requirement.",
+    "fact": "RAI Lint was built to enforce explicit attribution of AI involvement in code authorship rather than allowing it to remain implicit or invisible.",
+    "tags": ["ai-disclosure", "authorship", "transparency"],
+    "entities": ["RAI Lint"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:constraints:accountability-gap",
+    "title": "Invisible AI contributions create an accountability gap",
+    "blurb": "Version history alone is insufficient.",
+    "fact": "The project directly addresses the accountability gap created when AI contributions are not visible or recorded in version history.",
+    "tags": ["accountability", "version-history", "constraints"],
+    "entities": ["RAI Lint"],
+    "facet_domain": "work_style",
+    "facet_category": "constraints",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:lint-enforced-disclosure",
+    "title": "Disclosure is enforced through commit linting",
+    "blurb": "Attribution is operationalized, not advisory.",
+    "fact": "RAI Lint enforces disclosure by integrating with commitlint and gitlint rather than relying on developer memory or informal convention.",
+    "tags": ["linting", "process-enforcement", "workflow"],
+    "entities": ["RAI Lint"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:outcomes:normalized-ai-attribution",
+    "title": "AI attribution was successfully normalized",
+    "blurb": "Disclosure became part of the default workflow.",
+    "fact": "The outcome of RAI Lint successfully normalized AI contribution disclosure for commits using commitlint and gitlint.",
+    "tags": ["outcomes", "normalization", "ai-collaboration"],
+    "entities": ["RAI Lint"],
+    "facet_domain": "work_style",
+    "facet_category": "outcomes",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:local-context-over-generic",
+    "title": "Local context was prioritized over generic recommendations",
+    "blurb": "The planner emphasizes constraints and tradeoffs.",
+    "fact": "Underfoot is an AI-assisted travel planner designed to surface local context, constraints, and tradeoffs rather than providing generic recommendations.",
+    "tags": ["local-context", "constraints", "tradeoffs"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:constraints:hackathon-origin",
+    "title": "The project originated as a hackathon build",
+    "blurb": "Initial scope and momentum were time-bound.",
+    "fact": "Underfoot started as a hackathon project, with early progress shaped by the constraints and tooling available during that event.",
+    "tags": ["hackathon", "time-boxing", "constraints"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "work_style",
+    "facet_category": "constraints",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:work_style:learning:overextension-failure",
+    "title": "Extending past intended scope caused over-design",
+    "blurb": "Lack of boundaries led to complexity.",
+    "fact": "After the hackathon, I continued extending Underfoot past its intended scope, over-designed the system, and learned firsthand why projects require explicit timeboxing and versioning.",
+    "tags": ["over-design", "scope-creep", "lessons-learned"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "work_style",
+    "facet_category": "learning",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:tooling-expiration-pivot",
+    "title": "Tooling expiration forced a rebuild",
+    "blurb": "External limits triggered a reset.",
+    "fact": "When the hackathon tooling free trials expired, the project was repurposed into a separate AI orchestration experiment rebuilt from the ground up using free tools.",
+    "tags": ["tooling-constraints", "rebuild", "ai-orchestration"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:status:experimental-and-incomplete",
+    "title": "The project remains experimental and unfinished",
+    "blurb": "Stability is pending further work.",
+    "fact": "Underfoot remains in an experimental state, pending testing and fixes following its rebuild and repurposing.",
+    "tags": ["experimental", "unfinished", "in-progress"],
+    "entities": ["Underfoot Travel"],
+    "facet_domain": "work_style",
+    "facet_category": "status",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:work_style:workflow:personal-pattern-library",
+    "title": "Awesome Copilot is a personal pattern library",
+    "blurb": "The collection reflects an actively used workflow.",
+    "fact": "Awesome GitHub Copilot is a personal collection of prompts, agents, instructions, and skills that I actively use in my own workflow rather than a curated showcase.",
+    "tags": ["workflow", "patterns", "personal-tooling"],
+    "entities": ["Awesome Copilot"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:package-what-works",
+    "title": "Only proven patterns are packaged for reuse",
+    "blurb": "Sharing follows demonstrated usefulness.",
+    "fact": "The project was built because these patterns already worked well for me, and packaging them made reuse and consistency easier across projects.",
+    "tags": ["reuse", "proven-patterns", "consistency"],
+    "entities": ["Awesome Copilot"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:consistency-across-projects",
+    "title": "The collection enforces consistency across projects",
+    "blurb": "Shared tooling reduces drift.",
+    "fact": "Organizing prompts, agents, and skills into a single reference made it easier to apply the same patterns consistently across different projects.",
+    "tags": ["consistency", "cross-project", "systems-thinking"],
+    "entities": ["Awesome Copilot"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:status:living-reference",
+    "title": "The project is a living reference",
+    "blurb": "The content evolves with ongoing use.",
+    "fact": "The outcome of the project is a living reference that I actively use as-is rather than a finished or static artifact.",
+    "tags": ["living-docs", "iterative", "active-use"],
+    "entities": ["Awesome Copilot"],
+    "facet_domain": "work_style",
+    "facet_category": "status",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:constraints:ai-visibility-gap",
+    "title": "AI systems could not see existing Dev.to content",
+    "blurb": "The problem was discoverability by AI, not humans.",
+    "fact": "DevTO Mirror was built after discovering that AI systems could not see or reference blog content I had published on Dev.to.",
+    "tags": ["ai-visibility", "constraints", "seo"],
+    "entities": ["DevTO Mirror"],
+    "facet_domain": "work_style",
+    "facet_category": "constraints",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:canonical-source-preserved",
+    "title": "The canonical publishing source was intentionally preserved",
+    "blurb": "The solution avoids relocating original content.",
+    "fact": "The project was designed to keep Dev.to as the canonical source rather than self-hosting or moving the original writing elsewhere.",
+    "tags": ["canonical-source", "restraint", "publishing"],
+    "entities": ["DevTO Mirror"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:mirror-not-migration",
+    "title": "The project functions as a mirror, not a migration",
+    "blurb": "Distribution is separated from authorship.",
+    "fact": "DevTO Mirror exists strictly as a publishing mirror to make content visible to AI tools like ChatGPT and Gemini without changing where or how I publish.",
+    "tags": ["distribution", "separation-of-concerns", "workflow"],
+    "entities": ["DevTO Mirror"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:outcomes:lightweight-distribution-layer",
+    "title": "A lightweight layer solved AI visibility",
+    "blurb": "The solution added reach without operational overhead.",
+    "fact": "The outcome is a lightweight distribution layer that improves AI visibility without altering the publishing workflow or hosting model.",
+    "tags": ["outcomes", "low-overhead", "systems-design"],
+    "entities": ["DevTO Mirror"],
+    "facet_domain": "work_style",
+    "facet_category": "outcomes",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:encode-decisions-once",
+    "title": "Lint decisions are encoded once, not renegotiated",
+    "blurb": "Consistency is favored over per-project debate.",
+    "fact": "ESLint Config Echo is an opinionated shared configuration designed to encode linting decisions once instead of renegotiating them across individual projects.",
+    "tags": ["opinionated-config", "consistency", "decision-encoding"],
+    "entities": ["Echo ESLint"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:constraints:reduce-bikeshedding",
+    "title": "The configuration exists to reduce bikeshedding",
+    "blurb": "Time is protected by removing low-value debate.",
+    "fact": "The project was built specifically to reduce bikeshedding and inconsistency across repositories by centralizing linting rules.",
+    "tags": ["bikeshedding", "constraints", "time-savings"],
+    "entities": ["Echo ESLint"],
+    "facet_domain": "work_style",
+    "facet_category": "constraints",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:outcomes:stable-lint-behavior",
+    "title": "Lint behavior was stabilized across projects",
+    "blurb": "Rules became predictable and repeatable.",
+    "fact": "The outcome of ESLint Config Echo was stabilized lint behavior across repositories that adopted the shared configuration.",
+    "tags": ["outcomes", "stability", "tooling"],
+    "entities": ["Echo ESLint"],
+    "facet_domain": "work_style",
+    "facet_category": "outcomes",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:learning:early-ai-experiment",
+    "title": "The project was an early AI collaboration experiment",
+    "blurb": "It predated later tooling and frameworks.",
+    "fact": "Checkmark Copilot Chat was an early AI experiment built before MCP and before the Awesome GitHub Copilot repository existed.",
+    "tags": ["early-experimentation", "ai-collaboration", "timing"],
+    "entities": ["Copilot Chat Extension"],
+    "facet_domain": "work_style",
+    "facet_category": "learning",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:work_style:workflow:prompt-sharing-via-chat",
+    "title": "The goal was to share prompts through Copilot Chat",
+    "blurb": "Invocation was meant to be simple and social.",
+    "fact": "The project was intended as a simple way to share the prompts and instructions I was using at work so others could invoke them directly from Copilot Chat.",
+    "tags": ["prompt-sharing", "workflow", "collaboration"],
+    "entities": ["Copilot Chat Extension"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:work_style:constraints:missing-context-persistence",
+    "title": "Lack of context persistence made the approach unworkable",
+    "blurb": "The tooling could not support the intended workflow.",
+    "fact": "Limited documentation and GitHub’s inability at the time to persist context across turns made the approach unworkable without the deeper system already present in VS Code.",
+    "tags": ["tooling-limits", "context-management", "constraints"],
+    "entities": ["Copilot Chat Extension"],
+    "facet_domain": "work_style",
+    "facet_category": "constraints",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:choosing-not-to-build",
+    "title": "Choosing not to build a full plugin was deliberate",
+    "blurb": "Effort was withheld when the cost outweighed the value.",
+    "fact": "Rather than investing in writing a full plugin to compensate for these limitations, I chose not to pursue the approach further.",
+    "tags": ["restraint", "engineering-judgment", "opportunity-cost"],
+    "entities": ["Copilot Chat Extension"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:leverage-over-complexity",
+    "title": "AI leverage is capped to avoid unnecessary complexity",
+    "blurb": "The system intentionally stops short of maximal capability.",
+    "fact": "In this implementation, the AI is intentionally simple and does not attempt to do everything it could, because beyond a certain point complexity outweighs leverage.",
+    "tags": ["leverage", "complexity", "restraint"],
+    "entities": ["System Notes"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:answer-over-navigation",
+    "title": "AI replaces search and navigation with direct answers",
+    "blurb": "Leverage comes from reducing cognitive overhead.",
+    "fact": "Where AI adds leverage is in eliminating the need to search, navigate, or infer intent, providing direct answers instead of forcing users to hunt through pages.",
+    "tags": ["usability", "cognitive-load", "direct-answers"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:ai_collaboration:data-not-tone-changes",
+    "title": "The same data serves different audiences",
+    "blurb": "Tone adjusts without mutating the system.",
+    "fact": "The same underlying data supports judges and recruiters equally, with only minor instruction-level tone adjustments rather than changes to the data itself.",
+    "tags": ["audience-adaptation", "instruction-layer", "ai-collaboration"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "ai_collaboration",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:system-boundary-discipline",
+    "title": "System boundaries are enforced deliberately",
+    "blurb": "Not every possible AI capability is desirable.",
+    "fact": "The implementation reflects a deliberate boundary where AI stops adding value and begins adding complexity, and that boundary is actively enforced.",
+    "tags": ["system-boundaries", "engineering-judgment", "intentional-design"],
+    "entities": ["System Notes"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:ai-is-not-the-author",
+    "title": "The AI is explicitly not the author",
+    "blurb": "Identity separation is enforced.",
+    "fact": "A core guardrail is that the AI is explicitly not me and must not present itself as the author or decision-maker.",
+    "tags": ["identity-separation", "authorship", "guardrails"],
+    "entities": ["System Notes"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:ai_collaboration:no-guessing-or-inference",
+    "title": "The AI is not allowed to guess or infer",
+    "blurb": "Speculation is treated as an error.",
+    "fact": "The AI is explicitly not allowed to guess, infer intent, or speculate beyond what is stated in the canonical data.",
+    "tags": ["no-inference", "accuracy", "ai-collaboration"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "ai_collaboration",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:closed-world-assumption",
+    "title": "Unstated information is treated as nonexistent",
+    "blurb": "The system operates under a closed-world model.",
+    "fact": "If something is not stated in the canonical data, it is treated as not existing rather than being filled in or approximated.",
+    "tags": ["closed-world", "data-integrity", "guardrails"],
+    "entities": ["System Notes"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:human-escalation-path",
+    "title": "Unknowns are escalated back to the human",
+    "blurb": "The system defers rather than fabricates.",
+    "fact": "When information is missing, the user is directed to ask me directly instead of the AI attempting to fill in the gap.",
+    "tags": ["escalation", "human-in-the-loop", "workflow"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:adversarial-self-testing",
+    "title": "The system is tested with known-unknown questions",
+    "blurb": "Accuracy is validated through deliberate probing.",
+    "fact": "I actively test the system with questions I know I never answered, questions about itself, and questions about specific projects to verify how it behaves under uncertainty.",
+    "tags": ["testing", "validation", "adversarial-evaluation"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:accuracy-over-coverage",
+    "title": "Accuracy is the primary success criterion",
+    "blurb": "Correct refusal is better than fabricated answers.",
+    "fact": "As long as the system responds accurately without fabricating information when data is missing, it is considered helpful.",
+    "tags": ["accuracy", "no-hallucination", "trust"],
+    "entities": ["System Notes"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:ai_collaboration:self-referential-queries",
+    "title": "The system is tested on questions about itself",
+    "blurb": "Self-knowledge boundaries are intentionally probed.",
+    "fact": "Questions about the system itself are used to evaluate whether the AI respects its guardrails and avoids inventing internal state or intent.",
+    "tags": ["self-reference", "guardrails", "ai-collaboration"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "ai_collaboration",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:ai-as-baseline-infrastructure",
+    "title": "AI is treated as baseline infrastructure",
+    "blurb": "Usefulness is measured against modern expectations.",
+    "fact": "AI is no longer treated as a novelty or gimmick, but as an expected baseline for functional systems, and this implementation is evaluated against that standard.",
+    "tags": ["baseline-expectation", "modern-systems", "leverage"],
+    "entities": ["System Notes"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:system-first-portfolio",
+    "title": "The portfolio is a system-first experiment",
+    "blurb": "Systems take precedence over finished artifacts.",
+    "fact": "This portfolio is intentionally designed as a system-first experiment rather than a showcase of finished applications.",
+    "tags": ["system-first", "experimentation", "portfolio-design"],
+    "entities": ["System Notes"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:constraints:hackathon-style-build",
+    "title": "The portfolio was built under hackathon-style constraints",
+    "blurb": "Time and scope limits shaped the outcome.",
+    "fact": "The portfolio was built under hackathon-style constraints and is intentionally exploratory rather than optimized for completeness or polish.",
+    "tags": ["hackathon", "constraints", "time-boxing"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "constraints",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:polish-deprioritized-by-design",
+    "title": "Polish and completeness were deprioritized by design",
+    "blurb": "Exploration was favored over refinement.",
+    "fact": "The goal of the portfolio was to test how far real-world AI collaboration could be pushed when polish and completeness were explicitly deprioritized.",
+    "tags": ["restraint", "ai-collaboration", "intentional-incompleteness"],
+    "entities": ["System Notes"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:site-is-the-artifact",
+    "title": "The site itself is the portfolio artifact",
+    "blurb": "The system replaces a static placeholder.",
+    "fact": "The site exists as the portfolio artifact itself, replacing a static placeholder and primarily serving to host and expose the underlying system decisions.",
+    "tags": ["system-artifact", "documentation", "workflow"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:behavior:active-perfectionism",
+    "title": "Perfectionism is active, not paralyzing",
+    "blurb": "Work pauses rather than being abandoned.",
+    "fact": "The author is an active perfectionist, meaning work is not left alone permanently but paused until attention shifts and returns later.",
+    "tags": ["perfectionism", "work-patterns", "iteration"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "behavior",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:direction-over-completion",
+    "title": "Directional correctness matters more than completion",
+    "blurb": "Progress is evaluated by trajectory.",
+    "fact": "Satisfaction comes from knowing the work is directionally correct rather than fully complete.",
+    "tags": ["directional-correctness", "engineering-judgment", "restraint"],
+    "entities": ["System Notes"],
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:iteration-is-expected",
+    "title": "Iteration is assumed over time",
+    "blurb": "Revisiting work is part of the system.",
+    "fact": "The system is designed with the expectation that work will be revisited and iterated on over time rather than finalized in a single pass.",
+    "tags": ["iteration", "long-term-systems", "workflow"],
+    "entities": ["System Notes"],
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:background:appalachian-origin",
+    "title": "Raised in rural Appalachia",
+    "blurb": "Early life was shaped by geographic isolation.",
+    "fact": "I was raised in a small coal-mining town in southwest Virginia, deep in Appalachia.",
+    "tags": ["background", "appalachia", "rural"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "background",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:background:isolation-as-context",
+    "title": "Isolation shaped how I understand systems",
+    "blurb": "Distance influenced perception of access and structure.",
+    "fact": "Growing up isolated shaped how I see systems, scale, and access.",
+    "tags": ["systems-thinking", "context", "background"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "background",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:background:limited-access-reality",
+    "title": "Limited access defined early experience",
+    "blurb": "Infrastructure was distant and sparse.",
+    "fact": "The nearest Walmart was a 45-minute drive, and for a long time the biggest city I knew was Bristol.",
+    "tags": ["infrastructure", "access", "constraints"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "background",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:person:background:relocation-to-georgia",
+    "title": "Moved to Georgia as a teenager",
+    "blurb": "Geographic context shifted in adolescence.",
+    "fact": "At seventeen, I moved to Georgia, where I have lived ever since.",
+    "tags": ["relocation", "background", "life-changes"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "background",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:person:background:mountains-as-home",
+    "title": "The mountains remain home",
+    "blurb": "Sense of place persists despite relocation.",
+    "fact": "No matter where I land, the mountains still feel like home, and Appalachia is the place I keep reaching for.",
+    "tags": ["identity", "place", "appalachia"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "background",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:career:nonlinear-education-path",
+    "title": "Entered engineering through a nonlinear path",
+    "blurb": "Career direction was not immediate.",
+    "fact": "I came to software engineering during my second attempt at college rather than through a direct or early pipeline.",
+    "tags": ["career-path", "nonlinear", "education"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "career",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:person:career:pragmatic-decision-making",
+    "title": "Career choice was driven by pragmatism",
+    "blurb": "Earning potential influenced direction.",
+    "fact": "A career aptitude test led me to rank options by earning potential, with software engineering at the top.",
+    "tags": ["pragmatism", "decision-making", "career"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "career",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:career:pragmatism-to-obsession",
+    "title": "Pragmatism turned into long-term commitment",
+    "blurb": "Interest deepened after entry.",
+    "fact": "What began as a pragmatic decision quickly turned into a long-term obsession with the work.",
+    "tags": ["motivation", "growth", "career"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "career",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:craft:systems-over-features",
+    "title": "Systems thinking outweighs feature building",
+    "blurb": "Coherence matters more than surface output.",
+    "fact": "I don’t just build applications; I build systems and push back when things lack coherence.",
+    "tags": ["systems-design", "craft", "architecture"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "craft",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:craft:assumption-challenging",
+    "title": "Assumptions are challenged instinctively",
+    "blurb": "Default practices are questioned.",
+    "fact": "I debate assumptions instinctively and fix problems before they calcify into standard practice.",
+    "tags": ["critical-thinking", "process", "engineering-judgment"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "craft",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:craft:intentional-large-changes",
+    "title": "Large-scale changes are intentional",
+    "blurb": "Broad modifications are planned, not accidental.",
+    "fact": "If every file in a repository changes once, it is intentional, and automation follows afterward.",
+    "tags": ["intentionality", "automation", "systems-work"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "craft",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:person:craft:guardrails-and-tooling",
+    "title": "Guardrails are required for system stability",
+    "blurb": "Tooling enforces predictability.",
+    "fact": "I believe linters, formatters, and guardrails are necessary to keep systems stable and predictable.",
+    "tags": ["guardrails", "tooling", "stability"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "craft",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:ai_practice:reduced-hand-coding",
+    "title": "Manual coding is no longer the primary activity",
+    "blurb": "Work has shifted to system orchestration.",
+    "fact": "These days, I write very little code by hand.",
+    "tags": ["ai-augmented", "workflow-shift", "practice"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "ai_practice",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:person:ai_practice:ai-writes-like-me",
+    "title": "AI is trained to write code the way I would",
+    "blurb": "Behavior is constrained by prior standards.",
+    "fact": "I build AI-augmented systems that write code the way I used to write it myself.",
+    "tags": ["ai-training", "constraints", "personalization"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "ai_practice",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:ai_practice:system-level-review",
+    "title": "Review happens at the system level",
+    "blurb": "Correctness is evaluated holistically.",
+    "fact": "My review process focuses on whether systems work, are deterministic, tested, repeatable, and constrained over time.",
+    "tags": ["review", "determinism", "quality"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "ai_practice",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:philosophy:teaching-not-using-ai",
+    "title": "AI is taught, not merely used",
+    "blurb": "Workflows are designed, not improvised.",
+    "fact": "I approach AI by teaching it through intentionally designed workflows rather than simply using it as a tool.",
+    "tags": ["ai-philosophy", "teaching", "workflow-design"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "philosophy",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:philosophy:durable-constrained-systems",
+    "title": "The goal is durable, constrained systems",
+    "blurb": "Longevity matters more than novelty.",
+    "fact": "My goal is to build reusable, durable, intentionally constrained systems that continue to function well long after the initial build.",
+    "tags": ["durability", "constraints", "long-term-thinking"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "philosophy",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:identity:theme-song-choice",
+    "title": "I Build Things is my theme song",
+    "blurb": "The song represents a personal constant.",
+    "fact": "I have called the song \"I Build Things\" my theme song since the first time I heard it.",
+    "tags": ["identity", "theme-song", "personal-signals"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "identity",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:background:appalachian-ingenuity",
+    "title": "Appalachian ingenuity shaped how I approach building",
+    "blurb": "Fixing and reusing were learned early.",
+    "fact": "Growing up with Appalachian ingenuity taught me to fix what breaks, reuse what still works, and take things apart to understand how they function.",
+    "tags": ["appalachia", "ingenuity", "background"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "background",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:craft:early-system-dismantling",
+    "title": "I dismantled systems before I had the language for them",
+    "blurb": "Systems intuition predates formal vocabulary.",
+    "fact": "I have been dismantling systems and sometimes putting them back together since before I had the vocabulary to call them systems.",
+    "tags": ["systems-thinking", "intuition", "craft"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "craft",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:motivation:joy-in-building",
+    "title": "Building is genuinely enjoyable",
+    "blurb": "Motivation is intrinsic, not symbolic.",
+    "fact": "Part of why the song resonates is that it is fun, catchy, energetic, and makes me want to build things.",
+    "tags": ["motivation", "joy", "building"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "motivation",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:person:philosophy:practical-symbolism",
+    "title": "Symbolism is chosen for usefulness, not abstraction",
+    "blurb": "Meaning must still be practical.",
+    "fact": "I do not treat a theme song as a metaphor exercise alone and chose it because it is motivating, memorable, and genuinely enjoyable.",
+    "tags": ["pragmatism", "personal-philosophy", "signals"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "philosophy",
+    "facet_signal_level": "medium"
+  },
+  {
+    "objectID": "card:person:craft:failure-hunting",
+    "title": "I design systems by hunting failure points",
+    "blurb": "Failure is assumed, not ignored.",
+    "fact": "I design systems by actively hunting for failure points, assuming that if something can break, it eventually will.",
+    "tags": ["failure-analysis", "systems-design", "craft"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "craft",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:craft:pre-production-failure",
+    "title": "Failures should be found before deployment",
+    "blurb": "Production is not the test environment.",
+    "fact": "I strongly prefer finding, understanding, and addressing failures before production rather than shipping something marked \"done\" and immediately needing a hotfix.",
+    "tags": ["testing", "reliability", "engineering-discipline"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "craft",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:philosophy:clean-ships-over-fast-ships",
+    "title": "Shipping clean matters more than shipping fast",
+    "blurb": "Stability is the success condition.",
+    "fact": "If I deploy something, I believe the failure should already have been found, understood, and addressed.",
+    "tags": ["quality", "deployment", "engineering-judgment"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "philosophy",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:philosophy:break-things-early",
+    "title": "Breaking things early is intentional",
+    "blurb": "Failure is a design tool.",
+    "fact": "I believe that breaking things early, loudly, and intentionally is how you end up with systems that ship clean and remain stable.",
+    "tags": ["failure-driven-design", "resilience", "systems-thinking"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "philosophy",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:person:identity:joy-and-discipline-balance",
+    "title": "Joy and discipline coexist in how I build",
+    "blurb": "Playfulness does not replace rigor.",
+    "fact": "The song captures the balance between the joy of building something yourself and the discipline of breaking systems intentionally to ensure they ship clean and stay that way.",
+    "tags": ["balance", "identity", "craft"],
+    "entities": [],
+    "facet_domain": "person",
+    "facet_category": "identity",
     "facet_signal_level": "high"
   }
 ]
