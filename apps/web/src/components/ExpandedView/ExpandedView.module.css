@@ -1,7 +1,7 @@
 .overlay {
     position: fixed;
     inset: 0;
-    z-index: 1000;
+    z-index: 2000;
     background: rgba(0, 0, 0, 0.85);
     /* Deep focus */
     /* backdrop-filter: blur(10px) saturate(180%); Removed for performance */

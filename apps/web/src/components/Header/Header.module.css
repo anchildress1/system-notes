@@ -14,7 +14,7 @@
     /* Translucent dark */
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    z-index: 900;
+    z-index: 990;
 }
 
 .identity {
@@ -129,7 +129,9 @@
         /* More opaque for mobile readability */
         backdrop-filter: none;
         /* Perf optimization */
-        position: relative;
+        position: sticky;
+        top: 0;
+        /* Fixed: Ensure header stays on top and handles stacking correctly */
         /* Force flow layout on mobile to prevent overlap */
     }
 
