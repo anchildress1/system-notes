@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
-import re
+from werkzeug.utils import secure_filename
 import os
 import json
 import logging
@@ -104,32 +104,28 @@ async def get_projects():
 @app.get("/system/doc/{doc_path:path}")
 async def get_system_doc(doc_path: str):
     try:
-        # Security Rule 1.2: Ban ".."
-        if ".." in doc_path:
-             logger.warning(f"Path traversal attempt blocked (contains '..'): {doc_path}")
-             return JSONResponse(status_code=400, content={"error": "Invalid path components"})
+        # Security Rule: Use Library Sanitization (Werkzeug)
+        # We split the path user provided and sanitize each component.
+        # secure_filename() ensures no component contains separators or traversal chars ('..')
+        parts = doc_path.split("/")
+        safe_parts = [secure_filename(part) for part in parts if part and part not in (".", "..")]
         
-        # Security Rule 1.3: Strict character set
-        # Allow alphanumeric, underscore, hyphen, slash, and dot
-        if not re.match(r"^[a-zA-Z0-9_./-]+$", doc_path):
-             logger.warning(f"Path traversal attempt blocked (invalid chars): {doc_path}")
-             return JSONResponse(status_code=400, content={"error": "Invalid characters in path"})
+        # If the resulting path list is empty (e.g. user sent "///" or ".."), return error
+        if not safe_parts:
+             return JSONResponse(status_code=400, content={"error": "Invalid path components"})
 
+        # Reconstruct path using pathlib, anchored to api_root
+        api_root = Path(__file__).resolve().parent
+        target_path = api_root.joinpath(*safe_parts).resolve()
+        
         # Security Rule 2.1: Safe Extensions Only
+        # Check the *resolved* path's extension/name just to be sure, although secure_filename handles strictness.
         ALLOWED_EXTENSIONS = {".md", ".json", ".txt"}
-        if not any(doc_path.endswith(ext) for ext in ALLOWED_EXTENSIONS):
-             logger.warning(f"File access blocked (disallowed extension): {doc_path}")
+        if not any(str(target_path.name).endswith(ext) for ext in ALLOWED_EXTENSIONS):
+             logger.warning(f"File access blocked (disallowed extension): {target_path}")
              return JSONResponse(status_code=400, content={"error": "File type not allowed"})
              
-        # Security: prevent traversing up and ensure path is within apps/api
-        api_root = Path(__file__).resolve().parent
-        
-        # Join path and resolve it
-        # We've already validated the string content, but we still verify the final resolved path
-        safe_rel_path = doc_path.lstrip("/")
-        target_path = (api_root / safe_rel_path).resolve()
-        
-        # Security Rule 1.4: Resolve and Verify Root
+        # Security Rule 1.4: Resolve and Verify Root (Defense in Depth)
         if not target_path.is_relative_to(api_root):
              logger.warning(f"Path traversal attempt blocked (escaped root): {doc_path}")
              return JSONResponse(status_code=400, content={"error": "Invalid path resolution"})
@@ -139,7 +135,7 @@ async def get_system_doc(doc_path: str):
              
         content = target_path.read_text(encoding="utf-8")
             
-        return {"content": content, "format": "markdown", "path": doc_path}
+        return {"content": content, "format": "markdown", "path": "/".join(safe_parts)}
     except Exception as e:
         logger.error(f"Error serving doc: {e}")
         return JSONResponse(status_code=500, content={"error": "Internal server error"})
