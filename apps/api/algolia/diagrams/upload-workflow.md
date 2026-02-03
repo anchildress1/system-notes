@@ -11,12 +11,12 @@ graph TD
     Trigger["Deploy / Update Trigger"]:::trigger
 
     %% Script path
-    Script["Python Script<br/>(index_algolia.py)"]:::method
+    Script["Deploy Script<br/>(algolia_upload.sh)"]:::method
 
     %% Steps
     Validation{"Env Vars Set?<br/>(API Keys)"}:::decision
-    IndexSync["Index Data<br/>(Replace All)"]:::step
-    SynonymSync["Synonym Sync<br/>(projects & about)"]:::step
+    IndexSync["Index Data<br/>(system-notes)"]:::step
+    SynonymSync["Synonym Sync<br/>(system-notes)"]:::step
 
     %% Outcomes
     Success["Graph Index Live"]:::success
