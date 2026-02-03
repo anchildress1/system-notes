@@ -90,13 +90,7 @@ test-e2e:
 # Run Performance tests
 test-perf:
 	@echo "🚀 Running Performance tests..."
-	@cd apps/web && if [ -e .env.local.bak ]; then echo "Error: .env.local.bak already exists. Please restore or remove it before running 'make test-perf'." >&2; exit 1; fi; if [ -e .env.local ]; then mv .env.local .env.local.bak; fi
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=test_app_id" > .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key" >> .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id" >> .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes" >> .env.local
 	npm run test:perf -w apps/web
-	@cd apps/web && rm -f .env.local; if [ -e .env.local.bak ]; then mv .env.local.bak .env.local; fi
 
 # Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
 ai-checks: secret-scan
