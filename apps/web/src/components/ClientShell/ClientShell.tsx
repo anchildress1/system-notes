@@ -3,7 +3,6 @@
 import dynamic from 'next/dynamic';
 import BackgroundMusic from '@/components/BackgroundMusic/BackgroundMusic';
 import Footer from '@/components/Footer/Footer';
-import styles from './ClientShell.module.css';
 
 const GlitterBomb = dynamic(() => import('@/components/GlitterBomb/GlitterBomb'), {
   ssr: false,
