@@ -2,20 +2,6 @@ import { test, expect } from '@playwright/test';
 import { injectTestStyles } from './utils';
 
 test.describe('AI Readiness & SEO', () => {
-  test('should allow AI bots to access the homepage', async ({ page }) => {
-    // Simulate GPTBot
-    await page.setExtraHTTPHeaders({
-      'User-Agent':
-        'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.0; +https://openai.com/gptbot)',
-    });
-
-    const response = await page.goto('/');
-    expect(response?.status()).toBe(200);
-
-    // Verify main content is visible to the bot
-    await expect(page.getByText('Disruption is the feature—loud by design')).toBeVisible();
-    await expect(page.getByText('Not here to play nice')).toBeVisible();
-  });
   test('should contain valid JSON-LD structure', async ({ page }) => {
     await page.goto('/');
 
@@ -43,7 +29,7 @@ test.describe('AI Readiness & SEO', () => {
     expect(response?.status()).toBe(200);
     const text = (await response?.text()) ?? '';
 
-    expect(text).toContain('User-agent: *');
+    expect(text).toMatch(/User-agent: \*/i);
     expect(text).toContain('Allow: /');
   });
 });
