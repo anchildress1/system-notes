@@ -30,8 +30,26 @@
     transition: color 0.2s ease;
 }
 
-.link:hover {
+.link:hover,
+.link:focus-visible {
     color: hsl(var(--color-accent-yellow));
+    outline: 2px solid hsl(var(--color-accent-yellow));
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.socialLink {
+    composes: link;
+    font-size: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 2px;
+}
+
+.socialLink:focus-visible {
+    outline-offset: 2px;
 }
 
 .center {
