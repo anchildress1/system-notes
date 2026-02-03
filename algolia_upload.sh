@@ -47,7 +47,7 @@ fi
 
 echo "🔤 Uploading ${INDEX_NAME} synonyms..."
 if [ -f "apps/api/algolia/config/synonyms.json" ]; then
-  curl -X PUT "${BASE_URL}/indexes/${INDEX_NAME}/synonyms" \
+  curl -X POST "${BASE_URL}/indexes/${INDEX_NAME}/synonyms/batch?replaceExistingSynonyms=true" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
     -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
     -H "Content-Type: application/json" \
