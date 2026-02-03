@@ -1,0 +1,23 @@
+{
+  "searchableAttributes": ["title", "blurb", "fact", "tags", "entities"],
+  "attributesForFaceting": [
+    "filterOnly(facet_domain)",
+    "filterOnly(facet_category)",
+    "filterOnly(facet_signal_level)",
+    "searchable(entities)",
+    "searchable(tags)"
+  ],
+  "customRanking": ["desc(updated_at)"],
+  "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
+  "attributesToRetrieve": ["*"],
+  "attributesToHighlight": ["title", "blurb"],
+  "hitsPerPage": 12,
+  "typoTolerance": true,
+  "renderingContent": {
+    "facetOrdering": {
+      "facets": {
+        "order": ["facet_domain", "facet_category", "facet_signal_level", "entities", "tags"]
+      }
+    }
+  }
+}

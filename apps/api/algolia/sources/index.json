@@ -1,0 +1,90 @@
+[
+  {
+    "objectID": "card:philosophy:principles:0001",
+
+    "title": "A portfolio does not need polish to be honest",
+    "blurb": "Polish is not required for work to be meaningful or instructive.",
+    "fact": "I believe a portfolio can be valuable without polished outputs if it accurately reflects real-world constraints, experimentation, and learning.",
+
+    "tags": ["portfolio", "experimentation", "systems-thinking"],
+
+    "entities": ["System Notes"],
+
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:0002",
+
+    "title": "Polish is deprioritized during exploration",
+    "blurb": "Time is spent learning and testing ideas rather than refining presentation.",
+    "fact": "In practice, I intentionally deprioritize polish while exploring ideas so effort goes toward understanding systems and constraints instead of presentation.",
+
+    "tags": ["portfolio", "experimentation", "systems-thinking"],
+
+    "entities": ["System Notes"],
+
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:ai_collaboration:0003",
+
+    "title": "AI is used as a challenging collaborator",
+    "blurb": "AI is engaged continuously, even when it disagrees or produces friction.",
+    "fact": "I work with AI tools in an ongoing, sometimes adversarial way to test whether collaboration under imperfect conditions can still produce functional results.",
+
+    "tags": ["experimentation", "systems-thinking", "ai-collaboration"],
+
+    "entities": [
+      "System Notes",
+      "ChatGPT",
+      "Antigravity",
+      "Awesome Copilot",
+      "Hermes Agent",
+      "Underfoot Travel"
+    ],
+
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:philosophy:principles:0002",
+
+    "title": "Restraint is a deliberate engineering choice",
+    "blurb": "Good engineering includes knowing when not to act.",
+    "fact": "I believe strong engineering judgment includes recognizing when not to intervene, especially when additional complexity does not meaningfully improve outcomes.",
+
+    "tags": ["engineering-judgment", "restraint", "systems-thinking"],
+
+    "entities": [
+      "System Notes",
+      "Copilot Chat Extension",
+      "Delegate Action",
+      "RAI Lint",
+      "DevTO Mirror"
+    ],
+
+    "facet_domain": "philosophy",
+    "facet_category": "principles",
+    "facet_signal_level": "high"
+  },
+  {
+    "objectID": "card:work_style:workflow:0004",
+
+    "title": "Proven patterns are preferred over reinvention",
+    "blurb": "Existing solutions are favored unless there is a clear reason not to use them.",
+    "fact": "In practice, I prefer proven patterns and existing solutions over reinvention unless there is a clear signal that a custom approach is justified.",
+
+    "tags": ["proven-patterns", "pragmatism", "systems-design"],
+
+    "entities": ["System Notes", "Delegate Action", "RAI Lint", "Echo ESLint", "Awesome Copilot"],
+
+    "facet_domain": "work_style",
+    "facet_category": "workflow",
+    "facet_signal_level": "high"
+  }
+]

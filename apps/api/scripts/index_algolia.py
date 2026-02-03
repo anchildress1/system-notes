@@ -54,59 +54,36 @@ async def index_data(index_name, data, settings=None):
 
 async def main():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    
-    # Projects source data
     source_dir = os.path.join(root_dir, 'algolia', 'sources')
-    projects_path = os.path.join(source_dir, 'projects.json')
     config_dir = os.path.join(root_dir, 'algolia', 'config')
-    projects_settings_path = os.path.join(config_dir, 'projects_settings.json')
     
+    # New single index setup
+    index_path = os.path.join(source_dir, 'index.json')
+    settings_path = os.path.join(config_dir, 'settings.json')
     
-    # Process Projects
-    if os.path.exists(projects_path):
-        projects_data = load_json(projects_path)
-        projects_settings = load_json(projects_settings_path) if os.path.exists(projects_settings_path) else None
+    # The new primary index name
+    index_name = 'system-notes'
+    
+    if os.path.exists(index_path):
+        data = load_json(index_path)
+        settings = load_json(settings_path) if os.path.exists(settings_path) else None
         
-        # Index data
-        await index_data('projects', projects_data, projects_settings)
+        await index_data(index_name, data, settings)
         
-        if os.path.exists(projects_path):
-            print("Updating synonyms for projects...")
-            synonyms_path = os.path.join(config_dir, 'projects_synonyms.json')
-            if os.path.exists(synonyms_path):
-                synonyms = load_json(synonyms_path)
-                try:
-                    await client.save_synonyms('projects', synonyms, replace_existing_synonyms=True)
-                    print("Synonyms updated for projects")
-                except Exception as e:
-                    print(f"Error updating synonyms: {e}")
-    else:
-        print(f"Projects file not found: {projects_path}")
-
-    # About index
-    about_path = os.path.join(source_dir, 'about.json')
-    about_settings_path = os.path.join(config_dir, 'about_settings.json')
-    if os.path.exists(about_path):
-        about_data = load_json(about_path)
-        about_settings = load_json(about_settings_path) if os.path.exists(about_settings_path) else None
-        await index_data('about', about_data, about_settings)
-        
-        # Update synonyms for about
-        print("Updating synonyms for about...")
-        about_synonyms_path = os.path.join(config_dir, 'about_synonyms.json')
-        if os.path.exists(about_synonyms_path):
-            about_synonyms = load_json(about_synonyms_path)
+        # Check for synonyms
+        synonyms_path = os.path.join(config_dir, 'synonyms.json')
+        if os.path.exists(synonyms_path):
+            print(f"Updating synonyms for {index_name}...")
+            synonyms = load_json(synonyms_path)
             try:
-                await client.save_synonyms('about', about_synonyms, replace_existing_synonyms=True)
-                print("Synonyms updated for about")
+                await client.save_synonyms(index_name, synonyms, replace_existing_synonyms=True)
+                print(f"Synonyms updated for {index_name}")
             except Exception as e:
-                print(f"Error updating about synonyms: {e}")
+                print(f"Error updating synonyms: {e}")
     else:
-        print(f"About file not found: {about_path}")
-    
+        print(f"Index file not found: {index_path}")
+
     print("\nIndexing complete!")
-    
-    # Close the client
     await client.close()
 
 if __name__ == "__main__":
