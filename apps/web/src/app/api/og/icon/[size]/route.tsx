@@ -3,7 +3,10 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ size: string }> }) {
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ size: string }> }
+) {
   const sizeParam = (await params).size;
   const size = parseInt(sizeParam, 10);
 
@@ -35,6 +38,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     {
       width: iconSize,
       height: iconSize,
+      headers: {
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
     }
   );
 }
