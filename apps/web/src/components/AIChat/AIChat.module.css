@@ -1,17 +1,32 @@
 /* Algolia Chat Widget Overrides 
-   Focusing on Position and Color only
+   Focusing on Color and ensuring proper stacking
 */
 
-/* Chat Window Container - Colors and Z-index */
-:global(.ais-Chat-window) {
-  z-index: 99999 !important;
-  background-color: hsla(var(--color-bg-surface), 0.95) !important;
+
+/* Ensure the window itself captures events */
+:global(.ais-Chat-window),
+:global(.ais-Chat-container) {
+  pointer-events: auto;
+  /* Use correct HSL syntax and transparent usage is not allowed - making it solid */
+  background-color: hsl(var(--color-bg-surface)) !important;
   color: hsl(var(--color-text-primary)) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* The toggle button wrapper - Needs to be positioned separately to stay at the bottom */
+:global(.ais-Chat-toggleButtonWrapper) {
+  position: fixed !important;
+  bottom: 90px !important;
+  right: var(--space-md, 20px) !important;
+  z-index: 10001 !important;
+  pointer-events: auto;
 }
 
 .musicWrapper {
   position: fixed;
-  bottom: 95px;
+  bottom: 90px;
   /* Center aligned with button center */
   right: calc(var(--space-md, 20px) + 60px + 20px);
   /* Margin + Button Width + Gap */
@@ -64,6 +79,7 @@
 :global(.ais-Chat-header) {
   background-color: hsl(var(--color-bg-base)) !important;
   color: hsl(var(--color-text-primary)) !important;
+  border-bottom: 1px solid hsla(var(--color-text-primary), 0.1);
 }
 
 .headerIcon {
@@ -84,6 +100,8 @@
 /* Input Area Colors */
 :global(.ais-Chat-input) {
   background-color: hsl(var(--color-bg-base)) !important;
+  border-top: 1px solid hsla(var(--color-text-primary), 0.1);
+
 }
 
 :global(.ais-Chat-inputBox) {
@@ -103,7 +121,7 @@
 /* Disclaimer / Prompt Footer - Text/Color Only */
 .disclaimer {
   color: hsl(var(--color-text-muted));
-  background-color: hsla(var(--color-bg-base), 0.5);
+  background-color: hsl(var(--color-bg-base) / 0.5);
   font-size: 0.65rem;
   text-transform: uppercase;
   padding: 8px;
