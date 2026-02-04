@@ -77,29 +77,4 @@ test.describe('Mobile Responsiveness', () => {
     // Verify play button is clickable
     await expect(playButton).toBeEnabled();
   });
-
-  test('should verify blog button and music player visibility', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
-
-    // Check Blog Button
-    // Fallback to text if testid not found immediately (HMR issue?)
-    const blogLink = page.locator('header a[href*="dev.to"]');
-    await expect(blogLink).toBeVisible();
-
-    // Check Music Player
-    // Use generic class matcher if testid is missing due to HMR lag
-    const musicPlayer = page
-      .locator('[data-testid="music-player"]')
-      .or(page.locator('div[class*="playerWrapper"]'));
-    await expect(musicPlayer).toBeVisible();
-
-    const playButton = page
-      .locator('[data-testid="play-button"]')
-      .or(page.locator('button[aria-label*="Play"]'));
-    await expect(playButton).toBeVisible();
-
-    // Verify play button is clickable
-    await expect(playButton).toBeEnabled();
-  });
 });

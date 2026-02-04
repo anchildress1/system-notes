@@ -5,8 +5,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  timeout: process.env.CI ? 60000 : 30000,
+  workers: process.env.CI ? 4 : undefined,
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3002',
@@ -28,10 +27,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'PORT=3001 npm run start:standalone',
-    url: 'http://localhost:3001',
+    command: 'PORT=3002 npm run start:standalone',
+    url: 'http://localhost:3002',
     cwd: './apps/web',
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 120000,
   },
 });
