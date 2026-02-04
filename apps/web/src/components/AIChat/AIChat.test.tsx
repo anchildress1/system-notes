@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom/vitest';
 import AIChat from './AIChat';
 
 // Mock react-instantsearch
@@ -23,14 +24,24 @@ vi.mock('algoliasearch/lite', () => ({
   })),
 }));
 
+// Mock MusicPlayer
+vi.mock('@/components/MusicPlayer/MusicPlayer', () => ({
+  default: () => <div data-testid="music-player-mock">Music Player</div>,
+}));
+
 describe('AIChat Widget Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('renders the Algolia Chat component', () => {
+  it('renders the Algolia Chat component', async () => {
     render(<AIChat />);
     expect(screen.getByTestId('instant-search-mock')).toBeInTheDocument();
     expect(screen.getByTestId('algolia-chat-mock')).toBeInTheDocument();
+
+    // MusicPlayer is dynamically imported, so we wait for it
+    await waitFor(() => {
+      expect(screen.getByTestId('music-player-mock')).toBeInTheDocument();
+    });
   });
 });

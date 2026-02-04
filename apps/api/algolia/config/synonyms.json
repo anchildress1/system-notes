@@ -71,7 +71,7 @@
   {
     "objectID": "syn_website_names",
     "type": "synonym",
-    "synonyms": ["System Notes", "system-notes", "portfolio", "challenge site", "hackathon"]
+    "synonyms": ["System Notes", "system-notes", "portfolio"]
   },
   {
     "objectID": "syn_hermes_agent",

@@ -140,56 +140,92 @@ button {
 
 /* Algolia Chat Widget Overrides (Global Scope) */
 
-/* 1. Force Pink Accent Color & Fix Clickability & Z-Index */
+/* 1. Force Teal Accent Color & Fix Clickability & Z-Index */
 .ais-Chat,
 .ais-Chat-toggleButtonWrapper,
 .ais-Chat-toggleButton-wrapper,
 .ais-ChatToggleButtonWrapper,
 .ais-Chat-container {
   pointer-events: none !important;
-  --ais-chat-primary-color: hsl(338 78% 61%) !important;
-  /* Explicit Pink Accent */
-  --ais-primary-color: hsl(338 78% 61%) !important;
+  --ais-chat-primary-color: hsl(178, 59%, 45%) !important;
+  /* Hardcoded Teal */
+  --ais-primary-color: hsl(178, 59%, 45%) !important;
   z-index: 9999 !important;
-  /* Ensure it's on top */
+  /* sit BEHIND the Footer (10000) so footer covers it */
 }
 
 /* 2. Re-enable interactive elements - SCOPED STRICTLY */
+/* The chat window itself and ALL its children must be interactive */
 .ais-Chat-toggleButton,
 .ais-ChatToggleButton,
-.ais-Chat-container,
 .ais-Chat-window,
 .ais-ChatWindow,
+/* CRITICAL: All structural elements must block clicks */
+.ais-ChatHeader,
+.ais-ChatHeader-title,
+.ais-ChatHeader-titleIcon,
+.ais-ChatMessages,
+.ais-ChatMessages-scroll,
+.ais-ChatPrompt,
+.ais-ChatPrompt-form,
 /* Ensure ALL window contents are interactive */
-.ais-Chat-container *,
 .ais-Chat-window *,
 .ais-ChatWindow *,
 .ais-Chat-inputForm,
 [class*="ais-Chat-toggleButton"],
 [class*="ais-ChatToggleButton"],
-.ais-ChatPrompt-textarea {
+.ais-ChatPrompt-textarea,
+/* Add specific interactive elements */
+.ais-Chat button,
+.ais-Chat input,
+.ais-Chat textarea,
+.ais-Chat a,
+.ais-Chat form,
+.ais-Chat svg,
+.ais-Chat img,
+.ais-ChatHeader-close,
+.ais-ChatHeader-maximize,
+.ais-ChatPrompt-submit,
+.ais-ChatPrompt-clear,
+[class*="ais-Chat"] button,
+[class*="ais-Chat"] input,
+[class*="ais-Chat"] textarea,
+[class*="ais-Chat"] a,
+[class*="ais-Chat"] form,
+[class*="ais-Chat"] svg,
+[class*="ais-Chat"] img,
+[class*="ais-ChatHeader"] *,
+[class*="ais-ChatMessages"] *,
+[class*="ais-ChatPrompt"] * {
   pointer-events: auto !important;
 }
 
-/* 3. Fix Toggle Button Color & Size */
-.ais-Chat-toggleButton,
-.ais-ChatToggleButton,
-[class*="ais-Chat-toggleButton"],
-[class*="ais-ChatToggleButton"] {
-  width: 50px !important;
-  height: 50px !important;
-  background-color: hsl(338 78% 61%) !important;
-  background: hsl(338 78% 61%) !important;
-  color: white !important;
-  border-radius: 9999px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 20px rgba(233, 77, 136, 0.4) !important;
+
+
+/* 3. Visual Overrides */
+.ais-Chat-toggleButton {
+  width: 60px !important;
+  /* Bigger size */
+  height: 60px !important;
+  background-color: hsl(178, 59%, 45%) !important;
+  /* Hardcoded Teal */
 }
 
-.ais-Chat-toggleButton:hover,
-.ais-ChatToggleButton:hover {
-  background-color: hsl(338 78% 71%) !important;
-  transform: scale(1.05) !important;
+.ais-Chat-toggleButton svg {
+  width: 30px !important;
+  height: 30px !important;
 }
+
+.ais-Chat-container {
+  z-index: 9999 !important;
+  /* Use 9999 to sit BEHIND the Footer (10000) */
+  pointer-events: none !important;
+  --ais-chat-primary-color: hsl(178, 59%, 45%) !important;
+  /* Hardcoded Teal */
+  --ais-primary-color: hsl(178, 59%, 45%) !important;
+}
+
+/* Consolidated Visual Overrides are above */
 
 /* 4. Fix Header Icon & Title Color */
 .ais-ChatHeader-titleIcon,

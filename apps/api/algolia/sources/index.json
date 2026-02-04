@@ -8,7 +8,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:0002",
@@ -19,7 +19,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:ai_collaboration:0003",
@@ -37,7 +37,7 @@
     ],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:0002",
@@ -54,7 +54,7 @@
     ],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:0004",
@@ -65,7 +65,7 @@
     "entities": ["System Notes", "Delegate Action", "RAI Lint", "Echo ESLint", "Awesome Copilot"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:public-by-design",
@@ -86,7 +86,7 @@
     ],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:environment-agnostic-sharing",
@@ -107,7 +107,7 @@
     ],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:optional-adoption",
@@ -128,7 +128,7 @@
     ],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:work_style:workflow:day-to-day-representation",
@@ -139,7 +139,7 @@
     "entities": ["System Notes", "Hermes Agent"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:design-first-process",
@@ -150,7 +150,7 @@
     "entities": ["System Notes", "Hermes Agent"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:ai_collaboration:co-developed-systems",
@@ -161,7 +161,7 @@
     "entities": ["System Notes", "Hermes Agent"],
     "facet_domain": "work_style",
     "facet_category": "ai_collaboration",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:rigor-after-design",
@@ -172,7 +172,7 @@
     "entities": ["System Notes", "Hermes Agent"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:work_style:learning:post-ship-constraints",
@@ -183,7 +183,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "work_style",
     "facet_category": "learning",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:ai_collaboration:parallel-autonomy-limits",
@@ -194,7 +194,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "work_style",
     "facet_category": "ai_collaboration",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:intentional-piecewise-systems",
@@ -205,7 +205,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:time-vs-perfection",
@@ -226,7 +226,7 @@
     ],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:diminishing-returns-awareness",
@@ -247,7 +247,7 @@
     ],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:unfinished-is-acceptable",
@@ -268,7 +268,7 @@
     ],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:work_style:workflow:ui-polish-cutoff",
@@ -279,7 +279,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:constraints:time-boxed-build",
@@ -290,7 +290,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "work_style",
     "facet_category": "constraints",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:ai_collaboration:delegated-commits",
@@ -301,7 +301,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "work_style",
     "facet_category": "ai_collaboration",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:philosophy:principles:iterative-documentation-over-production",
@@ -312,7 +312,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:built-public-from-start",
@@ -333,7 +333,7 @@
     ],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:internal-work-not-represented",
@@ -354,7 +354,7 @@
     ],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:philosophy:principles:public-ai-experimentation",
@@ -375,7 +375,7 @@
     ],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:constraints:ui-avoidance-forced-decision",
@@ -386,7 +386,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "constraints",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:shipping-over-readiness",
@@ -397,7 +397,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:existence-over-polish",
@@ -408,7 +408,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:ai_collaboration:ai-paired-by-opportunity",
@@ -419,7 +419,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "ai_collaboration",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:work_style:constraints:missing-platform-capability",
@@ -430,7 +430,7 @@
     "entities": ["Delegate Action"],
     "facet_domain": "work_style",
     "facet_category": "constraints",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:workflow-first-design",
@@ -441,7 +441,7 @@
     "entities": ["Delegate Action"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:ai_collaboration:documentation-updates-via-agent",
@@ -452,7 +452,7 @@
     "entities": ["Delegate Action", "Awesome Copilot"],
     "facet_domain": "work_style",
     "facet_category": "ai_collaboration",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:philosophy:principles:intentionally-disposable",
@@ -463,7 +463,7 @@
     "entities": ["Delegate Action"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:local-agent-playground",
@@ -474,7 +474,7 @@
     "entities": ["Hermes Agent"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:ai_collaboration:workflow-memorization",
@@ -485,7 +485,7 @@
     "entities": ["Hermes Agent"],
     "facet_domain": "work_style",
     "facet_category": "ai_collaboration",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:stateful-over-stateless",
@@ -496,7 +496,7 @@
     "entities": ["Hermes Agent"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:constraints:design-phase-only",
@@ -507,7 +507,7 @@
     "entities": ["Hermes Agent"],
     "facet_domain": "work_style",
     "facet_category": "constraints",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:philosophy:principles:locally-grounded-agency",
@@ -518,7 +518,7 @@
     "entities": ["Hermes Agent"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:ai-authorship-disclosure",
@@ -529,7 +529,7 @@
     "entities": ["RAI Lint"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:constraints:accountability-gap",
@@ -540,7 +540,7 @@
     "entities": ["RAI Lint"],
     "facet_domain": "work_style",
     "facet_category": "constraints",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:lint-enforced-disclosure",
@@ -551,7 +551,7 @@
     "entities": ["RAI Lint"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:outcomes:normalized-ai-attribution",
@@ -562,7 +562,7 @@
     "entities": ["RAI Lint"],
     "facet_domain": "work_style",
     "facet_category": "outcomes",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:local-context-over-generic",
@@ -573,7 +573,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:constraints:hackathon-origin",
@@ -584,7 +584,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "work_style",
     "facet_category": "constraints",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:work_style:learning:overextension-failure",
@@ -595,7 +595,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "work_style",
     "facet_category": "learning",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:tooling-expiration-pivot",
@@ -606,7 +606,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:status:experimental-and-incomplete",
@@ -617,7 +617,7 @@
     "entities": ["Underfoot Travel"],
     "facet_domain": "work_style",
     "facet_category": "status",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:work_style:workflow:personal-pattern-library",
@@ -628,7 +628,7 @@
     "entities": ["Awesome Copilot"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:package-what-works",
@@ -639,7 +639,7 @@
     "entities": ["Awesome Copilot"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:consistency-across-projects",
@@ -650,7 +650,7 @@
     "entities": ["Awesome Copilot"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:status:living-reference",
@@ -661,7 +661,7 @@
     "entities": ["Awesome Copilot"],
     "facet_domain": "work_style",
     "facet_category": "status",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:constraints:ai-visibility-gap",
@@ -672,7 +672,7 @@
     "entities": ["DevTO Mirror"],
     "facet_domain": "work_style",
     "facet_category": "constraints",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:canonical-source-preserved",
@@ -683,7 +683,7 @@
     "entities": ["DevTO Mirror"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:mirror-not-migration",
@@ -694,7 +694,7 @@
     "entities": ["DevTO Mirror"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:outcomes:lightweight-distribution-layer",
@@ -705,7 +705,7 @@
     "entities": ["DevTO Mirror"],
     "facet_domain": "work_style",
     "facet_category": "outcomes",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:encode-decisions-once",
@@ -716,7 +716,7 @@
     "entities": ["Echo ESLint"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:constraints:reduce-bikeshedding",
@@ -727,7 +727,7 @@
     "entities": ["Echo ESLint"],
     "facet_domain": "work_style",
     "facet_category": "constraints",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:outcomes:stable-lint-behavior",
@@ -738,7 +738,7 @@
     "entities": ["Echo ESLint"],
     "facet_domain": "work_style",
     "facet_category": "outcomes",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:learning:early-ai-experiment",
@@ -749,7 +749,7 @@
     "entities": ["Copilot Chat Extension"],
     "facet_domain": "work_style",
     "facet_category": "learning",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:work_style:workflow:prompt-sharing-via-chat",
@@ -760,7 +760,7 @@
     "entities": ["Copilot Chat Extension"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:work_style:constraints:missing-context-persistence",
@@ -771,7 +771,7 @@
     "entities": ["Copilot Chat Extension"],
     "facet_domain": "work_style",
     "facet_category": "constraints",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:choosing-not-to-build",
@@ -782,7 +782,7 @@
     "entities": ["Copilot Chat Extension"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:leverage-over-complexity",
@@ -793,7 +793,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:answer-over-navigation",
@@ -804,7 +804,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:ai_collaboration:data-not-tone-changes",
@@ -815,7 +815,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "ai_collaboration",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:system-boundary-discipline",
@@ -826,7 +826,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:ai-is-not-the-author",
@@ -837,7 +837,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:ai_collaboration:no-guessing-or-inference",
@@ -848,7 +848,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "ai_collaboration",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:closed-world-assumption",
@@ -859,7 +859,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:human-escalation-path",
@@ -870,7 +870,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:adversarial-self-testing",
@@ -881,7 +881,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:accuracy-over-coverage",
@@ -892,7 +892,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:ai_collaboration:self-referential-queries",
@@ -903,7 +903,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "ai_collaboration",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:ai-as-baseline-infrastructure",
@@ -914,7 +914,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:system-first-portfolio",
@@ -925,7 +925,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:constraints:hackathon-style-build",
@@ -936,7 +936,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "constraints",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:polish-deprioritized-by-design",
@@ -947,7 +947,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:site-is-the-artifact",
@@ -958,7 +958,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:behavior:active-perfectionism",
@@ -969,7 +969,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "behavior",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:philosophy:principles:direction-over-completion",
@@ -980,7 +980,7 @@
     "entities": ["System Notes"],
     "facet_domain": "philosophy",
     "facet_category": "principles",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:work_style:workflow:iteration-is-expected",
@@ -991,7 +991,7 @@
     "entities": ["System Notes"],
     "facet_domain": "work_style",
     "facet_category": "workflow",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:background:appalachian-origin",
@@ -1002,7 +1002,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "background",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:background:isolation-as-context",
@@ -1013,7 +1013,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "background",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:background:limited-access-reality",
@@ -1024,7 +1024,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "background",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:person:background:relocation-to-georgia",
@@ -1035,7 +1035,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "background",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:person:background:mountains-as-home",
@@ -1046,7 +1046,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "background",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:career:nonlinear-education-path",
@@ -1057,7 +1057,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "career",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:person:career:pragmatic-decision-making",
@@ -1068,7 +1068,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "career",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:career:pragmatism-to-obsession",
@@ -1079,7 +1079,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "career",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:craft:systems-over-features",
@@ -1090,7 +1090,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "craft",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:craft:assumption-challenging",
@@ -1101,7 +1101,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "craft",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:craft:intentional-large-changes",
@@ -1112,7 +1112,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "craft",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:person:craft:guardrails-and-tooling",
@@ -1123,7 +1123,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "craft",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:ai_practice:reduced-hand-coding",
@@ -1134,7 +1134,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "ai_practice",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:person:ai_practice:ai-writes-like-me",
@@ -1145,7 +1145,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "ai_practice",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:ai_practice:system-level-review",
@@ -1156,7 +1156,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "ai_practice",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:philosophy:teaching-not-using-ai",
@@ -1167,7 +1167,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "philosophy",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:philosophy:durable-constrained-systems",
@@ -1178,7 +1178,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "philosophy",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:identity:theme-song-choice",
@@ -1189,7 +1189,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "identity",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:background:appalachian-ingenuity",
@@ -1200,7 +1200,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "background",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:craft:early-system-dismantling",
@@ -1211,7 +1211,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "craft",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:motivation:joy-in-building",
@@ -1222,7 +1222,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "motivation",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:person:philosophy:practical-symbolism",
@@ -1233,7 +1233,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "philosophy",
-    "facet_signal_level": "medium"
+    "facet_signal_level": 2
   },
   {
     "objectID": "card:person:craft:failure-hunting",
@@ -1244,7 +1244,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "craft",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:craft:pre-production-failure",
@@ -1255,7 +1255,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "craft",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:philosophy:clean-ships-over-fast-ships",
@@ -1266,7 +1266,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "philosophy",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:philosophy:break-things-early",
@@ -1277,7 +1277,7 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "philosophy",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
   },
   {
     "objectID": "card:person:identity:joy-and-discipline-balance",
@@ -1288,6 +1288,105 @@
     "entities": [],
     "facet_domain": "person",
     "facet_category": "identity",
-    "facet_signal_level": "high"
+    "facet_signal_level": 1
+  },
+  {
+    "objectID": "card:challenge:progress:first-indexing-agent-attempt",
+    "title": "This was my first attempt at search-index agent behavior",
+    "blurb": "There was an initial learning curve.",
+    "fact": "It took me time to get accustomed to the index because this was my first attempt at building an agent with search-indexing style functionality.",
+    "tags": ["challenge-progress", "learning-curve", "indexing"],
+    "entities": ["System Notes"],
+    "facet_domain": "challenge",
+    "facet_category": "progress",
+    "facet_signal_level": 1
+  },
+  {
+    "objectID": "card:challenge:learning:early-attempts-failed-latency",
+    "title": "Early attempts failed due to slow responses",
+    "blurb": "Performance issues made the initial approach unusable.",
+    "fact": "The first several attempts were complete failures because the agent took far too long to respond.",
+    "tags": ["challenge-progress", "failure-modes", "performance"],
+    "entities": ["System Notes"],
+    "facet_domain": "challenge",
+    "facet_category": "learning",
+    "facet_signal_level": 1
+  },
+  {
+    "objectID": "card:challenge:workflow:ground-up-redesign-with-chatgpt",
+    "title": "A ground-up redesign improved results",
+    "blurb": "The turning point was rewriting the approach.",
+    "fact": "When I gave the instructions to ChatGPT and redesigned from the ground up, the output improved significantly.",
+    "tags": ["challenge-progress", "iteration", "workflow"],
+    "entities": ["System Notes", "ChatGPT"],
+    "facet_domain": "challenge",
+    "facet_category": "workflow",
+    "facet_signal_level": 1
+  },
+  {
+    "objectID": "card:challenge:outcomes:agent-became-quicker",
+    "title": "Response speed improved after the redesign",
+    "blurb": "Performance became acceptable after iteration.",
+    "fact": "After the redesign, the agent became much quicker.",
+    "tags": ["challenge-progress", "outcomes", "performance"],
+    "entities": ["System Notes"],
+    "facet_domain": "challenge",
+    "facet_category": "outcomes",
+    "facet_signal_level": 1
+  },
+  {
+    "objectID": "card:challenge:pain_points:ui-and-ai-parallel-work",
+    "title": "UI iteration was the hardest part",
+    "blurb": "Working on chat UI while coordinating AI was difficult.",
+    "fact": "The UI was very difficult to work with while using the chat widget and AI at the same time.",
+    "tags": ["challenge-progress", "pain-points", "ui-work"],
+    "entities": ["System Notes"],
+    "facet_domain": "challenge",
+    "facet_category": "pain_points",
+    "facet_signal_level": 1
+  },
+  {
+    "objectID": "card:challenge:feedback:mvp-guidance-needed",
+    "title": "MVP-focused guidance would help adopters",
+    "blurb": "Setup clarity matters more than breadth right now.",
+    "fact": "I would encourage the platform to focus more on MVP directions, setup, and skills for implementing functionality.",
+    "tags": ["challenge-feedback", "mvp", "docs"],
+    "entities": [],
+    "facet_domain": "challenge",
+    "facet_category": "feedback",
+    "facet_signal_level": 2
+  },
+  {
+    "objectID": "card:challenge:context:backend-dev-ui-shortcut-value",
+    "title": "The chat widget is a fast path to a real UI feature",
+    "blurb": "It provides immediate UX even for non-UI developers.",
+    "fact": "Coming from a strictly back-end background, the chat widget was an easy way to have a fully fledged feature accessible immediately in the UI.",
+    "tags": ["challenge-progress", "ui-shortcut", "developer-experience"],
+    "entities": ["System Notes"],
+    "facet_domain": "challenge",
+    "facet_category": "context",
+    "facet_signal_level": 1
+  },
+  {
+    "objectID": "card:challenge:constraints:beta-widget-rough-edges",
+    "title": "Beta UI tooling is incomplete but usable",
+    "blurb": "The design surface is not fully mature.",
+    "fact": "Even acknowledging the chat widget as a beta feature with incomplete design, it still enabled immediate UI access to the functionality.",
+    "tags": ["constraints", "beta", "challenge-context"],
+    "entities": ["System Notes"],
+    "facet_domain": "challenge",
+    "facet_category": "constraints",
+    "facet_signal_level": 2
+  },
+  {
+    "objectID": "card:challenge:pain_points:implementation-understanding-cost",
+    "title": "The main time sink was alignment on implementation behavior",
+    "blurb": "Getting the system to understand the implementation constraints was costly.",
+    "fact": "The major pain point was getting the agent to understand what it needed to do for implementation, which took the vast majority of half a day.",
+    "tags": ["challenge-progress", "pain-points", "time-cost"],
+    "entities": ["System Notes"],
+    "facet_domain": "challenge",
+    "facet_category": "pain_points",
+    "facet_signal_level": 1
   }
 ]

@@ -1,168 +1,110 @@
 /* Algolia Chat Widget Overrides 
-   Component-specific styles only. Global overrides are in globals.css
+   Focusing on Position and Color only
 */
 
-/* Chat Window Container */
+/* Chat Window Container - Colors and Z-index */
 :global(.ais-Chat-window) {
-  border-radius: 20px !important;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px hsl(var(--color-border)) !important;
-  background-color: hsla(var(--color-bg-surface), 0.8) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-  overflow: hidden !important;
-  border: none !important;
-}
-
-/* Header */
-:global(.ais-Chat-header) {
-  background: linear-gradient(to right, hsla(var(--color-bg-base), 0.9), hsla(var(--color-bg-surface), 0.9)) !important;
-  border-bottom: 1px solid hsl(var(--color-border)) !important;
-  padding: 16px 20px !important;
-}
-
-:global(.ais-Chat-headerTitle) {
-  font-family: var(--font-sans) !important;
-  /* No special font */
-  font-size: 1.1rem !important;
-  /* Slightly smaller to look cleaner */
-  letter-spacing: 0.02em !important;
+  z-index: 99999 !important;
+  background-color: hsla(var(--color-bg-surface), 0.95) !important;
   color: hsl(var(--color-text-primary)) !important;
-  text-shadow: none !important;
-  font-weight: 600 !important;
 }
 
-/* Removed :after pseudo-element for "Powered by Algolia" subheader */
+.musicWrapper {
+  position: fixed;
+  bottom: 95px;
+  /* Center aligned with button center */
+  right: calc(var(--space-md, 20px) + 60px + 20px);
+  /* Margin + Button Width + Gap */
+  z-index: 10000;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Match standard material/Algolia easing */
+  pointer-events: auto;
+}
+
+/* When chat is open, push music player left of the window */
+.musicPushed {
+  right: calc(var(--space-md, 20px) + 375px + 20px);
+  /* Margin + Chat Window Width (375px) + Gap */
+}
+
+/* Chat Toggle Button - Matching anchildress1.dev style and positioning from main branch */
+:global(.ais-Chat-toggleButton),
+:global(.ais-ChatToggleButton) {
+  position: fixed !important;
+  bottom: 90px !important;
+  right: var(--space-md, 20px) !important;
+  width: 60px !important;
+  height: 60px !important;
+  background-color: hsl(var(--color-accent-teal)) !important;
+  /* Solid teal background using variable */
+  color: #FFFFFF !important;
+  /* White icon */
+  border-radius: 50% !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10001 !important;
+}
+
+:global(.ais-Chat-toggleButton:hover),
+:global(.ais-ChatToggleButton:hover) {
+  transform: scale(1.05) !important;
+  box-shadow: 0 8px 24px hsl(var(--color-accent-teal) / 0.5) !important;
+}
+
+/* Toggle Icon - Ensure white color */
+.toggleIcon {
+  color: inherit !important;
+}
+
+/* Header Colors */
+:global(.ais-Chat-header) {
+  background-color: hsl(var(--color-bg-base)) !important;
+  color: hsl(var(--color-text-primary)) !important;
+}
 
 .headerIcon {
   color: hsl(var(--color-accent-pink));
-  /* Pink brain/sparkles in header too */
-  margin-right: 10px;
 }
 
-:global(.ais-Chat-headerTitleIcon) {
-  color: hsl(var(--color-accent-pink)) !important;
-}
-
-/* Actions in Header (Close/Maximize) */
-:global(.ais-Chat-headerActions button) {
-  color: hsl(var(--color-text-secondary)) !important;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-
-:global(.ais-Chat-headerActions button:hover) {
-  opacity: 1;
-  color: hsl(var(--color-accent-pink)) !important;
-}
-
-/* Messages Area */
-:global(.ais-Chat-messages) {
-  background: transparent !important;
-  padding: 16px !important;
-}
-
-/* Message Bubbles */
-:global(.ais-Chat-message) {
-  padding: 12px 16px !important;
-  font-size: 0.95rem !important;
-  line-height: 1.5 !important;
-  border-radius: 16px !important;
-  margin-bottom: 12px !important;
-  max-width: 85% !important;
-}
-
+/* Message Colors */
 :global(.ais-Chat-message--user) {
-  background: hsl(var(--color-accent-teal)) !important;
-  /* Pure teal for user */
+  background-color: hsl(var(--color-accent-teal)) !important;
   color: white !important;
-  border: none !important;
-  border-bottom-right-radius: 4px !important;
-  align-self: flex-end !important;
-  box-shadow: 0 4px 12px hsl(var(--color-accent-teal) / 0.2) !important;
 }
 
 :global(.ais-Chat-message--assistant) {
-  background-color: hsla(var(--color-bg-elevated), 0.8) !important;
+  background-color: hsl(var(--color-bg-elevated)) !important;
   color: hsl(var(--color-text-primary)) !important;
-  border: 1px solid hsl(var(--color-accent-pink) / 0.2) !important;
-  /* Subtle pink border for Ruckus */
-  border-bottom-left-radius: 4px !important;
-  align-self: flex-start !important;
 }
 
-/* Input Area */
+/* Input Area Colors */
 :global(.ais-Chat-input) {
-  padding: 16px 20px !important;
-  background-color: hsla(var(--color-bg-base), 0.9) !important;
-  border-top: 1px solid hsl(var(--color-border)) !important;
-}
-
-:global(.ais-Chat-inputForm) {
-  background-color: transparent !important;
-  box-shadow: none !important;
+  background-color: hsl(var(--color-bg-base)) !important;
 }
 
 :global(.ais-Chat-inputBox) {
   background-color: hsl(var(--color-bg-surface)) !important;
-  border: 1px solid hsl(var(--color-border)) !important;
-  border-radius: 24px !important;
   color: hsl(var(--color-text-primary)) !important;
-  padding: 8px 16px !important;
-}
-
-:global(.ais-Chat-inputBox:focus-within) {
-  border-color: hsl(var(--color-accent-pink)) !important;
-  /* Pink focus for Ruckus input area */
-  box-shadow: 0 0 0 3px hsl(var(--color-accent-pink) / 0.2) !important;
-}
-
-:global(.ais-Chat-submitButton) {
-  color: hsl(var(--color-accent-pink)) !important;
-  /* Pink submit button */
-  background: transparent !important;
-}
-
-:global(.ais-Chat-submitButton:hover:not(:disabled)) {
-  background-color: hsl(var(--color-accent-pink) / 0.1) !important;
 }
 
 /* Avatar for Assistant */
 .avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, hsl(var(--color-bg-elevated)), hsl(var(--color-bg-base)));
+  background-color: transparent;
+  color: hsl(var(--color-accent-pink));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: hsl(var(--color-accent-pink));
-  border: 1px solid hsl(var(--color-border));
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-right: 8px;
 }
 
-/* Disclaimer / Prompt Footer */
+/* Disclaimer / Prompt Footer - Text/Color Only */
 .disclaimer {
-  padding: 8px 20px;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.05em;
   color: hsl(var(--color-text-muted));
-  text-transform: uppercase;
   background-color: hsla(var(--color-bg-base), 0.5);
-  border-top: 1px solid hsl(var(--color-border));
-}
-
-/* Scrollbar customization for messages */
-:global(.ais-Chat-messagesContent::-webkit-scrollbar) {
-  width: 4px;
-}
-
-:global(.ais-Chat-messagesContent::-webkit-scrollbar-track) {
-  background: transparent;
-}
-
-:global(.ais-Chat-messagesContent::-webkit-scrollbar-thumb) {
-  background: hsl(var(--color-border));
-  border-radius: 10px;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  padding: 8px;
 }

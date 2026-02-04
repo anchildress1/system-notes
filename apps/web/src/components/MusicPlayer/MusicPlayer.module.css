@@ -1,14 +1,12 @@
 .playerWrapper {
-    position: fixed;
-    bottom: 24px;
-    right: 98px;
-    /* 24px (margin) + 50px (chat button width) + 24px (gap) */
+    position: relative;
+    /* Removed fixed positioning to allow wrapping in ClientShell */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    z-index: 999;
-    /* Just below chat (1000) */
+    z-index: auto;
+    /* Managed by parent */
 }
 
 .playButton {
@@ -26,6 +24,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     position: relative;
     z-index: 2;
+    pointer-events: auto;
 }
 
 .playButton:hover {

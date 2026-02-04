@@ -1,19 +1,29 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { InstantSearch, Chat } from 'react-instantsearch';
 import styles from './AIChat.module.css';
+import dynamic from 'next/dynamic';
 
 import { IoSparkles, IoClose } from 'react-icons/io5';
 import { FaBrain } from 'react-icons/fa';
 
-const searchClient = algoliasearch(
-  process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '',
-  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || ''
-);
+const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
+const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
+
+const searchClient =
+  appId && apiKey
+    ? algoliasearch(appId, apiKey)
+    : {
+        search: () => Promise.resolve({ results: [] }),
+      }; // Mock client or null to prevent crash
 
 const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || '';
+
+const MusicPlayer = dynamic(() => import('../MusicPlayer/MusicPlayer'), {
+  ssr: false,
+});
 
 // Custom components to enrich the chat experience
 const HeaderIcon = () => <IoSparkles className={styles.headerIcon} />;
@@ -25,21 +35,42 @@ const AssistantAvatar = () => (
 const PromptFooter = () => <div className={styles.disclaimer}>Powered by Algolia</div>;
 const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
   isOpen ? (
-    <IoClose size={28} style={{ color: 'white' }} />
+    <IoClose size={24} className={styles.toggleIcon} />
   ) : (
-    <FaBrain size={28} style={{ color: 'white' }} />
+    <FaBrain size={24} className={styles.toggleIcon} />
   );
 
 export default function AIChat() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  // Memoize translations to prevent unnecessary re-renders of the Chat widget
+  const translations = useMemo(
+    () => ({
+      header: {
+        title: 'Ruckus 2.0',
+      },
+      toggleButtonTitle: 'Open AI Chat',
+    }),
+    []
+  );
+
   useEffect(() => {
     // Accessibility fix: Inject aria-label into Algolia's Chat toggle button
     const observer = new MutationObserver(() => {
-      const toggleBtn = document.querySelector('.ais-Chat-toggleButton');
+      if (typeof document === 'undefined') return;
+
+      const chatWindow = document.querySelector('.ais-Chat-window');
+      const isWindowOpen = !!chatWindow;
+      setIsChatOpen((prev) => (prev === isWindowOpen ? prev : isWindowOpen));
+
+      const toggleBtn = document.querySelector(
+        '.ais-ChatToggleButton, .ais-Chat-toggleButton, [class*="ChatToggleButton"]'
+      );
       if (toggleBtn) {
-        if (!toggleBtn.getAttribute('aria-label')) {
+        if (!toggleBtn.hasAttribute('aria-label')) {
           toggleBtn.setAttribute('aria-label', 'Open AI Chat');
         }
-        if (!toggleBtn.getAttribute('data-testid')) {
+        if (!toggleBtn.hasAttribute('data-testid')) {
           toggleBtn.setAttribute('data-testid', 'ai-chat-toggle');
         }
       }
@@ -51,19 +82,20 @@ export default function AIChat() {
   }, []);
 
   return (
-    <InstantSearch searchClient={searchClient}>
-      <Chat
-        agentId={AGENT_ID}
-        translations={{
-          header: {
-            title: 'Ruckus 2.0',
-          },
-        }}
-        headerTitleIconComponent={HeaderIcon}
-        assistantMessageLeadingComponent={AssistantAvatar}
-        promptFooterComponent={PromptFooter}
-        toggleButtonIconComponent={ToggleIcon}
-      />
-    </InstantSearch>
+    <>
+      <div className={`${styles.musicWrapper} ${isChatOpen ? styles.musicPushed : ''}`}>
+        <MusicPlayer />
+      </div>
+      <InstantSearch searchClient={searchClient}>
+        <Chat
+          agentId={AGENT_ID}
+          translations={translations}
+          headerTitleIconComponent={HeaderIcon}
+          assistantMessageLeadingComponent={AssistantAvatar}
+          promptFooterComponent={PromptFooter}
+          toggleButtonIconComponent={ToggleIcon}
+        />
+      </InstantSearch>
+    </>
   );
 }
