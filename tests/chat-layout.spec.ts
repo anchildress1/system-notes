@@ -28,6 +28,9 @@ test.describe('AIChat Visual Layout', () => {
       return window.getComputedStyle(el).position;
     });
 
+    console.log('Computed bottom:', bottomValue);
+    console.log('Computed position:', positionValue);
+
     expect(bottomValue).toBe('170px');
     expect(positionValue).toBe('fixed');
   });
