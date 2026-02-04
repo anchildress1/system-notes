@@ -157,14 +157,17 @@ button {
 /* 2. Re-enable interactive elements - SCOPED STRICTLY */
 .ais-Chat-toggleButton,
 .ais-ChatToggleButton,
+.ais-Chat-container,
 .ais-Chat-window,
 .ais-ChatWindow,
-.ais-Chat-inputForm,
-/* Ensure window contents are interactive */
+/* Ensure ALL window contents are interactive */
+.ais-Chat-container *,
 .ais-Chat-window *,
 .ais-ChatWindow *,
+.ais-Chat-inputForm,
 [class*="ais-Chat-toggleButton"],
-[class*="ais-ChatToggleButton"] {
+[class*="ais-ChatToggleButton"],
+.ais-ChatPrompt-textarea {
   pointer-events: auto !important;
 }
 
