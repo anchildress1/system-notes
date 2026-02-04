@@ -154,9 +154,10 @@ button {
 .ais-ChatToggleButtonWrapper,
 .ais-Chat-container {
   pointer-events: none !important;
-  --ais-chat-primary-color: hsl(178, 59%, 45%) !important;
-  /* Hardcoded Teal */
-  --ais-primary-color: hsl(178, 59%, 45%) !important;
+  /* Correctly override Satellite Theme Variables */
+  --ais-primary-color-rgb: 47, 182, 178 !important;
+  --ais-background-color-rgb: 255, 255, 255 !important;
+  --ais-text-color-rgb: 38, 38, 38 !important;
   z-index: 9999 !important;
   /* sit BEHIND the Footer (10000) so footer covers it */
 }
@@ -227,9 +228,6 @@ button {
   z-index: 9999 !important;
   /* Use 9999 to sit BEHIND the Footer (10000) */
   pointer-events: none !important;
-  --ais-chat-primary-color: hsl(178, 59%, 45%) !important;
-  /* Hardcoded Teal */
-  --ais-primary-color: hsl(178, 59%, 45%) !important;
 }
 
 /* Consolidated Visual Overrides are above */
@@ -238,12 +236,4 @@ button {
 .ais-ChatHeader-titleIcon,
 .aspect-square {
   color: hsl(338 78% 61%) !important;
-}
-
-/* 5. Clean up Focus */
-.ais-Chat *:focus-visible,
-.ais-ChatToggleButton:focus-visible,
-.ais-Chat-toggleButton:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
 }

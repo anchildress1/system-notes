@@ -15,8 +15,6 @@
   max-height: calc(100vh - 190px) !important;
   z-index: 10002 !important;
   pointer-events: auto;
-  /* Use correct HSL syntax and transparent usage is not allowed - making it solid */
-  background-color: hsl(var(--color-bg-surface)) !important;
   color: hsl(var(--color-text-primary)) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
@@ -129,7 +127,7 @@
 /* Disclaimer / Prompt Footer - Text/Color Only */
 .disclaimer {
   color: hsl(var(--color-text-muted));
-  background-color: hsl(var(--color-bg-base) / 0.5);
+  background-color: transparent;
   font-size: 0.65rem;
   text-transform: uppercase;
   padding: 8px;
