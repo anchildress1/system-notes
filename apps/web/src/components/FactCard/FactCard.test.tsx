@@ -1,7 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
 import type { Hit, BaseHit } from 'instantsearch.js';
+
+const mockSendEvent = vi.fn();
 
 vi.mock('react-instantsearch', () => ({
   Highlight: ({ attribute, hit }: { attribute: string; hit: Record<string, unknown> }) => (
@@ -36,6 +39,9 @@ const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecor
   }) as Hit<FactHitRecord>;
 
 describe('FactCard Component', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
   it('renders fact card with all fields', () => {
     render(<FactCard hit={createMockHit()} />);
 
@@ -96,9 +102,53 @@ describe('FactCard Component', () => {
   it('has correct article structure for accessibility', () => {
     render(<FactCard hit={createMockHit()} />);
 
-    const card = screen.getByRole('button');
+    const card = screen.getByRole('article');
     expect(card).toBeInTheDocument();
     expect(card.tagName).toBe('ARTICLE');
     expect(screen.getByRole('heading', { level: 3 })).toBeInTheDocument();
+  });
+
+  it('tracks flip-to-back event with insights client', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} sendEvent={mockSendEvent} />);
+
+    const card = screen.getByRole('article');
+    await user.click(card);
+
+    expect(mockSendEvent).toHaveBeenCalledWith('click', createMockHit(), 'Fact Card Viewed');
+  });
+
+  it('only tracks flip-to-back once per card instance', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} sendEvent={mockSendEvent} />);
+
+    const card = screen.getByRole('article');
+    await user.click(card);
+    await user.click(card);
+    await user.click(card);
+
+    expect(mockSendEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not track when flipping back to front', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} sendEvent={mockSendEvent} />);
+
+    const card = screen.getByRole('article');
+    await user.click(card);
+    vi.clearAllMocks();
+    await user.click(card);
+
+    expect(mockSendEvent).not.toHaveBeenCalled();
+  });
+
+  it('does not track when sendEvent is not provided', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} />);
+
+    const card = screen.getByRole('article');
+    await user.click(card);
+
+    expect(mockSendEvent).not.toHaveBeenCalled();
   });
 });

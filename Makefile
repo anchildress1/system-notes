@@ -83,14 +83,26 @@ secret-scan:
 	fi
 
 # Run Playwright E2E tests
-test-e2e: build
+test-e2e:
 	@echo "🎭 Running Playwright E2E tests..."
+	@lsof -ti:3002 | xargs kill -9 2>/dev/null || true
+	cd apps/web && \
+	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=test_app_id \
+	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key \
+	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
+	NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes \
+	npm run build
 	CI=true npm exec playwright test
 
 # Run Performance tests
 test-perf:
 	@echo "🚀 Running Performance tests..."
-	npm run test:perf -w apps/web
+	cd apps/web && \
+	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=test_app_id \
+	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key \
+	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
+	NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes \
+	npm run test:perf
 
 # Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
 ai-checks: secret-scan

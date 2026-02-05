@@ -61,9 +61,36 @@
     color: hsl(var(--color-text-primary));
 }
 
+.poweredBy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: center;
+}
+
 .builtWith {
     opacity: 0.9;
     font-style: italic;
+    font-size: 0.8rem;
+}
+
+.algoliaLink {
+    composes: link;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.algoliaLink:hover {
+    opacity: 1;
+}
+
+.algoliaIcon {
+    font-size: 1rem;
+    color: hsl(var(--color-accent-blue));
 }
 
 @media (max-width: 600px) {

@@ -21,6 +21,15 @@ const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'system-notes';
 const hasCredentials = appId && searchKey;
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
 
+const insightsConfig = {
+  insightsClient: null,
+  insightsInitParams: {
+    appId,
+    apiKey: searchKey,
+    useCookie: true,
+  },
+};
+
 export default function SearchPage() {
   if (!searchClient) {
     return (
@@ -37,7 +46,7 @@ export default function SearchPage() {
 
   return (
     <div className={styles.container}>
-      <InstantSearch searchClient={searchClient} indexName={indexName}>
+      <InstantSearch searchClient={searchClient} indexName={indexName} insights={insightsConfig}>
         <Configure hitsPerPage={12} />
 
         <header className={styles.searchHeader}>
