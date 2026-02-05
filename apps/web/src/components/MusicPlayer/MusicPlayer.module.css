@@ -1,6 +1,6 @@
 .playerWrapper {
     position: relative;
-    /* Removed fixed positioning to allow wrapping in ClientShell */
+    /* Previously position:fixed; now relative to allow wrapping in ClientShell floatingControls */
     display: flex;
     flex-direction: column;
     align-items: center;

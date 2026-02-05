@@ -25,23 +25,9 @@ test.describe('AIChat Width and Visibility', () => {
     const width = await chatWindow.evaluate((el) => {
       return window.getComputedStyle(el).width;
     });
-    console.log('Computed width with big content:', width);
 
     // Check visibility / bounds
     const box = await chatWindow.boundingBox();
-    console.log('Bounding Box:', box);
-
-    if (box) {
-      const viewportSize = page.viewportSize() || { width: 1280, height: 720 };
-      // Check if top is off-screen
-      if (box.y < 0) {
-        console.log('BUG: Top of chat window is off-screen (y < 0)');
-      }
-      // Check if width is excessive
-      if (box.width > 400) {
-        console.log('BUG: Chat window is too wide:', box.width);
-      }
-    }
 
     const widthPx = parseFloat(width);
     // This assertion SHOULD FAIL if the bug is present (unconstrained width)
