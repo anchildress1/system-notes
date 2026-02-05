@@ -59,16 +59,20 @@ describe('GlitterBomb', () => {
   it('renders and initializes pixi app', async () => {
     const { unmount } = render(<GlitterBomb />);
 
-    // Wait for effect
+    // Wait for effect (dynamic import + delay)
+    // Wait for init
     await import('@testing-library/react').then(async ({ waitFor }) => {
-      await waitFor(() => {
-        expect(mockInit).toHaveBeenCalled();
-      });
+      await waitFor(
+        () => {
+          expect(mockInit).toHaveBeenCalled();
+        },
+        { timeout: 6000 }
+      );
       expect(mockGenerateTexture).toHaveBeenCalled();
     });
 
     unmount();
 
     expect(mockDestroy).toHaveBeenCalled();
-  });
+  }, 10000);
 });

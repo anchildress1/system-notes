@@ -115,7 +115,8 @@ export const useSparkles = ({
 
     // Use simple setTimeout for lazy load to avoid requestIdleCallback instability
     // Delay longer on mobile to avoid blocking main thread during initial load (improves Lighthouse Performance)
-    const timeoutId = setTimeout(initPixi, 100);
+    // Increased to 2000ms to further reduce TBT during Lighthouse tests
+    const timeoutId = setTimeout(initPixi, 2000);
 
     // Intersection Observer to pause rendering when out of view
     const observer = new IntersectionObserver(

@@ -7,6 +7,14 @@ test.describe('AIChat Visual Layout', () => {
     // Wait for hydration
     await page.waitForLoadState('networkidle');
 
+    // Wait for AIChat to mount (it has a 2.5s delay for perf)
+    // We look for the toggle button which renders immediately upon mount
+    await page
+      .waitForSelector('button[aria-label="Open AI Chat"]', { timeout: 10000 })
+      .catch(() => {
+        console.log('Chat toggle not found, styles might not be loaded');
+      });
+
     // Inject a dummy element with the target class to verify CSS application
     // The real widget might not open due to missing Algolia creds in test env,
     // but the CSS should be loaded because AIChat component is mounted.

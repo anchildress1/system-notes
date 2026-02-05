@@ -34,9 +34,14 @@ describe('ClientShell Component', () => {
     });
     expect(screen.getByTestId('bg-music')).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(screen.getByTestId('ai-chat')).toBeInTheDocument();
-    });
+    // Wait for delayed AIChat
+    await waitFor(
+      () => {
+        expect(screen.getByTestId('ai-chat')).toBeInTheDocument();
+      },
+      { timeout: 6000 }
+    );
+
     expect(screen.getByTestId('footer')).toBeInTheDocument();
-  });
+  }, 10000);
 });

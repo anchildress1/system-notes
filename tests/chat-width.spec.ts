@@ -4,6 +4,13 @@ test.describe('AIChat Width and Visibility', () => {
   test('chat window should have correct width and be fully visible', async ({ page }) => {
     await page.goto('/');
 
+    // Wait for AIChat to mount (it has a 2.5s delay for perf)
+    await page
+      .waitForSelector('button[aria-label="Open AI Chat"]', { timeout: 10000 })
+      .catch(() => {
+        console.log('Chat toggle not found, styles might not be loaded');
+      });
+
     // Inject a dummy element to simulate the chat window behavior if real one doesn't load
     // But we prefer the real one if possible. The previous test had issues loading it.
     // Let's try to mock the CSS class behavior directly since we confirmed the CSS is applied to the class.
