@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { FaGithub, FaLinkedin, FaDev } from 'react-icons/fa';
 import { SiAlgolia } from 'react-icons/si';
 import styles from './Footer.module.css';
@@ -12,9 +11,6 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.left}>
         <span suppressHydrationWarning>&copy; {currentYear} Ashley Childress</span>
-        <Link href="/sitemap" className={styles.link}>
-          Sitemap
-        </Link>
       </div>
       <div className={styles.center}>
         <div className={styles.poweredBy}>

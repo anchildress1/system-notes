@@ -27,9 +27,6 @@ export default function Header() {
         <Link href="/about" className={styles.navLink}>
           About
         </Link>
-        <Link href="/sitemap" className={styles.navLink}>
-          Sitemap
-        </Link>
         <a
           href="https://dev.to/anchildress1"
           target="_blank"

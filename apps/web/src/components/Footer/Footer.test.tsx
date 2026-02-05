@@ -26,11 +26,6 @@ describe('Footer Component', () => {
     );
   });
 
-  it('renders sitemap link', () => {
-    render(<Footer />);
-    expect(screen.getByRole('link', { name: /Sitemap/i })).toHaveAttribute('href', '/sitemap');
-  });
-
   it('renders build info', () => {
     render(<Footer />);
     expect(screen.getByText(/Built with Gemini, ChatGPT, Claude \+ Verdent/i)).toBeInTheDocument();

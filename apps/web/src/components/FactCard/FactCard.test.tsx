@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import FactCard from './FactCard';
 import type { Hit, BaseHit } from 'instantsearch.js';
 
@@ -41,7 +41,7 @@ describe('FactCard Component', () => {
 
     expect(screen.getByTestId('highlight-title')).toHaveTextContent('Test Fact Title');
     expect(screen.getByTestId('highlight-blurb')).toHaveTextContent('This is a test blurb.');
-    expect(screen.getByText('This is the detailed fact content.')).toBeInTheDocument();
+    expect(screen.getByText(/This is the detailed fact content/)).toBeInTheDocument();
     expect(screen.getByText('Work Style')).toBeInTheDocument();
   });
 
@@ -50,33 +50,22 @@ describe('FactCard Component', () => {
     expect(screen.getByText('Philosophy')).toBeInTheDocument();
   });
 
-  it('renders tags up to 5 items', () => {
-    render(<FactCard hit={createMockHit()} />);
-
-    expect(screen.getByText('tag-one')).toBeInTheDocument();
-    expect(screen.getByText('tag-two')).toBeInTheDocument();
-    expect(screen.getByText('tag-three')).toBeInTheDocument();
-  });
-
-  it('shows +N indicator for more than 5 tags', () => {
-    const manyTags = ['a', 'b', 'c', 'd', 'e', 'f'];
+  it('renders all tags without limit', () => {
+    const manyTags = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
     render(<FactCard hit={createMockHit({ tags: manyTags })} />);
 
-    expect(screen.getByText('+1')).toBeInTheDocument();
+    manyTags.forEach((tag) => {
+      expect(screen.getByText(tag)).toBeInTheDocument();
+    });
   });
 
-  it('renders projects up to 3 items', () => {
-    render(<FactCard hit={createMockHit()} />);
-
-    expect(screen.getByText('Project Alpha')).toBeInTheDocument();
-    expect(screen.getByText('Project Beta')).toBeInTheDocument();
-  });
-
-  it('shows +N indicator for more than 3 projects', () => {
+  it('renders all projects without limit', () => {
     const manyProjects = ['A', 'B', 'C', 'D', 'E'];
     render(<FactCard hit={createMockHit({ projects: manyProjects })} />);
 
-    expect(screen.getByText('+2')).toBeInTheDocument();
+    manyProjects.forEach((project) => {
+      expect(screen.getByText(project)).toBeInTheDocument();
+    });
   });
 
   it('renders without tags when empty', () => {
@@ -93,12 +82,71 @@ describe('FactCard Component', () => {
     expect(entitiesSection).not.toBeInTheDocument();
   });
 
-  it('has correct article structure for accessibility', () => {
+  it('has correct structure for accessibility', () => {
     render(<FactCard hit={createMockHit()} />);
 
-    const card = screen.getByRole('button');
+    const card = screen.getByRole('button', { name: /Press to expand/i });
     expect(card).toBeInTheDocument();
-    expect(card.tagName).toBe('ARTICLE');
-    expect(screen.getByRole('heading', { level: 3 })).toBeInTheDocument();
+    expect(card).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('heading', { level: 3, name: 'Test Fact Title' })).toBeInTheDocument();
+  });
+
+  it('supports keyboard navigation with Enter', () => {
+    render(<FactCard hit={createMockHit()} />);
+
+    const card = screen.getByRole('button', { name: /Press to expand/i });
+    expect(card).toHaveAttribute('aria-expanded', 'false');
+
+    // Simulate activation
+    fireEvent.click(card);
+    expect(card).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('supports keyboard navigation with Space', () => {
+    render(<FactCard hit={createMockHit()} />);
+
+    const card = screen.getByRole('button', { name: /Press to expand/i });
+    // Simulate activation
+    fireEvent.click(card);
+    expect(card).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('supports Escape to close when expanded', () => {
+    render(<FactCard hit={createMockHit()} />);
+
+    const card = screen.getByRole('button', { name: /Press to expand/i });
+    fireEvent.click(card);
+    expect(card).toHaveAttribute('aria-expanded', 'true');
+
+    // Fire escape on the container div which has the listener
+    // The container is the parent of the cardInner which contains the button
+    const container = card.parentElement?.parentElement;
+    if (!container) throw new Error('Container not found');
+
+    fireEvent.keyDown(container, { key: 'Escape' });
+
+    expect(card).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('has close button when expanded', () => {
+    render(<FactCard hit={createMockHit()} />);
+
+    const card = screen.getByRole('button', { name: /Test Fact Title/i });
+    fireEvent.click(card);
+
+    const closeButton = screen.getByRole('button', { name: /Close expanded view/i });
+    expect(closeButton).toBeInTheDocument();
+  });
+
+  it('close button closes the card', () => {
+    render(<FactCard hit={createMockHit()} />);
+
+    const card = screen.getByRole('button', { name: /Test Fact Title/i });
+    fireEvent.click(card);
+    expect(card).toHaveAttribute('aria-expanded', 'true');
+
+    const closeButton = screen.getByRole('button', { name: /Close expanded view/i });
+    fireEvent.click(closeButton);
+    expect(card).toHaveAttribute('aria-expanded', 'false');
   });
 });

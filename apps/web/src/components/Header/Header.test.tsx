@@ -13,7 +13,7 @@ describe('Header Component', () => {
     render(<Header />);
     expect(screen.getByRole('link', { name: /Projects/i })).toHaveAttribute('href', '/');
     expect(screen.getByRole('link', { name: /About/i })).toHaveAttribute('href', '/about');
-    expect(screen.getByRole('link', { name: /Sitemap/i })).toHaveAttribute('href', '/sitemap');
+    expect(screen.getByRole('link', { name: /Fact Index/i })).toHaveAttribute('href', '/search');
   });
 
   it('renders blog link', () => {
