@@ -1,7 +1,12 @@
 {
-  "searchableAttributes": ["title", "blurb", "fact", "tags", "projects"],
-  "attributesForFaceting": ["category", "signal", "searchable(projects)", "searchable(tags)"],
-  "customRanking": ["desc(signal)"],
+  "searchableAttributes": ["title", "blurb", "fact", "tags", "entities"],
+  "attributesForFaceting": [
+    "filterOnly(facet_domain)",
+    "filterOnly(facet_category)",
+    "filterOnly(facet_signal_level)",
+    "searchable(entities)",
+    "searchable(tags)"
+  ],
   "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
   "attributesToRetrieve": ["*"],
   "attributesToHighlight": ["title", "blurb"],
