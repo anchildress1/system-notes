@@ -43,10 +43,12 @@ gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com
 API_SA="system-notes-api@$PROJECT_ID.iam.gserviceaccount.com"
 UI_SA="system-notes-ui@$PROJECT_ID.iam.gserviceaccount.com"
 
-# Algolia Config
-NEXT_PUBLIC_ALGOLIA_APPLICATION_ID="${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}"
-NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY="${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}"
-NEXT_PUBLIC_ALGOLIA_AGENT_ID="${NEXT_PUBLIC_ALGOLIA_AGENT_ID}"
+# Algolia Config - these are PUBLIC keys (safe for client-side)
+# For sensitive secrets, use Secret Manager instead of env vars
+NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=EXKENZ9FHJ
+NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=cd51e9af01f0796ac10c3fbfc5aa5b9f
+NEXT_PUBLIC_ALGOLIA_AGENT_ID=11caec4a-abd5-439a-a66a-3c26562de5c1
+NEXT_PUBLIC_BASE_URL=https://unstable.anchildress1.dev
 
 # ==========================================
 # Deployment Function
@@ -78,16 +80,15 @@ deploy_service() {
     echo "Building: $IMAGE_URI"
 
     if [ -n "$DOCKERFILE_PATH" ]; then
-        # Use provided cloudbuild configuration if Dockerfile path implies special handling (via config file)
-        # We assume if DOCKERFILE_PATH is passed, we are using the web config pattern or similar
-        # For simplicity in this specific project context:
-        gcloud builds submit "$SOURCE_DIR" \
+        # Use cloudbuild.yaml for web app with build args
+        # Prefix sensitive vars with _ to prevent Cloud Build from logging them
+        gcloud beta builds submit "$SOURCE_DIR" \
             --config "apps/web/cloudbuild.yaml" \
             --project "$PROJECT_ID" \
-            --substitutions _IMAGE_URI="$IMAGE_URI",_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID="$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID",_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY="$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY",_NEXT_PUBLIC_ALGOLIA_AGENT_ID="$NEXT_PUBLIC_ALGOLIA_AGENT_ID",_NEXT_PUBLIC_API_URL="$API_URL"
+            --substitutions "_IMAGE_URI=$IMAGE_URI,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID,_NEXT_PUBLIC_API_URL=$API_URL,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL"
     else
         # Standard build from root of service directory
-        gcloud builds submit --tag "$IMAGE_URI" "$SOURCE_DIR" --project "$PROJECT_ID"
+        gcloud beta builds submit --tag "$IMAGE_URI" "$SOURCE_DIR" --project "$PROJECT_ID"
     fi
 
     # 3. Deploy to Cloud Run

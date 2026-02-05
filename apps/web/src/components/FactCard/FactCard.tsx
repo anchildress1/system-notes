@@ -11,9 +11,9 @@ interface FactHitRecord extends BaseHit {
   blurb: string;
   fact: string;
   tags: string[];
-  entities: string[];
-  domain: string;
-  signal_level: number;
+  projects: string[];
+  category: string;
+  signal: number;
 }
 
 interface FactCardProps {
@@ -22,7 +22,7 @@ interface FactCardProps {
 
 export default function FactCard({ hit }: FactCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const domainLabel = hit.domain?.replace(/_/g, ' ') || '';
+  const categoryLabel = hit.category || '';
 
   const handleFlip = useCallback(() => {
     setIsFlipped((prev) => !prev);
@@ -51,7 +51,7 @@ export default function FactCard({ hit }: FactCardProps) {
       <div className={styles.cardInner}>
         <div className={styles.cardFront} aria-hidden={isFlipped}>
           <div className={styles.header}>
-            <span className={styles.domain}>{domainLabel}</span>
+            <span className={styles.domain}>{categoryLabel}</span>
           </div>
 
           <h3 className={styles.title}>
@@ -62,15 +62,15 @@ export default function FactCard({ hit }: FactCardProps) {
             <Highlight attribute="blurb" hit={hit} />
           </p>
 
-          {hit.entities && hit.entities.length > 0 && (
+          {hit.projects && hit.projects.length > 0 && (
             <div className={styles.entities}>
-              {hit.entities.slice(0, 3).map((entity) => (
+              {hit.projects.slice(0, 3).map((entity) => (
                 <span key={entity} className={styles.entity}>
                   {entity}
                 </span>
               ))}
-              {hit.entities.length > 3 && (
-                <span className={styles.entityMore}>+{hit.entities.length - 3}</span>
+              {hit.projects.length > 3 && (
+                <span className={styles.entityMore}>+{hit.projects.length - 3}</span>
               )}
             </div>
           )}
