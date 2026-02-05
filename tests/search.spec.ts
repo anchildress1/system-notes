@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { injectTestStyles } from './utils';
 
 const mockSearchResults = {
   results: [
@@ -12,9 +11,10 @@ const mockSearchResults = {
           blurb: 'This is a test blurb for the fact.',
           fact: 'This is the detailed fact content that explains the insight.',
           tags: ['tag-one', 'tag-two', 'testing'],
-          projects: ['System Notes', 'Test Project'],
-          category: 'Work Style',
-          signal: 3,
+          entities: ['System Notes', 'Test Project'],
+          facet_domain: 'work_style',
+          facet_category: 'workflow',
+          facet_signal_level: 1,
           _highlightResult: {
             title: { value: 'Test Fact Title', matchLevel: 'none', matchedWords: [] },
             blurb: {
@@ -30,9 +30,10 @@ const mockSearchResults = {
           blurb: 'Second fact blurb.',
           fact: 'Second detailed fact content.',
           tags: ['ai-collaboration'],
-          projects: ['Hermes Agent'],
-          category: 'Philosophy',
-          signal: 3,
+          entities: ['Hermes Agent'],
+          facet_domain: 'philosophy',
+          facet_category: 'principles',
+          facet_signal_level: 1,
           _highlightResult: {
             title: { value: 'Another Fact', matchLevel: 'none', matchedWords: [] },
             blurb: { value: 'Second fact blurb.', matchLevel: 'none', matchedWords: [] },
@@ -45,8 +46,9 @@ const mockSearchResults = {
       hitsPerPage: 12,
       facets: {
         tags: { 'tag-one': 1, 'tag-two': 1, testing: 1, 'ai-collaboration': 1 },
-        projects: { 'System Notes': 1, 'Test Project': 1, 'Hermes Agent': 1 },
-        category: { 'Work Style': 1, Philosophy: 1 },
+        entities: { 'System Notes': 1, 'Test Project': 1, 'Hermes Agent': 1 },
+        facet_domain: { work_style: 1, philosophy: 1 },
+        facet_category: { workflow: 1, principles: 1 },
       },
     },
   ],
@@ -70,7 +72,18 @@ test.describe('Search Page Integration', () => {
       });
     });
 
-    await injectTestStyles(page);
+    await page.addStyleTag({
+      content: `
+        [class*="floatingControls"],
+        .ais-Chat-window,
+        .ais-Chat-toggleButton,
+        [class*="ClientShell-module__PdIJPa__floatingControls"] {
+          display: none !important;
+          pointer-events: none !important;
+          z-index: -1 !important;
+        }
+      `,
+    });
   });
 
   test('loads search page with correct title', async ({ page }) => {
@@ -95,6 +108,7 @@ test.describe('Search Page Integration', () => {
   test('renders filter sidebar with facets', async ({ page }) => {
     await page.goto('/search');
     await expect(page.getByRole('heading', { level: 2, name: 'Filter' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 3, name: 'Domain' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 3, name: 'Category' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 3, name: 'Projects' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 3, name: 'Tags' })).toBeVisible();
@@ -107,10 +121,11 @@ test.describe('Search Page Integration', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Fact Index' })).toBeVisible();
   });
 
-  test('displays category labels on cards', async ({ page }) => {
+  test('displays domain and category labels on cards', async ({ page }) => {
     await page.goto('/search');
     await expect(page.getByRole('article').first()).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText('Work Style').first()).toBeVisible();
+    await expect(page.getByText('work style').first()).toBeVisible();
+    await expect(page.getByText('workflow').first()).toBeVisible();
   });
 
   test('displays tags on fact cards', async ({ page }) => {
@@ -121,7 +136,7 @@ test.describe('Search Page Integration', () => {
     await expect(firstCard.getByText('tag-two')).toBeVisible();
   });
 
-  test('displays project labels on cards', async ({ page }) => {
+  test('displays entity/project labels on cards', async ({ page }) => {
     await page.goto('/search');
     await expect(page.getByRole('article').first()).toBeVisible({ timeout: 10000 });
     await expect(page.getByText('System Notes').first()).toBeVisible();

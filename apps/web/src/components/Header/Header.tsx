@@ -21,6 +21,9 @@ export default function Header() {
         <Link href="/" className={styles.navLink}>
           Projects
         </Link>
+        <Link href="/search" className={styles.navLink}>
+          Fact Index
+        </Link>
         <Link href="/about" className={styles.navLink}>
           About
         </Link>

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-ALGOLIA_APP_ID = os.getenv("ALGOLIA_APPLICATION_ID")
+ALGOLIA_APP_ID = os.getenv("ALGOLIA_APPLICATION_ID") or os.getenv("NEXT_PUBLIC_ALGOLIA_APPLICATION_ID")
 ALGOLIA_API_KEY = os.getenv("ALGOLIA_ADMIN_API_KEY")
 
 if not ALGOLIA_APP_ID or not ALGOLIA_API_KEY:
@@ -52,6 +52,23 @@ async def index_data(index_name, data, settings=None):
         print(f"Error indexing {index_name}: {e}")
         raise
 
+def transform_record(record):
+    """
+    Transform source record to match frontend schema.
+    Maps: category -> domain, signal -> signal_level, projects -> entities
+    """
+    transformed = record.copy()
+    
+    # Rename fields
+    if 'category' in transformed:
+        transformed['domain'] = transformed.pop('category')
+    if 'signal' in transformed:
+        transformed['signal_level'] = transformed.pop('signal')
+    if 'projects' in transformed:
+        transformed['entities'] = transformed.pop('projects')
+    
+    return transformed
+
 async def main():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     source_dir = os.path.join(root_dir, 'algolia', 'sources')
@@ -65,7 +82,9 @@ async def main():
     index_name = 'system-notes'
     
     if os.path.exists(index_path):
-        data = load_json(index_path)
+        raw_data = load_json(index_path)
+        # Transform records to match frontend schema
+        data = [transform_record(record) for record in raw_data]
         settings = load_json(settings_path) if os.path.exists(settings_path) else None
         
         await index_data(index_name, data, settings)

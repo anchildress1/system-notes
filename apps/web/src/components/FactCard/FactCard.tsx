@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { Highlight } from 'react-instantsearch';
 import type { Hit, BaseHit } from 'instantsearch.js';
-import type { SendEventForHits } from 'instantsearch.js/es/lib/utils';
 import styles from './FactCard.module.css';
 
 interface FactHitRecord extends BaseHit {
@@ -12,30 +11,22 @@ interface FactHitRecord extends BaseHit {
   blurb: string;
   fact: string;
   tags: string[];
-  projects: string[];
-  category: string;
-  signal: number;
+  entities: string[];
+  domain: string;
+  signal_level: number;
 }
 
 interface FactCardProps {
   hit: Hit<FactHitRecord>;
-  sendEvent?: SendEventForHits;
 }
 
-export default function FactCard({ hit, sendEvent }: FactCardProps) {
+export default function FactCard({ hit }: FactCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const hasTrackedFlip = useRef(false);
-  const categoryLabel = hit.category || '';
+  const domainLabel = hit.domain?.replace(/_/g, ' ') || '';
 
   const handleFlip = useCallback(() => {
-    const newFlipState = !isFlipped;
-    setIsFlipped(newFlipState);
-
-    if (newFlipState && !hasTrackedFlip.current && sendEvent) {
-      hasTrackedFlip.current = true;
-      sendEvent('click', hit, 'Fact Card Viewed');
-    }
-  }, [isFlipped, sendEvent, hit]);
+    setIsFlipped((prev) => !prev);
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -53,12 +44,14 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
       onClick={handleFlip}
       onKeyDown={handleKeyDown}
       tabIndex={0}
+      role="button"
+      aria-expanded={isFlipped}
       aria-label={`${hit.title}. ${isFlipped ? 'Press to show summary' : 'Press to show full fact'}`}
     >
       <div className={styles.cardInner}>
         <div className={styles.cardFront} aria-hidden={isFlipped}>
           <div className={styles.header}>
-            <span className={styles.domain}>{categoryLabel}</span>
+            <span className={styles.domain}>{domainLabel}</span>
           </div>
 
           <h3 className={styles.title}>
@@ -69,15 +62,15 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
             <Highlight attribute="blurb" hit={hit} />
           </p>
 
-          {hit.projects && hit.projects.length > 0 && (
+          {hit.entities && hit.entities.length > 0 && (
             <div className={styles.entities}>
-              {hit.projects.slice(0, 3).map((entity) => (
+              {hit.entities.slice(0, 3).map((entity) => (
                 <span key={entity} className={styles.entity}>
                   {entity}
                 </span>
               ))}
-              {hit.projects.length > 3 && (
-                <span className={styles.entityMore}>+{hit.projects.length - 3}</span>
+              {hit.entities.length > 3 && (
+                <span className={styles.entityMore}>+{hit.entities.length - 3}</span>
               )}
             </div>
           )}

@@ -229,7 +229,7 @@
   font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: hsl(220 10% 93%);
+  color: hsl(var(--color-text-muted));
 }
 
 @media (max-width: 768px) {

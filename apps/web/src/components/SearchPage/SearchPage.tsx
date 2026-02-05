@@ -21,15 +21,6 @@ const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'system-notes';
 const hasCredentials = appId && searchKey;
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
 
-const insightsConfig = {
-  insightsClient: null,
-  insightsInitParams: {
-    appId,
-    apiKey: searchKey,
-    useCookie: true,
-  },
-};
-
 export default function SearchPage() {
   if (!searchClient) {
     return (
@@ -46,7 +37,7 @@ export default function SearchPage() {
 
   return (
     <div className={styles.container}>
-      <InstantSearch searchClient={searchClient} indexName={indexName} insights={insightsConfig}>
+      <InstantSearch searchClient={searchClient} indexName={indexName}>
         <Configure hitsPerPage={12} />
 
         <header className={styles.searchHeader}>
@@ -84,9 +75,9 @@ export default function SearchPage() {
               <h2 className={styles.filterTitle}>Filter</h2>
 
               <div className={styles.refinementGroup}>
-                <h3 className={styles.refinementTitle}>Category</h3>
+                <h3 className={styles.refinementTitle}>Domain</h3>
                 <RefinementList
-                  attribute="category"
+                  attribute="domain"
                   classNames={{
                     root: styles.refinementRoot,
                     list: styles.refinementList,
@@ -103,7 +94,7 @@ export default function SearchPage() {
               <div className={styles.refinementGroup}>
                 <h3 className={styles.refinementTitle}>Projects</h3>
                 <RefinementList
-                  attribute="projects"
+                  attribute="entities"
                   classNames={{
                     root: styles.refinementRoot,
                     list: styles.refinementList,

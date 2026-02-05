@@ -1,10 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
 import type { Hit, BaseHit } from 'instantsearch.js';
-
-const mockSendEvent = vi.fn();
 
 vi.mock('react-instantsearch', () => ({
   Highlight: ({ attribute, hit }: { attribute: string; hit: Record<string, unknown> }) => (
@@ -18,9 +15,9 @@ interface FactHitRecord extends BaseHit {
   blurb: string;
   fact: string;
   tags: string[];
-  projects: string[];
-  category: string;
-  signal: number;
+  entities: string[];
+  domain: string;
+  signal_level: number;
 }
 
 const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecord> =>
@@ -30,30 +27,27 @@ const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecor
     blurb: 'This is a test blurb.',
     fact: 'This is the detailed fact content.',
     tags: ['tag-one', 'tag-two', 'tag-three'],
-    projects: ['Project Alpha', 'Project Beta'],
-    category: 'Work Style',
-    signal: 3,
+    entities: ['Project Alpha', 'Project Beta'],
+    domain: 'work_style',
+    signal_level: 1,
     __position: 1,
     __queryID: 'test-query',
     ...overrides,
   }) as Hit<FactHitRecord>;
 
 describe('FactCard Component', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
   it('renders fact card with all fields', () => {
     render(<FactCard hit={createMockHit()} />);
 
     expect(screen.getByTestId('highlight-title')).toHaveTextContent('Test Fact Title');
     expect(screen.getByTestId('highlight-blurb')).toHaveTextContent('This is a test blurb.');
     expect(screen.getByText('This is the detailed fact content.')).toBeInTheDocument();
-    expect(screen.getByText('Work Style')).toBeInTheDocument();
+    expect(screen.getByText('work style')).toBeInTheDocument();
   });
 
-  it('renders category label', () => {
-    render(<FactCard hit={createMockHit({ category: 'Philosophy' })} />);
-    expect(screen.getByText('Philosophy')).toBeInTheDocument();
+  it('renders domain with underscores replaced', () => {
+    render(<FactCard hit={createMockHit({ domain: 'technical_decisions' })} />);
+    expect(screen.getByText('technical decisions')).toBeInTheDocument();
   });
 
   it('renders tags up to 5 items', () => {
@@ -71,16 +65,16 @@ describe('FactCard Component', () => {
     expect(screen.getByText('+1')).toBeInTheDocument();
   });
 
-  it('renders projects up to 3 items', () => {
+  it('renders entities up to 3 items', () => {
     render(<FactCard hit={createMockHit()} />);
 
     expect(screen.getByText('Project Alpha')).toBeInTheDocument();
     expect(screen.getByText('Project Beta')).toBeInTheDocument();
   });
 
-  it('shows +N indicator for more than 3 projects', () => {
-    const manyProjects = ['A', 'B', 'C', 'D', 'E'];
-    render(<FactCard hit={createMockHit({ projects: manyProjects })} />);
+  it('shows +N indicator for more than 3 entities', () => {
+    const manyEntities = ['A', 'B', 'C', 'D', 'E'];
+    render(<FactCard hit={createMockHit({ entities: manyEntities })} />);
 
     expect(screen.getByText('+2')).toBeInTheDocument();
   });
@@ -92,8 +86,8 @@ describe('FactCard Component', () => {
     expect(tagsSection).not.toBeInTheDocument();
   });
 
-  it('renders without projects when empty', () => {
-    const { container } = render(<FactCard hit={createMockHit({ projects: [] })} />);
+  it('renders without entities when empty', () => {
+    const { container } = render(<FactCard hit={createMockHit({ entities: [] })} />);
 
     const entitiesSection = container.querySelector('[class*="entities"]');
     expect(entitiesSection).not.toBeInTheDocument();
@@ -102,53 +96,9 @@ describe('FactCard Component', () => {
   it('has correct article structure for accessibility', () => {
     render(<FactCard hit={createMockHit()} />);
 
-    const card = screen.getByRole('article');
+    const card = screen.getByRole('button');
     expect(card).toBeInTheDocument();
     expect(card.tagName).toBe('ARTICLE');
     expect(screen.getByRole('heading', { level: 3 })).toBeInTheDocument();
-  });
-
-  it('tracks flip-to-back event with insights client', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} sendEvent={mockSendEvent} />);
-
-    const card = screen.getByRole('article');
-    await user.click(card);
-
-    expect(mockSendEvent).toHaveBeenCalledWith('click', createMockHit(), 'Fact Card Viewed');
-  });
-
-  it('only tracks flip-to-back once per card instance', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} sendEvent={mockSendEvent} />);
-
-    const card = screen.getByRole('article');
-    await user.click(card);
-    await user.click(card);
-    await user.click(card);
-
-    expect(mockSendEvent).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not track when flipping back to front', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} sendEvent={mockSendEvent} />);
-
-    const card = screen.getByRole('article');
-    await user.click(card);
-    vi.clearAllMocks();
-    await user.click(card);
-
-    expect(mockSendEvent).not.toHaveBeenCalled();
-  });
-
-  it('does not track when sendEvent is not provided', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} />);
-
-    const card = screen.getByRole('article');
-    await user.click(card);
-
-    expect(mockSendEvent).not.toHaveBeenCalled();
   });
 });
