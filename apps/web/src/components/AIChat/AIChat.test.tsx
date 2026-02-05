@@ -8,12 +8,16 @@ vi.mock('react-instantsearch', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-instantsearch')>();
   return {
     ...actual,
-    InstantSearch: ({ children }: { children: React.ReactNode }) => (
-      <div data-testid="instant-search-mock">{children}</div>
-    ),
     Chat: () => <div data-testid="algolia-chat-mock">Algolia Chat</div>,
   };
 });
+
+// Mock react-instantsearch-nextjs
+vi.mock('react-instantsearch-nextjs', () => ({
+  InstantSearchNext: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="instant-search-next-mock">{children}</div>
+  ),
+}));
 
 // Mock algoliasearch/lite
 vi.mock('algoliasearch/lite', () => ({
@@ -34,9 +38,9 @@ describe('AIChat Widget Integration', () => {
     vi.clearAllMocks();
   });
 
-  it('renders the Algolia Chat component', async () => {
+  it('renders the Algolia Chat component with InstantSearchNext', async () => {
     render(<AIChat />);
-    expect(screen.getByTestId('instant-search-mock')).toBeInTheDocument();
+    expect(screen.getByTestId('instant-search-next-mock')).toBeInTheDocument();
     expect(screen.getByTestId('algolia-chat-mock')).toBeInTheDocument();
 
     // MusicPlayer is dynamically imported, so we wait for it

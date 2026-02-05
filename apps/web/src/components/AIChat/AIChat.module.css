@@ -1,54 +1,65 @@
-/* Algolia Chat Widget Overrides 
-   Focusing on Color and ensuring proper stacking
-*/
+/* Algolia Chat Widget - Positioning and Custom Styling Only */
 
+/* IMPORTANT: Allow Algolia to handle maximize/fullscreen behavior
+   Only apply custom positioning when in default (non-maximized) state */
 
-/* Ensure the window itself captures events */
-:global(.ais-Chat-window),
-:global(.ais-Chat-container) {
-  position: fixed !important;
-  bottom: 170px !important;
-  right: var(--space-md, 20px) !important;
-  width: 375px !important;
-  max-width: calc(100vw - 40px) !important;
-  height: 600px !important;
-  max-height: calc(100vh - 190px) !important;
-  z-index: 10002 !important;
-  pointer-events: auto;
-  color: hsl(var(--color-text-primary)) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  overflow: hidden;
+/* Chat window positioning - only when NOT maximized */
+:global(.ais-Chat-window:not([class*="maximized"]):not([class*="fullscreen"])) {
+  position: fixed;
+  bottom: 170px;
+  right: var(--space-md, 20px);
+  width: 375px;
+  max-width: calc(100vw - 40px);
+  height: 600px;
+  max-height: calc(100vh - 190px);
+  z-index: 10002;
 }
 
-/* The toggle button wrapper - Needs to be positioned separately to stay at the bottom */
+/* Container positioning - only when NOT maximized */
+:global(.ais-Chat-container:not([class*="maximized"]):not([class*="fullscreen"])) {
+  position: fixed;
+  bottom: 170px;
+  right: var(--space-md, 20px);
+  width: 375px;
+  max-width: calc(100vw - 40px);
+  height: 600px;
+  max-height: calc(100vh - 190px);
+  z-index: 10002;
+}
+
+/* Ensure maximized/fullscreen mode works - higher z-index only */
+:global(.ais-Chat-container[class*="maximized"]),
+:global(.ais-Chat-container[class*="fullscreen"]),
+:global(.ais-Chat-window[class*="maximized"]),
+:global(.ais-Chat-window[class*="fullscreen"]) {
+  z-index: 10003 !important;
+}
+
+/* DO NOT override pointer-events - let Algolia control it */
+
+/* The toggle button wrapper */
 :global(.ais-Chat-toggleButtonWrapper) {
   position: fixed !important;
   bottom: 90px !important;
   right: var(--space-md, 20px) !important;
   z-index: 10001 !important;
-  pointer-events: auto;
 }
 
 .musicWrapper {
   position: fixed;
   bottom: 90px;
-  /* Center aligned with button center */
   right: calc(var(--space-md, 20px) + 60px + 20px);
-  /* Margin + Button Width + Gap */
   z-index: 10000;
   transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Match standard material/Algolia easing */
   pointer-events: auto;
 }
 
 /* When chat is open, push music player left of the window */
 .musicPushed {
   right: calc(var(--space-md, 20px) + 375px + 20px);
-  /* Margin + Chat Window Width (375px) + Gap */
 }
 
-/* Chat Toggle Button - Matching anchildress1.dev style and positioning from main branch */
+/* Chat Toggle Button - Custom styling for anchildress1.dev */
 :global(.ais-Chat-toggleButton),
 :global(.ais-ChatToggleButton) {
   position: fixed !important;
@@ -57,9 +68,6 @@
   width: 60px !important;
   height: 60px !important;
   background-color: hsl(var(--color-accent-teal)) !important;
-  /* Solid teal background using variable */
-  color: #FFFFFF !important;
-  /* White icon */
   border-radius: 50% !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
   border: none !important;
@@ -76,46 +84,17 @@
   box-shadow: 0 8px 24px hsl(var(--color-accent-teal) / 0.5) !important;
 }
 
-/* Toggle Icon - Ensure white color */
+/* Toggle Icon */
 .toggleIcon {
-  color: inherit !important;
+  color: inherit;
 }
 
-/* Header Colors */
-:global(.ais-Chat-header) {
-  background-color: hsl(var(--color-bg-base)) !important;
-  color: hsl(var(--color-text-primary)) !important;
-  border-bottom: 1px solid hsla(var(--color-text-primary), 0.1);
-}
-
+/* Custom Header Icon - Pink Bat */
 .headerIcon {
   color: hsl(var(--color-accent-pink));
 }
 
-/* Message Colors */
-:global(.ais-Chat-message--user) {
-  background-color: hsl(var(--color-accent-teal)) !important;
-  color: white !important;
-}
-
-:global(.ais-Chat-message--assistant) {
-  background-color: hsl(var(--color-bg-elevated)) !important;
-  color: hsl(var(--color-text-primary)) !important;
-}
-
-/* Input Area Colors */
-:global(.ais-Chat-input) {
-  background-color: hsl(var(--color-bg-base)) !important;
-  border-top: 1px solid hsla(var(--color-text-primary), 0.1);
-
-}
-
-:global(.ais-Chat-inputBox) {
-  background-color: hsl(var(--color-bg-surface)) !important;
-  color: hsl(var(--color-text-primary)) !important;
-}
-
-/* Avatar for Assistant */
+/* Avatar for Assistant - Pink Bat */
 .avatar {
   background-color: transparent;
   color: hsl(var(--color-accent-pink));
@@ -124,7 +103,16 @@
   justify-content: center;
 }
 
-/* Disclaimer / Prompt Footer - Text/Color Only */
+/* Avatar for User - Purple */
+.userAvatar {
+  background-color: transparent;
+  color: hsl(var(--color-accent-purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Disclaimer / Prompt Footer */
 .disclaimer {
   color: hsl(var(--color-text-muted));
   background-color: transparent;
