@@ -63,8 +63,8 @@ describe('SearchPage Component', () => {
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
 
-    expect(screen.getByTestId('refinement-domain')).toBeInTheDocument();
-    expect(screen.getByTestId('refinement-entities')).toBeInTheDocument();
+    expect(screen.getByTestId('refinement-category')).toBeInTheDocument();
+    expect(screen.getByTestId('refinement-projects')).toBeInTheDocument();
     expect(screen.getByTestId('refinement-tags')).toBeInTheDocument();
   });
 
@@ -107,7 +107,7 @@ describe('SearchPage Component', () => {
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
 
-    expect(screen.getByText('Domain')).toBeInTheDocument();
+    expect(screen.getByText('Category')).toBeInTheDocument();
     expect(screen.getByText('Projects')).toBeInTheDocument();
     expect(screen.getByText('Tags')).toBeInTheDocument();
   });

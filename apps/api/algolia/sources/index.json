@@ -4,7 +4,7 @@
     "title": "A portfolio does not need polish to be honest",
     "blurb": "Polish is not required for work to be meaningful or instructive.",
     "fact": "I believe a portfolio can be valuable without polished outputs if it accurately reflects real-world constraints, experimentation, and learning.",
-    "Tags": ["Portfolio", "Experimentation", "Systems thinking"],
+    "tags": ["Portfolio", "Experimentation", "Systems thinking"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -14,7 +14,7 @@
     "title": "Polish is deprioritized during exploration",
     "blurb": "Time is spent learning and testing ideas rather than refining presentation.",
     "fact": "In practice, I intentionally deprioritize polish while exploring ideas so effort goes toward understanding systems and constraints instead of presentation.",
-    "Tags": ["Portfolio", "Experimentation", "Systems thinking"],
+    "tags": ["Portfolio", "Experimentation", "Systems thinking"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -24,7 +24,7 @@
     "title": "AI is used as a challenging collaborator",
     "blurb": "AI is engaged continuously, even when it disagrees or produces friction.",
     "fact": "I work with AI tools in an ongoing, sometimes adversarial way to test whether collaboration under imperfect conditions can still produce functional results.",
-    "Tags": ["Experimentation", "Systems Thinking", "AI Collaboration"],
+    "tags": ["Experimentation", "Systems Thinking", "AI Collaboration"],
     "projects": [
       "System Notes",
       "ChatGPT",
@@ -41,7 +41,7 @@
     "title": "Restraint is a deliberate engineering choice",
     "blurb": "Good engineering includes knowing when not to act.",
     "fact": "I believe strong engineering judgment includes recognizing when not to intervene, especially when additional complexity does not meaningfully improve outcomes.",
-    "Tags": ["Engineering Judgment", "Restraint", "Systems Thinking"],
+    "tags": ["Engineering Judgment", "Restraint", "Systems Thinking"],
     "projects": [
       "System Notes",
       "Copilot Chat Extension",
@@ -57,7 +57,7 @@
     "title": "Proven patterns are preferred over reinvention",
     "blurb": "Existing solutions are favored unless there is a clear reason not to use them.",
     "fact": "In practice, I prefer proven patterns and existing solutions over reinvention unless there is a clear signal that a custom approach is justified.",
-    "Tags": ["Proven Patterns", "Pragmatism", "Systems Design"],
+    "tags": ["Proven Patterns", "Pragmatism", "Systems Design"],
     "projects": ["System Notes", "Delegate Action", "RAI Lint", "Echo ESLint", "Awesome Copilot"],
     "category": "Work Style",
     "signal": 3
@@ -67,7 +67,7 @@
     "title": "Work is public to reduce duplicated effort",
     "blurb": "Shared abstractions prevent others from rebuilding the same solutions.",
     "fact": "Although these tools are built to simplify my own work, they are public because the same abstractions tend to repeat across environments, and sharing them avoids duplication.",
-    "Tags": ["Reuse", "Abstractions", "Efficiency"],
+    "tags": ["Reuse", "Abstractions", "Efficiency"],
     "projects": [
       "System Notes",
       "Delegate Action",
@@ -87,7 +87,7 @@
     "title": "Abstractions are shared across environments",
     "blurb": "The work is applicable beyond a single setup or organization.",
     "fact": "The tools are public because the abstractions they encode tend to repeat across different environments rather than being specific to one context.",
-    "Tags": ["Systems thinking", "Abstractions", "Portability"],
+    "tags": ["Systems thinking", "Abstractions", "Portability"],
     "projects": [
       "System Notes",
       "Delegate Action",
@@ -107,7 +107,7 @@
     "title": "Public does not imply required adoption",
     "blurb": "Others are free to reuse or ignore the work.",
     "fact": "Making the work public is intended to leave room for others to reuse the tools if helpful, or ignore them entirely if not.",
-    "Tags": ["Autonomy", "Pragmatism", "Open Sharing"],
+    "tags": ["Autonomy", "Pragmatism", "Open Sharing"],
     "projects": [
       "System Notes",
       "Delegate Action",
@@ -127,7 +127,7 @@
     "title": "System Notes and Hermes best reflect day-to-day work",
     "blurb": "These projects most closely mirror how work is actually done.",
     "fact": "System Notes, along with Hermes Agent, best represents how I work day to day because the real work happens up front through deliberate design, analysis, and decision-making.",
-    "Tags": ["Work Style", "Systems Design", "Daily Practice"],
+    "tags": ["Work Style", "Systems Design", "Daily Practice"],
     "projects": ["System Notes", "Hermes Agent"],
     "category": "Work Style",
     "signal": 3
@@ -137,7 +137,7 @@
     "title": "Design and reasoning precede implementation",
     "blurb": "Most effort is spent before any code is written.",
     "fact": "My workflow emphasizes thinking through design, identifying edge cases, mapping patterns, and making deliberate build-versus-delegate decisions before implementation begins.",
-    "Tags": ["Design First", "Engineering Judgment", "Systems Thinking"],
+    "tags": ["Design First", "Engineering Judgment", "Systems Thinking"],
     "projects": ["System Notes", "Hermes Agent"],
     "category": "Work Style",
     "signal": 3
@@ -147,7 +147,7 @@
     "title": "AI systems are built alongside the project",
     "blurb": "The AI workflow is designed, not assumed.",
     "fact": "The work is not prompt-and-go; it involves building the AI system alongside the project, with decisions about what the AI should implement made deliberately as part of the design process.",
-    "Tags": ["AI Collaboration", "Intentional Design", "Process"],
+    "tags": ["AI Collaboration", "Intentional Design", "Process"],
     "projects": ["System Notes", "Hermes Agent"],
     "category": "Work Style",
     "signal": 3
@@ -157,7 +157,7 @@
     "title": "Rigor follows once core design is clear",
     "blurb": "Validation and guardrails are added after foundational decisions.",
     "fact": "Validation, guardrails, testing, and other rigor are added after the core design is established rather than being imposed prematurely.",
-    "Tags": ["Validation", "Testing", "Engineering Discipline"],
+    "tags": ["Validation", "Testing", "Engineering Discipline"],
     "projects": ["System Notes", "Hermes Agent"],
     "category": "Work Style",
     "signal": 2
@@ -167,7 +167,7 @@
     "title": "Underfoot revealed real-world constraints after shipping",
     "blurb": "The most meaningful lessons emerged once the system was live.",
     "fact": "Underfoot taught me the most after it shipped, particularly around constraint, cost control, and the realities introduced by running the system in practice rather than in theory.",
-    "Tags": ["Post-ship Learning", "Constraints", "Cost Control"],
+    "tags": ["Post-ship Learning", "Constraints", "Cost Control"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -177,7 +177,7 @@
     "title": "Autonomous and parallel AI coding exposed tooling limits",
     "blurb": "Parallel AI work does not yet produce cohesive systems.",
     "fact": "The project highlighted how autonomous and parallel AI-assisted coding still falls short of producing cohesive, fully integrated systems with current tooling.",
-    "Tags": ["AI Collaboration", "Autonomy", "Tooling Limits"],
+    "tags": ["AI Collaboration", "Autonomy", "Tooling Limits"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -187,7 +187,7 @@
     "title": "Leaving systems intentionally piecewise is sometimes correct",
     "blurb": "Incomplete integration can be a deliberate decision.",
     "fact": "As a result of these limitations, Underfoot was left intentionally piecewise until the gap between autonomous AI output and cohesive system integration can be meaningfully addressed.",
-    "Tags": ["Restraint", "Systems thinking", "Intentional Incompleteness"],
+    "tags": ["Restraint", "Systems thinking", "Intentional Incompleteness"],
     "projects": ["Underfoot Travel"],
     "category": "Philosophy",
     "signal": 3
@@ -197,7 +197,7 @@
     "title": "Time investment is weighed against perceived perfection",
     "blurb": "Refinement is evaluated against diminishing returns.",
     "fact": "A recurring tradeoff across my projects is deciding how much time to invest refining details versus accepting that nothing is ever truly finished.",
-    "Tags": ["Tradeoffs", "Perfection", "Time Investment"],
+    "tags": ["Tradeoffs", "Perfection", "Time Investment"],
     "projects": [
       "System Notes",
       "Delegate Action",
@@ -217,7 +217,7 @@
     "title": "Additional effort is evaluated for meaningful value",
     "blurb": "Not all refinement justifies its cost.",
     "fact": "I regularly evaluate whether additional effort meaningfully improves a project or simply satisfies personal standards that may not add real value.",
-    "Tags": ["Engineering Judgment", "Prioritization", "Pragmatism"],
+    "tags": ["Engineering Judgment", "Prioritization", "Pragmatism"],
     "projects": [
       "System Notes",
       "Delegate Action",
@@ -237,7 +237,7 @@
     "title": "Unfinished does not imply incorrect",
     "blurb": "Completion is contextual, not absolute.",
     "fact": "I am comfortable knowing that projects may remain unfinished if further refinement no longer justifies the time required.",
-    "Tags": ["Restraint", "Systems Thinking", "Acceptance"],
+    "tags": ["Restraint", "Systems Thinking", "Acceptance"],
     "projects": [
       "System Notes",
       "Delegate Action",
@@ -257,7 +257,7 @@
     "title": "UI refinements were intentionally capped early",
     "blurb": "Low-impact polish was deprioritized to protect time.",
     "fact": "I consciously stopped adding UI refinements early after learning from a previous hackathon how easily time can disappear into low-impact polish.",
-    "Tags": ["UI Restraint", "Time Management", "Prioritization"],
+    "tags": ["UI Restraint", "Time Management", "Prioritization"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -267,7 +267,7 @@
     "title": "Time and skill constraints shaped feature decisions",
     "blurb": "Scope was adjusted based on realistic limits.",
     "fact": "Knowing I was starting late, working within a single weekend, and operating outside my primary skill set, I focused on delivering core functionality instead of over-optimizing the interface.",
-    "Tags": ["Constraints", "Time-boxing", "Scope Control"],
+    "tags": ["Constraints", "Time-boxing", "Scope Control"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -277,7 +277,7 @@
     "title": "Lower rigor and AI-delegated commits were accepted",
     "blurb": "Process rigor was adjusted to match project stakes.",
     "fact": "I accepted lower review rigor and delegated commits to the AI because the project stakes were intentionally low and the work was exploratory.",
-    "Tags": ["AI Collaboration", "Risk Calibration", "Pragmatism"],
+    "tags": ["AI Collaboration", "Risk Calibration", "Pragmatism"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 2
@@ -287,7 +287,7 @@
     "title": "The project was treated as iterative documentation",
     "blurb": "Learning and capture took precedence over production readiness.",
     "fact": "Rather than treating the work as a production-grade deliverable, I approached it as iterative documentation intended to capture decisions and lessons under intentionally low stakes.",
-    "Tags": ["Documentation", "Learning", "Intentional Low Stakes"],
+    "tags": ["Documentation", "Learning", "Intentional Low Stakes"],
     "projects": ["Underfoot Travel"],
     "category": "Philosophy",
     "signal": 3
@@ -297,7 +297,7 @@
     "title": "Projects were created in public from the start",
     "blurb": "There was no private-to-public transition.",
     "fact": "None of these projects originated as private tools that later went public; they were created in public from the beginning rather than evolving out of private work.",
-    "Tags": ["Public Build", "Process", "Portfolio History"],
+    "tags": ["Public Build", "Process", "Portfolio History"],
     "projects": [
       "System Notes",
       "Delegate Action",
@@ -317,7 +317,7 @@
     "title": "Earlier work lived on internal systems",
     "blurb": "Public repositories did not reflect prior experience.",
     "fact": "For over a decade, my GitHub was largely unused because my professional work lived on internal systems rather than in public repositories.",
-    "Tags": ["Career", "Internal Systems", "Work History"],
+    "tags": ["Career", "Internal Systems", "Work History"],
     "projects": [
       "System Notes",
       "Delegate Action",
@@ -337,7 +337,7 @@
     "title": "Public building coincided with AI experimentation",
     "blurb": "Public repos reduced friction and enabled better tooling.",
     "fact": "My return to building coincided directly with experimenting publicly with AI, in part because public repositories reduce friction and provide access to better tooling.",
-    "Tags": ["AI Experimentation", "Tooling", "Low Friction"],
+    "tags": ["AI Experimentation", "Tooling", "Low Friction"],
     "projects": [
       "System Notes",
       "Delegate Action",
@@ -357,7 +357,7 @@
     "title": "UI avoidance required an external forcing function",
     "blurb": "A deadline was needed to unblock frontend work.",
     "fact": "System Notes is a portfolio website I had been procrastinating building because I do not do UI work, and it only moved forward once a hackathon imposed an external deadline that forced the decision.",
-    "Tags": ["Constraints", "UI Work", "Forced Decisions"],
+    "tags": ["Constraints", "UI Work", "Forced Decisions"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -367,7 +367,7 @@
     "title": "Shipping under a real timeline was prioritized",
     "blurb": "Completion mattered more than personal readiness.",
     "fact": "The primary goal was to ship a real site under an external timeline instead of waiting for a subjective sense of readiness to do frontend work.",
-    "Tags": ["Shipping", "Time-boxing", "Execution"],
+    "tags": ["Shipping", "Time-boxing", "Execution"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -377,7 +377,7 @@
     "title": "Existence was the success condition",
     "blurb": "The outcome was a deployed system, not refined UI.",
     "fact": "The successful outcome of the project was that the website exists and is deployed, rather than achieving a high level of frontend polish.",
-    "Tags": ["Pragmatism", "Deployment", "Outcomes"],
+    "tags": ["Pragmatism", "Deployment", "Outcomes"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -387,7 +387,7 @@
     "title": "AI was paired due to challenge alignment, not preference",
     "blurb": "Tooling choices were shaped by external context.",
     "fact": "AI was included in System Notes because the next challenge focus made pairing them worthwhile, even though frontend work itself was never an area of personal interest.",
-    "Tags": ["AI Collaboration", "Context-dDecisions", "Tooling"],
+    "tags": ["AI Collaboration", "Context-driven Decisions", "Tooling"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 2
@@ -397,7 +397,7 @@
     "title": "Delegate Action exists to bridge missing GitHub functionality",
     "blurb": "The project fills a specific platform gap.",
     "fact": "Delegate Action was built as a temporary GitHub Action to stand in for missing GitHub functionality, specifically the inability to call a coding agent from within an existing GitHub Actions workflow.",
-    "Tags": ["Platform Gaps", "Constraints", "Glue Code"],
+    "tags": ["Platform Gaps", "Constraints", "Glue Code"],
     "projects": ["Delegate Action"],
     "category": "Work Style",
     "signal": 3
@@ -407,7 +407,7 @@
     "title": "The workflow logic existed before the action",
     "blurb": "The action is an implementation detail, not the core idea.",
     "fact": "The workflow logic was already designed, and Delegate Action exists only to invoke that logic in a narrow, controlled way rather than to introduce new behavior.",
-    "Tags": ["Workflow First", "Systems Design", "Minimal Scope"],
+    "tags": ["Workflow First", "Systems Design", "Minimal Scope"],
     "projects": ["Delegate Action"],
     "category": "Work Style",
     "signal": 3
@@ -417,7 +417,7 @@
     "title": "AI is used narrowly for documentation updates",
     "blurb": "Agent use is constrained and prompt-driven.",
     "fact": "Delegate Action is currently focused on updating documentation per pull request using prompts defined in Awesome GitHub Copilot rather than broad or autonomous code changes.",
-    "Tags": ["AI Collaboration", "Documentation", "Scoped Automation"],
+    "tags": ["AI Collaboration", "Documentation", "Scoped Automation"],
     "projects": ["Delegate Action", "Awesome Copilot"],
     "category": "Work Style",
     "signal": 2
@@ -427,7 +427,7 @@
     "title": "The project is intentionally disposable",
     "blurb": "Its lifespan is expected to be limited.",
     "fact": "The project is still in testing and intentionally scoped as disposable, with the expectation that GitHub will eventually support this capability natively and eliminate the need for custom glue.",
-    "Tags": ["Intentional Temporariness", "Restraint", "Platform Evolution"],
+    "tags": ["Intentional Temporariness", "Restraint", "Platform Evolution"],
     "projects": ["Delegate Action"],
     "category": "Philosophy",
     "signal": 3
@@ -437,7 +437,7 @@
     "title": "Hermantic Agent is a local experimentation playground",
     "blurb": "The project is designed for hands-on agent experimentation.",
     "fact": "My Hermantic Agent is a custom local playground built on my own machine for experimenting with ADK and personal agent design rather than a hosted or production system.",
-    "Tags": ["Local Development", "Experimentation", "Agent Design"],
+    "tags": ["Local Development", "Experimentation", "Agent Design"],
     "projects": ["Hermes Agent"],
     "category": "Work Style",
     "signal": 3
@@ -447,7 +447,7 @@
     "title": "The agent is designed to learn personal workflows",
     "blurb": "Adaptation replaces generic prompting.",
     "fact": "The intended design focuses on allowing the agent to learn and memorize my specific workflows over time instead of relying on generic prompts or stateless interactions.",
-    "Tags": ["Adaptive-systems", "Personalization", "AI Collaboration"],
+    "tags": ["Adaptive-systems", "Personalization", "AI Collaboration"],
     "projects": ["Hermes Agent"],
     "category": "Work Style",
     "signal": 3
@@ -457,7 +457,7 @@
     "title": "Stateful interaction is preferred over stateless prompts",
     "blurb": "Memory is treated as a first-class capability.",
     "fact": "The project is intentionally designed around stateful learning and memory rather than repeated prompt-based interactions.",
-    "Tags": ["Statefulness", "Memory", "Systems thinking"],
+    "tags": ["Statefulness", "Memory", "Systems thinking"],
     "projects": ["Hermes Agent"],
     "category": "Philosophy",
     "signal": 3
@@ -467,7 +467,7 @@
     "title": "The project is currently design-only",
     "blurb": "Implementation has not yet begun.",
     "fact": "Hermantic Agent is still in the design phase and has not yet been implemented, with effort focused on defining intent and architecture.",
-    "Tags": ["Design", "Intent First", "Constraints"],
+    "tags": ["Design", "Intent First", "Constraints"],
     "projects": ["Hermes Agent"],
     "category": "Work Style",
     "signal": 2
@@ -477,7 +477,7 @@
     "title": "The agent is intended to be locally grounded",
     "blurb": "Control and context remain on the developer’s machine.",
     "fact": "The intended outcome is a locally grounded agent that adapts to how I actually work, rather than relying on external or abstracted execution environments.",
-    "Tags": ["Local Control", "Developer Agency", "Grounded Systems"],
+    "tags": ["Local Control", "Developer Agency", "Grounded Systems"],
     "projects": ["Hermes Agent"],
     "category": "Philosophy",
     "signal": 3
@@ -487,7 +487,7 @@
     "title": "AI involvement in code must be explicitly disclosed",
     "blurb": "Authorship transparency is treated as a requirement.",
     "fact": "RAI Lint was built to enforce explicit attribution of AI involvement in code authorship rather than allowing it to remain implicit or invisible.",
-    "Tags": ["AI Disclosure", "Authorship", "Transparency"],
+    "tags": ["AI Disclosure", "Authorship", "Transparency"],
     "projects": ["RAI Lint"],
     "category": "Philosophy",
     "signal": 3
@@ -497,7 +497,7 @@
     "title": "Invisible AI contributions create an accountability gap",
     "blurb": "Version history alone is insufficient.",
     "fact": "The project directly addresses the accountability gap created when AI contributions are not visible or recorded in version history.",
-    "Tags": ["Accountability", "Version History", "Constraints"],
+    "tags": ["Accountability", "Version History", "Constraints"],
     "projects": ["RAI Lint"],
     "category": "Work Style",
     "signal": 3
@@ -507,7 +507,7 @@
     "title": "Disclosure is enforced through commit linting",
     "blurb": "Attribution is operationalized, not advisory.",
     "fact": "RAI Lint enforces disclosure by integrating with commitlint and gitlint rather than relying on developer memory or informal convention.",
-    "Tags": ["Linting", "Process Enforcement", "Workflow"],
+    "tags": ["Linting", "Process Enforcement", "Workflow"],
     "projects": ["RAI Lint"],
     "category": "Work Style",
     "signal": 3
@@ -517,7 +517,7 @@
     "title": "AI attribution was successfully normalized",
     "blurb": "Disclosure became part of the default workflow.",
     "fact": "The outcome of RAI Lint successfully normalized AI contribution disclosure for commits using commitlint and gitlint.",
-    "Tags": ["Outcomes", "Normalization", "AI Collaboration"],
+    "tags": ["Outcomes", "Normalization", "AI Collaboration"],
     "projects": ["RAI Lint"],
     "category": "Work Style",
     "signal": 3
@@ -527,7 +527,7 @@
     "title": "Local context was prioritized over generic recommendations",
     "blurb": "The planner emphasizes constraints and tradeoffs.",
     "fact": "Underfoot is an AI-assisted travel planner designed to surface local context, constraints, and tradeoffs rather than providing generic recommendations.",
-    "Tags": ["Local Context", "Constraints", "Tradeoffs"],
+    "tags": ["Local Context", "Constraints", "Tradeoffs"],
     "projects": ["Underfoot Travel"],
     "category": "Philosophy",
     "signal": 3
@@ -537,7 +537,7 @@
     "title": "The project originated as a hackathon build",
     "blurb": "Initial scope and momentum were time-bound.",
     "fact": "Underfoot started as a hackathon project, with early progress shaped by the constraints and tooling available during that event.",
-    "Tags": ["Hackathon", "Time-boxing", "Constraints"],
+    "tags": ["Hackathon", "Time-boxing", "Constraints"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 2
@@ -547,7 +547,7 @@
     "title": "Extending past intended scope caused over-design",
     "blurb": "Lack of boundaries led to complexity.",
     "fact": "After the hackathon, I continued extending Underfoot past its intended scope, over-designed the system, and learned firsthand why projects require explicit timeboxing and versioning.",
-    "Tags": ["Design", "Scope Creep", "Lessons Learned"],
+    "tags": ["Design", "Scope Creep", "Lessons Learned"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -557,7 +557,7 @@
     "title": "Tooling expiration forced a rebuild",
     "blurb": "External limits triggered a reset.",
     "fact": "When the hackathon tooling free trials expired, the project was repurposed into a separate AI orchestration experiment rebuilt from the ground up using free tools.",
-    "Tags": ["Constraints", "Rebuild", "AI Orchestration"],
+    "tags": ["Constraints", "Rebuild", "AI Orchestration"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -567,7 +567,7 @@
     "title": "The project remains experimental and unfinished",
     "blurb": "Stability is pending further work.",
     "fact": "Underfoot remains in an experimental state, pending testing and fixes following its rebuild and repurposing.",
-    "Tags": ["Experimental", "Unfinished", "In-progress"],
+    "tags": ["Experimental", "Unfinished", "In-progress"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 2
@@ -577,7 +577,7 @@
     "title": "Awesome Copilot is a personal pattern library",
     "blurb": "The collection reflects an actively used workflow.",
     "fact": "Awesome GitHub Copilot is a personal collection of prompts, agents, instructions, and skills that I actively use in my own workflow rather than a curated showcase.",
-    "Tags": ["Workflow", "Patterns", "Personal Tooling"],
+    "tags": ["Workflow", "Patterns", "Personal Tooling"],
     "projects": ["Awesome Copilot"],
     "category": "Work Style",
     "signal": 3
@@ -587,7 +587,7 @@
     "title": "Only proven patterns are packaged for reuse",
     "blurb": "Sharing follows demonstrated usefulness.",
     "fact": "The project was built because these patterns already worked well for me, and packaging them made reuse and consistency easier across projects.",
-    "Tags": ["Reuse", "Proven Patterns", "Consistency"],
+    "tags": ["Reuse", "Proven Patterns", "Consistency"],
     "projects": ["Awesome Copilot"],
     "category": "Philosophy",
     "signal": 3
@@ -597,7 +597,7 @@
     "title": "The collection enforces consistency across projects",
     "blurb": "Shared tooling reduces drift.",
     "fact": "Organizing prompts, agents, and skills into a single reference made it easier to apply the same patterns consistently across different projects.",
-    "Tags": ["Consistency", "Cross Project", "Systems Thinking"],
+    "tags": ["Consistency", "Cross Project", "Systems Thinking"],
     "projects": ["Awesome Copilot"],
     "category": "Work Style",
     "signal": 3
@@ -607,7 +607,7 @@
     "title": "The project is a living reference",
     "blurb": "The content evolves with ongoing use.",
     "fact": "The outcome of the project is a living reference that I actively use as-is rather than a finished or static artifact.",
-    "Tags": ["Living Docs", "Iterative", "Active"],
+    "tags": ["Living Docs", "Iterative", "Active"],
     "projects": ["Awesome Copilot"],
     "category": "Work Style",
     "signal": 3
@@ -617,7 +617,7 @@
     "title": "AI systems could not see existing Dev.to content",
     "blurb": "The problem was discoverability by AI, not humans.",
     "fact": "DevTO Mirror was built after discovering that AI systems could not see or reference blog content I had published on Dev.to.",
-    "Tags": ["AI", "Constraints", "SEO"],
+    "tags": ["AI", "Constraints", "SEO"],
     "projects": ["DevTO Mirror"],
     "category": "Work Style",
     "signal": 3
@@ -627,7 +627,7 @@
     "title": "The canonical publishing source was intentionally preserved",
     "blurb": "The solution avoids relocating original content.",
     "fact": "The project was designed to keep Dev.to as the canonical source rather than self-hosting or moving the original writing elsewhere.",
-    "Tags": ["Canonical Source", "Restraint", "Publishing"],
+    "tags": ["Canonical Source", "Restraint", "Publishing"],
     "projects": ["DevTO Mirror"],
     "category": "Philosophy",
     "signal": 3
@@ -637,7 +637,7 @@
     "title": "The project functions as a mirror, not a migration",
     "blurb": "Distribution is separated from authorship.",
     "fact": "DevTO Mirror exists strictly as a publishing mirror to make content visible to AI tools like ChatGPT and Gemini without changing where or how I publish.",
-    "Tags": ["Distribution", "Separation of Concerns", "Workflow"],
+    "tags": ["Distribution", "Separation of Concerns", "Workflow"],
     "projects": ["DevTO Mirror"],
     "category": "Work Style",
     "signal": 3
@@ -647,7 +647,7 @@
     "title": "A lightweight layer solved AI visibility",
     "blurb": "The solution added reach without operational overhead.",
     "fact": "The outcome is a lightweight distribution layer that improves AI visibility without altering the publishing workflow or hosting model.",
-    "Tags": ["Outcomes", "Low Overhead", "Systems Design"],
+    "tags": ["Outcomes", "Low Overhead", "Systems Design"],
     "projects": ["DevTO Mirror"],
     "category": "Work Style",
     "signal": 3
@@ -657,7 +657,7 @@
     "title": "Lint decisions are encoded once, not renegotiated",
     "blurb": "Consistency is favored over per-project debate.",
     "fact": "ESLint Config Echo is an opinionated shared configuration designed to encode linting decisions once instead of renegotiating them across individual projects.",
-    "Tags": ["Opinionated Config", "Consistency", "Decisions"],
+    "tags": ["Opinionated Config", "Consistency", "Decisions"],
     "projects": ["Echo ESLint"],
     "category": "Philosophy",
     "signal": 3
@@ -667,7 +667,7 @@
     "title": "The configuration exists to reduce bikeshedding",
     "blurb": "Time is protected by removing low-value debate.",
     "fact": "The project was built specifically to reduce bikeshedding and inconsistency across repositories by centralizing linting rules.",
-    "Tags": ["Bikeshedding", "Constraints", "Time Savings"],
+    "tags": ["Bikeshedding", "Constraints", "Time Savings"],
     "projects": ["Echo ESLint"],
     "category": "Work Style",
     "signal": 3
@@ -677,7 +677,7 @@
     "title": "Lint behavior was stabilized across projects",
     "blurb": "Rules became predictable and repeatable.",
     "fact": "The outcome of ESLint Config Echo was stabilized lint behavior across repositories that adopted the shared configuration.",
-    "Tags": ["Outcomes", "Stability", "Tooling"],
+    "tags": ["Outcomes", "Stability", "Tooling"],
     "projects": ["Echo ESLint"],
     "category": "Work Style",
     "signal": 3
@@ -687,7 +687,7 @@
     "title": "The project was an early AI Collaboration experiment",
     "blurb": "It predated later tooling and frameworks.",
     "fact": "Checkmark Copilot Chat was an early AI experiment built before MCP and before the Awesome GitHub Copilot repository existed.",
-    "Tags": ["Experimentation", "AI Collaboration", "Timing"],
+    "tags": ["Experimentation", "AI Collaboration", "Timing"],
     "projects": ["Copilot Chat Extension"],
     "category": "Work Style",
     "signal": 2
@@ -697,7 +697,7 @@
     "title": "The goal was to share prompts through Copilot Chat",
     "blurb": "Invocation was meant to be simple and social.",
     "fact": "The project was intended as a simple way to share the prompts and instructions I was using at work so others could invoke them directly from Copilot Chat.",
-    "Tags": ["Prompt Sharing", "Workflow", "Collaboration"],
+    "tags": ["Prompt Sharing", "Workflow", "Collaboration"],
     "projects": ["Copilot Chat Extension"],
     "category": "Work Style",
     "signal": 2
@@ -707,7 +707,7 @@
     "title": "Lack of context persistence made the approach unworkable",
     "blurb": "The tooling could not support the intended workflow.",
     "fact": "Limited documentation and GitHub’s inability at the time to persist context across turns made the approach unworkable without the deeper system already present in VS Code.",
-    "Tags": ["Limits", "Context Management", "Constraints"],
+    "tags": ["Limits", "Context Management", "Constraints"],
     "projects": ["Copilot Chat Extension"],
     "category": "Work Style",
     "signal": 3
@@ -717,7 +717,7 @@
     "title": "Choosing not to build a full plugin was deliberate",
     "blurb": "Effort was withheld when the cost outweighed the value.",
     "fact": "Rather than investing in writing a full plugin to compensate for these limitations, I chose not to pursue the approach further.",
-    "Tags": ["Restraint", "Engineering Judgment", "Opportunity"],
+    "tags": ["Restraint", "Engineering Judgment", "Opportunity"],
     "projects": ["Copilot Chat Extension"],
     "category": "Philosophy",
     "signal": 3
@@ -727,7 +727,7 @@
     "title": "AI leverage is capped to avoid unnecessary complexity",
     "blurb": "The system intentionally stops short of maximal capability.",
     "fact": "In this implementation, the AI is intentionally simple and does not attempt to do everything it could, because beyond a certain point complexity outweighs leverage.",
-    "Tags": ["Leverage", "Complexity", "Restraint"],
+    "tags": ["Leverage", "Complexity", "Restraint"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -737,7 +737,7 @@
     "title": "AI replaces search and navigation with direct answers",
     "blurb": "Leverage comes from reducing cognitive overhead.",
     "fact": "Where AI adds leverage is in eliminating the need to search, navigate, or infer intent, providing direct answers instead of forcing users to hunt through pages.",
-    "Tags": ["Usability", "Cognitive Load", "Direct Answers"],
+    "tags": ["Usability", "Cognitive Load", "Direct Answers"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -747,7 +747,7 @@
     "title": "The same data serves different audiences",
     "blurb": "Tone adjusts without mutating the system.",
     "fact": "The same underlying data supports judges and recruiters equally, with only minor instruction-level tone adjustments rather than changes to the data itself.",
-    "Tags": ["Audience-adaptation", "Instruction Layer", "AI Collaboration"],
+    "tags": ["Audience-adaptation", "Instruction Layer", "AI Collaboration"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -757,7 +757,7 @@
     "title": "System boundaries are enforced deliberately",
     "blurb": "Not every possible AI capability is desirable.",
     "fact": "The implementation reflects a deliberate boundary where AI stops adding value and begins adding complexity, and that boundary is actively enforced.",
-    "Tags": ["System Boundaries", "Engineering Judgment", "Design"],
+    "tags": ["System Boundaries", "Engineering Judgment", "Design"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -767,7 +767,7 @@
     "title": "The AI is explicitly not the author",
     "blurb": "Identity separation is enforced.",
     "fact": "A core guardrail is that the AI is explicitly not me and must not present itself as the author or decision-maker.",
-    "Tags": ["Identity Separation", "Authorship", "Guardrails"],
+    "tags": ["Identity Separation", "Authorship", "Guardrails"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -777,7 +777,7 @@
     "title": "The AI is not allowed to guess or infer",
     "blurb": "Speculation is treated as an error.",
     "fact": "The AI is explicitly not allowed to guess, infer intent, or speculate beyond what is stated in the canonical data.",
-    "Tags": ["No Inference", "Accuracy", "AI Collaboration"],
+    "tags": ["No Inference", "Accuracy", "AI Collaboration"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -787,7 +787,7 @@
     "title": "Unstated information is treated as nonexistent",
     "blurb": "The system operates under a closed-world model.",
     "fact": "If something is not stated in the canonical data, it is treated as not existing rather than being filled in or approximated.",
-    "Tags": ["Closed World", "Data Integrity", "Guardrails"],
+    "tags": ["Closed World", "Data Integrity", "Guardrails"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -797,7 +797,7 @@
     "title": "Unknowns are escalated back to the human",
     "blurb": "The system defers rather than fabricates.",
     "fact": "When information is missing, the user is directed to ask me directly instead of the AI attempting to fill in the gap.",
-    "Tags": ["Escalation", "Human-in-the-loop", "Workflow"],
+    "tags": ["Escalation", "Human-in-the-loop", "Workflow"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -807,7 +807,7 @@
     "title": "The system is tested with known-unknown questions",
     "blurb": "Accuracy is validated through deliberate probing.",
     "fact": "I actively test the system with questions I know I never answered, questions about itself, and questions about specific projects to verify how it behaves under uncertainty.",
-    "Tags": ["Testing", "Validation", "Adversarial Evaluation"],
+    "tags": ["Testing", "Validation", "Adversarial Evaluation"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -817,7 +817,7 @@
     "title": "Accuracy is the primary success criterion",
     "blurb": "Correct refusal is better than fabricated answers.",
     "fact": "As long as the system responds accurately without fabricating information when data is missing, it is considered helpful.",
-    "Tags": ["Accuracy", "No Hallucination", "Trust"],
+    "tags": ["Accuracy", "No Hallucination", "Trust"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -827,7 +827,7 @@
     "title": "The system is tested on questions about itself",
     "blurb": "Self-knowledge boundaries are intentionally probed.",
     "fact": "Questions about the system itself are used to evaluate whether the AI respects its guardrails and avoids inventing internal state or intent.",
-    "Tags": ["Self Reference", "Guardrails", "AI Collaboration"],
+    "tags": ["Self Reference", "Guardrails", "AI Collaboration"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -837,7 +837,7 @@
     "title": "AI is treated as baseline infrastructure",
     "blurb": "Usefulness is measured against modern expectations.",
     "fact": "AI is no longer treated as a novelty or gimmick, but as an expected baseline for functional systems, and this implementation is evaluated against that standard.",
-    "Tags": ["Baseline Expectation", "Systems", "Leverage"],
+    "tags": ["Baseline Expectation", "Modern Systems", "Leverage"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -847,7 +847,7 @@
     "title": "The portfolio is a system-first experiment",
     "blurb": "Systems take precedence over finished artifacts.",
     "fact": "This portfolio is intentionally designed as a system-first experiment rather than a showcase of finished applications.",
-    "Tags": ["Systems", "Experimentation", "Design"],
+    "tags": ["Systems First", "Experimentation", "Portfolio Design"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -857,7 +857,7 @@
     "title": "The portfolio was built under hackathon-style constraints",
     "blurb": "Time and scope limits shaped the outcome.",
     "fact": "The portfolio was built under hackathon-style constraints and is intentionally exploratory rather than optimized for completeness or polish.",
-    "Tags": ["Hackathon", "Constraints", "Time-boxing"],
+    "tags": ["Hackathon", "Constraints", "Time-boxing"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -867,7 +867,7 @@
     "title": "Polish and completeness were deprioritized by design",
     "blurb": "Exploration was favored over refinement.",
     "fact": "The goal of the portfolio was to test how far real-world AI Collaboration could be pushed when polish and completeness were explicitly deprioritized.",
-    "Tags": ["Restraint", "AI Collaboration", "Intentional Incompleteness"],
+    "tags": ["Restraint", "AI Collaboration", "Intentional Incompleteness"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -877,7 +877,7 @@
     "title": "The site itself is the portfolio artifact",
     "blurb": "The system replaces a static placeholder.",
     "fact": "The site exists as the portfolio artifact itself, replacing a static placeholder and primarily serving to host and expose the underlying system decisions.",
-    "Tags": ["Systems", "Documentation", "Workflow"],
+    "tags": ["Systems Artifact", "Documentation", "Workflow"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -887,7 +887,7 @@
     "title": "Perfectionism is active, not paralyzing",
     "blurb": "Work pauses rather than being abandoned.",
     "fact": "The author is an active perfectionist, meaning work is not left alone permanently but paused until attention shifts and returns later.",
-    "Tags": ["Perfectionism", "Work Patterns", "Iteration"],
+    "tags": ["Perfectionism", "Work Patterns", "Iteration"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -897,7 +897,7 @@
     "title": "Directional correctness matters more than completion",
     "blurb": "Progress is evaluated by trajectory.",
     "fact": "Satisfaction comes from knowing the work is directionally correct rather than fully complete.",
-    "Tags": ["Directional Correctness", "Engineering Judgment", "Restraint"],
+    "tags": ["Directional Correctness", "Engineering Judgment", "Restraint"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
@@ -907,7 +907,7 @@
     "title": "Iteration is assumed over time",
     "blurb": "Revisiting work is part of the system.",
     "fact": "The system is designed with the expectation that work will be revisited and iterated on over time rather than finalized in a single pass.",
-    "Tags": ["Iteration", "Long Term Systems", "Workflow"],
+    "tags": ["Iteration", "Long Term Systems", "Workflow"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -917,7 +917,7 @@
     "title": "Raised in rural Appalachia",
     "blurb": "Early life was shaped by geographic isolation.",
     "fact": "I was raised in a small coal-mining town in southwest Virginia, deep in Appalachia.",
-    "Tags": ["Background", "Appalachia", "Rural"],
+    "tags": ["Background", "Appalachia", "Rural"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -927,7 +927,7 @@
     "title": "Isolation shaped how I understand systems",
     "blurb": "Distance influenced perception of access and structure.",
     "fact": "Growing up isolated shaped how I see systems, scale, and access.",
-    "Tags": ["Systems thinking", "Context", "Background"],
+    "tags": ["Systems thinking", "Context", "Background"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -937,7 +937,7 @@
     "title": "Limited access defined early experience",
     "blurb": "Infrastructure was distant and sparse.",
     "fact": "The nearest Walmart was a 45-minute drive, and for a long time the biggest city I knew was Bristol.",
-    "Tags": ["Infrastructure", "Access", "Constraints"],
+    "tags": ["Infrastructure", "Access", "Constraints"],
     "projects": [],
     "category": "About",
     "signal": 2
@@ -947,7 +947,7 @@
     "title": "Moved to Georgia as a teenager",
     "blurb": "Geographic context shifted in adolescence.",
     "fact": "At seventeen, I moved to Georgia, where I have lived ever since.",
-    "Tags": ["Relocation", "Background", "Life-changes"],
+    "tags": ["Relocation", "Background", "Life-changes"],
     "projects": [],
     "category": "About",
     "signal": 2
@@ -957,7 +957,7 @@
     "title": "The mountains remain home",
     "blurb": "Sense of place persists despite relocation.",
     "fact": "No matter where I land, the mountains still feel like home, and Appalachia is the place I keep reaching for.",
-    "Tags": ["Identity", "Place", "Appalachia"],
+    "tags": ["Identity", "Place", "Appalachia"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -967,7 +967,7 @@
     "title": "Entered engineering through a nonlinear path",
     "blurb": "Career direction was not immediate.",
     "fact": "I came to software engineering during my second attempt at college rather than through a direct or early pipeline.",
-    "Tags": ["Career", "Nonlinear", "Education"],
+    "tags": ["Career", "Nonlinear", "Education"],
     "projects": [],
     "category": "About",
     "signal": 2
@@ -977,7 +977,7 @@
     "title": "Career choice was driven by pragmatism",
     "blurb": "Earning potential influenced direction.",
     "fact": "A career aptitude test led me to rank options by earning potential, with software engineering at the top.",
-    "Tags": ["Pragmatism", "Decision Making", "Career"],
+    "tags": ["Pragmatism", "Decision Making", "Career"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -987,7 +987,7 @@
     "title": "Pragmatism turned into long-term commitment",
     "blurb": "Interest deepened after entry.",
     "fact": "What began as a pragmatic decision quickly turned into a long-term obsession with the work.",
-    "Tags": ["Motivation", "Growth", "Career"],
+    "tags": ["Motivation", "Growth", "Career"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -997,7 +997,7 @@
     "title": "Systems thinking outweighs feature building",
     "blurb": "Coherence matters more than surface output.",
     "fact": "I don’t just build applications; I build systems and push back when things lack coherence.",
-    "Tags": ["Systems Design", "Craft", "Architecture"],
+    "tags": ["Systems Design", "Craft", "Architecture"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1007,7 +1007,7 @@
     "title": "Assumptions are challenged instinctively",
     "blurb": "Default practices are questioned.",
     "fact": "I debate assumptions instinctively and fix problems before they calcify into standard practice.",
-    "Tags": ["Critical-thinking", "Process", "Engineering-judgment"],
+    "tags": ["Critical-thinking", "Process", "Engineering-judgment"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1017,7 +1017,7 @@
     "title": "Large-scale changes are intentional",
     "blurb": "Broad modifications are planned, not accidental.",
     "fact": "If every file in a repository changes once, it is intentional, and automation follows afterward.",
-    "Tags": ["Intentionality", "Automation", "Systems Work"],
+    "tags": ["Intentionality", "Automation", "Systems Work"],
     "projects": [],
     "category": "About",
     "signal": 2
@@ -1027,7 +1027,7 @@
     "title": "Guardrails are required for system stability",
     "blurb": "Tooling enforces predictability.",
     "fact": "I believe linters, formatters, and guardrails are necessary to keep systems stable and predictable.",
-    "Tags": ["Guardrails", "Tooling", "Stability"],
+    "tags": ["Guardrails", "Tooling", "Stability"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1037,7 +1037,7 @@
     "title": "Manual coding is no longer the primary activity",
     "blurb": "Work has shifted to system orchestration.",
     "fact": "These days, I write very little code by hand.",
-    "Tags": ["AI Augmented", "Workflow Shift", "Practice"],
+    "tags": ["AI Augmented", "Workflow Shift", "Practice"],
     "projects": [],
     "category": "About",
     "signal": 2
@@ -1047,7 +1047,7 @@
     "title": "AI is trained to write code the way I would",
     "blurb": "Behavior is constrained by prior standards.",
     "fact": "I build AI-augmented systems that write code the way I used to write it myself.",
-    "Tags": ["AI Training", "Constraints", "Personalization"],
+    "tags": ["AI Training", "Constraints", "Personalization"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1057,7 +1057,7 @@
     "title": "Review happens at the system level",
     "blurb": "Correctness is evaluated holistically.",
     "fact": "My review process focuses on whether systems work, are deterministic, tested, repeatable, and constrained over time.",
-    "Tags": ["Review", "Determinism", "Quality"],
+    "tags": ["Review", "Determinism", "Quality"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1067,7 +1067,7 @@
     "title": "AI is taught, not merely used",
     "blurb": "Workflows are designed, not improvised.",
     "fact": "I approach AI by teaching it through intentionally designed workflows rather than simply using it as a tool.",
-    "Tags": ["AI Philosophy", "Teaching", "Workflow Design"],
+    "tags": ["AI Philosophy", "Teaching", "Workflow Design"],
     "projects": ["Awesome Copilot"],
     "category": "About",
     "signal": 3
@@ -1077,7 +1077,7 @@
     "title": "The goal is durable, constrained systems",
     "blurb": "Longevity matters more than novelty.",
     "fact": "My goal is to build reusable, durable, intentionally constrained systems that continue to function well long after the initial build.",
-    "Tags": ["Durability", "Constraints", "Long Term Thinking"],
+    "tags": ["Durability", "Constraints", "Long Term Thinking"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1087,7 +1087,7 @@
     "title": "I Build Things is my theme song",
     "blurb": "The song represents a personal constant.",
     "fact": "I have called the song \"I Build Things\" my theme song since the first time I heard it.",
-    "Tags": ["Identity", "Theme Song", "Personal Signals"],
+    "tags": ["Identity", "Theme Song", "Personal Signals"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1097,7 +1097,7 @@
     "title": "Appalachian ingenuity shaped how I approach building",
     "blurb": "Fixing and reusing were learned early.",
     "fact": "Growing up with Appalachian ingenuity taught me to fix what breaks, reuse what still works, and take things apart to understand how they function.",
-    "Tags": ["Appalachia", "Ingenuity", "Background"],
+    "tags": ["Appalachia", "Ingenuity", "Background"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1107,7 +1107,7 @@
     "title": "I dismantled systems before I had the language for them",
     "blurb": "Systems intuition predates formal vocabulary.",
     "fact": "I have been dismantling systems and sometimes putting them back together since before I had the vocabulary to call them systems.",
-    "Tags": ["Systems Thinking", "Intuition", "Craft"],
+    "tags": ["Systems Thinking", "Intuition", "Craft"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1117,7 +1117,7 @@
     "title": "Building is genuinely enjoyable",
     "blurb": "Motivation is intrinsic, not symbolic.",
     "fact": "Part of why the song resonates is that it is fun, catchy, energetic, and makes me want to build things.",
-    "Tags": ["Motivation", "Joy", "Building"],
+    "tags": ["Motivation", "Joy", "Building"],
     "projects": [],
     "category": "About",
     "signal": 2
@@ -1127,7 +1127,7 @@
     "title": "Symbolism is chosen for usefulness, not abstraction",
     "blurb": "Meaning must still be practical.",
     "fact": "I do not treat a theme song as a metaphor exercise alone and chose it because it is motivating, memorable, and genuinely enjoyable.",
-    "Tags": ["Pragmatism", "Personal Philosophy", "Signals"],
+    "tags": ["Pragmatism", "Personal Philosophy", "Signals"],
     "projects": [],
     "category": "About",
     "signal": 2
@@ -1137,7 +1137,7 @@
     "title": "I design systems by hunting failure points",
     "blurb": "Failure is assumed, not ignored.",
     "fact": "I design systems by actively hunting for failure points, assuming that if something can break, it eventually will.",
-    "Tags": ["Failure Analysis", "Systems Design", "Craft"],
+    "tags": ["Failure Analysis", "Systems Design", "Craft"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1147,7 +1147,7 @@
     "title": "Failures should be found before deployment",
     "blurb": "Production is not the test environment.",
     "fact": "I strongly prefer finding, understanding, and addressing failures before production rather than shipping something marked \"done\" and immediately needing a hotfix.",
-    "Tags": ["Testing", "Reliability", "Engineering Discipline"],
+    "tags": ["Testing", "Reliability", "Engineering Discipline"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1157,7 +1157,7 @@
     "title": "Shipping clean matters more than shipping fast",
     "blurb": "Stability is the success condition.",
     "fact": "If I deploy something, I believe the failure should already have been found, understood, and addressed.",
-    "Tags": ["Quality", "Deployment", "Engineering Judgment"],
+    "tags": ["Quality", "Deployment", "Engineering Judgment"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1167,7 +1167,7 @@
     "title": "Breaking things early is intentional",
     "blurb": "Failure is a design tool.",
     "fact": "I believe that breaking things early, loudly, and intentionally is how you end up with systems that ship clean and remain stable.",
-    "Tags": ["Failure Driven Design", "Resilience", "Systems Thinking"],
+    "tags": ["Failure Driven Design", "Resilience", "Systems Thinking"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1177,7 +1177,7 @@
     "title": "Joy and discipline coexist in how I build",
     "blurb": "Playfulness does not replace rigor.",
     "fact": "The song captures the balance between the joy of building something yourself and the discipline of breaking systems intentionally to ensure they ship clean and stay that way.",
-    "Tags": ["Balance", "Identity", "Craft"],
+    "tags": ["Balance", "Identity", "Craft"],
     "projects": [],
     "category": "About",
     "signal": 3
@@ -1187,7 +1187,7 @@
     "title": "This was my first attempt at search-index agent behavior",
     "blurb": "There was an initial learning curve.",
     "fact": "It took me time to get accustomed to the index because this was my first attempt at building an agent with search-indexing style functionality.",
-    "Tags": ["Hackathon", "Learning Curve", "Indexing"],
+    "tags": ["Hackathon", "Learning Curve", "Indexing"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
@@ -1197,7 +1197,7 @@
     "title": "Early attempts failed due to slow responses",
     "blurb": "Performance issues made the initial approach unusable.",
     "fact": "The first several attempts were complete failures because the agent took far too long to respond.",
-    "Tags": ["Hackathon", "Failure- Mdes", "Performance"],
+    "tags": ["Hackathon", "Failure- Mdes", "Performance"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
@@ -1207,7 +1207,7 @@
     "title": "A ground-up redesign improved results",
     "blurb": "The turning point was rewriting the approach.",
     "fact": "When I gave the instructions to ChatGPT and redesigned from the ground up, the output improved significantly.",
-    "Tags": ["Hackathon", "Iteration", "Workflow"],
+    "tags": ["Hackathon", "Iteration", "Workflow"],
     "projects": ["System Notes", "ChatGPT"],
     "category": "Challenges",
     "signal": 3
@@ -1217,7 +1217,7 @@
     "title": "Response speed improved after the redesign",
     "blurb": "Performance became acceptable after iteration.",
     "fact": "After the redesign, the agent became much quicker.",
-    "Tags": ["Hackathon", "Outcomes", "Performance"],
+    "tags": ["Hackathon", "Outcomes", "Performance"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
@@ -1227,7 +1227,7 @@
     "title": "UI iteration was the hardest part",
     "blurb": "Working on chat UI while coordinating AI was difficult.",
     "fact": "The UI was very difficult to work with while using the chat widget and AI at the same time.",
-    "Tags": ["Hackathon", "Pain Points", "UI Work"],
+    "tags": ["Hackathon", "Pain Points", "UI Work"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
@@ -1237,7 +1237,7 @@
     "title": "MVP-focused guidance would help adopters",
     "blurb": "Setup clarity matters more than breadth right now.",
     "fact": "I would encourage the platform to focus more on MVP directions, setup, and skills for implementing functionality.",
-    "Tags": ["Hackathon Feedback", "MVP", "Docs"],
+    "tags": ["Hackathon Feedback", "MVP", "Docs"],
     "projects": [],
     "category": "Challenges",
     "signal": 2
@@ -1247,7 +1247,7 @@
     "title": "The chat widget is a fast path to a real UI feature",
     "blurb": "It provides immediate UX even for non-UI developers.",
     "fact": "Coming from a strictly back-end background, the chat widget was an easy way to have a fully fledged feature accessible immediately in the UI.",
-    "Tags": ["Hackathon", "UI Shortcut", "Developer Experience"],
+    "tags": ["Hackathon", "UI Shortcut", "Developer Experience"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
@@ -1257,7 +1257,7 @@
     "title": "Beta UI tooling is incomplete but usable",
     "blurb": "The design surface is not fully mature.",
     "fact": "Even acknowledging the chat widget as a beta feature with incomplete design, it still enabled immediate UI access to the functionality.",
-    "Tags": ["Constraints", "Beta", "Hackathon"],
+    "tags": ["Constraints", "Beta", "Hackathon"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 2
@@ -1267,7 +1267,7 @@
     "title": "The main time sink was alignment on implementation behavior",
     "blurb": "Getting the system to understand the implementation constraints was costly.",
     "fact": "The major pain point was getting the agent to understand what it needed to do for implementation, which took the vast majority of half a day.",
-    "Tags": ["Hackathon", "Pain Points", "Time Cost"],
+    "tags": ["Hackathon", "Pain Points", "Time Cost"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3

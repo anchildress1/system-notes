@@ -75,9 +75,9 @@ export default function SearchPage() {
               <h2 className={styles.filterTitle}>Filter</h2>
 
               <div className={styles.refinementGroup}>
-                <h3 className={styles.refinementTitle}>Domain</h3>
+                <h3 className={styles.refinementTitle}>Category</h3>
                 <RefinementList
-                  attribute="domain"
+                  attribute="category"
                   classNames={{
                     root: styles.refinementRoot,
                     list: styles.refinementList,
@@ -94,7 +94,7 @@ export default function SearchPage() {
               <div className={styles.refinementGroup}>
                 <h3 className={styles.refinementTitle}>Projects</h3>
                 <RefinementList
-                  attribute="entities"
+                  attribute="projects"
                   classNames={{
                     root: styles.refinementRoot,
                     list: styles.refinementList,
