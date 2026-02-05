@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import BackgroundMusic from '@/components/BackgroundMusic/BackgroundMusic';
 import Footer from '@/components/Footer/Footer';
+import ErrorBoundary from '@/components/ErrorBoundary/ErrorBoundary';
 import styles from './ClientShell.module.css';
 
 const GlitterBomb = dynamic(() => import('@/components/GlitterBomb/GlitterBomb'), {
@@ -21,7 +22,9 @@ export default function ClientShell({ children }: { children: React.ReactNode })
       <BackgroundMusic />
       {children}
       <div className={styles.floatingControls}>
-        <AIChat />
+        <ErrorBoundary fallback={null}>
+          <AIChat />
+        </ErrorBoundary>
       </div>
       <Footer />
     </>

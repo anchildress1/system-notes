@@ -96,7 +96,7 @@ describe('FactCard Component', () => {
   it('has correct article structure for accessibility', () => {
     render(<FactCard hit={createMockHit()} />);
 
-    const card = screen.getByRole('button');
+    const card = screen.getByRole('article');
     expect(card).toBeInTheDocument();
     expect(card.tagName).toBe('ARTICLE');
     expect(screen.getByRole('heading', { level: 3 })).toBeInTheDocument();

@@ -1,15 +1,19 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 from werkzeug.utils import secure_filename
 import os
 import json
 import logging
+import re
+import xml.etree.ElementTree as ET
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
+import httpx
 
 # Load environment variables
 from pathlib import Path
@@ -139,3 +143,176 @@ async def get_system_doc(doc_path: str):
     except Exception as e:
         logger.error(f"Error serving doc: {e}")
         return JSONResponse(status_code=500, content={"error": "Internal server error"})
+
+
+CRAWLY_BASE_URL = "https://crawly.checkmarkdevtools.dev"
+CRAWLY_SITEMAP_URL = f"{CRAWLY_BASE_URL}/sitemap.xml"
+
+_blog_cache: dict = {"data": None, "expires": None}
+
+
+class BlogPost(BaseModel):
+    objectID: str
+    title: str
+    blurb: str = Field(description="Short summary of the blog post")
+    fact: str = Field(description="Key insight or takeaway from the post")
+    tags: List[str] = []
+    projects: List[str] = []
+    category: str = "Blog"
+    signal: int = Field(default=3, ge=1, le=5)
+    url: str
+    published_date: Optional[str] = None
+    reading_time: Optional[str] = None
+
+
+class BlogSearchResponse(BaseModel):
+    results: List[BlogPost]
+    total: int
+    query: Optional[str] = None
+
+
+async def fetch_sitemap_urls() -> List[str]:
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        response = await client.get(CRAWLY_SITEMAP_URL)
+        response.raise_for_status()
+        root = ET.fromstring(response.text)
+        ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+        urls = [
+            loc.text for loc in root.findall(".//sm:loc", ns)
+            if loc.text and "/posts/" in loc.text
+        ]
+        return urls
+
+
+def extract_json_ld(html: str) -> Optional[dict]:
+    pattern = r'<script type="application/ld\+json">\s*(\{[^<]+\})\s*</script>'
+    matches = re.findall(pattern, html, re.DOTALL)
+    for match in matches:
+        try:
+            data = json.loads(match)
+            if data.get("@type") == "Article":
+                return data
+        except json.JSONDecodeError:
+            continue
+    return None
+
+
+def extract_meta_content(html: str, name: str) -> Optional[str]:
+    pattern = rf'<meta\s+name="{name}"\s+content="([^"]*)"'
+    match = re.search(pattern, html, re.IGNORECASE)
+    return match.group(1) if match else None
+
+
+async def fetch_post_metadata(url: str) -> Optional[BlogPost]:
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            html = response.text
+
+        json_ld = extract_json_ld(html)
+        if not json_ld:
+            return None
+
+        slug = url.split("/")[-1].replace(".html", "")
+        keywords = json_ld.get("keywords", [])
+        if isinstance(keywords, str):
+            keywords = [k.strip() for k in keywords.split(",")]
+
+        reading_time = extract_meta_content(html, "reading-time")
+        description = json_ld.get("description", "")
+
+        return BlogPost(
+            objectID=f"blog:{slug}",
+            title=json_ld.get("headline", ""),
+            blurb=description[:200] if description else "",
+            fact=description,
+            tags=keywords,
+            projects=["DevTO Mirror"],
+            category="Blog",
+            signal=3,
+            url=json_ld.get("mainEntityOfPage", {}).get("@id", url),
+            published_date=json_ld.get("datePublished"),
+            reading_time=reading_time,
+        )
+    except Exception as e:
+        logger.warning(f"Failed to fetch post {url}: {e}")
+        return None
+
+
+async def get_all_blog_posts() -> List[BlogPost]:
+    global _blog_cache
+    now = datetime.now()
+
+    if _blog_cache["data"] and _blog_cache["expires"] and now < _blog_cache["expires"]:
+        return _blog_cache["data"]
+
+    urls = await fetch_sitemap_urls()
+    posts = []
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        for url in urls:
+            try:
+                response = await client.get(url)
+                response.raise_for_status()
+                html = response.text
+                json_ld = extract_json_ld(html)
+                if not json_ld:
+                    continue
+
+                slug = url.split("/")[-1].replace(".html", "")
+                keywords = json_ld.get("keywords", [])
+                if isinstance(keywords, str):
+                    keywords = [k.strip() for k in keywords.split(",")]
+
+                reading_time = extract_meta_content(html, "reading-time")
+                description = json_ld.get("description", "")
+
+                posts.append(BlogPost(
+                    objectID=f"blog:{slug}",
+                    title=json_ld.get("headline", ""),
+                    blurb=description[:200] if description else "",
+                    fact=description,
+                    tags=keywords,
+                    projects=["DevTO Mirror"],
+                    category="Blog",
+                    signal=3,
+                    url=json_ld.get("mainEntityOfPage", {}).get("@id", url),
+                    published_date=json_ld.get("datePublished"),
+                    reading_time=reading_time,
+                ))
+            except Exception as e:
+                logger.warning(f"Failed to fetch post {url}: {e}")
+                continue
+
+    _blog_cache["data"] = posts
+    _blog_cache["expires"] = now + timedelta(minutes=15)
+    return posts
+
+
+@app.get("/blog/search", response_model=BlogSearchResponse)
+async def search_blog_posts(
+    q: Optional[str] = Query(None, description="Search query to filter posts"),
+    tag: Optional[str] = Query(None, description="Filter by tag"),
+    limit: int = Query(10, ge=1, le=50, description="Maximum results to return"),
+):
+    posts = await get_all_blog_posts()
+
+    if q:
+        q_lower = q.lower()
+        posts = [
+            p for p in posts
+            if q_lower in p.title.lower()
+            or q_lower in p.blurb.lower()
+            or q_lower in p.fact.lower()
+            or any(q_lower in t.lower() for t in p.tags)
+        ]
+
+    if tag:
+        tag_lower = tag.lower()
+        posts = [p for p in posts if any(tag_lower in t.lower() for t in p.tags)]
+
+    return BlogSearchResponse(
+        results=posts[:limit],
+        total=len(posts),
+        query=q,
+    )

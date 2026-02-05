@@ -6,6 +6,7 @@ import { Chat } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import styles from './AIChat.module.css';
 import dynamic from 'next/dynamic';
+import { API_URL } from '@/config';
 
 import { IoClose } from 'react-icons/io5';
 import { GiBat } from 'react-icons/gi';
@@ -14,15 +15,20 @@ import { FaBrain, FaUser } from 'react-icons/fa';
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
 
+if (!appId || !apiKey) {
+  throw new Error(
+    'Algolia configuration missing: NEXT_PUBLIC_ALGOLIA_APPLICATION_ID and NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY must be set.'
+  );
+}
+
 // Create searchClient at module level for stable reference (prevents unnecessary re-renders)
-const searchClient =
-  appId && apiKey
-    ? algoliasearch(appId, apiKey)
-    : {
-        search: () => Promise.resolve({ results: [] }),
-      };
+const searchClient = algoliasearch(appId, apiKey);
 
 const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || '';
+
+if (!AGENT_ID) {
+  throw new Error('Algolia configuration missing: NEXT_PUBLIC_ALGOLIA_AGENT_ID must be set.');
+}
 
 const MusicPlayer = dynamic(() => import('../MusicPlayer/MusicPlayer'), {
   ssr: false,
@@ -53,13 +59,49 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
 export default function AIChat() {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
-  // Memoize translations to prevent unnecessary re-renders of the Chat widget
   const translations = useMemo(
     () => ({
       header: {
         title: 'Ruckus 2.0',
       },
       toggleButtonTitle: 'Open AI Chat',
+    }),
+    []
+  );
+
+  const tools = useMemo(
+    () => ({
+      searchBlogPosts: {
+        onToolCall: async (params: {
+          input: unknown;
+          addToolResult: (result: { output: unknown }) => void;
+        }) => {
+          const { input, addToolResult } = params;
+          const typedInput = input as { query?: string; tag?: string; limit?: number } | undefined;
+          try {
+            const urlParams = new URLSearchParams();
+            if (typedInput?.query) urlParams.set('q', typedInput.query);
+            if (typedInput?.tag) urlParams.set('tag', typedInput.tag);
+            if (typedInput?.limit) urlParams.set('limit', String(typedInput.limit));
+
+            const response = await fetch(`${API_URL}/blog/search?${urlParams.toString()}`);
+            if (!response.ok) {
+              addToolResult({
+                output: { error: 'Failed to fetch blog posts', results: [] },
+              });
+              return;
+            }
+
+            const data = await response.json();
+            addToolResult({ output: data });
+          } catch (error) {
+            console.error('AIChat tool error:', error);
+            addToolResult({
+              output: { error: 'Network error fetching blog posts', results: [] },
+            });
+          }
+        },
+      },
     }),
     []
   );
@@ -103,6 +145,7 @@ export default function AIChat() {
         <Chat
           agentId={AGENT_ID}
           translations={translations}
+          tools={tools}
           headerTitleIconComponent={HeaderIcon}
           assistantMessageLeadingComponent={AssistantAvatar}
           userMessageLeadingComponent={UserAvatar}

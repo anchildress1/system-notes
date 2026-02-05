@@ -6,7 +6,9 @@ import { Project } from '@/data/projects';
 // Mock next/image
 vi.mock('next/image', () => ({
   default: ({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fill: _fill,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     priority: _priority,
     ...props
   }: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean; priority?: boolean }) => (

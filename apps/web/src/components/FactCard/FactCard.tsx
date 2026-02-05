@@ -44,8 +44,6 @@ export default function FactCard({ hit }: FactCardProps) {
       onClick={handleFlip}
       onKeyDown={handleKeyDown}
       tabIndex={0}
-      role="button"
-      aria-expanded={isFlipped}
       aria-label={`${hit.title}. ${isFlipped ? 'Press to show summary' : 'Press to show full fact'}`}
     >
       <div className={styles.cardInner}>
