@@ -1,41 +1,11 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { injectTestStyles, mockAlgolia } from './utils';
 
 test.describe('System Notes Integration', () => {
   test.beforeEach(async ({ page }) => {
-    // Mock Algolia globally to ensure deterministic tests and prevent external calls
-    await page.route('**/*algolia*/**', async (route) => {
-      // Small delay to simulate network but not hang
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Always return empty results to prevent Chat from opening automatically
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          results: [
-            {
-              hits: [],
-              nbHits: 0,
-            },
-          ],
-        }),
-      });
-    });
-
-    // Inject CSS to hide the Chat widget to prevent click interception
-    await page.addStyleTag({
-      content: `
-        [class*="floatingControls"],
-        .ais-Chat-window,
-        .ais-Chat-toggleButton,
-        [class*="ClientShell-module__PdIJPa__floatingControls"] {
-          display: none !important;
-          pointer-events: none !important;
-          z-index: -1 !important;
-        }
-      `,
-    });
+    await mockAlgolia(page);
+    await injectTestStyles(page);
   });
 
   test('loads homepage with correct metadata', async ({ page }) => {
@@ -48,7 +18,7 @@ test.describe('System Notes Integration', () => {
     await page.goto('/');
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
-    await expect(footer).toContainText('Built with Gemini, ChatGPT, Claude + Verdent');
+    await expect(footer).toContainText('Built with Gemini 3 Pro');
   });
 
   test('should display blog CTA in header', async ({ page }) => {

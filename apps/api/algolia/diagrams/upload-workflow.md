@@ -11,12 +11,11 @@ graph TD
     Trigger["Deploy / Update Trigger"]:::trigger
 
     %% Script path
-    Script["Indexing Script<br/>(index_algolia.py)"]:::method
+    Script["Deploy Script<br/>(algolia_upload.sh)"]:::method
 
     %% Steps
     Validation{"Env Vars Set?<br/>(API Keys)"}:::decision
-    LoadData["Load sources/index.json"]:::step
-    IndexSync["Atomic Replace<br/>(system-notes)"]:::step
+    IndexSync["Index Data<br/>(system-notes)"]:::step
     SynonymSync["Synonym Sync<br/>(system-notes)"]:::step
 
     %% Outcomes
@@ -26,10 +25,9 @@ graph TD
     %% Flow
     Trigger --> Script
     Script --> Validation
-    Validation -->|yes| LoadData
+    Validation -->|yes| IndexSync
     Validation -->|no| Fail
 
-    LoadData --> IndexSync
     IndexSync --> SynonymSync
     SynonymSync --> Success
 

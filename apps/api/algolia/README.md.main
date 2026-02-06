@@ -1,6 +1,30 @@
-# Algolia System Data Flow
+# Algolia Index Configuration
 
-End-to-end flow from JSON source files through the **Graph Enrichment Script** to Algolia and the Agent.
+This folder tracks all Algolia index settings for reproducibility.
+
+## Indices
+
+- **`system-notes`** — Unified index containing "fact" objects and narrative records (Identity, Principles, Projects, etc.) for targeted retrieval.
+
+## Files
+
+- `sources/` — Source of truth JSON files (`index.json`).
+- `config/` — Index settings and synonym files (`settings.json`, `synonyms.json`).
+- `algolia_prompt.md` — The unified system prompt for the agent.
+
+## Searchable Attributes (Tier Order)
+
+### `system-notes`
+
+1. `title`
+2. `blurb`
+3. `fact`
+4. `tags`
+5. `entities`
+
+## Architecture Diagrams
+
+### System Flow: Source → Algolia → Agent → User
 
 ```mermaid
 graph TB
@@ -33,3 +57,23 @@ graph TB
     classDef agent fill:#059669,stroke:#047857,stroke-width:2px,color:#f0fdf4
     classDef output fill:#0891b2,stroke:#0e7490,stroke-width:2px,color:#ecfeff
 ```
+
+## Upload Workflow
+
+The primary upload method is via the python script:
+
+```bash
+# Upload to Algolia (Enrichment happens in-memory)
+python3 apps/api/scripts/index_algolia.py
+```
+
+## Credentials
+
+Stored in `.env`:
+
+```
+ALGOLIA_APPLICATION_ID=EXKENZ9FHJ
+ALGOLIA_ADMIN_API_KEY=<redacted>
+```
+
+**Never commit credentials to git.**

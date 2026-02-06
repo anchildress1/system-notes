@@ -167,7 +167,6 @@ button {
 }
 
 /* Header Icon Color */
-.ais-ChatHeader-titleIcon,
-.aspect-square {
+.ais-ChatHeader-titleIcon {
   color: hsl(338 78% 61%) !important;
 }

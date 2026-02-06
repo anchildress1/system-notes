@@ -1,20 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { injectTestStyles } from './utils';
 
 test.describe('Primary Navigation Flows', () => {
   test.beforeEach(async ({ page }) => {
-    // Inject CSS to hide the Chat widget to prevent click interception
-    await page.addStyleTag({
-      content: `
-        [class*="floatingControls"],
-        .ais-Chat-window,
-        .ais-Chat-toggleButton,
-        [class*="ClientShell-module__PdIJPa__floatingControls"] {
-          display: none !important;
-          pointer-events: none !important;
-          z-index: -1 !important;
-        }
-      `,
-    });
+    await injectTestStyles(page);
   });
   test('should navigate from Home to About and back', async ({ page }) => {
     // Start at Home

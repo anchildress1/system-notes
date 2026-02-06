@@ -47,7 +47,6 @@ UI_SA="system-notes-ui@$PROJECT_ID.iam.gserviceaccount.com"
 NEXT_PUBLIC_ALGOLIA_APPLICATION_ID="${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}"
 NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY="${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}"
 NEXT_PUBLIC_ALGOLIA_AGENT_ID="${NEXT_PUBLIC_ALGOLIA_AGENT_ID}"
-NEXT_PUBLIC_BASE_URL=https://unstable.anchildress1.dev
 
 # ==========================================
 # Deployment Function
@@ -79,15 +78,16 @@ deploy_service() {
     echo "Building: $IMAGE_URI"
 
     if [ -n "$DOCKERFILE_PATH" ]; then
-        # Use cloudbuild.yaml for web app with build args
-        # Prefix sensitive vars with _ to prevent Cloud Build from logging them
-        gcloud beta builds submit "$SOURCE_DIR" \
+        # Use provided cloudbuild configuration if Dockerfile path implies special handling (via config file)
+        # We assume if DOCKERFILE_PATH is passed, we are using the web config pattern or similar
+        # For simplicity in this specific project context:
+        gcloud builds submit "$SOURCE_DIR" \
             --config "apps/web/cloudbuild.yaml" \
             --project "$PROJECT_ID" \
-            --substitutions "_IMAGE_URI=$IMAGE_URI,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID,_NEXT_PUBLIC_API_URL=$API_URL,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL"
+            --substitutions _IMAGE_URI="$IMAGE_URI",_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID="$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID",_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY="$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY",_NEXT_PUBLIC_ALGOLIA_AGENT_ID="$NEXT_PUBLIC_ALGOLIA_AGENT_ID",_NEXT_PUBLIC_API_URL="$API_URL"
     else
         # Standard build from root of service directory
-        gcloud beta builds submit --tag "$IMAGE_URI" "$SOURCE_DIR" --project "$PROJECT_ID"
+        gcloud builds submit --tag "$IMAGE_URI" "$SOURCE_DIR" --project "$PROJECT_ID"
     fi
 
     # 3. Deploy to Cloud Run
