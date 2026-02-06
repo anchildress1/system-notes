@@ -122,7 +122,7 @@ export default function SearchPage() {
               <div className={styles.refinementGroup}>
                 <h3 className={styles.refinementTitle}>Tags</h3>
                 <RefinementList
-                  attribute="tags"
+                  attribute="tags.lvl0"
                   limit={10}
                   showMore
                   showMoreLimit={30}
