@@ -10,7 +10,7 @@ export async function injectTestStyles(page: Page) {
       [class*="floatingControls"],
       .ais-Chat-window,
       .ais-Chat-toggleButton,
-      [class*="ClientShell-module"][class*="floatingControls"] {
+      [class*="ClientShell-module"] [class*="floatingControls"] {
         display: none !important;
         pointer-events: none !important;
         z-index: -1 !important;

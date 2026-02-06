@@ -53,6 +53,14 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
 export default function AIChat() {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
+  useEffect(() => {
+    if (!AGENT_ID && process.env.NODE_ENV !== 'production') {
+      console.warn(
+        'AIChat: NEXT_PUBLIC_ALGOLIA_AGENT_ID is missing. Chat widget will be disabled.'
+      );
+    }
+  }, []);
+
   // Memoize translations to prevent unnecessary re-renders of the Chat widget
   const translations = useMemo(
     () => ({
