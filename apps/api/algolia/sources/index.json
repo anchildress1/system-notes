@@ -1376,6 +1376,17 @@
     "signal": 3
   },
   {
+    "objectID": "card:challenge:context:backend-dev-ui-shortcut-value",
+    "title": "The chat widget is a fast path to a real UI feature",
+    "blurb": "It provides immediate UX even for non-UI developers.",
+    "fact": "Coming from a strictly back-end background, the chat widget was an easy way to have a fully fledged feature accessible immediately in the UI.",
+    "tags.lvl0": ["DEV Challenge", "Discipline"],
+    "tags.lvl1": ["Discipline > Engineering"],
+    "projects": ["System Notes"],
+    "category": "Decisions",
+    "signal": 3
+  },
+  {
     "objectID": "card:challenge:constraints:beta-widget-rough-edges",
     "title": "Beta UI tooling is incomplete but usable",
     "blurb": "The design surface is not fully mature.",

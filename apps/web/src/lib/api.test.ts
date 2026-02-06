@@ -95,7 +95,6 @@ describe('getProjects', () => {
     });
 
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
     const result = await getProjects();
     expect(result).toEqual([]);
     expect(consoleSpy).toHaveBeenCalled();

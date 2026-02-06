@@ -109,15 +109,6 @@ describe('FactCard Component', () => {
     expect(card).toHaveAttribute('aria-expanded', 'true');
   });
 
-  it('supports keyboard navigation with Space', () => {
-    render(<FactCard hit={createMockHit()} />);
-
-    const card = screen.getByRole('button', { name: /Press to expand/i });
-    // Simulate activation
-    fireEvent.click(card);
-    expect(card).toHaveAttribute('aria-expanded', 'true');
-  });
-
   it('supports Escape to close when expanded', () => {
     render(<FactCard hit={createMockHit()} />);
 

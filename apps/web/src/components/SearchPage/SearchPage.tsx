@@ -14,11 +14,11 @@ import {
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
 import styles from './SearchPage.module.css';
-import UnifiedHitCard from './UnifiedHitCard';
+import FactCard from '../FactCard/FactCard';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'merged-search';
+const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'system-notes';
 
 const hasCredentials = appId && searchKey;
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
@@ -37,6 +37,7 @@ export default function SearchPage() {
     return (
       <div className={styles.container}>
         <div className={styles.errorState}>
+          <h1 className={styles.title}>Fact Index</h1>
           <p className={styles.errorMessage}>
             Search is currently unavailable. Please check back later.
           </p>
@@ -52,6 +53,7 @@ export default function SearchPage() {
 
         <header className={styles.searchHeader}>
           <div className={styles.searchRow}>
+            <h1 className={styles.title}>Fact Index</h1>
             <SearchBox
               placeholder="Search facts..."
               classNames={{
@@ -132,7 +134,7 @@ export default function SearchPage() {
               <div className={styles.refinementGroup}>
                 <h3 className={styles.refinementTitle}>Tags</h3>
                 <RefinementList
-                  attribute="tags.lvl0"
+                  attribute="tags"
                   limit={10}
                   showMore
                   showMoreLimit={30}
@@ -165,7 +167,7 @@ export default function SearchPage() {
 
           <section className={styles.results} aria-label="Search results">
             <Hits
-              hitComponent={UnifiedHitCard}
+              hitComponent={FactCard}
               classNames={{
                 root: styles.hitsRoot,
                 list: styles.hitsList,

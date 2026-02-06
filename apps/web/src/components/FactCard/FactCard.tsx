@@ -16,7 +16,7 @@ type SendEventForHits = {
 
 import styles from './FactCard.module.css';
 
-export interface FactHitRecord extends BaseHit {
+interface FactHitRecord extends BaseHit {
   objectID: string;
   title: string;
   blurb: string;
@@ -82,11 +82,9 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
               <Highlight attribute="title" hit={hit} />
             </h3>
 
-            {hit.blurb && (
-              <p className={styles.blurb}>
-                <Highlight attribute="blurb" hit={hit} />
-              </p>
-            )}
+            <p className={styles.blurb}>
+              <Highlight attribute="blurb" hit={hit} />
+            </p>
 
             <div className={styles.flipHint}>
               <span className={styles.flipIcon} aria-hidden="true">

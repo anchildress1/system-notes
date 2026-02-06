@@ -82,7 +82,7 @@
 }
 
 .flipped .cardInner {
-  transform: rotateY(180deg);
+  transform: none; /* Removed rotation as we use fixed positioning for expanded state */
 }
 
 .cardFront,
@@ -114,7 +114,6 @@
 }
 
 .cardBack {
-  transform: rotateY(180deg);
   z-index: 1;
   position: relative; /* Changed from absolute to relative to flow content in fixed container */
   height: 100%;
@@ -250,7 +249,7 @@
 }
 
 .factQuote {
-  font-family: var(--font-serif, serif); /* Fallback if no specific serif var */
+  font-family: var(--font-serif, serif);
   font-size: 1.25rem;
   font-style: italic;
   color: hsl(var(--color-text-primary));

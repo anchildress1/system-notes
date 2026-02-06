@@ -6,7 +6,6 @@ import { Chat } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import styles from './AIChat.module.css';
 import dynamic from 'next/dynamic';
-import { API_URL } from '@/config';
 
 import { IoClose } from 'react-icons/io5';
 import { GiBat } from 'react-icons/gi';
@@ -65,43 +64,6 @@ export default function AIChat() {
     []
   );
 
-  const tools = useMemo(
-    () => ({
-      searchBlogPosts: {
-        onToolCall: async (params: {
-          input: unknown;
-          addToolResult: (result: { output: unknown }) => void;
-        }) => {
-          const { input, addToolResult } = params;
-          const typedInput = input as { query?: string; tag?: string; limit?: number } | undefined;
-          try {
-            const urlParams = new URLSearchParams();
-            if (typedInput?.query) urlParams.set('q', typedInput.query);
-            if (typedInput?.tag) urlParams.set('tag', typedInput.tag);
-            if (typedInput?.limit) urlParams.set('limit', String(typedInput.limit));
-
-            const response = await fetch(`${API_URL}/blog/search?${urlParams.toString()}`);
-            if (!response.ok) {
-              addToolResult({
-                output: { error: 'Failed to fetch blog posts', results: [] },
-              });
-              return;
-            }
-
-            const data = await response.json();
-            addToolResult({ output: data });
-          } catch (error) {
-            console.error('AIChat tool error:', error);
-            addToolResult({
-              output: { error: 'Network error fetching blog posts', results: [] },
-            });
-          }
-        },
-      },
-    }),
-    []
-  );
-
   useEffect(() => {
     // Accessibility fix: Inject aria-label into Algolia's Chat toggle button
     const observer = new MutationObserver(() => {
@@ -141,7 +103,6 @@ export default function AIChat() {
         <Chat
           agentId={AGENT_ID}
           translations={translations}
-          tools={tools}
           headerTitleIconComponent={HeaderIcon}
           assistantMessageLeadingComponent={AssistantAvatar}
           userMessageLeadingComponent={UserAvatar}

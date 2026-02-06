@@ -147,11 +147,9 @@ export default function GlitterBomb() {
         window.removeEventListener('trigger-glitter-bomb', trigger);
     };
 
-    // Delay initialization to improve LCP/TBT scores
-    const timerId = setTimeout(initPixi, 3000);
+    initPixi();
 
     return () => {
-      clearTimeout(timerId);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((window as any)._glitterCleanup) (window as any)._glitterCleanup();
       if (appRef.current) {

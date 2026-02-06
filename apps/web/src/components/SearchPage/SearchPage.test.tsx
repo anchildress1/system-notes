@@ -46,6 +46,7 @@ describe('SearchPage Component', () => {
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
 
+    expect(screen.getByText('Fact Index')).toBeInTheDocument();
     expect(screen.getByText(/Search is currently unavailable/)).toBeInTheDocument();
   });
 
@@ -69,7 +70,7 @@ describe('SearchPage Component', () => {
 
     expect(screen.getByTestId('refinement-category')).toBeInTheDocument();
     expect(screen.getByTestId('refinement-projects')).toBeInTheDocument();
-    expect(screen.getByTestId('refinement-tags.lvl0')).toBeInTheDocument();
+    expect(screen.getByTestId('refinement-tags')).toBeInTheDocument();
   });
 
   it('renders pagination and stats components', async () => {
@@ -93,13 +94,14 @@ describe('SearchPage Component', () => {
     expect(screen.getByTestId('clear-refinements')).toBeInTheDocument();
   });
 
-  it('has correct heading structure for filters', async () => {
+  it('has correct heading structure for SEO', async () => {
     process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
     process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
 
+    expect(screen.getByRole('heading', { level: 1, name: 'Fact Index' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: 'Filter' })).toBeInTheDocument();
   });
 

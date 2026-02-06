@@ -1,0 +1,201 @@
+[
+  {
+    "objectID": "system-notes",
+    "node_type": "project",
+    "title": "System Notes",
+    "tags": ["project", "experiment", "active", "portfolio"],
+    "order_rank": 10,
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "name": "System Notes",
+      "what_it_is": "AI-generated portfolio system built under a hackathon deadline as a constrained experiment",
+      "why_it_exists": "To force shipment of a real portfolio site under an external deadline, avoiding indefinite delay due to UI avoidance, while exploring orchestration, authorship boundaries, and evaluation clarity",
+      "what_happened": "Successfully shipped and deployed a real site; UI intentionally minimal, with AI included due to challenge focus rather than frontend interest",
+      "tech_stack": ["GCP", "Cloud Run", "LLM", "AI Orchestration"],
+      "project_type": "experiment",
+      "completion_state": "active",
+      "repo_url": "https://github.com/anchildress1/system-notes",
+      "app_url": "https://system-notes.anchildress1.dev",
+      "related_project_ids": [
+        "underfoot-underground-travel-planner",
+        "delegate-action",
+        "devto-mirror"
+      ],
+      "related_links": [
+        "https://dev.to/anchildress1/my-portfolio-doesnt-live-on-the-page-218e",
+        "https://dev.to/anchildress1/can-we-set-the-record-straight-ai-content-and-a-bit-of-sanity-1inj",
+        "https://dev.to/anchildress1/waiting-with-intent-designing-ai-systems-for-the-long-game-1abg",
+        "https://dev.to/anchildress1/fact-checking-the-fear-behind-the-dark-side-of-ai-the-real-story-366p"
+      ]
+    }
+  },
+  {
+    "objectID": "delegate-action",
+    "node_type": "project",
+    "title": "Delegate Action",
+    "tags": ["project", "tool", "active", "github"],
+    "order_rank": 20,
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "name": "Delegate Action",
+      "what_it_is": "Temporary AI coding agent implemented as a narrowly scoped GitHub Action",
+      "why_it_exists": "To stand in for missing GitHub functionality: invoking a coding agent from within existing GitHub Actions workflows",
+      "what_happened": "Enabled AI-generated pull requests for documentation updates using prompts defined in Awesome GitHub Copilot; intentionally scoped as disposable pending native GitHub support",
+      "tech_stack": ["GitHub Actions", "Node.js", "Automation"],
+      "project_type": "tool",
+      "completion_state": "active",
+      "repo_url": "https://github.com/CheckMarKDevTools/delegate-action",
+      "related_project_ids": ["rai-lint", "awesome-github-copilot"]
+    }
+  },
+  {
+    "objectID": "my-hermantic-agent",
+    "node_type": "project",
+    "title": "Hermes Agent",
+    "tags": ["project", "experiment", "active", "agent"],
+    "order_rank": 30,
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "name": "Hermes Agent",
+      "what_it_is": "Local AI agent playground for experimenting with memory, workflow learning, and agent behavior",
+      "why_it_exists": "To design a locally grounded personal agent that adapts to specific workflows instead of relying on generic, stateless prompts",
+      "what_happened": "Currently in design phase; serves as a conceptual and architectural sandbox rather than a completed implementation",
+      "tech_stack": ["Python", "Local AI", "Agent Systems", "Persistence"],
+      "project_type": "experiment",
+      "completion_state": "active",
+      "repo_url": "https://github.com/anchildress1/my-hermantic-agent",
+      "related_project_ids": ["underfoot-underground-travel-planner"]
+    }
+  },
+  {
+    "objectID": "rai-lint",
+    "node_type": "project",
+    "title": "RAI Lint",
+    "tags": ["project", "tool", "active", "rai"],
+    "order_rank": 40,
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "name": "RAI Lint",
+      "what_it_is": "Commit linting tool that enforces explicit attribution of AI involvement in code authorship",
+      "why_it_exists": "To make AI usage explicit and enforceable instead of implied and ignored",
+      "what_happened": "Successfully normalized AI disclosure in commit history using commitlint and gitlint",
+      "tech_stack": ["TypeScript", "Python", "Developer Tooling", "AI Governance"],
+      "project_type": "tool",
+      "completion_state": "active",
+      "repo_url": "https://github.com/CheckMarKDevTools/rai-lint",
+      "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"],
+      "related_links": [
+        "https://dev.to/anchildress1/is-github-copilot-safe-the-fun-and-hard-truth-about-responsible-ai-3b95",
+        "https://dev.to/anchildress1/did-ai-erase-attribution-your-git-history-is-missing-a-co-author-1m2l",
+        "https://dev.to/anchildress1/signing-your-name-on-ai-assisted-commits-with-rai-footers-2b0o"
+      ]
+    }
+  },
+  {
+    "objectID": "underfoot-underground-travel-planner",
+    "node_type": "project",
+    "title": "Underfoot",
+    "tags": ["project", "experiment", "archived", "travel"],
+    "order_rank": 50,
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "name": "Underfoot",
+      "what_it_is": "AI-assisted travel planner focused on surfacing local context, constraints, and tradeoffs",
+      "why_it_exists": "To explore AI orchestration and narrative synthesis using a real-world travel discovery problem",
+      "what_happened": "Worked well initially, then over-extended past intended scope; became a lesson in timeboxing, versioning, and orchestration limits after hackathon tooling expired",
+      "tech_stack": ["Python", "Frontend", "Data Ingestion", "AI Orchestration"],
+      "project_type": "experiment",
+      "completion_state": "archived",
+      "repo_url": "https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner",
+      "related_project_ids": ["my-hermantic-agent"],
+      "related_links": [
+        "https://dev.to/anchildress1/underfoot-the-chatpot-for-hidden-places-and-why-i-dont-do-hackathons-2684",
+        "https://dev.to/anchildress1/the-hackathon-i-swore-off-and-the-exhaustion-that-mostly-compiled-c4l"
+      ]
+    }
+  },
+  {
+    "objectID": "awesome-github-copilot",
+    "node_type": "project",
+    "title": "Awesome GitHub Copilot",
+    "tags": ["project", "resource", "active", "copilot"],
+    "order_rank": 60,
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "name": "Awesome GitHub Copilot",
+      "what_it_is": "Personal collection of GitHub Copilot prompts, agents, instructions, and skills organized for reuse",
+      "why_it_exists": "A place for GitHub Copilot tools and patterns that earned their keep instead of just sounding clever",
+      "what_happened": "Functions as a living reference actively used in daily workflow to promote consistency and reuse",
+      "tech_stack": ["Documentation", "GitHub Copilot", "AI Workflows"],
+      "project_type": "resource",
+      "completion_state": "active",
+      "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
+      "related_project_ids": ["delegate-action", "checkmark-copilot-chat"],
+      "related_links": [
+        "https://dev.to/anchildress1/troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o",
+        "https://dev.to/anchildress1/oh-i-have-big-news-guess-what-i-got-yesterday-1jca",
+        "https://dev.to/anchildress1/everything-i-know-about-github-copilot-instructions-from-zero-to-onboarded-for-real-4nb0",
+        "https://dev.to/anchildress1/github-copilot-chat-modes-explained-with-personality-2f4c",
+        "https://dev.to/anchildress1/leash-not-autopilot-building-predictable-ai-behavior-with-copilot-instructions-14ip"
+      ]
+    }
+  },
+  {
+    "objectID": "devto-mirror",
+    "node_type": "project",
+    "title": "Dev.to Mirror",
+    "tags": ["project", "tool", "active", "writing"],
+    "order_rank": 70,
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "name": "Dev.to Mirror",
+      "what_it_is": "Automated publishing mirror that makes long-form technical writing visible to AI systems",
+      "why_it_exists": "To make long-form technical writing legible to AI systems",
+      "what_happened": "Solved AI visibility for Dev.to writing without self-hosting or moving the canonical source",
+      "tech_stack": ["Python", "GitHub Actions", "Static Hosting"],
+      "project_type": "tool",
+      "completion_state": "active",
+      "repo_url": "https://github.com/CheckMarKDevTools/devto-mirror",
+      "related_links": [
+        "https://dev.to/anchildress1/weekend-hack-making-my-blog-ai-searchable-no-flames-required-16h5"
+      ]
+    }
+  },
+  {
+    "objectID": "eslint-config-echo",
+    "node_type": "project",
+    "title": "Echo",
+    "tags": ["project", "tool", "active", "linting"],
+    "order_rank": 80,
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "name": "Echo",
+      "what_it_is": "Shared, opinionated ESLint configuration that encodes decisions once instead of renegotiating per project",
+      "why_it_exists": "To provide AI strict, reusable formatting and linting constraints across projects",
+      "what_happened": "Stabilized lint behavior and reduced bikeshedding and inconsistency across repositories",
+      "tech_stack": ["Node.js", "Linting", "Code Quality"],
+      "project_type": "tool",
+      "completion_state": "active",
+      "repo_url": "https://github.com/CheckMarKDevTools/eslint-config-echo"
+    }
+  },
+  {
+    "objectID": "checkmark-copilot-chat",
+    "node_type": "project",
+    "title": "Copilot Chat Extension",
+    "tags": ["project", "experiment", "failed", "copilot"],
+    "order_rank": 90,
+    "updated_at": "2026-02-01T00:00:00Z",
+    "data": {
+      "name": "Copilot Chat Extension",
+      "what_it_is": "Early experiment attempting to share Copilot prompts and instructions via chat",
+      "why_it_exists": "To test whether Copilot chat context could persist across environments",
+      "what_happened": "Proved unworkable due to lack of persistent context and documentation; abandoned rather than investing in a full plugin",
+      "tech_stack": ["GitHub Copilot", "JavaScript", "Experimental Tooling"],
+      "project_type": "experiment",
+      "completion_state": "failed",
+      "repo_url": "https://github.com/CheckMarKDevTools/checkmark-copilot-chat",
+      "related_project_ids": ["awesome-github-copilot"]
+    }
+  }
+]

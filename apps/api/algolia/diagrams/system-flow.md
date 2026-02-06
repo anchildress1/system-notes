@@ -1,11 +1,11 @@
 # Algolia System Data Flow
 
-End-to-end flow from the Unified JSON source through the Indexing Script to Algolia and the Agent.
+End-to-end flow from the Unified JSON source through the Indexing Script to Algolia, the Search UI, and the Ruckus Agent.
 
 ```mermaid
 graph TB
     accTitle: Algolia System Data Flow
-    accDescr: Data flow showing how the Python script indexes the unified JSON data
+    accDescr: Data flow showing how the Python script indexes the unified JSON data into Algolia for use by the Search UI and Ruckus Agent.
 
     %% Data sources
     UnifiedJSON["sources/index.json<br/>(Unified Knowledge Graph)"]:::source
