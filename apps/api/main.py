@@ -7,6 +7,7 @@ import os
 import json
 import logging
 import re
+import asyncio
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
@@ -160,6 +161,9 @@ class BlogPost(BaseModel):
     projects: List[str] = []
     category: str = "Blog"
     signal: int = Field(default=3, ge=1, le=5)
+
+
+class BlogPostInternal(BlogPost):
     url: str
     published_date: Optional[str] = None
     reading_time: Optional[str] = None
@@ -172,16 +176,22 @@ class BlogSearchResponse(BaseModel):
 
 
 async def fetch_sitemap_urls() -> List[str]:
-    async with httpx.AsyncClient(timeout=10.0) as client:
-        response = await client.get(CRAWLY_SITEMAP_URL)
-        response.raise_for_status()
-        root = ET.fromstring(response.text)
-        ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-        urls = [
-            loc.text for loc in root.findall(".//sm:loc", ns)
-            if loc.text and "/posts/" in loc.text
-        ]
-        return urls
+    logger.info(f"Fetching sitemap from {CRAWLY_SITEMAP_URL}")
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(CRAWLY_SITEMAP_URL)
+            response.raise_for_status()
+            root = ET.fromstring(response.text)
+            ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+            urls = [
+                loc.text for loc in root.findall(".//sm:loc", ns)
+                if loc.text and "/posts/" in loc.text
+            ]
+            logger.info(f"Found {len(urls)} post URLs in sitemap")
+            return urls
+    except Exception as e:
+        logger.error(f"Error fetching sitemap: {e}")
+        return []
 
 
 def extract_json_ld(html: str) -> Optional[dict]:
@@ -192,7 +202,8 @@ def extract_json_ld(html: str) -> Optional[dict]:
             data = json.loads(match)
             if data.get("@type") == "Article":
                 return data
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
+            logger.warning(f"Failed to parse JSON-LD: {e}")
             continue
     return None
 
@@ -203,15 +214,15 @@ def extract_meta_content(html: str, name: str) -> Optional[str]:
     return match.group(1) if match else None
 
 
-async def fetch_post_metadata(url: str) -> Optional[BlogPost]:
+async def fetch_post_content(client: httpx.AsyncClient, url: str) -> Optional[BlogPostInternal]:
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(url)
-            response.raise_for_status()
-            html = response.text
-
+        logger.info(f"Fetching metadata for {url}")
+        response = await client.get(url)
+        response.raise_for_status()
+        html = response.text
         json_ld = extract_json_ld(html)
         if not json_ld:
+            logger.warning(f"Skipping {url}: No JSON-LD found")
             return None
 
         slug = url.split("/")[-1].replace(".html", "")
@@ -221,17 +232,20 @@ async def fetch_post_metadata(url: str) -> Optional[BlogPost]:
 
         reading_time = extract_meta_content(html, "reading-time")
         description = json_ld.get("description", "")
+        final_url = json_ld.get("mainEntityOfPage", {}).get("@id", url)
+        
+        logger.info(f"Successfully parsed post: {slug}")
 
-        return BlogPost(
+        return BlogPostInternal(
             objectID=f"blog:{slug}",
             title=json_ld.get("headline", ""),
-            blurb=description[:200] if description else "",
+            blurb=final_url,
             fact=description,
             tags=keywords,
-            projects=["DevTO Mirror"],
+            projects=["DEV Blog"],
             category="Blog",
             signal=3,
-            url=json_ld.get("mainEntityOfPage", {}).get("@id", url),
+            url=final_url,
             published_date=json_ld.get("datePublished"),
             reading_time=reading_time,
         )
@@ -240,50 +254,24 @@ async def fetch_post_metadata(url: str) -> Optional[BlogPost]:
         return None
 
 
-async def get_all_blog_posts() -> List[BlogPost]:
+async def get_all_blog_posts() -> List[BlogPostInternal]:
     global _blog_cache
     now = datetime.now()
 
     if _blog_cache["data"] and _blog_cache["expires"] and now < _blog_cache["expires"]:
+        logger.info(f"Returning {len(_blog_cache['data'])} posts from cache")
         return _blog_cache["data"]
 
+    logger.info("Cache miss or expired. Fetching fresh blog posts...")
     urls = await fetch_sitemap_urls()
-    posts = []
+    
     async with httpx.AsyncClient(timeout=10.0) as client:
-        for url in urls:
-            try:
-                response = await client.get(url)
-                response.raise_for_status()
-                html = response.text
-                json_ld = extract_json_ld(html)
-                if not json_ld:
-                    continue
+        tasks = [fetch_post_content(client, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+        
+    posts = [p for p in results if p is not None]
 
-                slug = url.split("/")[-1].replace(".html", "")
-                keywords = json_ld.get("keywords", [])
-                if isinstance(keywords, str):
-                    keywords = [k.strip() for k in keywords.split(",")]
-
-                reading_time = extract_meta_content(html, "reading-time")
-                description = json_ld.get("description", "")
-
-                posts.append(BlogPost(
-                    objectID=f"blog:{slug}",
-                    title=json_ld.get("headline", ""),
-                    blurb=description[:200] if description else "",
-                    fact=description,
-                    tags=keywords,
-                    projects=["DevTO Mirror"],
-                    category="Blog",
-                    signal=3,
-                    url=json_ld.get("mainEntityOfPage", {}).get("@id", url),
-                    published_date=json_ld.get("datePublished"),
-                    reading_time=reading_time,
-                ))
-            except Exception as e:
-                logger.warning(f"Failed to fetch post {url}: {e}")
-                continue
-
+    logger.info(f"Fetched {len(posts)} valid posts")
     _blog_cache["data"] = posts
     _blog_cache["expires"] = now + timedelta(minutes=15)
     return posts
@@ -295,7 +283,10 @@ async def search_blog_posts(
     tag: Optional[str] = Query(None, description="Filter by tag"),
     limit: int = Query(10, ge=1, le=50, description="Maximum results to return"),
 ):
+    logger.info(f"Search request: q='{q}', tag='{tag}', limit={limit}")
+    
     posts = await get_all_blog_posts()
+    logger.info(f"Total posts available for filtering: {len(posts)}")
 
     if q:
         q_lower = q.lower()
@@ -306,13 +297,18 @@ async def search_blog_posts(
             or q_lower in p.fact.lower()
             or any(q_lower in t.lower() for t in p.tags)
         ]
+        logger.info(f"After query filter: {len(posts)} results")
 
-    if tag:
+    if tag and isinstance(tag, str):
         tag_lower = tag.lower()
         posts = [p for p in posts if any(tag_lower in t.lower() for t in p.tags)]
+        logger.info(f"After tag filter: {len(posts)} results")
 
+    results = posts[:limit]
+    logger.info(f"Returning {len(results)} results")
+    
     return BlogSearchResponse(
-        results=posts[:limit],
+        results=results,
         total=len(posts),
         query=q,
     )

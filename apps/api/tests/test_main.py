@@ -228,3 +228,93 @@ def test_blog_search_limit_validation():
     
     response = client.get("/blog/search?limit=0")
     assert response.status_code == 400
+
+
+@patch("main.httpx.AsyncClient")
+def test_blog_search_sitemap_failure(mock_client_class):
+    mock_client = MagicMock()
+    mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+    mock_client.__aexit__ = AsyncMock(return_value=None)
+    
+    # Simulate exception when fetching sitemap
+    mock_client.get = AsyncMock(side_effect=Exception("Sitemap unreachable"))
+    mock_client_class.return_value = mock_client
+    
+    response = client.get("/blog/search")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["results"] == []
+    assert data["total"] == 0
+
+
+@patch("main.httpx.AsyncClient")
+def test_blog_search_post_failure(mock_client_class):
+    mock_client = MagicMock()
+    mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+    mock_client.__aexit__ = AsyncMock(return_value=None)
+    
+    sitemap_response = MagicMock()
+    sitemap_response.text = MOCK_SITEMAP
+    sitemap_response.raise_for_status = MagicMock()
+    
+    # First post fails, second succeeds
+    post_response = MagicMock()
+    post_response.text = MOCK_POST_HTML
+    post_response.raise_for_status = MagicMock()
+    
+    mock_client.get = AsyncMock(side_effect=[
+        sitemap_response, 
+        Exception("Post unreachable"), 
+        post_response
+    ])
+    mock_client_class.return_value = mock_client
+    
+    response = client.get("/blog/search")
+    assert response.status_code == 200
+    data = response.json()
+    # One post should be skipped, one succeeded
+    # But wait, MOCK_SITEMAP has 2 post URLs.
+    # We mock side_effect for 3 calls: sitemap, post1, post2.
+    # If post1 fails, we expect post2 to be processed.
+    assert len(data["results"]) == 1
+    assert data["total"] == 1
+
+
+@patch("main.httpx.AsyncClient")
+def test_blog_search_response_shape(mock_client_class):
+    # Verify that the response strictly matches the index.json shape
+    # i.e., NO url, published_date, or reading_time
+    mock_client = MagicMock()
+    mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+    mock_client.__aexit__ = AsyncMock(return_value=None)
+    
+    sitemap_response = MagicMock()
+    sitemap_response.text = MOCK_SITEMAP
+    sitemap_response.raise_for_status = MagicMock()
+    
+    post_response = MagicMock()
+    post_response.text = MOCK_POST_HTML
+    post_response.raise_for_status = MagicMock()
+    
+    mock_client.get = AsyncMock(side_effect=[sitemap_response, post_response, post_response])
+    mock_client_class.return_value = mock_client
+    
+    response = client.get("/blog/search")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["results"]) > 0
+    
+    first_result = data["results"][0]
+    expected_keys = {"objectID", "title", "blurb", "fact", "tags", "projects", "category", "signal"}
+    assert set(first_result.keys()) == expected_keys
+    
+    # Explicitly check for exclusion of internal fields
+    assert "url" not in first_result
+    assert "published_date" not in first_result
+    assert "reading_time" not in first_result
+
+    # Verify user-requested field mappings
+    assert first_result["projects"] == ["DEV Blog"]
+    assert first_result["blurb"] == "https://dev.to/test/test-post-123"
+    assert first_result["fact"] == "This is a test description for the blog post about AI tools."
+
