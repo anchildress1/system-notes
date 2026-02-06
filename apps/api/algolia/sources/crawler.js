@@ -66,7 +66,8 @@ new Crawler({
           {
             objectID: urlStr,
             title: title,
-            blurb: urlStr,
+            url: urlStr,
+            blurb: '',
             fact: description,
             'tags.lvl0': ['DEV Blog'],
             'tags.lvl1': tags,

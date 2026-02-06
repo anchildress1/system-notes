@@ -4,10 +4,11 @@ import { Highlight } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
 import styles from './PostCard.module.css';
 
-interface PostHitRecord {
+export interface PostHitRecord {
   objectID: string;
   title: string;
-  blurb: string; // URL
+  url: string;
+  blurb: string;
   fact: string; // Excerpt
   tags?: {
     lvl0?: string[];
@@ -22,8 +23,8 @@ interface PostCardProps {
 }
 
 export default function PostCard({ hit }: PostCardProps) {
-  // Use blurb as URL if available, otherwise fallback to objectID
-  const url = hit.blurb && hit.blurb.startsWith('http') ? hit.blurb : hit.objectID;
+  // Use explicit url if available, fallback to blurb if it looks like a URL, then objectID
+  const url = hit.url || (hit.blurb && hit.blurb.startsWith('http') ? hit.blurb : hit.objectID);
   const tags = hit.tags?.lvl1 || hit.tags?.lvl0 || [];
 
   return (
