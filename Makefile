@@ -44,16 +44,15 @@ secret-scan:
 		uvx detect-secrets scan --exclude-files 'node_modules|dist|.next|.turbo|.venv|.secrets.baseline|.secrets.baseline.tmp' > .secrets.baseline.tmp; \
 		if [ -f .secrets.baseline ]; then \
 			echo "Checking against baseline..."; \
-			uvx detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' > .secrets.baseline.tmp; \
-			DIFF=$$(jq '.results | length' .secrets.baseline.tmp 2>/dev/null || echo 0); \
-			if [ "$${DIFF:-0}" -gt 0 ]; then \
-				echo "❌ Secrets found! Check .secrets.baseline.tmp or run 'detect-secrets audit .secrets.baseline'"; \
-				jq '.results' .secrets.baseline.tmp; \
+			NEW_SECRETS=$$(uvx detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results | length' 2>/dev/null || echo 0); \
+			if [ "$${NEW_SECRETS:-0}" -gt 0 ]; then \
+				echo "❌ New secrets found! Run 'detect-secrets audit .secrets.baseline' to review."; \
+				uvx detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results'; \
 				rm .secrets.baseline.tmp; \
 				exit 1; \
 			else \
-				echo "✅ No new secrets found."; \
-				rm .secrets.baseline.tmp; \
+				echo "✅ No new secrets found. Updating baseline timestamp."; \
+				mv .secrets.baseline.tmp .secrets.baseline; \
 			fi; \
 		else \
 			mv .secrets.baseline.tmp .secrets.baseline; \
@@ -63,16 +62,15 @@ secret-scan:
 		detect-secrets scan --exclude-files 'node_modules|dist|.next|.turbo|.venv|.secrets.baseline|.secrets.baseline.tmp' > .secrets.baseline.tmp; \
 		if [ -f .secrets.baseline ]; then \
 			echo "Checking against baseline..."; \
-			detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' > .secrets.baseline.tmp; \
-			DIFF=$$(jq '.results | length' .secrets.baseline.tmp 2>/dev/null || echo 0); \
-			if [ "$${DIFF:-0}" -gt 0 ]; then \
-				echo "❌ Secrets found! Check .secrets.baseline.tmp or run 'detect-secrets audit .secrets.baseline'"; \
-				jq '.results' .secrets.baseline.tmp; \
+			NEW_SECRETS=$$(detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results | length' 2>/dev/null || echo 0); \
+			if [ "$${NEW_SECRETS:-0}" -gt 0 ]; then \
+				echo "❌ New secrets found! Run 'detect-secrets audit .secrets.baseline' to review."; \
+				detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results'; \
 				rm .secrets.baseline.tmp; \
 				exit 1; \
 			else \
-				echo "✅ No new secrets found."; \
-				rm .secrets.baseline.tmp; \
+				echo "✅ No new secrets found. Updating baseline timestamp."; \
+				mv .secrets.baseline.tmp .secrets.baseline; \
 			fi; \
 		else \
 			mv .secrets.baseline.tmp .secrets.baseline; \
@@ -145,3 +143,5 @@ clean:
 algolia_deploy:
 	@echo "🔍 indexing algolia..."
 	cd apps/api && uv run python scripts/index_algolia.py
+
+index-algolia: algolia_deploy
