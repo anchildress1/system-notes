@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://anchildress1.dev/sitemap
+
+# Algolia-Crawler-Verif: 9436900A4AC5D56A

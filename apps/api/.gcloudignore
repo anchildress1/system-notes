@@ -1,0 +1,15 @@
+.git
+.gitignore
+.dockerignore
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+tests/
+algolia/
+scripts/

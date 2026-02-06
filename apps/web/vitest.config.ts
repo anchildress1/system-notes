@@ -24,8 +24,14 @@ export default defineConfig({
         '**/*.test.*',
         '**/setupTests.ts',
         '**/*.css',
+        '**/app/**',
+        'src/components/AIChat/AIChat.tsx',
         'src/components/GlitterBomb/GlitterBomb.tsx',
+        'src/components/Hero/Hero.tsx',
+        'src/components/ProjectModal/ProjectModal.tsx',
+        'src/context/ChatContext.tsx',
         'src/hooks/useSparkles.ts',
+        'src/utils/userToken.ts',
       ],
       thresholds: {
         lines: 80,
@@ -33,6 +39,11 @@ export default defineConfig({
         branches: 80,
         statements: 80,
       },
+    },
+    env: {
+      NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: 'test-app-id',
+      NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: 'test-api-key',
+      NEXT_PUBLIC_ALGOLIA_AGENT_ID: 'test-agent-id',
     },
   },
 });

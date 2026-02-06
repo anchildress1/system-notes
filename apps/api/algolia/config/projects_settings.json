@@ -1,0 +1,25 @@
+{
+  "searchableAttributes": [
+    "title",
+    "tags",
+    "data.name",
+    "data.what_it_is",
+    "data.why_it_exists",
+    "data.what_happened",
+    "data.tech_stack",
+    "data.project_type"
+  ],
+  "attributesForFaceting": [
+    "node_type",
+    "tags",
+    "data.project_type",
+    "data.completion_state",
+    "data.tech_stack"
+  ],
+  "customRanking": ["asc(order_rank)", "desc(updated_at)"],
+  "ranking": ["typo", "words", "filters", "attribute", "exact", "custom"],
+  "attributesToRetrieve": ["*"],
+  "attributesToHighlight": ["title", "data.name", "data.what_it_is", "data.why_it_exists"],
+  "hitsPerPage": 5,
+  "typoTolerance": true
+}

@@ -24,3 +24,13 @@ class IntersectionObserverMock {
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
 window.IntersectionObserver = IntersectionObserverMock;
 global.IntersectionObserver = IntersectionObserverMock;
+
+import React from 'react';
+
+// Mock next/image to avoid DOM warnings for non-standard attributes
+vi.mock('next/image', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  default: ({ src, alt, fill, priority, ...props }: any) => {
+    return React.createElement('img', { src, alt, ...props });
+  },
+}));

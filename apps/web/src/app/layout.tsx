@@ -26,7 +26,7 @@ import ClientShell from '@/components/ClientShell/ClientShell';
 import { allProjects } from '@/data/projects';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+  metadataBase: new URL('https://anchildress1.dev'),
   title: {
     default: "Ashley Childress' System Notes",
     template: '%s | System Notes',
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     title: "Ashley Childress' System Notes",
     description:
       "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
-    url: 'https://system-notes-ui-856401495068.us-east1.run.app',
+    url: 'https://anchildress1.dev',
     siteName: 'System Notes',
     images: [
       {
@@ -90,12 +90,13 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: "Ashley Childress' System Notes",
-    url: 'https://system-notes-ui-856401495068.us-east1.run.app',
+    url: 'https://anchildress1.dev',
     description: 'A living, queryable index of projects and decisions.',
     author: {
       '@type': 'Person',
       name: 'Ashley Childress',
-      url: 'https://github.com/anchildress1',
+      url: 'https://anchildress1.dev',
+      sameAs: ['https://anchildress1.dev'],
     },
     hasPart: allProjects.map((p) => ({
       '@type': 'SoftwareApplication',
@@ -103,17 +104,15 @@ export default function RootLayout({
       description: p.description,
       applicationCategory: 'DeveloperApplication',
       operatingSystem: 'Any',
+      url: p.id === 'system-notes' ? 'https://anchildress1.dev' : undefined,
+      codeRepository: p.repoUrl,
+      relatedLink: p.blogs?.map((b) => b.url) || [],
       offers: {
         '@type': 'Offer',
         price: '0',
         priceCurrency: 'USD',
       },
     })),
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: 'https://system-notes-ui-856401495068.us-east1.run.app/?q={search_term_string}',
-      'query-input': 'required name=search_term_string',
-    },
   };
 
   return (

@@ -2,8 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
+from werkzeug.utils import secure_filename
 import os
-from openai import OpenAI
+import json
 import logging
 from dotenv import load_dotenv
 from fastapi.exceptions import RequestValidationError
@@ -44,61 +45,17 @@ app.add_middleware(
         "https://anchildress1.dev",
         "https://www.anchildress1.dev",
     ],
-    allow_origin_regex=r"https://system-notes-ui-288489184837\..*\.run\.app",
+    allow_origin_regex=r"https://system-notes-ui-800441415595\..*\.run\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Initialize OpenAI client
-# Note: Expects OPENAI_API_KEY environment variable
-client = OpenAI()
-
-# Load system prompt
-# Load system prompt and context
-try:
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Base Prompt
-    prompt_path = os.path.join(current_dir, "prompts", "system_prompt.md")
-    with open(prompt_path, "r") as f:
-        base_prompt = f.read()
-
-    # Dynamic Context (Project Narratives)
-    projects_path = os.path.join(current_dir, "prompts", "projects.md")
-    with open(projects_path, "r") as f:
-        projects_content = f.read()
-
-    # Persona Context
-    ashley_path = os.path.join(current_dir, "prompts", "about_ashley.md")
-    with open(ashley_path, "r") as f:
-        ashley_content = f.read()
-
-    # Portfolio Canon
-    portfolio_path = os.path.join(current_dir, "prompts", "portfolio_canon.md")
-    with open(portfolio_path, "r") as f:
-        portfolio_content = f.read()
-        
-    SYSTEM_PROMPT = f"{base_prompt}\n\n{projects_content}\n\n{ashley_content}\n\n{portfolio_content}"
-    
-except FileNotFoundError as e:
-    logger.warning(f"File not found during system prompt init: {e}")
-    SYSTEM_PROMPT = "You are a helpful assistant."
-
 
 class Project(BaseModel):
     id: str
     title: str
     description: str
     github_url: Optional[str] = None
-
-
-class ChatRequest(BaseModel):
-    message: str
-
-
-class ChatResponse(BaseModel):
-    reply: str
 
 
 @app.get("/")
@@ -111,92 +68,74 @@ async def health_check():
     return {"status": "ok"}
 
 
-@app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
-    try:
-        completion = client.chat.completions.create(
-            model="gpt-5.2",  # Production model (System Notes Vibe Check approved)
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": request.message},
-            ],
-        )
-        reply = completion.choices[0].message.content
-        return ChatResponse(reply=reply)
-    except Exception as e:
-        logger.error(f"OpenAI API error: {str(e)}")
-        # Fail-safe behavior: graceful degradation
-        return ChatResponse(
-            reply="That’s outside what I know right now. This chatbot only knows what Ashley explicitly wired in, and she hasn’t taught me that yet."
-        )
-
-
-def parse_projects(content: str) -> List[Project]:
-    projects = []
-    current_project = {}
-    lines = content.split("\n")
-
-    for line in lines:
-        line = line.strip()
-        if not line:
-            continue
-
-        if line.startswith("## "):
-            if current_project:
-                projects.append(Project(**current_project))
-            current_project = {
-                "id": line[3:]
-                .strip()
-                .lower()
-                .replace(" ", "-")
-                .replace(".", "")
-                .replace("(", "")
-                .replace(")", ""),
-                "title": line[3:].strip(),
-                "description": "",
-                "github_url": None,
-            }
-        elif line.startswith("**Description**"):
-            pass  # Skip the header
-        elif line.startswith("**") and not line.startswith("**Description**"):
-            pass  # Skip other headers for now
-        elif current_project and "description" in current_project:
-            # Simple heuristic: append to description if not a header
-            if not line.startswith("**") and not line.startswith("---"):
-                current_project["description"] += line + " "
-
-    if current_project:
-        projects.append(Project(**current_project))
-
-    # Clean up descriptions
-    for p in projects:
-        p.description = p.description.strip()
-
-    return projects
-
-
 @app.get("/projects", response_model=List[Project])
 async def get_projects():
     try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(current_dir, "prompts", "projects.md")
+        file_path = os.path.join(current_dir, "data", "projects.json")
+        
+        if not os.path.exists(file_path):
+             logger.error("projects.json not found")
+             return []
+
         with open(file_path, "r") as f:
-            content = f.read()
-        return parse_projects(content)
-    except FileNotFoundError:
-        logger.error("projects.md not found")
+            content = json.load(f)
+        
+        projects = []
+        for item in content:
+            # Map JSON fields to Project model
+            # objectID -> id
+            # title -> title
+            # summary -> description
+            # url -> github_url
+            projects.append(Project(
+                id=item.get("objectID"),
+                title=item.get("title") or item.get("name"),
+                description=item.get("summary") or item.get("what_it_is", ""),
+                github_url=item.get("url") or item.get("repo_url")
+            ))
+            
+        return projects
+    except Exception as e:
+        logger.error(f"Error loading projects: {e}")
         return []
 
 
-@app.get("/about")
-async def get_about():
+@app.get("/system/doc/{doc_path:path}")
+async def get_system_doc(doc_path: str):
     try:
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(current_dir, "prompts", "about_ashley.md")
-        with open(file_path, "r") as f:
-            content = f.read()
-        return {"content": content}
-    except FileNotFoundError:
-        logger.error("about_ashley.md not found")
-        return {"content": "About content not available."}
+        # Security Rule: Use Library Sanitization (Werkzeug)
+        # We split the path user provided and sanitize each component.
+        # secure_filename() ensures no component contains separators or traversal chars ('..')
+        parts = doc_path.split("/")
+        safe_parts = [secure_filename(part) for part in parts if part and part not in (".", "..")]
+        
+        # If the resulting path list is empty (e.g. user sent "///" or ".."), return error
+        if not safe_parts:
+             return JSONResponse(status_code=400, content={"error": "Invalid path components"})
 
+        # Reconstruct path using pathlib, anchored to api_root
+        api_root = Path(__file__).resolve().parent
+        target_path = api_root.joinpath(*safe_parts).resolve()
+        
+        # Security Rule 2.1: Safe Extensions Only
+        # Check the *resolved* path's extension/name just to be sure, although secure_filename handles strictness.
+        ALLOWED_EXTENSIONS = {".md", ".json", ".txt"}
+        if not any(str(target_path.name).endswith(ext) for ext in ALLOWED_EXTENSIONS):
+             logger.warning(f"File access blocked (disallowed extension): {target_path}")
+             return JSONResponse(status_code=400, content={"error": "File type not allowed"})
+             
+        # Security Rule 1.4: Resolve and Verify Root (Defense in Depth)
+        if not target_path.is_relative_to(api_root):
+             logger.warning(f"Path traversal attempt blocked (escaped root): {doc_path}")
+             return JSONResponse(status_code=400, content={"error": "Invalid path resolution"})
+        
+        if not target_path.is_file():
+             return JSONResponse(status_code=404, content={"error": "Document not found"})
+             
+        content = target_path.read_text(encoding="utf-8")
+            
+        return {"content": content, "format": "markdown", "path": "/".join(safe_parts)}
+    except Exception as e:
+        logger.error(f"Error serving doc: {e}")
+        return JSONResponse(status_code=500, content={"error": "Internal server error"})

@@ -5,6 +5,7 @@ node_modules
 
 # Testing
 coverage
+.coverage
 test-results
 
 # Next.js
@@ -55,3 +56,6 @@ htmlcov/
 *tmp*
 lighthouse.json
 .lighthouseci/
+commit.tmp
+*.log
+.verdent/

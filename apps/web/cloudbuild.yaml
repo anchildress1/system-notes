@@ -1,0 +1,14 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t', '$_IMAGE_URI',
+    '-f', 'apps/web/Dockerfile',
+    '--build-arg', 'NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID',
+    '--build-arg', 'NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY',
+    '--build-arg', 'NEXT_PUBLIC_ALGOLIA_AGENT_ID=$_NEXT_PUBLIC_ALGOLIA_AGENT_ID',
+    '--build-arg', 'NEXT_PUBLIC_API_URL=$_NEXT_PUBLIC_API_URL',
+    '.'
+  ]
+images:
+- '$_IMAGE_URI'

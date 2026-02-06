@@ -10,11 +10,11 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "npx prettier --write \"**/*.{ts,tsx,md,json,js}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json,js}\"",
     "test": "turbo run test",
     "bench": "turbo run bench",
     "clean": "rm -rf node_modules **/*/node_modules",
-    "postinstall": "lefthook install"
+    "postinstall": "[ -d .git ] && lefthook install || true"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",

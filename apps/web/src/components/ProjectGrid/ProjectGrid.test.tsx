@@ -1,62 +1,58 @@
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+
 import ProjectGrid from './ProjectGrid';
-import { allProjects, Project } from '@/data/projects';
 
-// Mock the dynamic import of ExpandedView
-vi.mock('@/components/ExpandedView/ExpandedView', () => ({
-  default: ({ project, onClose }: { project: Project; onClose: () => void }) => (
-    <div data-testid="expanded-view">
-      <h1>{project.title}</h1>
-      <button onClick={onClose}>Close</button>
-    </div>
+vi.mock('next/image', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  default: ({ fill: _fill, priority: _priority, ...props }: any) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img {...props} alt={props.alt} />
   ),
 }));
 
-// Mock ProjectCard to simplify testing
-vi.mock('@/components/ProjectCard/ProjectCard', () => ({
-  default: ({ project, onSelect }: { project: Project; onSelect: (p: Project) => void }) => (
-    <div data-testid="project-card" onClick={() => onSelect(project)}>
-      {project.title}
-    </div>
-  ),
-}));
-
-describe('ProjectGrid Component', () => {
-  it('renders a grid of project cards', () => {
-    render(<ProjectGrid />);
-    const cards = screen.getAllByTestId('project-card');
-    expect(cards).toHaveLength(allProjects.length);
+describe('ProjectGrid', () => {
+  beforeEach(() => {
+    window.location.hash = '';
   });
 
-  it('opens ExpandedView when a project card is clicked', async () => {
-    render(<ProjectGrid />);
-    const firstCard = screen.getAllByTestId('project-card')[0];
-
-    fireEvent.click(firstCard);
-
-    await waitFor(() => {
-      expect(screen.getByTestId('expanded-view')).toBeInTheDocument();
-      const expandedView = screen.getByTestId('expanded-view');
-      // Scope search to the expanded view since the card grid is still visible
-      expect(within(expandedView).getByText(allProjects[0].title)).toBeInTheDocument();
-    });
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  it('closes ExpandedView when close button is clicked', async () => {
+  it('selects a project on click and writes hash', () => {
     render(<ProjectGrid />);
-    const firstCard = screen.getAllByTestId('project-card')[0];
 
-    // Open modal
-    fireEvent.click(firstCard);
-    await waitFor(() => {
-      expect(screen.getByTestId('expanded-view')).toBeInTheDocument();
-    });
+    const firstProjectTitle = screen.getAllByRole('heading', { level: 3 })[0];
+    fireEvent.click(firstProjectTitle);
 
-    // Close modal
-    fireEvent.click(screen.getByText('Close'));
-    await waitFor(() => {
-      expect(screen.queryByTestId('expanded-view')).not.toBeInTheDocument();
-    });
+    expect(window.location.hash).toMatch(/^#project=/);
+  });
+
+  it('opens modal when hash matches a project id', async () => {
+    render(<ProjectGrid />);
+
+    const firstProjectTitle = screen.getAllByRole('heading', { level: 3 })[0];
+    fireEvent.click(firstProjectTitle);
+
+    const selectedId = decodeURIComponent(window.location.hash.replace(/^#project=/, ''));
+
+    window.location.hash = `project=${encodeURIComponent(selectedId)}`;
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+
+    expect(await screen.findByLabelText('Close modal')).toBeInTheDocument();
+  });
+
+  it('clears hash when closing modal', async () => {
+    render(<ProjectGrid />);
+
+    const firstProjectTitle = screen.getAllByRole('heading', { level: 3 })[0];
+    fireEvent.click(firstProjectTitle);
+
+    expect(window.location.hash).toMatch(/^#project=/);
+
+    fireEvent.click(await screen.findByLabelText('Close modal'));
+
+    expect(window.location.hash).toBe('');
   });
 });

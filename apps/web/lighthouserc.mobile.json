@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "npm start",
+      "startServerCommand": "PORT=3000 node .next/standalone/apps/web/server.js",
       "url": ["http://localhost:3000/"],
       "numberOfRuns": 3,
       "settings": {

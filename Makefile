@@ -1,4 +1,4 @@
-.PHONY: setup setup-python setup-node dev build clean ai-checks secret-scan
+.PHONY: setup setup-python setup-node dev build deploy clean ai-checks secret-scan test test-e2e format lint
 
 # Default target
 all: setup
@@ -20,7 +20,7 @@ setup-python:
 # Run the development environment (Turbo)
 dev:
 	@echo "🚀 Starting development servers..."
-	npm run dev
+	npm run dev -- --parallel
 
 # Format code (Prettier)
 format:
@@ -85,20 +85,33 @@ secret-scan:
 # Run Playwright E2E tests
 test-e2e: build
 	@echo "🎭 Running Playwright E2E tests..."
-	npx playwright test
+	CI=true npm exec playwright test
 
-# Run all AI checks (Scan -> Format -> Lint -> Test -> E2E)
+# Run Performance tests
+test-perf:
+	@echo "🚀 Running Performance tests..."
+	npm run test:perf -w apps/web
+
+# Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
 ai-checks: secret-scan
 	$(MAKE) format
 	$(MAKE) lint
 	$(MAKE) test
 	$(MAKE) test-e2e
+	$(MAKE) test-perf
 	@echo "🤖 AI Checks Complete: All Systems Nominal."
 
 # Build the project
 build:
 	@echo "🏗️ Building project..."
 	npm run build
+
+# Deploy the application to Google Cloud
+deploy:
+	@echo "🚀 Deploying to Google Cloud..."
+	cd apps/api && uv sync --no-dev
+	npm install
+	./deploy.sh
 
 # Clean up all dependencies and build artifacts
 clean:
@@ -113,3 +126,8 @@ clean:
 	rm -rf apps/api/__pycache__
 	rm -f .secrets.baseline.tmp
 	@echo "✨ Clean complete."
+
+# Deploy Algolia indices
+algolia_deploy:
+	@echo "🔍 indexing algolia..."
+	cd apps/api && uv run python scripts/index_algolia.py

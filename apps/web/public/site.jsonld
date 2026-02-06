@@ -1,0 +1,121 @@
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Ashley Childress' System Notes",
+    "url": "https://anchildress1.dev",
+    "description": "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
+    "author": {
+        "@type": "Person",
+        "name": "Ashley Childress",
+        "url": "https://github.com/anchildress1",
+        "sameAs": [
+            "https://dev.to/anchildress1"
+        ]
+    },
+    "publisher": {
+        "@type": "Person",
+        "name": "Ashley Childress"
+    },
+    "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+            {
+                "@type": "SoftwareApplication",
+                "name": "System Notes",
+                "description": "AI-generated challenge site used to test orchestration and authorship boundaries.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "url": "https://anchildress1.dev",
+                "codeRepository": "https://github.com/anchildress1/system-notes",
+                "relatedLink": [
+                    "https://dev.to/anchildress1/can-we-set-the-record-straight-ai-content-and-a-bit-of-sanity-1inj",
+                    "https://dev.to/anchildress1/waiting-with-intent-designing-ai-systems-for-the-long-game-1abg",
+                    "https://dev.to/anchildress1/fact-checking-the-fear-behind-the-dark-side-of-ai-the-real-story-366p"
+                ]
+            },
+            {
+                "@type": "SoftwareApplication",
+                "name": "Delegate Action",
+                "description": "Temporary AI coding agent implemented as a GitHub Action.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "codeRepository": "https://github.com/CheckMarKDevTools/delegate-action"
+            },
+            {
+                "@type": "SoftwareApplication",
+                "name": "My Hermatic Agent",
+                "description": "Personal AI agent playground with early memory experiments.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "codeRepository": "https://github.com/anchildress1/my-hermantic-agent"
+            },
+            {
+                "@type": "SoftwareApplication",
+                "name": "RAI Lint",
+                "description": "Hard enforcement for AI attribution in commit workflows.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "codeRepository": "https://github.com/CheckMarKDevTools/rai-lint",
+                "relatedLink": [
+                    "https://dev.to/anchildress1/is-github-copilot-safe-the-fun-and-hard-truth-about-responsible-ai-3b95",
+                    "https://dev.to/anchildress1/did-ai-erase-attribution-your-git-history-is-missing-a-co-author-1m2l",
+                    "https://dev.to/anchildress1/signing-your-name-on-ai-assisted-commits-with-rai-footers-2b0o"
+                ]
+            },
+            {
+                "@type": "SoftwareApplication",
+                "name": "Underfoot Underground Travel Planner",
+                "description": "Narrative travel discovery explored through AI orchestration experiments.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "codeRepository": "https://github.com/anchildress1/underfoot-underground-travel-planner",
+                "relatedLink": [
+                    "https://dev.to/anchildress1/underfoot-the-chatpot-for-hidden-places-and-why-i-dont-do-hackathons-2684",
+                    "https://dev.to/anchildress1/the-hackathon-i-swore-off-and-the-exhaustion-that-mostly-compiled-c4l"
+                ]
+            },
+            {
+                "@type": "SoftwareApplication",
+                "name": "Awesome GitHub Copilot",
+                "description": "Curated GitHub Copilot workflows, agents, and patterns.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "codeRepository": "https://github.com/anchildress1/awesome-github-copilot",
+                "relatedLink": [
+                    "https://dev.to/anchildress1/troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o",
+                    "https://dev.to/anchildress1/oh-i-have-big-news-guess-what-i-got-yesterday-1jca",
+                    "https://dev.to/anchildress1/everything-i-know-about-github-copilot-instructions-from-zero-to-onboarded-for-real-4nb0",
+                    "https://dev.to/anchildress1/github-copilot-chat-modes-explained-with-personality-2f4c",
+                    "https://dev.to/anchildress1/leash-not-autopilot-building-predictable-ai-behavior-with-copilot-instructions-14ip"
+                ]
+            },
+            {
+                "@type": "SoftwareApplication",
+                "name": "Dev.to Mirror",
+                "description": "Automated AI-optimized mirror of technical writing.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "codeRepository": "https://github.com/CheckMarKDevTools/devto-mirror",
+                "relatedLink": [
+                    "https://dev.to/anchildress1/weekend-hack-making-my-blog-ai-searchable-no-flames-required-16h5"
+                ]
+            },
+            {
+                "@type": "SoftwareApplication",
+                "name": "Echo ESLint Config",
+                "description": "Reusable linting boundaries designed for AI-assisted codebases.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "codeRepository": "https://github.com/CheckMarKDevTools/eslint-config-echo"
+            },
+            {
+                "@type": "SoftwareApplication",
+                "name": "Copilot Chat Extension",
+                "description": "Failed experiment in portable Copilot chat context.",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Any",
+                "codeRepository": "https://github.com/CheckMarKDevTools/checkmark-copilot-chat"
+            }
+        ]
+    }
+}

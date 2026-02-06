@@ -1,47 +1,117 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
-import { getProjects } from './api';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { getSystemDoc, getProjects } from './api';
 
-global.fetch = vi.fn();
+// Mock global fetch
+const fetchMock = vi.fn();
+global.fetch = fetchMock;
 
-describe('API Service', () => {
+describe('getSystemDoc', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
-  it('fetches projects successfully', async () => {
-    const mockProjects = [{ id: '1', title: 'Test', description: 'desc' }];
-    (fetch as unknown as Mock).mockResolvedValue({
+  it('should return document content on successful fetch', async () => {
+    const mockResponse = {
+      content: 'test content',
+      format: 'markdown',
+      path: 'test/path',
+    };
+
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: async () => mockResponse,
+    });
+
+    const result = await getSystemDoc('test/path');
+    expect(result).toEqual(mockResponse);
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining('/system/doc/test/path'),
+      expect.objectContaining({ cache: 'no-store' })
+    );
+  });
+
+  it('should return error object on 404', async () => {
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 404,
+      statusText: 'Not Found',
+      text: async () => 'Document not found',
+    });
+
+    const result = await getSystemDoc('nonexistent/path');
+
+    expect(result).toEqual({
+      content: '',
+      format: 'text',
+      path: 'nonexistent/path',
+      error: 'Error 404: Document not found',
+    });
+  });
+
+  it('should return error object on network failure', async () => {
+    const networkError = new Error('Network error');
+    fetchMock.mockRejectedValue(networkError);
+
+    const result = await getSystemDoc('test/path');
+
+    expect(result).toEqual({
+      content: '',
+      format: 'text',
+      path: 'test/path',
+      error: 'Network error',
+    });
+  });
+});
+
+describe('getProjects', () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it('should return projects on successful fetch', async () => {
+    const mockProjects = [
+      { id: '1', title: 'Project 1', description: 'Description 1' },
+      { id: '2', title: 'Project 2', description: 'Description 2' },
+    ];
+
+    fetchMock.mockResolvedValue({
       ok: true,
       json: async () => mockProjects,
     });
 
-    const projects = await getProjects();
-    expect(projects).toEqual(mockProjects);
-    expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/projects'), expect.any(Object));
+    const result = await getProjects();
+    expect(result).toEqual(mockProjects);
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining('/projects'),
+      expect.objectContaining({ cache: 'no-store' })
+    );
   });
 
-  it('returns empty array on fetch failure', async () => {
-    (fetch as unknown as Mock).mockResolvedValue({
+  it('should return empty array on fetch failure', async () => {
+    fetchMock.mockResolvedValue({
       ok: false,
+      status: 500,
+      statusText: 'Internal Server Error',
     });
 
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    const projects = await getProjects();
-    expect(projects).toEqual([]);
-    expect(consoleSpy).toHaveBeenCalledWith('API Error:', expect.any(Error));
+    const result = await getProjects();
+    expect(result).toEqual([]);
+    expect(consoleSpy).toHaveBeenCalled();
 
     consoleSpy.mockRestore();
   });
 
-  it('returns empty array on network error', async () => {
-    (fetch as unknown as Mock).mockRejectedValue(new Error('Network error'));
+  it('should return empty array on network error', async () => {
+    const networkError = new Error('Network error');
+    fetchMock.mockRejectedValue(networkError);
 
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    const projects = await getProjects();
-    expect(projects).toEqual([]);
-    expect(consoleSpy).toHaveBeenCalled();
+    const result = await getProjects();
+    expect(result).toEqual([]);
+    expect(consoleSpy).toHaveBeenCalledWith('API Error:', networkError);
 
     consoleSpy.mockRestore();
   });
