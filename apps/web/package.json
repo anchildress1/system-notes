@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "cp -r .next/static .next/standalone/apps/web/.next/static && cp -r public .next/standalone/apps/web/public",
+    "postbuild": "STANDALONE_BASE=$(find .next/standalone -name 'server.js' -path '*apps/web/server.js' 2>/dev/null | head -1 | xargs dirname 2>/dev/null); if [ -n \"$STANDALONE_BASE\" ]; then mkdir -p \"$STANDALONE_BASE/.next\" && cp -r .next/static \"$STANDALONE_BASE/.next/static\" && cp -r public \"$STANDALONE_BASE/public\"; fi",
     "start": "next start",
-    "start:standalone": "node .next/standalone/apps/web/server.js",
+    "start:standalone": "SERVER_JS=$(find .next/standalone -name 'server.js' -path '*apps/web/server.js' 2>/dev/null | head -1); [ -n \"$SERVER_JS\" ] && node \"$SERVER_JS\" || echo 'Error: Standalone build not found. Run npm run build first.'",
     "lint": "ESLINT_USE_FLAT_CONFIG=true eslint --config eslint.config.mjs .",
     "test": "vitest run --coverage --passWithNoTests",
     "test:watch": "vitest",
@@ -29,6 +29,14 @@
     "react-instantsearch-nextjs": "^1.0.13",
     "react-markdown": "^10.1.0",
     "search-insights": "^2.17.3"
+  },
+  "optionalDependencies": {
+    "@esbuild/linux-x64": "0.27.2",
+    "@rollup/rollup-linux-x64-gnu": "latest",
+    "@tailwindcss/oxide-linux-x64-gnu": "4.1.18",
+    "@tailwindcss/oxide-linux-x64-musl": "4.1.18",
+    "lightningcss-linux-x64-gnu": "1.31.1",
+    "lightningcss-linux-x64-musl": "1.31.1"
   },
   "devDependencies": {
     "@lhci/cli": "^0.15.1",
