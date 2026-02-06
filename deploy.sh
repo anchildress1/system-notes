@@ -43,11 +43,10 @@ gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com
 API_SA="system-notes-api@$PROJECT_ID.iam.gserviceaccount.com"
 UI_SA="system-notes-ui@$PROJECT_ID.iam.gserviceaccount.com"
 
-# Algolia Config - these are PUBLIC keys (safe for client-side)
-# For sensitive secrets, use Secret Manager instead of env vars
-NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=EXKENZ9FHJ
-NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=cd51e9af01f0796ac10c3fbfc5aa5b9f
-NEXT_PUBLIC_ALGOLIA_AGENT_ID=11caec4a-abd5-439a-a66a-3c26562de5c1
+# Algolia Config
+NEXT_PUBLIC_ALGOLIA_APPLICATION_ID="${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}"
+NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY="${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}"
+NEXT_PUBLIC_ALGOLIA_AGENT_ID="${NEXT_PUBLIC_ALGOLIA_AGENT_ID}"
 NEXT_PUBLIC_BASE_URL=https://unstable.anchildress1.dev
 
 # ==========================================

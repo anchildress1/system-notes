@@ -91,8 +91,9 @@ test-e2e:
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key \
 	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
 	NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes \
-	npm run build
-	CI=true npm exec playwright test
+	npm run build && \
+	cd ../.. && \
+	CI=true npm exec playwright test -- --config playwright.config.ts
 
 # Run Performance tests
 test-perf:

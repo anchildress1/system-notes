@@ -191,8 +191,3 @@ Rules:
 - Hard limit: **2–3 sentences total**, excluding listed facts.
 - No meta commentary about the agent, rules, or system behavior.
 - Output should read like confident, intentional UX copy written by someone who knows when to stop.
-
----
-
-**Footer copy (site):**  
-**Powered by Algolia — fast, relevant, still imperfect.**

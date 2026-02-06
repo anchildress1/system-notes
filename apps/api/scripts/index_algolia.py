@@ -54,29 +54,20 @@ async def index_data(index_name, data, settings=None):
 
 def transform_record(record):
     """
-    Transform source record to match frontend schema.
-    Maps: category -> domain, signal -> signal_level, projects -> entities
+    Pass-through transformation.
+    The source data is expected to match the frontend schema (category, signal, projects).
+    No backward compatibility mapping is performed.
     """
-    transformed = record.copy()
-    
-    # Rename fields
-    if 'category' in transformed:
-        transformed['domain'] = transformed.pop('category')
-    if 'signal' in transformed:
-        transformed['signal_level'] = transformed.pop('signal')
-    if 'projects' in transformed:
-        transformed['entities'] = transformed.pop('projects')
-    
-    return transformed
+    return record.copy()
 
 async def main():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     source_dir = os.path.join(root_dir, 'algolia', 'sources')
-    config_dir = os.path.join(root_dir, 'algolia', 'config')
     
-    # New single index setup
+    # New single index setup (consolidated in sources directory)
     index_path = os.path.join(source_dir, 'index.json')
-    settings_path = os.path.join(config_dir, 'settings.json')
+    settings_path = os.path.join(source_dir, 'settings.json')
+    synonyms_path = os.path.join(source_dir, 'synonyms.json')
     
     # The new primary index name
     index_name = 'system-notes'
@@ -90,7 +81,6 @@ async def main():
         await index_data(index_name, data, settings)
         
         # Check for synonyms
-        synonyms_path = os.path.join(config_dir, 'synonyms.json')
         if os.path.exists(synonyms_path):
             print(f"Updating synonyms for {index_name}...")
             synonyms = load_json(synonyms_path)

@@ -1,12 +1,12 @@
 {
-  "searchableAttributes": ["title", "blurb", "fact", "tags", "entities"],
+  "searchableAttributes": ["title", "blurb", "fact", "projects", "tags.lvl0", "tags.lvl1"],
   "attributesForFaceting": [
-    "filterOnly(facet_domain)",
-    "filterOnly(facet_category)",
-    "filterOnly(facet_signal_level)",
-    "searchable(entities)",
-    "searchable(tags)"
+    "category",
+    "searchable(projects)",
+    "searchable(tags.lvl0)",
+    "searchable(tags.lvl1)"
   ],
+  "customRanking": ["desc(signal)"],
   "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
   "attributesToRetrieve": ["*"],
   "attributesToHighlight": ["title", "blurb"],
@@ -15,7 +15,7 @@
   "renderingContent": {
     "facetOrdering": {
       "facets": {
-        "order": ["category", "projects", "tags"]
+        "order": ["category", "tags.lvl0", "tags.lvl1", "projects"]
       }
     }
   }
