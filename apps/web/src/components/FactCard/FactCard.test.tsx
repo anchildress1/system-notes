@@ -115,7 +115,9 @@ describe('FactCard Component', () => {
     const card = screen.getByRole('article');
     await user.click(card);
 
-    expect(mockSendEvent).toHaveBeenCalledWith('click', createMockHit(), 'Fact Card Viewed');
+    expect(mockSendEvent).toHaveBeenCalledWith('click', createMockHit(), 'Fact Card Viewed', {
+      objectIDs: [createMockHit().objectID],
+    });
   });
 
   it('only tracks flip-to-back once per card instance', async () => {
@@ -150,5 +152,47 @@ describe('FactCard Component', () => {
     await user.click(card);
 
     expect(mockSendEvent).not.toHaveBeenCalled();
+  });
+
+  it('tracks flip interaction via keyboard (Enter)', async () => {
+    const user = userEvent.setup();
+    const hit = createMockHit();
+    render(<FactCard hit={hit} sendEvent={mockSendEvent} />);
+
+    const card = screen.getByRole('article');
+    card.focus();
+    await user.keyboard('{Enter}');
+
+    expect(mockSendEvent).toHaveBeenCalledTimes(1);
+    expect(mockSendEvent).toHaveBeenCalledWith('click', hit, 'Fact Card Viewed', {
+      objectIDs: [hit.objectID],
+    });
+  });
+
+  it('tracks flip interaction via keyboard (Space)', async () => {
+    const user = userEvent.setup();
+    const hit = createMockHit();
+    render(<FactCard hit={hit} sendEvent={mockSendEvent} />);
+
+    const card = screen.getByRole('article');
+    card.focus();
+    await user.keyboard(' ');
+
+    expect(mockSendEvent).toHaveBeenCalledTimes(1);
+    expect(mockSendEvent).toHaveBeenCalledWith('click', hit, 'Fact Card Viewed', {
+      objectIDs: [hit.objectID],
+    });
+  });
+
+  it('updates aria-label on flip', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} />);
+
+    const card = screen.getByRole('article');
+    expect(card).toHaveAttribute('aria-label', expect.stringContaining('Press to show full fact'));
+
+    await user.click(card);
+
+    expect(card).toHaveAttribute('aria-label', expect.stringContaining('Press to show summary'));
   });
 });

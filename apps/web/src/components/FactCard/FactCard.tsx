@@ -33,7 +33,9 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
 
     if (newFlipState && !hasTrackedFlip.current && sendEvent) {
       hasTrackedFlip.current = true;
-      sendEvent('click', hit, 'Fact Card Viewed');
+      sendEvent('click', hit, 'Fact Card Viewed', {
+        objectIDs: [hit.objectID],
+      });
     }
   }, [isFlipped, sendEvent, hit]);
 

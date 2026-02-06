@@ -1,6 +1,7 @@
 'use client';
 
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import aa from 'search-insights';
 import {
   InstantSearch,
   SearchBox,
@@ -22,7 +23,7 @@ const hasCredentials = appId && searchKey;
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
 
 const insightsConfig = {
-  insightsClient: null,
+  insightsClient: aa,
   insightsInitParams: {
     appId,
     apiKey: searchKey,
