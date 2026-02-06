@@ -1,0 +1,680 @@
+[
+  {
+    "objectID": "blog:i-genuinely-meant-it-when-i-said-i-was-done-i-even-had-that-rare-fragile-sense-of-closure-then-i-1cna",
+    "title": "I genuinely meant it when I said I was done. I even had that rare, fragile sense of closure. Then I noticed one small thing, which led to another, and somehow became a full pass of \u201cminor\u201d edits. I failed at stopping, but this time I really did. \ud83d\udea7\ud83d\udea6",
+    "blurb": "https://dev.to/anchildress1/i-genuinely-meant-it-when-i-said-i-was-done-i-even-had-that-rare-fragile-sense-of-closure-then-i-1cna",
+    "fact": "My Portfolio Doesn\u2019t Live on the Page \ud83d\udeab\ud83d\udcc3       Ashley Childress...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > devchallenge",
+      "DEV Blog > googleaichallenge",
+      "DEV Blog > portfolio",
+      "DEV Blog > gemini"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:my-portfolio-doesnt-live-on-the-page-218e",
+    "title": "My Portfolio Doesn\u2019t Live on the Page \ud83d\udeab\ud83d\udcc3",
+    "blurb": "https://dev.to/anchildress1/my-portfolio-doesnt-live-on-the-page-218e",
+    "fact": "A systems\u2011first portfolio built with Antigravity\u2014focused on outcomes over code, intentional constraints, and the work that lives beyond the page.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > devchallenge",
+      "DEV Blog > googleaichallenge",
+      "DEV Blog > portfolio",
+      "DEV Blog > gemini"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:herding-cats-in-pajamas-teamwork-across-time-zones-242n",
+    "title": "Herding Cats in Pajamas: Teamwork Across Time Zones \ud83d\udc08\u200d\u2b1b\ud83d\udd70\ufe0f\ud83d\udecb\ufe0f",
+    "blurb": "https://dev.to/anchildress1/herding-cats-in-pajamas-teamwork-across-time-zones-242n",
+    "fact": "Distributed teamwork isn\u2019t easy \u2014 especially when everyone\u2019s remote. Here\u2019s how I wrangle projects and people without losing my mind (or coffee)",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > discuss",
+      "DEV Blog > career",
+      "DEV Blog > productivity",
+      "DEV Blog > developers"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:signing-your-name-on-ai-assisted-commits-with-rai-footers-2b0o",
+    "title": "Signing Your Name on AI-Assisted Commits with RAI Footers \ud83d\udee1\ufe0f\u270d\ufe0f",
+    "blurb": "https://dev.to/anchildress1/signing-your-name-on-ai-assisted-commits-with-rai-footers-2b0o",
+    "fact": "Your AI assistant can help write the code, but your git history still needs a human signature. Here\u2019s how RAI footers make AI attribution explicit.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > automation",
+      "DEV Blog > git"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:did-ai-erase-attribution-your-git-history-is-missing-a-co-author-1m2l",
+    "title": "Did AI Erase Attribution? Your Git History Is Missing a Co-Author",
+    "blurb": "https://dev.to/anchildress1/did-ai-erase-attribution-your-git-history-is-missing-a-co-author-1m2l",
+    "fact": "Your AI assistant might be the most productive co-author you\u2019ve ever had, but your git history doesn\u2019t know it. Here\u2019s how to fix that.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > productivity",
+      "DEV Blog > automation"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:waiting-with-intent-designing-ai-systems-for-the-long-game-1abg",
+    "title": "Waiting, With Intent: Designing AI Systems for the Long Game \ud83e\udded",
+    "blurb": "https://dev.to/anchildress1/waiting-with-intent-designing-ai-systems-for-the-long-game-1abg",
+    "fact": "Why AI orchestration, context limits, and trust matter more than speed\u2014and what building for the next five to ten years actually looks like.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > agentic",
+      "DEV Blog > ai",
+      "DEV Blog > architecture",
+      "DEV Blog > devrel"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:leash-not-autopilot-building-predictable-ai-behavior-with-copilot-instructions-14ip",
+    "title": "Leash, Not Autopilot: Building Predictable AI Behavior with Copilot Instructions \ud83e\udea2",
+    "blurb": "https://dev.to/anchildress1/leash-not-autopilot-building-predictable-ai-behavior-with-copilot-instructions-14ip",
+    "fact": "A battle-tested approach to GitHub Copilot instructions\u2014repo rules, priority stacks, validation loops, and why AI needs boundaries to be useful.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > developertools",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:weekend-hack-making-my-blog-ai-searchable-no-flames-required-16h5",
+    "title": "Weekend Hack: Making My Blog AI-Searchable (No Flames Required) \ud83d\udd25\ud83d\udeab",
+    "blurb": "https://dev.to/anchildress1/weekend-hack-making-my-blog-ai-searchable-no-flames-required-16h5",
+    "fact": "My blog was invisible to AI search. Three hours later (and a solid round of OCD), I built a lazy Dev.to \u2192 GitHub Pages mirror. No flames required.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": ["DEV Blog > writing", "DEV Blog > ai", "DEV Blog > seo", "DEV Blog > chatgpt"],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:when-the-spark-is-done-the-adhd-energy-cycle-no-one-talks-about-43fo",
+    "title": "When the Spark is Done: The ADHD Energy Cycle No One Talks About \u2728",
+    "blurb": "https://dev.to/anchildress1/when-the-spark-is-done-the-adhd-energy-cycle-no-one-talks-about-43fo",
+    "fact": "When ADHD energy drops into \u201cdone mode,\u201d it\u2019s not burnout\u2014it\u2019s a reset. Here\u2019s what the spark cycle really feels like.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > mentalhealth",
+      "DEV Blog > productivity",
+      "DEV Blog > discuss",
+      "DEV Blog > adhd"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:top-10-github-copilot-updates-you-actually-need-to-know-about-297d",
+    "title": "Top 10 GitHub Copilot Updates You Actually Need to Know About \ud83d\udca5",
+    "blurb": "https://dev.to/anchildress1/top-10-github-copilot-updates-you-actually-need-to-know-about-297d",
+    "fact": "GitHub Copilot\u2019s wild late-October 2025 release: agents, smarter reviews, embeddings, metrics, and that one \u201chelpful\u201d test that nearly went to prod. Chaotic, hilarious, and absolutely worth the read.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > github",
+      "DEV Blog > ai",
+      "DEV Blog > news"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:github-copilot-chat-modes-from-chaos-to-command-54k0",
+    "title": "GitHub Copilot C\u0334h\u0334a\u0334t\u0334 \u0334M\u0334o\u0334d\u0334e\u0334s\u0334 Agents: From Chaos to Command \ud83c\udf9b\ufe0f",
+    "blurb": "https://dev.to/anchildress1/github-copilot-chat-modes-from-chaos-to-command-54k0",
+    "fact": "You\u2019ve built your first GitHub Copilot c\u0336h\u0336a\u0336t\u0336 \u0336m\u0336o\u0336d\u0336e\u0336 agent\u2014now it\u2019s time to tame it. Here\u2019s how to set up, test, and share custom modes like a professional who occasionally yells at their AI.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > tutorial",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:github-copilot-chat-modes-explained-with-personality-2f4c",
+    "title": "GitHub Copilot C\u0334h\u0334a\u0334t\u0334 \u0334M\u0334o\u0334d\u0334e\u0334s\u0334 Agents Explained (with Personality) \ud83c\udfad",
+    "blurb": "https://dev.to/anchildress1/github-copilot-chat-modes-explained-with-personality-2f4c",
+    "fact": "The third way to shape how GitHub Copilot responds:  c\u0336h\u0336a\u0336t\u0336 \u0336m\u0336o\u0336d\u0336e\u0336s\u0336 agents. Now officially documented and live in your repo, they let you define Copilot\u2019s behavior with your own personality, tone, and workflow\u2014because coding assistants should sound like you.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > tutorial",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:copilot-premium-requests-more-than-asked-exactly-what-you-need-8ph",
+    "title": "Copilot Premium Requests\u2014More Than Asked, Exactly What You Need \ud83d\udcb8",
+    "blurb": "https://dev.to/anchildress1/copilot-premium-requests-more-than-asked-exactly-what-you-need-8ph",
+    "fact": "Learn how to stretch every GitHub Copilot premium request, avoid quota meltdowns, and still get reliable AI output. Includes tested models, workflows, and prompt tips.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > productivity",
+      "DEV Blog > tutorial"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o",
+    "title": "Troubleshooting Production with GitHub Copilot: The Guide for Real Humans (and Bots with Good Taste)",
+    "blurb": "https://dev.to/anchildress1/troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o",
+    "fact": "Welcome to Copilot Troubleshooting, Real-World Edition    \u26a0\ufe0f This guide assumes you have...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > productivity",
+      "DEV Blog > learning"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:everything-i-know-about-github-copilot-instructions-from-zero-to-onboarded-for-real-4nb0",
+    "title": "Everything I Know About GitHub Copilot Instructions \u2014 From Zero to Onboarded (For Real) \u26a1",
+    "blurb": "https://dev.to/anchildress1/everything-i-know-about-github-copilot-instructions-from-zero-to-onboarded-for-real-4nb0",
+    "fact": "Everything you need to know about Copilot custom instructions \u2014 why they work, how to write them, and how to go from zero to useful fast.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > productivity",
+      "DEV Blog > learn"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:codeck-presents-verdent-ai-they-wanted-opinions-i-have-plenty-5ccl",
+    "title": "Codeck Presents Verdent AI: They Wanted Opinions, I Have Plenty",
+    "blurb": "https://dev.to/anchildress1/codeck-presents-verdent-ai-they-wanted-opinions-i-have-plenty-5ccl",
+    "fact": "Previewing Verdent AI through Codeck turned into a full-tilt stress test: VS Code extension, multi-agent Deck, and plenty of chaos. Here\u2019s what broke, what worked, and which parts outshined everything else\u2014completely biased by my own strong opinions and nothing else.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > tooling",
+      "DEV Blog > ai",
+      "DEV Blog > vscode",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:demystifying-coding-agent-prompts-that-always-work-2on7",
+    "title": "Demystifying Coding Agent: Prompts That Always Work \u2728",
+    "blurb": "https://dev.to/anchildress1/demystifying-coding-agent-prompts-that-always-work-2on7",
+    "fact": "A field guide to the safest, most reliable GitHub Coding Agent prompts\u2014feature docs, test specs, bug fixes, and more\u2014all proven to ship without breaking anything.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > tutorial",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:github-coding-agent-the-magical-autonomous-ai-the-prequel-4h11",
+    "title": "GitHub Coding Agent the Magical Autonomous AI: The Prequel",
+    "blurb": "https://dev.to/anchildress1/github-coding-agent-the-magical-autonomous-ai-the-prequel-4h11",
+    "fact": "Everything you need to know about setting up GitHub&#x27;s Coding Agent for best results\u2014setup, advanced tricks, and gotchas from real stories and wins. Chaos, fun, and no filter.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > tutorial",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:magical-coding-agent-the-ship-ready-spellbook-2mbf",
+    "title": "Magical Coding Agent: The Ship-Ready Spellbook",
+    "blurb": "https://dev.to/anchildress1/magical-coding-agent-the-ship-ready-spellbook-2mbf",
+    "fact": "Flip the right GitHub previews, understand Copilot\u2019s PR shape, batch your review prompts, and keep control of the code\u2014practical notes with just a dash of wizardry.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > tutorial",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:all-ive-learned-about-github-copilot-instructions-so-far-5bm7",
+    "title": "\ud83d\udccb All I\u2019ve Learned About GitHub Copilot Instructions (So Far)",
+    "blurb": "https://dev.to/anchildress1/all-ive-learned-about-github-copilot-instructions-so-far-5bm7",
+    "fact": "\ud83d\udce2 Just a Heads Up   I\u2019ve started sharing these at work as well, so what you\u2019re seeing here...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > learning",
+      "DEV Blog > ai",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:what-in-the-world-is-github-coding-agent-2m8p",
+    "title": "What in the World Is GitHub Coding Agent?",
+    "blurb": "https://dev.to/anchildress1/what-in-the-world-is-github-coding-agent-2m8p",
+    "fact": "An all-in, real-world guide to GitHub\u2019s Coding Agent\u2014what it really does, what can go sideways, and why \u201call in\u201d was the only way I could learn. This is just the start of a whole series, because honestly, this rabbit hole goes deep.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > tutorial",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:can-we-set-the-record-straight-ai-content-and-a-bit-of-sanity-1inj",
+    "title": "Can We Set the Record Straight? AI, Content, and a Bit of Sanity \ud83d\ude4f",
+    "blurb": "https://dev.to/anchildress1/can-we-set-the-record-straight-ai-content-and-a-bit-of-sanity-1inj",
+    "fact": "A story-driven look at AI content, bans, why process matters, and why a little honesty beats a blanket rule every time.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": ["DEV Blog > ai", "DEV Blog > writing", "DEV Blog > ethics", "DEV Blog > devrel"],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:underfoot-the-chatpot-for-hidden-places-and-why-i-dont-do-hackathons-2684",
+    "title": "Underfoot: The ChatPot for Hidden Places (and Why I Don\u2019t Do Hackathons)",
+    "blurb": "https://dev.to/anchildress1/underfoot-the-chatpot-for-hidden-places-and-why-i-dont-do-hackathons-2684",
+    "fact": "My updated submission for the first hackathon I&#x27;ve done in more than 10 years, here&#x27;s how it really happened.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > devchallenge",
+      "DEV Blog > n8nbrightdatachallenge",
+      "DEV Blog > ai",
+      "DEV Blog > webdev"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:the-hackathon-i-swore-off-and-the-exhaustion-that-mostly-compiled-c4l",
+    "title": "The Hackathon I Swore Off \u2014 and the Exhaustion That Mostly Compiled",
+    "blurb": "https://dev.to/anchildress1/the-hackathon-i-swore-off-and-the-exhaustion-that-mostly-compiled-c4l",
+    "fact": "The hackathon I said I\u2019d never do again turned exhaustion into code.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > watercooler",
+      "DEV Blog > career",
+      "DEV Blog > life",
+      "DEV Blog > n8nagentchallenge"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:dont-judge-this-version-of-the-submission-but-it-was-driving-me-insane-that-i-didnt-have-time-to-56o6",
+    "title": "Don't judge this version of the submission, but it was driving me insane that I didn't have time to actually finish the post that I had already spent so much time organizing and writing this past week. This is that version, check out how it really went!",
+    "blurb": "https://dev.to/anchildress1/dont-judge-this-version-of-the-submission-but-it-was-driving-me-insane-that-i-didnt-have-time-to-56o6",
+    "fact": "Underfoot: The ChatPot for Hidden Places (and Why I Don\u2019t Do...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > devchallenge",
+      "DEV Blog > n8nbrightdatachallenge",
+      "DEV Blog > ai",
+      "DEV Blog > webdev"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:medium-and-the-blanket-ai-ban-2cni",
+    "title": "Medium and the Blanket AI Ban \ud83d\ude36",
+    "blurb": "https://dev.to/anchildress1/medium-and-the-blanket-ai-ban-2cni",
+    "fact": "Medium\u2019s AI policy feels like gatekeeping: spellcheck is fine, but real AI use is banned. Here\u2019s why that doesn\u2019t fly.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > writers",
+      "DEV Blog > discuss",
+      "DEV Blog > ai",
+      "DEV Blog > chatgpt"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:how-i-blog-with-bots-but-you-can-still-blame-me-2861",
+    "title": "How I Blog with Bots (But You Can Still Blame Me) \ud83d\ude05",
+    "blurb": "https://dev.to/anchildress1/how-i-blog-with-bots-but-you-can-still-blame-me-2861",
+    "fact": "The cover image is a result of me getting very impatient with ChatGPT after the third nearly perfect...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > watercooler",
+      "DEV Blog > ai",
+      "DEV Blog > discuss",
+      "DEV Blog > community"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:github-copilot-reusable-prompts-part-3-more-experiments-more-mayhem-552b",
+    "title": "GitHub Copilot - Reusable Prompts Part 3: More Experiments, More Mayhem \ud83c\udf00",
+    "blurb": "https://dev.to/anchildress1/github-copilot-reusable-prompts-part-3-more-experiments-more-mayhem-552b",
+    "fact": "Part 3 of the Reusable Prompts series covers troubleshooting when GitHub Copilot prompts don\u2019t work as expected \u2014 with personal examples, optimization tips, structured syntax, and how to split, share, and reference prompts later.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > tutorial",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:github-copilot-reusable-prompts-part-2-walkthrough-real-examples-17mh",
+    "title": "GitHub Copilot: Reusable Prompts, Part 2 \u2014 Walkthrough & Real Examples",
+    "blurb": "https://dev.to/anchildress1/github-copilot-reusable-prompts-part-2-walkthrough-real-examples-17mh",
+    "fact": "Part 2 of the Reusable Prompts series introduces PRIOR, my prompt strategy for GitHub Copilot \u2014 why it works, real examples, and how to use it in your own projects.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > tutorial",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:three-ais-and-a-funeral-my-take-on-gpt-5-3f3e",
+    "title": "Three AIs and a Funeral: My Take on GPT-5 \u26b0\ufe0f",
+    "blurb": "https://dev.to/anchildress1/three-ais-and-a-funeral-my-take-on-gpt-5-3f3e",
+    "fact": "My real-world GPT-5 experience, tested daily in GitHub Copilot + ChatGPT.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > chatgpt",
+      "DEV Blog > writing",
+      "DEV Blog > watercooler"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:github-copilot-agent-mode-the-mistake-you-never-want-to-make-1mmh",
+    "title": "GitHub Copilot Agent Mode: The Mistake You NEVER Want to Make",
+    "blurb": "https://dev.to/anchildress1/github-copilot-agent-mode-the-mistake-you-never-want-to-make-1mmh",
+    "fact": "Copilot Agent Mode tried to help. Instead, it deleted my secrets. Took me 3 days to find them. Hilarious now. Wasn\u2019t then.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > discuss",
+      "DEV Blog > watercooler"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:what-ive-learned-about-github-copilot-agent-mode-4co2",
+    "title": "What I've Learned About GitHub Copilot Agent Mode",
+    "blurb": "https://dev.to/anchildress1/what-ive-learned-about-github-copilot-agent-mode-4co2",
+    "fact": "This is Agent Mode, not autopilot. I tested the edges \u2014 from rogue workarounds to \u201cwait, that worked?\u201d moments. Welcome to the weird side.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > learning",
+      "DEV Blog > ai",
+      "DEV Blog > showdev"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:reposting-in-case-you-missed-it-the-first-time-because-blaming-ai-is-the-easy-way-out-but-this-1ga1",
+    "title": "Reposting in case you missed it. Blaming AI is easy \u2014 but the real issue? It\u2019s always been about people. \ud83e\udde0\u2728",
+    "blurb": "https://dev.to/anchildress1/reposting-in-case-you-missed-it-the-first-time-because-blaming-ai-is-the-easy-way-out-but-this-1ga1",
+    "fact": "Fact-Checking the Fear Behind \u201cThe Dark Side of AI\u201d: The Real...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > ai",
+      "DEV Blog > mentalhealth",
+      "DEV Blog > chatgpt",
+      "DEV Blog > technology"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:github-copilot-everything-you-wanted-to-know-about-reusable-and-experimental-prompts-part-1-iff",
+    "title": "GitHub Copilot: Everything You Wanted to Know About Reusable (and Experimental) Prompts - Part 1",
+    "blurb": "https://dev.to/anchildress1/github-copilot-everything-you-wanted-to-know-about-reusable-and-experimental-prompts-part-1-iff",
+    "fact": "An introduction to reusable prompts in GitHub Copilot \u2014 what they are, how they work, and why they\u2019re worth adding to your dev workflow.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > tutorial",
+      "DEV Blog > productivity"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:oh-i-have-big-news-guess-what-i-got-yesterday-1jca",
+    "title": "Guess what?! I passed the Pearson VUE GitHub Copilot Certification Exam \ud83c\udfc6\u2728",
+    "blurb": "https://dev.to/anchildress1/oh-i-have-big-news-guess-what-i-got-yesterday-1jca",
+    "fact": "New as of July 2025: GitHub Copilot certification now runs on Pearson VUE. How I registered, what to expect on exam day, rules, gotchas, and a few funny moments.",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > community",
+      "DEV Blog > watercooler",
+      "DEV Blog > githubcopilot",
+      "DEV Blog > developers"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:so-this-was-just-a-test-you-made-it-a-thing-6df",
+    "title": "So... This Was Just a Test - You Made It a Thing \ud83e\udef6",
+    "blurb": "https://dev.to/anchildress1/so-this-was-just-a-test-you-made-it-a-thing-6df",
+    "fact": "If you&#x27;ve been following me (or just started), THANK YOU \u2014 seriously! To be honest, I really didn&#x27;t...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > community",
+      "DEV Blog > watercooler",
+      "DEV Blog > writing",
+      "DEV Blog > githubcopilot"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:fact-checking-the-fear-behind-the-dark-side-of-ai-the-real-story-366p",
+    "title": "Fact-Checking the Fear Behind \u201cThe Dark Side of AI\u201d: The Real Story",
+    "blurb": "https://dev.to/anchildress1/fact-checking-the-fear-behind-the-dark-side-of-ai-the-real-story-366p",
+    "fact": "This post is a direct response to four nearly identical articles by @abhi_jith_f00c2ff58ac2a7e, all...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > ai",
+      "DEV Blog > mentalhealth",
+      "DEV Blog > chatgpt",
+      "DEV Blog > technology"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:build-it-better-real-world-ai-coding-with-github-copilot-1d47",
+    "title": "\u2699\ufe0f Build It Better: Real-World AI Coding with GitHub Copilot",
+    "blurb": "https://dev.to/anchildress1/build-it-better-real-world-ai-coding-with-github-copilot-1d47",
+    "fact": "Originally shared as an internal how-to document.            GitHub Copilot as a true pair...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > productivity",
+      "DEV Blog > tutorial"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:is-github-copilot-safe-the-fun-and-hard-truth-about-responsible-ai-3b95",
+    "title": "Is GitHub Copilot Safe? The Fun (and Hard) Truth About Responsible AI \ud83d\udea6",
+    "blurb": "https://dev.to/anchildress1/is-github-copilot-safe-the-fun-and-hard-truth-about-responsible-ai-3b95",
+    "fact": "It hit me the other day - I haven\u2019t been great about adding RAI disclaimers (especially around here)....",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > tutorial",
+      "DEV Blog > discuss"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:name-swap-alert-ocd-strikes-again-but-its-just-the-username-3pai",
+    "title": "Name Swap Alert: OCD Strikes Again (But It\u2019s Just the Username)",
+    "blurb": "https://dev.to/anchildress1/name-swap-alert-ocd-strikes-again-but-its-just-the-username-3pai",
+    "fact": "I changed my username back to anchildress1 (just dropped the extra \u201c1\u201d from anchildress11). For...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > watercooler",
+      "DEV Blog > profiletweaks",
+      "DEV Blog > ocdmoments",
+      "DEV Blog > usernamenews"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:calling-all-nodejs-wizards-what-would-you-add-to-the-ultimate-boilerplate-38aj",
+    "title": "Calling All NodeJS Wizards: What Would You Add to the Ultimate Boilerplate?",
+    "blurb": "https://dev.to/anchildress1/calling-all-nodejs-wizards-what-would-you-add-to-the-ultimate-boilerplate-38aj",
+    "fact": "\ud83d\ude80 TL;DR   I&#x27;m kicking off a new NodeJS starter template and crowdsourcing the best tips,...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > discuss",
+      "DEV Blog > node",
+      "DEV Blog > javascript",
+      "DEV Blog > coding"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:from-hell-loops-to-happy-commits-38c4",
+    "title": "\ud83d\udcc8 Letting AI Drive: From Hell Loops to Happy Commits",
+    "blurb": "https://dev.to/anchildress1/from-hell-loops-to-happy-commits-38c4",
+    "fact": "What does 600,000+ lines of AI-generated code look like in the wild?            \ud83d\udee0\ufe0f What I...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > developers",
+      "DEV Blog > casestudy"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  },
+  {
+    "objectID": "blog:letting-ai-drive-a-month-of-building-with-github-copilot-4a94",
+    "title": "\ud83e\udde0 Letting AI Drive: A Month of Building with GitHub Copilot",
+    "blurb": "https://dev.to/anchildress1/letting-ai-drive-a-month-of-building-with-github-copilot-4a94",
+    "fact": "\u201cWhen the going gets weird, the weird turn pro.\u201d \u2014 Hunter S. Thompson            What happens when...",
+    "tags.lvl0": ["DEV Blog"],
+    "tags.lvl1": [
+      "DEV Blog > githubcopilot",
+      "DEV Blog > ai",
+      "DEV Blog > developers",
+      "DEV Blog > casestudy"
+    ],
+    "projects": ["DEV Blog"],
+    "category": "Blog",
+    "signal": 3
+  }
+]

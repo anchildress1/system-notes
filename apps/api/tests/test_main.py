@@ -315,7 +315,7 @@ def test_blog_search_response_shape(mock_client_class):
 
     # Verify user-requested field mappings
     assert first_result["projects"] == ["DEV Blog"]
-    assert first_result["blurb"] == "This is a test description for the blog post about AI tools."
+    assert first_result["blurb"] == "https://dev.to/test/test-post-123"
     assert first_result["fact"] == "This is a test description for the blog post about AI tools."
     assert first_result["url"] == "https://dev.to/test/test-post-123"
 
