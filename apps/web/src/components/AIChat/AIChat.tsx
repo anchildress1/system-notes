@@ -1,176 +1,115 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send } from 'lucide-react';
-import { LuBrain } from 'react-icons/lu';
-import styles from './AIChat.module.css';
-import { useChat as useUI } from '@/context/ChatContext';
-import MusicPlayer from '../MusicPlayer/MusicPlayer';
-import ReactMarkdown from 'react-markdown';
+import { useEffect, useState, useMemo } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { InstantSearch, useChat as useAlgoliaChat } from 'react-instantsearch';
+import { Chat } from 'react-instantsearch';
+import { InstantSearchNext } from 'react-instantsearch-nextjs';
+import styles from './AIChat.module.css';
+import dynamic from 'next/dynamic';
 
-const searchClient = algoliasearch(
-  process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '',
-  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || ''
+import { IoClose } from 'react-icons/io5';
+import { GiBat } from 'react-icons/gi';
+import { FaBrain, FaUser } from 'react-icons/fa';
+
+const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
+const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
+
+// Create searchClient at module level for stable reference (prevents unnecessary re-renders)
+const searchClient =
+  appId && apiKey
+    ? algoliasearch(appId, apiKey)
+    : {
+        search: () => Promise.resolve({ results: [] }),
+      };
+
+const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || '';
+
+const MusicPlayer = dynamic(() => import('../MusicPlayer/MusicPlayer'), {
+  ssr: false,
+});
+
+// Custom components to enrich the chat experience
+const HeaderIcon = () => <GiBat className={styles.headerIcon} />;
+const AssistantAvatar = () => (
+  <div className={styles.avatar}>
+    <GiBat />
+  </div>
 );
+const UserAvatar = () => (
+  <div className={styles.userAvatar}>
+    <FaUser />
+  </div>
+);
+const PromptFooter = () => (
+  <div className={styles.disclaimer}>Powered by Algolia—fast, relevant, still imperfect.</div>
+);
+const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
+  isOpen ? (
+    <IoClose size={24} className={styles.toggleIcon} />
+  ) : (
+    <FaBrain size={24} className={styles.toggleIcon} />
+  );
 
-const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || 'ruckus_agent';
+export default function AIChat() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
-function ChatContent() {
-  const { messages, status, sendMessage } = useAlgoliaChat({ agentId: AGENT_ID });
-
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const isLoading = status === 'streaming' || status === 'submitted';
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Memoize translations to prevent unnecessary re-renders of the Chat widget
+  const translations = useMemo(
+    () => ({
+      header: {
+        title: 'Ruckus 2.0',
+      },
+      toggleButtonTitle: 'Open AI Chat',
+    }),
+    []
+  );
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    // Accessibility fix: Inject aria-label into Algolia's Chat toggle button
+    const observer = new MutationObserver(() => {
+      if (typeof document === 'undefined') return;
 
-  // Focus input on mount and when loading finishes
-  useEffect(() => {
-    if (!isLoading) {
-      // Timeout ensures the disabled attribute is fully removed from DOM before focusing
-      const timer = setTimeout(() => {
-        inputRef.current?.focus();
-      }, 200);
-      return () => clearTimeout(timer);
-    }
-  }, [isLoading]);
+      const chatWindow = document.querySelector('.ais-Chat-window');
+      const isWindowOpen = !!chatWindow;
+      setIsChatOpen((prev) => (prev === isWindowOpen ? prev : isWindowOpen));
 
-  const handleSend = () => {
-    const input = inputRef.current?.value;
-    if (!input?.trim()) return;
-    sendMessage({ text: input }); // Use object with text property
-    if (inputRef.current) inputRef.current.value = '';
-  };
+      const toggleBtn = document.querySelector(
+        '.ais-ChatToggleButton, .ais-Chat-toggleButton, [class*="ChatToggleButton"]'
+      );
+      if (toggleBtn) {
+        if (!toggleBtn.hasAttribute('aria-label')) {
+          toggleBtn.setAttribute('aria-label', 'Open AI Chat');
+        }
+        if (!toggleBtn.hasAttribute('data-testid')) {
+          toggleBtn.setAttribute('data-testid', 'ai-chat-toggle');
+        }
+      }
+    });
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSend();
-    }
-  };
+    observer.observe(document.body, { childList: true, subtree: true });
 
-  // Helper to extract text from message parts
-  interface MessagePart {
-    type: string;
-    text?: string;
-  }
-
-  interface ChatMessage {
-    content?: string;
-    parts?: MessagePart[];
-  }
-
-  const getMessageText = (msg: unknown) => {
-    const message = msg as ChatMessage;
-    if (message.content) return message.content;
-    if (message.parts && Array.isArray(message.parts)) {
-      return message.parts
-        .filter((p) => p.type === 'text')
-        .map((p) => p.text)
-        .join('');
-    }
-    return '';
-  };
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
-      <div className={styles.header}>
-        <span className={styles.ruckusName}>Ruckus 2.0</span>
-        <span className={styles.agentMeta}>powered by algolia</span>
-      </div>
-      <div className={styles.messages}>
-        {messages.length === 0 && (
-          <div className={`${styles.message} ${styles.botMessage}`}>
-            I&apos;m here. I&apos;m listening. Ask me anything about Ashley&apos;s work or
-            philosophy.
-          </div>
-        )}
-        {messages.map((msg) => {
-          const text = getMessageText(msg);
-          if (!text) return null;
-          return (
-            <div
-              key={msg.id}
-              className={`${styles.message} ${msg.role === 'user' ? styles.userMessage : styles.botMessage}`}
-            >
-              <ReactMarkdown>{text}</ReactMarkdown>
-            </div>
-          );
-        })}
-        {isLoading && <div className={`${styles.message} ${styles.botMessage}`}>Thinking...</div>}
-        <div ref={messagesEndRef} />
-      </div>
-
-      <div className={styles.inputArea}>
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder="Type a message..."
-          className={styles.input}
-          onKeyDown={handleKeyDown}
-          disabled={isLoading}
-          aria-label="Chat message"
-        />
-        <button
-          onClick={handleSend}
-          className={styles.sendButton}
-          aria-label="Send"
-          disabled={isLoading}
-        >
-          <Send size={18} />
-        </button>
-      </div>
-    </>
-  );
-}
-
-export default function AIChat() {
-  const { isOpen, toggleChat } = useUI();
-
-  return (
-    <div className={styles.chatWrapper}>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className={styles.chatWindow}
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          >
-            <InstantSearch searchClient={searchClient} indexName="projects">
-              {/* Configure removed to prevent auto-search on 404 index */}
-              <ChatContent />
-            </InstantSearch>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className={styles.controlsRow}>
+      <div className={`${styles.musicWrapper} ${isChatOpen ? styles.musicPushed : ''}`}>
         <MusicPlayer />
-
-        <button
-          className={`${styles.toggleButton} ${isOpen ? styles.stopPulse : ''}`}
-          onClick={(e) => {
-            e.preventDefault();
-            toggleChat();
-          }}
-          aria-label={isOpen ? 'Close AI Chat' : 'Open AI Chat'}
-          data-testid="ai-chat-toggle"
-        >
-          {isOpen ? '✕' : <LuBrain size={24} />}
-        </button>
       </div>
-    </div>
+      <InstantSearchNext
+        searchClient={searchClient}
+        future={{ preserveSharedStateOnUnmount: true }}
+      >
+        <Chat
+          agentId={AGENT_ID}
+          translations={translations}
+          headerTitleIconComponent={HeaderIcon}
+          assistantMessageLeadingComponent={AssistantAvatar}
+          userMessageLeadingComponent={UserAvatar}
+          promptFooterComponent={PromptFooter}
+          toggleButtonIconComponent={ToggleIcon}
+        />
+      </InstantSearchNext>
+    </>
   );
 }

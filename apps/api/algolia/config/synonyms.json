@@ -16,9 +16,9 @@
     ]
   },
   {
-    "objectID": "syn_ruckus_agent",
+    "objectID": "syn_ruckus_identity",
     "type": "synonym",
-    "synonyms": ["Ruckus", "agent", "assistant", "bot", "system", "you"]
+    "synonyms": ["Ruckus", "ruckus", "agent", "assistant", "bot", "system", "you"]
   },
   {
     "objectID": "syn_appalachia",
@@ -62,5 +62,20 @@
       "reliability",
       "observability"
     ]
+  },
+  {
+    "objectID": "syn_github_copilot",
+    "type": "synonym",
+    "synonyms": ["GitHub Copilot", "Copilot", "copilot", "GH Copilot"]
+  },
+  {
+    "objectID": "syn_website_names",
+    "type": "synonym",
+    "synonyms": ["System Notes", "system-notes", "portfolio"]
+  },
+  {
+    "objectID": "syn_hermes_agent",
+    "type": "synonym",
+    "synonyms": ["my-hermetic-agent", "hermes", "Hermes Agent"]
   }
 ]

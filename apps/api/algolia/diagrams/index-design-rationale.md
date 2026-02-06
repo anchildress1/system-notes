@@ -12,32 +12,32 @@ graph TD
 
     %% Phase 1: Structure
     Q1{"One index or multiple?"}:::question
-    Multiple["Multiple indices (Projects, About)<br/>pros: per-type tuning<br/>cons: more config"]:::chosen
+    Unified["Unified Index (system-notes)<br/>pros: unified retrieval, simple config<br/>cons: single ranking strategy"]:::chosen
 
     %% Phase 2: Content Granularity
     Q2{"Monolithic vs Granular?"}:::question
-    Granular["Granular Records<br/>pros: precise retrieval<br/>cons: lost context"]:::chosen
+    Granular["Granular Records<br/>pros: precise retrieval<br/>cons: requires signal balancing"]:::chosen
 
     %% Phase 3: The Context Problem
     Q3{"How to maintain context?"}:::problem
-    OldWay["Load Full Bio<br/>(High token cost)"]:::cons
-    NewWay["Graph Linking<br/>(Link via tags/slugs)"]:::solution
+    OldWay["Siloed Indices<br/>(Hard to cross-reference)"]:::cons
+    NewWay["Graph Linking in One Index<br/>(Shared facets & tags)"]:::solution
 
     %% Final decision
-    Decision["CURRENT ARCHITECTURE<br/>Granular Facts<br/>1. Atomic 'about' records<br/>2. Narrative 'project' records"]:::final
+    Decision["CURRENT ARCHITECTURE<br/>Unified System Notes<br/>1. Facts & Narratives in one graph<br/>2. Differentiated by facet_domain"]:::final
 
     %% Rationale
-    Why1["WHY: Monoliths waste context window<br/>and confuse retrieval ranking"]:::rationale
-    Why2["WHY: Atomic facts allow the agent<br/>to compose precise answers"]:::rationale
+    Why1["WHY: Silos fragment the agent's<br/>understanding of the system"]:::rationale
+    Why2["WHY: Unified index allows<br/>holistic retrieval"]:::rationale
 
     %% Flow
     Start --> Q1
-    Q1 --> Multiple
-    Multiple --> Q2
+    Q1 --> Unified
+    Unified --> Q2
     Q2 --> Granular
     Granular --> Q3
-    Q3 -->|Old: Expensive| OldWay
-    Q3 -->|New: Efficient| NewWay
+    Q3 -->|Old: Fragmented| OldWay
+    Q3 -->|New: Holistic| NewWay
     NewWay --> Decision
     Decision --> Why1
     Decision --> Why2

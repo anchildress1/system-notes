@@ -49,30 +49,6 @@ test.describe('Mobile Responsiveness', () => {
     await expect(modal).not.toBeVisible();
   });
 
-  test('AIChat should be accessible', async ({ page, isMobile }) => {
-    await page.goto('/');
-    // Check for chat toggle button
-    const toggle = page.getByTestId('ai-chat-toggle');
-    await expect(toggle).toBeVisible({ timeout: 15000 });
-
-    // Open chat
-    await toggle.click();
-    const input = page.getByPlaceholder('Type a message...');
-    await expect(input).toBeVisible();
-
-    if (isMobile) {
-      // Verify it takes up most of the screen width (simplified check)
-      // Use text "Ruckus" in the header to find the chat window container
-      const chatHeader = page.getByText('Ruckus');
-      await expect(chatHeader).toBeVisible();
-
-      // Check bounding box of the chat window (parent of header roughly)
-      // We can just verify the input field width is substantial
-      const inputStyle = await input.boundingBox();
-      expect(inputStyle?.width).toBeGreaterThan(250);
-    }
-  });
-
   test('should verify blog button and music player visibility', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');

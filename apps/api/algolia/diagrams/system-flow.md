@@ -8,12 +8,10 @@ graph TB
     accDescr: Data flow showing how the Python script enriches JSON data with graph context before indexing
 
     %% Data sources
-    AboutJSON["sources/about.json<br/>(Granular Facts)"]:::source
-    ProjectsJSON["sources/projects.json<br/>(Narrative Objects)"]:::source
+    UnifiedJSON["sources/index.json<br/>(Unified Knowledge Graph)"]:::source
 
     %% Algolia indices
-    AboutIndex[("about index<br/>(Granular)")]:::index
-    ProjectsIndex[("projects index<br/>(Narrative)")]:::index
+    UnifiedIndex[("system-notes index<br/>(Unified)")]:::index
 
     %% Retrieval
     Ruckus["Ruckus Agent<br/>(RAG Retrieval)"]:::agent
@@ -22,11 +20,8 @@ graph TB
     Links["Deterministic Links"]:::output
 
     %% Flow
-    ProjectsJSON --> ProjectsIndex
-    AboutJSON --> AboutIndex
-
-    AboutIndex -->|retrieve| Ruckus
-    ProjectsIndex -->|retrieve| Ruckus
+    UnifiedJSON --> UnifiedIndex
+    UnifiedIndex -->|retrieve| Ruckus
 
     Ruckus --> Links
     Links --> User

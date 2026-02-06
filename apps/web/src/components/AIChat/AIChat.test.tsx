@@ -1,26 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom/vitest';
 import AIChat from './AIChat';
-import { ChatProvider } from '@/context/ChatContext';
 
 // Mock react-instantsearch
-const mockUseChat = vi.fn(() => ({
-  messages: [],
-  status: 'idle',
-  sendMessage: vi.fn(),
-}));
-
 vi.mock('react-instantsearch', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-instantsearch')>();
   return {
     ...actual,
-    InstantSearch: ({ children }: { children: React.ReactNode }) => (
-      <div data-testid="instant-search-mock">{children}</div>
-    ),
-    Configure: () => null,
-    useChat: () => mockUseChat(),
+    Chat: () => <div data-testid="algolia-chat-mock">Algolia Chat</div>,
   };
 });
+
+// Mock react-instantsearch-nextjs
+vi.mock('react-instantsearch-nextjs', () => ({
+  InstantSearchNext: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="instant-search-next-mock">{children}</div>
+  ),
+}));
 
 // Mock algoliasearch/lite
 vi.mock('algoliasearch/lite', () => ({
@@ -32,62 +29,23 @@ vi.mock('algoliasearch/lite', () => ({
 }));
 
 // Mock MusicPlayer
-vi.mock('../MusicPlayer/MusicPlayer', () => ({
+vi.mock('@/components/MusicPlayer/MusicPlayer', () => ({
   default: () => <div data-testid="music-player-mock">Music Player</div>,
 }));
 
 describe('AIChat Widget Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    window.HTMLElement.prototype.scrollIntoView = vi.fn();
-    // Clear sessionStorage to ensure clean test state
-    window.sessionStorage.clear();
   });
 
-  const renderComponent = () => {
-    return render(
-      <ChatProvider>
-        <AIChat />
-      </ChatProvider>
-    );
-  };
+  it('renders the Algolia Chat component with InstantSearchNext', async () => {
+    render(<AIChat />);
+    expect(screen.getByTestId('instant-search-next-mock')).toBeInTheDocument();
+    expect(screen.getByTestId('algolia-chat-mock')).toBeInTheDocument();
 
-  it('renders the toggle button initially', () => {
-    renderComponent();
-    expect(screen.getByLabelText('Open AI Chat')).toBeInTheDocument();
-  });
-
-  it('renders InstantSearch when chat is opened', async () => {
-    renderComponent();
-    const toggleBtn = screen.getByLabelText('Open AI Chat');
-
-    await act(async () => {
-      fireEvent.click(toggleBtn);
-    });
-
-    // Verify InstantSearch is rendered
-    expect(screen.getByTestId('instant-search-mock')).toBeInTheDocument();
-
-    // Verify header text
-    expect(screen.getByText('Ruckus 2.0')).toBeInTheDocument();
-  });
-
-  it('unmounts InstantSearch when chat is closed', async () => {
-    renderComponent();
-    const toggleBtn = screen.getByLabelText('Open AI Chat');
-
-    await act(async () => {
-      fireEvent.click(toggleBtn); // Open
-    });
-
-    expect(screen.getByTestId('instant-search-mock')).toBeInTheDocument();
-
-    await act(async () => {
-      fireEvent.click(screen.getByLabelText('Close AI Chat')); // Close
-    });
-
+    // MusicPlayer is dynamically imported, so we wait for it
     await waitFor(() => {
-      expect(screen.queryByTestId('instant-search-mock')).not.toBeInTheDocument();
+      expect(screen.getByTestId('music-player-mock')).toBeInTheDocument();
     });
   });
 });
