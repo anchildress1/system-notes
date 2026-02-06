@@ -34,13 +34,7 @@
       "AI > Gemini",
       "AI > Verdent"
     ],
-    "projects": [
-      "System Notes",
-      "Antigravity",
-      "Awesome Copilot",
-      "Hermes Agent",
-      "Underfoot Travel"
-    ],
+    "projects": ["System Notes", "Awesome Copilot", "Hermes Agent", "Underfoot Travel"],
     "category": "Work Style",
     "signal": 5
   },
@@ -1327,14 +1321,14 @@
     "signal": 3
   },
   {
-    "objectID": "card:challenge:workflow:ground-up-redesign-with-chatgpt",
-    "title": "A ground-up redesign improved results",
-    "blurb": "The turning point was rewriting the approach.",
-    "fact": "When I gave the instructions to ChatGPT and redesigned from the ground up, the output improved significantly.",
-    "tags.lvl0": ["DEV Challenge", "AI"],
-    "tags.lvl1": ["AI > ChatGPT"],
+    "objectID": "card:decision:workflow:ground-up-redesign-with-chatgpt",
+    "title": "The System Notes agent workflow was redesigned",
+    "blurb": "Prompt tuning was replaced with a structural rewrite.",
+    "fact": "While building the System Notes agent, incremental prompt edits to improve ChatGPT’s responses produced inconsistent behavior across turns. Instead of continuing to tune prompts, the workflow was redesigned from the ground up by reauthoring the instructions and constraints as a cohesive system, which resulted in more stable and predictable output.",
+    "tags.lvl0": ["Approach", "AI"],
+    "tags.lvl1": ["Approach > AI Collaboration", "AI > ChatGPT", "AI > Algolia"],
     "projects": ["System Notes"],
-    "category": "Challenges",
+    "category": "Decisions",
     "signal": 3
   },
   {
@@ -1344,17 +1338,6 @@
     "fact": "When I gave the instructions to ChatGPT and redesigned from the ground up, the output improved significantly.",
     "tags.lvl0": ["DEV Challenge", "AI"],
     "tags.lvl1": ["AI > ChatGPT"],
-    "projects": ["System Notes"],
-    "category": "Challenges",
-    "signal": 3
-  },
-  {
-    "objectID": "card:challenge:outcomes:agent-became-quicker",
-    "title": "Response speed improved after the redesign",
-    "blurb": "Performance became acceptable after iteration.",
-    "fact": "After the redesign, the agent became much quicker.",
-    "tags.lvl0": ["DEV Challenge", "Approach"],
-    "tags.lvl1": ["Approach > Experimentation"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
@@ -1372,31 +1355,31 @@
   },
   {
     "objectID": "card:challenge:feedback:mvp-guidance-needed",
-    "title": "MVP-focused guidance would help adopters",
-    "blurb": "Setup clarity matters more than breadth right now.",
-    "fact": "I would encourage the platform to focus more on MVP directions, setup, and skills for implementing functionality.",
-    "tags.lvl0": ["DEV Challenge", "Principle"],
+    "title": "Lack of MVP guidance created adoption friction",
+    "blurb": "Setup ambiguity slowed early use.",
+    "fact": "During the DEV challenge, limited guidance around MVP scope and initial setup made it harder for me to understand where to start, even when the underlying capabilities were available.",
+    "tags.lvl0": ["Principle"],
     "tags.lvl1": ["Principle > Restraint"],
     "projects": [],
     "category": "Challenges",
     "signal": 2
   },
   {
-    "objectID": "card:challenge:context:backend-dev-ui-shortcut-value",
-    "title": "The chat widget is a fast path to a real UI feature",
-    "blurb": "It provides immediate UX even for non-UI developers.",
-    "fact": "Coming from a strictly back-end background, the chat widget was an easy way to have a fully fledged feature accessible immediately in the UI.",
-    "tags.lvl0": ["DEV Challenge", "Discipline"],
-    "tags.lvl1": ["Discipline > Engineering"],
+    "objectID": "card:decision:context:chat-widget-ui-shortcut",
+    "title": "The chat widget was used as a UI delivery shortcut",
+    "blurb": "It enabled immediate user-facing value without UI investment.",
+    "fact": "Because of a primarily back-end background, the chat widget was intentionally used as a fast path to deliver a fully usable, user-facing feature without first building a dedicated UI.",
+    "tags.lvl0": ["Approach", "DEV Challenge", "AI"],
+    "tags.lvl1": ["Approach > Experimentation", "AI > Algolia"],
     "projects": ["System Notes"],
-    "category": "Challenges",
+    "category": "Decisions",
     "signal": 3
   },
   {
     "objectID": "card:challenge:constraints:beta-widget-rough-edges",
     "title": "Beta UI tooling is incomplete but usable",
     "blurb": "The design surface is not fully mature.",
-    "fact": "Even acknowledging the chat widget as a beta feature with incomplete design, it still enabled immediate UI access to the functionality.",
+    "fact": "Although the chat widget was a beta feature with incomplete design and rough edges, it still enabled immediate UI access to System Notes functionality during the DEV challenge.",
     "tags.lvl0": ["DEV Challenge", "Principle"],
     "tags.lvl1": ["Principle > Restraint"],
     "projects": ["System Notes"],
@@ -1406,8 +1389,8 @@
   {
     "objectID": "card:challenge:pain_points:implementation-understanding-cost",
     "title": "The main time sink was alignment on implementation behavior",
-    "blurb": "Getting the system to understand the implementation constraints was costly.",
-    "fact": "The major pain point was getting the agent to understand what it needed to do for implementation, which took the vast majority of half a day.",
+    "blurb": "Getting the system to internalize implementation constraints was costly.",
+    "fact": "The primary time cost came from aligning the agent’s understanding of implementation expectations and constraints, which consumed the majority of a half-day during development.",
     "tags.lvl0": ["DEV Challenge", "Approach"],
     "tags.lvl1": ["Approach > Experimentation"],
     "projects": ["System Notes"],
@@ -1433,7 +1416,7 @@
     "tags.lvl0": ["Principle", "Discipline"],
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": ["System Notes"],
-    "category": "System Design",
+    "category": "Work Style",
     "signal": 4
   },
   {
@@ -1444,7 +1427,7 @@
     "tags.lvl0": ["Principle", "DEV Challenge"],
     "tags.lvl1": ["Principle > Restraint"],
     "projects": ["System Notes"],
-    "category": "System Design",
+    "category": "Work Style",
     "signal": 4
   },
   {
@@ -1455,7 +1438,7 @@
     "tags.lvl0": ["Discipline", "Principle"],
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": ["System Notes"],
-    "category": "System Design",
+    "category": "Work Style",
     "signal": 5
   },
   {
@@ -1466,7 +1449,7 @@
     "tags.lvl0": ["Discipline", "Principle"],
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": ["System Notes"],
-    "category": "System Design",
+    "category": "Work Style",
     "signal": 5
   },
   {
@@ -1477,7 +1460,7 @@
     "tags.lvl0": ["Discipline", "Mindset"],
     "tags.lvl1": ["Discipline > Engineering", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
-    "category": "System Design",
+    "category": "Work Style",
     "signal": 5
   },
   {
@@ -1488,7 +1471,7 @@
     "tags.lvl0": ["Principle", "Mindset"],
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
-    "category": "System Design",
+    "category": "Work Style",
     "signal": 5
   },
   {
@@ -1499,7 +1482,7 @@
     "tags.lvl0": ["Principle", "AI"],
     "tags.lvl1": ["Principle > Restraint", "AI > ChatGPT"],
     "projects": ["System Notes"],
-    "category": "System Design",
+    "category": "Work Style",
     "signal": 5
   },
   {
@@ -1510,7 +1493,217 @@
     "tags.lvl0": ["Mindset", "AI"],
     "tags.lvl1": ["Mindset > Systems Thinking", "AI > ChatGPT"],
     "projects": ["System Notes"],
-    "category": "System Design",
+    "category": "Work Style",
     "signal": 5
+  },
+  {
+    "objectID": "card:process:timeboxed-agent-hardening",
+    "title": "Agent behavior was hardened under time constraints",
+    "blurb": "Limited time exposed weak assumptions quickly.",
+    "fact": "The DEV Algolia Challenge timeline forced rapid iteration and manual testing, surfacing issues like over-searching, hallucinated clarification, and unsafe intent handling that were corrected through targeted prompt edits.",
+    "tags.lvl0": ["Approach", "Discipline", "DEV Challenge"],
+    "tags.lvl1": ["Approach > Iterative", "Discipline > Agent Design"],
+    "projects": ["System Notes"],
+    "category": "Work Style",
+    "signal": 4
+  },
+  {
+    "objectID": "card:system:agent:intent-first-routing",
+    "title": "User intent is classified before any retrieval",
+    "blurb": "The agent decides why before deciding how.",
+    "fact": "The Algolia agent classifies user input into a fixed set of intent types before performing any lookup, preventing premature searches, hallucinated relevance, or unnecessary query expansion.",
+    "tags.lvl0": ["Mindset", "Discipline"],
+    "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Agent Design"],
+    "projects": ["System Notes"],
+    "category": "Work Style",
+    "signal": 5
+  },
+  {
+    "objectID": "card:system:agent:single-search-discipline",
+    "title": "Retrieval is limited to one search by default",
+    "blurb": "Search retries are constrained, not exploratory.",
+    "fact": "The agent performs a single lookup per user input and only retries when zero results are returned, with a hard cap on attempts, ensuring predictable behavior and preventing search loops.",
+    "tags.lvl0": ["Discipline", "AI"],
+    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia"],
+    "projects": ["System Notes"],
+    "category": "Work Style",
+    "signal": 5
+  },
+  {
+    "objectID": "card:system:agent:clarification-without-invention",
+    "title": "Clarifying questions use a fixed vocabulary",
+    "blurb": "The agent does not invent examples to be helpful.",
+    "fact": "When user intent is ambiguous, the agent asks a single clarifying question using a predefined list of allowed topic labels, avoiding hallucinated suggestions or implied content.",
+    "tags.lvl0": ["Discipline", "AI"],
+    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia"],
+    "projects": ["System Notes"],
+    "category": "Work Style",
+    "signal": 5
+  },
+  {
+    "objectID": "card:system:agent:instruction-over-content",
+    "title": "Agent behavior is shaped by instructions, not data duplication",
+    "blurb": "Tone and behavior live above the index.",
+    "fact": "The Algolia agent’s personality, humor, refusal behavior, and explanation style are defined entirely in the instruction layer, allowing the same dataset to support multiple interaction modes without altering stored records.",
+    "tags.lvl0": ["Mindset", "Discipline"],
+    "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Agent Design"],
+    "projects": ["System Notes"],
+    "category": "Work Style",
+    "signal": 5
+  },
+  {
+    "objectID": "card:system:agent:manual-testing-loop",
+    "title": "Agent behavior is validated through manual conversational testing",
+    "blurb": "Correctness is observed, not assumed.",
+    "fact": "Agent logic, intent routing, and failure modes were refined through repeated manual testing of real conversational inputs rather than relying solely on theoretical prompt design.",
+    "tags.lvl0": ["Discipline", "AI", "DEV Challenge"],
+    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia"],
+    "projects": ["System Notes"],
+    "category": "Work Style",
+    "signal": 4
+  },
+  {
+    "objectID": "card:system:agent:no-guessing-invariant",
+    "title": "The agent treats missing information as meaningful",
+    "blurb": "Silence is safer than invention.",
+    "fact": "The system explicitly encodes a no-guessing rule, requiring the agent to acknowledge gaps in available information rather than inferring or fabricating answers.",
+    "tags.lvl0": ["Discipline", "AI"],
+    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia"],
+    "projects": ["System Notes"],
+    "category": "Work Style",
+    "signal": 5
+  },
+  {
+    "objectID": "card:system:agent:iterative-prompt-hardening",
+    "title": "The agent prompt evolved through targeted edits",
+    "blurb": "Small changes, observed effects.",
+    "fact": "Instead of rewriting the agent prompt wholesale, behavior was improved through targeted, incremental edits that were tested against real user interactions to confirm impact.",
+    "tags.lvl0": ["Discipline", "AI", "DEV Challenge"],
+    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia"],
+    "projects": ["System Notes"],
+    "category": "Work Style",
+    "signal": 4
+  },
+  {
+    "objectID": "card:system:algolia:agent-safety-alignment",
+    "title": "Platform safety systems are not overridden",
+    "blurb": "The agent cooperates with platform guarantees.",
+    "fact": "Mental health and crisis handling is delegated to Algolia’s built-in safety systems rather than being reimplemented at the agent layer, reducing risk and duplication.",
+    "tags.lvl0": ["Principle", "Mindset"],
+    "tags.lvl1": ["Principle > Responsibility", "Mindset > Systems Thinking"],
+    "projects": ["System Notes"],
+    "category": "Work Style",
+    "signal": 4
+  },
+  {
+    "objectID": "card:philosophy:experimentation:0002",
+    "title": "Failed experiments are still usable work",
+    "blurb": "When an idea fails in one form, it can still succeed as a tool.",
+    "fact": "An early crawler concept did not work as intended, so Ashley reframed it as a standalone tool instead of forcing the original approach to succeed.",
+    "tags.lvl0": ["AI", "Approach"],
+    "tags.lvl1": ["AI > Algolia", "Approach > Experimentation"],
+    "projects": ["System Notes"],
+    "category": "Work Style",
+    "signal": 4
+  },
+  {
+    "objectID": "card:experimentation:iteration:0001",
+    "title": "When a crawler failed, it became a tool",
+    "blurb": "An idea that failed as automation succeeded as instrumentation.",
+    "fact": "I built a crawler concept that did not work reliably in practice. Rather than forcing it to succeed as automation, I repurposed the useful components into a standalone tool.",
+    "tags.lvl0": ["Approach", "Mindset"],
+    "tags.lvl1": ["Approach > Experimentation", "Mindset > Systems Thinking"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:experimentation:retrieval:0002",
+    "title": "Behavior moved from prompts into the index",
+    "blurb": "Retrieval constraints were encoded structurally instead of procedurally.",
+    "fact": "I encoded behavioral constraints directly into the index and retrieval structure rather than relying on prompt logic, reducing complexity and improving consistency.",
+    "tags.lvl0": ["Approach", "Discipline"],
+    "tags.lvl1": ["Approach > Experimentation", "Discipline > Agent Design"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:experimentation:authorship:0003",
+    "title": "Authored facts stayed first-person; the agent adapted",
+    "blurb": "The index reflects the author’s voice, not the agent’s.",
+    "fact": "I kept all indexed facts written in the first person and adjusted the agent’s behavior to adapt at output time, preserving author intent without altering source data.",
+    "tags.lvl0": ["Approach", "Principle", "Discipline"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "Principle > Restraint",
+      "Discipline > Agent Design"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5
+  },
+  {
+    "objectID": "card:experimentation:ux:0004",
+    "title": "Failure handling was behavioral, not scripted",
+    "blurb": "The agent was constrained without forcing awkward responses.",
+    "fact": "I removed explicit failure messages and relied solely on behavioral constraints, allowing limits to be acknowledged without scripted or unnatural language.",
+    "tags.lvl0": ["Principle", "Discipline"],
+    "tags.lvl1": ["Principle > Restraint", "Discipline > Agent Design"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:experimentation:fallback:0005",
+    "title": "Vague input triggers a deliberate default",
+    "blurb": "Empty intent is handled explicitly, not ignored.",
+    "fact": "When I noticed that greetings or vague input produced no actionable intent, I introduced a deliberate fallback that returns a small set of representative entries. This ensured the system always responded meaningfully without guessing user intent.",
+    "tags.lvl0": ["Approach", "Principle", "Discipline"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "Principle > Restraint",
+      "Discipline > Agent Design"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:experimentation:suggestions:0006",
+    "title": "Prompt suggestions were treated as a separate system",
+    "blurb": "Follow-ups had their own constraints and personality.",
+    "fact": "Prompt suggestions were intentionally isolated from the main agent prompt, with their own rules and tone, to prevent bleed-through and keep suggestions grounded in retrieved facts only.",
+    "tags.lvl0": ["Approach", "Discipline", "Principle"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "Discipline > Agent Design",
+      "Principle > Restraint"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5
+  },
+  {
+    "objectID": "card:experimentation:algolia:0007",
+    "title": "Algolia defaults were adapted, not replaced",
+    "blurb": "Platform constraints shaped the agent instead of being ignored.",
+    "fact": "I adapted Algolia’s default assistant model to fit my constraints and tone rather than replacing it outright, preserving built-in search limits, retrieval flow, and expected platform behavior.",
+    "tags.lvl0": ["Approach", "Discipline", "AI"],
+    "tags.lvl1": ["Approach > AI Collaboration", "Discipline > Agent Design", "AI > Algolia"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5
+  },
+  {
+    "objectID": "card:decision:scope:personalization-deferred",
+    "title": "Personalization was intentionally deferred",
+    "blurb": "Unpredictability was avoided before mastering the basics.",
+    "fact": "I chose not to implement personalization during the challenge because I had not yet mastered the core system behavior. Adding personalization at that stage would have introduced unpredictable outcomes and obscured whether failures came from fundamentals or personalization logic.",
+    "tags.lvl0": ["Approach", "Principle", "DEV Challenge"],
+    "tags.lvl1": ["Approach > AI Collaboration", "Principle > Restraint"],
+    "projects": ["System Notes"],
+    "category": "Decisions",
+    "signal": 4
   }
 ]
