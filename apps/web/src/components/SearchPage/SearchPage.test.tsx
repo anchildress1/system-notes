@@ -22,6 +22,11 @@ vi.mock('react-instantsearch', () => ({
   Configure: () => null,
 }));
 
+// Mock SiAlgolia icon to avoid issues with react-icons in tests if needed
+vi.mock('react-icons/si', () => ({
+  SiAlgolia: () => <span data-testid="algolia-icon">Algolia Icon</span>,
+}));
+
 const originalEnv = { ...process.env };
 
 describe('SearchPage Component', () => {

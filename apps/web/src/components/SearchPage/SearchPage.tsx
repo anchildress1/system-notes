@@ -1,6 +1,7 @@
 'use client';
 
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import aa from 'search-insights';
 import {
   InstantSearch,
   SearchBox,
@@ -10,10 +11,12 @@ import {
   Stats,
   ClearRefinements,
   Configure,
+  Index,
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
 import styles from './SearchPage.module.css';
 import FactCard from '../FactCard/FactCard';
+import PostCard from '../PostCard/PostCard';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
@@ -21,6 +24,15 @@ const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'system-notes';
 
 const hasCredentials = appId && searchKey;
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
+
+const insightsConfig = {
+  insightsClient: aa,
+  insightsInitParams: {
+    appId,
+    apiKey: searchKey,
+    useCookie: true,
+  },
+};
 
 export default function SearchPage() {
   if (!searchClient) {
@@ -37,7 +49,7 @@ export default function SearchPage() {
 
   return (
     <div className={styles.container}>
-      <InstantSearch searchClient={searchClient} indexName={indexName}>
+      <InstantSearch searchClient={searchClient} indexName={indexName} insights={insightsConfig}>
         <Configure hitsPerPage={20} />
 
         <header className={styles.searchHeader}>
@@ -162,6 +174,29 @@ export default function SearchPage() {
                 item: styles.hitsItem,
               }}
             />
+
+            <Index indexName="crawly_posts">
+              <div style={{ marginTop: 'var(--space-xl)', marginBottom: 'var(--space-lg)' }}>
+                <h2
+                  className={styles.filterTitle}
+                  style={{
+                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                    paddingBottom: 'var(--space-sm)',
+                    marginBottom: 'var(--space-md)',
+                  }}
+                >
+                  From the Blog
+                </h2>
+                <Hits
+                  hitComponent={PostCard}
+                  classNames={{
+                    root: styles.hitsRoot,
+                    list: styles.hitsList,
+                    item: styles.hitsItem,
+                  }}
+                />
+              </div>
+            </Index>
 
             <Pagination
               classNames={{

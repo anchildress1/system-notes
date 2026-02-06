@@ -1,8 +1,19 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Highlight } from 'react-instantsearch';
 import type { Hit, BaseHit } from 'instantsearch.js';
+
+type SendEventForHits = {
+  (
+    eventType: string,
+    hits: Hit | Hit[],
+    eventName?: string,
+    additionalData?: Record<string, unknown>
+  ): void;
+  (customPayload: unknown): void;
+};
+
 import styles from './FactCard.module.css';
 
 interface FactHitRecord extends BaseHit {
@@ -18,15 +29,23 @@ interface FactHitRecord extends BaseHit {
 
 interface FactCardProps {
   hit: Hit<FactHitRecord>;
+  sendEvent?: SendEventForHits;
 }
 
-export default function FactCard({ hit }: FactCardProps) {
+export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const hasTrackedFlip = useRef(false);
   const categoryLabel = hit.category || '';
 
   const handleFlip = useCallback(() => {
+    if (!isFlipped && !hasTrackedFlip.current && sendEvent) {
+      hasTrackedFlip.current = true;
+      sendEvent('click', hit, 'Fact Card Viewed', {
+        objectIDs: [hit.objectID],
+      });
+    }
     setIsFlipped((prev) => !prev);
-  }, []);
+  }, [isFlipped, sendEvent, hit]);
 
   const handleContainerKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -92,7 +111,6 @@ export default function FactCard({ hit }: FactCardProps) {
                 }}
                 aria-label="Close expanded view"
                 tabIndex={isFlipped ? 0 : -1}
-                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus={isFlipped}
               >
                 <span aria-hidden="true">×</span>

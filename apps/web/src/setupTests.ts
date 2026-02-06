@@ -29,9 +29,8 @@ import React from 'react';
 
 // Mock next/image to avoid DOM warnings for non-standard attributes
 vi.mock('next/image', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-  default: ({ src, alt, fill, priority, ...props }: any) => {
-    // eslint-disable-next-line @next/next/no-img-element
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  default: ({ src, alt, fill, priority, ...props }: Record<string, unknown>) => {
     return React.createElement('img', { src, alt, ...props });
   },
 }));
