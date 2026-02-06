@@ -1,3 +1,5 @@
+@import 'instantsearch.css/themes/satellite.css';
+
 :root {
   /* Agentic Morph Palette - V2 Power Theme */
   --color-bg-base: 230 9% 13%;
@@ -80,6 +82,13 @@ body::before {
   border-radius: 2px;
 }
 
+/* Chat widget: no custom focus color override */
+.ais-Chat *:focus-visible,
+.ais-ChatToggleButton:focus-visible,
+.ais-Chat-toggleButton:focus-visible {
+  outline-color: transparent !important;
+}
+
 /* Modal Overlay Base Styles */
 .modal-overlay {
   position: fixed;
@@ -134,4 +143,30 @@ button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--color-accent-purple) / 0.5);
+}
+
+/* Algolia Chat Widget - Minimal Overrides */
+
+/* Theme variable overrides */
+.ais-Chat {
+  --ais-primary-color-rgb: 47, 182, 178 !important;
+  --ais-background-color-rgb: 255, 255, 255 !important;
+  --ais-text-color-rgb: 38, 38, 38 !important;
+}
+
+/* Visual Overrides */
+.ais-Chat-toggleButton {
+  width: 60px !important;
+  height: 60px !important;
+  background-color: hsl(178, 59%, 45%) !important;
+}
+
+.ais-Chat-toggleButton svg {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+/* Header Icon Color */
+.ais-ChatHeader-titleIcon {
+  color: hsl(338 78% 61%) !important;
 }

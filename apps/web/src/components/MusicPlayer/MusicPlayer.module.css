@@ -1,9 +1,12 @@
 .playerWrapper {
     position: relative;
+    /* Previously position:fixed; now relative to allow wrapping in ClientShell floatingControls */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
+    z-index: auto;
+    /* Managed by parent */
 }
 
 .playButton {
@@ -21,6 +24,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     position: relative;
     z-index: 2;
+    pointer-events: auto;
 }
 
 .playButton:hover {

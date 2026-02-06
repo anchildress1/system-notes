@@ -39,9 +39,7 @@ headers = {
 payload = {
     "systemPrompt": prompt_content,
     "indices": [
-        {"indexName": "projects"},
-        {"indexName": "about"},
-        {"indexName": "blog_posts"}
+        {"indexName": "system-notes"}
     ]
 }
 

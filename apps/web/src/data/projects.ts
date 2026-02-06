@@ -140,7 +140,7 @@ export const allProjects: Project[] = [
 
   {
     id: 'underfoot-underground-travel-planner',
-    title: 'Underfoot',
+    title: 'Underfoot Travel',
     status: 'Active · In Progress',
     description: 'Narrative travel discovery explored through AI orchestration experiments.',
     purpose:
@@ -174,7 +174,7 @@ export const allProjects: Project[] = [
 
   {
     id: 'awesome-github-copilot',
-    title: 'Awesome GitHub Copilot',
+    title: 'Awesome Copilot',
     status: 'Active',
     description: 'Curated GitHub Copilot workflows, agents, and patterns.',
     purpose:
@@ -247,7 +247,7 @@ export const allProjects: Project[] = [
 
   {
     id: 'eslint-config-echo',
-    title: 'Echo',
+    title: 'Echo ESLint',
     status: 'Active · Testing',
     description: 'Reusable linting boundaries designed for AI-assisted codebases.',
     purpose: 'To provide AI strict, reusable formatting and linting constraints across projects.',

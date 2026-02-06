@@ -9,49 +9,61 @@ if [ -f ".env" ]; then
   export $(grep -v '^#' .env | xargs)
 fi
 
-if [ -z "${ALGOLIA_APPLICATION_ID:-}" ] || [ -z "${ALGOLIA_ADMIN_API_KEY:-}" ]; then
-  echo "Error: ALGOLIA_APPLICATION_ID and ALGOLIA_ADMIN_API_KEY must be set in .env"
+if [ -z "${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID:-}" ] || [ -z "${ALGOLIA_ADMIN_API_KEY:-}" ]; then
+  echo "Error: NEXT_PUBLIC_ALGOLIA_APPLICATION_ID and ALGOLIA_ADMIN_API_KEY must be set in .env"
   exit 1
 fi
 
-BASE_URL="https://${ALGOLIA_APPLICATION_ID}.algolia.net/1"
+# Check for required tools
+for cmd in jq curl; do
+  if ! command -v $cmd &> /dev/null; then
+    echo "Error: $cmd is not installed."
+    exit 1
+  fi
+done
 
-echo "📤 Uploading projects index data..."
-cat apps/api/algolia/sources/projects.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
-  curl -X POST "${BASE_URL}/indexes/projects/batch" \
-  -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
-  -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
-  -H "Content-Type: application/json" \
-  --data-binary @- \
-  -w "\n" \
-  -s
+BASE_URL="https://${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}.algolia.net/1"
+INDEX_NAME="system-notes"
 
-echo "📤 Uploading about index data..."
-cat apps/api/algolia/sources/about.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
-  curl -X POST "${BASE_URL}/indexes/about/batch" \
-  -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
-  -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
-  -H "Content-Type: application/json" \
-  --data-binary @- \
-  -w "\n" \
-  -s
+echo "📤 Uploading ${INDEX_NAME} index data..."
+if [ -f "apps/api/algolia/sources/index.json" ]; then
+  cat apps/api/algolia/sources/index.json | jq '{requests: [.[] | {action: "updateObject", body: .}]}' | \
+    curl -X POST "${BASE_URL}/indexes/${INDEX_NAME}/batch" \
+    -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
+    -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
+    -H "Content-Type: application/json" \
+    --data-binary @- \
+    -w "\n" \
+    -sS
+else
+  echo "Error: apps/api/algolia/sources/index.json not found"
+  exit 1
+fi
 
-echo "⚙️  Uploading projects settings..."
-curl -X PUT "${BASE_URL}/indexes/projects/settings" \
-  -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
-  -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
-  -H "Content-Type: application/json" \
-  --data @apps/api/algolia/config/projects_settings.json \
-  -w "\n" \
-  -s
+echo "⚙️  Uploading ${INDEX_NAME} settings..."
+if [ -f "apps/api/algolia/config/settings.json" ]; then
+  curl -X PUT "${BASE_URL}/indexes/${INDEX_NAME}/settings" \
+    -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
+    -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
+    -H "Content-Type: application/json" \
+    --data @apps/api/algolia/config/settings.json \
+    -w "\n" \
+    -sS
+else
+  echo "Warning: apps/api/algolia/config/settings.json not found, skipping settings upload"
+fi
 
-echo "⚙️  Uploading about settings..."
-curl -X PUT "${BASE_URL}/indexes/about/settings" \
-  -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
-  -H "X-Algolia-Application-Id: ${ALGOLIA_APPLICATION_ID}" \
-  -H "Content-Type: application/json" \
-  --data @apps/api/algolia/config/about_settings.json \
-  -w "\n" \
-  -s
+echo "🔤 Uploading ${INDEX_NAME} synonyms..."
+if [ -f "apps/api/algolia/config/synonyms.json" ]; then
+  curl -X POST "${BASE_URL}/indexes/${INDEX_NAME}/synonyms/batch?replaceExistingSynonyms=true" \
+    -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
+    -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
+    -H "Content-Type: application/json" \
+    --data @apps/api/algolia/config/synonyms.json \
+    -w "\n" \
+    -sS
+else
+  echo "Warning: apps/api/algolia/config/synonyms.json not found, skipping synonyms upload"
+fi
 
-echo "✅ All indices uploaded successfully"
+echo "✅ Index upload complete"

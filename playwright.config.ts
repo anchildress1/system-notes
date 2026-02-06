@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3001',
+    baseURL: 'http://localhost:3002',
     trace: 'on-first-retry',
     headless: true,
   },
@@ -27,8 +27,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'PORT=3001 npm run start:standalone',
-    url: 'http://localhost:3001',
+    command: 'PORT=3002 npm run start:standalone',
+    url: 'http://localhost:3002',
     cwd: './apps/web',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
