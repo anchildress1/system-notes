@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { injectTestStyles } from './utils';
 
 const mockSearchResults = {
   results: [
@@ -69,18 +70,7 @@ test.describe('Search Page Integration', () => {
       });
     });
 
-    await page.addStyleTag({
-      content: `
-        [class*="floatingControls"],
-        .ais-Chat-window,
-        .ais-Chat-toggleButton,
-        [class*="ClientShell-module__PdIJPa__floatingControls"] {
-          display: none !important;
-          pointer-events: none !important;
-          z-index: -1 !important;
-        }
-      `,
-    });
+    await injectTestStyles(page);
   });
 
   test('loads search page with correct title', async ({ page }) => {
