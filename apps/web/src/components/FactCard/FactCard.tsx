@@ -3,7 +3,17 @@
 import { useState, useCallback, useRef } from 'react';
 import { Highlight } from 'react-instantsearch';
 import type { Hit, BaseHit } from 'instantsearch.js';
-import type { SendEventForHits } from 'instantsearch.js/es/lib/utils';
+
+type SendEventForHits = {
+  (
+    eventType: string,
+    hits: Hit | Hit[],
+    eventName?: string,
+    additionalData?: Record<string, unknown>
+  ): void;
+  (customPayload: unknown): void;
+};
+
 import styles from './FactCard.module.css';
 
 interface FactHitRecord extends BaseHit {
@@ -101,7 +111,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                 }}
                 aria-label="Close expanded view"
                 tabIndex={isFlipped ? 0 : -1}
-                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus={isFlipped}
               >
                 <span aria-hidden="true">×</span>
