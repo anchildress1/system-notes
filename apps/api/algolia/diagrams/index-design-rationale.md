@@ -24,7 +24,11 @@ graph TD
     NewWay["Graph Linking in One Index<br/>(Shared facets & tags)"]:::solution
 
     %% Final decision
+<<<<<<< HEAD
+    Decision["CURRENT ARCHITECTURE<br/>Unified System Notes<br/>1. Facts & Narratives in one graph<br/>2. Differentiated by category"]:::final
+=======
     Decision["CURRENT ARCHITECTURE<br/>Unified System Notes<br/>1. Facts & Narratives in one graph<br/>2. Differentiated by facet_domain"]:::final
+>>>>>>> main
 
     %% Rationale
     Why1["WHY: Silos fragment the agent's<br/>understanding of the system"]:::rationale

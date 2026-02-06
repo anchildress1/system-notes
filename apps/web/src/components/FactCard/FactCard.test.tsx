@@ -1,7 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
 import type { Hit, BaseHit } from 'instantsearch.js';
+
+const mockSendEvent = vi.fn();
 
 vi.mock('react-instantsearch', () => ({
   Highlight: ({ attribute, hit }: { attribute: string; hit: Record<string, unknown> }) => (
@@ -36,6 +39,10 @@ const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecor
   }) as Hit<FactHitRecord>;
 
 describe('FactCard Component', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('renders fact card with all fields', () => {
     render(<FactCard hit={createMockHit()} />);
 
@@ -148,5 +155,51 @@ describe('FactCard Component', () => {
     const closeButton = screen.getByRole('button', { name: /Close expanded view/i });
     fireEvent.click(closeButton);
     expect(card).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('tracks expansion event with insights client', async () => {
+    const user = userEvent.setup();
+    const hit = createMockHit();
+    render(<FactCard hit={hit} sendEvent={mockSendEvent} />);
+
+    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
+    await user.click(expandButton);
+
+    expect(mockSendEvent).toHaveBeenCalledWith('click', hit, 'Fact Card Viewed', {
+      objectIDs: [hit.objectID],
+    });
+  });
+
+  it('only tracks expansion once per card instance', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} sendEvent={mockSendEvent} />);
+
+    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
+
+    // Open
+    await user.click(expandButton);
+
+    // Close (using close button found after expand)
+    const closeButton = screen.getByRole('button', { name: /Close expanded view/i });
+    await user.click(closeButton);
+
+    // Open again
+    // Note: the expand button might be hidden/re-shown or just aria-expanded toggled?
+    // In FactCard.tsx: <button ... hidden={isFlipped}>
+    // So when closed, it is visible again.
+    const expandButtonAgain = screen.getByRole('button', { name: /Press to expand/i });
+    await user.click(expandButtonAgain);
+
+    expect(mockSendEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not track when sendEvent is not provided', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} />);
+
+    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
+    await user.click(expandButton);
+
+    expect(mockSendEvent).not.toHaveBeenCalled();
   });
 });

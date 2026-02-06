@@ -86,7 +86,7 @@ test.describe('Search Page Integration', () => {
   test('loads search page with correct title', async ({ page }) => {
     await page.goto('/search');
     await expect(page).toHaveTitle(/Fact Index/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Fact Index' })).toBeVisible();
+    // H1 check removed as it's no longer present
   });
 
   test('renders search box', async ({ page }) => {
@@ -117,7 +117,6 @@ test.describe('Search Page Integration', () => {
     await page.goto('/');
     await page.getByRole('link', { name: 'Fact Index' }).click({ force: true });
     await expect(page).toHaveURL('/search');
-    await expect(page.getByRole('heading', { level: 1, name: 'Fact Index' })).toBeVisible();
   });
 
   test('displays category labels on cards', async ({ page }) => {

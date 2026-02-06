@@ -1,6 +1,7 @@
 'use client';
 
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import aa from 'search-insights';
 import {
   InstantSearch,
   SearchBox,
@@ -22,6 +23,15 @@ const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'system-notes';
 const hasCredentials = appId && searchKey;
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
 
+const insightsConfig = {
+  insightsClient: aa,
+  insightsInitParams: {
+    appId,
+    apiKey: searchKey,
+    useCookie: true,
+  },
+};
+
 export default function SearchPage() {
   if (!searchClient) {
     return (
@@ -37,7 +47,7 @@ export default function SearchPage() {
 
   return (
     <div className={styles.container}>
-      <InstantSearch searchClient={searchClient} indexName={indexName}>
+      <InstantSearch searchClient={searchClient} indexName={indexName} insights={insightsConfig}>
         <Configure hitsPerPage={20} />
 
         <header className={styles.searchHeader}>
