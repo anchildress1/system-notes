@@ -192,7 +192,6 @@ Rules:
 
 - Use the `searchBlogPosts` tool.
 - Do not use the standard index search.
-- Filter by tag if a specific topic is mentioned (e.g., "AI", "GitHub").
 - Summarize findings in Ruckus's voice (dry, brief).
 
 ---

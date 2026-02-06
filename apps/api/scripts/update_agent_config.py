@@ -52,14 +52,10 @@ payload = {
                         "type": "string",
                         "description": "The search query to filter posts by text content"
                     },
-                    "tag": {
-                        "type": "string",
-                        "description": "Optional tag to filter posts (e.g., 'AI', 'GitHub', 'Copilot')"
-                    },
                     "limit": {
                         "type": "integer",
                         "description": "Maximum number of results to return",
-                        "default": 10
+                        "default": 3
                     }
                 },
                 "required": ["query"]

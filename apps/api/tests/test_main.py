@@ -305,16 +305,17 @@ def test_blog_search_response_shape(mock_client_class):
     assert len(data["results"]) > 0
     
     first_result = data["results"][0]
-    expected_keys = {"objectID", "title", "blurb", "fact", "tags", "projects", "category", "signal"}
+    expected_keys = {"objectID", "title", "blurb", "fact", "tags", "projects", "category", "signal", "url"}
     assert set(first_result.keys()) == expected_keys
     
     # Explicitly check for exclusion of internal fields
-    assert "url" not in first_result
+    assert "url" in first_result
     assert "published_date" not in first_result
     assert "reading_time" not in first_result
 
     # Verify user-requested field mappings
     assert first_result["projects"] == ["DEV Blog"]
-    assert first_result["blurb"] == "https://dev.to/test/test-post-123"
+    assert first_result["blurb"] == "This is a test description for the blog post about AI tools."
     assert first_result["fact"] == "This is a test description for the blog post about AI tools."
+    assert first_result["url"] == "https://dev.to/test/test-post-123"
 

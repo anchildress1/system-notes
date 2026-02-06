@@ -157,6 +157,7 @@ class BlogPost(BaseModel):
     title: str
     blurb: str = Field(description="Short summary of the blog post")
     fact: str = Field(description="Key insight or takeaway from the post")
+    url: Optional[str] = None
     tags: List[str] = []
     projects: List[str] = []
     category: str = "Blog"
@@ -239,7 +240,7 @@ async def fetch_post_content(client: httpx.AsyncClient, url: str) -> Optional[Bl
         return BlogPostInternal(
             objectID=f"blog:{slug}",
             title=json_ld.get("headline", ""),
-            blurb=final_url,
+            blurb=description,
             fact=description,
             tags=keywords,
             projects=["DEV Blog"],
@@ -270,6 +271,7 @@ async def get_all_blog_posts() -> List[BlogPostInternal]:
         results = await asyncio.gather(*tasks)
         
     posts = [p for p in results if p is not None]
+    posts.sort(key=lambda x: x.published_date or "", reverse=True)
 
     logger.info(f"Fetched {len(posts)} valid posts")
     _blog_cache["data"] = posts
@@ -281,7 +283,7 @@ async def get_all_blog_posts() -> List[BlogPostInternal]:
 async def search_blog_posts(
     q: Optional[str] = Query(None, description="Search query to filter posts"),
     tag: Optional[str] = Query(None, description="Filter by tag"),
-    limit: int = Query(10, ge=1, le=50, description="Maximum results to return"),
+    limit: int = Query(3, ge=1, le=50, description="Maximum results to return"),
 ):
     logger.info(f"Search request: q='{q}', tag='{tag}', limit={limit}")
     
