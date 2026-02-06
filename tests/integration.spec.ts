@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { injectTestStyles, mockAlgolia } from './utils';
 
 test.describe('System Notes Integration', () => {
   test.beforeEach(async ({ page }) => {
@@ -48,7 +49,7 @@ test.describe('System Notes Integration', () => {
     await page.goto('/');
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
-    await expect(footer).toContainText('Built with Gemini, ChatGPT, Claude');
+    await expect(footer).toContainText('Built with Gemini, ChatGPT, Claude + Verdent');
   });
 
   test('should display blog CTA in header', async ({ page }) => {

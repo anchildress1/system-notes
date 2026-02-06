@@ -15,20 +15,15 @@ import { FaBrain, FaUser } from 'react-icons/fa';
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
 
-if (!appId || !apiKey) {
-  throw new Error(
-    'Algolia configuration missing: NEXT_PUBLIC_ALGOLIA_APPLICATION_ID and NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY must be set.'
-  );
-}
-
 // Create searchClient at module level for stable reference (prevents unnecessary re-renders)
-const searchClient = algoliasearch(appId, apiKey);
+const searchClient =
+  appId && apiKey
+    ? algoliasearch(appId, apiKey)
+    : {
+        search: () => Promise.resolve({ results: [] }),
+      };
 
 const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || '';
-
-if (!AGENT_ID) {
-  throw new Error('Algolia configuration missing: NEXT_PUBLIC_ALGOLIA_AGENT_ID must be set.');
-}
 
 const MusicPlayer = dynamic(() => import('../MusicPlayer/MusicPlayer'), {
   ssr: false,
@@ -59,6 +54,7 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
 export default function AIChat() {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
+  // Memoize translations to prevent unnecessary re-renders of the Chat widget
   const translations = useMemo(
     () => ({
       header: {

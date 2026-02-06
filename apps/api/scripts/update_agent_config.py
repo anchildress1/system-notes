@@ -67,6 +67,7 @@ payload = {
 print(f"🔧 Updating Algolia Agent {AGENT_ID}...")
 print(f"📝 Prompt length: {len(prompt_content)} characters")
 print("🛠️  Tools: searchBlogPosts")
+
 print()
 
 try:

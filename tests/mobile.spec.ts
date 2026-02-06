@@ -1,6 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { injectTestStyles } from './utils';
 
 test.describe('Mobile Responsiveness', () => {
+  test.beforeEach(async ({ page }) => {
+    await injectTestStyles(page);
+  });
   test('should render header correctly on mobile', async ({ page }) => {
     await page.goto('/');
 

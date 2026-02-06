@@ -1,4 +1,4 @@
-import { Code } from 'lucide-react';
+import { FaCode } from 'react-icons/fa';
 import Link from 'next/link';
 import styles from './Header.module.css';
 
@@ -27,9 +27,6 @@ export default function Header() {
         <Link href="/about" className={styles.navLink}>
           About
         </Link>
-        <Link href="/sitemap" className={styles.navLink}>
-          Sitemap
-        </Link>
         <a
           href="https://dev.to/anchildress1"
           target="_blank"
@@ -37,7 +34,7 @@ export default function Header() {
           data-testid="blog-link"
           className={styles.ctaButton}
         >
-          <Code size={16} />
+          <FaCode size={16} />
           Read My Blog
         </a>
       </nav>

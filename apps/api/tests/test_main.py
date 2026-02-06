@@ -102,8 +102,6 @@ def test_get_system_doc_error_handling(MockPath):
     response = client.get("/system/doc/fail.md")
     assert response.status_code == 500
     assert response.json()["error"] == "Internal server error"
-
-
 MOCK_SITEMAP = '''<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://crawly.checkmarkdevtools.dev/</loc></url>

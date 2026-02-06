@@ -144,8 +144,6 @@ async def get_system_doc(doc_path: str):
     except Exception as e:
         logger.error(f"Error serving doc: {e}")
         return JSONResponse(status_code=500, content={"error": "Internal server error"})
-
-
 CRAWLY_BASE_URL = "https://crawly.checkmarkdevtools.dev"
 CRAWLY_SITEMAP_URL = f"{CRAWLY_BASE_URL}/sitemap.xml"
 

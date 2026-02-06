@@ -1,21 +1,21 @@
 {
-  "searchableAttributes": ["title", "blurb", "fact", "tags", "entities"],
+  "searchableAttributes": ["title", "blurb", "fact"],
   "attributesForFaceting": [
-    "filterOnly(facet_domain)",
-    "filterOnly(facet_category)",
-    "filterOnly(facet_signal_level)",
-    "searchable(entities)",
-    "searchable(tags)"
+    "filterOnly(category)",
+    "filterOnly(projects)",
+    "filterOnly(tags.lvl0)",
+    "filterOnly(tags.lvl1)"
   ],
-  "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
+  "ranking": ["exact", "words", "filters", "attribute", "custom"],
+  "customRanking": ["desc(signal)"],
   "attributesToRetrieve": ["*"],
   "attributesToHighlight": ["title", "blurb"],
   "hitsPerPage": 12,
-  "typoTolerance": true,
+  "typoTolerance": "min",
   "renderingContent": {
     "facetOrdering": {
       "facets": {
-        "order": ["category", "projects", "tags"]
+        "order": ["category", "projects", "tags.lvl0", "tags.lvl1"]
       }
     }
   }
