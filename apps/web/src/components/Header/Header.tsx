@@ -34,7 +34,7 @@ export default function Header() {
           data-testid="blog-link"
           className={styles.ctaButton}
         >
-          <Code size={16} />
+          <FaCode size={16} />
           Read My Blog
         </a>
       </nav>
