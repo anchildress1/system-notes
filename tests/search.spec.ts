@@ -86,7 +86,7 @@ test.describe('Search Page Integration', () => {
   test('loads search page with correct title', async ({ page }) => {
     await page.goto('/search');
     await expect(page).toHaveTitle(/Fact Index/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Fact Index' })).toBeVisible();
+    // H1 check removed as it's no longer present
   });
 
   test('renders search box', async ({ page }) => {
@@ -97,8 +97,11 @@ test.describe('Search Page Integration', () => {
 
   test('renders fact cards with results', async ({ page }) => {
     await page.goto('/search');
-    await expect(page.getByRole('article').first()).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText('Test Fact Title')).toBeVisible();
+    await expect(page.getByRole('button', { name: /Test Fact Title/ }).first()).toBeVisible({
+      timeout: 10000,
+    });
+    // Use .first() to resolve strict mode ambiguity if both front and back titles are in DOM
+    await expect(page.getByText('Test Fact Title').first()).toBeVisible();
     await expect(page.getByText('This is a test blurb for the fact.')).toBeVisible();
   });
 
@@ -114,32 +117,45 @@ test.describe('Search Page Integration', () => {
     await page.goto('/');
     await page.getByRole('link', { name: 'Fact Index' }).click({ force: true });
     await expect(page).toHaveURL('/search');
-    await expect(page.getByRole('heading', { level: 1, name: 'Fact Index' })).toBeVisible();
   });
 
   test('displays category labels on cards', async ({ page }) => {
     await page.goto('/search');
-    await expect(page.getByRole('article').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('button', { name: /Test Fact Title/ }).first()).toBeVisible({
+      timeout: 10000,
+    });
     await expect(page.getByText('Work Style').first()).toBeVisible();
   });
 
   test('displays tags on fact cards', async ({ page }) => {
     await page.goto('/search');
-    const firstCard = page.getByRole('article').first();
+    const firstCard = page.getByRole('button', { name: /Test Fact Title/ }).first();
     await expect(firstCard).toBeVisible({ timeout: 10000 });
-    await expect(firstCard.getByText('tag-one')).toBeVisible();
-    await expect(firstCard.getByText('tag-two')).toBeVisible();
+
+    // Flip the card to see tags
+    await firstCard.click();
+
+    const cardBack = page.getByRole('region', { name: /Test Fact Title details/ });
+    await expect(cardBack.getByText('tag-one')).toBeVisible();
+    await expect(cardBack.getByText('tag-two')).toBeVisible();
   });
 
   test('displays project labels on cards', async ({ page }) => {
     await page.goto('/search');
-    await expect(page.getByRole('article').first()).toBeVisible({ timeout: 10000 });
+    const firstCard = page.getByRole('button', { name: /Test Fact Title/ }).first();
+    await expect(firstCard).toBeVisible({ timeout: 10000 });
+
+    // Flip the card to see projects
+    await firstCard.click();
+
     await expect(page.getByText('System Notes').first()).toBeVisible();
   });
 
   test('search page passes accessibility checks', async ({ page }) => {
     await page.goto('/search');
-    await expect(page.getByRole('article').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('button', { name: /Test Fact Title/ }).first()).toBeVisible({
+      timeout: 10000,
+    });
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .disableRules(['region'])

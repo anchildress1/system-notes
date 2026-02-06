@@ -22,6 +22,11 @@ vi.mock('react-instantsearch', () => ({
   Configure: () => null,
 }));
 
+// Mock SiAlgolia icon to avoid issues with react-icons in tests if needed
+vi.mock('react-icons/si', () => ({
+  SiAlgolia: () => <span data-testid="algolia-icon">Algolia Icon</span>,
+}));
+
 const originalEnv = { ...process.env };
 
 describe('SearchPage Component', () => {
@@ -41,7 +46,6 @@ describe('SearchPage Component', () => {
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
 
-    expect(screen.getByText('Fact Index')).toBeInTheDocument();
     expect(screen.getByText(/Search is currently unavailable/)).toBeInTheDocument();
   });
 
@@ -89,14 +93,13 @@ describe('SearchPage Component', () => {
     expect(screen.getByTestId('clear-refinements')).toBeInTheDocument();
   });
 
-  it('has correct heading structure for SEO', async () => {
+  it('has correct heading structure for filters', async () => {
     process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
     process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Fact Index' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: 'Filter' })).toBeInTheDocument();
   });
 
@@ -110,5 +113,16 @@ describe('SearchPage Component', () => {
     expect(screen.getByText('Category')).toBeInTheDocument();
     expect(screen.getByText('Projects')).toBeInTheDocument();
     expect(screen.getByText('Tags')).toBeInTheDocument();
+  });
+
+  it('renders Algolia attribution link', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+
+    const { default: SearchPage } = await import('./SearchPage');
+    render(<SearchPage />);
+
+    const algoliaLink = screen.getByRole('link', { name: /Search powered by Algolia/i });
+    expect(algoliaLink).toHaveAttribute('href', 'https://www.algolia.com');
   });
 });

@@ -28,96 +28,123 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const categoryLabel = hit.category || '';
 
   const handleFlip = useCallback(() => {
-    const newFlipState = !isFlipped;
-    setIsFlipped(newFlipState);
-
-    if (newFlipState && !hasTrackedFlip.current && sendEvent) {
+    if (!isFlipped && !hasTrackedFlip.current && sendEvent) {
       hasTrackedFlip.current = true;
       sendEvent('click', hit, 'Fact Card Viewed', {
         objectIDs: [hit.objectID],
       });
     }
+    setIsFlipped((prev) => !prev);
   }, [isFlipped, sendEvent, hit]);
 
-  const handleKeyDown = useCallback(
+  const handleContainerKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+      if (e.key === 'Escape' && isFlipped) {
         e.preventDefault();
-        handleFlip();
+        setIsFlipped(false);
       }
     },
-    [handleFlip]
+    [isFlipped]
   );
 
   return (
-    <article
-      className={`${styles.card} ${isFlipped ? styles.flipped : ''}`}
-      onClick={handleFlip}
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-      aria-label={`${hit.title}. ${isFlipped ? 'Press to show summary' : 'Press to show full fact'}`}
-    >
-      <div className={styles.cardInner}>
-        <div className={styles.cardFront} aria-hidden={isFlipped}>
-          <div className={styles.header}>
-            <span className={styles.domain}>{categoryLabel}</span>
-          </div>
+    <>
+      {isFlipped && <div className={styles.placeholder} aria-hidden="true" />}
+      <div
+        className={`${styles.card} ${isFlipped ? styles.flipped : ''}`}
+        onKeyDown={handleContainerKeyDown}
+        data-state={isFlipped ? 'expanded' : 'collapsed'}
+      >
+        <div className={styles.cardInner}>
+          <button
+            type="button"
+            className={styles.cardFront}
+            onClick={handleFlip}
+            aria-expanded={isFlipped}
+            aria-label={`${hit.title}. Press to expand.`}
+            hidden={isFlipped}
+          >
+            <div className={styles.header}>
+              <span className={styles.domain}>{categoryLabel}</span>
+            </div>
 
-          <h3 className={styles.title}>
-            <Highlight attribute="title" hit={hit} />
-          </h3>
+            <h3 className={styles.title}>
+              <Highlight attribute="title" hit={hit} />
+            </h3>
 
-          <p className={styles.blurb}>
-            <Highlight attribute="blurb" hit={hit} />
-          </p>
+            <p className={styles.blurb}>
+              <Highlight attribute="blurb" hit={hit} />
+            </p>
 
-          {hit.projects && hit.projects.length > 0 && (
-            <div className={styles.entities}>
-              {hit.projects.slice(0, 3).map((entity) => (
-                <span key={entity} className={styles.entity}>
-                  {entity}
-                </span>
-              ))}
-              {hit.projects.length > 3 && (
-                <span className={styles.entityMore}>+{hit.projects.length - 3}</span>
+            <div className={styles.flipHint}>
+              <span className={styles.flipIcon} aria-hidden="true">
+                +
+              </span>
+              <span className={styles.flipText}>Expand</span>
+            </div>
+          </button>
+
+          <div
+            className={styles.cardBack}
+            aria-hidden={!isFlipped}
+            role="region"
+            aria-label={`${hit.title} details`}
+          >
+            <div className={styles.backHeader}>
+              <h3 className={styles.backTitle}>{hit.title}</h3>
+              <button
+                type="button"
+                className={styles.closeHint}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFlipped(false);
+                }}
+                aria-label="Close expanded view"
+                tabIndex={isFlipped ? 0 : -1}
+                // eslint-disable-next-line jsx-a11y/no-autofocus
+                autoFocus={isFlipped}
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+
+            <div className={styles.factContent}>
+              <blockquote className={styles.factQuote}>&ldquo;{hit.fact}&rdquo;</blockquote>
+            </div>
+
+            <div className={styles.metaSection}>
+              {hit.projects && hit.projects.length > 0 && (
+                <div className={styles.facetGroup}>
+                  <span className={styles.facetLabel}>Projects</span>
+                  <div className={styles.entities}>
+                    {hit.projects.map((entity) => (
+                      <span key={entity} className={styles.entity}>
+                        {entity}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {hit.tags && hit.tags.length > 0 && (
+                <div className={styles.facetGroup}>
+                  <span className={styles.facetLabel}>Tags</span>
+                  <div className={styles.tags}>
+                    {hit.tags.map((tag) => (
+                      <span key={tag} className={styles.tag}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
-          )}
-
-          <div className={styles.flipHint}>
-            <span className={styles.flipIcon} aria-hidden="true">
-              ↻
-            </span>
-            <span className={styles.flipText}>Click to read more</span>
-          </div>
-        </div>
-
-        <div className={styles.cardBack} aria-hidden={!isFlipped}>
-          <div className={styles.factContent}>
-            <p className={styles.factText}>{hit.fact}</p>
-          </div>
-
-          {hit.tags && hit.tags.length > 0 && (
-            <div className={styles.tags}>
-              {hit.tags.slice(0, 5).map((tag) => (
-                <span key={tag} className={styles.tag}>
-                  {tag}
-                </span>
-              ))}
-              {hit.tags.length > 5 && (
-                <span className={styles.tagMore}>+{hit.tags.length - 5}</span>
-              )}
-            </div>
-          )}
-
-          <div className={styles.flipHint}>
-            <span className={styles.flipIcon} aria-hidden="true">
-              ↻
-            </span>
-            <span className={styles.flipText}>Click to go back</span>
           </div>
         </div>
       </div>
-    </article>
+      {isFlipped && (
+        <div className={styles.backdrop} onClick={() => setIsFlipped(false)} aria-hidden="true" />
+      )}
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { injectTestStyles, mockAlgolia } from './utils';
 
 test.describe('System Notes Integration', () => {
   test.beforeEach(async ({ page }) => {

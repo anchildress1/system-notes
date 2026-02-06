@@ -1,0 +1,22 @@
+{
+  "searchableAttributes": ["title", "blurb", "fact"],
+  "attributesForFaceting": [
+    "filterOnly(category)",
+    "filterOnly(projects)",
+    "filterOnly(tags.lvl0)",
+    "filterOnly(tags.lvl1)"
+  ],
+  "ranking": ["exact", "words", "filters", "attribute", "custom"],
+  "customRanking": ["desc(signal)"],
+  "attributesToRetrieve": ["*"],
+  "attributesToHighlight": ["title", "blurb"],
+  "hitsPerPage": 12,
+  "typoTolerance": "min",
+  "renderingContent": {
+    "facetOrdering": {
+      "facets": {
+        "order": ["category", "projects", "tags.lvl0", "tags.lvl1"]
+      }
+    }
+  }
+}

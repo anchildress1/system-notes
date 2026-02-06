@@ -12,6 +12,7 @@ import {
   ClearRefinements,
   Configure,
 } from 'react-instantsearch';
+import { SiAlgolia } from 'react-icons/si';
 import styles from './SearchPage.module.css';
 import FactCard from '../FactCard/FactCard';
 
@@ -36,7 +37,6 @@ export default function SearchPage() {
     return (
       <div className={styles.container}>
         <div className={styles.errorState}>
-          <h1 className={styles.title}>Fact Index</h1>
           <p className={styles.errorMessage}>
             Search is currently unavailable. Please check back later.
           </p>
@@ -48,22 +48,33 @@ export default function SearchPage() {
   return (
     <div className={styles.container}>
       <InstantSearch searchClient={searchClient} indexName={indexName} insights={insightsConfig}>
-        <Configure hitsPerPage={12} />
+        <Configure hitsPerPage={20} />
 
         <header className={styles.searchHeader}>
-          <h1 className={styles.title}>Fact Index</h1>
-          <SearchBox
-            placeholder="Search facts..."
-            classNames={{
-              root: styles.searchBoxRoot,
-              form: styles.searchBoxForm,
-              input: styles.searchBoxInput,
-              submit: styles.searchBoxSubmit,
-              reset: styles.searchBoxReset,
-              submitIcon: styles.searchBoxIcon,
-              resetIcon: styles.searchBoxIcon,
-            }}
-          />
+          <div className={styles.searchRow}>
+            <SearchBox
+              placeholder="Search facts..."
+              classNames={{
+                root: styles.searchBoxRoot,
+                form: styles.searchBoxForm,
+                input: styles.searchBoxInput,
+                submit: styles.searchBoxSubmit,
+                reset: styles.searchBoxReset,
+                submitIcon: styles.searchBoxIcon,
+                resetIcon: styles.searchBoxIcon,
+              }}
+            />
+          </div>
+          <a
+            href="https://www.algolia.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.algoliaAttribution}
+            aria-label="Search powered by Algolia"
+          >
+            <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
+            <span className={styles.algoliaText}>Search powered by Algolia</span>
+          </a>
         </header>
 
         <div className={styles.statsRow}>

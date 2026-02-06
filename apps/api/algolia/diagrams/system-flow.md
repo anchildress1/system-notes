@@ -1,33 +1,53 @@
 # Algolia System Data Flow
 
+<<<<<<< HEAD
 End-to-end flow from the Unified JSON source through the Indexing Script to Algolia and the Agent.
+=======
+End-to-end flow from JSON source files through the **Graph Enrichment Script** to Algolia and the Agent.
+
+> > > > > > > main
 
 ```mermaid
 graph TB
     accTitle: Algolia System Data Flow
+<<<<<<< HEAD
     accDescr: Data flow showing how the Python script indexes the unified JSON data
+=======
+    accDescr: Data flow showing how the Python script enriches JSON data with graph context before indexing
+>>>>>>> main
 
     %% Data sources
     UnifiedJSON["sources/index.json<br/>(Unified Knowledge Graph)"]:::source
 
+<<<<<<< HEAD
     %% Process
     Script["index_algolia.py<br/>(Validation & Indexing)"]:::process
 
+=======
+>>>>>>> main
     %% Algolia indices
     UnifiedIndex[("system-notes index<br/>(Unified)")]:::index
 
     %% Retrieval
     Ruckus["Ruckus Agent<br/>(RAG Retrieval)"]:::agent
+<<<<<<< HEAD
     Web["Search UI<br/>(Fact Cards)"]:::agent
+=======
+>>>>>>> main
 
     %% Link generation
     Links["Deterministic Links"]:::output
 
     %% Flow
+<<<<<<< HEAD
     UnifiedJSON --> Script
     Script --> UnifiedIndex
     UnifiedIndex -->|retrieve| Ruckus
     UnifiedIndex -->|search| Web
+=======
+    UnifiedJSON --> UnifiedIndex
+    UnifiedIndex -->|retrieve| Ruckus
+>>>>>>> main
 
     Ruckus --> Links
     Links --> User
