@@ -1,0 +1,74 @@
+[
+  {
+    "objectID": "syn_person_ashley_human",
+    "type": "synonym",
+    "synonyms": ["Ashley", "Ashley Childress", "Childress", "about ashley", "who is ashley"]
+  },
+  {
+    "objectID": "syn_assistant_ruckus_human",
+    "type": "synonym",
+    "synonyms": ["Ruckus", "chatbot", "assistant", "ai assistant", "agent", "search assistant"]
+  },
+  {
+    "objectID": "syn_site_system_notes_human",
+    "type": "synonym",
+    "synonyms": [
+      "System Notes",
+      "system notes",
+      "system-notes",
+      "portfolio",
+      "site",
+      "website",
+      "projects site"
+    ]
+  },
+  {
+    "objectID": "syn_content_about_human",
+    "type": "synonym",
+    "synonyms": ["about", "about me", "bio", "background", "story", "profile", "resume"]
+  },
+  {
+    "objectID": "syn_content_projects_human",
+    "type": "synonym",
+    "synonyms": ["projects", "work", "repos", "repository", "github"]
+  },
+  {
+    "objectID": "syn_theme_systems_human",
+    "type": "synonym",
+    "synonyms": [
+      "systems",
+      "systems thinking",
+      "architecture",
+      "structure",
+      "platform",
+      "orchestration"
+    ]
+  },
+  {
+    "objectID": "syn_theme_ai_attribution_human",
+    "type": "synonym",
+    "synonyms": [
+      "attribution",
+      "ai attribution",
+      "disclosure",
+      "transparency",
+      "traceability",
+      "provenance"
+    ]
+  },
+  {
+    "objectID": "syn_theme_appalachia_human",
+    "type": "synonym",
+    "synonyms": ["Appalachia", "Appalachian", "Virginia", "mountains"]
+  },
+  {
+    "objectID": "syn_project_hermes_human",
+    "type": "synonym",
+    "synonyms": ["Hermes", "Hermes Agent", "hermetic agent", "my-hermetic-agent"]
+  },
+  {
+    "objectID": "syn_tool_copilot_human",
+    "type": "synonym",
+    "synonyms": ["Copilot", "GitHub Copilot", "gh copilot"]
+  }
+]

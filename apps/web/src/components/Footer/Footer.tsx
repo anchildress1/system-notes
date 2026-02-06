@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { FaGithub, FaLinkedin, FaDev } from 'react-icons/fa';
+import { SiAlgolia } from 'react-icons/si';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -16,11 +17,20 @@ export default function Footer() {
         </Link>
       </div>
       <div className={styles.center}>
-        <span className={styles.builtWith}>
-          Built with Gemini 3 Pro + Antigravity
-          <br />
-          (plus a little help from ChatGPT) 🦄
-        </span>
+        <div className={styles.poweredBy}>
+          <span className={styles.builtWith}>Built with Gemini, ChatGPT, Claude + Verdent</span>
+          <a
+            href="https://www.algolia.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.algoliaLink}
+            aria-label="Powered by Algolia"
+          >
+            <span>Search by</span>
+            <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
+            <span>Algolia</span>
+          </a>
+        </div>
       </div>
       <div className={styles.right}>
         <a
