@@ -14,11 +14,11 @@ import {
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
 import styles from './SearchPage.module.css';
-import FactCard from '../FactCard/FactCard';
+import UnifiedHitCard from './UnifiedHitCard';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'system-notes';
+const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'merged-search';
 
 const hasCredentials = appId && searchKey;
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
@@ -132,7 +132,7 @@ export default function SearchPage() {
               <div className={styles.refinementGroup}>
                 <h3 className={styles.refinementTitle}>Tags</h3>
                 <RefinementList
-                  attribute="tags"
+                  attribute="tags.lvl0"
                   limit={10}
                   showMore
                   showMoreLimit={30}
@@ -165,7 +165,7 @@ export default function SearchPage() {
 
           <section className={styles.results} aria-label="Search results">
             <Hits
-              hitComponent={FactCard}
+              hitComponent={UnifiedHitCard}
               classNames={{
                 root: styles.hitsRoot,
                 list: styles.hitsList,

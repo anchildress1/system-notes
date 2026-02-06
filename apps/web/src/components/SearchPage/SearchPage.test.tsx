@@ -69,7 +69,7 @@ describe('SearchPage Component', () => {
 
     expect(screen.getByTestId('refinement-category')).toBeInTheDocument();
     expect(screen.getByTestId('refinement-projects')).toBeInTheDocument();
-    expect(screen.getByTestId('refinement-tags')).toBeInTheDocument();
+    expect(screen.getByTestId('refinement-tags.lvl0')).toBeInTheDocument();
   });
 
   it('renders pagination and stats components', async () => {

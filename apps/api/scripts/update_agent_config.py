@@ -40,11 +40,34 @@ payload = {
     "systemPrompt": prompt_content,
     "indices": [
         {"indexName": "system-notes"}
+    ],
+    "tools": [
+        {
+            "name": "searchBlogPosts",
+            "description": "Search for blog posts from the Crawly blog. call this whenever the user asks about blog posts, articles, or writing.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "The search query to filter posts by text content"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "Maximum number of results to return",
+                        "default": 3
+                    }
+                },
+                "required": ["query"]
+            }
+        }
     ]
 }
 
 print(f"🔧 Updating Algolia Agent {AGENT_ID}...")
 print(f"📝 Prompt length: {len(prompt_content)} characters")
+print("🛠️  Tools: searchBlogPosts")
+
 print()
 
 try:
