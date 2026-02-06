@@ -14,6 +14,14 @@ if [ -z "${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID:-}" ] || [ -z "${ALGOLIA_ADMIN_API
   exit 1
 fi
 
+# Check for required tools
+for cmd in jq curl; do
+  if ! command -v $cmd &> /dev/null; then
+    echo "Error: $cmd is not installed."
+    exit 1
+  fi
+done
+
 BASE_URL="https://${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}.algolia.net/1"
 INDEX_NAME="system-notes"
 
@@ -26,7 +34,7 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
     -H "Content-Type: application/json" \
     --data-binary @- \
     -w "\n" \
-    -s
+    -sS
 else
   echo "Error: apps/api/algolia/sources/index.json not found"
   exit 1
@@ -40,7 +48,7 @@ if [ -f "apps/api/algolia/config/settings.json" ]; then
     -H "Content-Type: application/json" \
     --data @apps/api/algolia/config/settings.json \
     -w "\n" \
-    -s
+    -sS
 else
   echo "Warning: apps/api/algolia/config/settings.json not found, skipping settings upload"
 fi
@@ -53,7 +61,7 @@ if [ -f "apps/api/algolia/config/synonyms.json" ]; then
     -H "Content-Type: application/json" \
     --data @apps/api/algolia/config/synonyms.json \
     -w "\n" \
-    -s
+    -sS
 else
   echo "Warning: apps/api/algolia/config/synonyms.json not found, skipping synonyms upload"
 fi

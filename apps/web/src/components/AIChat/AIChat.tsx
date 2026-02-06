@@ -91,6 +91,14 @@ export default function AIChat() {
     return () => observer.disconnect();
   }, []);
 
+  if (!AGENT_ID) {
+    return (
+      <div className={styles.musicWrapper}>
+        <MusicPlayer />
+      </div>
+    );
+  }
+
   return (
     <>
       <div className={`${styles.musicWrapper} ${isChatOpen ? styles.musicPushed : ''}`}>
