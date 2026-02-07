@@ -53,22 +53,22 @@ new Crawler({
         }
 
         var engagementRaw = $('meta[name="devto:engagement_score"]').attr('content');
-        var engagementScore = engagementRaw ? Number(engagementRaw) : 0;
+        var engagementScore = engagementRaw ? Number(engagementRaw) - 1 : 0;
 
-        var signal = 0;
-        if (isFinite(engagementScore)) {
-          signal = Math.min(5, (5 * engagementScore) / 40);
+        if (engagementScore < 0) {
+          engagementScore = 0;
+        } else if (engagementScore > 5) {
+          engagementScore = 5;
         }
-
-        if (signal < 1) {
-          signal = 2;
+        if (engagementScore === 0) {
+          return [];
         }
 
         var content = $('main article').first().text();
         content = content ? String(content).replace(/\s+/g, ' ').trim() : '';
-        var blurb = content.substring(0, 1000);
-        if (content.length > 1000) {
-          blurb += '...';
+        var contentSubstring = content.substring(0, 300);
+        if (content.length > 300) {
+          contentSubstring += '...';
         }
 
         return [
@@ -76,13 +76,13 @@ new Crawler({
             objectID: finalUrl,
             title: title,
             url: finalUrl,
-            blurb: blurb,
-            fact: description,
+            blurb: description,
+            fact: contentSubstring,
             'tags.lvl0': ['DEV Blog'],
             'tags.lvl1': tags,
             projects: [],
             category: 'Writing',
-            signal: signal,
+            signal: engagementScore,
             publishedAt: publishedAt,
           },
         ];
