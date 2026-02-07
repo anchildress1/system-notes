@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 import { API_URL } from '@/config';
 import { useRecommendationTools } from '@/lib/recommendations';
 import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
+import { getChatSessionId } from '@/utils/userToken';
 
 import { IoClose } from 'react-icons/io5';
 import { GiBat } from 'react-icons/gi';
@@ -21,7 +22,12 @@ const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'merged-search';
 // Create searchClient at module level for stable reference (prevents unnecessary re-renders)
 const searchClient =
   appId && apiKey
-    ? algoliasearch(appId, apiKey)
+    ? algoliasearch(appId, apiKey, {
+        headers: {
+          'X-Algolia-UserToken': getChatSessionId(),
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any)
     : {
         search: () => Promise.resolve({ results: [] }),
       };
@@ -114,7 +120,7 @@ export default function AIChat() {
 
   useEffect(() => {
     // Accessibility fix: Inject aria-label into Algolia's Chat toggle button
-    const observer = new MutationObserver(() => {
+    const fixAccessibility = () => {
       if (typeof document === 'undefined') return;
 
       const chatWindow = document.querySelector('.ais-Chat-window');
@@ -132,8 +138,12 @@ export default function AIChat() {
           toggleBtn.setAttribute('data-testid', 'ai-chat-toggle');
         }
       }
-    });
+    };
 
+    // Run immediately in case it's already there
+    fixAccessibility();
+
+    const observer = new MutationObserver(fixAccessibility);
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => observer.disconnect();

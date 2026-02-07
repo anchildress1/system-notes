@@ -1,25 +1,37 @@
 /**
- * Generate or retrieve a unique user token for Algolia session tracking.
- * Uses sessionStorage for per-session tokens to prevent cross-talk between users.
- *
- * @returns A unique token for this session
+ * Generate unique user tokens for Algolia sessions.
+ * Returns distinct tokens for Search vs Chat to prevent context pollution.
+ * Tokens are generated per-page-load (refresh updates them) and not persisted.
+ */
+
+// In-memory storage for the current page session
+let searchSessionId: string | null = null;
+let chatSessionId: string | null = null;
+
+const generateUUID = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return `user_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+};
+
+export function getSearchSessionId(): string {
+  if (!searchSessionId) {
+    searchSessionId = generateUUID();
+  }
+  return searchSessionId;
+}
+
+export function getChatSessionId(): string {
+  if (!chatSessionId) {
+    chatSessionId = generateUUID();
+  }
+  return chatSessionId;
+}
+
+/**
+ * @deprecated Use getSearchSessionId or getChatSessionId instead
  */
 export function getOrCreateUserToken(): string {
-  const STORAGE_KEY = 'algolia_user_token';
-
-  // Check if we have a token in sessionStorage
-  if (typeof window !== 'undefined' && window.sessionStorage) {
-    const existingToken = sessionStorage.getItem(STORAGE_KEY);
-    if (existingToken) {
-      return existingToken;
-    }
-
-    // Generate a new token: timestamp + random string
-    const token = `user_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
-    sessionStorage.setItem(STORAGE_KEY, token);
-    return token;
-  }
-
-  // Fallback for SSR or when sessionStorage is unavailable
-  return `user_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+  return getSearchSessionId();
 }

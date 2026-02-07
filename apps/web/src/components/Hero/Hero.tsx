@@ -27,9 +27,8 @@ export default function Hero({ title, subtitle, image }: HeroProps) {
     <div className={styles.hero} ref={containerRef}>
       <div className={styles.titleContainer} ref={textRef}>
         <div
-          role="button"
-          tabIndex={0}
           className={styles.interactiveContainer}
+          data-testid="hero-interactive"
           onClick={() => {
             window.dispatchEvent(new Event('trigger-glitter-bomb'));
           }}
@@ -39,7 +38,6 @@ export default function Hero({ title, subtitle, image }: HeroProps) {
               window.dispatchEvent(new Event('trigger-glitter-bomb'));
             }
           }}
-          aria-label="Click to trigger a glitter effect"
         >
           <h1 className={styles.title}>{title}</h1>
           {subtitle && <div className={styles.subtitle}>{subtitle}</div>}

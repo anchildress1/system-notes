@@ -1,67 +1,73 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import PostCard, { PostHitRecord } from './PostCard';
 import type { Hit } from 'instantsearch.js';
 
-const mockSendEvent = vi.fn();
-
+// Mock Highlight to just render the text
 vi.mock('react-instantsearch', () => ({
-  Highlight: ({ attribute, hit }: { attribute: string; hit: Record<string, unknown> }) => (
-    <span data-testid={`highlight-${attribute}`}>{String(hit[attribute])}</span>
-  ),
+  Highlight: ({ hit, attribute }: { hit: Record<string, unknown>; attribute: string }) => {
+    return <span>{hit[attribute] as React.ReactNode}</span>;
+  },
 }));
 
-const createMockHit = (overrides: Partial<PostHitRecord> = {}): Hit<PostHitRecord> =>
-  ({
-    objectID: 'post:test:0001',
-    title: 'Test Post Title',
-    url: 'https://example.com/post',
-    blurb: 'https://example.com/post',
-    fact: 'This is a test excerpt.',
-    'tags.lvl0': ['blog'],
-    'tags.lvl1': ['blog > tech'],
-    category: 'Thoughts',
+describe('PostCard', () => {
+  const mockHit: Hit<PostHitRecord> = {
+    objectID: 'post-1',
+    title: 'Test Post',
+    url: 'https://example.com/post-1',
+    blurb: 'This is a test post blurb that should be displayed.',
+    fact: 'This is a snippet of the fact.',
+    category: 'Engineering',
+    'tags.lvl1': ['Engineering > Testing'],
     __position: 1,
-    __queryID: 'test-query',
-    ...overrides,
-  }) as Hit<PostHitRecord>;
+    __queryID: 'test-query-id',
+  };
 
-describe('PostCard Component', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
+  const mockSendEvent = vi.fn();
+
+  it('renders post content correctly', () => {
+    render(<PostCard hit={mockHit} />);
+
+    expect(screen.getByText('Test Post')).toBeDefined();
+    expect(screen.getByText('Engineering')).toBeDefined();
+    expect(screen.getByText('This is a snippet of the fact.')).toBeDefined();
+    expect(screen.getByText('Engineering > Testing')).toBeDefined();
+    expect(screen.getByLabelText('Read post: Test Post')).toBeDefined();
   });
 
-  it('renders post card with correct content', () => {
-    const hit = createMockHit();
-    render(<PostCard hit={hit} />);
-
-    expect(screen.getByTestId('highlight-title')).toHaveTextContent('Test Post Title');
-    expect(screen.getByTestId('highlight-fact')).toHaveTextContent('This is a test excerpt.');
-    expect(screen.getByText('Thoughts')).toBeInTheDocument();
+  it('renders link with correct url', () => {
+    render(<PostCard hit={mockHit} />);
+    const link = screen.getByRole('link', { name: /Read post: Test Post/i });
+    expect(link.getAttribute('href')).toBe('https://example.com/post-1');
+    expect(link.getAttribute('target')).toBe('_blank');
   });
 
-  it('renders correct tags', () => {
-    const hit = createMockHit({
-      'tags.lvl1': ['blog > tech', 'blog > ai'],
-    });
-    render(<PostCard hit={hit} />);
+  it('calls sendEvent when clicked', () => {
+    render(<PostCard hit={mockHit} sendEvent={mockSendEvent} />);
+    const card = screen.getByRole('link');
 
-    expect(screen.getByText('blog > tech')).toBeInTheDocument();
-    expect(screen.getByText('blog > ai')).toBeInTheDocument();
+    fireEvent.click(card);
+
+    expect(mockSendEvent).toHaveBeenCalledWith(
+      'click',
+      mockHit,
+      'Post Clicked',
+      expect.objectContaining({
+        objectIDs: ['post-1'],
+      })
+    );
   });
 
-  it('accepts sendEvent prop (even if unused for now)', () => {
-    const hit = createMockHit();
-    // This test primarily verifies the TypeScript interface and runtime acceptance
-    render(<PostCard hit={hit} sendEvent={mockSendEvent} />);
+  it('falls back to objectID if url is missing', () => {
+    const fallbackHit = {
+      ...mockHit,
+      url: '',
+      blurb: 'Just text',
+    } as Hit<PostHitRecord>;
 
-    const link = screen.getByRole('link', { name: /Read post: Test Post Title/i });
-    expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', 'https://example.com/post');
-  });
-
-  it('renders read more link', () => {
-    render(<PostCard hit={createMockHit()} />);
-    expect(screen.getByText(/Read Post/i)).toBeInTheDocument();
+    render(<PostCard hit={fallbackHit} />);
+    const link = screen.getByRole('link');
+    // Implementation uses objectID if URL is missing
+    expect(link.getAttribute('href')).toBe('post-1');
   });
 });

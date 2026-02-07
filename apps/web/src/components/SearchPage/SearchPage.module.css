@@ -14,9 +14,10 @@
 }
 
 .errorMessage {
-  color: hsl(var(--color-text-muted));
-  font-size: 1.125rem;
-  margin-top: var(--space-md);
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
 }
 
 .searchHeader {
@@ -127,7 +128,8 @@
 }
 
 .searchBoxInput::placeholder {
-  color: #B9BBC4;
+  color: var(--color-text-secondary);
+  opacity: 1;
 }
 
 :global(.ais-Autocomplete .ais-SearchBox-input) {
@@ -141,7 +143,8 @@
 }
 
 :global(.ais-Autocomplete .ais-SearchBox-input::placeholder) {
-  color: #B9BBC4;
+  color: var(--color-text-secondary);
+  opacity: 1;
 }
 
 .searchBoxSubmit {
@@ -230,12 +233,15 @@
   border-radius: 12px;
   padding: var(--space-sm);
   box-shadow: var(--shadow-card);
+  z-index: 1000;
+  position: absolute;
+  width: 100%;
 }
 
 :global(.ais-Autocomplete-panel) {
   margin-top: var(--space-xs);
   background: #3A3D46;
-  border: 1px solid hsl(var(--color-border));
+  border: 1px solid #B9BBC4;
   border-radius: 12px;
   padding: var(--space-sm);
   box-shadow: var(--shadow-card);
@@ -253,6 +259,7 @@
 .autocompleteItem {
   padding: 0;
 }
+
 
 .autocompleteHeader {
   display: flex;
@@ -525,11 +532,17 @@
   border-radius: 12px !important;
   box-shadow: var(--shadow-card) !important;
   z-index: 10000 !important;
+  margin-top: var(--space-xs) !important;
+  padding: var(--space-sm) !important;
 }
 
 :global(.aa-List) {
   margin: 0 !important;
   padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--space-xs) !important;
+  list-style: none !important;
 }
 
 :global(.aa-Item) {
