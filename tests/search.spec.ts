@@ -13,22 +13,19 @@ test.describe('Search Page Integration', () => {
     await page.goto('/search'); // Use relative path as baseURL is usually configured or passed via CI env
 
     try {
-      // Allow for different placeholders or generic searchbox role
-      // Script loads async, so we verify the container exists
-      const searchContainer = page.locator('#search-container');
+      const searchInput = page.getByPlaceholder('Search facts and system notes...');
       const unavailable = page.getByText(/Search is currently unavailable/);
 
-      await expect(searchContainer.or(unavailable)).toBeVisible({ timeout: 15000 });
+      await expect(searchInput.or(unavailable)).toBeVisible({ timeout: 15000 });
     } catch (e) {
       console.log('Search box not found. Page content:');
       console.log(await page.content());
       throw e;
     }
 
-    // Verify key attributes if search box is present
-    const searchContainer = page.locator('#search-container');
-    if (await searchContainer.isVisible()) {
-      await expect(searchContainer).toBeVisible();
+    const searchInput = page.getByPlaceholder('Search facts and system notes...');
+    if (await searchInput.isVisible()) {
+      await expect(searchInput).toBeVisible();
     }
   });
 

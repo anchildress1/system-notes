@@ -157,14 +157,11 @@ describe('searchRouting', () => {
         page: 2,
         category: ['cat1'],
       };
-      const location = { pathname: '/search' } as unknown as Location;
+      const location = {
+        origin: 'https://example.com',
+        pathname: '/search',
+      } as unknown as Location;
 
-      // Use the actual implementation's expectations for qsModule
-      // But since we can't easily replicate the complex qs stringify options in a simple mock,
-      // we'll rely on our simple mock behaving predictably enough for the test,
-      // OR we can just check what parameters are passed to qsModule.stringify if we mock THAT.
-
-      // Better approach: Check logic inside createURL by mocking qsModule.stringify
       const mockStringify = vi.fn().mockReturnValue('mocked-query-string');
       const customQsModule = { ...qsModule, stringify: mockStringify };
 
@@ -178,7 +175,7 @@ describe('searchRouting', () => {
         }),
         expect.any(Object)
       );
-      expect(url).toBe('/searchmocked-query-string');
+      expect(url).toBe('https://example.com/searchmocked-query-string');
     });
 
     it('parses URL correctly', () => {

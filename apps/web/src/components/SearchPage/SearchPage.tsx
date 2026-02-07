@@ -5,6 +5,7 @@ import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import aa from 'search-insights';
 import {
   InstantSearch,
+  SearchBox,
   RefinementList,
   Stats,
   ClearRefinements,
@@ -21,9 +22,12 @@ import { getSearchSessionId } from '@/utils/userToken';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { ALGOLIA_INDEX } from '@/config';
 
+const SITESEARCH_VERSION = '1.0.0';
+const SITESEARCH_CSS = `https://unpkg.com/@algolia/sitesearch@${SITESEARCH_VERSION}/dist/search-ai.min.css`;
+const SITESEARCH_JS = `https://unpkg.com/@algolia/sitesearch@${SITESEARCH_VERSION}/dist/search-ai.min.js`;
+
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-// Use constant for index name
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
 const hasCredentials = appId && searchKey;
@@ -38,40 +42,33 @@ const insightsConfig = {
   },
 };
 
-export default function SearchPage() {
-  const routing = useMemo(() => createSearchRouting(indexName), []);
-
-  const isEnabled = hasCredentials && process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID;
-
+function useSiteSearchWidget() {
   useEffect(() => {
+    const assistantId = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID;
+    if (!hasCredentials || !assistantId) return;
+
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/@algolia/sitesearch@latest/dist/search-askai.min.css';
+    link.href = SITESEARCH_CSS;
     document.head.appendChild(link);
 
     const script = document.createElement('script');
-    script.src = 'https://unpkg.com/@algolia/sitesearch@latest/dist/search-askai.min.js';
+    script.src = SITESEARCH_JS;
     script.async = true;
     script.onload = () => {
-      // @ts-expect-error SiteSearchAskAI is not typed on window
-      if (window.SiteSearchAskAI) {
-        // @ts-expect-error SiteSearchAskAI is not typed on window
-        window.SiteSearchAskAI.init({
-          container: '#search-container',
+      // @ts-expect-error SiteSearchWithAI is injected by external script
+      if (window.SiteSearchWithAI) {
+        // @ts-expect-error SiteSearchWithAI is injected by external script
+        window.SiteSearchWithAI.init({
+          container: '#sitesearch',
           applicationId: appId,
           apiKey: searchKey,
-          indexName: indexName,
-          assistantId: process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID,
+          indexName,
+          assistantId,
           attributes: {
             primaryText: 'title',
             secondaryText: 'blurb',
-            tertiaryText: 'fact',
-            url: 'url',
-          },
-          searchParameters: {
-            clickAnalytics: true,
-            analytics: true,
-            userToken: getSearchSessionId(),
+            image: 'undefined',
           },
         });
       }
@@ -79,35 +76,32 @@ export default function SearchPage() {
     document.body.appendChild(script);
 
     return () => {
-      document.head.removeChild(link);
-      document.body.removeChild(script);
+      if (link.parentNode) link.parentNode.removeChild(link);
+      if (script.parentNode) script.parentNode.removeChild(script);
     };
   }, []);
+}
 
-  // Accessibility fix: Inject aria-labels into Algolia's Autocomplete elements
+function useAccessibilityFixes() {
   useEffect(() => {
     if (typeof document === 'undefined') return;
 
     const fixAccessibility = () => {
-      // 1. Fix Input Label
       const input = document.querySelector('.aa-Input');
       if (input && !input.getAttribute('aria-label')) {
         input.setAttribute('aria-label', 'Search facts and system notes');
       }
 
-      // 2. Fix Clear Button
       const clearBtn = document.querySelector('.aa-ClearButton');
       if (clearBtn && !clearBtn.getAttribute('aria-label')) {
         clearBtn.setAttribute('aria-label', 'Clear search query');
       }
 
-      // 3. Fix Submit Button
       const submitBtn = document.querySelector('.aa-SubmitButton');
       if (submitBtn && !submitBtn.getAttribute('aria-label')) {
         submitBtn.setAttribute('aria-label', 'Submit search');
       }
 
-      // 4. Fix Panel/Dropdown accessibility
       const panel = document.querySelector('.aa-Panel');
       if (panel) {
         if (!panel.getAttribute('role')) panel.setAttribute('role', 'listbox');
@@ -116,46 +110,66 @@ export default function SearchPage() {
       }
     };
 
-    // Run immediately in case elements are already present
     fixAccessibility();
-
     const observer = new MutationObserver(fixAccessibility);
-
-    // Observe the document body for changes (since the portal/dropdown might be appended anywhere)
     observer.observe(document.body, { childList: true, subtree: true });
-
     return () => observer.disconnect();
   }, []);
+}
 
-  const unavailableUI = (
-    <div className={styles.container}>
-      <div className={styles.errorState}>
-        <p className={styles.errorMessage}>
-          Search is currently unavailable. Please check back later.
-        </p>
-      </div>
-    </div>
-  );
+export default function SearchPage() {
+  const routing = useMemo(() => createSearchRouting(indexName), []);
+  const isEnabled = hasCredentials && process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID;
+
+  useSiteSearchWidget();
+  useAccessibilityFixes();
 
   if (!isEnabled || !searchClient) {
-    return unavailableUI;
+    return (
+      <div className={styles.container}>
+        <div className={styles.errorState}>
+          <p className={styles.errorMessage}>
+            Search is currently unavailable. Please check back later.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className={styles.container}>
+      <ErrorBoundary fallback={null}>
+        <div id="sitesearch" data-testid="search-container" className={styles.siteSearchWidget} />
+      </ErrorBoundary>
+
       <InstantSearch
         searchClient={searchClient}
         indexName={indexName}
         insights={insightsConfig}
         routing={routing}
       >
-        <Configure hitsPerPage={20} attributesToHighlight={['title', 'blurb', 'fact']} />
+        <Configure
+          hitsPerPage={20}
+          attributesToHighlight={['title', 'blurb', 'fact']}
+          clickAnalytics
+          analytics
+          userToken={getSearchSessionId()}
+        />
+
+        <SearchBox
+          classNames={{
+            root: styles.searchBoxRoot,
+            form: styles.searchBoxForm,
+            input: styles.searchBoxInput,
+            submit: styles.searchBoxSubmit,
+            reset: styles.searchBoxReset,
+            submitIcon: styles.searchBoxIcon,
+            resetIcon: styles.searchBoxIcon,
+          }}
+          placeholder="Search facts and system notes..."
+        />
 
         <header className={styles.searchHeader}>
-          <ErrorBoundary fallback={null}>
-            <div id="search-container" data-testid="search-container" />
-          </ErrorBoundary>
-
           <div className={styles.metaRow}>
             <Stats
               classNames={{
@@ -238,8 +252,12 @@ export default function SearchPage() {
           <section className={styles.results} aria-label="Search results">
             <LoadingIndicator />
             <InfiniteHits
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              hitComponent={UnifiedHitCard as any}
+              hitComponent={
+                UnifiedHitCard as React.ComponentType<{
+                  hit: import('instantsearch.js').Hit;
+                  sendEvent?: import('@/types/algolia').SendEventForHits;
+                }>
+              }
               classNames={{
                 root: styles.hitsRoot,
                 list: styles.hitsList,
