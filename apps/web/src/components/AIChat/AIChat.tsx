@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { Chat } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
@@ -8,6 +8,7 @@ import styles from './AIChat.module.css';
 import dynamic from 'next/dynamic';
 import { API_URL } from '@/config';
 import { useRecommendationTools } from '@/lib/recommendations';
+import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
 
 import { IoClose } from 'react-icons/io5';
 import { GiBat } from 'react-icons/gi';
@@ -15,6 +16,7 @@ import { FaBrain, FaUser } from 'react-icons/fa';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
+const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'merged-search';
 
 // Create searchClient at module level for stable reference (prevents unnecessary re-renders)
 const searchClient =
@@ -43,7 +45,7 @@ const UserAvatar = () => (
   </div>
 );
 const PromptFooter = () => (
-  <div className={styles.disclaimer}>Powered by Algolia—fast, relevant, still imperfect.</div>
+  <div className={styles.disclaimer}>Powered by Algolia | Indexed. Not Imagined.</div>
 );
 const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
   isOpen ? (
@@ -55,6 +57,11 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
 export default function AIChat() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const recommendationTools = useRecommendationTools();
+  const resolveSearchPageURL = useCallback(
+    (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
+      getSearchPageURL(nextUiState, indexName),
+    []
+  );
 
   // Memoize translations to prevent unnecessary re-renders of the Chat widget
   const translations = useMemo(
@@ -145,7 +152,7 @@ export default function AIChat() {
           agentId={AGENT_ID}
           translations={translations}
           tools={tools}
-          model={{ stream: true }}
+          getSearchPageURL={resolveSearchPageURL}
           headerTitleIconComponent={HeaderIcon}
           assistantMessageLeadingComponent={AssistantAvatar}
           userMessageLeadingComponent={UserAvatar}

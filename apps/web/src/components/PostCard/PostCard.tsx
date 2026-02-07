@@ -2,6 +2,7 @@
 
 import { Highlight } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
+import type { SendEventForHits } from '@/types/algolia';
 import styles from './PostCard.module.css';
 
 export interface PostHitRecord {
@@ -18,6 +19,7 @@ export interface PostHitRecord {
 
 interface PostCardProps {
   hit: Hit<PostHitRecord>;
+  sendEvent?: SendEventForHits;
 }
 
 export default function PostCard({ hit }: PostCardProps) {

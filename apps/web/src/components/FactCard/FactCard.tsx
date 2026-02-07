@@ -5,23 +5,15 @@ import { createPortal } from 'react-dom';
 import { Highlight } from 'react-instantsearch';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Hit, BaseHit } from 'instantsearch.js';
+import type { SendEventForHits } from '@/types/algolia';
 import styles from './FactCard.module.css';
-
-type SendEventForHits = {
-  (
-    eventType: string,
-    hits: Hit | Hit[],
-    eventName?: string,
-    additionalData?: Record<string, unknown>
-  ): void;
-  (customPayload: unknown): void;
-};
 
 export interface FactHitRecord extends BaseHit {
   objectID: string;
   title: string;
   blurb: string;
   fact: string;
+  content?: string;
   'tags.lvl0'?: string[];
   'tags.lvl1'?: string[];
   projects: string[];
@@ -138,7 +130,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                 {hit.blurb ? (
                   <Highlight attribute="blurb" hit={hit} />
                 ) : (
-                  hit.fact?.substring(0, 100) + '...'
+                  (hit.content || hit.fact || '').substring(0, 100) + '...'
                 )}
               </p>
 

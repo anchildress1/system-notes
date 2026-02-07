@@ -21,7 +21,7 @@ test.describe('Primary Navigation Flows', () => {
     // Start at Home (Choices)
     await page.goto('/');
     await expect(page).toHaveURL('/');
-    await expect(page.locator('h1').first()).toContainText('Decisions on record');
+    await expect(page.locator('h1').first()).toContainText("This portfolio isn't browsed—");
 
     // Navigate to Human
     await page.getByRole('link', { name: 'Human' }).click({ force: true });
@@ -34,7 +34,7 @@ test.describe('Primary Navigation Flows', () => {
     // Navigate back to Home
     await page.getByRole('link', { name: 'Choices' }).first().click({ force: true });
     await expect(page).toHaveURL('/');
-    await expect(page.locator('h1').first()).toContainText('Decisions on record');
+    await expect(page.locator('h1').first()).toContainText("This portfolio isn't browsed—");
   });
 
   test('should navigate to Builds and back', async ({ page }) => {

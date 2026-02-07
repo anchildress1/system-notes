@@ -15,6 +15,7 @@
     "test:perf": "npm run build && lhci autorun --config=lighthouserc.mobile.json && lhci autorun --config=lighthouserc.desktop.json"
   },
   "dependencies": {
+    "@algolia/recommend": "^5.47.0",
     "algoliasearch": "^5.47.0",
     "framer-motion": "^12.26.2",
     "instantsearch.css": "^8.9.0",

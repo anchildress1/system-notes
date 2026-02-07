@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <main className={styles.main} id="main-content">
       <Header />
-      <Hero title="Decisions on record" subtitle="so you can audit me" />
+      <Hero title="This portfolio isn't browsed—" subtitle="It's retrieved." />
       <SearchPageWrapper />
     </main>
   );

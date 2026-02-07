@@ -1801,5 +1801,177 @@
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
+  },
+  {
+    "objectID": "card:algolia:docs:examples-applied",
+    "title": "Algolia documentation enabled example-driven implementation",
+    "blurb": "Examples were directly used to match intended usage.",
+    "fact": "I used Algolia’s documentation examples as the source of truth for implementation, and ChatGPT was able to follow those same examples to help keep my usage aligned with the intended patterns.",
+    "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > AI Collaboration",
+      "AI > Verdent",
+      "AI > Algolia",
+      "AI > ChatGPT",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:algolia:ui:widgets-plus-styling-accessible",
+    "title": "Widgets and styling options enabled UI work without front-end expertise",
+    "blurb": "UI composition was approachable with minimal front-end skill.",
+    "fact": "I found the combination of Algolia widgets and built-in styling options straightforward enough to implement UI functionality despite not being a front-end developer.",
+    "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "AI > Algolia",
+      "AI > Verdent",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:decision:algolia:no-personalization-public-content",
+    "title": "Personalization was excluded because the content is public",
+    "blurb": "User-specific experiences were intentionally avoided.",
+    "fact": "I chose not to implement personalized results or user-specific filtering because the site content is public information and did not need to be scoped per user.",
+    "tags.lvl0": ["Principle", "DEV Challenge"],
+    "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Decisions",
+    "signal": 5
+  },
+  {
+    "objectID": "card:algolia:build:widget-heavy-implementation",
+    "title": "Widget reuse was a primary implementation strategy",
+    "blurb": "Reusable widgets reduced custom UI effort.",
+    "fact": "I used Algolia widgets extensively because they were reusable and reduced the amount of custom UI work required to expose search functionality.",
+    "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:algolia:index:first-index-trial-and-error",
+    "title": "Index design required experimentation due to inexperience",
+    "blurb": "Performance tuning started without prior indexing experience.",
+    "fact": "This was my first time designing an index like this, and I relied on trial and error to arrive at a performant structure.",
+    "tags.lvl0": ["Approach", "Mindset", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Iterative",
+      "Mindset > Systems Thinking",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 3
+  },
+  {
+    "objectID": "card:algolia:index:best-practices-fixed-results",
+    "title": "Correcting best-practice violations improved retrieval quality",
+    "blurb": "Alignment with documented guidance improved results.",
+    "fact": "My initial index setup violated multiple documented best practices, and aligning the structure to the documentation significantly improved search and retrieval behavior.",
+    "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5
+  },
+  {
+    "objectID": "card:algolia:architecture:prompt-vs-index-roles",
+    "title": "Prompt and index were designed for different responsibilities",
+    "blurb": "Behavior policy lived in the prompt; speed lived in the index.",
+    "fact": "I designed the chat prompt primarily around tool usage rules, personality, and hallucination boundaries, while designing the index for speed-first retrieval to support fast and relevant responses.",
+    "tags.lvl0": ["Discipline", "Principle", "DEV Challenge"],
+    "tags.lvl1": [
+      "Discipline > Agent Design",
+      "Principle > Restraint",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5
+  },
+  {
+    "objectID": "card:algolia:tradeoff:speed-over-precision-curated",
+    "title": "Fast retrieval was prioritized because content was curated",
+    "blurb": "Responsiveness mattered more than precision scoring.",
+    "fact": "Because the indexed material was curated or authored by me, I prioritized fast retrieval over strict precision, treating responsiveness as the more important outcome.",
+    "tags.lvl0": ["Principle", "DEV Challenge"],
+    "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:algolia:tags:hierarchical-tuning-control",
+    "title": "Hierarchical tags enabled finer tuning of search behavior",
+    "blurb": "Subtags provided additional control surfaces.",
+    "fact": "I used hierarchical tags to give myself finer control over tuning and drill-down behavior for subsets of content.",
+    "tags.lvl0": ["Approach", "Mindset", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "Mindset > Systems Thinking",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:algolia:agent:full-blog-cache-tool",
+    "title": "A custom tool provided full blog context to the agent",
+    "blurb": "Full-text context improved conversational accuracy.",
+    "fact": "I implemented a custom tool that loads the full blog content into cache for the chat agent, allowing responses to use full context rather than only indexed summaries.",
+    "tags.lvl0": ["Discipline", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Discipline > Agent Design",
+      "AI > ChatGPT",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5
+  },
+  {
+    "objectID": "card:algolia:chat:suggestions-grounding-ambiguity",
+    "title": "Suggestion grounding was hard due to mixed output types",
+    "blurb": "Generated text and structured results were difficult to separate.",
+    "fact": "I found it difficult to ground chat suggestions in retrieved results because it was hard to distinguish generated model output from structured JSON search results.",
+    "tags.lvl0": ["Discipline", "DEV Challenge"],
+    "tags.lvl1": ["Discipline > Agent Design", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Challenges",
+    "signal": 4
+  },
+  {
+    "objectID": "card:algolia:agent:productivity-mcp-support",
+    "title": "A productivity MCP server supported agent implementation",
+    "blurb": "Implementation details were delegated without losing control.",
+    "fact": "I used a productivity MCP server to help agents work through concrete implementation details, allowing me to offload low-level execution while keeping architectural and behavioral decisions explicit and intentional.",
+    "tags.lvl0": ["Approach", "Discipline", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > AI Collaboration",
+      "Discipline > Agent Design",
+      "AI > ChatGPT",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
   }
 ]

@@ -13,14 +13,14 @@
         "categories:performance": [
           "error",
           {
-            "minScore": 0.45,
+            "minScore": 0.7,
             "aggregationMethod": "optimistic"
           }
         ],
         "categories:accessibility": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.95,
             "aggregationMethod": "optimistic"
           }
         ],

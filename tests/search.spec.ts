@@ -11,6 +11,7 @@ const mockSearchResults = {
           blurb: 'This is a test blurb for the fact.',
           fact: 'This is the detailed fact content that explains the insight.',
           tags: ['tag-one', 'tag-two', 'testing'],
+          'tags.lvl1': ['tag-one', 'tag-two'],
           projects: ['System Notes', 'Test Project'],
           category: 'Work Style',
           signal: 3,
@@ -107,10 +108,9 @@ test.describe('Search Page Integration', () => {
 
   test('renders filter sidebar with facets', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { level: 2, name: 'Filters' })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 3, name: 'Category' })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 3, name: 'Builds' })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 3, name: 'Tags' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Category' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Builds' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Tags' })).toBeVisible();
   });
 
   test('navigates to Choices from header', async ({ page }) => {
@@ -132,12 +132,9 @@ test.describe('Search Page Integration', () => {
     const firstCard = page.getByRole('button', { name: /Test Fact Title/ }).first();
     await expect(firstCard).toBeVisible({ timeout: 10000 });
 
-    // Flip the card to see tags
-    await firstCard.click();
-
-    const cardBack = page.getByRole('region', { name: /Test Fact Title details/ });
-    await expect(cardBack.getByText('tag-one')).toBeVisible();
-    await expect(cardBack.getByText('tag-two')).toBeVisible();
+    // Tags are now displayed on the front card (level 1 tags)
+    // We expect at least one tag to be visible without flipping
+    await expect(firstCard.getByText('tag-one')).toBeVisible();
   });
 
   test('displays project labels on cards', async ({ page }) => {

@@ -17,6 +17,7 @@ interface FactHitRecord extends BaseHit {
   title: string;
   blurb: string;
   fact: string;
+  content?: string;
   tags: string[];
   projects: string[];
   category: string;
@@ -56,20 +57,9 @@ describe('FactCard Component', () => {
     expect(screen.getByText('Philosophy')).toBeInTheDocument();
   });
 
-  it('renders all tags without limit', () => {
-    const manyTags = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
-    render(<FactCard hit={createMockHit({ tags: manyTags })} />);
-
-    // Open the card to see tags
-    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
-    fireEvent.click(expandButton);
-
-    const detailsRegion = screen.getByRole('region', { name: /details/i });
-    const { getByText } = within(detailsRegion);
-
-    manyTags.forEach((tag) => {
-      expect(getByText(tag)).toBeInTheDocument();
-    });
+  it('renders content fallback when fact is missing', () => {
+    render(<FactCard hit={createMockHit({ blurb: '', fact: '', content: 'Fallback content' })} />);
+    expect(screen.getByText('Fallback content...')).toBeInTheDocument();
   });
 
   it('renders all projects without limit', () => {

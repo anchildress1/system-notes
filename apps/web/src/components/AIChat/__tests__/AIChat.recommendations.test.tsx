@@ -18,7 +18,7 @@ vi.mock('@/lib/recommendations', () => ({
 
 // Mock next/dynamic
 vi.mock('next/dynamic', () => ({
-  default: vi.fn((fn) => {
+  default: vi.fn(() => {
     const Component = () => null;
     Component.displayName = 'DynamicComponent';
     return Component;
@@ -31,15 +31,10 @@ vi.mock('react-instantsearch', () => ({
     const ToggleIcon = toggleButtonIconComponent;
     return (
       <div data-testid="algolia-chat">
-        <button
-          data-testid="ai-chat-toggle"
-          aria-label="Open AI Chat"
-        >
+        <button data-testid="ai-chat-toggle" aria-label="Open AI Chat">
           {ToggleIcon && <ToggleIcon isOpen={false} />}
         </button>
-        <div data-testid="chat-tools">
-          {Object.keys(tools || {}).join(',')}
-        </div>
+        <div data-testid="chat-tools">{Object.keys(tools || {}).join(',')}</div>
       </div>
     );
   }),
@@ -138,7 +133,7 @@ describe('AIChat with Recommendations', () => {
   describe('Streaming', () => {
     it('should enable streaming in Chat model', () => {
       render(<AIChat />);
-      
+
       // Verify the Chat component is rendered
       // The actual streaming configuration is verified via the mock
       expect(screen.getByTestId('algolia-chat')).toBeInTheDocument();

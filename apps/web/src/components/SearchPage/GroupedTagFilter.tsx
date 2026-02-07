@@ -68,9 +68,19 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
             <div key={rootItem.value} className={styles.refinementItem}>
               {/* Header (Expand Trigger) */}
               <div
+                role="button"
+                tabIndex={0}
                 className={styles.refinementLabel}
                 onClick={() => toggleGroup(rootItem.label)}
-                style={{ justifyContent: 'space-between', paddingRight: '4px' }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleGroup(rootItem.label);
+                  }
+                }}
+                aria-expanded={isExpanded}
+                aria-label={`Expand ${rootItem.label} tags`}
+                style={{ justifyContent: 'space-between', paddingRight: '4px', cursor: 'pointer' }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   {isExpanded ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}

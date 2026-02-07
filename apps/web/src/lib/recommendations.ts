@@ -1,18 +1,18 @@
 'use client';
 
 import { useMemo } from 'react';
-import { recommend } from '@algolia/recommend';
+import { recommendClient as createRecommendClient } from '@algolia/recommend';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'system-notes';
+const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'merged-search';
 
 // Lazy initialize Algolia Recommend client
-let recommendClient: ReturnType<typeof recommend> | null = null;
+let recommendClient: ReturnType<typeof createRecommendClient> | null = null;
 
 function getRecommendClient() {
   if (!recommendClient && appId && apiKey) {
-    recommendClient = recommend(appId, apiKey);
+    recommendClient = createRecommendClient(appId, apiKey);
   }
   return recommendClient;
 }
@@ -42,11 +42,9 @@ export interface RecommendResult {
  * Fetch recommendations using Algolia Recommend API
  * Follows best practices from https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/tools/algolia-recommend
  */
-export async function fetchRecommendations(
-  params: RecommendParams
-): Promise<RecommendResult[]> {
+export async function fetchRecommendations(params: RecommendParams): Promise<RecommendResult[]> {
   const client = getRecommendClient();
-  
+
   if (!client) {
     console.warn('Algolia Recommend client not initialized');
     return [];
@@ -62,14 +60,7 @@ export async function fetchRecommendations(
     } = params;
 
     // Default attributes optimized for performance and relevance
-    const defaultAttributes = [
-      'objectID',
-      'title',
-      'blurb',
-      'category',
-      'tags.lvl1',
-      'projects',
-    ];
+    const defaultAttributes = ['objectID', 'title', 'blurb', 'category', 'tags.lvl1', 'projects'];
 
     const queries = [
       {
@@ -86,7 +77,7 @@ export async function fetchRecommendations(
     ];
 
     const response = await client.getRecommendations(queries);
-    
+
     if (!response || !response.results || response.results.length === 0) {
       return [];
     }

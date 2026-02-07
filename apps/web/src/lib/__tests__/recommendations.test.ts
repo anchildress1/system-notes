@@ -1,13 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import {
-  useRecommendationTools,
-  type RecommendParams,
-} from '../recommendations';
+import { useRecommendationTools } from '../recommendations';
 
 // Mock the @algolia/recommend module at the top level
 vi.mock('@algolia/recommend', () => ({
-  recommend: vi.fn(() => ({
+  recommendClient: vi.fn(() => ({
     getRecommendations: vi.fn().mockResolvedValue({
       results: [{ hits: [] }],
     }),
