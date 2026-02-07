@@ -174,7 +174,6 @@ export default function SearchPage() {
         <div className={styles.layout}>
           <aside className={styles.sidebar}>
             <div className={styles.filterSection}>
-              <h2 className="visually-hidden">Filters</h2>
               <div className={styles.refinementGroup}>
                 <h3 className={styles.refinementTitle}>Category</h3>
                 <RefinementList

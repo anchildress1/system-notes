@@ -91,7 +91,11 @@ export default function RootLayout({
       '@type': 'Person',
       name: 'Ashley Childress',
       url: baseUrl,
-      sameAs: [baseUrl, 'https://github.com/anchildress1', 'https://dev.to/anchildress1'],
+      sameAs: [
+        baseUrl,
+        'https://github.com/anchildress1',
+        'https://dev.to/anchildress1',
+      ],
     },
     hasPart: allProjects.map((p) => ({
       '@type': 'SoftwareApplication',
