@@ -105,7 +105,7 @@
 }
 
 .closeButton:hover {
-    background: hsl(var(--color-accent-purple));
+    background: hsl(var(--color-accent-pink));
     color: white;
     transform: rotate(90deg);
     border-color: transparent;
@@ -159,9 +159,9 @@
 .statusBadge {
     display: inline-block;
     padding: 6px 12px;
-    background: hsl(var(--color-accent-teal) / 0.1);
-    color: hsl(var(--color-accent-teal));
-    border: 1px solid hsl(var(--color-accent-teal) / 0.5);
+    background: hsl(var(--color-accent-teal));
+    color: hsl(var(--color-bg-base));
+    border: 1px solid hsl(var(--color-accent-teal) / 0.3);
     border-radius: 4px;
     font-size: 0.8rem;
     font-weight: 700;
@@ -169,7 +169,6 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     white-space: nowrap;
-    box-shadow: 0 0 10px hsl(var(--color-accent-teal) / 0.1);
 }
 
 .subheader {
@@ -286,9 +285,7 @@
 }
 
 .repoLink:hover {
-    background: hsl(var(--color-bg-surface));
-    border: 2px solid hsl(var(--color-accent-pink));
-    color: hsl(var(--color-accent-pink));
+    background: hsl(var(--color-accent-pink) / 0.8);
     transform: translateY(-2px);
     box-shadow: 0 8px 30px hsl(var(--color-accent-pink) / 0.3);
 }

@@ -175,16 +175,6 @@
   box-shadow: var(--shadow-card);
 }
 
-.filterTitle {
-  font-family: var(--font-ribeye), cursive;
-  font-size: 1.25rem;
-  font-weight: 400;
-  color: hsl(var(--color-text-primary));
-  margin: 0 0 var(--space-md) 0;
-  padding-bottom: var(--space-sm);
-  border-bottom: 1px solid transparent;
-}
-
 .refinementGroup {
   margin-bottom: var(--space-md);
   padding-bottom: var(--space-sm);
@@ -228,8 +218,23 @@
   cursor: pointer;
   padding: var(--space-xs) 0;
   transition: color 0.2s ease;
+  color: hsl(var(--color-text-secondary));
+  text-decoration: none;
 }
 
+.refinementLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  cursor: pointer;
+  padding: var(--space-xs) 0;
+  transition: color 0.2s ease;
+  color: hsl(var(--color-text-secondary));
+  text-decoration: none;
+  width: 100%;
+}
+
+.refinementLink:hover,
 .refinementLabel:hover {
   color: hsl(var(--color-accent-purple));
 }
