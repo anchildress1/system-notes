@@ -105,7 +105,7 @@
 }
 
 .closeButton:hover {
-    background: hsl(var(--color-accent-pink));
+    background: hsl(var(--color-accent-purple));
     color: white;
     transform: rotate(90deg);
     border-color: transparent;

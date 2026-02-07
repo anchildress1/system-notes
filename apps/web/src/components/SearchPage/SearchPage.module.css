@@ -23,7 +23,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-sm);
+  gap: 4px; /* Reduced gap */
   padding: 0 var(--space-md) var(--space-md);
   max-width: 1300px;
   margin: 0 auto;
@@ -35,25 +35,37 @@
   justify-content: center;
 }
 
+.metaRow {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Ensure top alignment */
+  padding: 0 var(--space-xs);
+  margin-top: 0;
+}
+
 .algoliaAttribution {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.375rem 0.75rem;
-  background: rgba(0, 61, 255, 0.08);
-  border: 1px solid rgba(0, 61, 255, 0.2);
-  border-radius: 20px;
-  color: #5E85FF;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: hsl(var(--color-text-muted)); /* Neutral color */
   font-size: 0.75rem;
   font-weight: 500;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: opacity 0.2s ease;
+  line-height: 1.2; /* Match stats text roughly */
 }
 
 .algoliaAttribution:hover {
-  background: rgba(0, 61, 255, 0.15);
-  border-color: rgba(0, 61, 255, 0.4);
-  transform: translateY(-1px);
+  background: transparent;
+  border-color: transparent;
+  transform: none;
+  opacity: 0.8;
 }
 
 .algoliaIcon {
@@ -211,10 +223,19 @@
   fill: #E6E6EB;
 }
 
-:global(.ais-Autocomplete-panel) {
+.autocompletePanel {
   margin-top: var(--space-xs);
   background: #3A3D46;
   border: 1px solid #B9BBC4;
+  border-radius: 12px;
+  padding: var(--space-sm);
+  box-shadow: var(--shadow-card);
+}
+
+:global(.ais-Autocomplete-panel) {
+  margin-top: var(--space-xs);
+  background: #3A3D46;
+  border: 1px solid hsl(var(--color-border));
   border-radius: 12px;
   padding: var(--space-sm);
   box-shadow: var(--shadow-card);
@@ -251,7 +272,7 @@
 .autocompleteHeaderLine {
   flex: 1;
   height: 1px;
-  background: #B9BBC4;
+  background: hsl(var(--color-border));
 }
 
 .autocompleteResultButton,
@@ -274,12 +295,13 @@
 .autocompleteResultButton:hover,
 .autocompleteSuggestionButton:hover {
   border-color: #B56BFF;
-  background: #3A3D46;
+  background: rgba(181, 107, 255, 0.1); /* Purple tint */
 }
 
 .autocompleteResultTitle {
   font-weight: 600;
   font-size: 0.95rem;
+  color: #E6E6EB;
 }
 
 .autocompleteResultSubtitle {
@@ -287,17 +309,20 @@
   color: #B9BBC4;
 }
 
-.statsRow {
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 var(--space-md);
-  text-align: right;
+:global(.ais-Highlight-highlighted) {
+  color: #B56BFF;
+  background: transparent;
+  font-style: normal;
+  font-weight: 700;
 }
+
+/* statsRow removed as it is now inside metaRow */
 
 .statsRoot {
   display: inline-block;
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* Match algoliaAttribution font size */
   color: hsl(var(--color-text-muted));
+  font-weight: 500;
 }
 
 .layout {
@@ -491,6 +516,31 @@
   border: none;
   padding: 0;
   margin: 0;
+}
+
+/* Loading Indicator */
+.loadingIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  color: hsl(var(--color-text-muted));
+  font-size: 0.875rem;
+  width: 100%;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid hsl(var(--color-text-muted));
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 @media (max-width: 900px) {

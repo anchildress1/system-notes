@@ -22,9 +22,8 @@ export default function Footer() {
             className={styles.algoliaLink}
             aria-label="Powered by Algolia"
           >
-            <span>Search by</span>
             <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
-            <span>Algolia</span>
+            <span>Powered by Algolia</span>
           </a>
         </div>
       </div>

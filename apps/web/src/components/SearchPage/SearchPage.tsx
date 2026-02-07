@@ -9,12 +9,14 @@ import {
   ClearRefinements,
   Configure,
   EXPERIMENTAL_Autocomplete,
+  Highlight,
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
 import styles from './SearchPage.module.css';
 import UnifiedHitCard from './UnifiedHitCard';
 import GroupedTagFilter from './GroupedTagFilter';
 import InfiniteHits from './InfiniteHits';
+import LoadingIndicator from './LoadingIndicator';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
@@ -53,111 +55,126 @@ export default function SearchPage() {
         <Configure hitsPerPage={20} />
 
         <header className={styles.searchHeader}>
-          <div className={styles.searchRow}>
-            <EXPERIMENTAL_Autocomplete
-              placeholder="Search facts..."
-              classNames={{
-                root: styles.autocompleteRoot,
-              }}
-              searchParameters={{
-                hitsPerPage: 6,
-              }}
-              indices={[
-                {
-                  indexName,
-                  headerComponent: ({ items }) => (
-                    <div className={styles.autocompleteHeader} hidden={!items.length}>
-                      <span className={styles.autocompleteHeaderTitle}>Results</span>
-                      <span className={styles.autocompleteHeaderLine} />
-                    </div>
-                  ),
-                  itemComponent: ({ item, onSelect }) => {
-                    const typedItem = item as {
-                      title?: string;
-                      name?: string;
-                      query?: string;
-                      blurb?: string;
-                    };
-
-                    return (
-                      <button
-                        type="button"
-                        className={styles.autocompleteResultButton}
-                        onClick={onSelect}
-                      >
-                        <span className={styles.autocompleteResultTitle}>
-                          {typedItem.title || typedItem.name || typedItem.query}
-                        </span>
-                        {typedItem.blurb ? (
-                          <span className={styles.autocompleteResultSubtitle}>
-                            {typedItem.blurb}
-                          </span>
-                        ) : null}
-                      </button>
-                    );
-                  },
-                },
-              ]}
-              showSuggestions={{
-                indexName: suggestionsIndexName,
+          <EXPERIMENTAL_Autocomplete
+            placeholder="Search facts..."
+            classNames={{
+              root: styles.autocompleteRoot,
+            }}
+            searchParameters={{
+              hitsPerPage: 6,
+            }}
+            indices={[
+              {
+                indexName,
                 headerComponent: ({ items }) => (
                   <div className={styles.autocompleteHeader} hidden={!items.length}>
-                    <span className={styles.autocompleteHeaderTitle}>Suggestions</span>
+                    <span className={styles.autocompleteHeaderTitle}>Results</span>
                     <span className={styles.autocompleteHeaderLine} />
                   </div>
                 ),
                 itemComponent: ({ item, onSelect }) => {
-                  const typedItem = item as { query?: string };
+                  const typedItem = item as {
+                    title?: string;
+                    name?: string;
+                    query?: string;
+                    blurb?: string;
+                    url?: string;
+                    objectID?: string;
+                  };
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  const highlightItem = item as any;
 
                   return (
                     <button
                       type="button"
-                      className={styles.autocompleteSuggestionButton}
+                      className={styles.autocompleteResultButton}
                       onClick={onSelect}
                     >
-                      {typedItem.query}
+                      <span className={styles.autocompleteResultTitle}>
+                        {typedItem.title || typedItem.name || typedItem.query ? (
+                          <Highlight
+                            attribute={
+                              typedItem.title ? 'title' : typedItem.name ? 'name' : 'query'
+                            }
+                            hit={highlightItem}
+                          />
+                        ) : (
+                          'Untitled'
+                        )}
+                      </span>
+                      {typedItem.blurb ? (
+                        <span className={styles.autocompleteResultSubtitle}>
+                          <Highlight attribute="blurb" hit={highlightItem} />
+                        </span>
+                      ) : null}
                     </button>
                   );
                 },
-              }}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              onSelect={(params: any) => {
-                const { query, setQuery } = params;
-                if (setQuery) {
-                  setQuery(query);
-                }
-              }}
-            />
-          </div>
-          <a
-            href="https://www.algolia.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.algoliaAttribution}
-            aria-label="Search powered by Algolia"
-          >
-            <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
-            <span className={styles.algoliaText}>Search powered by Algolia</span>
-          </a>
-        </header>
+              },
+            ]}
+            showSuggestions={{
+              indexName: suggestionsIndexName,
+              headerComponent: ({ items }) => (
+                <div className={styles.autocompleteHeader} hidden={!items.length}>
+                  <span className={styles.autocompleteHeaderTitle}>Suggestions</span>
+                  <span className={styles.autocompleteHeaderLine} />
+                </div>
+              ),
+              itemComponent: ({ item, onSelect }) => {
+                const typedItem = item as { query?: string };
 
-        <div className={styles.statsRow}>
-          <Stats
-            classNames={{
-              root: styles.statsRoot,
-            }}
-            translations={{
-              rootElementText({ nbHits, processingTimeMS }) {
-                return `${nbHits.toLocaleString()} results found in ${processingTimeMS / 1000}s`;
+                return (
+                  <button
+                    type="button"
+                    className={styles.autocompleteSuggestionButton}
+                    onClick={onSelect}
+                  >
+                    {typedItem.query}
+                  </button>
+                );
               },
             }}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onSelect={(params: any) => {
+              const { item, query, setQuery, setIsOpen } = params;
+              const typedItem = item as { title?: string; name?: string; query?: string };
+              const nextQuery = typedItem?.title || typedItem?.name || typedItem?.query || query;
+              if (setQuery) {
+                setQuery(nextQuery);
+              }
+              if (setIsOpen) {
+                setIsOpen(false);
+              }
+            }}
           />
-        </div>
+          <div className={styles.metaRow}>
+            <Stats
+              classNames={{
+                root: styles.statsRoot,
+              }}
+              translations={{
+                rootElementText({ nbHits, processingTimeMS }) {
+                  return `${nbHits.toLocaleString()} results found in ${processingTimeMS / 1000}s`;
+                },
+              }}
+            />
+            <a
+              href="https://www.algolia.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.algoliaAttribution}
+              aria-label="Powered by Algolia"
+            >
+              <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
+              <span className={styles.algoliaText}>Powered by Algolia</span>
+            </a>
+          </div>
+        </header>
 
         <div className={styles.layout}>
           <aside className={styles.sidebar}>
             <div className={styles.filterSection}>
-              <h2 className={styles.filterHeading}>Filter</h2>
+              {/* Heading removed per requirements */}
               <div className={styles.refinementGroup}>
                 <h3 className={styles.refinementTitle}>Category</h3>
                 <RefinementList
@@ -211,6 +228,7 @@ export default function SearchPage() {
           </aside>
 
           <section className={styles.results} aria-label="Search results">
+            <LoadingIndicator />
             <InfiniteHits
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               hitComponent={UnifiedHitCard as any}

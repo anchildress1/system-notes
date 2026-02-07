@@ -69,7 +69,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     setIsFlipped((prev) => !prev);
   }, [isFlipped, sendEvent, hit]);
 
-  const displayTags = [...(hit.tags || []), ...(hit.projects || [])].slice(0, 5);
+  const displayTags = hit.tags ? hit.tags.slice(0, 5) : [];
 
   return (
     <>
@@ -131,7 +131,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                 </h2>
               </div>
 
-              <h3 className={styles.intentLabel}>Summary</h3>
               <p className={styles.description}>
                 {hit.blurb ? (
                   <Highlight attribute="blurb" hit={hit} />
@@ -185,9 +184,33 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                     role="region"
                     aria-label={`${hit.title} details`}
                   >
+                    <button
+                      type="button"
+                      className={styles.closeButton}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsFlipped(false);
+                      }}
+                      aria-label="Close expanded view"
+                      tabIndex={0}
+                      autoFocus
+                    >
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+
                     <div className={styles.backHeader}>
                       <div className={styles.headerTop}>
-                        <span className={styles.ownerBadge}>{categoryLabel}</span>
+                        {/* Removed Category Label */}
 
                         <div className={styles.headerControls}>
                           {hit.url && (
@@ -215,20 +238,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                               </svg>
                             </a>
                           )}
-
-                          <button
-                            type="button"
-                            className={styles.closeButton}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setIsFlipped(false);
-                            }}
-                            aria-label="Close expanded view"
-                            tabIndex={0}
-                            autoFocus
-                          >
-                            <span aria-hidden="true">×</span>
-                          </button>
                         </div>
                       </div>
                       <h3 className={styles.title} style={{ marginTop: '0.5rem' }}>
@@ -237,16 +246,12 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                     </div>
 
                     <div className={styles.factContent}>
-                      <h4 className={styles.intentLabel}>Fact</h4>
                       <p className={styles.factText}>{hit.fact}</p>
                     </div>
 
                     <div className={styles.metaSection}>
                       {hit.projects && hit.projects.length > 0 && (
                         <div className={styles.facetGroup}>
-                          <span className={styles.intentLabel} style={{ fontSize: '0.65rem' }}>
-                            Builds
-                          </span>
                           <div className={styles.simpleTags}>
                             {hit.projects.map((entity) => (
                               <span key={entity} className={styles.simpleTag}>

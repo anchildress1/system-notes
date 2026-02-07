@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, vi, beforeEach, afterAll } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
 vi.mock('algoliasearch/lite', () => ({
@@ -29,6 +29,7 @@ vi.mock('react-instantsearch', () => ({
   useRefinementList: () => ({ items: [], refine: vi.fn() }),
   useInfiniteHits: () => ({ hits: [], isLastPage: true, showMore: vi.fn() }),
   Stats: () => <div data-testid="stats">100 results</div>,
+  Highlight: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
 }));
 
 vi.mock('./UnifiedHitCard', () => ({
@@ -50,21 +51,18 @@ vi.mock('./GroupedTagFilter', () => ({
   ),
 }));
 
-const originalEnv = { ...process.env };
-
 describe('SearchPage Component', () => {
   beforeEach(() => {
     vi.resetModules();
-    process.env = { ...originalEnv };
   });
 
-  afterAll(() => {
-    process.env = originalEnv;
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it('renders error state when Algolia credentials are missing', async () => {
-    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = '';
-    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = '';
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', '');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', '');
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
@@ -73,8 +71,8 @@ describe('SearchPage Component', () => {
   });
 
   it('renders InstantSearch when credentials are present', async () => {
-    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
-    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'test-app-id');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'test-search-key');
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
@@ -84,8 +82,8 @@ describe('SearchPage Component', () => {
   });
 
   it('renders all filter refinement lists', async () => {
-    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
-    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'test-app-id');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'test-search-key');
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
@@ -96,8 +94,8 @@ describe('SearchPage Component', () => {
   });
 
   it('renders clear refinements button', async () => {
-    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
-    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'test-app-id');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'test-search-key');
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
@@ -106,8 +104,8 @@ describe('SearchPage Component', () => {
   });
 
   it('renders filter section headings', async () => {
-    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
-    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'test-app-id');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'test-search-key');
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
@@ -118,8 +116,8 @@ describe('SearchPage Component', () => {
   });
 
   it('renders Algolia attribution link', async () => {
-    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
-    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'test-app-id');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'test-search-key');
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
