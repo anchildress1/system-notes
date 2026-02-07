@@ -32,14 +32,13 @@
   min-height: 48px;
 }
 
-/* Results Header - Stats left, Attribution right (above results) */
-.resultsHeader {
+/* Meta Row - Stats left, Attribution right */
+.metaRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-sm) 0 var(--space-md);
-  margin-bottom: var(--space-sm);
-  border-bottom: 1px solid rgba(185, 187, 196, 0.1);
+  padding: var(--space-xs) 0;
+  margin-top: var(--space-xs);
 }
 
 .statsRoot {
@@ -370,4 +369,38 @@
 :global(.sitesearch-button-aa .button-text) {
   font-size: 0.95rem !important;
   font-weight: 500 !important;
+}
+
+/* Shortcut Keys - Make readable */
+:global(.sitesearch-button-aa kbd) {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 4px !important;
+  color: #e6e6eb !important; /* Text Primary */
+  font-family: var(--font-mono) !important;
+  font-size: 0.75rem !important;
+  padding: 2px 6px !important;
+  box-shadow: none !important;
+}
+
+/* Modal Accents - Purple Overrides */
+/* Search Input Focus */
+:global(.ss-searchbox-form:focus-within) {
+  border-color: #b56bff !important;
+  box-shadow: 0 0 0 3px rgba(181, 107, 255, 0.2) !important;
+}
+
+/* Algolia Logo in Modal Footer */
+:global(.ss-footer svg path) {
+  fill: #b56bff !important;
+}
+
+/* Search Icon in Modal Input */
+:global(.ss-searchbox-form svg path) {
+  fill: #b56bff !important;
+}
+
+/* Focus Outline in Modal */
+:global(*:focus-visible) {
+  outline-color: #b56bff !important;
 }

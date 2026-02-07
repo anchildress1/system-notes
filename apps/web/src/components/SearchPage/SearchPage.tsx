@@ -149,6 +149,26 @@ export default function SearchPage() {
 
         <div className={styles.searchSection}>
           <div id="sitesearch" className={styles.siteSearchContainer} data-testid="sitesearch" />
+          <div className={styles.metaRow}>
+            <Stats
+              classNames={{ root: styles.statsRoot }}
+              translations={{
+                rootElementText({ nbHits, processingTimeMS }) {
+                  return `${nbHits.toLocaleString()} results in ${processingTimeMS}ms`;
+                },
+              }}
+            />
+            <a
+              href="https://www.algolia.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.algoliaAttribution}
+              aria-label="Powered by Algolia"
+            >
+              <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
+              <span className={styles.algoliaText}>Powered by Algolia</span>
+            </a>
+          </div>
         </div>
 
         <div className={styles.layout}>
@@ -207,26 +227,6 @@ export default function SearchPage() {
           </aside>
 
           <section className={styles.results} aria-label="Search results">
-            <div className={styles.resultsHeader}>
-              <Stats
-                classNames={{ root: styles.statsRoot }}
-                translations={{
-                  rootElementText({ nbHits, processingTimeMS }) {
-                    return `${nbHits.toLocaleString()} results in ${processingTimeMS}ms`;
-                  },
-                }}
-              />
-              <a
-                href="https://www.algolia.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.algoliaAttribution}
-                aria-label="Powered by Algolia"
-              >
-                <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
-                <span className={styles.algoliaText}>Powered by Algolia</span>
-              </a>
-            </div>
             <LoadingIndicator />
             <InfiniteHits
               hitComponent={
