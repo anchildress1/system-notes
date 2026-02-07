@@ -22,10 +22,8 @@ export interface FactHitRecord extends BaseHit {
   title: string;
   blurb: string;
   fact: string;
-  tags?: string[] | {
-    lvl0?: string[];
-    lvl1?: string[];
-  };
+  'tags.lvl0'?: string[];
+  'tags.lvl1'?: string[];
   projects: string[];
   category: string;
   signal: number;
@@ -72,9 +70,9 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     setIsFlipped((prev) => !prev);
   }, [isFlipped, sendEvent, hit]);
 
-  const tagsArray = Array.isArray(hit.tags) ? hit.tags : [];
-  const lvl1Tags = (!Array.isArray(hit.tags) && hit.tags?.lvl1) ? hit.tags.lvl1 : [];
-  const displayTags = lvl1Tags.length > 0 ? lvl1Tags.slice(0, 1) : tagsArray.slice(0, 5);
+  // Access hierarchical tags using bracket notation
+  const lvl1Tags = hit['tags.lvl1'] || [];
+  const displayTags = lvl1Tags.slice(0, 1); // Show only the first lvl1 tag
 
   return (
     <>
@@ -273,13 +271,13 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                         </div>
                       )}
 
-                      {hit.tags && hit.tags.length > 0 && (
+                      {lvl1Tags.length > 0 && (
                         <div className={styles.facetGroup}>
                           <span className={styles.intentLabel} style={{ fontSize: '0.65rem' }}>
                             Tags
                           </span>
                           <div className={styles.simpleTags}>
-                            {hit.tags.map((tag) => (
+                            {lvl1Tags.map((tag) => (
                               <span key={tag} className={styles.simpleTag}>
                                 {tag}
                               </span>

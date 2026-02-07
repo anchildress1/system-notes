@@ -10,10 +10,8 @@ export interface PostHitRecord {
   url: string;
   blurb: string;
   fact: string; // Excerpt
-  tags?: {
-    lvl0?: string[];
-    lvl1?: string[];
-  };
+  'tags.lvl0'?: string[];
+  'tags.lvl1'?: string[];
   category: string;
   _highlightResult?: Record<string, unknown>;
 }
@@ -25,7 +23,7 @@ interface PostCardProps {
 export default function PostCard({ hit }: PostCardProps) {
   // Use explicit url if available, fallback to blurb if it looks like a URL, then objectID
   const url = hit.url || (hit.blurb && hit.blurb.startsWith('http') ? hit.blurb : hit.objectID);
-  const tags = hit.tags?.lvl1 || hit.tags?.lvl0 || [];
+  const tags = hit['tags.lvl1'] || hit['tags.lvl0'] || [];
 
   return (
     <a
