@@ -6,7 +6,8 @@
   cursor: pointer;
   height: 200px;
   outline: none;
-  background: hsl(var(--color-bg-elevated));
+  background: rgba(30, 31, 36, 0.7);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   box-shadow: var(--shadow-card);
@@ -44,7 +45,7 @@
 }
 
 .card:hover:not(.flipped) {
-  background: hsl(var(--color-bg-surface));
+  background: hsl(var(--color-bg-elevated));
   box-shadow:
     var(--shadow-bento),
     0 0 20px hsl(var(--color-accent-purple) / 0.15);
@@ -62,7 +63,7 @@
   max-height: 80vh;
   transform: translate(-50%, -50%) !important;
   z-index: 50;
-  background: hsl(var(--color-bg-base));
+  background: hsl(var(--color-bg-surface));
   border-color: hsl(var(--color-accent-pink) / 0.4);
   box-shadow:
     0 25px 50px -12px rgba(0, 0, 0, 0.8),
