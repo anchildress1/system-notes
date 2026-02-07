@@ -3,8 +3,6 @@ new Crawler({
   apiKey: 'b64818d18623f622291609230cb797dd',
   indexPrefix: '',
   rateLimit: 8,
-  maxUrls: 100,
-  schedule: 'on thursday',
   startUrls: ['https://crawly.checkmarkdevtools.dev/'],
   sitemaps: ['https://crawly.checkmarkdevtools.dev/sitemap.xml'],
   saveBackup: false,
