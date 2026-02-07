@@ -1710,21 +1710,6 @@
     "signal": 4
   },
   {
-    "objectID": "card:decision:algolia:no-personalization",
-    "title": "Personalization was intentionally avoided",
-    "blurb": "Public information did not justify user-specific results.",
-    "fact": "I intentionally avoided personalization and user-specific filtering because the site contains public information and did not require experiences tied to individual users.",
-    "tags.lvl0": ["Approach", "Principle", "DEV Challenge"],
-    "tags.lvl1": [
-      "Approach > AI Collaboration",
-      "Principle > Restraint",
-      "DEV Challenge > Algolia Agent Studio"
-    ],
-    "projects": ["System Notes"],
-    "category": "Decisions",
-    "signal": 4
-  },
-  {
     "objectID": "card:algolia:index:first-experience",
     "title": "This was my first time designing a search index",
     "blurb": "Index design required trial and error.",
@@ -1844,7 +1829,7 @@
     "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Decisions",
-    "signal": 5
+    "signal": 4
   },
   {
     "objectID": "card:algolia:build:widget-heavy-implementation",

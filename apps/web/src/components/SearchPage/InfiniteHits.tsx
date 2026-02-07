@@ -55,7 +55,9 @@ export default function InfiniteHits({
     });
 
     if (newHits.length > 0) {
-      sendEvent('view', newHits, 'Search Results Viewed');
+      sendEvent('view', newHits, 'Search Results Viewed', {
+        objectIDs: newHits.map((h) => h.objectID),
+      });
     }
   }, [hits, sendEvent]);
 
