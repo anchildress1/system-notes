@@ -30,7 +30,7 @@
 
 .logoLink:hover .name {
     text-decoration: underline;
-    text-decoration-color: hsl(var(--color-accent-purple));
+    text-decoration-color: hsl(var(--color-accent-teal));
 }
 
 .name {
@@ -43,7 +43,7 @@
 .handle {
     font-family: var(--font-mono);
     font-size: 0.8rem;
-    color: hsl(var(--color-accent-purple));
+    color: hsl(var(--color-accent-pink));
     opacity: 0.8;
 }
 
@@ -60,7 +60,7 @@
 
 .nav {
     display: flex;
-    gap: var(--space-md);
+    gap: var(--space-sm);
     align-items: center;
 }
 
@@ -79,11 +79,9 @@
 
 .navLink.active {
     color: hsl(var(--color-text-primary));
-    background: radial-gradient(
-        circle at center,
-        hsl(var(--color-accent-purple) / 0.15) 0%,
-        transparent 70%
-    );
+    background: radial-gradient(circle at center,
+            hsl(var(--color-accent-purple) / 0.15) 0%,
+            transparent 70%);
     box-shadow: 0 0 15px hsl(var(--color-accent-purple) / 0.1);
 }
 
@@ -94,12 +92,10 @@
     left: 20%;
     right: 20%;
     height: 1px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        hsl(var(--color-accent-purple) / 0.5),
-        transparent
-    );
+    background: linear-gradient(90deg,
+            transparent,
+            hsl(var(--color-accent-purple) / 0.5),
+            transparent);
 }
 
 .skipLink {
@@ -107,7 +103,7 @@
     top: -200px;
     left: 50%;
     transform: translateX(-50%);
-    background: hsl(var(--color-accent-yellow));
+    background: hsl(var(--color-accent-teal));
     color: hsl(var(--color-bg-base));
     padding: 0.5rem 1rem;
     z-index: 1000;
