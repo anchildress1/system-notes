@@ -16,7 +16,6 @@ describe('Recommendations Library', () => {
     // Set required environment variables
     process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
     process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-api-key';
-    process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME = 'system-notes';
   });
 
   describe('useRecommendationTools', () => {

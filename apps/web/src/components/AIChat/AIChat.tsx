@@ -6,8 +6,8 @@ import { Chat } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import styles from './AIChat.module.css';
 import dynamic from 'next/dynamic';
-import { API_URL } from '@/config';
-import { useRecommendationTools } from '@/lib/recommendations';
+import { API_URL, ALGOLIA_INDEX } from '@/config';
+// import { useRecommendationTools } from '@/lib/recommendations';
 import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
 import { getChatSessionId } from '@/utils/userToken';
 
@@ -17,7 +17,7 @@ import { FaBrain, FaUser } from 'react-icons/fa';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'merged-search';
+const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
 // Create searchClient at module level for stable reference (prevents unnecessary re-renders)
 const searchClient =
@@ -62,7 +62,7 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
 
 export default function AIChat() {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const recommendationTools = useRecommendationTools();
+  // const recommendationTools = useRecommendationTools();
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
@@ -94,6 +94,7 @@ export default function AIChat() {
             if (typedInput?.query) urlParams.set('q', typedInput.query);
             if (typedInput?.tag) urlParams.set('tag', typedInput.tag);
             if (typedInput?.limit) urlParams.set('limit', String(typedInput.limit));
+            urlParams.set('indexName', ALGOLIA_INDEX.CHAT_SOURCE);
 
             const response = await fetch(`${API_URL}/blog/search?${urlParams.toString()}`);
             if (!response.ok) {
@@ -113,9 +114,10 @@ export default function AIChat() {
           }
         },
       },
-      ...recommendationTools,
+      // ...recommendationTools,
     }),
-    [recommendationTools]
+    []
+    // [recommendationTools]
   );
 
   useEffect(() => {

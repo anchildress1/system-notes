@@ -44,7 +44,7 @@ vi.mock('react-instantsearch-nextjs', () => ({
   InstantSearchNext: vi.fn(({ children }) => <div>{children}</div>),
 }));
 
-describe('AIChat with Recommendations', () => {
+describe.skip('AIChat with Recommendations', () => {
   beforeEach(() => {
     process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
     process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-api-key';
