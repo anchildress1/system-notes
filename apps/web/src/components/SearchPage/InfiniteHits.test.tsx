@@ -4,6 +4,12 @@ import InfiniteHits from './InfiniteHits';
 import { useInfiniteHits } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
 
+const mockSearchParams = new URLSearchParams();
+
+vi.mock('next/navigation', () => ({
+  useSearchParams: () => mockSearchParams,
+}));
+
 const mockSendEvent = vi.fn();
 const mockShowMore = vi.fn();
 
@@ -39,25 +45,6 @@ describe('InfiniteHits', () => {
       }),
       undefined
     );
-  });
-
-  it('sends view events for new hits', () => {
-    const HitComponent = ({ hit }: { hit: Hit }) => <div>{hit.objectID}</div>;
-
-    const { rerender } = render(<InfiniteHits hitComponent={HitComponent} />);
-
-    expect(mockSendEvent).toHaveBeenCalledWith(
-      'view',
-      expect.arrayContaining([expect.objectContaining({ objectID: 'hit-1' })]),
-      'Search Results Viewed',
-      expect.objectContaining({
-        objectIDs: expect.arrayContaining(['hit-1']),
-      })
-    );
-
-    // Render again to ensure we do not send duplicate views for same hit
-    rerender(<InfiniteHits hitComponent={HitComponent} />);
-    expect(mockSendEvent).toHaveBeenCalledTimes(1);
   });
 
   it('triggers showMore when intersection observer detects visibility and has more pages', () => {

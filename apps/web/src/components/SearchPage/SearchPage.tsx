@@ -2,7 +2,6 @@
 
 import { useMemo, useEffect } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import aa from 'search-insights';
 import {
   InstantSearch,
   RefinementList,
@@ -17,7 +16,6 @@ import GroupedTagFilter from './GroupedTagFilter';
 import InfiniteHits from './InfiniteHits';
 import LoadingIndicator from './LoadingIndicator';
 import { createSearchRouting } from './searchRouting';
-import { getSearchSessionId } from '@/utils/userToken';
 import { ALGOLIA_INDEX } from '@/config';
 import { useFactIdRouting } from '@/hooks/useFactIdRouting';
 
@@ -27,15 +25,6 @@ const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
 const hasCredentials = appId && searchKey;
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
-
-const insightsConfig = {
-  insightsClient: aa,
-  insightsInitParams: {
-    appId,
-    apiKey: searchKey,
-    useCookie: true,
-  },
-};
 
 declare global {
   interface Window {
@@ -133,18 +122,11 @@ export default function SearchPage() {
 
   return (
     <div className={styles.container}>
-      <InstantSearch
-        searchClient={searchClient}
-        indexName={indexName}
-        insights={insightsConfig}
-        routing={routing}
-      >
+      <InstantSearch searchClient={searchClient} indexName={indexName} insights routing={routing}>
         <Configure
           hitsPerPage={20}
           attributesToHighlight={['title', 'blurb', 'fact']}
           clickAnalytics
-          analytics
-          userToken={getSearchSessionId()}
         />
 
         <div className={styles.searchSection}>
