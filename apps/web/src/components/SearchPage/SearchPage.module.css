@@ -20,25 +20,26 @@
   font-family: var(--font-mono);
 }
 
-/* Search Section - Contains search box and meta row */
+/* Search Section - Contains only search button */
 .searchSection {
-  max-width: 840px; /* Widened to match modern footer alignment */
-  margin: 0 auto var(--space-md);
+  max-width: 840px;
+  margin: 0 auto var(--space-lg);
   padding: 0 var(--space-md);
 }
 
 .siteSearchContainer {
   width: 100%;
-  margin-bottom: var(--space-xs);
-  min-height: 52px;
+  min-height: 48px;
 }
 
-/* Meta Row - Stats left, Attribution right */
-.metaRow {
+/* Results Header - Stats left, Attribution right (above results) */
+.resultsHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-xs) var(--space-xs); /* Added horizontal padding to align with button text */
+  padding: var(--space-sm) 0 var(--space-md);
+  margin-bottom: var(--space-sm);
+  border-bottom: 1px solid rgba(185, 187, 196, 0.1);
 }
 
 .statsRoot {
@@ -329,168 +330,44 @@
 }
 
 /* Global Overrides for Algolia SiteSearch Ask AI Widget */
-/* Search Button - Modern glassmorphism with subtle depth */
+/* Search Button - Wide, minimal height */
 :global(.sitesearch-button-aa) {
   background: linear-gradient(135deg, rgba(58, 61, 70, 0.7) 0%, rgba(46, 48, 54, 0.8) 100%) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(185, 187, 196, 0.2) !important;
   border-radius: 12px !important;
-  color: #b9bbc4 !important; /* Text Secondary */
+  color: #b9bbc4 !important;
   font-family: var(--font-sans) !important;
   width: 100% !important;
   justify-content: flex-start !important;
-  padding: var(--space-md) var(--space-lg) !important;
-  height: auto !important;
-  min-height: 56px !important;
+  padding: 12px 20px !important; /* Fixed padding instead of space vars */
+  height: 48px !important; /* Fixed height */
+  min-height: 48px !important;
+  max-height: 48px !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
-              0 1px 3px rgba(0, 0, 0, 0.08),
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12),
               0 0 0 1px rgba(255, 255, 255, 0.05) inset !important;
 }
 
 :global(.sitesearch-button-aa:hover) {
   background: linear-gradient(135deg, rgba(58, 61, 70, 0.85) 0%, rgba(46, 48, 54, 0.95) 100%) !important;
-  border-color: rgba(181, 107, 255, 0.5) !important; /* Purple hover (action) */
-  color: #e6e6eb !important; /* Text Primary */
+  border-color: rgba(181, 107, 255, 0.5) !important;
+  color: #e6e6eb !important;
   box-shadow: 0 0 0 2px rgba(181, 107, 255, 0.25),
-              0 8px 20px rgba(0, 0, 0, 0.2),
+              0 4px 12px rgba(0, 0, 0, 0.18),
               0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
   transform: translateY(-1px) !important;
 }
 
 :global(.sitesearch-button-aa .search-icon) {
-  color: #b56bff !important; /* Purple for action */
-  width: 20px !important;
-  height: 20px !important;
+  color: #b56bff !important;
+  width: 18px !important;
+  height: 18px !important;
   filter: drop-shadow(0 0 6px rgba(181, 107, 255, 0.4)) !important;
 }
 
 :global(.sitesearch-button-aa .button-text) {
-  font-size: 1rem !important;
+  font-size: 0.95rem !important;
   font-weight: 500 !important;
 }
-
-/* Modal Container - Rich gradient with depth */
-:global(.modal-content-askai) {
-  background: linear-gradient(165deg, 
-    rgba(58, 61, 70, 0.95) 0%, 
-    rgba(46, 48, 54, 0.98) 50%,
-    rgba(40, 42, 48, 0.99) 100%) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-  border: 1px solid rgba(181, 107, 255, 0.2) !important; /* Subtle purple accent */
-  border-radius: 20px !important;
-  color: #e6e6eb !important; /* Text Primary */
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5),
-              0 10px 25px rgba(0, 0, 0, 0.3),
-              0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-              0 0 60px rgba(181, 107, 255, 0.08) !important; /* Subtle purple glow */
-}
-
-/* Search Input in Modal - Glassmorphic with focus state */
-:global(.ss-searchbox-form) {
-  background: linear-gradient(135deg, rgba(30, 32, 38, 0.6) 0%, rgba(25, 27, 32, 0.7) 100%) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(185, 187, 196, 0.15) !important;
-  border-radius: 12px !important;
-  transition: all 0.3s ease !important;
-}
-
-:global(.ss-searchbox-form:focus-within) {
-  border-color: rgba(181, 107, 255, 0.6) !important; /* Purple on focus (action) */
-  background: linear-gradient(135deg, rgba(30, 32, 38, 0.8) 0%, rgba(25, 27, 32, 0.9) 100%) !important;
-  box-shadow: 0 0 0 3px rgba(181, 107, 255, 0.2),
-              0 4px 12px rgba(181, 107, 255, 0.15) !important;
-}
-
-/* AI Suggestion Card - Subtle purple gradient for AI response */
-:global(.ss-qa-card) {
-  background: linear-gradient(135deg, 
-    rgba(181, 107, 255, 0.08) 0%, 
-    rgba(181, 107, 255, 0.12) 100%) !important;
-  border: 1px solid rgba(181, 107, 255, 0.25) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgba(181, 107, 255, 0.08) !important;
-}
-
-:global(.ss-qa-question) {
-  color: #f16197 !important; /* Pink for Human */
-  font-family: var(--font-sans) !important;
-  font-weight: 600 !important;
-  text-shadow: 0 0 20px rgba(241, 97, 151, 0.25) !important; /* Subtle glow */
-}
-
-:global(.ss-qa-answer-content) {
-  color: #e6e6eb !important; /* Text Primary - high contrast */
-  font-family: var(--font-sans) !important;
-  line-height: 1.65 !important;
-}
-
-:global(.ss-qa-answer-content strong) {
-  color: #b56bff !important; /* Purple for emphasis (action) */
-  font-weight: 700 !important;
-}
-
-/* Search Results - Glassmorphic cards */
-:global(.ss-infinite-hits-item) {
-  background: linear-gradient(135deg, 
-    rgba(58, 61, 70, 0.4) 0%, 
-    rgba(46, 48, 54, 0.5) 100%) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  border: 1px solid rgba(185, 187, 196, 0.12) !important;
-  border-radius: 10px !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-:global(.ss-infinite-hits-item:hover) {
-  border-color: rgba(62, 199, 194, 0.5) !important; /* Teal on hover (navigation) */
-  background: linear-gradient(135deg, 
-    rgba(58, 61, 70, 0.6) 0%, 
-    rgba(46, 48, 54, 0.7) 100%) !important;
-  box-shadow: 0 4px 12px rgba(62, 199, 194, 0.15) !important;
-  transform: translateY(-2px) !important;
-}
-
-:global(.ss-infinite-hits-item-title) {
-  color: #3ec7c2 !important; /* Teal for navigation links */
-  font-family: var(--font-mono) !important;
-  font-weight: 700 !important;
-  text-shadow: 0 0 12px rgba(62, 199, 194, 0.3) !important; /* Subtle glow */
-}
-
-:global(.ss-infinite-hits-item-body) {
-  color: #b9bbc4 !important; /* Text Secondary */
-}
-
-/* Footer - Subtle gradient */
-:global(.ss-footer) {
-  background: linear-gradient(180deg, rgba(30, 32, 38, 0.5) 0%, rgba(25, 27, 32, 0.7) 100%) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border-top: 1px solid rgba(185, 187, 196, 0.1) !important;
-}
-
-/* Action Buttons - Vibrant gradient for primary actions */
-:global(.ss-ask-ai-btn),
-:global(.ss-no-results-btn) {
-  background: linear-gradient(135deg, #b56bff 0%, #9d4edd 100%) !important; /* Purple gradient (action) */
-  color: #ffffff !important; /* White text for contrast */
-  border: none !important;
-  border-radius: 10px !important;
-  font-weight: 600 !important;
-  box-shadow: 0 4px 12px rgba(181, 107, 255, 0.35),
-              0 2px 6px rgba(181, 107, 255, 0.2) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-:global(.ss-ask-ai-btn:hover),
-:global(.ss-no-results-btn:hover) {
-  background: linear-gradient(135deg, #c684ff 0%, #ae5ff0 100%) !important; /* Lighter on hover */
-  box-shadow: 0 6px 20px rgba(181, 107, 255, 0.45),
-              0 3px 10px rgba(181, 107, 255, 0.25) !important;
-  transform: translateY(-2px) scale(1.02) !important;
-}
-

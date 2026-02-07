@@ -2553,5 +2553,22 @@
     "projects": ["System Notes"],
     "category": "Projects",
     "signal": 4
+  },
+  {
+    "objectID": "card:decision:ui:default-algolia-styling-retained",
+    "title": "Default Algolia styling was retained",
+    "blurb": "Implementation stability was prioritized over customization.",
+    "fact": "I chose to retain as much of Algolia’s default styling as was reasonable because the implementation agent struggled with the early Ask AI Search feature, and additional customization increased friction without improving core functionality.",
+    "tags.lvl0": ["Approach", "Discipline", "Principle", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "Discipline > Agent Design",
+      "Principle > Restraint",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Decisions",
+    "signal": 4
   }
 ]
