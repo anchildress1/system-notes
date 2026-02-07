@@ -304,3 +304,99 @@
     font-size: 0.75rem;
   }
 }
+
+/* Global Overrides for Algolia SiteSearch Ask AI Widget */
+:global(.sitesearch-button-aa) {
+  background: #3a3d46 !important;
+  border: 1px solid rgba(185, 187, 196, 0.3) !important;
+  border-radius: 8px !important;
+  color: #b9bbc4 !important;
+  font-family: var(--font-sans) !important;
+  width: 100% !important;
+  justify-content: flex-start !important;
+  padding: var(--space-sm) var(--space-md) !important;
+  height: auto !important;
+  min-height: 48px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease !important;
+}
+
+:global(.sitesearch-button-aa:hover) {
+  border-color: #b56bff !important;
+  color: #e6e6eb !important;
+  box-shadow: 0 0 0 1px rgba(181, 107, 255, 0.3) !important;
+}
+
+:global(.sitesearch-button-aa .search-icon) {
+  color: #b56bff !important; /* Purple icon */
+  width: 20px !important;
+  height: 20px !important;
+}
+
+:global(.sitesearch-button-aa .button-text) {
+  font-size: 1rem !important;
+}
+
+:global(.modal-content-askai) {
+  background-color: #3a3d46 !important; /* Surface */
+  border: 1px solid rgba(181, 107, 255, 0.2) !important;
+  box-shadow: var(--shadow-card) !important;
+  color: #e6e6eb !important;
+}
+
+:global(.ss-searchbox-form) {
+  background-color: #2e3036 !important;
+  border: 1px solid rgba(185, 187, 196, 0.1) !important;
+}
+
+:global(.ss-searchbox-form:focus-within) {
+  border-color: #b56bff !important;
+  box-shadow: 0 0 0 2px rgba(181, 107, 255, 0.3) !important;
+}
+
+:global(.ss-qa-question) {
+  color: #f16197 !important; /* Pink for Human */
+  font-family: var(--font-sans) !important;
+}
+
+:global(.ss-qa-answer-content) {
+  color: #e6e6eb !important;
+  font-family: var(--font-sans) !important;
+}
+
+:global(.ss-qa-answer-content strong) {
+  color: #b56bff !important; /* Purple for emphasis */
+}
+
+:global(.ss-infinite-hits-item-title) {
+  color: #b56bff !important; /* Purple for titles */
+  font-family: var(--font-mono) !important;
+  font-weight: 700 !important;
+}
+
+:global(.ss-infinite-hits-anchor) {
+  text-decoration: none !important;
+}
+
+:global(.ss-infinite-hits-anchor:hover .ss-infinite-hits-item-title) {
+  text-decoration: underline !important;
+}
+
+:global(.ss-footer) {
+  background-color: #2e3036 !important;
+  border-top: 1px solid rgba(185, 187, 196, 0.1) !important;
+}
+
+:global(.ss-ask-ai-btn),
+:global(.ss-no-results-btn) {
+  background-color: #b56bff !important; /* Purple */
+  color: #fff !important;
+  border: none !important;
+  border-radius: 6px !important;
+}
+
+:global(.ss-ask-ai-btn:hover),
+:global(.ss-no-results-btn:hover) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
