@@ -183,7 +183,12 @@
     "blurb": "The most meaningful lessons emerged once the system was live.",
     "fact": "Underfoot taught me the most after it shipped, particularly around constraint, cost control, and the realities introduced by running the system in practice rather than in theory.",
     "tags.lvl0": ["Approach", "Mindset", "AI", "DEV Challenge"],
-    "tags.lvl1": ["Approach > Pragmatism", "Mindset > Systems Thinking", "AI > Verdent", "DEV Challenge > Unstoppable Workflow"],
+    "tags.lvl1": [
+      "Approach > Pragmatism",
+      "Mindset > Systems Thinking",
+      "AI > Verdent",
+      "DEV Challenge > Unstoppable Workflow"
+    ],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -1359,7 +1364,11 @@
     "blurb": "It enabled immediate user-facing value without UI investment.",
     "fact": "Because of a primarily back-end background, the chat widget was intentionally used as a fast path to deliver a fully usable, user-facing feature without first building a dedicated UI.",
     "tags.lvl0": ["Approach", "DEV Challenge", "AI"],
-    "tags.lvl1": ["Approach > Experimentation", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
     "projects": ["System Notes"],
     "category": "Decisions",
     "signal": 3
@@ -1469,7 +1478,11 @@
     "blurb": "Limited time exposed weak assumptions quickly.",
     "fact": "The DEV Algolia Challenge timeline forced rapid iteration and manual testing, surfacing issues like over-searching, hallucinated clarification, and unsafe intent handling that were corrected through targeted prompt edits.",
     "tags.lvl0": ["Approach", "Discipline", "DEV Challenge"],
-    "tags.lvl1": ["Approach > Iterative", "Discipline > Agent Design", "DEV Challenge > Algolia Agent Studio"],
+    "tags.lvl1": [
+      "Approach > Iterative",
+      "Discipline > Agent Design",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 4
@@ -1524,7 +1537,11 @@
     "blurb": "Correctness is observed, not assumed.",
     "fact": "Agent logic, intent routing, and failure modes were refined through repeated manual testing of real conversational inputs rather than relying solely on theoretical prompt design.",
     "tags.lvl0": ["Discipline", "AI", "DEV Challenge"],
-    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "tags.lvl1": [
+      "Discipline > Agent Design",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 4
@@ -1546,7 +1563,11 @@
     "blurb": "Small changes, observed effects.",
     "fact": "Instead of rewriting the agent prompt wholesale, behavior was improved through targeted, incremental edits that were tested against real user interactions to confirm impact.",
     "tags.lvl0": ["Discipline", "AI", "DEV Challenge"],
-    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "tags.lvl1": [
+      "Discipline > Agent Design",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 4
@@ -1668,7 +1689,11 @@
     "blurb": "Clear examples enabled correct usage by both human and AI.",
     "fact": "I found Algolia’s documentation clear and easy to follow, and both I and the AI were able to read and apply the examples directly to ensure features were implemented as intended.",
     "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
-    "tags.lvl1": ["Approach > AI Collaboration", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "tags.lvl1": [
+      "Approach > AI Collaboration",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
     "projects": ["System Notes"],
     "category": "Experimentation",
     "signal": 4
@@ -1690,7 +1715,11 @@
     "blurb": "Public information did not justify user-specific results.",
     "fact": "I intentionally avoided personalization and user-specific filtering because the site contains public information and did not require experiences tied to individual users.",
     "tags.lvl0": ["Approach", "Principle", "DEV Challenge"],
-    "tags.lvl1": ["Approach > AI Collaboration", "Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
+    "tags.lvl1": [
+      "Approach > AI Collaboration",
+      "Principle > Restraint",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
     "projects": ["System Notes"],
     "category": "Decisions",
     "signal": 4
@@ -1701,7 +1730,11 @@
     "blurb": "Index design required trial and error.",
     "fact": "This was my first experience working with a search index of this nature, and achieving a performant structure required experimentation and iteration before the overall shape became clear.",
     "tags.lvl0": ["Approach", "Mindset", "DEV Challenge"],
-    "tags.lvl1": ["Approach > Iterative", "Mindset > Systems Thinking", "DEV Challenge > Algolia Agent Studio"],
+    "tags.lvl1": [
+      "Approach > Iterative",
+      "Mindset > Systems Thinking",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
     "projects": ["System Notes"],
     "category": "Experimentation",
     "signal": 3
@@ -1712,7 +1745,11 @@
     "blurb": "Correct structure unlocked better behavior.",
     "fact": "My initial index design violated many documented best practices, and once I aligned the structure with Algolia’s recommendations, retrieval behavior improved and the system became easier to reason about.",
     "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
-    "tags.lvl1": ["Approach > Experimentation", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
     "projects": ["System Notes"],
     "category": "Experimentation",
     "signal": 5
@@ -1745,7 +1782,11 @@
     "blurb": "Conversational accuracy required deeper context.",
     "fact": "I implemented a custom tool for the chat agent that loads full blog content into cache, allowing conversational responses to use complete context instead of relying solely on indexed summaries.",
     "tags.lvl0": ["Discipline", "AI", "DEV Challenge"],
-    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "tags.lvl1": [
+      "Discipline > Agent Design",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
     "projects": ["System Notes"],
     "category": "Experimentation",
     "signal": 5
