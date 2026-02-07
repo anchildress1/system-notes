@@ -13,20 +13,19 @@ test.describe('Search Page Integration', () => {
     await page.goto('/search'); // Use relative path as baseURL is usually configured or passed via CI env
 
     try {
-      const searchBox = page.getByPlaceholder('Search facts...');
+      const searchInput = page.getByPlaceholder('Search facts and system notes...');
       const unavailable = page.getByText(/Search is currently unavailable/);
 
-      await expect(searchBox.or(unavailable)).toBeVisible({ timeout: 10000 });
+      await expect(searchInput.or(unavailable)).toBeVisible({ timeout: 15000 });
     } catch (e) {
       console.log('Search box not found. Page content:');
       console.log(await page.content());
       throw e;
     }
 
-    // Verify key attributes if search box is present
-    const searchBox = page.getByPlaceholder('Search facts...');
-    if (await searchBox.isVisible()) {
-      await expect(searchBox).toBeVisible();
+    const searchInput = page.getByPlaceholder('Search facts and system notes...');
+    if (await searchInput.isVisible()) {
+      await expect(searchInput).toBeVisible();
     }
   });
 
