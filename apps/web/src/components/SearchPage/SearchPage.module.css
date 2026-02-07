@@ -405,10 +405,6 @@
     gap: var(--space-md);
   }
 
-  .filterTitle {
-    grid-column: 1 / -1;
-  }
-
   .clearRoot {
     grid-column: 1 / -1;
   }

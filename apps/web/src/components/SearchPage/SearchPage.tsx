@@ -95,6 +95,7 @@ export default function SearchPage() {
           <aside className={styles.sidebar}>
             <div className={styles.filterSection}>
               <div className={styles.refinementGroup}>
+                <h3 className={styles.refinementTitle}>Category</h3>
                 <RefinementList
                   attribute="category"
                   classNames={{
@@ -111,6 +112,7 @@ export default function SearchPage() {
               </div>
 
               <div className={styles.refinementGroup}>
+                <h3 className={styles.refinementTitle}>Builds</h3>
                 <RefinementList
                   attribute="projects"
                   classNames={{
@@ -127,6 +129,7 @@ export default function SearchPage() {
               </div>
 
               <div className={styles.refinementGroup}>
+                <h3 className={styles.refinementTitle}>Tags</h3>
                 <HierarchicalMenu
                   attributes={['tags.lvl0', 'tags.lvl1']}
                   limit={10}

@@ -146,7 +146,7 @@
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.5px;
-    background: hsl(var(--color-accent-teal));
+    background: hsl(var(--color-accent-purple));
     color: hsl(var(--color-bg-base));
     padding: 2px 8px;
     border-radius: 4px;
@@ -158,13 +158,13 @@
     font-size: 0.7rem;
     padding: 2px 6px;
     border-radius: 4px;
-    background: hsl(var(--color-accent-purple));
+    background: hsl(var(--color-accent-teal));
     color: hsl(var(--color-bg-base));
     font-weight: 700;
     text-transform: uppercase;
     margin-left: auto;
     margin-right: var(--space-sm);
-    box-shadow: 0 0 10px hsl(var(--color-accent-purple) / 0.5);
+    box-shadow: 0 0 10px hsl(var(--color-accent-teal) / 0.5);
 }
 
 .title {
@@ -198,10 +198,11 @@
 }
 
 .ghLink:hover {
-    background: hsl(var(--color-accent-pink) / 0.8);
-    color: hsl(var(--color-bg-base));
+    background: hsl(var(--color-bg-surface));
+    border-color: hsl(var(--color-accent-pink));
+    color: hsl(var(--color-accent-pink));
     transform: rotate(15deg) scale(1.1);
-    box-shadow: 0 0 15px hsl(var(--color-accent-pink) / 0.6);
+    box-shadow: 0 0 15px hsl(var(--color-accent-pink) / 0.4);
 }
 
 .description {
