@@ -5,10 +5,7 @@
     "blurb": "Long-term system ownership shaped decision-making.",
     "fact": "As of May 2026, I had completed eight years of continuous service at The Home Depot, operating within long-lived systems where architectural decisions, operational standards, and tooling choices accumulated over time.",
     "tags.lvl0": ["Experience", "Mindset", "Principle"],
-    "tags.lvl1": [
-      "Mindset > Systems Thinking",
-      "Principle > Operational Ownership"
-    ],
+    "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Operational Ownership"],
     "projects": [],
     "category": "Experience",
     "signal": 5
@@ -19,10 +16,7 @@
     "blurb": "Resolution included diagnosis, mitigation, and communication.",
     "fact": "As a Senior Software Engineer, I led end-to-end resolution of multiple high-impact production incidents across critical ordering and platform flows, combining deep debugging with clear rollback or roll-forward decisions and direct stakeholder communication.",
     "tags.lvl0": ["Experience", "Discipline", "Principle"],
-    "tags.lvl1": [
-      "Discipline > Production Support",
-      "Principle > Predictability"
-    ],
+    "tags.lvl1": ["Discipline > Production Support", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
     "signal": 5
@@ -33,10 +27,7 @@
     "blurb": "Operational risk was reduced through standardization.",
     "fact": "I advanced reliability and change safety by refining alerts and dashboards, tightening CR and PR hygiene, and establishing a unified schema and migration pattern that reduced risk for database and platform changes.",
     "tags.lvl0": ["Experience", "Discipline", "Principle"],
-    "tags.lvl1": [
-      "Discipline > Reliability Engineering",
-      "Principle > Predictability"
-    ],
+    "tags.lvl1": ["Discipline > Reliability Engineering", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
     "signal": 4
@@ -47,10 +38,7 @@
     "blurb": "Consistency was reinforced through tooling and review.",
     "fact": "I raised day-to-day engineering quality by introducing and maintaining lint and format configurations, conventional commits, and improved GitHub Actions workflows, paired with detailed reviews, 1:1 coaching, and formal mentoring.",
     "tags.lvl0": ["Experience", "Discipline", "Approach"],
-    "tags.lvl1": [
-      "Discipline > Platform Quality",
-      "Approach > Iterative"
-    ],
+    "tags.lvl1": ["Discipline > Platform Quality", "Approach > Iterative"],
     "projects": [],
     "category": "Experience",
     "signal": 4
@@ -61,25 +49,19 @@
     "blurb": "AI usage was constrained to practical workflows.",
     "fact": "I acted as a subject matter expert for GitHub Copilot and GenAI enablement, driving adoption across daily workflows such as research, root-cause analysis, coding, and documentation, while experimenting with custom flows and converting lessons learned into reusable guidance.",
     "tags.lvl0": ["Experience", "AI", "Discipline"],
-    "tags.lvl1": [
-      "AI > GitHub Copilot",
-      "Discipline > Engineering"
-    ],
+    "tags.lvl1": ["AI > GitHub Copilot", "Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
     "signal": 4
   },
-  
+
   {
     "objectID": "card:experience:backend-systems-scope:thd",
     "title": "Backend systems were built across cloud and on-prem environments",
     "blurb": "Design choices accounted for heterogeneous runtime constraints.",
     "fact": "In my role as Software Engineer II, I built secure and scalable backend systems across both cloud and on-prem environments using Java, Spring, and Node.js, operating under constraints imposed by mixed infrastructure, legacy systems, and distributed ownership.",
     "tags.lvl0": ["Experience", "Discipline", "Mindset"],
-    "tags.lvl1": [
-      "Discipline > Engineering",
-      "Mindset > Systems Thinking"
-    ],
+    "tags.lvl1": ["Discipline > Engineering", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
     "signal": 4
@@ -90,10 +72,7 @@
     "blurb": "Tool adoption was tied to standards, not speed alone.",
     "fact": "I actively championed GitHub Copilot usage to elevate team performance and code quality, framing its adoption around consistency, efficiency, and modern development practices rather than unchecked automation.",
     "tags.lvl0": ["Experience", "AI", "Discipline"],
-    "tags.lvl1": [
-      "AI > GitHub Copilot",
-      "Discipline > Engineering"
-    ],
+    "tags.lvl1": ["AI > GitHub Copilot", "Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
     "signal": 4
@@ -104,10 +83,7 @@
     "blurb": "Performance and reliability guided replacement decisions.",
     "fact": "I contributed to modernizing supply-chain platforms by replacing legacy systems, resolving performance bottlenecks, and deploying platform enhancements that improved responsiveness and reduced failure rates through coordinated cross-team work.",
     "tags.lvl0": ["Experience", "Discipline", "Approach"],
-    "tags.lvl1": [
-      "Discipline > Platform Quality",
-      "Approach > Iterative"
-    ],
+    "tags.lvl1": ["Discipline > Platform Quality", "Approach > Iterative"],
     "projects": [],
     "category": "Experience",
     "signal": 5
@@ -118,10 +94,7 @@
     "blurb": "Alert noise reduction was treated as a reliability goal.",
     "fact": "I diagnosed production issues and implemented sustainable fixes that improved platform reliability while reducing alert fatigue, prioritizing long-term operational health over short-term mitigation.",
     "tags.lvl0": ["Experience", "Discipline", "Principle"],
-    "tags.lvl1": [
-      "Discipline > Reliability Engineering",
-      "Principle > Predictability"
-    ],
+    "tags.lvl1": ["Discipline > Reliability Engineering", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
     "signal": 4
@@ -132,10 +105,7 @@
     "blurb": "Human systems were treated as part of the platform.",
     "fact": "I elevated team performance and code quality by mentoring junior engineers, leading knowledge-sharing sessions, and reinforcing clean code, CI/CD, and strong engineering practices as ongoing expectations.",
     "tags.lvl0": ["Experience", "Discipline", "Approach"],
-    "tags.lvl1": [
-      "Discipline > Engineering",
-      "Approach > Iterative"
-    ],
+    "tags.lvl1": ["Discipline > Engineering", "Approach > Iterative"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -146,10 +116,7 @@
     "blurb": "Understanding emerged through immersion, not documentation alone.",
     "fact": "When I joined The Home Depot, I had no background in large-scale retail systems, so I leaned into daily pairing, took on backend stories, and incrementally built confidence working across Java, JavaScript, Python, and Google Cloud Platform.",
     "tags.lvl0": ["Experience", "Approach", "Mindset"],
-    "tags.lvl1": [
-      "Approach > Iterative",
-      "Mindset > Systems Thinking"
-    ],
+    "tags.lvl1": ["Approach > Iterative", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -160,10 +127,7 @@
     "blurb": "Risk was identified before it reached production.",
     "fact": "My early experience shaped how I approach engineering problems by looking beyond individual tickets, understanding downstream impact, and identifying risks before they became production issues.",
     "tags.lvl0": ["Experience", "Mindset", "Principle"],
-    "tags.lvl1": [
-      "Mindset > Systems Thinking",
-      "Principle > Predictability"
-    ],
+    "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
     "signal": 4
@@ -174,10 +138,7 @@
     "blurb": "Business metrics informed technical prioritization.",
     "fact": "I delivered new features and platform capabilities aligned with internal KPIs, translating business requirements into implementation-ready work alongside cross-functional partners.",
     "tags.lvl0": ["Experience", "Discipline", "Approach"],
-    "tags.lvl1": [
-      "Discipline > Engineering",
-      "Approach > Iterative"
-    ],
+    "tags.lvl1": ["Discipline > Engineering", "Approach > Iterative"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -188,10 +149,7 @@
     "blurb": "Stability was improved before failures escalated.",
     "fact": "I provided production support with a focus on issue prevention and early detection, strengthening reliability and process stability across multiple backend services.",
     "tags.lvl0": ["Experience", "Discipline", "Principle"],
-    "tags.lvl1": [
-      "Discipline > Production Support",
-      "Principle > Predictability"
-    ],
+    "tags.lvl1": ["Discipline > Production Support", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -202,10 +160,7 @@
     "blurb": "Skill depth grew through real production work.",
     "fact": "Through hands-on delivery, I strengthened my engineering foundation across backend services, balancing speed, quality, and support needs while becoming a dependable contributor in unfamiliar and evolving systems.",
     "tags.lvl0": ["Experience", "Discipline", "Mindset"],
-    "tags.lvl1": [
-      "Discipline > Engineering",
-      "Mindset > Systems Thinking"
-    ],
+    "tags.lvl1": ["Discipline > Engineering", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
     "signal": 4
@@ -216,10 +171,7 @@
     "blurb": "Foundational habits were formed under real production constraints.",
     "fact": "After completing my degree, I transitioned into my first full-time industry role at Greenway Health, contributing to a newly launched billing platform built in C# while learning to operate within production systems and established delivery expectations.",
     "tags.lvl0": ["Experience", "Mindset", "Discipline"],
-    "tags.lvl1": [
-      "Mindset > Systems Thinking",
-      "Discipline > Engineering"
-    ],
+    "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -230,10 +182,7 @@
     "blurb": "Correctness and reliability were prioritized over speed.",
     "fact": "I applied test-driven development practices to write clean, reliable code, using TDD as a learning and quality mechanism while delivering short user stories with minimal oversight.",
     "tags.lvl0": ["Experience", "Discipline", "Principle"],
-    "tags.lvl1": [
-      "Discipline > Engineering",
-      "Principle > Predictability"
-    ],
+    "tags.lvl1": ["Discipline > Engineering", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -244,10 +193,7 @@
     "blurb": "Responsibility expanded alongside system understanding.",
     "fact": "Through early exposure to production systems, I developed a strong sense of ownership and problem-solving, becoming a reliable contributor for developing and troubleshooting new features with limited supervision.",
     "tags.lvl0": ["Experience", "Mindset", "Principle"],
-    "tags.lvl1": [
-      "Mindset > Systems Thinking",
-      "Principle > Operational Ownership"
-    ],
+    "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Operational Ownership"],
     "projects": [],
     "category": "Experience",
     "signal": 2
@@ -258,10 +204,7 @@
     "blurb": "Deep system understanding emerged through targeted investigation.",
     "fact": "I identified and fixed a persistent defect previously considered unfixable by developing a deeper understanding of the system’s print service architecture and tracing failures through production behavior.",
     "tags.lvl0": ["Experience", "Discipline", "Approach"],
-    "tags.lvl1": [
-      "Discipline > Production Support",
-      "Approach > Experimentation"
-    ],
+    "tags.lvl1": ["Discipline > Production Support", "Approach > Experimentation"],
     "projects": [],
     "category": "Experience",
     "signal": 4
@@ -272,9 +215,7 @@
     "blurb": "System understanding preceded implementation responsibility.",
     "fact": "I joined Greenway Health as a Junior Business Analyst while completing my Bachelor’s degree, supporting the transition to a new billing system and gaining early exposure to how software systems are specified, tested, and delivered.",
     "tags.lvl0": ["Experience", "Mindset"],
-    "tags.lvl1": [
-      "Mindset > Systems Thinking"
-    ],
+    "tags.lvl1": ["Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
     "signal": 2
@@ -285,9 +226,7 @@
     "blurb": "Clarity reduced downstream rework.",
     "fact": "I collaborated with stakeholders to identify user needs, test functionality, and relay enhancement requests to product and engineering teams, helping convert business requirements into implementation-ready work.",
     "tags.lvl0": ["Experience", "Discipline"],
-    "tags.lvl1": [
-      "Discipline > Engineering"
-    ],
+    "tags.lvl1": ["Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -298,10 +237,7 @@
     "blurb": "Documentation supported repeatable releases.",
     "fact": "I developed comprehensive end-user documentation, including design specifications, implementation plans, and structured release management materials to support consistent delivery and adoption.",
     "tags.lvl0": ["Experience", "Discipline", "Principle"],
-    "tags.lvl1": [
-      "Discipline > Engineering",
-      "Principle > Predictability"
-    ],
+    "tags.lvl1": ["Discipline > Engineering", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
     "signal": 2
@@ -312,9 +248,7 @@
     "blurb": "Process awareness informed later engineering work.",
     "fact": "By participating directly in Agile workflows, process improvement efforts, and cross-functional collaboration, I built a foundation in iterative delivery that later shaped my transition into a full-time software engineering role.",
     "tags.lvl0": ["Experience", "Approach"],
-    "tags.lvl1": [
-      "Approach > Iterative"
-    ],
+    "tags.lvl1": ["Approach > Iterative"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -325,10 +259,7 @@
     "blurb": "Role boundaries were crossed intentionally.",
     "fact": "The analytical, documentation, and collaboration skills developed in my Junior Business Analyst role laid the groundwork for a successful transition into a full-time Software Engineer position after graduation.",
     "tags.lvl0": ["Experience", "Mindset", "Principle"],
-    "tags.lvl1": [
-      "Mindset > Systems Thinking",
-      "Principle > Operational Ownership"
-    ],
+    "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Operational Ownership"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -339,10 +270,7 @@
     "blurb": "Growth was driven by accountability, not title.",
     "fact": "I began my career at Arby’s Restaurant Group as a cashier and progressed through seven roles to Certified Training Manager, taking on increasing responsibility for people development and operational consistency across the restaurant and district level.",
     "tags.lvl0": ["Experience", "Mindset", "Principle"],
-    "tags.lvl1": [
-      "Mindset > Systems Thinking",
-      "Principle > Operational Ownership"
-    ],
+    "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Operational Ownership"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -353,9 +281,7 @@
     "blurb": "Consistency depended on shared expectations.",
     "fact": "As a Certified Training Manager, I led onboarding and skills development across all positions, helping new hires ramp quickly and confidently through clear expectations, structured coaching, and repeatable training processes.",
     "tags.lvl0": ["Experience", "Discipline"],
-    "tags.lvl1": [
-      "Discipline > Engineering"
-    ],
+    "tags.lvl1": ["Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
     "signal": 2
@@ -366,10 +292,7 @@
     "blurb": "Reliability followed standardization.",
     "fact": "I learned to identify root causes, establish repeatable processes, and drive continuous improvement by applying consistent operational standards and measuring their impact on team performance and morale.",
     "tags.lvl0": ["Experience", "Principle", "Approach"],
-    "tags.lvl1": [
-      "Principle > Predictability",
-      "Approach > Iterative"
-    ],
+    "tags.lvl1": ["Principle > Predictability", "Approach > Iterative"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -380,9 +303,7 @@
     "blurb": "Best practices were shared beyond a single location.",
     "fact": "I hosted district-wide training sessions to share operational best practices with peers and store leaders, reinforcing consistency and accountability across multiple locations.",
     "tags.lvl0": ["Experience", "Discipline"],
-    "tags.lvl1": [
-      "Discipline > Engineering"
-    ],
+    "tags.lvl1": ["Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
     "signal": 2
@@ -393,9 +314,7 @@
     "blurb": "Trust and clarity enabled performance.",
     "fact": "Through hands-on coaching and daily operational support, I gained firsthand experience building team trust, setting clear expectations, and motivating performance, forming a people-first leadership foundation that carried forward into my engineering career.",
     "tags.lvl0": ["Experience", "Mindset"],
-    "tags.lvl1": [
-      "Mindset > Systems Thinking"
-    ],
+    "tags.lvl1": ["Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -406,9 +325,7 @@
     "blurb": "Theory and practice were developed in parallel.",
     "fact": "I completed a Bachelor of Science in Computer Science at the University of West Georgia, building a strong foundation in software systems engineering and object-oriented programming through rigorous coursework and hands-on implementation.",
     "tags.lvl0": ["Experience", "Discipline"],
-    "tags.lvl1": [
-      "Discipline > Engineering"
-    ],
+    "tags.lvl1": ["Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -419,9 +336,7 @@
     "blurb": "Consistency reflected depth of understanding.",
     "fact": "I graduated with honors and a 4.0 major GPA, reflecting sustained academic performance and mastery within the computer science curriculum.",
     "tags.lvl0": ["Experience", "Principle"],
-    "tags.lvl1": [
-      "Principle > Predictability"
-    ],
+    "tags.lvl1": ["Principle > Predictability"],
     "projects": [],
     "category": "Experience",
     "signal": 2
@@ -432,9 +347,7 @@
     "blurb": "Community building complemented technical growth.",
     "fact": "I served as President of Computer Science Women of West Georgia and participated in ACM and UPE Honor Society, gaining early leadership experience while supporting peer learning and technical community development.",
     "tags.lvl0": ["Experience", "Mindset"],
-    "tags.lvl1": [
-      "Mindset > Systems Thinking"
-    ],
+    "tags.lvl1": ["Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -445,10 +358,7 @@
     "blurb": "System correctness was evaluated through formal models.",
     "fact": "I contributed to research in privacy-aware access control systems by helping design and implement a bitwise permission model used to identify gaps and inconsistencies in external security policies.",
     "tags.lvl0": ["Experience", "Discipline", "Approach"],
-    "tags.lvl1": [
-      "Discipline > Engineering",
-      "Approach > Experimentation"
-    ],
+    "tags.lvl1": ["Discipline > Engineering", "Approach > Experimentation"],
     "projects": [],
     "category": "Experience",
     "signal": 4
@@ -459,11 +369,7 @@
     "blurb": "AI usage was framed through governance and real-world delivery.",
     "fact": "I completed Google Cloud’s Generative AI Leader certification in 2025, focusing on guiding real teams and projects in applying generative AI responsibly, with emphasis on governance, risk, and measurable outcomes.",
     "tags.lvl0": ["Experience", "AI", "Discipline", "Principle"],
-    "tags.lvl1": [
-      "AI > Gemini",
-      "Discipline > Engineering",
-      "Principle > Restraint"
-    ],
+    "tags.lvl1": ["AI > Gemini", "Discipline > Engineering", "Principle > Restraint"],
     "projects": [],
     "category": "Experience",
     "signal": 4
@@ -474,10 +380,7 @@
     "blurb": "AI-assisted coding was treated as an engineering skill.",
     "fact": "In 2025, I earned the GitHub Copilot Certification to validate hands-on experience with prompt design, IDE integration, and responsible use of AI-assisted coding tools in production-oriented workflows.",
     "tags.lvl0": ["Experience", "AI", "Discipline"],
-    "tags.lvl1": [
-      "AI > GitHub Copilot",
-      "Discipline > Engineering"
-    ],
+    "tags.lvl1": ["AI > GitHub Copilot", "Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
     "signal": 3
@@ -2591,5 +2494,4 @@
     "category": "Decisions",
     "signal": 5
   }
-
 ]

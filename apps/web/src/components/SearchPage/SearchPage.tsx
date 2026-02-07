@@ -38,6 +38,9 @@ const insightsConfig = {
 
 declare global {
   interface Window {
+    SiteSearchAskAI?: {
+      init: (config: unknown) => void;
+    };
     SiteSearch?: {
       init: (config: unknown) => void;
     };
@@ -59,17 +62,17 @@ function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string) {
 
     const loadWidget = () => {
       // Load CSS
-      if (!document.querySelector('link[href*="search.min.css"]')) {
+      if (!document.querySelector('link[href*="search-askai.min.css"]')) {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = 'https://unpkg.com/@algolia/sitesearch@1.0.11/dist/search.min.css';
+        link.href = 'https://unpkg.com/@algolia/sitesearch@latest/dist/search-askai.min.css';
         document.head.appendChild(link);
       }
 
       // Load JS
-      if (!document.querySelector('script[src*="search.min.js"]')) {
+      if (!document.querySelector('script[src*="search-askai.min.js"]')) {
         const script = document.createElement('script');
-        script.src = 'https://unpkg.com/@algolia/sitesearch@1.0.11/dist/search.min.js';
+        script.src = 'https://unpkg.com/@algolia/sitesearch@latest/dist/search-askai.min.js';
         script.async = true;
         script.onload = initWidget;
         document.body.appendChild(script);
@@ -79,11 +82,11 @@ function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string) {
     };
 
     const initWidget = () => {
-      // Check for available globals - SiteSearch is the standard for @algolia/sitesearch
+      // Check for available globals
       const candidates = [
+        'SiteSearchAskAI',
         'SiteSearch',
         'sitesearch',
-        'SiteSearchWithAI',
         'AlgoliaSiteSearch',
       ] as const;
       const globalName = candidates.find((c) => window[c]);
@@ -98,7 +101,7 @@ function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string) {
           attributes: {
             primaryText: 'title',
             secondaryText: 'blurb',
-            image: 'undefined',
+            image: undefined,
           },
         });
       }

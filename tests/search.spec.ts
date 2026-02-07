@@ -13,19 +13,25 @@ test.describe('Search Page Integration', () => {
     await page.goto('/search'); // Use relative path as baseURL is usually configured or passed via CI env
 
     try {
-      const searchInput = page.getByPlaceholder('Search facts and system notes...');
+      // Check for the SiteSearch container instead of specific input placeholder
+      // as the widget renders dynamically
+      const siteSearch = page.locator('#sitesearch');
       const unavailable = page.getByText(/Search is currently unavailable/);
 
-      await expect(searchInput.or(unavailable)).toBeVisible({ timeout: 15000 });
+      await expect(siteSearch.or(unavailable)).toBeVisible({ timeout: 15000 });
+
+      // Also verify we have results (hybrid mode)
+      const results = page.locator('section[aria-label="Search results"]');
+      await expect(results).toBeVisible();
     } catch (e) {
-      console.log('Search box not found. Page content:');
+      console.log('Search container not found. Page content:');
       console.log(await page.content());
       throw e;
     }
 
-    const searchInput = page.getByPlaceholder('Search facts and system notes...');
-    if (await searchInput.isVisible()) {
-      await expect(searchInput).toBeVisible();
+    const siteSearch = page.locator('#sitesearch');
+    if (await siteSearch.isVisible()) {
+      await expect(siteSearch).toBeVisible();
     }
   });
 
