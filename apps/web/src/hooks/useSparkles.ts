@@ -137,7 +137,7 @@ export const useSparkles = ({
       if (!app || !app.renderer || !containerRef.current || !isMounted) return;
 
       try {
-        // If restricted to text area (like in AboutHero)
+        // If restricted to text area (like in Hero with image)
         if (sparkleNearText && textRef?.current) {
           const textRect = textRef.current.getBoundingClientRect();
           const isInText =

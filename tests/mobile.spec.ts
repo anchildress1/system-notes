@@ -24,7 +24,7 @@ test.describe('Mobile Responsiveness', () => {
   }) => {
     // if (!isMobile) test.skip();
 
-    await page.goto('/');
+    await page.goto('/projects');
     const grid = page.locator('section').locator('.grid'); // Assuming class name from module css, but locally scoped?
     // Note: CSS modules make class names hashed. We should use data-testid or text content for better reliability,
     // or just check visual stability.
@@ -35,7 +35,7 @@ test.describe('Mobile Responsiveness', () => {
   });
 
   test('should open expanded view on click', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/projects');
     // Click the first project card
     // Click the first project card
     const card = page.getByTestId(/^project-card-/).first();

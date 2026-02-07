@@ -113,7 +113,7 @@ export default function SearchPage() {
               </div>
 
               <div className={styles.refinementGroup}>
-                <h3 className={styles.refinementTitle}>Projects</h3>
+                <h3 className={styles.refinementTitle}>Builds</h3>
                 <RefinementList
                   attribute="projects"
                   classNames={{

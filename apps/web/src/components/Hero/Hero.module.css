@@ -1,0 +1,52 @@
+.hero {
+    composes: hero from "@/styles/SharedHero.module.css";
+}
+
+.titleContainer {
+    position: relative;
+    z-index: 10;
+}
+
+.interactiveContainer {
+    composes: interactiveContainer from "@/styles/SharedHero.module.css";
+}
+
+.title {
+    composes: title from "@/styles/SharedHero.module.css";
+}
+
+.subtitle {
+    composes: subtitle from "@/styles/SharedHero.module.css";
+}
+
+.imageContainer {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 4rem;
+    z-index: 5;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.imageContainer:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 50px rgba(var(--color-accent-purple), 0.2);
+    border-color: hsl(var(--color-accent-purple) / 0.3);
+}
+
+.image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .imageContainer {
+        margin-top: 3rem;
+        max-width: 100%;
+    }
+}

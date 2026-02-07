@@ -17,28 +17,37 @@ test.describe('Primary Navigation Flows', () => {
       `,
     });
   });
-  test('should navigate from Home to About and back', async ({ page }) => {
-    // Start at Home
+  test('should navigate from Home to Human and back', async ({ page }) => {
+    // Start at Home (Choices)
     await page.goto('/');
     await expect(page).toHaveURL('/');
-    await expect(page.locator('h1').first()).toContainText('Not here to play nice');
+    await expect(page.locator('h1').first()).toContainText('Decisions on record');
 
-    // Navigate to About
-    await page.getByRole('link', { name: 'About' }).click({ force: true });
+    // Navigate to Human
+    await page.getByRole('link', { name: 'Human' }).click({ force: true });
     await expect(page).toHaveURL('/about');
 
-    // Verify About Page Content
-    // Update to match actual content
-    // Use loose text check to verify content loading
+    // Verify Human Page Content
     await expect(page.locator('body')).toContainText('Ashley Childress', { timeout: 10000 });
-
-    // Also check for something unique to the bio
     await expect(page.locator('body')).toContainText('Appalachia');
 
     // Navigate back to Home
-    await page.getByRole('link', { name: 'Projects' }).first().click({ force: true });
+    await page.getByRole('link', { name: 'Choices' }).first().click({ force: true });
     await expect(page).toHaveURL('/');
+    await expect(page.locator('h1').first()).toContainText('Decisions on record');
+  });
+
+  test('should navigate to Builds and back', async ({ page }) => {
+    await page.goto('/');
+
+    // Navigate to Builds
+    await page.getByRole('link', { name: 'Builds' }).click({ force: true });
+    await expect(page).toHaveURL('/projects');
     await expect(page.locator('h1').first()).toContainText('Not here to play nice');
+
+    // Navigate back to Home
+    await page.getByRole('link', { name: 'Choices' }).click({ force: true });
+    await expect(page).toHaveURL('/');
   });
 
   test('should navigate to external links correctly', async ({ page }) => {

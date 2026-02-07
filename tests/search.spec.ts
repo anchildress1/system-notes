@@ -84,19 +84,19 @@ test.describe('Search Page Integration', () => {
   });
 
   test('loads search page with correct title', async ({ page }) => {
-    await page.goto('/search');
-    await expect(page).toHaveTitle(/Fact Index/);
+    await page.goto('/');
+    await expect(page).toHaveTitle(/Choices/);
     // H1 check removed as it's no longer present
   });
 
   test('renders search box', async ({ page }) => {
-    await page.goto('/search');
+    await page.goto('/');
     const searchBox = page.getByRole('searchbox', { name: 'Search' });
     await expect(searchBox).toBeVisible();
   });
 
   test('renders fact cards with results', async ({ page }) => {
-    await page.goto('/search');
+    await page.goto('/');
     await expect(page.getByRole('button', { name: /Test Fact Title/ }).first()).toBeVisible({
       timeout: 10000,
     });
@@ -106,21 +106,21 @@ test.describe('Search Page Integration', () => {
   });
 
   test('renders filter sidebar with facets', async ({ page }) => {
-    await page.goto('/search');
+    await page.goto('/');
     await expect(page.getByRole('heading', { level: 2, name: 'Filter' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 3, name: 'Category' })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 3, name: 'Projects' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 3, name: 'Builds' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 3, name: 'Tags' })).toBeVisible();
   });
 
-  test('navigates to search from header', async ({ page }) => {
-    await page.goto('/');
-    await page.getByRole('link', { name: 'Fact Index' }).click({ force: true });
-    await expect(page).toHaveURL('/search');
+  test('navigates to Choices from header', async ({ page }) => {
+    await page.goto('/projects');
+    await page.getByRole('link', { name: 'Choices' }).click({ force: true });
+    await expect(page).toHaveURL('/');
   });
 
   test('displays category labels on cards', async ({ page }) => {
-    await page.goto('/search');
+    await page.goto('/');
     await expect(page.getByRole('button', { name: /Test Fact Title/ }).first()).toBeVisible({
       timeout: 10000,
     });
@@ -128,7 +128,7 @@ test.describe('Search Page Integration', () => {
   });
 
   test('displays tags on fact cards', async ({ page }) => {
-    await page.goto('/search');
+    await page.goto('/');
     const firstCard = page.getByRole('button', { name: /Test Fact Title/ }).first();
     await expect(firstCard).toBeVisible({ timeout: 10000 });
 
@@ -141,7 +141,7 @@ test.describe('Search Page Integration', () => {
   });
 
   test('displays project labels on cards', async ({ page }) => {
-    await page.goto('/search');
+    await page.goto('/');
     const firstCard = page.getByRole('button', { name: /Test Fact Title/ }).first();
     await expect(firstCard).toBeVisible({ timeout: 10000 });
 
@@ -152,7 +152,7 @@ test.describe('Search Page Integration', () => {
   });
 
   test('search page passes accessibility checks', async ({ page }) => {
-    await page.goto('/search');
+    await page.goto('/');
     await expect(page.getByRole('button', { name: /Test Fact Title/ }).first()).toBeVisible({
       timeout: 10000,
     });

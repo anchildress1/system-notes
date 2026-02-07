@@ -27,7 +27,6 @@ export default defineConfig({
         '**/app/**',
         'src/components/AIChat/AIChat.tsx',
         'src/components/GlitterBomb/GlitterBomb.tsx',
-        'src/components/Hero/Hero.tsx',
         'src/components/ProjectModal/ProjectModal.tsx',
         'src/context/ChatContext.tsx',
         'src/hooks/useSparkles.ts',

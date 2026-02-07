@@ -1,0 +1,28 @@
+.main {
+    min-height: 100vh;
+    /* padding-top: 120px; Removed to let Hero handle spacing */
+    /* Offset for fixed header is now in Hero padding */
+    padding-bottom: var(--space-xl);
+    position: relative;
+    z-index: 1;
+}
+
+
+
+.introSection {
+    padding: 0 var(--space-lg);
+    margin-bottom: var(--space-lg);
+    max-width: 800px;
+}
+
+.introText {
+    font-size: 1.5rem;
+    color: hsl(var(--color-text-secondary));
+    font-weight: 300;
+    line-height: 1.4;
+}
+
+.highlight {
+    color: hsl(var(--color-text-primary));
+    font-weight: 500;
+}

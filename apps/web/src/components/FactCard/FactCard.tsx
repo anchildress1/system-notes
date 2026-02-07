@@ -126,7 +126,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
             <div className={styles.metaSection}>
               {hit.projects && hit.projects.length > 0 && (
                 <div className={styles.facetGroup}>
-                  <span className={styles.facetLabel}>Projects</span>
+                  <span className={styles.facetLabel}>Builds</span>
                   <div className={styles.entities}>
                     {hit.projects.map((entity) => (
                       <span key={entity} className={styles.entity}>

@@ -65,13 +65,41 @@
 }
 
 .navLink {
+    position: relative;
     font-size: 0.9rem;
     color: hsl(var(--color-text-secondary));
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
 }
 
 .navLink:hover {
     color: hsl(var(--color-text-primary));
+}
+
+.navLink.active {
+    color: hsl(var(--color-text-primary));
+    background: radial-gradient(
+        circle at center,
+        hsl(var(--color-accent-purple) / 0.15) 0%,
+        transparent 70%
+    );
+    box-shadow: 0 0 15px hsl(var(--color-accent-purple) / 0.1);
+}
+
+.navLink.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        hsl(var(--color-accent-purple) / 0.5),
+        transparent
+    );
 }
 
 .skipLink {

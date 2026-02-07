@@ -1,6 +1,5 @@
 .container {
   min-height: 100vh;
-  background: hsl(var(--color-bg-base));
   padding-bottom: var(--space-xl);
 }
 

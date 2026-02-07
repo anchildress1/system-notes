@@ -2,7 +2,7 @@
 
 import Header from '@/components/Header/Header';
 import styles from './page.module.css';
-import AboutHero from '@/components/AboutHero/AboutHero';
+import Hero from '@/components/Hero/Hero';
 import { aboutData } from '@/data/about';
 
 const TextContent = ({ text }: { text: string }) => (
@@ -13,11 +13,13 @@ const TextContent = ({ text }: { text: string }) => (
   </>
 );
 
-export default function About() {
+export default function Human() {
+  const [heroTitle, heroSubtitle] = aboutData.heroTitle.split('\n');
+
   return (
     <main id="main-content">
       <Header />
-      <AboutHero title={aboutData.heroTitle} image={aboutData.heroImage} />
+      <Hero title={heroTitle.trim()} subtitle={heroSubtitle?.trim()} image={aboutData.heroImage} />
       <div className={styles.container}>
         <div className={styles.content}>
           {aboutData.sections.map((section, index) => {

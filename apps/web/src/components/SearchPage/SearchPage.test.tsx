@@ -111,7 +111,7 @@ describe('SearchPage Component', () => {
     render(<SearchPage />);
 
     expect(screen.getByText('Category')).toBeInTheDocument();
-    expect(screen.getByText('Projects')).toBeInTheDocument();
+    expect(screen.getByText('Builds')).toBeInTheDocument();
     expect(screen.getByText('Tags')).toBeInTheDocument();
   });
 
