@@ -143,12 +143,12 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
               </p>
 
               <div className={styles.simpleTags}>
+                <span className={styles.tagCategory}>{categoryLabel}</span>
                 {displayTags.map((t) => (
                   <span key={t} className={styles.tagLevel1}>
                     {t}
                   </span>
                 ))}
-                <span className={styles.tagCategory}>{categoryLabel}</span>
               </div>
             </div>
           </div>
@@ -265,21 +265,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                             {hit.projects.map((entity) => (
                               <span key={entity} className={styles.simpleTag}>
                                 {entity}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {lvl1Tags.length > 0 && (
-                        <div className={styles.facetGroup}>
-                          <span className={styles.intentLabel} style={{ fontSize: '0.65rem' }}>
-                            Tags
-                          </span>
-                          <div className={styles.simpleTags}>
-                            {lvl1Tags.map((tag) => (
-                              <span key={tag} className={styles.simpleTag}>
-                                {tag}
                               </span>
                             ))}
                           </div>
