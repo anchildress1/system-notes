@@ -2,11 +2,10 @@
 
 import { useMemo } from 'react';
 import { recommendClient as createRecommendClient } from '@algolia/recommend';
-import { ALGOLIA_INDEX } from '../config';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
+const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'merged-search';
 
 // Lazy initialize Algolia Recommend client
 let recommendClient: ReturnType<typeof createRecommendClient> | null = null;

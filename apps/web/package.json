@@ -15,17 +15,21 @@
     "test:perf": "npm run build && lhci autorun --config=lighthouserc.mobile.json && lhci autorun --config=lighthouserc.desktop.json"
   },
   "dependencies": {
-    "@algolia/sitesearch": "^1.0.11",
+    "@algolia/recommend": "^5.47.0",
+    "algoliasearch": "^5.47.0",
     "framer-motion": "^12.26.2",
     "instantsearch.css": "^8.9.0",
     "instantsearch.js": "^4.86.1",
-    "lucide-react": "^0.563.0",
     "next": "16.1.5",
     "pixi.js": "^8.15.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-icons": "^5.5.0",
-    "react-markdown": "^10.1.0"
+    "react-instantsearch": "^7.23.1",
+    "react-instantsearch-core": "^7.23.1",
+    "react-instantsearch-nextjs": "^1.0.13",
+    "react-markdown": "^10.1.0",
+    "search-insights": "^2.17.3"
   },
   "optionalDependencies": {
     "@esbuild/linux-x64": "0.27.2",

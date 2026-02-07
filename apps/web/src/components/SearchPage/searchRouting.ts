@@ -89,7 +89,7 @@ export const createSearchRouting = (indexName: string) => ({
         encodeValuesOnly: true,
       });
 
-      return `${location.origin}${location.pathname}${queryString}`;
+      return `${location.pathname}${queryString}`;
     },
     parseURL({ qsModule, location }) {
       const parsedParams = qsModule.parse(location.search.slice(1));

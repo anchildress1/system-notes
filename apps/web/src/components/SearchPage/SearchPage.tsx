@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import aa from 'search-insights';
 import {
@@ -17,10 +18,11 @@ import UnifiedHitCard from './UnifiedHitCard';
 import GroupedTagFilter from './GroupedTagFilter';
 import InfiniteHits from './InfiniteHits';
 import LoadingIndicator from './LoadingIndicator';
+import { createSearchRouting } from './searchRouting';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'system-notes';
+const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'merged-search';
 const suggestionsIndexName =
   process.env.NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME || 'merged_search_query_suggestions';
 
@@ -37,6 +39,8 @@ const insightsConfig = {
 };
 
 export default function SearchPage() {
+  const routing = useMemo(() => createSearchRouting(indexName), []);
+
   if (!searchClient) {
     return (
       <div className={styles.container}>
@@ -51,8 +55,13 @@ export default function SearchPage() {
 
   return (
     <div className={styles.container}>
-      <InstantSearch searchClient={searchClient} indexName={indexName} insights={insightsConfig}>
-        <Configure hitsPerPage={20} />
+      <InstantSearch
+        searchClient={searchClient}
+        indexName={indexName}
+        insights={insightsConfig}
+        routing={routing}
+      >
+        <Configure hitsPerPage={20} attributesToHighlight={['title', 'blurb', 'fact']} />
 
         <header className={styles.searchHeader}>
           <EXPERIMENTAL_Autocomplete
@@ -175,7 +184,7 @@ export default function SearchPage() {
           <aside className={styles.sidebar}>
             <div className={styles.filterSection}>
               <div className={styles.refinementGroup}>
-                <h3 className={styles.refinementTitle}>Category</h3>
+                <h2 className={styles.refinementTitle}>Category</h2>
                 <RefinementList
                   attribute="category"
                   classNames={{
@@ -192,7 +201,7 @@ export default function SearchPage() {
               </div>
 
               <div className={styles.refinementGroup}>
-                <h3 className={styles.refinementTitle}>Builds</h3>
+                <h2 className={styles.refinementTitle}>Builds</h2>
                 <RefinementList
                   attribute="projects"
                   classNames={{
@@ -209,7 +218,7 @@ export default function SearchPage() {
               </div>
 
               <div className={styles.refinementGroup}>
-                <h3 className={styles.refinementTitle}>Tags</h3>
+                <h2 className={styles.refinementTitle}>Tags</h2>
                 <GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />
               </div>
 

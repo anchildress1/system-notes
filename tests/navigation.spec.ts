@@ -16,14 +16,11 @@ test.describe('Primary Navigation Flows', () => {
       `,
     });
   });
-
-  test('should navigate from Home to About and back', async ({ page }) => {
-    // Start at Home
+  test('should navigate from Home to Human and back', async ({ page }) => {
+    // Start at Home (Choices)
     await page.goto('/');
     await expect(page).toHaveURL('/');
-
-    // Header title might not be present if SearchWithAskAI overlays it or if page structure changed
-    await expect(page.locator('h1').first()).toContainText("This portfolio isn't browsed-");
+    await expect(page.locator('h1').first()).toContainText("This portfolio isn't browsed—");
 
     // Navigate to Human
     await page.getByRole('link', { name: 'Human' }).click({ force: true });
@@ -36,10 +33,11 @@ test.describe('Primary Navigation Flows', () => {
     // Navigate back to Home
     await page.getByRole('link', { name: 'Choices' }).first().click({ force: true });
     await expect(page).toHaveURL('/');
+    await expect(page.locator('h1').first()).toContainText("This portfolio isn't browsed—");
   });
 
   test('should navigate to Builds and back', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/');
 
     // Navigate to Builds
     await page.getByRole('link', { name: 'Builds' }).click({ force: true });

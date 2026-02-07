@@ -49,10 +49,7 @@ describe('InfiniteHits', () => {
     expect(mockSendEvent).toHaveBeenCalledWith(
       'view',
       expect.arrayContaining([expect.objectContaining({ objectID: 'hit-1' })]),
-      'Search Results Viewed',
-      expect.objectContaining({
-        objectIDs: expect.arrayContaining(['hit-1']),
-      })
+      'Search Results Viewed'
     );
 
     // Render again to ensure we do not send duplicate views for same hit

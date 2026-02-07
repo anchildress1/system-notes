@@ -113,9 +113,9 @@ describe('SearchPage Component', () => {
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
 
-    expect(screen.getByRole('heading', { level: 3, name: 'Category' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 3, name: 'Builds' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 3, name: 'Tags' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Category' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Builds' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Tags' })).toBeInTheDocument();
   });
 
   it('renders Algolia attribution link', async () => {
