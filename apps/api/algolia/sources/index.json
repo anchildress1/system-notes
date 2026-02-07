@@ -1420,10 +1420,10 @@
     "signal": 4
   },
   {
-    "objectID": "card:system:index:lvl0-only-context-tags",
-    "title": "Context tags may exist at lvl0 without lvl1",
-    "blurb": "Not all dimensions require refinement.",
-    "fact": "Some contextual dimensions, such as DEV Challenge, intentionally use only lvl0 tags when further subdivision would add no meaningful signal.",
+    "objectID": "card:system:index:context-tags-standalone",
+    "title": "Some context tags are intentionally not subdivided",
+    "blurb": "Extra structure is avoided when it adds no clarity.",
+    "fact": "I intentionally kept some context tags broad and unsubdivided when further refinement would not improve understanding or filtering, favoring clarity and signal over unnecessary structure.",
     "tags.lvl0": ["Principle", "DEV Challenge"],
     "tags.lvl1": ["Principle > Restraint"],
     "projects": ["System Notes"],

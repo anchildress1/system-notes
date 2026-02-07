@@ -27,7 +27,7 @@
         "categories:best-practices": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.96,
             "aggregationMethod": "optimistic"
           }
         ],

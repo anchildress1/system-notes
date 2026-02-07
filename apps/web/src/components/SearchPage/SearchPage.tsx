@@ -4,22 +4,23 @@ import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import aa from 'search-insights';
 import {
   InstantSearch,
-  SearchBox,
-  Hits,
   RefinementList,
-  HierarchicalMenu,
-  Pagination,
   Stats,
   ClearRefinements,
   Configure,
+  EXPERIMENTAL_Autocomplete,
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
 import styles from './SearchPage.module.css';
 import UnifiedHitCard from './UnifiedHitCard';
+import GroupedTagFilter from './GroupedTagFilter';
+import InfiniteHits from './InfiniteHits';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'merged-search';
+const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'system-notes';
+const suggestionsIndexName =
+  process.env.NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME || 'merged_search_query_suggestions';
 
 const hasCredentials = appId && searchKey;
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
@@ -53,16 +54,78 @@ export default function SearchPage() {
 
         <header className={styles.searchHeader}>
           <div className={styles.searchRow}>
-            <SearchBox
+            <EXPERIMENTAL_Autocomplete
               placeholder="Search facts..."
               classNames={{
-                root: styles.searchBoxRoot,
-                form: styles.searchBoxForm,
-                input: styles.searchBoxInput,
-                submit: styles.searchBoxSubmit,
-                reset: styles.searchBoxReset,
-                submitIcon: styles.searchBoxIcon,
-                resetIcon: styles.searchBoxIcon,
+                root: styles.autocompleteRoot,
+              }}
+              searchParameters={{
+                hitsPerPage: 6,
+              }}
+              indices={[
+                {
+                  indexName,
+                  headerComponent: ({ items }) => (
+                    <div className={styles.autocompleteHeader} hidden={!items.length}>
+                      <span className={styles.autocompleteHeaderTitle}>Results</span>
+                      <span className={styles.autocompleteHeaderLine} />
+                    </div>
+                  ),
+                  itemComponent: ({ item, onSelect }) => {
+                    const typedItem = item as {
+                      title?: string;
+                      name?: string;
+                      query?: string;
+                      blurb?: string;
+                    };
+
+                    return (
+                      <button
+                        type="button"
+                        className={styles.autocompleteResultButton}
+                        onClick={onSelect}
+                      >
+                        <span className={styles.autocompleteResultTitle}>
+                          {typedItem.title || typedItem.name || typedItem.query}
+                        </span>
+                        {typedItem.blurb ? (
+                          <span className={styles.autocompleteResultSubtitle}>
+                            {typedItem.blurb}
+                          </span>
+                        ) : null}
+                      </button>
+                    );
+                  },
+                },
+              ]}
+              showSuggestions={{
+                indexName: suggestionsIndexName,
+                headerComponent: ({ items }) => (
+                  <div className={styles.autocompleteHeader} hidden={!items.length}>
+                    <span className={styles.autocompleteHeaderTitle}>Suggestions</span>
+                    <span className={styles.autocompleteHeaderLine} />
+                  </div>
+                ),
+                itemComponent: ({ item, onSelect }) => {
+                  const typedItem = item as { query?: string };
+
+                  return (
+                    <button
+                      type="button"
+                      className={styles.autocompleteSuggestionButton}
+                      onClick={onSelect}
+                    >
+                      {typedItem.query}
+                    </button>
+                  );
+                },
+              }}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onSelect={(params: any) => {
+                const { query, setQuery } = params;
+                if (setQuery) {
+                  setQuery(query);
+                }
               }}
             />
           </div>
@@ -94,6 +157,7 @@ export default function SearchPage() {
         <div className={styles.layout}>
           <aside className={styles.sidebar}>
             <div className={styles.filterSection}>
+              <h2 className={styles.filterHeading}>Filter</h2>
               <div className={styles.refinementGroup}>
                 <h3 className={styles.refinementTitle}>Category</h3>
                 <RefinementList
@@ -130,22 +194,7 @@ export default function SearchPage() {
 
               <div className={styles.refinementGroup}>
                 <h3 className={styles.refinementTitle}>Tags</h3>
-                <HierarchicalMenu
-                  attributes={['tags.lvl0', 'tags.lvl1']}
-                  limit={10}
-                  showMore
-                  showMoreLimit={30}
-                  classNames={{
-                    root: styles.refinementRoot,
-                    list: styles.refinementList,
-                    item: styles.refinementItem,
-                    selectedItem: styles.refinementItemSelected,
-                    label: styles.refinementLabel,
-                    link: styles.refinementLink,
-                    count: styles.refinementCount,
-                    showMore: styles.showMoreButton,
-                  }}
-                />
+                <GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />
               </div>
 
               <ClearRefinements
@@ -162,23 +211,13 @@ export default function SearchPage() {
           </aside>
 
           <section className={styles.results} aria-label="Search results">
-            <Hits
-              hitComponent={UnifiedHitCard}
+            <InfiniteHits
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              hitComponent={UnifiedHitCard as any}
               classNames={{
                 root: styles.hitsRoot,
                 list: styles.hitsList,
                 item: styles.hitsItem,
-              }}
-            />
-
-            <Pagination
-              classNames={{
-                root: styles.paginationRoot,
-                list: styles.paginationList,
-                item: styles.paginationItem,
-                selectedItem: styles.paginationItemSelected,
-                disabledItem: styles.paginationItemDisabled,
-                link: styles.paginationLink,
               }}
             />
           </section>

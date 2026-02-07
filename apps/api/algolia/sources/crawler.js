@@ -49,15 +49,15 @@ new Crawler({
               return !!t;
             })
             .map(function (t) {
-              return t.charAt(0) === '#' ? t : '#' + t;
+              return 'DEV Blog > #' + t;
             });
         }
 
         var engagementRaw = $('meta[name="devto:engagement_score"]').attr('content');
         var engagementScore = engagementRaw ? Number(engagementRaw) : 0;
-        const normalize = (score) => Math.min(5, (5 * score) / 50);
+        const normalize = (score) => Math.min(5, (5 * score) / 40);
 
-        if (!isFinite(engagementScore)) engagementScore = 0;
+        if (!isFinite(engagementScore)) engagementScore = 1;
 
         var content = $('main article').first().text();
         content = content ? String(content).replace(/\s+/g, ' ').trim() : '';

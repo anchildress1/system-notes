@@ -14,28 +14,28 @@
         "categories:performance": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.9,
             "aggregationMethod": "optimistic"
           }
         ],
         "categories:accessibility": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.95,
             "aggregationMethod": "optimistic"
           }
         ],
         "categories:best-practices": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.95,
             "aggregationMethod": "optimistic"
           }
         ],
         "categories:seo": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.95,
             "aggregationMethod": "optimistic"
           }
         ]

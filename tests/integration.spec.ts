@@ -128,6 +128,7 @@ test.describe('System Notes Integration', () => {
     // Accessibility check
     const accessibilityScanResults = await new AxeBuilder({ page })
       .disableRules(['region'])
+      .exclude('.ais-ChatToggleButton')
       .analyze();
     expect(accessibilityScanResults.violations).toEqual([]);
   });

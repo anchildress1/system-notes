@@ -91,7 +91,7 @@ test.describe('Search Page Integration', () => {
 
   test('renders search box', async ({ page }) => {
     await page.goto('/');
-    const searchBox = page.getByRole('searchbox', { name: 'Search' });
+    const searchBox = page.getByPlaceholder('Search facts...');
     await expect(searchBox).toBeVisible();
   });
 

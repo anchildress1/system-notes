@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
 import type { Hit, BaseHit } from 'instantsearch.js';
@@ -43,12 +43,11 @@ describe('FactCard Component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders fact card with all fields', () => {
+  it('renders fact card with front-side fields', () => {
     render(<FactCard hit={createMockHit()} />);
 
     expect(screen.getByTestId('highlight-title')).toHaveTextContent('Test Fact Title');
     expect(screen.getByTestId('highlight-blurb')).toHaveTextContent('This is a test blurb.');
-    expect(screen.getByText(/This is the detailed fact content/)).toBeInTheDocument();
     expect(screen.getByText('Work Style')).toBeInTheDocument();
   });
 
@@ -61,8 +60,15 @@ describe('FactCard Component', () => {
     const manyTags = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
     render(<FactCard hit={createMockHit({ tags: manyTags })} />);
 
+    // Open the card to see tags
+    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
+    fireEvent.click(expandButton);
+
+    const detailsRegion = screen.getByRole('region', { name: /details/i });
+    const { getByText } = within(detailsRegion);
+
     manyTags.forEach((tag) => {
-      expect(screen.getByText(tag)).toBeInTheDocument();
+      expect(getByText(tag)).toBeInTheDocument();
     });
   });
 
@@ -70,22 +76,34 @@ describe('FactCard Component', () => {
     const manyProjects = ['A', 'B', 'C', 'D', 'E'];
     render(<FactCard hit={createMockHit({ projects: manyProjects })} />);
 
+    // Open the card to see projects
+    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
+    fireEvent.click(expandButton);
+
+    const detailsRegion = screen.getByRole('region', { name: /details/i });
+    const { getByText } = within(detailsRegion);
+
     manyProjects.forEach((project) => {
-      expect(screen.getByText(project)).toBeInTheDocument();
+      expect(getByText(project)).toBeInTheDocument();
     });
   });
 
   it('renders without tags when empty', () => {
     const { container } = render(<FactCard hit={createMockHit({ tags: [] })} />);
 
-    const tagsSection = container.querySelector('[class*="tags"]');
-    expect(tagsSection).not.toBeInTheDocument();
+    const tags = container.querySelectorAll('.simpleTag');
+    expect(tags.length).toBe(0);
   });
 
   it('renders without projects when empty', () => {
-    const { container } = render(<FactCard hit={createMockHit({ projects: [] })} />);
+    render(<FactCard hit={createMockHit({ projects: [] })} />);
 
-    const entitiesSection = container.querySelector('[class*="entities"]');
+    // In the new implementation (front face), projects are merged into tags.
+
+    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
+    fireEvent.click(expandButton);
+
+    const entitiesSection = screen.queryByText('Builds');
     expect(entitiesSection).not.toBeInTheDocument();
   });
 
@@ -95,7 +113,7 @@ describe('FactCard Component', () => {
     const card = screen.getByRole('button', { name: /Press to expand/i });
     expect(card).toBeInTheDocument();
     expect(card).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.getByRole('heading', { level: 3, name: 'Test Fact Title' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Test Fact Title' })).toBeInTheDocument();
   });
 
   it('supports keyboard navigation with Enter', () => {
@@ -125,12 +143,8 @@ describe('FactCard Component', () => {
     fireEvent.click(card);
     expect(card).toHaveAttribute('aria-expanded', 'true');
 
-    // Fire escape on the container div which has the listener
-    // The container is the parent of the cardInner which contains the button
-    const container = card.parentElement?.parentElement;
-    if (!container) throw new Error('Container not found');
-
-    fireEvent.keyDown(container, { key: 'Escape' });
+    // Fire escape globally
+    fireEvent.keyDown(window, { key: 'Escape' });
 
     expect(card).toHaveAttribute('aria-expanded', 'false');
   });
