@@ -22,49 +22,6 @@ INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_INDEX_NAME:-system-notes}"
 MERGED_INDEX="${ALGOLIA_MERGED_INDEX:-merged-search}"
 CRAWLER_INDEX="${ALGOLIA_CRAWLER_INDEX:-crawly_posts}"
 
-NORMALIZE_JQ_COMMON='
-  def ensure_array($value):
-    if $value == null then []
-    elif ($value | type) == "array" then $value
-    else [$value]
-    end;
-
-  def normalize_common:
-    . as $in
-    | {
-        objectID: ($in.objectID // error("Missing objectID")),
-        title: ($in.title // ""),
-        blurb: ($in.blurb // ""),
-        fact: ($in.fact // ""),
-        "tags.lvl0": (ensure_array($in["tags.lvl0"])),
-        "tags.lvl1": (ensure_array($in["tags.lvl1"])),
-        projects: (ensure_array($in.projects)),
-        category: ($in.category // ""),
-        signal: ($in.signal // 0)
-      }
-    | . as $record
-    | ($record["tags.lvl0"]) as $lvl0
-    | ($record["tags.lvl1"]) as $lvl1
-    | if ($lvl0 | length) == 1
-      then .["tags.lvl1"] = ($lvl1 | map(
-        if (type == "string" and (contains(" > ") | not))
-        then ($lvl0[0] + " > " + (sub("^#"; "")))
-        else .
-        end
-      ))
-      else .
-      end;
-
-  def normalize_no_url: normalize_common;
-  def normalize_with_url: . as $in | normalize_common | . + {url: ($in.url // "")};
-  def normalize_with_url_empty_blurb: . as $in | normalize_common | . + {url: ($in.url // "")} | .blurb = "";
-'
-
-# Filters:
-NORMALIZE_JQ_SYS="${NORMALIZE_JQ_COMMON}; {requests: [.[] | {action: \"updateObject\", body: (normalize_no_url)}]}"
-NORMALIZE_JQ_MERGED="${NORMALIZE_JQ_COMMON}; {requests: [.[] | {action: \"updateObject\", body: (normalize_with_url)}]}"
-NORMALIZE_JQ_MERGED_FROM_HITS="${NORMALIZE_JQ_COMMON}; {requests: [.[] | {action: \"updateObject\", body: (normalize_with_url_empty_blurb)}]}"
-
 echo "📤 Uploading ${INDEX_NAME} index data..."
 if [ -f "apps/api/algolia/sources/index.json" ]; then
   INDEX_JSON_PATH="$(pwd)/apps/api/algolia/sources/index.json"

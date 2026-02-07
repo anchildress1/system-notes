@@ -27,12 +27,11 @@ new Crawler({
         var publishedAt = $('meta[name="article:published_time"]').attr('content');
         publishedAt = publishedAt ? String(publishedAt).trim() : null;
 
-        var modifiedAt = $('meta[name="article:modified_time"]').attr('content');
-        modifiedAt = modifiedAt ? String(modifiedAt).trim() : null;
-
         var canonical =
           $('link[rel="canonical"]').attr('href') || $('meta[name="canonical"]').attr('content');
         canonical = canonical ? String(canonical).trim() : null;
+
+        var finalUrl = canonical || urlStr;
 
         var image = $('meta[property="og:image"]').attr('content');
         image = image ? String(image).trim() : null;
@@ -55,36 +54,38 @@ new Crawler({
 
         var engagementRaw = $('meta[name="devto:engagement_score"]').attr('content');
         var engagementScore = engagementRaw ? Number(engagementRaw) : 0;
-        const normalize = (score) => Math.min(5, (5 * score) / 40);
 
-        if (!isFinite(engagementScore)) engagementScore = 1;
+        var signal = 0;
+        if (isFinite(engagementScore)) {
+          signal = Math.min(5, (5 * engagementScore) / 40);
+        }
+
+        if (signal < 1) {
+          signal = 2;
+        }
 
         var content = $('main article').first().text();
         content = content ? String(content).replace(/\s+/g, ' ').trim() : '';
+        var blurb = content.substring(0, 1000);
+        if (content.length > 1000) {
+          blurb += '...';
+        }
 
         return [
           {
-            objectID: urlStr,
+            objectID: finalUrl,
             title: title,
-            url: urlStr,
-            blurb: '',
+            url: finalUrl,
+            blurb: blurb,
             fact: description,
             'tags.lvl0': ['DEV Blog'],
             'tags.lvl1': tags,
             projects: [],
             category: 'Writing',
-            signal: normalize(engagementScore),
+            signal: signal,
+            publishedAt: publishedAt,
           },
         ];
-      },
-    },
-    {
-      indexName: 'crawly_pages',
-      pathsToMatch: ['https://crawly.checkmarkdevtools.dev/**'],
-      recordExtractor: function ({ url, $, helpers, contentLength, fileType }) {
-        var urlStr = typeof url === 'string' ? url : String(url);
-        if (urlStr.indexOf('/posts/') !== -1) return [];
-        return helpers.page({ $, url, contentLength, fileType });
       },
     },
   ],
@@ -92,8 +93,13 @@ new Crawler({
     crawly_posts: {
       distinct: true,
       attributeForDistinct: 'objectIDs',
-      searchableAttributes: ['unordered(title)', 'unordered(fact)', 'tags.lvl1'],
-      customRanking: ['desc(engagementScore)', 'desc(publishedAt)'],
+      searchableAttributes: [
+        'unordered(title)',
+        'unordered(fact)',
+        'unordered(blurb)',
+        'tags.lvl1',
+      ],
+      customRanking: ['desc(signal)', 'desc(publishedAt)'],
       attributesForFaceting: ['type', 'tags'],
     },
   },
