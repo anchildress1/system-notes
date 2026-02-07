@@ -225,10 +225,10 @@
   transform: translate(-50%, -50%) !important;
   z-index: 5000;
   background: hsl(var(--color-bg-surface));
-  border-color: hsl(var(--color-accent-pink) / 0.4);
+  border-color: hsl(var(--color-accent-purple) / 0.4);
   box-shadow:
     0 25px 50px -12px rgba(0, 0, 0, 0.8),
-    0 0 0 1px hsl(var(--color-accent-pink) / 0.2);
+    0 0 0 1px hsl(var(--color-accent-purple) / 0.2);
   cursor: default;
   display: flex !important;
   flex-direction: column;
