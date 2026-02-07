@@ -25,10 +25,12 @@ require_env() {
 require_env "NEXT_PUBLIC_ALGOLIA_APPLICATION_ID"
 require_env "NEXT_PUBLIC_BASE_URL"
 require_env "ALGOLIA_ADMIN_API_KEY"
+require_env "ALGOLIA_CRAWLER_API_KEY"
 
 # Configuration
 CRAWLER_API_URL="https://crawler.algolia.com/api/1/crawlers"
 CRAWLER_ID="${ALGOLIA_CRAWLER_ID:-}"
+CRAWLER_API_KEY="${ALGOLIA_CRAWLER_API_KEY:-}"
 
 echo "=================================================="
 echo "ALGOLIA CRAWLER DEPLOYMENT"
@@ -86,12 +88,12 @@ if [ -n "$CRAWLER_ID" ]; then
     RESPONSE=$(curl -s -w "\n%{http_code}" -X PUT \
         "${CRAWLER_API_URL}/${CRAWLER_ID}" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer ${ALGOLIA_ADMIN_API_KEY}" \
+        -H "Authorization: Bearer ${CRAWLER_API_KEY}" \
         --data "$CRAWLER_CONFIG")
-    
+
     HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
     BODY=$(echo "$RESPONSE" | sed '$d')
-    
+
     if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 201 ]; then
         echo "✅ Crawler configuration updated successfully"
     else
@@ -106,10 +108,10 @@ else
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${ALGOLIA_ADMIN_API_KEY}" \
         --data "$CRAWLER_CONFIG")
-    
+
     HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
     BODY=$(echo "$RESPONSE" | sed '$d')
-    
+
     if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 201 ]; then
         CRAWLER_ID=$(echo "$BODY" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
         echo "✅ Crawler created successfully"

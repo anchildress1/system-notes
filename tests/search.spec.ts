@@ -35,6 +35,45 @@ test.describe('Search Page Integration', () => {
     }
   });
 
+  test('navigating to URL with factId expands the card and scrolls into view', async ({ page }) => {
+    // Navigate directly to search with a factId parameter
+    // Using a known objectID from the test data
+    await page.goto('/search?factId=card%3Aalgolia%3Aindex%3Abest-practices-alignment');
+
+    // Wait for the card to be rendered
+    const cardLink = page
+      .locator('[href*="factId=card%3Aalgolia%3Aindex%3Abest-practices-alignment"]')
+      .first();
+    await expect(cardLink).toBeVisible({ timeout: 5000 });
+
+    // Verify the card is highlighted (data-highlighted attribute)
+    const article = cardLink.locator('article');
+    await expect(article).toBeVisible();
+
+    // Check that the card expanded state is visible (the modal/dialog)
+    // The FactCard component uses role="dialog" when expanded
+    const expandedView = page.locator('article[role="dialog"]');
+    await expect(expandedView).toBeVisible({ timeout: 3000 });
+  });
+
+  test('factId from external link applies fallback search if card not in results', async ({
+    page,
+  }) => {
+    // Navigate to search with a factId that might not be in default results
+    await page.goto('/search?factId=card%3Atest%3Anonexistent');
+
+    // The hook should apply a fallback search after 3 seconds
+    // Wait for the search query to be updated
+    await page.waitForTimeout(3500);
+
+    // Check if URL was updated with query parameter
+    const url = new URL(page.url());
+    const query = url.searchParams.get('query');
+
+    // The fallback should set the query to the factId
+    expect(query).toBeTruthy();
+  });
+
   /*
   test('search page passes basic accessibility', async ({ page }) => {
     page.on('console', (msg) => console.log(`PAGE LOG [${msg.type()}]:`, msg.text()));

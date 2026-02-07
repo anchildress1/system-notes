@@ -2493,5 +2493,65 @@
     "projects": ["System Notes"],
     "category": "Decisions",
     "signal": 5
+  },
+  {
+    "objectID": "card:decision:algolia-crawler-minimal-scope",
+    "title": "The crawler was intentionally scoped to demonstrate core functionality",
+    "blurb": "The goal was signal clarity, not completeness.",
+    "fact": "I intentionally kept the crawler minimal to clearly demonstrate feature functionality rather than present a fully exhaustive solution, with the understanding that additional time would allow for deeper refinements and expanded coverage.",
+    "tags.lvl0": ["Approach", "Principle", "AI"],
+    "tags.lvl1": ["Approach > Experimentation", "Principle > Restraint", "AI > Algolia"],
+    "projects": [],
+    "category": "Decisions",
+    "signal": 4
+  },
+  {
+    "objectID": "card:decision:index:no-supabase-json-managed",
+    "title": "Supabase was deferred in favor of direct index management",
+    "blurb": "Iteration speed outweighed persistence needs initially.",
+    "fact": "I intentionally deferred using Supabase to store index records and instead managed them iteratively as JSON uploaded through the Algolia API. While this approach was sufficient for the current scope, a persistent store like Supabase would become necessary at larger scale.",
+    "tags.lvl0": ["Approach", "Principle", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Iterative",
+      "Principle > Restraint",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Decisions",
+    "signal": 4
+  },
+  {
+    "objectID": "card:project:challenge:algolia-agent-studio-2026-02",
+    "title": "Algolia Agent Studio Challenge participation",
+    "blurb": "An applied exploration of conversational retrieval.",
+    "fact": "I participated in the Algolia Agent Studio DEV Challenge during February 2026, focusing on conversational and non-conversational search behavior using indexed content.",
+    "tags.lvl0": ["DEV Challenge", "Approach"],
+    "tags.lvl1": ["DEV Challenge > Algolia Agent Studio", "Approach > Experimentation"],
+    "projects": ["System Notes"],
+    "category": "Projects",
+    "signal": 5
+  },
+  {
+    "objectID": "card:project:challenge:new-year-new-you-2026-01",
+    "title": "New Year, New You Portfolio Challenge entry",
+    "blurb": "A portfolio-focused systems build.",
+    "fact": "I submitted an entry to the New Year, New You Portfolio DEV Challenge in January 2026, using it as an opportunity to design and present a systems-first engineering portfolio.",
+    "tags.lvl0": ["DEV Challenge", "Mindset"],
+    "tags.lvl1": ["DEV Challenge > New Year, New You Portfolio", "Mindset > Systems Thinking"],
+    "projects": ["System Notes"],
+    "category": "Projects",
+    "signal": 4
+  },
+  {
+    "objectID": "card:project:challenge:unstoppable-workflow-2025-08",
+    "title": "Unstoppable Workflow Challenge submission",
+    "blurb": "A time-boxed workflow experiment.",
+    "fact": "I submitted a project to the Unstoppable Workflow DEV Challenge in August 2025, treating it as a constrained experiment in workflow design and execution.",
+    "tags.lvl0": ["DEV Challenge", "Approach"],
+    "tags.lvl1": ["DEV Challenge > Unstoppable Workflow", "Approach > Iterative"],
+    "projects": ["System Notes"],
+    "category": "Projects",
+    "signal": 4
   }
 ]
