@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Highlight } from 'react-instantsearch';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { Hit, BaseHit } from 'instantsearch.js';
 import type { SendEventForHits } from '@/types/algolia';
 import styles from './FactCard.module.css';
@@ -28,12 +29,35 @@ interface FactCardProps {
 }
 
 export default function FactCard({ hit, sendEvent }: FactCardProps) {
-  const [isFlipped, setIsFlipped] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const hasTrackedFlip = useRef(false);
   const categoryLabel = hit.category || 'System';
 
+  const isFlipped = searchParams.get('factId') === hit.objectID;
+
+  const openCard = useCallback(() => {
+    if (!hasTrackedFlip.current && sendEvent) {
+      hasTrackedFlip.current = true;
+      sendEvent('click', hit, 'Fact Card Viewed', {
+        objectIDs: [hit.objectID],
+      });
+    }
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('factId', hit.objectID);
+    router.push(`?${params.toString()}`, { scroll: false });
+  }, [sendEvent, hit, searchParams, router]);
+
+  const closeCard = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('factId');
+    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+    router.push(newUrl, { scroll: false });
+  }, [searchParams, router]);
+
   useEffect(() => {
+    // Portal target must be set after mount when document.body is available
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPortalTarget(document.body);
   }, []);
@@ -42,7 +66,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     const handleWindowKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isFlipped) {
         e.preventDefault();
-        setIsFlipped(false);
+        closeCard();
       }
     };
 
@@ -50,111 +74,128 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
       window.addEventListener('keydown', handleWindowKeyDown);
     }
     return () => window.removeEventListener('keydown', handleWindowKeyDown);
-  }, [isFlipped]);
+  }, [isFlipped, closeCard]);
 
-  const handleFlip = useCallback(() => {
-    if (!isFlipped && !hasTrackedFlip.current && sendEvent) {
-      hasTrackedFlip.current = true;
-      sendEvent('click', hit, 'Fact Card Viewed', {
-        objectIDs: [hit.objectID],
-      });
-    }
-    setIsFlipped((prev) => !prev);
-  }, [isFlipped, sendEvent, hit]);
+  const handleCardClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (isFlipped) {
+        closeCard();
+      } else {
+        openCard();
+      }
+    },
+    [isFlipped, openCard, closeCard]
+  );
 
-  // Access hierarchical tags using bracket notation
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (isFlipped) {
+          closeCard();
+        } else {
+          openCard();
+        }
+      }
+    },
+    [isFlipped, openCard, closeCard]
+  );
+
   const lvl1Tags = hit['tags.lvl1'] || [];
-  const displayTags = lvl1Tags.slice(0, 1); // Show only the first lvl1 tag
+  const displayTags = lvl1Tags.slice(0, 1);
+  const cardUrl = `/search?factId=${hit.objectID}`;
 
   return (
     <>
-      {/* Front Face - Always rendered in list, but hidden when flipped using layoutId */}
-      <motion.div
-        layoutId={`card-${hit.objectID}`}
-        className={`${styles.card} ${isFlipped ? styles.flippedVisible : ''}`}
-        onClick={handleFlip}
-        data-state={isFlipped ? 'expanded' : 'collapsed'}
-        role="button"
-        tabIndex={0}
+      <a
+        href={cardUrl}
+        onClick={handleCardClick}
+        onKeyDown={handleKeyDown}
+        className={styles.cardLink}
         aria-expanded={isFlipped}
         aria-label={`${hit.title}. Press to expand.`}
-        style={{ opacity: isFlipped ? 0 : 1 }}
       >
-        <div className={styles.cardInner}>
-          <div className={styles.cardFront}>
-            <div className={styles.content}>
-              <div className={styles.header}>
-                <div className={styles.headerTop}>
-                  {/* Removed ownerBadge (Category) from here */}
-
-                  {hit.url && (
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      className={styles.ghLink}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(hit.url, '_blank', 'noopener,noreferrer');
-                      }}
-                      onKeyDown={(e) => {
-                        e.stopPropagation();
-                        if (e.key === 'Enter' || e.key === ' ') {
+        <motion.article
+          layoutId={`card-${hit.objectID}`}
+          className={`${styles.card} ${isFlipped ? styles.flippedVisible : ''}`}
+          data-state={isFlipped ? 'expanded' : 'collapsed'}
+          style={{ opacity: isFlipped ? 0 : 1 }}
+        >
+          <div className={styles.cardInner}>
+            <div className={styles.cardFront}>
+              <div className={styles.content}>
+                <div className={styles.header}>
+                  <div className={styles.headerTop}>
+                    {hit.url && (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        className={styles.ghLink}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           window.open(hit.url, '_blank', 'noopener,noreferrer');
-                        }
-                      }}
-                      aria-label={`View source for ${hit.title}`}
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
+                        }}
+                        onKeyDown={(e) => {
+                          e.stopPropagation();
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            window.open(hit.url, '_blank', 'noopener,noreferrer');
+                          }
+                        }}
+                        aria-label={`View source for ${hit.title}`}
                       >
-                        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                        <path d="M9 18c-4.51 2-5-2-7-2" />
-                      </svg>
-                    </div>
-                  )}
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                          <path d="M9 18c-4.51 2-5-2-7-2" />
+                        </svg>
+                      </span>
+                    )}
+                  </div>
+                  <h2 className={styles.title}>
+                    <Highlight attribute="title" hit={hit} />
+                  </h2>
                 </div>
-                <h2 className={styles.title}>
-                  <Highlight attribute="title" hit={hit} />
-                </h2>
-              </div>
 
-              <p className={styles.description}>
-                {hit.blurb ? (
-                  <Highlight attribute="blurb" hit={hit} />
-                ) : (
-                  (hit.content || hit.fact || '').substring(0, 100) + '...'
-                )}
-              </p>
+                <p className={styles.description}>
+                  {hit.blurb ? (
+                    <Highlight attribute="blurb" hit={hit} />
+                  ) : (
+                    (hit.content || hit.fact || '').substring(0, 100) + '...'
+                  )}
+                </p>
 
-              <div className={styles.simpleTags}>
-                <span className={styles.tagCategory}>{categoryLabel}</span>
-                {displayTags.map((t) => (
-                  <span key={t} className={styles.tagLevel1}>
-                    {t}
-                  </span>
-                ))}
+                <div className={styles.simpleTags}>
+                  <span className={styles.tagCategory}>{categoryLabel}</span>
+                  {displayTags.map((t) => (
+                    <span key={t} className={styles.tagLevel1}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.article>
+      </a>
 
-      {/* Expanded / Flipped View */}
       <AnimatePresence mode="wait">
         {isFlipped && portalTarget && (
           <>
             {createPortal(
               <motion.div
                 className={styles.backdrop}
-                onClick={() => setIsFlipped(false)}
+                onClick={closeCard}
                 aria-hidden="true"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -163,7 +204,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
               portalTarget
             )}
             {createPortal(
-              <motion.div
+              <motion.article
                 layoutId={`card-${hit.objectID}`}
                 className={`${styles.card} ${styles.flipped}`}
                 role="dialog"
@@ -190,7 +231,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                       className={styles.closeButton}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setIsFlipped(false);
+                        closeCard();
                       }}
                       aria-label="Close expanded view"
                       tabIndex={0}
@@ -211,8 +252,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
 
                     <div className={styles.backHeader}>
                       <div className={styles.headerTop}>
-                        {/* Removed Category Label */}
-
                         <div className={styles.headerControls}>
                           {hit.url && (
                             <a
@@ -265,7 +304,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                     </div>
                   </div>
                 </div>
-              </motion.div>,
+              </motion.article>,
               portalTarget
             )}
           </>

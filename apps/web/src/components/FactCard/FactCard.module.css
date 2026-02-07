@@ -1,5 +1,12 @@
 /* Merged from ProjectCard.module.css + FactCard flip logic */
 
+.cardLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
 .card {
   position: relative;
   background: rgba(30, 31, 36, 0.7);

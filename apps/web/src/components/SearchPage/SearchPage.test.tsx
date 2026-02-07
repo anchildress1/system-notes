@@ -10,14 +10,14 @@ vi.mock('./SearchPage.module.css', () => ({
     container: 'container',
     errorState: 'errorState',
     errorMessage: 'errorMessage',
-    siteSearchWidget: 'siteSearchWidget',
+    searchSection: 'searchSection',
     searchBoxRoot: 'searchBoxRoot',
     searchBoxForm: 'searchBoxForm',
     searchBoxInput: 'searchBoxInput',
     searchBoxSubmit: 'searchBoxSubmit',
     searchBoxReset: 'searchBoxReset',
-    searchBoxIcon: 'searchBoxIcon',
-    searchHeader: 'searchHeader',
+    searchBoxSubmitIcon: 'searchBoxSubmitIcon',
+    searchBoxResetIcon: 'searchBoxResetIcon',
     metaRow: 'metaRow',
     statsRoot: 'statsRoot',
     algoliaAttribution: 'algoliaAttribution',
@@ -65,14 +65,13 @@ describe('SearchPage Component', () => {
     expect(screen.getByText(/Search is currently unavailable/)).toBeInTheDocument();
   });
 
-  it('renders SiteSearch container when configuration is present', async () => {
+  it('renders search box container when configuration is present', async () => {
     vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'test-app-id');
     vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'test-search-key');
-    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID', 'test-ai-id');
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
 
-    expect(screen.getByTestId('search-container')).toBeInTheDocument();
+    expect(screen.getByTestId('sitesearch')).toBeInTheDocument();
   });
 });

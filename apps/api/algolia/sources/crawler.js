@@ -91,14 +91,24 @@ new Crawler({
     crawly_posts: {
       distinct: true,
       attributeForDistinct: 'objectIDs',
-      searchableAttributes: [
-        'unordered(title)',
-        'unordered(fact)',
-        'unordered(blurb)',
-        'tags.lvl1',
+      searchableAttributes: ['title', 'blurb', 'fact', 'projects', 'tags.lvl0', 'tags.lvl1'],
+      attributesForFaceting: [
+        'category',
+        'searchable(projects)',
+        'searchable(tags.lvl0)',
+        'searchable(tags.lvl1)',
       ],
       customRanking: ['desc(signal)', 'desc(publishedAt)'],
       attributesForFaceting: ['type', 'tags'],
+    },
+    hitsPerPage: 20,
+    typoTolerance: true,
+    renderingContent: {
+      facetOrdering: {
+        facets: {
+          order: ['category', 'tags.lvl0', 'tags.lvl1', 'projects'],
+        },
+      },
     },
   },
 });

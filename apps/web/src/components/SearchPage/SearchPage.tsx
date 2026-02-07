@@ -5,7 +5,6 @@ import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import aa from 'search-insights';
 import {
   InstantSearch,
-  SearchBox,
   RefinementList,
   Stats,
   ClearRefinements,
@@ -19,12 +18,7 @@ import InfiniteHits from './InfiniteHits';
 import LoadingIndicator from './LoadingIndicator';
 import { createSearchRouting } from './searchRouting';
 import { getSearchSessionId } from '@/utils/userToken';
-import { ErrorBoundary } from '../ErrorBoundary';
 import { ALGOLIA_INDEX } from '@/config';
-
-const SITESEARCH_VERSION = '1.0.0';
-const SITESEARCH_CSS = `https://unpkg.com/@algolia/sitesearch@${SITESEARCH_VERSION}/dist/search-ai.min.css`;
-const SITESEARCH_JS = `https://unpkg.com/@algolia/sitesearch@${SITESEARCH_VERSION}/dist/search-ai.min.js`;
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
@@ -42,29 +36,65 @@ const insightsConfig = {
   },
 };
 
-function useSiteSearchWidget() {
+declare global {
+  interface Window {
+    SiteSearch?: {
+      init: (config: unknown) => void;
+    };
+    SiteSearchWithAI?: {
+      init: (config: unknown) => void;
+    };
+    sitesearch?: {
+      init: (config: unknown) => void;
+    };
+    AlgoliaSiteSearch?: {
+      init: (config: unknown) => void;
+    };
+  }
+}
+
+function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string) {
   useEffect(() => {
-    const assistantId = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID;
-    if (!hasCredentials || !assistantId) return;
+    if (typeof window === 'undefined') return;
 
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = SITESEARCH_CSS;
-    document.head.appendChild(link);
+    const loadWidget = () => {
+      // Load CSS
+      if (!document.querySelector('link[href*="search.min.css"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/@algolia/sitesearch@1.0.11/dist/search.min.css';
+        document.head.appendChild(link);
+      }
 
-    const script = document.createElement('script');
-    script.src = SITESEARCH_JS;
-    script.async = true;
-    script.onload = () => {
-      // @ts-expect-error SiteSearchWithAI is injected by external script
-      if (window.SiteSearchWithAI) {
-        // @ts-expect-error SiteSearchWithAI is injected by external script
-        window.SiteSearchWithAI.init({
+      // Load JS
+      if (!document.querySelector('script[src*="search.min.js"]')) {
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/@algolia/sitesearch@1.0.11/dist/search.min.js';
+        script.async = true;
+        script.onload = initWidget;
+        document.body.appendChild(script);
+      } else {
+        initWidget();
+      }
+    };
+
+    const initWidget = () => {
+      // Check for available globals - SiteSearch is the standard for @algolia/sitesearch
+      const candidates = [
+        'SiteSearch',
+        'sitesearch',
+        'SiteSearchWithAI',
+        'AlgoliaSiteSearch',
+      ] as const;
+      const globalName = candidates.find((c) => window[c]);
+
+      if (globalName && window[globalName]) {
+        window[globalName]?.init({
           container: '#sitesearch',
           applicationId: appId,
-          apiKey: searchKey,
-          indexName,
-          assistantId,
+          apiKey: apiKey,
+          indexName: indexName,
+          assistantId: 'XcsWYxeCArfQ',
           attributes: {
             primaryText: 'title',
             secondaryText: 'blurb',
@@ -73,56 +103,16 @@ function useSiteSearchWidget() {
         });
       }
     };
-    document.body.appendChild(script);
 
-    return () => {
-      if (link.parentNode) link.parentNode.removeChild(link);
-      if (script.parentNode) script.parentNode.removeChild(script);
-    };
-  }, []);
-}
-
-function useAccessibilityFixes() {
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-
-    const fixAccessibility = () => {
-      const input = document.querySelector('.aa-Input');
-      if (input && !input.getAttribute('aria-label')) {
-        input.setAttribute('aria-label', 'Search facts and system notes');
-      }
-
-      const clearBtn = document.querySelector('.aa-ClearButton');
-      if (clearBtn && !clearBtn.getAttribute('aria-label')) {
-        clearBtn.setAttribute('aria-label', 'Clear search query');
-      }
-
-      const submitBtn = document.querySelector('.aa-SubmitButton');
-      if (submitBtn && !submitBtn.getAttribute('aria-label')) {
-        submitBtn.setAttribute('aria-label', 'Submit search');
-      }
-
-      const panel = document.querySelector('.aa-Panel');
-      if (panel) {
-        if (!panel.getAttribute('role')) panel.setAttribute('role', 'listbox');
-        if (!panel.getAttribute('aria-label'))
-          panel.setAttribute('aria-label', 'Search predictions');
-      }
-    };
-
-    fixAccessibility();
-    const observer = new MutationObserver(fixAccessibility);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => observer.disconnect();
-  }, []);
+    loadWidget();
+  }, [appId, apiKey, indexName]);
 }
 
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
-  const isEnabled = hasCredentials && process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID;
+  const isEnabled = hasCredentials;
 
-  useSiteSearchWidget();
-  useAccessibilityFixes();
+  useSiteSearchWithAI(appId, searchKey, indexName);
 
   if (!isEnabled || !searchClient) {
     return (
@@ -138,10 +128,6 @@ export default function SearchPage() {
 
   return (
     <div className={styles.container}>
-      <ErrorBoundary fallback={null}>
-        <div id="sitesearch" data-testid="search-container" className={styles.siteSearchWidget} />
-      </ErrorBoundary>
-
       <InstantSearch
         searchClient={searchClient}
         indexName={indexName}
@@ -156,28 +142,15 @@ export default function SearchPage() {
           userToken={getSearchSessionId()}
         />
 
-        <SearchBox
-          classNames={{
-            root: styles.searchBoxRoot,
-            form: styles.searchBoxForm,
-            input: styles.searchBoxInput,
-            submit: styles.searchBoxSubmit,
-            reset: styles.searchBoxReset,
-            submitIcon: styles.searchBoxIcon,
-            resetIcon: styles.searchBoxIcon,
-          }}
-          placeholder="Search facts and system notes..."
-        />
+        <div className={styles.searchSection}>
+          <div id="sitesearch" className={styles.siteSearchContainer} data-testid="sitesearch" />
 
-        <header className={styles.searchHeader}>
           <div className={styles.metaRow}>
             <Stats
-              classNames={{
-                root: styles.statsRoot,
-              }}
+              classNames={{ root: styles.statsRoot }}
               translations={{
                 rootElementText({ nbHits, processingTimeMS }) {
-                  return `${nbHits.toLocaleString()} results found in ${processingTimeMS / 1000}s`;
+                  return `${nbHits.toLocaleString()} results in ${processingTimeMS}ms`;
                 },
               }}
             />
@@ -192,7 +165,7 @@ export default function SearchPage() {
               <span className={styles.algoliaText}>Powered by Algolia</span>
             </a>
           </div>
-        </header>
+        </div>
 
         <div className={styles.layout}>
           <aside className={styles.sidebar}>

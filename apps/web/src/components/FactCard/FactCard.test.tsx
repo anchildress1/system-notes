@@ -1,8 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
 import type { Hit, BaseHit } from 'instantsearch.js';
+
+const mockPush = vi.fn();
+const mockSearchParams = new URLSearchParams();
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+  useSearchParams: () => mockSearchParams,
+}));
 
 const mockSendEvent = vi.fn();
 
@@ -42,6 +52,7 @@ const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecor
 describe('FactCard Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockSearchParams.delete('factId');
   });
 
   it('renders fact card with front-side fields', () => {
@@ -62,20 +73,15 @@ describe('FactCard Component', () => {
     expect(screen.getByText('Fallback content...')).toBeInTheDocument();
   });
 
-  it('renders all projects without limit', () => {
+  it('renders all projects when expanded', async () => {
+    const user = userEvent.setup();
     const manyProjects = ['A', 'B', 'C', 'D', 'E'];
     render(<FactCard hit={createMockHit({ projects: manyProjects })} />);
 
-    // Open the card to see projects
-    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
-    fireEvent.click(expandButton);
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
 
-    const detailsRegion = screen.getByRole('region', { name: /details/i });
-    const { getByText } = within(detailsRegion);
-
-    manyProjects.forEach((project) => {
-      expect(getByText(project)).toBeInTheDocument();
-    });
+    expect(mockPush).toHaveBeenCalledWith('?factId=card%3Atest%3Atest%3A0001', { scroll: false });
   });
 
   it('renders without tags when empty', () => {
@@ -85,80 +91,46 @@ describe('FactCard Component', () => {
     expect(tags.length).toBe(0);
   });
 
-  it('renders without projects when empty', () => {
+  it('renders without projects when empty', async () => {
+    const user = userEvent.setup();
     render(<FactCard hit={createMockHit({ projects: [] })} />);
 
-    // In the new implementation (front face), projects are merged into tags.
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
 
-    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
-    fireEvent.click(expandButton);
-
-    const entitiesSection = screen.queryByText('Builds');
-    expect(entitiesSection).not.toBeInTheDocument();
+    expect(mockPush).toHaveBeenCalled();
   });
 
   it('has correct structure for accessibility', () => {
     render(<FactCard hit={createMockHit()} />);
 
-    const card = screen.getByRole('button', { name: /Press to expand/i });
+    const card = screen.getByRole('link', { name: /Press to expand/i });
     expect(card).toBeInTheDocument();
     expect(card).toHaveAttribute('aria-expanded', 'false');
+    expect(card).toHaveAttribute('href', '/search?factId=card:test:test:0001');
     expect(screen.getByRole('heading', { level: 2, name: 'Test Fact Title' })).toBeInTheDocument();
   });
 
-  it('supports keyboard navigation with Enter', () => {
+  it('supports keyboard navigation with Enter', async () => {
+    const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} />);
 
-    const card = screen.getByRole('button', { name: /Press to expand/i });
-    expect(card).toHaveAttribute('aria-expanded', 'false');
+    const card = screen.getByRole('link', { name: /Press to expand/i });
+    card.focus();
+    await user.keyboard('{Enter}');
 
-    // Simulate activation
-    fireEvent.click(card);
-    expect(card).toHaveAttribute('aria-expanded', 'true');
+    expect(mockPush).toHaveBeenCalled();
   });
 
-  it('supports keyboard navigation with Space', () => {
+  it('supports keyboard navigation with Space', async () => {
+    const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} />);
 
-    const card = screen.getByRole('button', { name: /Press to expand/i });
-    // Simulate activation
-    fireEvent.click(card);
-    expect(card).toHaveAttribute('aria-expanded', 'true');
-  });
+    const card = screen.getByRole('link', { name: /Press to expand/i });
+    card.focus();
+    await user.keyboard(' ');
 
-  it('supports Escape to close when expanded', () => {
-    render(<FactCard hit={createMockHit()} />);
-
-    const card = screen.getByRole('button', { name: /Press to expand/i });
-    fireEvent.click(card);
-    expect(card).toHaveAttribute('aria-expanded', 'true');
-
-    // Fire escape globally
-    fireEvent.keyDown(window, { key: 'Escape' });
-
-    expect(card).toHaveAttribute('aria-expanded', 'false');
-  });
-
-  it('has close button when expanded', () => {
-    render(<FactCard hit={createMockHit()} />);
-
-    const card = screen.getByRole('button', { name: /Test Fact Title/i });
-    fireEvent.click(card);
-
-    const closeButton = screen.getByRole('button', { name: /Close expanded view/i });
-    expect(closeButton).toBeInTheDocument();
-  });
-
-  it('close button closes the card', () => {
-    render(<FactCard hit={createMockHit()} />);
-
-    const card = screen.getByRole('button', { name: /Test Fact Title/i });
-    fireEvent.click(card);
-    expect(card).toHaveAttribute('aria-expanded', 'true');
-
-    const closeButton = screen.getByRole('button', { name: /Close expanded view/i });
-    fireEvent.click(closeButton);
-    expect(card).toHaveAttribute('aria-expanded', 'false');
+    expect(mockPush).toHaveBeenCalled();
   });
 
   it('tracks expansion event with insights client', async () => {
@@ -166,8 +138,8 @@ describe('FactCard Component', () => {
     const hit = createMockHit();
     render(<FactCard hit={hit} sendEvent={mockSendEvent} />);
 
-    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
-    await user.click(expandButton);
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
 
     expect(mockSendEvent).toHaveBeenCalledWith('click', hit, 'Fact Card Viewed', {
       objectIDs: [hit.objectID],
@@ -178,21 +150,10 @@ describe('FactCard Component', () => {
     const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} sendEvent={mockSendEvent} />);
 
-    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
 
-    // Open
-    await user.click(expandButton);
-
-    // Close (using close button found after expand)
-    const closeButton = screen.getByRole('button', { name: /Close expanded view/i });
-    await user.click(closeButton);
-
-    // Open again
-    // Note: the expand button might be hidden/re-shown or just aria-expanded toggled?
-    // In FactCard.tsx: <button ... hidden={isFlipped}>
-    // So when closed, it is visible again.
-    const expandButtonAgain = screen.getByRole('button', { name: /Press to expand/i });
-    await user.click(expandButtonAgain);
+    await user.click(cardLink);
+    await user.click(cardLink);
 
     expect(mockSendEvent).toHaveBeenCalledTimes(1);
   });
@@ -201,8 +162,8 @@ describe('FactCard Component', () => {
     const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} />);
 
-    const expandButton = screen.getByRole('button', { name: /Press to expand/i });
-    await user.click(expandButton);
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
 
     expect(mockSendEvent).not.toHaveBeenCalled();
   });
