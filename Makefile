@@ -84,25 +84,21 @@ secret-scan:
 test-e2e:
 	@echo "🎭 Running Playwright E2E tests..."
 	@lsof -ti:3002 | xargs kill -9 2>/dev/null || true
-	@cd apps/web && mv .env.local .env.local.bak 2>/dev/null || true
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=test_app_id" > .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key" >> .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id" >> .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes" >> .env.local
+	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=test_app_id \
+	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key \
+	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
+	NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes \
 	npm run build
-	@cd apps/web && rm .env.local && mv .env.local.bak .env.local 2>/dev/null || true
 	CI=true npm exec playwright test
 
 # Run Performance tests
 test-perf:
 	@echo "🚀 Running Performance tests..."
-	@cd apps/web && mv .env.local .env.local.bak 2>/dev/null || true
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=test_app_id" > .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key" >> .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id" >> .env.local
-	@cd apps/web && echo "NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes" >> .env.local
+	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=test_app_id \
+	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key \
+	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
+	NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes \
 	npm run test:perf -w apps/web
-	@cd apps/web && rm .env.local && mv .env.local.bak .env.local 2>/dev/null || true
 
 # Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
 ai-checks: secret-scan
