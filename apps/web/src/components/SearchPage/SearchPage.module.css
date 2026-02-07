@@ -384,15 +384,75 @@
 }
 
 /* Modal Accents - Purple Overrides */
+/* Algolia Logo Text - Gray default, Purple hover */
+:global(.ss-footer a) {
+  color: #b9bbc4 !important; /* Text Secondary */
+  transition: color 0.2s ease !important;
+}
+
+:global(.ss-footer a:hover) {
+  color: #b56bff !important; /* Purple on hover */
+}
+
+/* Algolia Logo Icon */
+:global(.ss-footer svg path) {
+  fill: #b9bbc4 !important; /* Text Secondary */
+  transition: fill 0.2s ease !important;
+}
+
+:global(.ss-footer a:hover svg path) {
+  fill: #b56bff !important; /* Purple on hover */
+}
+
+/* Navigation Keys - Teal */
+:global(.ss-footer kbd),
+:global(.ss-footer .ss-key) {
+  color: #3ec7c2 !important; /* Teal */
+  border-color: rgba(62, 199, 194, 0.3) !important;
+  background: rgba(62, 199, 194, 0.1) !important;
+}
+
+/* Clear/Reset Button - Outline only */
+:global(.ss-searchbox-reset),
+:global(.ss-reset-btn) {
+  background: transparent !important;
+  border: 1px solid rgba(181, 107, 255, 0.5) !important;
+  color: #b56bff !important; /* Purple text */
+  box-shadow: none !important;
+}
+
+:global(.ss-searchbox-reset:hover),
+:global(.ss-reset-btn:hover) {
+  border-color: #b56bff !important;
+  background: rgba(181, 107, 255, 0.1) !important;
+}
+
+/* Search Results Items */
+:global(.ss-infinite-hits-item) {
+  background: rgba(58, 61, 70, 0.4) !important; /* Transparent/Glassy */
+  border-color: rgba(185, 187, 196, 0.1) !important;
+}
+
+:global(.ss-infinite-hits-item:hover) {
+  background: rgba(58, 61, 70, 0.6) !important;
+  border-color: #b56bff !important; /* Purple hover border */
+  box-shadow: 0 4px 12px rgba(181, 107, 255, 0.15) !important;
+}
+
+/* Result Highlights - Purple */
+:global(.ss-infinite-hits-item mark),
+:global(.ss-highlight) {
+  color: #b56bff !important;
+  background: transparent !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+  text-decoration-color: rgba(181, 107, 255, 0.4) !important;
+}
+
 /* Search Input Focus */
 :global(.ss-searchbox-form:focus-within) {
   border-color: #b56bff !important;
   box-shadow: 0 0 0 3px rgba(181, 107, 255, 0.2) !important;
-}
-
-/* Algolia Logo in Modal Footer */
-:global(.ss-footer svg path) {
-  fill: #b56bff !important;
 }
 
 /* Search Icon in Modal Input */
@@ -404,3 +464,4 @@
 :global(*:focus-visible) {
   outline-color: #b56bff !important;
 }
+
