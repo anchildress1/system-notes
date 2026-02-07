@@ -7,6 +7,7 @@ import {
   SearchBox,
   Hits,
   RefinementList,
+  HierarchicalMenu,
   Pagination,
   Stats,
   ClearRefinements,
@@ -93,10 +94,7 @@ export default function SearchPage() {
         <div className={styles.layout}>
           <aside className={styles.sidebar}>
             <div className={styles.filterSection}>
-              <h2 className={styles.filterTitle}>Filter</h2>
-
               <div className={styles.refinementGroup}>
-                <h3 className={styles.refinementTitle}>Category</h3>
                 <RefinementList
                   attribute="category"
                   classNames={{
@@ -113,7 +111,6 @@ export default function SearchPage() {
               </div>
 
               <div className={styles.refinementGroup}>
-                <h3 className={styles.refinementTitle}>Builds</h3>
                 <RefinementList
                   attribute="projects"
                   classNames={{
@@ -130,9 +127,8 @@ export default function SearchPage() {
               </div>
 
               <div className={styles.refinementGroup}>
-                <h3 className={styles.refinementTitle}>Tags</h3>
-                <RefinementList
-                  attribute="tags.lvl0"
+                <HierarchicalMenu
+                  attributes={['tags.lvl0', 'tags.lvl1']}
                   limit={10}
                   showMore
                   showMoreLimit={30}
@@ -142,8 +138,7 @@ export default function SearchPage() {
                     item: styles.refinementItem,
                     selectedItem: styles.refinementItemSelected,
                     label: styles.refinementLabel,
-                    checkbox: styles.refinementCheckbox,
-                    labelText: styles.refinementLabelText,
+                    link: styles.refinementLink,
                     count: styles.refinementCount,
                     showMore: styles.showMoreButton,
                   }}

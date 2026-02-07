@@ -94,6 +94,22 @@ Cards remain structural surfaces. Color indicates state or intent.
 
 ---
 
+## TYPOGRAPHY
+
+### Fonts
+
+- **Primary / Headers**: JetBrains Mono (`var(--font-mono)`)
+  - Used for: Titles, Headings, Hero text.
+  - Style: Bold/ExtraBold for impact.
+- **Secondary / Body**: Inter (`var(--font-sans)`)
+  - Used for: Standard text, descriptions.
+- **Accents**: Courier New (Monospace fallback)
+  - Used for: Subtitles, small technical accents.
+
+**FORBIDDEN**: Ribeye font is not to be used.
+
+---
+
 ## SINGLE DIRECTIVE
 
 Apply color strictly by role:

@@ -166,7 +166,7 @@ button {
 .ais-Chat-toggleButton {
   width: 60px !important;
   height: 60px !important;
-  background-color: hsl(270, 100%, 71%) !important;
+  background-color: hsl(var(--color-accent-purple)) !important;
 }
 
 .ais-Chat-toggleButton svg {

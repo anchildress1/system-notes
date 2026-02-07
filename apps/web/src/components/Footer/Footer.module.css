@@ -52,6 +52,12 @@
     outline-offset: 2px;
 }
 
+.socialLink:hover,
+.socialLink:focus-visible {
+    color: hsl(var(--color-accent-pink));
+    outline-color: hsl(var(--color-accent-pink));
+}
+
 .center {
     flex: 2;
     display: flex;

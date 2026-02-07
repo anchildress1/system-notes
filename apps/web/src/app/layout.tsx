@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, JetBrains_Mono, Ribeye } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
 const inter = Inter({
@@ -10,13 +10,6 @@ const inter = Inter({
 
 const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
-  subsets: ['latin'],
-  display: 'swap',
-});
-
-const ribeye = Ribeye({
-  weight: '400',
-  variable: '--font-ribeye',
   subsets: ['latin'],
   display: 'swap',
 });
@@ -128,7 +121,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${ribeye.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
         suppressHydrationWarning
       >
         <ClientShell>{children}</ClientShell>

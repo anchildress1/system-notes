@@ -13,7 +13,7 @@
 }
 
 .expandedCard {
-    background: hsl(var(--color-bg-base));
+    background: hsl(var(--color-bg-surface));
     width: 100%;
     max-width: 1200px;
     height: 90vh;
@@ -142,7 +142,7 @@
 .metaRow {
     font-family: var(--font-mono);
     font-size: 0.85rem;
-    color: hsl(var(--color-accent-cyan));
+    color: hsl(var(--color-accent-teal));
     text-transform: uppercase;
     letter-spacing: 2px;
 }
@@ -159,11 +159,12 @@
 .statusBadge {
     display: inline-block;
     padding: 6px 12px;
-    background: hsl(var(--color-accent-purple) / 0.1);
-    color: hsl(var(--color-accent-purple));
-    border: 1px solid hsl(var(--color-accent-purple) / 0.3);
+    background: hsl(var(--color-accent-teal));
+    color: hsl(var(--color-bg-base));
+    border: 1px solid hsl(var(--color-accent-teal) / 0.3);
     border-radius: 4px;
     font-size: 0.8rem;
+    font-weight: 700;
     font-family: var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -284,8 +285,9 @@
 }
 
 .repoLink:hover {
+    background: hsl(var(--color-accent-pink) / 0.8);
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 30px hsl(var(--color-accent-pink) / 0.3);
 }
 
 .mainColumn {
