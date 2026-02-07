@@ -101,41 +101,41 @@ else
 fi
 
 echo "⚙️  Uploading settings to ${INDEX_NAME} and ${MERGED_INDEX}..."
-if [ -f "apps/api/algolia/config/settings.json" ]; then
+if [ -f "apps/api/algolia/sources/settings.json" ]; then
   # Settings for system-notes
   curl --fail-with-body -X PUT "${BASE_URL}/indexes/${INDEX_NAME}/settings" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
     -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
     -H "Content-Type: application/json" \
-    --data @apps/api/algolia/config/settings.json -w "\n" -s
+    --data @apps/api/algolia/sources/settings.json -w "\n" -s
 
   # Settings for merged-search
   curl --fail-with-body -X PUT "${BASE_URL}/indexes/${MERGED_INDEX}/settings" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
     -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
     -H "Content-Type: application/json" \
-    --data @apps/api/algolia/config/settings.json -w "\n" -s
+    --data @apps/api/algolia/sources/settings.json -w "\n" -s
 else
-  echo "Warning: apps/api/algolia/config/settings.json not found"
+  echo "Info: apps/api/algolia/sources/settings.json not found — skipping settings upload.\n  To upload settings, create the file at apps/api/algolia/config/settings.json (Algolia index settings JSON)."
 fi
 
 echo "🔤 Uploading synonyms to ${INDEX_NAME} and ${MERGED_INDEX}..."
-if [ -f "apps/api/algolia/config/synonyms.json" ]; then
+if [ -f "apps/api/algolia/sources/synonyms.json" ]; then
   # Synonyms for system-notes
   curl --fail-with-body -X POST "${BASE_URL}/indexes/${INDEX_NAME}/synonyms/batch?replaceExistingSynonyms=true" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
     -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
     -H "Content-Type: application/json" \
-    --data @apps/api/algolia/config/synonyms.json -w "\n" -s
+    --data @apps/api/algolia/sources/synonyms.json -w "\n" -s
 
   # Synonyms for merged-search
   curl --fail-with-body -X POST "${BASE_URL}/indexes/${MERGED_INDEX}/synonyms/batch?replaceExistingSynonyms=true" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
     -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
     -H "Content-Type: application/json" \
-    --data @apps/api/algolia/config/synonyms.json -w "\n" -s
+    --data @apps/api/algolia/sources/synonyms.json -w "\n" -s
 else
-  echo "Warning: apps/api/algolia/config/synonyms.json not found"
+  echo "Info: apps/api/algolia/sources/synonyms.json not found — skipping synonyms upload.\n  To upload synonyms, create the file at apps/api/algolia/config/synonyms.json (an array of synonym objects)."
 fi
 
 echo "🔗 Merging ${CRAWLER_INDEX} into ${MERGED_INDEX}..."

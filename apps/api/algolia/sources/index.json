@@ -183,7 +183,7 @@
     "blurb": "The most meaningful lessons emerged once the system was live.",
     "fact": "Underfoot taught me the most after it shipped, particularly around constraint, cost control, and the realities introduced by running the system in practice rather than in theory.",
     "tags.lvl0": ["Approach", "Mindset", "AI", "DEV Challenge"],
-    "tags.lvl1": ["Approach > Pragmatism", "Mindset > Systems Thinking", "AI > Verdent"],
+    "tags.lvl1": ["Approach > Pragmatism", "Mindset > Systems Thinking", "AI > Verdent", "DEV Challenge > Unstoppable Workflow"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -279,7 +279,7 @@
     "blurb": "Low-impact polish was deprioritized to protect time.",
     "fact": "I consciously stopped adding UI refinements early after learning from a previous hackathon how easily time can disappear into low-impact polish.",
     "tags.lvl0": ["Discipline", "DEV Challenge"],
-    "tags.lvl1": ["Discipline > Engineering"],
+    "tags.lvl1": ["Discipline > Engineering", "DEV Challenge > New Year, New You Portfolio"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -290,7 +290,7 @@
     "blurb": "Scope was adjusted based on realistic limits.",
     "fact": "Knowing I was starting late, working within a single weekend, and operating outside my primary skill set, I focused on delivering core functionality instead of over-optimizing the interface.",
     "tags.lvl0": ["Approach", "DEV Challenge"],
-    "tags.lvl1": ["Approach > Experimentation"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > New Year, New You Portfolio"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -391,7 +391,7 @@
     "blurb": "A deadline was needed to unblock frontend work.",
     "fact": "System Notes is a portfolio website I had been procrastinating building because I do not do UI work, and it only moved forward once a hackathon imposed an external deadline that forced the decision.",
     "tags.lvl0": ["DEV Challenge", "Discipline"],
-    "tags.lvl1": ["Discipline > Engineering"],
+    "tags.lvl1": ["Discipline > Engineering", "DEV Challenge > New Year, New You Portfolio"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -402,7 +402,7 @@
     "blurb": "Completion mattered more than personal readiness.",
     "fact": "The primary goal was to ship a real site under an external timeline instead of waiting for a subjective sense of readiness to do frontend work.",
     "tags.lvl0": ["Approach", "DEV Challenge"],
-    "tags.lvl1": ["Approach > Experimentation"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > New Year, New You Portfolio"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 3
@@ -424,7 +424,7 @@
     "blurb": "Tooling choices were shaped by external context.",
     "fact": "AI was included in System Notes because the next challenge focus made pairing them worthwhile, even though frontend work itself was never an area of personal interest.",
     "tags.lvl0": ["AI", "DEV Challenge"],
-    "tags.lvl1": ["AI > ChatGPT", "AI > Gemini"],
+    "tags.lvl1": ["AI > ChatGPT", "AI > Gemini", "DEV Challenge > New Year, New You Portfolio"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 2
@@ -589,7 +589,7 @@
     "blurb": "Initial scope and momentum were time-bound.",
     "fact": "Underfoot started as a hackathon project, with early progress shaped by the constraints and tooling available during that event.",
     "tags.lvl0": ["DEV Challenge", "Approach"],
-    "tags.lvl1": ["Approach > Experimentation"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Unstoppable Workflow"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 2
@@ -600,7 +600,7 @@
     "blurb": "Lack of boundaries led to complexity.",
     "fact": "After the hackathon, I continued extending Underfoot past its intended scope, over-designed the system, and learned firsthand why projects require explicit timeboxing and versioning.",
     "tags.lvl0": ["Principle", "DEV Challenge"],
-    "tags.lvl1": ["Principle > Restraint"],
+    "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Unstoppable Workflow"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 3
@@ -622,7 +622,7 @@
     "blurb": "Stability is pending further work.",
     "fact": "Underfoot remains in an experimental state, pending testing and fixes following its rebuild and repurposing.",
     "tags.lvl0": ["Principle", "DEV Challenge"],
-    "tags.lvl1": ["Principle > Restraint"],
+    "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Unstoppable Workflow"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
     "signal": 2
@@ -1304,7 +1304,7 @@
     "blurb": "There was an initial learning curve.",
     "fact": "It took me time to get accustomed to the index because this was my first attempt at building an agent with search-indexing style functionality.",
     "tags.lvl0": ["DEV Challenge", "Approach"],
-    "tags.lvl1": ["Approach > Experimentation"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
@@ -1315,7 +1315,7 @@
     "blurb": "Performance issues made the initial approach unusable.",
     "fact": "The first several attempts were complete failures because the agent took far too long to respond.",
     "tags.lvl0": ["DEV Challenge", "Approach"],
-    "tags.lvl1": ["Approach > Experimentation"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
@@ -1337,18 +1337,7 @@
     "blurb": "The turning point was rewriting the approach.",
     "fact": "When I gave the instructions to ChatGPT and redesigned from the ground up, the output improved significantly.",
     "tags.lvl0": ["DEV Challenge", "AI"],
-    "tags.lvl1": ["AI > ChatGPT"],
-    "projects": ["System Notes"],
-    "category": "Challenges",
-    "signal": 3
-  },
-  {
-    "objectID": "card:challenge:pain_points:ui-and-ai-parallel-work",
-    "title": "UI iteration was the hardest part",
-    "blurb": "Working on chat UI while coordinating AI was difficult.",
-    "fact": "The UI was very difficult to work with while using the chat widget and AI at the same time.",
-    "tags.lvl0": ["DEV Challenge", "Discipline"],
-    "tags.lvl1": ["Discipline > Engineering"],
+    "tags.lvl1": ["AI > ChatGPT", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
@@ -1370,21 +1359,10 @@
     "blurb": "It enabled immediate user-facing value without UI investment.",
     "fact": "Because of a primarily back-end background, the chat widget was intentionally used as a fast path to deliver a fully usable, user-facing feature without first building a dedicated UI.",
     "tags.lvl0": ["Approach", "DEV Challenge", "AI"],
-    "tags.lvl1": ["Approach > Experimentation", "AI > Algolia"],
+    "tags.lvl1": ["Approach > Experimentation", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Decisions",
     "signal": 3
-  },
-  {
-    "objectID": "card:challenge:constraints:beta-widget-rough-edges",
-    "title": "Beta UI tooling is incomplete but usable",
-    "blurb": "The design surface is not fully mature.",
-    "fact": "Although the chat widget was a beta feature with incomplete design and rough edges, it still enabled immediate UI access to System Notes functionality during the DEV challenge.",
-    "tags.lvl0": ["DEV Challenge", "Principle"],
-    "tags.lvl1": ["Principle > Restraint"],
-    "projects": ["System Notes"],
-    "category": "Challenges",
-    "signal": 2
   },
   {
     "objectID": "card:challenge:pain_points:implementation-understanding-cost",
@@ -1392,7 +1370,7 @@
     "blurb": "Getting the system to internalize implementation constraints was costly.",
     "fact": "The primary time cost came from aligning the agent’s understanding of implementation expectations and constraints, which consumed the majority of a half-day during development.",
     "tags.lvl0": ["DEV Challenge", "Approach"],
-    "tags.lvl1": ["Approach > Experimentation"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Challenges",
     "signal": 3
@@ -1415,17 +1393,6 @@
     "fact": "Tags are intentionally limited to two levels (lvl0 and lvl1) to preserve clarity, prevent overfitting, and keep facet behavior predictable across the index.",
     "tags.lvl0": ["Principle", "Discipline"],
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
-    "projects": ["System Notes"],
-    "category": "Work Style",
-    "signal": 4
-  },
-  {
-    "objectID": "card:system:index:context-tags-standalone",
-    "title": "Some context tags are intentionally not subdivided",
-    "blurb": "Extra structure is avoided when it adds no clarity.",
-    "fact": "I intentionally kept some context tags broad and unsubdivided when further refinement would not improve understanding or filtering, favoring clarity and signal over unnecessary structure.",
-    "tags.lvl0": ["Principle", "DEV Challenge"],
-    "tags.lvl1": ["Principle > Restraint"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 4
@@ -1502,7 +1469,7 @@
     "blurb": "Limited time exposed weak assumptions quickly.",
     "fact": "The DEV Algolia Challenge timeline forced rapid iteration and manual testing, surfacing issues like over-searching, hallucinated clarification, and unsafe intent handling that were corrected through targeted prompt edits.",
     "tags.lvl0": ["Approach", "Discipline", "DEV Challenge"],
-    "tags.lvl1": ["Approach > Iterative", "Discipline > Agent Design"],
+    "tags.lvl1": ["Approach > Iterative", "Discipline > Agent Design", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 4
@@ -1557,7 +1524,7 @@
     "blurb": "Correctness is observed, not assumed.",
     "fact": "Agent logic, intent routing, and failure modes were refined through repeated manual testing of real conversational inputs rather than relying solely on theoretical prompt design.",
     "tags.lvl0": ["Discipline", "AI", "DEV Challenge"],
-    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia"],
+    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 4
@@ -1579,7 +1546,7 @@
     "blurb": "Small changes, observed effects.",
     "fact": "Instead of rewriting the agent prompt wholesale, behavior was improved through targeted, incremental edits that were tested against real user interactions to confirm impact.",
     "tags.lvl0": ["Discipline", "AI", "DEV Challenge"],
-    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia"],
+    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Work Style",
     "signal": 4
@@ -1696,14 +1663,102 @@
     "signal": 5
   },
   {
-    "objectID": "card:decision:scope:personalization-deferred",
-    "title": "Personalization was intentionally deferred",
-    "blurb": "Unpredictability was avoided before mastering the basics.",
-    "fact": "I chose not to implement personalization during the challenge because I had not yet mastered the core system behavior. Adding personalization at that stage would have introduced unpredictable outcomes and obscured whether failures came from fundamentals or personalization logic.",
+    "objectID": "card:algolia:docs:readable-and-followed",
+    "title": "Algolia documentation was easy to follow",
+    "blurb": "Clear examples enabled correct usage by both human and AI.",
+    "fact": "I found Algolia’s documentation clear and easy to follow, and both I and the AI were able to read and apply the examples directly to ensure features were implemented as intended.",
+    "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
+    "tags.lvl1": ["Approach > AI Collaboration", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:algolia:ui:widgets-over-custom-ui",
+    "title": "Algolia widgets enabled fast UI development",
+    "blurb": "Reusable components reduced front-end complexity.",
+    "fact": "I relied heavily on Algolia widgets because they were highly reusable and simple enough to work with despite my lack of front-end development experience.",
+    "tags.lvl0": ["Approach", "DEV Challenge"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:decision:algolia:no-personalization",
+    "title": "Personalization was intentionally avoided",
+    "blurb": "Public information did not justify user-specific results.",
+    "fact": "I intentionally avoided personalization and user-specific filtering because the site contains public information and did not require experiences tied to individual users.",
     "tags.lvl0": ["Approach", "Principle", "DEV Challenge"],
-    "tags.lvl1": ["Approach > AI Collaboration", "Principle > Restraint"],
+    "tags.lvl1": ["Approach > AI Collaboration", "Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Decisions",
     "signal": 4
+  },
+  {
+    "objectID": "card:algolia:index:first-experience",
+    "title": "This was my first time designing a search index",
+    "blurb": "Index design required trial and error.",
+    "fact": "This was my first experience working with a search index of this nature, and achieving a performant structure required experimentation and iteration before the overall shape became clear.",
+    "tags.lvl0": ["Approach", "Mindset", "DEV Challenge"],
+    "tags.lvl1": ["Approach > Iterative", "Mindset > Systems Thinking", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 3
+  },
+  {
+    "objectID": "card:algolia:index:best-practices-alignment",
+    "title": "Aligning with Algolia best practices improved results",
+    "blurb": "Correct structure unlocked better behavior.",
+    "fact": "My initial index design violated many documented best practices, and once I aligned the structure with Algolia’s recommendations, retrieval behavior improved and the system became easier to reason about.",
+    "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
+    "tags.lvl1": ["Approach > Experimentation", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5
+  },
+  {
+    "objectID": "card:algolia:retrieval:speed-over-precision",
+    "title": "Retrieval speed was prioritized over precision",
+    "blurb": "Curated content reduced accuracy risk.",
+    "fact": "Because the indexed content was entirely curated or authored by me, I optimized the index for fast retrieval rather than strict precision, prioritizing responsiveness over display-level accuracy.",
+    "tags.lvl0": ["Principle", "DEV Challenge"],
+    "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:algolia:tags:hierarchical-control",
+    "title": "Hierarchical tags enabled fine-grained control",
+    "blurb": "Subtags improved tuning flexibility.",
+    "fact": "Using hierarchical tags gave me finer control over search results and filtering, and the structure could have been extended further with additional time.",
+    "tags.lvl0": ["Approach", "DEV Challenge"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:algolia:agent:custom-blog-tool",
+    "title": "A custom tool prioritized full blog content for the agent",
+    "blurb": "Conversational accuracy required deeper context.",
+    "fact": "I implemented a custom tool for the chat agent that loads full blog content into cache, allowing conversational responses to use complete context instead of relying solely on indexed summaries.",
+    "tags.lvl0": ["Discipline", "AI", "DEV Challenge"],
+    "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5
+  },
+  {
+    "objectID": "card:algolia:chat:suggestions-grounding",
+    "title": "Chat suggestions were difficult to ground",
+    "blurb": "Generated text and structured results were hard to separate.",
+    "fact": "I found it difficult to reliably ground chat suggestions in actual search results because it was hard to distinguish between generated language model output and structured JSON responses, indicating the need for further iteration.",
+    "tags.lvl0": ["Approach", "DEV Challenge"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Challenges",
+    "signal": 3
   }
 ]
