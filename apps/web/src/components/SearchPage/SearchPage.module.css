@@ -329,19 +329,34 @@
 }
 
 /* Global Overrides for Algolia SiteSearch Ask AI Widget */
-/* Search Button - Wide, minimal height */
+/* Theme Variables - override default blue/styles globally */
+:global(:root) {
+  --search-primary-color: #b56bff !important; /* Purple Action */
+  --search-secondary-color: #3ec7c2 !important; /* Teal Navigation */
+  --search-background-color: #3a3d46 !important; /* Surface */
+  --search-neutral-color: #3a3d46 !important; /* Surface */
+  --search-text-color: #e6e6eb !important; /* Text Primary */
+  --search-subtle-text-color: #b9bbc4 !important; /* Text Secondary */
+  --search-border-color: rgba(185, 187, 196, 0.2) !important;
+  --search-hover-color: rgba(181, 107, 255, 0.15) !important;
+  --search-input-font-family: var(--font-sans) !important;
+  --search-border-radius: 12px !important;
+}
+
+/* Search Button - Wide, minimal height with Gradient */
 :global(.sitesearch-button-aa) {
   background: linear-gradient(135deg, rgba(58, 61, 70, 0.7) 0%, rgba(46, 48, 54, 0.8) 100%) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(185, 187, 196, 0.2) !important;
   border-radius: 12px !important;
-  color: #b9bbc4 !important;
+  /* Font & Text handled by vars where possible, but explicit overrides needed for gradient context */
+  color: var(--search-subtle-text-color) !important;
   font-family: var(--font-sans) !important;
   width: 100% !important;
   justify-content: flex-start !important;
-  padding: 12px 20px !important; /* Fixed padding instead of space vars */
-  height: 48px !important; /* Fixed height */
+  padding: 12px 20px !important;
+  height: 48px !important;
   min-height: 48px !important;
   max-height: 48px !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -352,7 +367,7 @@
 :global(.sitesearch-button-aa:hover) {
   background: linear-gradient(135deg, rgba(58, 61, 70, 0.85) 0%, rgba(46, 48, 54, 0.95) 100%) !important;
   border-color: rgba(181, 107, 255, 0.5) !important;
-  color: #e6e6eb !important;
+  color: var(--search-text-color) !important;
   box-shadow: 0 0 0 2px rgba(181, 107, 255, 0.25),
               0 4px 12px rgba(0, 0, 0, 0.18),
               0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
@@ -360,110 +375,106 @@
 }
 
 :global(.sitesearch-button-aa .search-icon) {
-  color: #b56bff !important;
+  color: var(--search-primary-color) !important;
   width: 18px !important;
   height: 18px !important;
   filter: drop-shadow(0 0 6px rgba(181, 107, 255, 0.4)) !important;
 }
 
-:global(.sitesearch-button-aa .button-text) {
-  font-size: 0.95rem !important;
-  font-weight: 500 !important;
-}
-
-/* Shortcut Keys - Make readable */
+/* Shortcut Keys - Make readable in Search Button */
 :global(.sitesearch-button-aa kbd) {
   background: rgba(255, 255, 255, 0.1) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 4px !important;
-  color: #e6e6eb !important; /* Text Primary */
+  color: var(--search-text-color) !important;
   font-family: var(--font-mono) !important;
   font-size: 0.75rem !important;
   padding: 2px 6px !important;
   box-shadow: none !important;
 }
 
-/* Modal Accents - Purple Overrides */
-/* Algolia Logo Text - Gray default, Purple hover */
-:global(.ss-footer-powered-by a),
-:global(.ss-footer-powered-by) {
-  color: #b9bbc4 !important; /* Text Secondary */
-  transition: color 0.2s ease !important;
-}
+/* Modal Specific Fixes */
 
-:global(.ss-footer-powered-by:hover a),
-:global(.ss-footer-powered-by:hover) {
-  color: #b56bff !important; /* Purple on hover */
-}
-
-/* Algolia Logo Icon */
+/* Algolia Logo "i" - Force Purple or Text Color */
+/* The widget uses .cls-1 on the path. We target it broadly within the widget. */
+:global(.ss-footer-powered-by svg .cls-1),
 :global(.ss-footer-powered-by svg path) {
-  fill: #b9bbc4 !important; /* Text Secondary */
+  fill: var(--search-subtle-text-color) !important;
   transition: fill 0.2s ease !important;
 }
 
+:global(.ss-footer-powered-by:hover svg .cls-1),
 :global(.ss-footer-powered-by:hover svg path) {
-  fill: #b56bff !important; /* Purple on hover */
+  fill: var(--search-primary-color) !important;
 }
 
-/* Navigation Keys - Teal */
+/* Navigation Keys - Teal Outline */
 :global(.ss-footer kbd),
 :global(.ss-footer .ss-key) {
-  color: #3ec7c2 !important; /* Teal */
+  color: var(--search-secondary-color) !important;
   border: 1px solid rgba(62, 199, 194, 0.3) !important;
-  background: transparent !important; /* Outline only */
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-/* Clear/Reset Button - Outline only */
+/* Clear/Reset Button - Outline Only, Purple Text */
 :global(.ss-searchbox-reset),
 :global(.ss-reset-btn) {
   background: transparent !important;
   border: 1px solid rgba(181, 107, 255, 0.5) !important;
-  color: #b56bff !important; /* Purple text */
+  color: var(--search-primary-color) !important;
   box-shadow: none !important;
 }
 
 :global(.ss-searchbox-reset:hover),
 :global(.ss-reset-btn:hover) {
-  border-color: #b56bff !important;
+  border-color: var(--search-primary-color) !important;
   background: rgba(181, 107, 255, 0.1) !important;
 }
 
-/* Search Results Items */
-:global(.ss-infinite-hits-item) {
-  background: rgba(58, 61, 70, 0.4) !important; /* Transparent/Glassy */
-  border-color: rgba(185, 187, 196, 0.1) !important;
-}
-
-:global(.ss-infinite-hits-item:hover) {
-  background: rgba(58, 61, 70, 0.6) !important;
-  border-color: #b56bff !important; /* Purple hover border */
-  box-shadow: 0 4px 12px rgba(181, 107, 255, 0.15) !important;
-}
-
-/* Result Highlights - Purple */
-:global(.ss-infinite-hits-item mark),
+/* Highlight Colors - Purple */
+:global(mark),
 :global(.ss-highlight) {
-  color: #b56bff !important;
+  color: var(--search-primary-color) !important;
   background: transparent !important;
-  font-weight: 700 !important;
-  text-decoration: underline !important;
   text-decoration-color: rgba(181, 107, 255, 0.4) !important;
 }
 
-/* Search Input Focus */
-:global(.ss-searchbox-form:focus-within) {
+/* Card/Hit Item Styling */
+:global(.ss-infinite-hits-item) {
+  border: 1px solid var(--search-border-color) !important;
+  background: rgba(58, 61, 70, 0.4) !important;
+}
+
+:global(.ss-infinite-hits-item:hover) {
+  border-color: var(--search-primary-color) !important;
+  background: rgba(58, 61, 70, 0.6) !important;
+  box-shadow: 0 4px 12px rgba(181, 107, 255, 0.15) !important;
+}
+
+/* Expanded Card / Modal Content */
+/* Ensure link colors (secondary actions) are Teal */
+:global(.ss-link),
+:global(.ss-hit-url),
+:global(a[class*="ss-"]) {
+  color: var(--search-secondary-color) !important;
+}
+
+/* Ask AI Chat Bubbles */
+/* User (Human) = Pink */
+:global(.ss-chat-message--user) {
+  border-color: #f16197 !important;
+}
+:global(.ss-chat-message--user .ss-avatar) {
+  background-color: #f16197 !important;
+}
+
+/* Agent = Purple */
+:global(.ss-chat-message--assistant) {
   border-color: #b56bff !important;
-  box-shadow: 0 0 0 3px rgba(181, 107, 255, 0.2) !important;
+}
+:global(.ss-chat-message--assistant .ss-avatar) {
+  background-color: #b56bff !important;
 }
 
-/* Search Icon in Modal Input */
-:global(.ss-searchbox-form svg path) {
-  fill: #b56bff !important;
-}
-
-/* Focus Outline in Modal */
-:global(*:focus-visible) {
-  outline-color: #b56bff !important;
-}
 

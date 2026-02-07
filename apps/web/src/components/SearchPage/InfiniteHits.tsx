@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useInfiniteHits } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
 import type { SendEventForHits } from '@/types/algolia';
@@ -23,7 +24,17 @@ export default function InfiniteHits({
 }: InfiniteHitsProps) {
   const { hits, isLastPage, showMore, sendEvent } = useInfiniteHits(props);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const trackedViewIds = useRef<Set<string>>(new Set());
+  const searchParams = useSearchParams();
+
+  const nextPageHref = useMemo(() => {
+    const params = new URLSearchParams(searchParams?.toString() || '');
+    const currentPageRaw = params.get('page');
+    const currentPage = currentPageRaw ? Number(currentPageRaw) : 1;
+    const nextPage = Number.isFinite(currentPage) && currentPage > 0 ? currentPage + 1 : 2;
+    params.set('page', String(nextPage));
+    const queryString = params.toString();
+    return queryString ? `?${queryString}` : '?page=2';
+  }, [searchParams]);
 
   useEffect(() => {
     if (sentinelRef.current) {
@@ -43,24 +54,6 @@ export default function InfiniteHits({
     }
   }, [isLastPage, showMore]);
 
-  useEffect(() => {
-    if (!sendEvent || hits.length === 0) return;
-
-    const newHits = hits.filter((hit) => {
-      if (!hit?.objectID || trackedViewIds.current.has(hit.objectID)) {
-        return false;
-      }
-      trackedViewIds.current.add(hit.objectID);
-      return true;
-    });
-
-    if (newHits.length > 0) {
-      sendEvent('view', newHits, 'Search Results Viewed', {
-        objectIDs: newHits.map((h) => h.objectID),
-      });
-    }
-  }, [hits, sendEvent]);
-
   return (
     <div className={classNames.root}>
       <ul className={classNames.list}>
@@ -70,6 +63,11 @@ export default function InfiniteHits({
           </li>
         ))}
       </ul>
+      {!isLastPage && (
+        <a href={nextPageHref} className={classNames.loadMore}>
+          Show more results
+        </a>
+      )}
       <div ref={sentinelRef} aria-hidden="true" style={{ height: '20px', margin: '20px 0' }} />
     </div>
   );
