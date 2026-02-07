@@ -14,9 +14,10 @@
 }
 
 .errorMessage {
-  color: hsl(var(--color-text-muted));
-  font-size: 1.125rem;
-  margin-top: var(--space-md);
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
 }
 
 .searchHeader {
@@ -127,7 +128,8 @@
 }
 
 .searchBoxInput::placeholder {
-  color: #B9BBC4;
+  color: var(--color-text-secondary);
+  opacity: 1;
 }
 
 :global(.ais-Autocomplete .ais-SearchBox-input) {
@@ -141,7 +143,8 @@
 }
 
 :global(.ais-Autocomplete .ais-SearchBox-input::placeholder) {
-  color: #B9BBC4;
+  color: var(--color-text-secondary);
+  opacity: 1;
 }
 
 .searchBoxSubmit {
@@ -230,12 +233,15 @@
   border-radius: 12px;
   padding: var(--space-sm);
   box-shadow: var(--shadow-card);
+  z-index: 1000;
+  position: absolute;
+  width: 100%;
 }
 
 :global(.ais-Autocomplete-panel) {
   margin-top: var(--space-xs);
   background: #3A3D46;
-  border: 1px solid hsl(var(--color-border));
+  border: 1px solid #B9BBC4;
   border-radius: 12px;
   padding: var(--space-sm);
   box-shadow: var(--shadow-card);
@@ -253,6 +259,7 @@
 .autocompleteItem {
   padding: 0;
 }
+
 
 .autocompleteHeader {
   display: flex;
@@ -518,37 +525,72 @@
   margin: 0;
 }
 
+/* Algolia Autocomplete Panel - Dark Theme Override */
 :global(.aa-Panel) {
-  background-color: #3A3D46;
-  border: 1px solid #B9BBC4;
-  border-radius: 12px;
-  box-shadow: var(--shadow-card);
-  z-index: 10000;
+  background-color: #3A3D46 !important;
+  border: 1px solid #B9BBC4 !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-card) !important;
+  z-index: 10000 !important;
+  margin-top: var(--space-xs) !important;
+  padding: var(--space-sm) !important;
+}
+
+:global(.aa-List) {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--space-xs) !important;
+  list-style: none !important;
 }
 
 :global(.aa-Item) {
-  color: #E6E6EB;
-  padding: var(--space-sm);
-  cursor: pointer;
+  color: #E6E6EB !important;
+  padding: var(--space-sm) !important;
+  cursor: pointer !important;
+  background-color: transparent !important;
 }
 
 :global(.aa-Item[aria-selected="true"]) {
-  background-color: rgba(181, 107, 255, 0.1);
-  color: #B56BFF;
+  background-color: rgba(181, 107, 255, 0.1) !important;
+  color: #B56BFF !important;
 }
 
 :global(.aa-ItemIcon) {
-  fill: #B9BBC4;
+  fill: #B9BBC4 !important;
+}
+
+:global(.aa-ItemContent) {
+  color: #E6E6EB !important;
 }
 
 :global(.aa-ItemContentTitle) {
-  color: #E6E6EB;
-  font-weight: 600;
+  color: #E6E6EB !important;
+  font-weight: 600 !important;
 }
 
 :global(.aa-ItemContentSubtitle) {
-  color: #B9BBC4;
-  font-size: 0.75rem;
+  color: #B9BBC4 !important;
+  font-size: 0.75rem !important;
+}
+
+:global(.aa-ItemContentDescription) {
+  color: #B9BBC4 !important;
+}
+
+:global(.aa-Source) {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+:global(.aa-SourceHeader) {
+  color: #B9BBC4 !important;
+  font-size: 0.7rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  padding: var(--space-xs) var(--space-sm) !important;
+  margin-top: var(--space-xs) !important;
 }
 
 /* Loading Indicator */

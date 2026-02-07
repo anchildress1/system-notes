@@ -46,8 +46,8 @@ describe('Hero Component', () => {
     const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
     render(<Hero {...defaultProps} />);
 
-    const button = screen.getByRole('button', { name: /Click to trigger/i });
-    fireEvent.click(button);
+    const container = screen.getByTestId('hero-interactive');
+    fireEvent.click(container);
 
     expect(dispatchSpy).toHaveBeenCalled();
     const event = dispatchSpy.mock.calls.find(
@@ -61,8 +61,8 @@ describe('Hero Component', () => {
     const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
     render(<Hero {...defaultProps} />);
 
-    const button = screen.getByRole('button', { name: /Click to trigger/i });
-    fireEvent.keyDown(button, { key: 'Enter' });
+    const container = screen.getByTestId('hero-interactive');
+    fireEvent.keyDown(container, { key: 'Enter' });
 
     expect(dispatchSpy).toHaveBeenCalled();
     dispatchSpy.mockRestore();
@@ -72,8 +72,8 @@ describe('Hero Component', () => {
     const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
     render(<Hero {...defaultProps} />);
 
-    const button = screen.getByRole('button', { name: /Click to trigger/i });
-    fireEvent.keyDown(button, { key: ' ' });
+    const container = screen.getByTestId('hero-interactive');
+    fireEvent.keyDown(container, { key: ' ' });
 
     expect(dispatchSpy).toHaveBeenCalled();
     dispatchSpy.mockRestore();
@@ -83,8 +83,8 @@ describe('Hero Component', () => {
     const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
     render(<Hero {...defaultProps} />);
 
-    const button = screen.getByRole('button', { name: /Click to trigger/i });
-    fireEvent.keyDown(button, { key: 'Escape' });
+    const container = screen.getByTestId('hero-interactive');
+    fireEvent.keyDown(container, { key: 'Escape' });
 
     expect(dispatchSpy).not.toHaveBeenCalled();
     dispatchSpy.mockRestore();
