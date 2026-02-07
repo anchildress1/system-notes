@@ -159,9 +159,9 @@
 .statusBadge {
     display: inline-block;
     padding: 6px 12px;
-    background: hsl(var(--color-accent-teal));
-    color: hsl(var(--color-bg-base));
-    border: 1px solid hsl(var(--color-accent-teal) / 0.3);
+    background: hsl(var(--color-accent-teal) / 0.1);
+    color: hsl(var(--color-accent-teal));
+    border: 1px solid hsl(var(--color-accent-teal) / 0.5);
     border-radius: 4px;
     font-size: 0.8rem;
     font-weight: 700;
@@ -169,6 +169,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     white-space: nowrap;
+    box-shadow: 0 0 10px hsl(var(--color-accent-teal) / 0.1);
 }
 
 .subheader {

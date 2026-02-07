@@ -22,6 +22,49 @@ INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_INDEX_NAME:-system-notes}"
 MERGED_INDEX="${ALGOLIA_MERGED_INDEX:-merged-search}"
 CRAWLER_INDEX="${ALGOLIA_CRAWLER_INDEX:-crawly_posts}"
 
+NORMALIZE_JQ_COMMON='
+  def ensure_array($value):
+    if $value == null then []
+    elif ($value | type) == "array" then $value
+    else [$value]
+    end;
+
+  def normalize_common:
+    . as $in
+    | {
+        objectID: ($in.objectID // error("Missing objectID")),
+        title: ($in.title // ""),
+        blurb: ($in.blurb // ""),
+        fact: ($in.fact // ""),
+        "tags.lvl0": (ensure_array($in["tags.lvl0"])),
+        "tags.lvl1": (ensure_array($in["tags.lvl1"])),
+        projects: (ensure_array($in.projects)),
+        category: ($in.category // ""),
+        signal: ($in.signal // 0)
+      }
+    | . as $record
+    | ($record["tags.lvl0"]) as $lvl0
+    | ($record["tags.lvl1"]) as $lvl1
+    | if ($lvl0 | length) == 1
+      then .["tags.lvl1"] = ($lvl1 | map(
+        if (type == "string" and (contains(" > ") | not))
+        then ($lvl0[0] + " > " + (sub("^#"; "")))
+        else .
+        end
+      ))
+      else .
+      end;
+
+  def normalize_no_url: normalize_common;
+  def normalize_with_url: . as $in | normalize_common | . + {url: ($in.url // "")};
+  def normalize_with_url_empty_blurb: . as $in | normalize_common | . + {url: ($in.url // "")} | .blurb = "";
+'
+
+# Filters:
+NORMALIZE_JQ_SYS="${NORMALIZE_JQ_COMMON}; {requests: [.[] | {action: \"updateObject\", body: (normalize_no_url)}]}"
+NORMALIZE_JQ_MERGED="${NORMALIZE_JQ_COMMON}; {requests: [.[] | {action: \"updateObject\", body: (normalize_with_url)}]}"
+NORMALIZE_JQ_MERGED_FROM_HITS="${NORMALIZE_JQ_COMMON}; {requests: [.[] | {action: \"updateObject\", body: (normalize_with_url_empty_blurb)}]}"
+
 echo "📤 Uploading ${INDEX_NAME} index data..."
 if [ -f "apps/api/algolia/sources/index.json" ]; then
   INDEX_JSON_PATH="$(pwd)/apps/api/algolia/sources/index.json"
@@ -46,12 +89,6 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
 
   # Upload to merged-search
   echo "📤 Syncing to ${MERGED_INDEX}..."
-  echo "🧹 Clearing ${MERGED_INDEX} before upload..."
-  curl --fail-with-body -X POST "${BASE_URL}/indexes/${MERGED_INDEX}/clear" \
-    -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
-    -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
-    -H "Content-Type: application/json" \
-    -w "\n" -s
   BATCH_JSON_MERGED=$(jq -f "apps/api/algolia/config/normalize_merged.jq" "$INDEX_JSON_PATH")
   echo "$BATCH_JSON_MERGED" | curl --fail-with-body -X POST "${BASE_URL}/indexes/${MERGED_INDEX}/batch" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
@@ -64,41 +101,41 @@ else
 fi
 
 echo "⚙️  Uploading settings to ${INDEX_NAME} and ${MERGED_INDEX}..."
-if [ -f "apps/api/algolia/sources/settings.json" ]; then
+if [ -f "apps/api/algolia/config/settings.json" ]; then
   # Settings for system-notes
   curl --fail-with-body -X PUT "${BASE_URL}/indexes/${INDEX_NAME}/settings" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
     -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
     -H "Content-Type: application/json" \
-    --data @apps/api/algolia/sources/settings.json -w "\n" -s
+    --data @apps/api/algolia/config/settings.json -w "\n" -s
 
   # Settings for merged-search
   curl --fail-with-body -X PUT "${BASE_URL}/indexes/${MERGED_INDEX}/settings" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
     -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
     -H "Content-Type: application/json" \
-    --data @apps/api/algolia/sources/settings.json -w "\n" -s
+    --data @apps/api/algolia/config/settings.json -w "\n" -s
 else
-  echo "Info: apps/api/algolia/sources/settings.json not found — skipping settings upload.\n  To upload settings, create the file at apps/api/algolia/config/settings.json (Algolia index settings JSON)."
+  echo "Warning: apps/api/algolia/config/settings.json not found"
 fi
 
 echo "🔤 Uploading synonyms to ${INDEX_NAME} and ${MERGED_INDEX}..."
-if [ -f "apps/api/algolia/sources/synonyms.json" ]; then
+if [ -f "apps/api/algolia/config/synonyms.json" ]; then
   # Synonyms for system-notes
   curl --fail-with-body -X POST "${BASE_URL}/indexes/${INDEX_NAME}/synonyms/batch?replaceExistingSynonyms=true" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
     -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
     -H "Content-Type: application/json" \
-    --data @apps/api/algolia/sources/synonyms.json -w "\n" -s
+    --data @apps/api/algolia/config/synonyms.json -w "\n" -s
 
   # Synonyms for merged-search
   curl --fail-with-body -X POST "${BASE_URL}/indexes/${MERGED_INDEX}/synonyms/batch?replaceExistingSynonyms=true" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
     -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
     -H "Content-Type: application/json" \
-    --data @apps/api/algolia/sources/synonyms.json -w "\n" -s
+    --data @apps/api/algolia/config/synonyms.json -w "\n" -s
 else
-  echo "Info: apps/api/algolia/sources/synonyms.json not found — skipping synonyms upload.\n  To upload synonyms, create the file at apps/api/algolia/config/synonyms.json (an array of synonym objects)."
+  echo "Warning: apps/api/algolia/config/synonyms.json not found"
 fi
 
 echo "🔗 Merging ${CRAWLER_INDEX} into ${MERGED_INDEX}..."

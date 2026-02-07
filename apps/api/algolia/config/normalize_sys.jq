@@ -32,4 +32,4 @@ def normalize_common:
 
 def normalize_no_url: normalize_common;
 
-{requests: [.[] | {action: "updateObject", body: (normalize_no_url)}]}
+{requests: [.[] | {action: "updateObject", body: (normalize_no_url)}]} 

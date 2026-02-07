@@ -3,6 +3,8 @@ new Crawler({
   apiKey: 'b64818d18623f622291609230cb797dd',
   indexPrefix: '',
   rateLimit: 8,
+  maxUrls: 100,
+  schedule: 'on thursday',
   startUrls: ['https://crawly.checkmarkdevtools.dev/'],
   sitemaps: ['https://crawly.checkmarkdevtools.dev/sitemap.xml'],
   saveBackup: false,
@@ -25,11 +27,12 @@ new Crawler({
         var publishedAt = $('meta[name="article:published_time"]').attr('content');
         publishedAt = publishedAt ? String(publishedAt).trim() : null;
 
+        var modifiedAt = $('meta[name="article:modified_time"]').attr('content');
+        modifiedAt = modifiedAt ? String(modifiedAt).trim() : null;
+
         var canonical =
           $('link[rel="canonical"]').attr('href') || $('meta[name="canonical"]').attr('content');
         canonical = canonical ? String(canonical).trim() : null;
-
-        var finalUrl = canonical || urlStr;
 
         var image = $('meta[property="og:image"]').attr('content');
         image = image ? String(image).trim() : null;
@@ -51,39 +54,37 @@ new Crawler({
         }
 
         var engagementRaw = $('meta[name="devto:engagement_score"]').attr('content');
-        var engagementScore = engagementRaw ? Number(engagementRaw) - 1 : 0;
+        var engagementScore = engagementRaw ? Number(engagementRaw) : 0;
+        const normalize = (score) => Math.min(5, (5 * score) / 40);
 
-        if (engagementScore < 0) {
-          engagementScore = 0;
-        } else if (engagementScore > 5) {
-          engagementScore = 5;
-        }
-        if (engagementScore === 0) {
-          return [];
-        }
+        if (!isFinite(engagementScore)) engagementScore = 1;
 
         var content = $('main article').first().text();
         content = content ? String(content).replace(/\s+/g, ' ').trim() : '';
-        var contentSubstring = content.substring(0, 300);
-        if (content.length > 300) {
-          contentSubstring += '...';
-        }
 
         return [
           {
-            objectID: finalUrl,
+            objectID: urlStr,
             title: title,
-            url: finalUrl,
-            blurb: description,
-            fact: contentSubstring,
+            url: urlStr,
+            blurb: '',
+            fact: description,
             'tags.lvl0': ['DEV Blog'],
             'tags.lvl1': tags,
             projects: [],
             category: 'Writing',
-            signal: engagementScore,
-            publishedAt: publishedAt,
+            signal: normalize(engagementScore),
           },
         ];
+      },
+    },
+    {
+      indexName: 'crawly_pages',
+      pathsToMatch: ['https://crawly.checkmarkdevtools.dev/**'],
+      recordExtractor: function ({ url, $, helpers, contentLength, fileType }) {
+        var urlStr = typeof url === 'string' ? url : String(url);
+        if (urlStr.indexOf('/posts/') !== -1) return [];
+        return helpers.page({ $, url, contentLength, fileType });
       },
     },
   ],
@@ -91,13 +92,8 @@ new Crawler({
     crawly_posts: {
       distinct: true,
       attributeForDistinct: 'objectIDs',
-      searchableAttributes: [
-        'unordered(title)',
-        'unordered(fact)',
-        'unordered(blurb)',
-        'tags.lvl1',
-      ],
-      customRanking: ['desc(signal)', 'desc(publishedAt)'],
+      searchableAttributes: ['unordered(title)', 'unordered(fact)', 'tags.lvl1'],
+      customRanking: ['desc(engagementScore)', 'desc(publishedAt)'],
       attributesForFaceting: ['type', 'tags'],
     },
   },
