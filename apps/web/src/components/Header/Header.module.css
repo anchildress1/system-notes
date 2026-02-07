@@ -26,17 +26,17 @@
 .logoLink {
     text-decoration: none;
     color: inherit;
+    border-bottom: 2px solid #B56BFF; /* Purple from style guide */
 }
 
 .logoLink:hover .name {
-    text-decoration: underline;
-    text-decoration-color: hsl(var(--color-accent-purple));
+    text-decoration: none;
 }
 
 .name {
     font-size: 1.5rem;
-    font-family: var(--font-ribeye), cursive;
-    font-weight: 400;
+    font-family: var(--font-mono);
+    font-weight: 700;
     color: hsl(var(--color-text-primary));
 }
 

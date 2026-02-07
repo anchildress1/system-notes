@@ -18,8 +18,10 @@ import ClientShell from '@/components/ClientShell/ClientShell';
 
 import { allProjects } from '@/data/projects';
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anchildress1.dev';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://anchildress1.dev'),
+  metadataBase: new URL(baseUrl),
   title: {
     default: "Ashley Childress' System Notes",
     template: '%s | System Notes',
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
     title: "Ashley Childress' System Notes",
     description:
       "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
-    url: 'https://anchildress1.dev',
+    url: baseUrl,
     siteName: 'System Notes',
     images: [
       {
@@ -83,14 +85,14 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: "Ashley Childress' System Notes",
-    url: 'https://anchildress1.dev',
+    url: baseUrl,
     description: 'A living, queryable index of projects and decisions.',
     author: {
       '@type': 'Person',
       name: 'Ashley Childress',
-      url: 'https://anchildress1.dev',
+      url: baseUrl,
       sameAs: [
-        'https://anchildress1.dev',
+        baseUrl,
         'https://github.com/anchildress1',
         'https://dev.to/anchildress1',
       ],
@@ -101,7 +103,7 @@ export default function RootLayout({
       description: p.description,
       applicationCategory: 'DeveloperApplication',
       operatingSystem: 'Any',
-      url: p.id === 'system-notes' ? 'https://anchildress1.dev' : undefined,
+      url: p.id === 'system-notes' ? baseUrl : undefined,
       codeRepository: p.repoUrl,
       relatedLink: p.blogs?.map((b) => b.url) || [],
       offers: {

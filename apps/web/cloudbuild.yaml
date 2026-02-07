@@ -10,6 +10,8 @@ steps:
     '--build-arg', 'NEXT_PUBLIC_ALGOLIA_AGENT_ID=$_NEXT_PUBLIC_ALGOLIA_AGENT_ID',
     '--build-arg', 'NEXT_PUBLIC_API_URL=$_NEXT_PUBLIC_API_URL',
     '--build-arg', 'NEXT_PUBLIC_BASE_URL=$_NEXT_PUBLIC_BASE_URL',
+    '--build-arg', 'NEXT_PUBLIC_ALGOLIA_INDEX_NAME=$_NEXT_PUBLIC_ALGOLIA_INDEX_NAME',
+    '--build-arg', 'NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=$_NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME',
     '.'
   ]
   # Prevent build args from appearing in logs

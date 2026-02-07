@@ -22,7 +22,10 @@ export interface FactHitRecord extends BaseHit {
   title: string;
   blurb: string;
   fact: string;
-  tags: string[];
+  tags?: string[] | {
+    lvl0?: string[];
+    lvl1?: string[];
+  };
   projects: string[];
   category: string;
   signal: number;
@@ -69,7 +72,9 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     setIsFlipped((prev) => !prev);
   }, [isFlipped, sendEvent, hit]);
 
-  const displayTags = hit.tags ? hit.tags.slice(0, 5) : [];
+  const tagsArray = Array.isArray(hit.tags) ? hit.tags : [];
+  const lvl1Tags = (!Array.isArray(hit.tags) && hit.tags?.lvl1) ? hit.tags.lvl1 : [];
+  const displayTags = lvl1Tags.length > 0 ? lvl1Tags.slice(0, 1) : tagsArray.slice(0, 5);
 
   return (
     <>
@@ -140,12 +145,12 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
               </p>
 
               <div className={styles.simpleTags}>
-                <span className={styles.tagCategory}>{categoryLabel}</span>
                 {displayTags.map((t) => (
                   <span key={t} className={styles.tagLevel1}>
                     {t}
                   </span>
                 ))}
+                <span className={styles.tagCategory}>{categoryLabel}</span>
               </div>
             </div>
           </div>
@@ -153,7 +158,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
       </motion.div>
 
       {/* Expanded / Flipped View */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isFlipped && portalTarget && (
           <>
             {createPortal(
@@ -173,10 +178,15 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                 className={`${styles.card} ${styles.flipped}`}
                 role="dialog"
                 aria-modal="true"
-                initial={{ rotateY: 180, scale: 0.9 }}
-                animate={{ rotateY: 0, scale: 1 }}
-                exit={{ rotateY: 180, scale: 0.9, opacity: 0 }}
-                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                initial={{ rotateY: -180, opacity: 0, scale: 0.8 }}
+                animate={{ rotateY: 0, opacity: 1, scale: 1 }}
+                exit={{ rotateY: 180, opacity: 0, scale: 0.8 }}
+                transition={{
+                  layout: { duration: 0.5, type: 'spring', bounce: 0.2 },
+                  rotateY: { duration: 0.5 },
+                  opacity: { duration: 0.3 },
+                }}
+                style={{ transformStyle: 'preserve-3d' }}
               >
                 <div className={styles.cardInner}>
                   <div

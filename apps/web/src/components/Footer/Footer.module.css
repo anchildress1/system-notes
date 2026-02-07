@@ -55,9 +55,13 @@
 
 .socialLink:hover,
 .socialLink:focus-visible {
-    background-color: transparent;
-    color: hsl(var(--color-accent-pink));
-    outline: none; /* Removed outline */
+    color: #F16197; /* Pink from style guide */
+    background: transparent;
+    outline: none;
+}
+
+.socialLink:hover svg {
+    fill: #F16197;
 }
 
 .center {
