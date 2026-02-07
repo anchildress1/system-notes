@@ -81,7 +81,7 @@
 }
 
 .searchBoxForm:focus-within {
-  box-shadow: 0 0 0 3px hsl(var(--color-accent-teal) / 0.3);
+  box-shadow: 0 0 0 3px hsl(var(--color-accent-purple) / 0.3);
 }
 
 .searchBoxInput {
@@ -231,13 +231,13 @@
 }
 
 .refinementLabel:hover {
-  color: hsl(var(--color-accent-teal));
+  color: hsl(var(--color-accent-purple));
 }
 
 .refinementCheckbox {
   width: 16px;
   height: 16px;
-  accent-color: hsl(var(--color-accent-teal));
+  accent-color: hsl(var(--color-accent-purple));
 }
 
 .refinementLabelText {
@@ -246,7 +246,7 @@
 }
 
 .refinementItemSelected .refinementLabelText {
-  color: hsl(var(--color-accent-teal));
+  color: hsl(var(--color-accent-purple));
   font-weight: 500;
 }
 
@@ -293,9 +293,9 @@
 }
 
 .clearButton:hover {
-  background: hsl(var(--color-accent-teal) / 0.8);
+  background: hsl(var(--color-accent-purple) / 0.8);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px hsl(var(--color-accent-teal) / 0.3);
+  box-shadow: 0 4px 12px hsl(var(--color-accent-purple) / 0.3);
 }
 
 .clearButtonDisabled {

@@ -6,22 +6,21 @@
   /* #1E1F24 */
   --color-bg-surface: 225 11% 30%;
   /* #444854 Lighter Surface */
-  --color-bg-elevated: 225 10% 25%;
+  --color-bg-elevated: 225 9% 25%;
   /* #3A3D46 */
 
-  --color-text-primary: 220 20% 98%;
-  --color-text-secondary: 220 10% 75%;
+  --color-text-primary: 240 10% 91%;
+  /* #E6E6EB */
+  --color-text-secondary: 229 8% 75%;
+  /* #B9BBC4 */
   --color-text-muted: 220 10% 55%;
 
   /* Accents - Power & Electric */
-  --color-accent-purple: 262 100% 71%;
-  /* #A86AFF */
-  --color-accent-pink: 338 78% 61%;
-  /* #E94D88 */
-  --color-accent-teal: 178 59% 45%;
-  /* #2FB7B2 */
-  --color-accent-yellow: 174 96% 35%;
-  /* Vibrant Teal (Overriding Yellow variable for V3) */
+  --color-accent-purple: 270 100% 71%;
+  /* #B56BFF */
+  --color-accent-pink: 338 86% 66%;
+  /* #F16197 */
+  /* #3EC7C2 */
 
   --color-border: 225 10% 25%;
   --color-border-hover: 262 100% 71%;
@@ -115,6 +114,15 @@ body::before {
   border: 0;
 }
 
+.card-glass {
+  background: rgba(30, 31, 36, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -149,7 +157,7 @@ button {
 
 /* Theme variable overrides */
 .ais-Chat {
-  --ais-primary-color-rgb: 47, 182, 178 !important;
+  --ais-primary-color-rgb: 181, 107, 255 !important;
   --ais-background-color-rgb: 255, 255, 255 !important;
   --ais-text-color-rgb: 38, 38, 38 !important;
 }
@@ -158,7 +166,7 @@ button {
 .ais-Chat-toggleButton {
   width: 60px !important;
   height: 60px !important;
-  background-color: hsl(178, 59%, 45%) !important;
+  background-color: hsl(270, 100%, 71%) !important;
 }
 
 .ais-Chat-toggleButton svg {
@@ -169,5 +177,5 @@ button {
 /* Header Icon Color */
 .ais-ChatHeader-titleIcon,
 .aspect-square {
-  color: hsl(338 78% 61%) !important;
+  color: hsl(270, 100%, 71%) !important;
 }

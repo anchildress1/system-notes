@@ -67,7 +67,7 @@
   right: var(--space-md, 20px) !important;
   width: 60px !important;
   height: 60px !important;
-  background-color: hsl(var(--color-accent-teal)) !important;
+  background-color: hsl(var(--color-accent-purple)) !important;
   border-radius: 50% !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
   border: none !important;
@@ -81,7 +81,7 @@
 :global(.ais-Chat-toggleButton:hover),
 :global(.ais-ChatToggleButton:hover) {
   transform: scale(1.05) !important;
-  box-shadow: 0 8px 24px hsl(var(--color-accent-teal) / 0.5) !important;
+  box-shadow: 0 8px 24px hsl(var(--color-accent-purple) / 0.5) !important;
 }
 
 /* Toggle Icon */
@@ -91,13 +91,13 @@
 
 /* Custom Header Icon - Pink Bat */
 .headerIcon {
-  color: hsl(var(--color-accent-pink));
+  color: hsl(var(--color-accent-purple));
 }
 
 /* Avatar for Assistant - Pink Bat */
 .avatar {
   background-color: transparent;
-  color: hsl(var(--color-accent-pink));
+  color: hsl(var(--color-accent-purple));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,7 +106,7 @@
 /* Avatar for User - Purple */
 .userAvatar {
   background-color: transparent;
-  color: hsl(var(--color-accent-purple));
+  color: hsl(var(--color-accent-pink));
   display: flex;
   align-items: center;
   justify-content: center;

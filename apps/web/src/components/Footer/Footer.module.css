@@ -32,8 +32,8 @@
 
 .link:hover,
 .link:focus-visible {
-    color: hsl(var(--color-accent-yellow));
-    outline: 2px solid hsl(var(--color-accent-yellow));
+    color: hsl(var(--color-accent-teal));
+    outline: 2px solid hsl(var(--color-accent-teal));
     outline-offset: 4px;
     border-radius: 4px;
 }
@@ -90,7 +90,7 @@
 
 .algoliaIcon {
     font-size: 1rem;
-    color: hsl(var(--color-accent-blue));
+    color: hsl(var(--color-accent-teal));
 }
 
 @media (max-width: 600px) {

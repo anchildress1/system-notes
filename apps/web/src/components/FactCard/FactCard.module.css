@@ -34,16 +34,21 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .card:hover:not(.flipped) {
   background: hsl(var(--color-bg-surface));
   box-shadow:
     var(--shadow-bento),
-    0 0 20px hsl(var(--color-accent-teal) / 0.15);
-  border-color: hsl(var(--color-accent-teal) / 0.3);
+    0 0 20px hsl(var(--color-accent-purple) / 0.15);
+  border-color: hsl(var(--color-accent-purple) / 0.3);
   transform: translateY(-2px);
 }
 
@@ -66,7 +71,7 @@
 }
 
 .card:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-teal));
+  outline: 2px solid hsl(var(--color-accent-purple));
   outline-offset: 4px;
 }
 
@@ -109,19 +114,21 @@
 }
 
 .cardFront:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-teal));
+  outline: 2px solid hsl(var(--color-accent-purple));
   outline-offset: 2px;
 }
 
 .cardBack {
   transform: rotateY(180deg);
   z-index: 1;
-  position: relative; /* Changed from absolute to relative to flow content in fixed container */
+  position: relative;
+  /* Changed from absolute to relative to flow content in fixed container */
   height: 100%;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--color-accent-pink) / 0.3) transparent;
-  padding: var(--space-md); /* More padding for expanded view */
+  padding: var(--space-md);
+  /* More padding for expanded view */
 }
 
 .cardBack::-webkit-scrollbar {
@@ -250,7 +257,8 @@
 }
 
 .factQuote {
-  font-family: var(--font-serif, serif); /* Fallback if no specific serif var */
+  font-family: var(--font-serif, serif);
+  /* Fallback if no specific serif var */
   font-size: 1.25rem;
   font-style: italic;
   color: hsl(var(--color-text-primary));
