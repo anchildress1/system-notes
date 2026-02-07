@@ -107,7 +107,7 @@ test.describe('Search Page Integration', () => {
 
   test('renders filter sidebar with facets', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { level: 2, name: 'Filter' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Filters' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 3, name: 'Category' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 3, name: 'Builds' })).toBeVisible();
     await expect(page.getByRole('heading', { level: 3, name: 'Tags' })).toBeVisible();

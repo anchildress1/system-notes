@@ -80,6 +80,26 @@
   border: 1px solid hsl(var(--color-border));
 }
 
+.tagCategory {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  background: #28a745; /* Solid Green */
+  color: white;
+  border-radius: 12px;
+  border: 1px solid #28a745;
+}
+
+.tagLevel1 {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  background: transparent;
+  color: hsl(var(--color-accent-teal));
+  border-radius: 12px;
+  border: 1px solid hsl(var(--color-accent-teal));
+}
+
 .header {
   display: flex;
   flex-direction: column;

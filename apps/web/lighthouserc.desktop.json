@@ -5,7 +5,7 @@
       "url": ["http://localhost:3001/"],
       "numberOfRuns": 3,
       "settings": {
-        "chromeFlags": "--no-sandbox",
+        "chromeFlags": "--headless=new --disable-gpu --no-sandbox",
         "preset": "desktop"
       }
     },

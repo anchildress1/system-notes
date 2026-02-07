@@ -518,6 +518,39 @@
   margin: 0;
 }
 
+:global(.aa-Panel) {
+  background-color: #3A3D46;
+  border: 1px solid #B9BBC4;
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  z-index: 10000;
+}
+
+:global(.aa-Item) {
+  color: #E6E6EB;
+  padding: var(--space-sm);
+  cursor: pointer;
+}
+
+:global(.aa-Item[aria-selected="true"]) {
+  background-color: rgba(181, 107, 255, 0.1);
+  color: #B56BFF;
+}
+
+:global(.aa-ItemIcon) {
+  fill: #B9BBC4;
+}
+
+:global(.aa-ItemContentTitle) {
+  color: #E6E6EB;
+  font-weight: 600;
+}
+
+:global(.aa-ItemContentSubtitle) {
+  color: #B9BBC4;
+  font-size: 0.75rem;
+}
+
 /* Loading Indicator */
 .loadingIndicator {
   display: flex;

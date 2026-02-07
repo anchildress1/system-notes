@@ -28,6 +28,7 @@ vi.mock('react-instantsearch', () => ({
   Configure: () => null,
   useRefinementList: () => ({ items: [], refine: vi.fn() }),
   useInfiniteHits: () => ({ hits: [], isLastPage: true, showMore: vi.fn() }),
+  useInstantSearch: () => ({ status: 'idle' }),
   Stats: () => <div data-testid="stats">100 results</div>,
   Highlight: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
 }));
@@ -122,7 +123,7 @@ describe('SearchPage Component', () => {
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
 
-    const algoliaLink = screen.getByRole('link', { name: /Search powered by Algolia/i });
+    const algoliaLink = screen.getByRole('link', { name: /Powered by Algolia/i });
     expect(algoliaLink).toHaveAttribute('href', 'https://www.algolia.com');
   });
 });

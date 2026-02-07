@@ -142,7 +142,6 @@ export default function AIChat() {
           agentId={AGENT_ID}
           translations={translations}
           tools={tools}
-          model={{ stream: true }}
           headerTitleIconComponent={HeaderIcon}
           assistantMessageLeadingComponent={AssistantAvatar}
           userMessageLeadingComponent={UserAvatar}

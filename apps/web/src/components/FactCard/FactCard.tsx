@@ -90,7 +90,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
             <div className={styles.content}>
               <div className={styles.header}>
                 <div className={styles.headerTop}>
-                  <span className={styles.ownerBadge}>{categoryLabel}</span>
+                  {/* Removed ownerBadge (Category) from here */}
 
                   {hit.url && (
                     <div
@@ -140,8 +140,9 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
               </p>
 
               <div className={styles.simpleTags}>
+                <span className={styles.tagCategory}>{categoryLabel}</span>
                 {displayTags.map((t) => (
-                  <span key={t} className={styles.simpleTag}>
+                  <span key={t} className={styles.tagLevel1}>
                     {t}
                   </span>
                 ))}

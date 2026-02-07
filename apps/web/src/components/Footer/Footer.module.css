@@ -55,8 +55,8 @@
 
 .socialLink:hover,
 .socialLink:focus-visible {
-    background-color: hsl(var(--color-accent-pink));
-    color: hsl(var(--color-bg-base)); /* Contrast text/icon against pink */
+    background-color: transparent;
+    color: hsl(var(--color-accent-pink));
     outline: none; /* Removed outline */
 }
 
