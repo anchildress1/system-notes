@@ -54,7 +54,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.15 }}
     >
       <motion.div
         ref={cardRef}
@@ -68,7 +68,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 30, duration: 0.2 }}
       >
         <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
           <svg

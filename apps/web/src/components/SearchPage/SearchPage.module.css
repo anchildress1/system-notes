@@ -385,22 +385,24 @@
 
 /* Modal Accents - Purple Overrides */
 /* Algolia Logo Text - Gray default, Purple hover */
-:global(.ss-footer a) {
+:global(.ss-footer-powered-by a),
+:global(.ss-footer-powered-by) {
   color: #b9bbc4 !important; /* Text Secondary */
   transition: color 0.2s ease !important;
 }
 
-:global(.ss-footer a:hover) {
+:global(.ss-footer-powered-by:hover a),
+:global(.ss-footer-powered-by:hover) {
   color: #b56bff !important; /* Purple on hover */
 }
 
 /* Algolia Logo Icon */
-:global(.ss-footer svg path) {
+:global(.ss-footer-powered-by svg path) {
   fill: #b9bbc4 !important; /* Text Secondary */
   transition: fill 0.2s ease !important;
 }
 
-:global(.ss-footer a:hover svg path) {
+:global(.ss-footer-powered-by:hover svg path) {
   fill: #b56bff !important; /* Purple on hover */
 }
 
@@ -408,8 +410,8 @@
 :global(.ss-footer kbd),
 :global(.ss-footer .ss-key) {
   color: #3ec7c2 !important; /* Teal */
-  border-color: rgba(62, 199, 194, 0.3) !important;
-  background: rgba(62, 199, 194, 0.1) !important;
+  border: 1px solid rgba(62, 199, 194, 0.3) !important;
+  background: transparent !important; /* Outline only */
 }
 
 /* Clear/Reset Button - Outline only */

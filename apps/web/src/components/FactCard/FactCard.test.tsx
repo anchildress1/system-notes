@@ -81,7 +81,10 @@ describe('FactCard Component', () => {
     const cardLink = screen.getByRole('link', { name: /Press to expand/i });
     await user.click(cardLink);
 
-    expect(mockPush).toHaveBeenCalledWith('?factId=card%3Atest%3Atest%3A0001', { scroll: false });
+    expect(mockPush).toHaveBeenCalledWith(
+      '?factId=card%3Atest%3Atest%3A0001&category=Work+Style&project=A&project=B&project=C&project=D&project=E',
+      { scroll: false }
+    );
   });
 
   it('renders without tags when empty', () => {
@@ -107,7 +110,10 @@ describe('FactCard Component', () => {
     const card = screen.getByRole('link', { name: /Press to expand/i });
     expect(card).toBeInTheDocument();
     expect(card).toHaveAttribute('aria-expanded', 'false');
-    expect(card).toHaveAttribute('href', '/search?factId=card:test:test:0001');
+    expect(card).toHaveAttribute(
+      'href',
+      '/search?factId=card%3Atest%3Atest%3A0001&category=Work+Style&project=Project+Alpha&project=Project+Beta'
+    );
     expect(screen.getByRole('heading', { level: 2, name: 'Test Fact Title' })).toBeInTheDocument();
   });
 

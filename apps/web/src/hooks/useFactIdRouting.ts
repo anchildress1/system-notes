@@ -12,9 +12,6 @@ interface FactMetadata {
   'tags.lvl1'?: string[];
 }
 
-const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
-const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-
 /**
  * Hook to handle factId in URL and scroll card into view when rendered
  * Optimized for performance to maintain Lighthouse scores
@@ -32,14 +29,11 @@ export function useFactIdRouting(indexName: string) {
       return;
     }
 
-    // Use requestIdleCallback for non-critical work to avoid blocking main thread
-    const idleCallback = window.requestIdleCallback || ((cb) => setTimeout(cb, 1));
-
     const scrollToCard = () => {
       if (scrollAttempted.current) return;
 
       const cardLink = document.querySelector(`[href*="factId=${encodeURIComponent(factId)}"]`);
-      if (cardLink) {
+      if (cardLink && typeof (cardLink as HTMLElement).scrollIntoView === 'function') {
         scrollAttempted.current = true;
 
         // Use requestAnimationFrame for smooth, performant scrolling
@@ -68,12 +62,10 @@ export function useFactIdRouting(indexName: string) {
     // Set up MutationObserver to detect when card is added to DOM
     // This is more efficient than polling setInterval
     const observer = new MutationObserver(() => {
-      idleCallback(() => {
-        scrollToCard();
-        if (scrollAttempted.current) {
-          observer.disconnect();
-        }
-      });
+      scrollToCard();
+      if (scrollAttempted.current) {
+        observer.disconnect();
+      }
     });
 
     // Observe the results container for new cards
@@ -85,41 +77,59 @@ export function useFactIdRouting(indexName: string) {
       });
     }
 
-    // Fallback: If card not found after 3 seconds, fetch metadata and apply smart search
-    const fallbackTimeout = setTimeout(async () => {
-      if (!scrollAttempted.current && !fallbackSearchApplied.current) {
-        fallbackSearchApplied.current = true;
+    const hasFilterParams = () => {
+      if (!searchParams) return false;
+      return (
+        searchParams.get('category') ||
+        searchParams.get('project') ||
+        searchParams.get('tag0') ||
+        searchParams.get('tag1') ||
+        searchParams.get('query')
+      );
+    };
 
-        try {
-          const metadata = await fetchFactMetadata(factId, indexName);
-          if (metadata) {
-            // Update URL to include objectID in query to force the card to appear
-            const params = new URLSearchParams(window.location.search);
-            const currentQuery = params.get('query') || '';
+    const applyMetadataFilters = async () => {
+      if (fallbackSearchApplied.current || hasFilterParams()) return;
+      fallbackSearchApplied.current = true;
 
-            // Only update query if it doesn't already contain the objectID
-            if (!currentQuery.includes(factId)) {
-              // Use objectID search to ensure card appears
-              params.set('query', factId);
-              const newUrl = `${window.location.pathname}?${params.toString()}`;
-              window.history.replaceState({}, '', newUrl);
+      try {
+        const metadata = await fetchFactMetadata(factId, indexName);
+        if (!metadata) return;
 
-              // Trigger a custom event to notify InstantSearch to update
-              window.dispatchEvent(new PopStateEvent('popstate'));
-            }
-          }
-        } catch (error) {
-          console.error('Error applying fallback search:', error);
+        const params = new URLSearchParams(window.location.search);
+        params.set('factId', factId);
+
+        if (!params.has('category') && metadata.category) {
+          params.append('category', metadata.category);
         }
+
+        if (!params.has('project') && metadata.projects?.length) {
+          metadata.projects.forEach((project) => params.append('project', project));
+        }
+
+        if (!params.has('tag0') && metadata['tags.lvl0']?.length) {
+          metadata['tags.lvl0'].forEach((tag) => params.append('tag0', tag));
+        }
+
+        if (!params.has('tag1') && metadata['tags.lvl1']?.length) {
+          metadata['tags.lvl1'].forEach((tag) => params.append('tag1', tag));
+        }
+
+        const newUrl = `${window.location.pathname}?${params.toString()}`;
+        window.history.replaceState({}, '', newUrl);
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      } catch (error) {
+        console.error('Error applying fallback filters:', error);
       }
-    }, 3000);
+    };
+
+    void applyMetadataFilters();
 
     // Cleanup
     return () => {
       observer.disconnect();
-      clearTimeout(fallbackTimeout);
     };
-  }, [factId, indexName]);
+  }, [factId, indexName, searchParams]);
 
   return { factId };
 }
@@ -132,6 +142,8 @@ export async function fetchFactMetadata(
   factId: string,
   indexName: string
 ): Promise<FactMetadata | null> {
+  const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
+  const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
   if (!appId || !apiKey) {
     console.warn('Algolia credentials not available');
     return null;

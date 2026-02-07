@@ -6,10 +6,12 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   box-shadow: var(--shadow-card);
-  transition: all 0.2s ease;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   height: 100%;
   overflow: hidden;
   outline: none;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .card:hover {
@@ -121,7 +123,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  transition: gap 0.2s ease;
+  transition: gap 0.15s ease;
 }
 
 .card:hover .readMore {

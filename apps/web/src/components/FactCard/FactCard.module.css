@@ -22,6 +22,8 @@
   box-shadow: var(--shadow-card);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
   perspective: 1200px; /* Added for flip */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .card:hover {
@@ -154,9 +156,10 @@
   border-radius: 50%;
   background: hsl(var(--color-bg-elevated));
   color: hsl(var(--color-text-muted));
-  transition: all 0.3s var(--ease-spring);
+  transition: all 0.2s ease;
   z-index: 2;
   border: 2px solid transparent;
+  will-change: transform;
 }
 
 .ghLink:hover {
@@ -192,7 +195,7 @@
 /* --- Flip / Back Styles (FactCard Specific) --- */
 
 .flippedVisible {
-  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 
@@ -209,12 +212,6 @@
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   z-index: 40;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 .card.flipped {
@@ -245,11 +242,12 @@
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.5s var(--ease-spring);
+  transition: none;
   transform-style: preserve-3d;
   background: transparent;
   display: flex;
   flex-direction: column;
+  will-change: transform;
 }
 
 .cardFront,
@@ -275,10 +273,17 @@
   cursor: pointer;
   /* Reset button styles */
   appearance: none;
-  border: none;
   background: none;
   padding: 0;
   margin: 0;
+  outline: none; /* Remove default outline */
+}
+
+/* Ensure purple outline only shows on focus-visible */
+.cardFront:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 4px;
+  border-radius: 16px;
 }
 
 .cardBack {
@@ -313,13 +318,10 @@
 
 /* Clean Close Button - Matches ExpandedView */
 .closeButton {
-  position: sticky;
+  position: absolute; /* Changed from sticky */
   top: 1rem;
-  align-self: flex-end;
-  margin-right: 1rem;
-  margin-top: 1rem;
-  margin-bottom: calc(-1rem - 40px);
-  /* Overlay on top of content */
+  right: 1rem;
+  /* Removed layout hacks */
   width: 40px;
   height: 40px;
   flex-shrink: 0;
@@ -333,6 +335,7 @@
   transition: all 0.2s ease;
   border: 1px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
+  outline: none; /* Removed erroneous purple outline */
 }
 
 .closeButton:hover {
@@ -340,6 +343,11 @@
   color: white;
   transform: rotate(90deg);
   border-color: transparent;
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 2px;
 }
 
 .factContent {

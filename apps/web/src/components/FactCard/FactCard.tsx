@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Highlight } from 'react-instantsearch';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -31,11 +31,38 @@ interface FactCardProps {
 export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+  const portalTarget = useMemo(() => (typeof document !== 'undefined' ? document.body : null), []);
   const hasTrackedFlip = useRef(false);
   const categoryLabel = hit.category || 'System';
+  const dialogTitleId = `fact-card-title-${hit.objectID}`;
+  const dialogDescriptionId = `fact-card-description-${hit.objectID}`;
+  const tagsLvl0Raw = hit['tags.lvl0'];
+  const tagsLvl1Raw = hit['tags.lvl1'];
+  const tagsLvl0 = useMemo(() => tagsLvl0Raw || [], [tagsLvl0Raw]);
+  const tagsLvl1 = useMemo(() => tagsLvl1Raw || [], [tagsLvl1Raw]);
 
   const isFlipped = searchParams.get('factId') === hit.objectID;
+
+  const applyHitParams = useCallback(
+    (params: URLSearchParams) => {
+      if (!params.has('category') && hit.category) {
+        params.append('category', hit.category);
+      }
+
+      if (!params.has('project') && hit.projects?.length) {
+        hit.projects.forEach((project) => params.append('project', project));
+      }
+
+      if (!params.has('tag0') && tagsLvl0.length) {
+        tagsLvl0.forEach((tag) => params.append('tag0', tag));
+      }
+
+      if (!params.has('tag1') && tagsLvl1.length) {
+        tagsLvl1.forEach((tag) => params.append('tag1', tag));
+      }
+    },
+    [hit.category, hit.projects, tagsLvl0, tagsLvl1]
+  );
 
   const openCard = useCallback(() => {
     if (!hasTrackedFlip.current && sendEvent) {
@@ -46,8 +73,9 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     }
     const params = new URLSearchParams(searchParams.toString());
     params.set('factId', hit.objectID);
+    applyHitParams(params);
     router.push(`?${params.toString()}`, { scroll: false });
-  }, [sendEvent, hit, searchParams, router]);
+  }, [sendEvent, hit, searchParams, router, applyHitParams]);
 
   const closeCard = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString());
@@ -55,12 +83,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
     router.push(newUrl, { scroll: false });
   }, [searchParams, router]);
-
-  useEffect(() => {
-    // Portal target must be set after mount when document.body is available
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPortalTarget(document.body);
-  }, []);
 
   useEffect(() => {
     const handleWindowKeyDown = (e: KeyboardEvent) => {
@@ -102,9 +124,25 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     [isFlipped, openCard, closeCard]
   );
 
-  const lvl1Tags = hit['tags.lvl1'] || [];
+  const lvl1Tags = tagsLvl1;
   const displayTags = lvl1Tags.slice(0, 1);
-  const cardUrl = `/search?factId=${hit.objectID}`;
+  const cardUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('factId', hit.objectID);
+
+    if (hit.category) {
+      params.append('category', hit.category);
+    }
+
+    if (hit.projects?.length) {
+      hit.projects.forEach((project) => params.append('project', project));
+    }
+
+    tagsLvl0.forEach((tag) => params.append('tag0', tag));
+    tagsLvl1.forEach((tag) => params.append('tag1', tag));
+
+    return `/search?${params.toString()}`;
+  }, [hit.objectID, hit.category, hit.projects, tagsLvl0, tagsLvl1]);
 
   return (
     <>
@@ -120,7 +158,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
           layoutId={`card-${hit.objectID}`}
           className={`${styles.card} ${isFlipped ? styles.flippedVisible : ''}`}
           data-state={isFlipped ? 'expanded' : 'collapsed'}
-          style={{ opacity: isFlipped ? 0 : 1 }}
         >
           <div className={styles.cardInner}>
             <div className={styles.cardFront}>
@@ -200,6 +237,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
               />,
               portalTarget
             )}
@@ -209,13 +247,15 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                 className={`${styles.card} ${styles.flipped}`}
                 role="dialog"
                 aria-modal="true"
-                initial={{ rotateY: -180, opacity: 0, scale: 0.8 }}
-                animate={{ rotateY: 0, opacity: 1, scale: 1 }}
-                exit={{ rotateY: 180, opacity: 0, scale: 0.8 }}
+                aria-labelledby={dialogTitleId}
+                aria-describedby={dialogDescriptionId}
+                initial={{ rotateY: 180, scale: 1 }}
+                animate={{ rotateY: 0, scale: 1 }}
+                exit={{ rotateY: -180, scale: 1 }}
                 transition={{
-                  layout: { duration: 0.5, type: 'spring', bounce: 0.2 },
-                  rotateY: { duration: 0.5 },
-                  opacity: { duration: 0.3 },
+                  rotateY: { duration: 0.2, ease: 'easeOut' },
+                  scale: { duration: 0.15, ease: 'easeOut', delay: 0.2 },
+                  layout: { duration: 0.15, ease: 'easeOut', delay: 0.2 },
                 }}
                 style={{ transformStyle: 'preserve-3d' }}
               >
@@ -280,13 +320,19 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                           )}
                         </div>
                       </div>
-                      <h3 className={styles.title} style={{ marginTop: '0.5rem' }}>
+                      <h3
+                        id={dialogTitleId}
+                        className={styles.title}
+                        style={{ marginTop: '0.5rem' }}
+                      >
                         {hit.title}
                       </h3>
                     </div>
 
                     <div className={styles.factContent}>
-                      <p className={styles.factText}>{hit.fact}</p>
+                      <p id={dialogDescriptionId} className={styles.factText}>
+                        {hit.fact}
+                      </p>
                     </div>
 
                     <div className={styles.metaSection}>
