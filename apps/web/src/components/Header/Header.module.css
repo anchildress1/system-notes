@@ -26,11 +26,14 @@
 .logoLink {
     text-decoration: none;
     color: inherit;
-    border-bottom: 2px solid #B56BFF; /* Purple from style guide */
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
 }
 
-.logoLink:hover .name {
-    text-decoration: none;
+.logoLink:hover {
+    box-shadow: 0 0 15px rgba(181, 107, 255, 0.3);
+    background: radial-gradient(circle at center, rgba(181, 107, 255, 0.1) 0%, transparent 70%);
 }
 
 .name {

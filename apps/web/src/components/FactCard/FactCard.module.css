@@ -83,9 +83,9 @@
 .tagCategory {
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  padding: 1px 6px;
-  background: #28a745; /* Solid green */
-  color: #ffffff;
+  padding: 2px 6px;
+  background: #3EC7C2; /* Solid teal from style guide */
+  color: #1E1F24; /* Dark text for contrast */
   border-radius: 4px;
   border: none;
   font-weight: 700;
