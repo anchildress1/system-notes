@@ -7,6 +7,7 @@ import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import styles from './AIChat.module.css';
 import dynamic from 'next/dynamic';
 import { API_URL } from '@/config';
+import { useRecommendationTools } from '@/lib/recommendations';
 
 import { IoClose } from 'react-icons/io5';
 import { GiBat } from 'react-icons/gi';
@@ -53,6 +54,7 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
 
 export default function AIChat() {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const recommendationTools = useRecommendationTools();
 
   // Memoize translations to prevent unnecessary re-renders of the Chat widget
   const translations = useMemo(
@@ -98,8 +100,9 @@ export default function AIChat() {
           }
         },
       },
+      ...recommendationTools,
     }),
-    []
+    [recommendationTools]
   );
 
   useEffect(() => {

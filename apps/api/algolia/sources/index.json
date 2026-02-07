@@ -4,8 +4,8 @@
     "title": "A portfolio does not need polish to be honest",
     "blurb": "Polish is not required for work to be meaningful or instructive.",
     "fact": "I believe a portfolio can be valuable without polished outputs if it accurately reflects real-world constraints, experimentation, and learning.",
-    "tags.lvl0": ["Domain", "Approach", "Mindset"],
-    "tags.lvl1": ["Domain > Portfolio", "Approach > Experimentation", "Mindset > Systems Thinking"],
+    "tags.lvl0": ["Approach", "Mindset"],
+    "tags.lvl1": ["Approach > Experimentation", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Philosophy",
     "signal": 3
