@@ -1958,5 +1958,110 @@
     "projects": ["System Notes"],
     "category": "Experimentation",
     "signal": 4
+  },
+
+  {
+    "objectID": "card:agent:behavior:no-clarifying-questions-default",
+    "title": "The Algolia agent does not ask clarifying questions by default",
+    "blurb": "Ambiguity is handled without user interruption.",
+    "fact": "I designed the Algolia agent to avoid asking clarifying questions. Instead it responds based on available context using a prompt recommendation.",
+    "tags.lvl0": ["Discipline", "Principle", "DEV Challenge"],
+    "tags.lvl1": [
+      "Discipline > Agent Design",
+      "Principle > Restraint",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:agent:suggestions:constraint-demonstration",
+    "title": "Prompt suggestions were used to demonstrate constraints",
+    "blurb": "Imperfect suggestions were an intentional design choice.",
+    "fact": "I accepted that prompt suggestions would not be perfect and used them as a way to demonstrate agent constraints when paired with a strict failure mode for unknown answers.",
+    "tags.lvl0": ["Approach", "Discipline", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "Discipline > Agent Design",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:algolia:analytics:feedback-loop",
+    "title": "Algolia analytics guided tuning decisions",
+    "blurb": "Real usage informed both prompt and index changes.",
+    "fact": "I used analytics from the Algolia dashboard to iteratively tune both the agent prompt and the index design with a focus on improving response speed.",
+    "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
+    "tags.lvl1": ["Approach > Iterative", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5
+  },
+  {
+    "objectID": "card:algolia:index:limited-hierarchy",
+    "title": "Index hierarchy was intentionally kept shallow",
+    "blurb": "Only one attribute uses multiple levels.",
+    "fact": "I limited the index to at most two levels of hierarchy in a single tag attribute, keeping all other indexed facts small and flat in alignment with Algolia best practices.",
+    "tags.lvl0": ["Principle", "AI", "DEV Challenge"],
+    "tags.lvl1": ["Principle > Restraint", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5
+  },
+  {
+    "objectID": "card:decision:scope:no-scale-consideration",
+    "title": "Scalability was intentionally deprioritized",
+    "blurb": "The system was designed as a personal playground.",
+    "fact": "I intentionally ignored scale considerations because the site is a personal playground rather than an e-commerce or production-scale system.",
+    "tags.lvl0": ["Principle", "DEV Challenge"],
+    "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Decisions",
+    "signal": 4
+  },
+  {
+    "objectID": "card:algolia:dx:widgets-and-docs-accessible",
+    "title": "Widgets and documentation lowered the UI barrier",
+    "blurb": "Backend-first development was supported.",
+    "fact": "Algolia’s widgets and documentation examples were easy to work with, making it possible for me to build UI functionality despite my front-end development avoidance.",
+    "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4
+  },
+  {
+    "objectID": "card:decision:stability:no-major-changes",
+    "title": "The current design would not be fundamentally changed",
+    "blurb": "Only tuning and refinement remain.",
+    "fact": "I would not change the current architecture or design decisions, focusing instead on fine-tuning behavior, styling, and performance alignment.",
+    "tags.lvl0": ["Mindset", "Principle", "DEV Challenge"],
+    "tags.lvl1": [
+      "Mindset > Systems Thinking",
+      "Principle > Restraint",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Decisions",
+    "signal": 4
+  },
+  {
+    "objectID": "card:decision:ui:last-minute-ask-ai",
+    "title": "Search was replaced with an Ask AI assistant",
+    "blurb": "Polish was traded for capability.",
+    "fact": "I chose to stop polishing the existing search integration and instead replaced it with an Ask AI assistant at the last minute to prioritize capability I had wanted to explore.",
+    "tags.lvl0": ["Approach", "DEV Challenge"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Decisions",
+    "signal": 5
   }
 ]
