@@ -22,7 +22,7 @@ interface PostCardProps {
   sendEvent?: SendEventForHits;
 }
 
-export default function PostCard({ hit }: PostCardProps) {
+export default function PostCard({ hit, sendEvent }: PostCardProps) {
   // Use explicit url if available, fallback to blurb if it looks like a URL, then objectID
   const url = hit.url || (hit.blurb && hit.blurb.startsWith('http') ? hit.blurb : hit.objectID);
   const tags = hit['tags.lvl1'] || hit['tags.lvl0'] || [];
@@ -34,6 +34,13 @@ export default function PostCard({ hit }: PostCardProps) {
       rel="noopener noreferrer"
       className={styles.card}
       aria-label={`Read post: ${hit.title}`}
+      onClick={() => {
+        if (sendEvent) {
+          sendEvent('click', hit, 'Post Clicked', {
+            objectIDs: [hit.objectID],
+          });
+        }
+      }}
     >
       <div className={styles.cardInner}>
         <div className={styles.header}>
