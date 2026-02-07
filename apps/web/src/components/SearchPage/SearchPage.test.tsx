@@ -1,63 +1,47 @@
-/**
- * @vitest-environment jsdom
- */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import React from 'react';
 
-vi.mock('./SearchPage.module.css', () => ({
-  default: {
-    container: 'container',
-    errorState: 'errorState',
-    errorMessage: 'errorMessage',
-    siteSearchWidget: 'siteSearchWidget',
-    searchBoxRoot: 'searchBoxRoot',
-    searchBoxForm: 'searchBoxForm',
-    searchBoxInput: 'searchBoxInput',
-    searchBoxSubmit: 'searchBoxSubmit',
-    searchBoxReset: 'searchBoxReset',
-    searchBoxIcon: 'searchBoxIcon',
-    searchHeader: 'searchHeader',
-    metaRow: 'metaRow',
-    statsRoot: 'statsRoot',
-    algoliaAttribution: 'algoliaAttribution',
-    algoliaIcon: 'algoliaIcon',
-    algoliaText: 'algoliaText',
-    layout: 'layout',
-    sidebar: 'sidebar',
-    filterSection: 'filterSection',
-    refinementGroup: 'refinementGroup',
-    refinementTitle: 'refinementTitle',
-    refinementRoot: 'refinementRoot',
-    refinementList: 'refinementList',
-    refinementItem: 'refinementItem',
-    refinementItemSelected: 'refinementItemSelected',
-    refinementLabel: 'refinementLabel',
-    refinementCheckbox: 'refinementCheckbox',
-    refinementLabelText: 'refinementLabelText',
-    refinementCount: 'refinementCount',
-    clearRoot: 'clearRoot',
-    clearButton: 'clearButton',
-    clearButtonDisabled: 'clearButtonDisabled',
-    results: 'results',
-    hitsRoot: 'hitsRoot',
-    hitsList: 'hitsList',
-    hitsItem: 'hitsItem',
-  },
+vi.mock('algoliasearch/lite', () => ({
+  liteClient: vi.fn(() => ({
+    search: vi.fn().mockResolvedValue({ results: [] }),
+  })),
 }));
+
+vi.mock('react-instantsearch', () => ({
+  InstantSearch: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="instant-search">{children}</div>
+  ),
+  SearchBox: () => <input data-testid="search-box" placeholder="Search facts..." />,
+  Hits: () => <div data-testid="hits">Hits component</div>,
+  RefinementList: ({ attribute }: { attribute: string }) => (
+    <div data-testid={`refinement-${attribute}`}>Refinement for {attribute}</div>
+  ),
+  Pagination: () => <nav data-testid="pagination">Pagination</nav>,
+  Stats: () => <div data-testid="stats">Stats</div>,
+  ClearRefinements: () => <button data-testid="clear-refinements">Clear Filters</button>,
+  Configure: () => null,
+}));
+
+// Mock SiAlgolia icon to avoid issues with react-icons in tests if needed
+vi.mock('react-icons/si', () => ({
+  SiAlgolia: () => <span data-testid="algolia-icon">Algolia Icon</span>,
+}));
+
+const originalEnv = { ...process.env };
 
 describe('SearchPage Component', () => {
   beforeEach(() => {
     vi.resetModules();
+    process.env = { ...originalEnv };
   });
 
-  afterEach(() => {
-    vi.unstubAllEnvs();
+  afterAll(() => {
+    process.env = originalEnv;
   });
 
-  it('renders error state when configuration is missing', async () => {
-    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', '');
-    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', '');
+  it('renders error state when Algolia credentials are missing', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = '';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = '';
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
@@ -65,14 +49,80 @@ describe('SearchPage Component', () => {
     expect(screen.getByText(/Search is currently unavailable/)).toBeInTheDocument();
   });
 
-  it('renders SiteSearch container when configuration is present', async () => {
-    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'test-app-id');
-    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'test-search-key');
-    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID', 'test-ai-id');
+  it('renders InstantSearch when credentials are present', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);
 
-    expect(screen.getByTestId('search-container')).toBeInTheDocument();
+    expect(screen.getByTestId('instant-search')).toBeInTheDocument();
+    expect(screen.getByTestId('search-box')).toBeInTheDocument();
+  });
+
+  it('renders all filter refinement lists', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+
+    const { default: SearchPage } = await import('./SearchPage');
+    render(<SearchPage />);
+
+    expect(screen.getByTestId('refinement-category')).toBeInTheDocument();
+    expect(screen.getByTestId('refinement-projects')).toBeInTheDocument();
+    expect(screen.getByTestId('refinement-tags.lvl0')).toBeInTheDocument();
+  });
+
+  it('renders pagination and stats components', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+
+    const { default: SearchPage } = await import('./SearchPage');
+    render(<SearchPage />);
+
+    expect(screen.getByTestId('pagination')).toBeInTheDocument();
+    expect(screen.getByTestId('stats')).toBeInTheDocument();
+  });
+
+  it('renders clear refinements button', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+
+    const { default: SearchPage } = await import('./SearchPage');
+    render(<SearchPage />);
+
+    expect(screen.getByTestId('clear-refinements')).toBeInTheDocument();
+  });
+
+  it('has correct heading structure for filters', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+
+    const { default: SearchPage } = await import('./SearchPage');
+    render(<SearchPage />);
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Filter' })).toBeInTheDocument();
+  });
+
+  it('renders filter section headings', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+
+    const { default: SearchPage } = await import('./SearchPage');
+    render(<SearchPage />);
+
+    expect(screen.getByText('Category')).toBeInTheDocument();
+    expect(screen.getByText('Builds')).toBeInTheDocument();
+    expect(screen.getByText('Tags')).toBeInTheDocument();
+  });
+
+  it('renders Algolia attribution link', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app-id';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key';
+
+    const { default: SearchPage } = await import('./SearchPage');
+    render(<SearchPage />);
+
+    const algoliaLink = screen.getByRole('link', { name: /Search powered by Algolia/i });
+    expect(algoliaLink).toHaveAttribute('href', 'https://www.algolia.com');
   });
 });
