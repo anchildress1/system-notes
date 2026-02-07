@@ -20,6 +20,7 @@
   /* #B56BFF */
   --color-accent-pink: 338 86% 66%;
   /* #F16197 */
+  --color-accent-teal: 178 57% 51%;
   /* #3EC7C2 */
 
   --color-border: 225 10% 25%;
@@ -69,8 +70,7 @@ body::before {
   z-index: -1;
   background-image:
     radial-gradient(circle at 50% -20%, hsl(var(--color-accent-purple) / 0.3), transparent 60%),
-    radial-gradient(circle at 85% 90%, hsl(var(--color-accent-teal) / 0.1), transparent 50%),
-    radial-gradient(circle at 10% 50%, hsl(var(--color-accent-yellow) / 0.05), transparent 40%);
+    radial-gradient(circle at 85% 90%, hsl(var(--color-accent-teal) / 0.1), transparent 50%);
   pointer-events: none;
 }
 
