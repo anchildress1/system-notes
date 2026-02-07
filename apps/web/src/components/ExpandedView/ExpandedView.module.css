@@ -285,7 +285,9 @@
 }
 
 .repoLink:hover {
-    background: hsl(var(--color-accent-pink) / 0.8);
+    background: hsl(var(--color-bg-surface));
+    border: 2px solid hsl(var(--color-accent-pink));
+    color: hsl(var(--color-accent-pink));
     transform: translateY(-2px);
     box-shadow: 0 8px 30px hsl(var(--color-accent-pink) / 0.3);
 }
