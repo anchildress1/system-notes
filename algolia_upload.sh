@@ -89,6 +89,12 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
 
   # Upload to merged-search
   echo "📤 Syncing to ${MERGED_INDEX}..."
+  echo "🧹 Clearing ${MERGED_INDEX} before upload..."
+  curl --fail-with-body -X POST "${BASE_URL}/indexes/${MERGED_INDEX}/clear" \
+    -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
+    -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
+    -H "Content-Type: application/json" \
+    -w "\n" -s
   BATCH_JSON_MERGED=$(jq -f "apps/api/algolia/config/normalize_merged.jq" "$INDEX_JSON_PATH")
   echo "$BATCH_JSON_MERGED" | curl --fail-with-body -X POST "${BASE_URL}/indexes/${MERGED_INDEX}/batch" \
     -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \

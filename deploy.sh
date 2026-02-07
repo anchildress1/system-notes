@@ -43,12 +43,31 @@ gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com
 API_SA="system-notes-api@$PROJECT_ID.iam.gserviceaccount.com"
 UI_SA="system-notes-ui@$PROJECT_ID.iam.gserviceaccount.com"
 
-# Algolia Config - these are PUBLIC keys (safe for client-side)
+# Env loading (PUBLIC keys are safe for client-side)
 # For sensitive secrets, use Secret Manager instead of env vars
-NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=EXKENZ9FHJ
-NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=cd51e9af01f0796ac10c3fbfc5aa5b9f
-NEXT_PUBLIC_ALGOLIA_AGENT_ID=11caec4a-abd5-439a-a66a-3c26562de5c1
-NEXT_PUBLIC_BASE_URL=https://unstable.anchildress1.dev
+ENV_FILE="${ENV_FILE:-.env}"
+
+if [ ! -f "$ENV_FILE" ]; then
+    echo "Error: Env file not found at $ENV_FILE"
+    exit 1
+fi
+
+set -a
+. "$ENV_FILE"
+set +a
+
+require_env() {
+    local name=$1
+    if [ -z "${!name}" ]; then
+        echo "Error: Required env var '$name' is missing or empty."
+        exit 1
+    fi
+}
+
+require_env "NEXT_PUBLIC_ALGOLIA_APPLICATION_ID"
+require_env "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY"
+require_env "NEXT_PUBLIC_ALGOLIA_AGENT_ID"
+require_env "NEXT_PUBLIC_BASE_URL"
 
 # ==========================================
 # Deployment Function
@@ -93,7 +112,7 @@ deploy_service() {
 
     # 3. Deploy to Cloud Run
     echo "Deploying to Cloud Run..."
-    
+
     # Use array to prevent word splitting issues
     DEPLOY_ARGS=(
         "deploy" "$SERVICE_NAME"
@@ -124,6 +143,10 @@ deploy_service "$API_SERVICE" "$API_SOURCE" "$API_PORT" "$API_SA"
 
 # 2. Get API URL
 API_URL=$(gcloud run services describe "$API_SERVICE" --region "$REGION" --project "$PROJECT_ID" --format 'value(status.url)')
+if [ -z "$API_URL" ]; then
+    echo "Error: Failed to resolve API_URL from Cloud Run service '$API_SERVICE'."
+    exit 1
+fi
 echo "API URL: $API_URL"
 
 deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "" "apps/web/Dockerfile"
