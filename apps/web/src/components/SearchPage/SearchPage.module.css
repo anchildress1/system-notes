@@ -440,15 +440,23 @@
   text-decoration-color: rgba(181, 107, 255, 0.4) !important;
 }
 
-/* Card/Hit Item Styling */
+/* Modal Container - Force Dark Theme Surface */
+:global(.ss-modal),
+:global(.ss-modal-content),
+:global(.sitesearch-modal) {
+  background-color: var(--search-background-color) !important;
+  color: var(--search-text-color) !important;
+}
+
+/* Card/Hit Item Styling - Remove Gray Background */
 :global(.ss-infinite-hits-item) {
   border: 1px solid var(--search-border-color) !important;
-  background: rgba(58, 61, 70, 0.4) !important;
+  background: transparent !important; /* Removed gray overlay */
 }
 
 :global(.ss-infinite-hits-item:hover) {
   border-color: var(--search-primary-color) !important;
-  background: rgba(58, 61, 70, 0.6) !important;
+  background: rgba(181, 107, 255, 0.05) !important; /* Very subtle purple tint on hover */
   box-shadow: 0 4px 12px rgba(181, 107, 255, 0.15) !important;
 }
 
