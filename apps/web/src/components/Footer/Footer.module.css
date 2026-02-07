@@ -7,7 +7,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    position: sticky;
+    bottom: 0;
     z-index: 10000;
     font-size: 0.85rem;
     color: hsl(var(--color-text-secondary));
@@ -54,8 +55,9 @@
 
 .socialLink:hover,
 .socialLink:focus-visible {
+    background-color: transparent;
     color: hsl(var(--color-accent-pink));
-    outline-color: hsl(var(--color-accent-pink));
+    outline: none; /* Removed outline */
 }
 
 .center {
@@ -88,10 +90,14 @@
     font-size: 0.75rem;
     opacity: 0.8;
     transition: opacity 0.2s ease;
+    border: none;
+    outline: none;
 }
 
 .algoliaLink:hover {
     opacity: 1;
+    color: hsl(var(--color-text-secondary)); /* Ensure it doesn't turn teal/pink */
+    outline: none; /* Force remove outline */
 }
 
 .algoliaIcon {

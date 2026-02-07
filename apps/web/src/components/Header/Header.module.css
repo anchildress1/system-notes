@@ -30,7 +30,7 @@
 
 .logoLink:hover .name {
     text-decoration: underline;
-    text-decoration-color: hsl(var(--color-accent-teal));
+    text-decoration-color: hsl(var(--color-accent-purple));
 }
 
 .name {
