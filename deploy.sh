@@ -45,16 +45,14 @@ UI_SA="system-notes-ui@$PROJECT_ID.iam.gserviceaccount.com"
 
 # Env loading (PUBLIC keys are safe for client-side)
 # For sensitive secrets, use Secret Manager instead of env vars
-ENV_FILE="${ENV_FILE:-.env}"
-
-if [ ! -f "$ENV_FILE" ]; then
-    echo "Error: Env file not found at $ENV_FILE"
-    exit 1
-fi
-
-set -a
-. "$ENV_FILE"
-set +a
+for env_file in ".env" ".env.local" "apps/web/.env.local"; do
+    if [ -f "$env_file" ]; then
+        set -a
+        # shellcheck disable=SC1090
+        . "$env_file"
+        set +a
+    fi
+done
 
 require_env() {
     local name=$1
@@ -68,6 +66,10 @@ require_env "NEXT_PUBLIC_ALGOLIA_APPLICATION_ID"
 require_env "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY"
 require_env "NEXT_PUBLIC_ALGOLIA_AGENT_ID"
 require_env "NEXT_PUBLIC_BASE_URL"
+
+# Set defaults for optional vars that are required by build
+NEXT_PUBLIC_ALGOLIA_INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_INDEX_NAME:-system-notes}"
+NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME:-${NEXT_PUBLIC_ALGOLIA_INDEX_NAME}_query_suggestions}"
 
 # ==========================================
 # Deployment Function
@@ -104,7 +106,7 @@ deploy_service() {
         gcloud beta builds submit "$SOURCE_DIR" \
             --config "apps/web/cloudbuild.yaml" \
             --project "$PROJECT_ID" \
-            --substitutions "_IMAGE_URI=$IMAGE_URI,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID,_NEXT_PUBLIC_API_URL=$API_URL,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL"
+            --substitutions "_IMAGE_URI=$IMAGE_URI,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID,_NEXT_PUBLIC_API_URL=$API_URL,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_INDEX_NAME,_NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME"
     else
         # Standard build from root of service directory
         gcloud beta builds submit --tag "$IMAGE_URI" "$SOURCE_DIR" --project "$PROJECT_ID"

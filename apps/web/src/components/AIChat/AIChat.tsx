@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { Chat } from 'react-instantsearch';
@@ -62,8 +62,6 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
   );
 
 export default function AIChat() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
@@ -122,14 +120,6 @@ export default function AIChat() {
     const fixAccessibility = () => {
       if (typeof document === 'undefined') return;
 
-      const chatWindow = document.querySelector('.ais-Chat-window');
-      const chatContainer = document.querySelector('.ais-Chat-container');
-      const isWindowOpen = !!chatWindow;
-      setIsChatOpen((prev) => (prev === isWindowOpen ? prev : isWindowOpen));
-
-      if (chatWindow) chatWindow.classList.add('dark');
-      if (chatContainer) chatContainer.classList.add('dark');
-
       const toggleBtn = document.querySelector(
         '.ais-ChatToggleButton, .ais-Chat-toggleButton, [class*="ChatToggleButton"]'
       );
@@ -153,7 +143,7 @@ export default function AIChat() {
 
   const chatContent = (
     <div className={styles.chatDock}>
-      <div className={`${styles.musicWrapper} ${isChatOpen ? styles.musicPushed : ''}`}>
+      <div className={styles.musicWrapper}>
         <MusicPlayer />
       </div>
       <InstantSearchNext

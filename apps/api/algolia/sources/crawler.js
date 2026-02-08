@@ -24,7 +24,16 @@ new Crawler({
         var description = _desc ? String(_desc).trim().slice(0, 500) : null;
 
         var publishedAt = $('meta[name="article:published_time"]').attr('content');
-        publishedAt = publishedAt ? String(publishedAt).trim() : null;
+        if (publishedAt) {
+          var date = new Date(String(publishedAt).trim());
+          if (!isNaN(date.getTime())) {
+            publishedAt = Math.floor(date.getTime() / 1000);
+          } else {
+            publishedAt = null;
+          }
+        } else {
+          publishedAt = null;
+        }
 
         var canonical =
           $('link[rel="canonical"]').attr('href') ||

@@ -1,59 +1,15 @@
 /* Algolia Chat Widget — Portal-based, body-level dock
    .appRoot (isolation:isolate) contains all app z-index values.
    The chatDock portal appears AFTER .appRoot in DOM, so it naturally
-   paints on top without any z-index. */
+   paints on top — zero z-index escalation needed.
+
+   CRITICAL: Do NOT override position/size/opacity/transform on
+   .ais-Chat-container. Algolia uses opacity+transform transitions
+   for the open/close animation. Overriding these properties breaks
+   the animation and leaves the container at opacity:0 (invisible). */
 
 .chatDock {
   isolation: isolate;
-}
-
-:global(.ais-Chat-window:not([class*="maximized"]):not([class*="fullscreen"])) {
-  position: fixed;
-  bottom: 170px;
-  right: var(--space-md, 20px);
-  width: min(375px, calc(100vw - 32px));
-  height: min(600px, calc(100vh - 190px));
-  z-index: 3;
-}
-
-:global(.ais-Chat-container:not([class*="maximized"]):not([class*="fullscreen"])) {
-  position: fixed;
-  bottom: 170px;
-  right: var(--space-md, 20px);
-  width: min(375px, calc(100vw - 32px));
-  height: min(600px, calc(100vh - 190px));
-  z-index: 3;
-  pointer-events: none;
-}
-
-
-:global(.ais-Chat-container[class*="maximized"]),
-:global(.ais-Chat-container[class*="fullscreen"]),
-:global(.ais-Chat-window[class*="maximized"]),
-:global(.ais-Chat-window[class*="fullscreen"]) {
-  position: fixed !important;
-  bottom: 170px !important;
-  right: var(--space-md, 20px) !important;
-  top: auto !important;
-  left: auto !important;
-  transform: none !important;
-  width: min(90vw, 800px) !important;
-  height: min(80vh, 700px) !important;
-  max-width: calc(100vw - 40px) !important;
-  max-height: calc(100vh - 190px) !important;
-  z-index: 4 !important;
-}
-
-
-:global(.ais-Chat-window) {
-  pointer-events: auto;
-}
-
-:global(.ais-Chat-toggleButtonWrapper) {
-  position: fixed !important;
-  bottom: 90px !important;
-  right: var(--space-md, 20px) !important;
-  z-index: 2 !important;
 }
 
 .musicWrapper {
@@ -65,20 +21,8 @@
   pointer-events: auto;
 }
 
-.musicPushed {
+.chatDock:has(:global(.ais-Chat-container--open)) .musicWrapper {
   right: calc(var(--space-md, 20px) + 375px + 20px);
-}
-
-@media (max-width: 768px) {
-  :global(.ais-Chat-container[class*="maximized"]),
-  :global(.ais-Chat-container[class*="fullscreen"]),
-  :global(.ais-Chat-window[class*="maximized"]),
-  :global(.ais-Chat-window[class*="fullscreen"]) {
-    width: calc(100vw - 40px) !important;
-    height: calc(100vh - 200px) !important;
-    bottom: 170px !important;
-    right: var(--space-md, 20px) !important;
-  }
 }
 
 :global(.ais-Chat-toggleButton),
@@ -96,7 +40,6 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  z-index: 2 !important;
 }
 
 :global(.ais-Chat-toggleButton:hover),
