@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { injectTestStyles } from './utils';
 
 test.describe('AI Readiness & SEO', () => {
   test('should contain valid JSON-LD structure', async ({ page }) => {

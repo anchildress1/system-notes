@@ -1,42 +1,10 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { injectTestStyles, mockAlgolia } from './utils';
+import { mockAlgolia } from './utils';
 
 test.describe('System Notes Integration', () => {
   test.beforeEach(async ({ page }) => {
-    // Mock Algolia globally to ensure deterministic tests and prevent external calls
-    await page.route('**/*algolia*/**', async (route) => {
-      // Small delay to simulate network but not hang
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Always return empty results to prevent Chat from opening automatically
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          results: [
-            {
-              hits: [],
-              nbHits: 0,
-            },
-          ],
-        }),
-      });
-    });
-
-    // Inject CSS to hide the Chat widget to prevent click interception
-    await page.addStyleTag({
-      content: `
-        [class*="floatingControls"],
-        .ais-Chat-window,
-        .ais-Chat-toggleButton,
-        [class*="ClientShell-module__PdIJPa__floatingControls"] {
-          display: none !important;
-          pointer-events: none !important;
-          z-index: -1 !important;
-        }
-      `,
-    });
+    await mockAlgolia(page);
   });
 
   test('loads homepage with correct metadata', async ({ page }) => {
@@ -120,10 +88,11 @@ test.describe('System Notes Integration', () => {
     });
     await expect(page.locator('text=Appalachia').first()).toBeVisible();
 
-    // Fallback: Manually inject if MutationObserver is too slow in test env
-    await page.evaluate(() => {
-      document.querySelector('.ais-ChatToggleButton')?.setAttribute('aria-label', 'Open AI Chat');
-    });
+    // Fix A11y: Ensure Chat Toggle Button has label
+    // The app's MutationObserver handles this, we verify it works
+    const chatToggle = page.locator('.ais-ChatToggleButton');
+    await expect(chatToggle).toBeVisible();
+    await expect(chatToggle).toHaveAttribute('aria-label', 'Open AI Chat');
 
     // Accessibility check
     const accessibilityScanResults = await new AxeBuilder({ page })
@@ -153,7 +122,7 @@ test.describe('System Notes Integration', () => {
 
     // Verify modal opens
     const modal = page.getByTestId('expanded-view-dialog');
-    await expect(modal).toBeVisible({ timeout: 5000 });
+    await expect(modal).toBeVisible();
 
     // Verify correct project loaded (use modal-scoped heading)
     await expect(modal.getByRole('heading', { name: 'System Notes' })).toBeVisible();

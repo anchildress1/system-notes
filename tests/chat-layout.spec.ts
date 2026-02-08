@@ -4,8 +4,8 @@ test.describe('AIChat Visual Layout', () => {
   test('chat window CSS should be correct', async ({ page }) => {
     await page.goto('/');
 
-    // Wait for hydration
-    await page.waitForLoadState('networkidle');
+    // Wait for hydration/content instead of networkidle
+    await expect(page.locator('h1').first()).toBeVisible();
 
     // Inject a dummy element with the target class to verify CSS application
     // The real widget might not open due to missing Algolia creds in test env,
