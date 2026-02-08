@@ -31,7 +31,6 @@ export default function PostCard({ hit, sendEvent }: PostCardProps) {
   const searchParams = useSearchParams();
   const portalTarget = useMemo(() => (typeof document !== 'undefined' ? document.body : null), []);
   const hasTrackedFlip = useRef(false);
-  const postUrl = hit.url || (hit.blurb && hit.blurb.startsWith('http') ? hit.blurb : hit.objectID);
   const tags = hit['tags.lvl1'] || hit['tags.lvl0'] || [];
   const dialogTitleId = `post-card-title-${hit.objectID}`;
   const dialogDescriptionId = `post-card-description-${hit.objectID}`;
@@ -124,10 +123,6 @@ export default function PostCard({ hit, sendEvent }: PostCardProps) {
                     ))}
                   </div>
                 )}
-
-                <div className={styles.footer}>
-                  <span className={styles.readMore}>Read Post &rarr;</span>
-                </div>
               </div>
             </div>
           </div>
@@ -220,18 +215,6 @@ export default function PostCard({ hit, sendEvent }: PostCardProps) {
                           ))}
                         </div>
                       )}
-                    </div>
-
-                    <div className={styles.actions}>
-                      <a
-                        href={postUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.readPostButton}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        Read Post &rarr;
-                      </a>
                     </div>
                   </div>
                 </div>

@@ -187,29 +187,6 @@
   border: 1px solid var(--glass-border);
 }
 
-.footer {
-  margin-top: auto;
-  padding-top: var(--space-sm);
-  border-top: 1px solid var(--glass-border);
-  display: flex;
-  justify-content: flex-end;
-}
-
-.readMore {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: hsl(var(--color-accent-purple));
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: gap var(--transition-fast);
-}
-
-.card:hover .readMore {
-  gap: 8px;
-}
-
 /* ── Back Side (Flipped) ── */
 
 .backHeader {
@@ -278,34 +255,6 @@
 
 .metaSection {
   margin-bottom: 1.5rem;
-}
-
-.actions {
-  margin-top: auto;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.readPostButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: hsl(var(--color-accent-purple));
-  border: 1.5px solid hsl(var(--color-accent-purple));
-  border-radius: var(--radius-md);
-  background: transparent;
-  text-decoration: none;
-  transition: all var(--transition-base);
-}
-
-.readPostButton:hover {
-  background: hsl(var(--color-accent-purple));
-  color: hsl(var(--color-bg-base));
-  box-shadow: 0 4px 12px hsl(var(--color-accent-purple) / 0.4);
 }
 
 @media (max-width: 768px) {
