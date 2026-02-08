@@ -7,26 +7,11 @@
   {
     "objectID": "syn_assistant_ruckus_human",
     "type": "synonym",
-    "synonyms": ["Ruckus", "chatbot", "assistant", "ai assistant", "agent", "search assistant"]
-  },
-  {
-    "objectID": "syn_site_system_notes_human",
-    "type": "synonym",
-    "synonyms": ["System Notes", "system notes", "system-notes", "portfolio", "site", "website"]
+    "synonyms": ["Ruckus", "bot", "assistant", "agent"]
   },
   {
     "objectID": "syn_content_projects_human",
     "type": "synonym",
     "synonyms": ["projects", "work", "repos", "repository", "github", "builds"]
-  },
-  {
-    "objectID": "syn_theme_appalachia_human",
-    "type": "synonym",
-    "synonyms": ["Appalachia", "Appalachian", "Virginia", "mountains"]
-  },
-  {
-    "objectID": "syn_project_hermes_human",
-    "type": "synonym",
-    "synonyms": ["Hermes", "Hermes Agent", "hermetic agent", "my-hermetic-agent"]
   }
 ]

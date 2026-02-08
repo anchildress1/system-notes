@@ -14,6 +14,7 @@ def normalize_common:
       fact: ($in.fact // ""),
       "tags.lvl0": (ensure_array($in["tags.lvl0"])),
       "tags.lvl1": (ensure_array($in["tags.lvl1"])),
+      tags: (ensure_array($in["tags.lvl0"]) + ensure_array($in["tags.lvl1"]) | unique),
       projects: (ensure_array($in.projects)),
       category: ($in.category // ""),
       signal: ($in.signal // 0)

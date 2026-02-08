@@ -1,1 +1,3 @@
-/* ClientShell: no layout styles needed — AIChat uses a body-level portal */
+.appRoot {
+  isolation: isolate;
+}

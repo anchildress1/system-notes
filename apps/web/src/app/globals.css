@@ -247,3 +247,59 @@ button {
 .ais-Chat-submitButton:hover {
   background-color: hsl(var(--color-accent-purple) / 0.8) !important;
 }
+
+/* ── Chat header action buttons (maximize, minimize, close) ── */
+.ais-Chat-header button,
+.ais-ChatHeader button,
+.ais-Chat-headerActions button {
+  color: hsl(var(--color-text-muted)) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.ais-Chat-header button:hover,
+.ais-ChatHeader button:hover,
+.ais-Chat-headerActions button:hover {
+  color: hsl(var(--color-accent-purple)) !important;
+}
+
+/* ── Kill ALL remaining Algolia blue ── */
+.ais-SearchBox-submit,
+.ais-SearchBox-submitIcon,
+.ais-RefinementList-checkbox:checked,
+.ais-ToggleRefinement-checkbox:checked,
+.ais-Pagination-link--selected,
+.ais-Stats-text a,
+.ais-ClearRefinements-button,
+.ais-CurrentRefinements-delete {
+  color: hsl(var(--color-accent-purple)) !important;
+}
+
+.ais-SearchBox-submit {
+  background: transparent !important;
+}
+
+.ais-Pagination-link--selected {
+  background-color: hsl(var(--color-accent-purple)) !important;
+  border-color: hsl(var(--color-accent-purple)) !important;
+  color: white !important;
+}
+
+*:focus-visible {
+  outline-color: hsl(var(--color-accent-purple)) !important;
+}
+
+.ais-SearchBox-input:focus {
+  border-color: hsl(var(--color-accent-purple)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--color-accent-purple) / 0.25) !important;
+}
+
+/* ── SiteSearch leftover blue overrides ── */
+[class*="ss-"] a,
+[class*="ss-"] button:not([class*="clear"]) {
+  color: inherit;
+}
+
+[class*="ss-"] a:hover {
+  color: hsl(var(--color-accent-teal)) !important;
+}

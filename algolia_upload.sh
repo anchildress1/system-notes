@@ -89,7 +89,7 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
     .[0] as $state
     | .[1]
     | map(. + {
-        created_at: ($state.dates[.objectID] // (now | todate))
+        created_at: (($state.dates[.objectID] | if . then (try fromdate catch .) else null end) // (now | floor))
       }) as $payload
     | $payload
     | map(.objectID) as $new_ids
@@ -216,7 +216,7 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
     | ($sys + $crawl) as $all_new
     | $all_new
     | map(. + {
-        created_at: ($state.dates[.objectID] // (now | todate))
+        created_at: (($state.dates[.objectID] | if . then (try fromdate catch .) else null end) // (now | floor))
       }) as $payload
     | $payload
     | map(.objectID) as $new_ids

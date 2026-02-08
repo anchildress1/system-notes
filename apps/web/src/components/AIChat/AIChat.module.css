@@ -1,11 +1,9 @@
 /* Algolia Chat Widget — Portal-based, body-level dock
-   Rule: DOM order defines priority, not z-index escalation.
-   #chat-dock is appended to <body> AFTER #__next, so it naturally
-   stacks above the app. Internal layering uses local z-index only. */
+   .appRoot (isolation:isolate) contains all app z-index values.
+   The chatDock portal appears AFTER .appRoot in DOM, so it naturally
+   paints on top without any z-index. */
 
 .chatDock {
-  position: relative;
-  z-index: 1;
   isolation: isolate;
 }
 
