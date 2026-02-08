@@ -21,9 +21,8 @@
   pointer-events: auto;
 }
 
-.chatDock:has(:global(.ais-Chat-container--open)) .musicWrapper {
-  right: calc(var(--space-md, 20px) + 375px + 20px);
-}
+/* Chat overlays music button instead of pushing it aside. Music button is
+   always at bottom-right; chat renders on top when open. */
 
 :global(.ais-Chat:has(.ais-Chat-container--maximized)),
 :global(.ais-Chat.ais-Chat--maximized) {

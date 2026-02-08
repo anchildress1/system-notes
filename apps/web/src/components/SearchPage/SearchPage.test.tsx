@@ -5,6 +5,22 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+  })),
+  useSearchParams: vi.fn(() => ({
+    get: vi.fn(),
+    has: vi.fn(),
+  })),
+  usePathname: vi.fn(() => '/search'),
+}));
+
 vi.mock('algoliasearch/lite', () => ({
   liteClient: vi.fn(() => ({
     search: vi.fn(() =>

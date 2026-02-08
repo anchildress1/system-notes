@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
   InstantSearch,
@@ -115,9 +116,49 @@ function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string, e
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
   const isEnabled = Boolean(hasCredentials);
+  const router = useRouter();
 
   useSiteSearchWithAI(appId, searchKey, indexName, isEnabled);
   useFactIdRouting(indexName);
+
+  useEffect(() => {
+    const handleLinkClick = (e: Event) => {
+      const link = e.currentTarget as HTMLElement;
+      e.preventDefault();
+      e.stopPropagation();
+
+      const titleEl = link.querySelector('.ss-infinite-hits-item-title');
+      const title = titleEl?.textContent?.trim();
+      if (!title) return;
+
+      const params = new URLSearchParams();
+      params.set('query', title);
+
+      router.push(`/search?${params.toString()}`, { scroll: false });
+
+      setTimeout(() => {
+        const dialog = document.querySelector('[role="dialog"], .modal-backdrop-askai');
+        const closeBtn = dialog?.querySelector('button[aria-label*="lose"], button:has(svg)');
+        if (closeBtn instanceof HTMLElement) closeBtn.click();
+      }, 100);
+    };
+
+    const attachHandlers = () => {
+      const links = document.querySelectorAll('.ss-infinite-hits-anchor');
+      links.forEach((link) => {
+        if (!link.hasAttribute('data-has-handler')) {
+          link.addEventListener('click', handleLinkClick);
+          link.setAttribute('data-has-handler', 'true');
+        }
+      });
+    };
+
+    const observer = new MutationObserver(attachHandlers);
+    observer.observe(document.body, { childList: true, subtree: true });
+    attachHandlers();
+
+    return () => observer.disconnect();
+  }, [router]);
 
   if (!isEnabled || !searchClient) {
     return (
