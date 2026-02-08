@@ -5,6 +5,30 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
+vi.mock('algoliasearch/lite', () => ({
+  liteClient: vi.fn(() => ({
+    search: vi.fn(() =>
+      Promise.resolve({
+        results: [
+          {
+            hits: [],
+            nbHits: 0,
+            page: 0,
+            nbPages: 0,
+            hitsPerPage: 20,
+            processingTimeMS: 1,
+            exhaustiveNbHits: true,
+            query: '',
+            params: '',
+            index: 'test_index',
+          },
+        ],
+      })
+    ),
+    addAlgoliaAgent: vi.fn(),
+  })),
+}));
+
 vi.mock('./SearchPage.module.css', () => ({
   default: {
     container: 'container',
