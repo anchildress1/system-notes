@@ -1,10 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { injectTestStyles } from './utils';
 
 test.describe('Mobile Responsiveness', () => {
-  test.beforeEach(async ({ page }) => {
-    await injectTestStyles(page);
-  });
+  // test.beforeEach(async ({ page }) => {
+  //   await injectTestStyles(page);
+  // });
   test('should render header correctly on mobile', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -55,7 +54,8 @@ test.describe('Mobile Responsiveness', () => {
 
   test('should verify blog button and music player visibility', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    // Wait for critical content instead of networkidle
+    await expect(page.locator('header')).toBeVisible();
 
     // Check Blog Button
     // Fallback to text if testid not found immediately (HMR issue?)

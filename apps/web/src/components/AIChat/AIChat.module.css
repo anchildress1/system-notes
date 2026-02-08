@@ -27,12 +27,35 @@
   z-index: 10002;
 }
 
-/* Ensure maximized/fullscreen mode works - higher z-index only */
+/* Maximized/fullscreen mode - anchor to bottom-right, expand upward/leftward */
 :global(.ais-Chat-container[class*="maximized"]),
 :global(.ais-Chat-container[class*="fullscreen"]),
 :global(.ais-Chat-window[class*="maximized"]),
 :global(.ais-Chat-window[class*="fullscreen"]) {
+  position: fixed !important;
+  bottom: 170px !important;
+  right: var(--space-md, 20px) !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  width: min(90vw, 800px) !important;
+  height: min(80vh, 700px) !important;
+  max-width: calc(100vw - 40px) !important;
+  max-height: calc(100vh - 190px) !important;
   z-index: 10003 !important;
+}
+
+/* Mobile responsive - expanded takes more space */
+@media (max-width: 768px) {
+  :global(.ais-Chat-container[class*="maximized"]),
+  :global(.ais-Chat-container[class*="fullscreen"]),
+  :global(.ais-Chat-window[class*="maximized"]),
+  :global(.ais-Chat-window[class*="fullscreen"]) {
+    width: calc(100vw - 40px) !important;
+    height: calc(100vh - 200px) !important;
+    bottom: 170px !important;
+    right: var(--space-md, 20px) !important;
+  }
 }
 
 /* DO NOT override pointer-events - let Algolia control it */
