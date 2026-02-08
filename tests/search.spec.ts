@@ -46,7 +46,7 @@ test.describe('Search Page Integration', () => {
     try {
       // Check for the SiteSearch container instead of specific input placeholder
       // as the widget renders dynamically
-      const siteSearch = page.locator('#sitesearch');
+      const siteSearch = page.locator('#search-askai');
 
       // Wait for search to "load" (our mock)
       await expect(siteSearch).toBeVisible({ timeout: 15000 });

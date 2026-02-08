@@ -16,8 +16,9 @@ new Crawler({
       recordExtractor: function ({ url, $, helpers }) {
         var urlStr = typeof url === 'string' ? url : String(url);
 
-        var title =
+        var _rawTitle =
           $('main > h1').first().text().trim() || $('title').first().text().trim() || urlStr;
+        var title = 'Blog titled ' + _rawTitle;
 
         var _desc = $('meta[name="description"]').attr('content');
         var description = _desc ? String(_desc).trim().slice(0, 500) : null;
@@ -32,6 +33,13 @@ new Crawler({
         canonical = canonical ? String(canonical).trim() : null;
 
         var finalUrl = canonical || urlStr;
+
+        var slug = finalUrl;
+        var cleanUrl = finalUrl.replace(/\/$/, '');
+        var parts = cleanUrl.split('/');
+        if (parts.length > 0) {
+          slug = parts.pop();
+        }
 
         var image = $('meta[property="og:image"]').attr('content');
         image = image ? String(image).trim() : null;
@@ -73,7 +81,7 @@ new Crawler({
 
         return [
           {
-            objectID: finalUrl,
+            objectID: slug,
             title: title,
             url: finalUrl,
             blurb: description,

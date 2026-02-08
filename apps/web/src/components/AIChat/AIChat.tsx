@@ -122,12 +122,22 @@ export default function AIChat() {
 
   useEffect(() => {
     // Accessibility fix: Inject aria-label into Algolia's Chat toggle button
+    // Dark mode: Add .dark class to enable Algolia's built-in dark theme
     const fixAccessibility = () => {
       if (typeof document === 'undefined') return;
 
       const chatWindow = document.querySelector('.ais-Chat-window');
+      const chatContainer = document.querySelector('.ais-Chat-container');
       const isWindowOpen = !!chatWindow;
       setIsChatOpen((prev) => (prev === isWindowOpen ? prev : isWindowOpen));
+
+      // Apply dark mode class to Algolia Chat widget
+      if (chatWindow) {
+        chatWindow.classList.add('dark');
+      }
+      if (chatContainer) {
+        chatContainer.classList.add('dark');
+      }
 
       const toggleBtn = document.querySelector(
         '.ais-ChatToggleButton, .ais-Chat-toggleButton, [class*="ChatToggleButton"]'

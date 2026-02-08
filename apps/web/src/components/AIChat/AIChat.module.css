@@ -1,6 +1,7 @@
 /* Algolia Chat Widget - Positioning and Custom Styling Only */
 
 /* IMPORTANT: Allow Algolia to handle maximize/fullscreen behavior
+   Dark mode is enabled via .dark class added in AIChat.tsx
    Only apply custom positioning when in default (non-maximized) state */
 
 /* Chat window positioning - only when NOT maximized */
@@ -10,7 +11,7 @@
   right: var(--space-md, 20px);
   width: min(375px, calc(100vw - 32px));
   height: min(600px, calc(100vh - 190px));
-  z-index: 10002;
+  z-index: var(--z-chat-window);
 }
 
 /* Container positioning - only when NOT maximized */
@@ -20,8 +21,9 @@
   right: var(--space-md, 20px);
   width: min(375px, calc(100vw - 32px));
   height: min(600px, calc(100vh - 190px));
-  z-index: 10002;
-  pointer-events: none; /* Let clicks pass through container to window/button */
+  z-index: var(--z-chat-window);
+  pointer-events: none;
+  /* Let clicks pass through container to window/button */
 }
 
 /* Maximized/fullscreen mode - anchor to bottom-right, expand upward/leftward */
@@ -30,16 +32,7 @@
 :global(.ais-Chat-window[class*="maximized"]),
 :global(.ais-Chat-window[class*="fullscreen"]) {
   position: fixed !important;
-  bottom: 170px !important;
-  right: var(--space-md, 20px) !important;
-  top: auto !important;
-  left: auto !important;
-  transform: none !important;
-  width: min(90vw, 800px) !important;
-  height: min(80vh, 700px) !important;
-  max-width: calc(100vw - 40px) !important;
-  max-height: calc(100vh - 190px) !important;
-  z-index: 10003 !important;
+  z-index: var(--z-chat-maximized) !important;
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
@@ -72,14 +65,14 @@
   position: fixed !important;
   bottom: 90px !important;
   right: var(--space-md, 20px) !important;
-  z-index: 10001 !important;
+  z-index: var(--z-chat-toggle) !important;
 }
 
 .musicWrapper {
   position: fixed;
   bottom: 90px;
   right: calc(var(--space-md, 20px) + 60px + 20px);
-  z-index: 10000;
+  z-index: var(--z-chat-music);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: auto;
 }
@@ -91,12 +84,15 @@
 
 /* Mobile Responsive Adjustments */
 @media (max-width: 480px) {
+
   :global(.ais-Chat-window:not([class*="maximized"]):not([class*="fullscreen"])),
   :global(.ais-Chat-container:not([class*="maximized"]):not([class*="fullscreen"])) {
-    bottom: 20px; /* Stick to bottom on mobile */
+    bottom: 20px;
+    /* Stick to bottom on mobile */
     right: 16px;
     width: calc(100vw - 32px);
-    height: calc(100vh - 100px); /* Maximize height usage */
+    height: calc(100vh - 100px);
+    /* Maximize height usage */
     max-height: 600px;
     border-radius: 20px;
   }
@@ -105,7 +101,7 @@
     bottom: 20px !important;
     right: 16px !important;
   }
-  
+
   :global(.ais-Chat-toggleButton),
   :global(.ais-ChatToggleButton) {
     bottom: 20px !important;
@@ -114,7 +110,8 @@
 
   /* Adjust Music Player on Mobile */
   .musicWrapper {
-    bottom: 90px; /* Move above toggle button */
+    bottom: 90px;
+    /* Move above toggle button */
     right: 16px;
   }
 
@@ -143,7 +140,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  z-index: 10001 !important;
+  z-index: var(--z-chat-toggle) !important;
 }
 
 :global(.ais-Chat-toggleButton:hover),
@@ -189,101 +186,4 @@
   padding: 8px;
 }
 
-/* Dark Mode Overrides for AI Chat Widget */
-:global(.ais-Chat-window) {
-  background-color: #3A3D46 !important; /* Surface */
-  border: 1px solid rgba(181, 107, 255, 0.2) !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
-  color: #E6E6EB !important; /* Text Primary */
-  font-family: var(--font-sans) !important;
-}
 
-:global(.ais-Chat-header) {
-  background-color: #3A3D46 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: #E6E6EB !important;
-}
-
-:global(.ais-Chat-headerTitle) {
-  font-family: var(--font-mono) !important;
-  color: #B56BFF !important; /* Purple */
-}
-
-:global(.ais-Chat-closeButton) {
-  color: #B9BBC4 !important; /* Text Secondary */
-}
-:global(.ais-Chat-closeButton:hover) {
-  color: #E6E6EB !important;
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-:global(.ais-Chat-messages) {
-  background-color: #3A3D46 !important;
-}
-
-/* Assistant Message - Purple Theme */
-:global(.ais-Chat-message--assistant) {
-  /* Ensure alignment or specific styling if needed */
-}
-
-:global(.ais-Chat-message--assistant .ais-Chat-messageBody) {
-  background-color: rgba(181, 107, 255, 0.1) !important; /* Purple tint */
-  border: 1px solid rgba(181, 107, 255, 0.2) !important;
-  color: #E6E6EB !important;
-  border-radius: 12px !important;
-  border-top-left-radius: 2px !important;
-}
-
-/* User Message - Pink Theme */
-:global(.ais-Chat-message--user .ais-Chat-messageBody) {
-  background-color: rgba(241, 97, 151, 0.1) !important; /* Pink tint */
-  border: 1px solid rgba(241, 97, 151, 0.2) !important;
-  color: #E6E6EB !important;
-  border-radius: 12px !important;
-  border-top-right-radius: 2px !important;
-}
-
-/* Input Area */
-:global(.ais-Chat-inputWrapper) {
-  background-color: #3A3D46 !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-:global(.ais-Chat-input) {
-  background-color: #2E3036 !important; /* Darker input */
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: #E6E6EB !important;
-  border-radius: 8px !important;
-}
-:global(.ais-Chat-input::placeholder) {
-  color: #B9BBC4 !important;
-}
-:global(.ais-Chat-input:focus) {
-  border-color: #B56BFF !important; /* Purple focus */
-  outline: none !important;
-  box-shadow: 0 0 0 2px rgba(181, 107, 255, 0.2) !important;
-}
-
-/* Submit Button */
-:global(.ais-Chat-submitButton) {
-  color: #B56BFF !important;
-  background: transparent !important;
-}
-:global(.ais-Chat-submitButton:hover) {
-  color: #D4A6FF !important; /* Lighter purple */
-  background-color: rgba(181, 107, 255, 0.1) !important;
-}
-:global(.ais-Chat-submitButton:disabled) {
-  color: #B9BBC4 !important;
-  opacity: 0.5 !important;
-}
-
-/* Typing Indicator */
-:global(.ais-Chat-typingIndicator) {
-  background-color: rgba(181, 107, 255, 0.1) !important;
-  border-radius: 12px !important;
-  padding: 8px 12px !important;
-}
-:global(.ais-Chat-typingDot) {
-  background-color: #B56BFF !important;
-}

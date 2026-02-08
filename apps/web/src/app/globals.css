@@ -45,6 +45,21 @@
   /* Animation */
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --ease-morph: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-Index Hierarchy */
+  --z-background: -1;
+  --z-base: 0;
+  --z-sticky: 100;
+  --z-modal: 1000;
+  --z-overlay: 2000;
+  --z-search-widget: 9000;
+  /* Critical Layers - High values to override library defaults */
+  /* Using 1M range to ensure Float32 precision safety (limit ~16.7M) */
+  --z-chat-music: 1000000;
+  --z-chat-toggle: 1000001;
+  --z-chat-window: 1000002;
+  --z-chat-maximized: 1000003;
+  --z-max: 2147483647;
 }
 
 * {
@@ -94,7 +109,7 @@ body::before {
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
-  z-index: 1000;
+  z-index: var(--z-modal);
   display: flex;
   align-items: center;
   justify-content: center;
