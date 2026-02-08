@@ -27,14 +27,14 @@
 
 .playButton:hover {
   transform: scale(1.1);
-  background: hsl(var(--color-accent-pink));
-  color: white;
+  background: hsl(var(--color-bg-elevated));
+  color: hsl(var(--color-accent-pink));
   box-shadow: 0 8px 24px hsl(var(--color-accent-pink) / 0.4);
 }
 
 .active {
-  background: hsl(var(--color-accent-pink));
-  color: white;
+  background: hsl(var(--color-bg-elevated));
+  color: hsl(var(--color-accent-pink));
   box-shadow: 0 0 15px hsl(var(--color-accent-pink) / 0.5);
   animation: pulse 2s infinite ease-in-out;
 }

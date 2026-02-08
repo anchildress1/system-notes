@@ -19,6 +19,11 @@ if [ -z "${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID:-}" ] || [ -z "${ALGOLIA_ADMIN_API
   exit 1
 fi
 
+# Sanitize variables to remove potential carriage returns or spaces
+NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$(echo "$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID" | tr -d '\r' | xargs)
+ALGOLIA_ADMIN_API_KEY=$(echo "$ALGOLIA_ADMIN_API_KEY" | tr -d '\r' | xargs)
+NEXT_PUBLIC_ALGOLIA_INDEX_NAME=$(echo "${NEXT_PUBLIC_ALGOLIA_INDEX_NAME:-system-notes}" | tr -d '\r' | xargs)
+
 BASE_URL="https://${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}.algolia.net/1"
 INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_INDEX_NAME:-system-notes}"
 MERGED_INDEX="${ALGOLIA_MERGED_INDEX:-merged-search}"
@@ -97,7 +102,7 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
       -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
       -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
       -H "Content-Type: application/json" \
-      --data-binary @- -w "\n" -s > /dev/null
+      --data-binary @- -w "\n" -S
   else
     echo "✨ No stale records to delete from ${INDEX_NAME}."
   fi
@@ -112,13 +117,13 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
       -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
       -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
       -H "Content-Type: application/json" \
-      --data-binary @- -w "\n" -s > /dev/null
+      --data-binary @- -w "\n" -S
   else
     echo "✨ No records to upload to ${INDEX_NAME}."
   fi
 
   # Cleanup
-  rm -f sys_state.json sys_plan.json
+  # rm -f sys_state.json sys_plan.json
 
   # --- Merged Index: Sync (Upsert + Prune) ---
   echo "📥 Fetching history from ${MERGED_INDEX}..."
@@ -208,7 +213,7 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
       -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
       -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
       -H "Content-Type: application/json" \
-      --data-binary @- -w "\n" -s > /dev/null
+      --data-binary @- -w "\n" -S
   else
     echo "✨ No stale records to delete."
   fi
@@ -223,7 +228,7 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
       -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
       -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}" \
       -H "Content-Type: application/json" \
-      --data-binary @- -w "\n" -s > /dev/null
+      --data-binary @- -w "\n" -S
   else
     echo "✨ No records to upload."
   fi

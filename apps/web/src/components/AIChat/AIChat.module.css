@@ -4,6 +4,9 @@
    stacks above the app. Internal layering uses local z-index only. */
 
 .chatDock {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
   isolation: isolate;
 }
 

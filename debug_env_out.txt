@@ -1,0 +1,48 @@
++ echo 'Checking env files...'
+Checking env files...
++ for env_file in '".env"' '".env.local"' '"apps/web/.env.local"'
++ '[' -f .env ']'
++ echo 'Sourcing .env...'
+Sourcing .env...
++ set -a
++ source .env
+++ NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=3Q79SRC1FP
+++ NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=1b2f5547d3697eeec084bf3efcae7c4d
+++ NEXT_PUBLIC_ALGOLIA_AGENT_ID=265dc6cd-3ccd-469b-b1ed-533cd6b906cd
+++ NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=1b2f5547d3697eeec084bf3efcae7c4d
+++ NEXT_PUBLIC_BASE_URL=https://anchildress1.dev
+++ GOOGLE_PROD=288489184837
+++ GOOGLE_UNSTABLE=800441415595
+++ GOOGLE_ALGOLIA=103463304277
+++ OPENAI_API_KEY=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
+++ ALGOLIA_ADMIN_API_KEY=b143c1a9da5301e805e089ba4dcb3754
+++ ALGOLIA_WRITE_API_KEY=5c9009b85a01f441833b5d62173a5c75
+++ ALGOLIA_CRAWLER_APP_ID=3Q79SRC1FP
+++ ALGOLIA_CRAWLER_API_KEY=b9b1af74f50b2cf906e7d16e5fbd95ec
++ echo 'Sourced .env successfully'
+Sourced .env successfully
++ set +a
++ for env_file in '".env"' '".env.local"' '"apps/web/.env.local"'
++ '[' -f .env.local ']'
++ echo 'Skipping .env.local (not found)'
+Skipping .env.local (not found)
++ for env_file in '".env"' '".env.local"' '"apps/web/.env.local"'
++ '[' -f apps/web/.env.local ']'
++ echo 'Sourcing apps/web/.env.local...'
+Sourcing apps/web/.env.local...
++ set -a
++ source apps/web/.env.local
+++ NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=3Q79SRC1FP
+++ NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=1b2f5547d3697eeec084bf3efcae7c4d
+++ NEXT_PUBLIC_ALGOLIA_AGENT_ID=265dc6cd-3ccd-469b-b1ed-533cd6b906cd
+++ NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=1b2f5547d3697eeec084bf3efcae7c4d
+++ NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes
++ echo 'Sourced apps/web/.env.local successfully'
+Sourced apps/web/.env.local successfully
++ set +a
++ echo 'APP_ID length: 10'
+APP_ID length: 10
++ echo 'API_KEY length: 32'
+API_KEY length: 32
++ echo 'APP_ID value: '\''3Q79SRC1FP'\'''
+APP_ID value: '3Q79SRC1FP'

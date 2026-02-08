@@ -217,7 +217,7 @@ button {
 }
 
 .ais-Chat-userMessage .ais-Chat-avatar {
-  background-color: hsl(var(--color-accent-pink)) !important;
+  background-color: hsl(var(--color-bg-surface)) !important;
 }
 
 .ais-Chat-assistantMessage {

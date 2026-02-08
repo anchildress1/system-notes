@@ -593,7 +593,7 @@
   border-color: hsl(var(--color-accent-pink)) !important;
 }
 :global(.ss-chat-message--user .ss-avatar) {
-  background-color: hsl(var(--color-accent-pink)) !important;
+  background-color: hsl(var(--color-bg-surface)) !important;
 }
 
 :global(.ss-chat-message--assistant) {
