@@ -22,7 +22,7 @@
 
 /* Search Section - Contains only search button */
 .searchSection {
-  max-width: 840px;
+  max-width: 600px;
   margin: 0 auto var(--space-lg);
   padding: 0 var(--space-md);
 }

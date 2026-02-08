@@ -143,3 +143,102 @@
   text-transform: uppercase;
   padding: 8px;
 }
+
+/* Dark Mode Overrides for AI Chat Widget */
+:global(.ais-Chat-window) {
+  background-color: #3A3D46 !important; /* Surface */
+  border: 1px solid rgba(181, 107, 255, 0.2) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+  color: #E6E6EB !important; /* Text Primary */
+  font-family: var(--font-sans) !important;
+}
+
+:global(.ais-Chat-header) {
+  background-color: #3A3D46 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #E6E6EB !important;
+}
+
+:global(.ais-Chat-headerTitle) {
+  font-family: var(--font-mono) !important;
+  color: #B56BFF !important; /* Purple */
+}
+
+:global(.ais-Chat-closeButton) {
+  color: #B9BBC4 !important; /* Text Secondary */
+}
+:global(.ais-Chat-closeButton:hover) {
+  color: #E6E6EB !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+:global(.ais-Chat-messages) {
+  background-color: #3A3D46 !important;
+}
+
+/* Assistant Message - Purple Theme */
+:global(.ais-Chat-message--assistant) {
+  /* Ensure alignment or specific styling if needed */
+}
+
+:global(.ais-Chat-message--assistant .ais-Chat-messageBody) {
+  background-color: rgba(181, 107, 255, 0.1) !important; /* Purple tint */
+  border: 1px solid rgba(181, 107, 255, 0.2) !important;
+  color: #E6E6EB !important;
+  border-radius: 12px !important;
+  border-top-left-radius: 2px !important;
+}
+
+/* User Message - Pink Theme */
+:global(.ais-Chat-message--user .ais-Chat-messageBody) {
+  background-color: rgba(241, 97, 151, 0.1) !important; /* Pink tint */
+  border: 1px solid rgba(241, 97, 151, 0.2) !important;
+  color: #E6E6EB !important;
+  border-radius: 12px !important;
+  border-top-right-radius: 2px !important;
+}
+
+/* Input Area */
+:global(.ais-Chat-inputWrapper) {
+  background-color: #3A3D46 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+:global(.ais-Chat-input) {
+  background-color: #2E3036 !important; /* Darker input */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #E6E6EB !important;
+  border-radius: 8px !important;
+}
+:global(.ais-Chat-input::placeholder) {
+  color: #B9BBC4 !important;
+}
+:global(.ais-Chat-input:focus) {
+  border-color: #B56BFF !important; /* Purple focus */
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(181, 107, 255, 0.2) !important;
+}
+
+/* Submit Button */
+:global(.ais-Chat-submitButton) {
+  color: #B56BFF !important;
+  background: transparent !important;
+}
+:global(.ais-Chat-submitButton:hover) {
+  color: #D4A6FF !important; /* Lighter purple */
+  background-color: rgba(181, 107, 255, 0.1) !important;
+}
+:global(.ais-Chat-submitButton:disabled) {
+  color: #B9BBC4 !important;
+  opacity: 0.5 !important;
+}
+
+/* Typing Indicator */
+:global(.ais-Chat-typingIndicator) {
+  background-color: rgba(181, 107, 255, 0.1) !important;
+  border-radius: 12px !important;
+  padding: 8px 12px !important;
+}
+:global(.ais-Chat-typingDot) {
+  background-color: #B56BFF !important;
+}
