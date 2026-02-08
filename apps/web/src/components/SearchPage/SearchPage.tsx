@@ -46,9 +46,9 @@ declare global {
   }
 }
 
-function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string) {
+function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string, enabled: boolean) {
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !enabled) return;
 
     const loadWidget = () => {
       // Load CSS
@@ -67,11 +67,18 @@ function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string) {
         script.onload = initWidget;
         document.body.appendChild(script);
       } else {
-        initWidget();
+        // Script already loaded, init immediately (ensure DOM is ready)
+        setTimeout(initWidget, 100);
       }
     };
 
     const initWidget = () => {
+      // Ensure container exists
+      if (!document.querySelector('#search-askai')) {
+        console.warn('SiteSearch container not found, skipping init');
+        return;
+      }
+
       // Check for available globals
       const candidates = [
         'SiteSearchAskAI',
@@ -82,30 +89,34 @@ function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string) {
       const globalName = candidates.find((c) => window[c]);
 
       if (globalName && window[globalName]) {
-        window[globalName]?.init({
-          container: '#sitesearch',
-          applicationId: appId,
-          apiKey: apiKey,
-          indexName: indexName,
-          assistantId: 'XcsWYxeCArfQ',
-          attributes: {
-            primaryText: 'title',
-            secondaryText: 'blurb',
-            image: undefined,
-          },
-        });
+        try {
+          window[globalName]?.init({
+            container: '#search-askai',
+            applicationId: appId,
+            apiKey: apiKey,
+            indexName: indexName,
+            assistantId: 'XcsWYxeCArfQ',
+            attributes: {
+              primaryText: 'title',
+              secondaryText: 'blurb',
+              image: undefined,
+            },
+          });
+        } catch (e) {
+          console.error('Failed to init SiteSearch:', e);
+        }
       }
     };
 
     loadWidget();
-  }, [appId, apiKey, indexName]);
+  }, [appId, apiKey, indexName, enabled]);
 }
 
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
-  const isEnabled = hasCredentials;
+  const isEnabled = Boolean(hasCredentials);
 
-  useSiteSearchWithAI(appId, searchKey, indexName);
+  useSiteSearchWithAI(appId, searchKey, indexName, isEnabled);
   useFactIdRouting(indexName);
 
   if (!isEnabled || !searchClient) {
@@ -130,7 +141,7 @@ export default function SearchPage() {
         />
 
         <div className={styles.searchSection}>
-          <div id="sitesearch" className={styles.siteSearchContainer} data-testid="sitesearch" />
+          <div id="search-askai" className={styles.siteSearchContainer} data-testid="sitesearch" />
           <div className={styles.metaRow}>
             <Stats
               classNames={{ root: styles.statsRoot }}
