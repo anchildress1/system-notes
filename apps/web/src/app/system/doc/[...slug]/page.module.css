@@ -2,15 +2,15 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  background: var(--background);
-  color: var(--foreground);
+  background: hsl(var(--color-bg-base));
+  color: hsl(var(--color-text-primary));
 }
 
 .title {
   margin-bottom: 2rem;
   font-family: var(--font-mono);
   font-size: 1.5rem;
-  color: var(--primary);
+  color: hsl(var(--color-accent-purple));
 }
 
 .editor {
@@ -18,22 +18,21 @@
   font-family: var(--font-mono);
   font-size: 14px;
   line-height: 1.5;
-  background: #1e1e1e;
-  /* Dark editor background */
-  color: #d4d4d4;
-  border-radius: 8px;
+  background: hsl(var(--color-bg-base));
+  color: hsl(var(--color-text-primary));
+  border-radius: var(--radius-md);
   overflow: hidden;
-  border: 1px solid #333;
+  border: 1px solid hsl(var(--color-border));
 }
 
 .gutter {
-  background: #252526;
+  background: hsl(var(--color-bg-elevated));
   padding: 1rem 0.5rem;
   text-align: right;
-  border-right: 1px solid #333;
+  border-right: 1px solid hsl(var(--color-border));
   user-select: none;
   min-width: 3rem;
-  color: #858585;
+  color: hsl(var(--color-text-muted));
 }
 
 .lineNumber a {
@@ -43,7 +42,7 @@
 }
 
 .lineNumber a:hover {
-  color: #c6c6c6;
+  color: hsl(var(--color-text-secondary));
 }
 
 .content {
@@ -54,10 +53,8 @@
 
 .lineContent {
   min-height: 1.5em;
-  /* Ensure empty lines have height */
 }
 
-/* Highlight target line (fragment) */
 .lineContent:target {
-  background-color: rgba(255, 255, 0, 0.2);
+  background-color: hsl(var(--color-accent-purple) / 0.15);
 }

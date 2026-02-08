@@ -1,10 +1,5 @@
 /* Algolia Chat Widget - Positioning and Custom Styling Only */
 
-/* IMPORTANT: Allow Algolia to handle maximize/fullscreen behavior
-   Dark mode is enabled via .dark class added in AIChat.tsx
-   Only apply custom positioning when in default (non-maximized) state */
-
-/* Chat window positioning - only when NOT maximized */
 :global(.ais-Chat-window:not([class*="maximized"]):not([class*="fullscreen"])) {
   position: fixed;
   bottom: 170px;
@@ -14,7 +9,6 @@
   z-index: var(--z-chat-window);
 }
 
-/* Container positioning - only when NOT maximized */
 :global(.ais-Chat-container:not([class*="maximized"]):not([class*="fullscreen"])) {
   position: fixed;
   bottom: 170px;
@@ -23,10 +17,9 @@
   height: min(600px, calc(100vh - 190px));
   z-index: var(--z-chat-window);
   pointer-events: none;
-  /* Let clicks pass through container to window/button */
 }
 
-/* Maximized/fullscreen mode - anchor to bottom-right, expand upward/leftward */
+
 :global(.ais-Chat-container[class*="maximized"]),
 :global(.ais-Chat-container[class*="fullscreen"]),
 :global(.ais-Chat-window[class*="maximized"]),
@@ -42,25 +35,11 @@
   border-radius: 0 !important;
 }
 
-/* Mobile responsive - expanded takes more space */
-@media (max-width: 768px) {
-  :global(.ais-Chat-container[class*="maximized"]),
-  :global(.ais-Chat-container[class*="fullscreen"]),
-  :global(.ais-Chat-window[class*="maximized"]),
-  :global(.ais-Chat-window[class*="fullscreen"]) {
-    width: calc(100vw - 40px) !important;
-    height: calc(100vh - 200px) !important;
-    bottom: 170px !important;
-    right: var(--space-md, 20px) !important;
-  }
-}
 
-/* DO NOT override pointer-events - let Algolia control it */
 :global(.ais-Chat-window) {
   pointer-events: auto;
 }
 
-/* The toggle button wrapper */
 :global(.ais-Chat-toggleButtonWrapper) {
   position: fixed !important;
   bottom: 90px !important;
@@ -73,26 +52,21 @@
   bottom: 90px;
   right: calc(var(--space-md, 20px) + 60px + 20px);
   z-index: var(--z-chat-music);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-slow);
   pointer-events: auto;
 }
 
-/* When chat is open, push music player left of the window */
 .musicPushed {
   right: calc(var(--space-md, 20px) + 375px + 20px);
 }
 
-/* Mobile Responsive Adjustments */
 @media (max-width: 480px) {
-
   :global(.ais-Chat-window:not([class*="maximized"]):not([class*="fullscreen"])),
   :global(.ais-Chat-container:not([class*="maximized"]):not([class*="fullscreen"])) {
     bottom: 20px;
-    /* Stick to bottom on mobile */
     right: 16px;
     width: calc(100vw - 32px);
     height: calc(100vh - 100px);
-    /* Maximize height usage */
     max-height: 600px;
     border-radius: 20px;
   }
@@ -108,14 +82,11 @@
     right: 16px !important;
   }
 
-  /* Adjust Music Player on Mobile */
   .musicWrapper {
     bottom: 90px;
-    /* Move above toggle button */
     right: 16px;
   }
 
-  /* Hide music player when chat is open on mobile to prevent overlap */
   .musicPushed {
     right: 16px;
     opacity: 0;
@@ -124,7 +95,6 @@
   }
 }
 
-/* Chat Toggle Button - Custom styling for anchildress1.dev */
 :global(.ais-Chat-toggleButton),
 :global(.ais-ChatToggleButton) {
   position: fixed !important;
@@ -133,7 +103,7 @@
   width: 60px !important;
   height: 60px !important;
   background-color: hsl(var(--color-accent-purple)) !important;
-  border-radius: 50% !important;
+  border-radius: var(--radius-round) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
   border: none !important;
   cursor: pointer !important;
@@ -149,17 +119,14 @@
   box-shadow: 0 8px 24px hsl(var(--color-accent-purple) / 0.5) !important;
 }
 
-/* Toggle Icon */
 .toggleIcon {
   color: inherit;
 }
 
-/* Custom Header Icon - Pink Bat */
 .headerIcon {
   color: hsl(var(--color-accent-purple));
 }
 
-/* Avatar for Assistant - Pink Bat */
 .avatar {
   background-color: transparent;
   color: hsl(var(--color-accent-purple));
@@ -168,7 +135,6 @@
   justify-content: center;
 }
 
-/* Avatar for User - Purple */
 .userAvatar {
   background-color: transparent;
   color: hsl(var(--color-accent-pink));
@@ -177,7 +143,6 @@
   justify-content: center;
 }
 
-/* Disclaimer / Prompt Footer */
 .disclaimer {
   color: hsl(var(--color-text-muted));
   background-color: transparent;
@@ -185,5 +150,3 @@
   text-transform: uppercase;
   padding: 8px;
 }
-
-

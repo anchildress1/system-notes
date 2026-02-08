@@ -1,7 +1,7 @@
 .viewer {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  background: hsl(var(--color-bg-base) / 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
   overflow-x: auto;
   font-family: var(--font-mono);
   font-size: 0.9rem;
@@ -14,17 +14,17 @@
 }
 
 .line:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: hsl(var(--color-text-primary) / 0.05);
 }
 
 .lineNumber {
   padding: 0 1rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: hsl(var(--color-text-primary) / 0.3);
   user-select: none;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid var(--glass-border);
   text-align: right;
   min-width: 4rem;
-  background: rgba(0, 0, 0, 0.2);
+  background: hsl(var(--color-bg-base) / 0.2);
 }
 
 .lineContent {
@@ -34,8 +34,6 @@
 }
 
 .highlighted {
-  background: rgba(255, 215, 0, 0.15) !important;
-  border-left: 3px solid #ffd700;
+  background: hsl(var(--color-accent-teal) / 0.15) !important;
+  border-left: 3px solid hsl(var(--color-accent-teal));
 }
-
-

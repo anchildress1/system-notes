@@ -1,144 +1,138 @@
 .modal {
-    background: hsl(var(--color-bg-surface));
-    width: 90%;
-    max-width: 800px;
-    /* Increased width for better content flow */
-    max-height: 85vh;
-    border-radius: 16px;
-    overflow-y: auto;
-    position: relative;
-    box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.5);
-    border: 1px solid hsl(var(--color-accent-purple) / 0.3);
-    display: flex;
-    flex-direction: column;
+  background: hsl(var(--color-bg-surface));
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  border-radius: var(--radius-xl);
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.5);
+  border: 1px solid hsl(var(--color-accent-purple) / 0.3);
+  display: flex;
+  flex-direction: column;
 }
 
 .banner {
-    height: 300px;
-    /* Taller banner for detail view */
-    width: 100%;
-    background: hsl(var(--color-bg-elevated));
-    position: relative;
-    flex-shrink: 0;
+  height: 300px;
+  width: 100%;
+  background: hsl(var(--color-bg-elevated));
+  position: relative;
+  flex-shrink: 0;
 }
 
 .bannerImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-/* Fallback pattern */
 .placeholderBanner {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, hsl(var(--color-bg-base)), hsl(var(--color-bg-elevated)));
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, hsl(var(--color-bg-base)), hsl(var(--color-bg-elevated)));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .placeholderBanner::after {
-    content: '🦄';
-    font-size: 4rem;
-    opacity: 0.2;
+  content: '';
+  font-size: 4rem;
+  opacity: 0.2;
 }
 
 .closeButton {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: transparent;
-    color: hsl(var(--color-accent-purple));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid transparent;
-    transition: all 0.2s ease;
-    z-index: 10;
-    cursor: pointer;
-    font-size: 1.5rem;
-    line-height: 1;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-round);
+  background: transparent;
+  color: hsl(var(--color-accent-purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  transition: all var(--transition-base);
+  z-index: 10;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
 }
 
 .closeButton:hover {
-    background: hsl(var(--color-accent-purple) / 0.15);
-    border-color: hsl(var(--color-accent-purple) / 0.3);
-    color: hsl(var(--color-accent-purple));
-    transform: scale(1.1);
+  background: hsl(var(--color-accent-purple) / 0.15);
+  border-color: hsl(var(--color-accent-purple) / 0.3);
+  color: hsl(var(--color-accent-purple));
+  transform: scale(1.1);
 }
 
 .modalContent {
-    padding: var(--space-md);
-    flex-grow: 1;
+  padding: var(--space-md);
+  flex-grow: 1;
 }
 
 .title {
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: var(--space-xs);
-    color: hsl(var(--color-text-primary));
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: var(--space-xs);
+  color: hsl(var(--color-text-primary));
 }
 
 .meta {
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
-    color: hsl(var(--color-accent-purple));
-    margin-bottom: var(--space-md);
-    opacity: 0.8;
-    display: flex;
-    gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: hsl(var(--color-accent-purple));
+  margin-bottom: var(--space-md);
+  opacity: 0.8;
+  display: flex;
+  gap: 1rem;
 }
 
 .bodyText {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: hsl(var(--color-text-secondary));
-    margin-bottom: var(--space-lg);
-    max-width: 65ch;
-    /* Readable line length */
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: hsl(var(--color-text-secondary));
+  margin-bottom: var(--space-lg);
+  max-width: 65ch;
 }
 
-/* Future Proofing: Section for extra info like README content */
 .infoSection {
-    margin-top: var(--space-lg);
-    padding-top: var(--space-md);
-    border-top: 1px solid hsl(var(--color-border));
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid hsl(var(--color-border));
 }
 
 .sectionHeader {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: hsl(var(--color-text-muted));
-    margin-bottom: var(--space-sm);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: hsl(var(--color-text-muted));
+  margin-bottom: var(--space-sm);
 }
 
 .actions {
-    display: flex;
-    justify-content: flex-end;
-    border-top: 1px solid hsl(var(--color-border));
-    padding-top: var(--space-md);
-    margin-top: auto;
-    /* Push to bottom if content is short */
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid hsl(var(--color-border));
+  padding-top: var(--space-md);
+  margin-top: auto;
 }
 
 .primaryBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: hsl(var(--color-accent-purple));
-    color: hsl(var(--color-bg-base));
-    padding: 0.8rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: opacity 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: hsl(var(--color-accent-purple));
+  color: hsl(var(--color-bg-base));
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: opacity var(--transition-base);
 }
 
 .primaryBtn:hover {
-    opacity: 0.9;
+  opacity: 0.9;
 }

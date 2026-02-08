@@ -103,7 +103,10 @@ test-perf:
 	npm run test:perf -w apps/web
 
 # Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
-ai-checks: secret-scan
+ai-checks: 
+	$(MAKE) clean
+	$(MAKE) setup
+	$(MAKE) secret-scan
 	$(MAKE) format
 	$(MAKE) lint
 	$(MAKE) test

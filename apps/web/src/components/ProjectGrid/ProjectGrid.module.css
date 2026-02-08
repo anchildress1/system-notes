@@ -1,72 +1,66 @@
 .gridSection {
-    margin-bottom: 3rem;
-    width: 100%;
-    max-width: 1300px;
-    /* Tighter container to force outer whitespace */
-    margin-left: auto;
-    margin-right: auto;
-    padding-inline: var(--space-md);
-    /* Standard internal padding */
+  margin-bottom: 3rem;
+  width: 100%;
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-inline: var(--space-md);
 }
 
 .sectionTitle {
-    font-size: 1.5rem;
-    font-weight: 300;
-    color: hsl(var(--color-text-muted));
-    margin-bottom: var(--space-md);
-    /* Removed border for cleaner look */
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    opacity: 0.6;
-    /* Subtler */
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: hsl(var(--color-text-muted));
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.6;
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .icon {
-    font-size: 1.2rem;
+  font-size: 1.2rem;
 }
 
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 2rem;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 2rem;
-    width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
 }
 
 .cardWrapper {
-    /* Animation defaults */
-    animation: fadeInUp 0.6s var(--ease-spring) backwards;
-    height: 100%;
+  animation: fadeInUp 0.6s var(--ease-spring) backwards;
+  height: 100%;
 }
 
 @media (max-width: 1024px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 600px) {
-    .grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
 
-    .gridSection {
-        padding-inline: 1rem;
-    }
+  .gridSection {
+    padding-inline: 1rem;
+  }
 }
