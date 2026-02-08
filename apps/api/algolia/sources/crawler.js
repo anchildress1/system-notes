@@ -75,8 +75,8 @@ new Crawler({
         var _content = $('main article').first().text();
         var content = _content ? String(_content).trim().replace(/\s+/g, ' ') : null;
         // Cap content size to avoid Algolia "record too large" errors.
-        if (content && content.length > 5000) {
-          content = content.slice(0, 5000);
+        if (content && content.length > 1000) {
+          content = content.slice(0, 1000);
         }
 
         return [

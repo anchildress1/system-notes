@@ -45,7 +45,9 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
   # --- System Notes: Upsert + Prune ---
   echo "📥 Fetching history from ${INDEX_NAME}..."
   > sys_state.jsonl
-  if curl --output /dev/null --silent --head --fail "${BASE_URL}/indexes/${INDEX_NAME}"; then
+  if curl --output /dev/null --silent --head --fail "${BASE_URL}/indexes/${INDEX_NAME}" \
+    -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
+    -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}"; then
     CURSOR=""
     while true; do
       URL="${BASE_URL}/indexes/${INDEX_NAME}/browse?attributesToRetrieve=objectID,created_at${CURSOR:+&cursor=$CURSOR}"
@@ -54,8 +56,14 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
         -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}")
 
       if echo "$RESP" | jq -e 'has("status") and (.status | tonumber) >= 400' >/dev/null 2>&1; then
-        echo "Error from Algolia: $(echo "$RESP" | jq -r '.message // "Unknown error"')" >&2
-        exit 1
+        MSG=$(echo "$RESP" | jq -r '.message // "Unknown error"')
+        if [[ "$MSG" == *"does not exist"* ]]; then
+          echo "Info: Index ${INDEX_NAME} not found, treating as empty for initial creation."
+          break
+        else
+          echo "Error from Algolia: $MSG" >&2
+          exit 1
+        fi
       fi
 
       echo "$RESP" | jq -c '.hits[] | {id: .objectID, created_at: .created_at}' >> sys_state.jsonl
@@ -123,12 +131,14 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
   fi
 
   # Cleanup
-  # rm -f sys_state.json sys_plan.json
+  rm -f sys_state.json sys_plan.json
 
   # --- Merged Index: Sync (Upsert + Prune) ---
   echo "📥 Fetching history from ${MERGED_INDEX}..."
   > merged_state.jsonl
-  if curl --output /dev/null --silent --head --fail "${BASE_URL}/indexes/${MERGED_INDEX}"; then
+  if curl --output /dev/null --silent --head --fail "${BASE_URL}/indexes/${MERGED_INDEX}" \
+    -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
+    -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}"; then
     CURSOR=""
     while true; do
       URL="${BASE_URL}/indexes/${MERGED_INDEX}/browse?attributesToRetrieve=objectID,created_at${CURSOR:+&cursor=$CURSOR}"
@@ -137,8 +147,14 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
         -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}")
 
       if echo "$RESP" | jq -e 'has("status") and (.status | tonumber) >= 400' >/dev/null 2>&1; then
-        echo "Error from Algolia: $(echo "$RESP" | jq -r '.message // "Unknown error"')" >&2
-        exit 1
+        MSG=$(echo "$RESP" | jq -r '.message // "Unknown error"')
+        if [[ "$MSG" == *"does not exist"* ]]; then
+          echo "Info: Index ${MERGED_INDEX} not found, treating as empty for initial creation."
+          break
+        else
+          echo "Error from Algolia: $MSG" >&2
+          exit 1
+        fi
       fi
 
       echo "$RESP" | jq -c '.hits[] | {id: .objectID, created_at: .created_at}' >> merged_state.jsonl
@@ -160,7 +176,9 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
 
   echo "🕷️  Fetching Crawler records..."
   > crawler_records.jsonl
-  if curl --output /dev/null --silent --head --fail "${BASE_URL}/indexes/${CRAWLER_INDEX}"; then
+  if curl --output /dev/null --silent --head --fail "${BASE_URL}/indexes/${CRAWLER_INDEX}" \
+    -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
+    -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}"; then
     CURSOR=""
     while true; do
       URL="${BASE_URL}/indexes/${CRAWLER_INDEX}/browse${CURSOR:+?cursor=$CURSOR}"
@@ -169,8 +187,14 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
         -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}")
 
       if echo "$RESP" | jq -e 'has("status") and (.status | tonumber) >= 400' >/dev/null 2>&1; then
-        echo "Error from Algolia: $(echo "$RESP" | jq -r '.message // "Unknown error"')" >&2
-        exit 1
+        MSG=$(echo "$RESP" | jq -r '.message // "Unknown error"')
+        if [[ "$MSG" == *"does not exist"* ]]; then
+          echo "Info: Index ${CRAWLER_INDEX} not found, treating as empty for initial creation."
+          break
+        else
+          echo "Error from Algolia: $MSG" >&2
+          exit 1
+        fi
       fi
 
       echo "$RESP" | jq -c '.hits[]' >> crawler_records.jsonl
