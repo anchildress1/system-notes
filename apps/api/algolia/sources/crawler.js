@@ -1,6 +1,6 @@
 new Crawler({
   appId: 'EXKENZ9FHJ',
-  apiKey: 'b64818d18623f622291609230cb797dd',
+  apiKey: process.env.ALGOLIA_CRAWLER_API_KEY,
   indexPrefix: '',
   rateLimit: 8,
   startUrls: ['https://crawly.checkmarkdevtools.dev/'],
@@ -19,14 +19,16 @@ new Crawler({
         var title =
           $('main > h1').first().text().trim() || $('title').first().text().trim() || urlStr;
 
-        var description = $('meta[name="description"]').attr('content');
-        description = description ? String(description).trim() : null;
+        var _desc = $('meta[name="description"]').attr('content');
+        var description = _desc ? String(_desc).trim().slice(0, 500) : null;
 
         var publishedAt = $('meta[name="article:published_time"]').attr('content');
         publishedAt = publishedAt ? String(publishedAt).trim() : null;
 
         var canonical =
-          $('link[rel="canonical"]').attr('href') || $('meta[name="canonical"]').attr('content');
+          $('link[rel="canonical"]').attr('href') ||
+          $('meta[name="og:url"]').attr('content') ||
+          $('meta[name="source-url"]').attr('content');
         canonical = canonical ? String(canonical).trim() : null;
 
         var finalUrl = canonical || urlStr;
@@ -62,7 +64,12 @@ new Crawler({
           return [];
         }
 
-        var content = $('main article').first().text();
+        var _content = $('main article').first().text();
+        var content = _content ? String(_content).trim().replace(/\s+/g, ' ') : null;
+        // Cap content size to avoid Algolia "record too large" errors.
+        if (content && content.length > 5000) {
+          content = content.slice(0, 5000);
+        }
 
         return [
           {
@@ -76,7 +83,7 @@ new Crawler({
             projects: [],
             category: 'Writing',
             signal: engagementScore,
-            publishedAt: publishedAt,
+            created_at: publishedAt,
           },
         ];
       },
@@ -93,17 +100,9 @@ new Crawler({
         'searchable(tags.lvl0)',
         'searchable(tags.lvl1)',
       ],
-      customRanking: ['desc(signal)', 'desc(publishedAt)'],
-      attributesForFaceting: ['type', 'tags'],
-    },
-    hitsPerPage: 20,
-    typoTolerance: true,
-    renderingContent: {
-      facetOrdering: {
-        facets: {
-          order: ['category', 'tags.lvl0', 'tags.lvl1', 'projects'],
-        },
-      },
+      customRanking: ['desc(signal)', 'desc(created_at)'],
+      hitsPerPage: 20,
+      typoTolerance: true,
     },
   },
 });

@@ -8,7 +8,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Operational Ownership"],
     "projects": [],
     "category": "Experience",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:incident-resolution:thd-senior",
@@ -19,7 +20,8 @@
     "tags.lvl1": ["Discipline > Production Support", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:change-safety:thd-senior",
@@ -30,7 +32,8 @@
     "tags.lvl1": ["Discipline > Reliability Engineering", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:engineering-quality:thd-senior",
@@ -41,7 +44,8 @@
     "tags.lvl1": ["Discipline > Platform Quality", "Approach > Iterative"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:copilot-sme:thd-senior",
@@ -52,9 +56,9 @@
     "tags.lvl1": ["AI > GitHub Copilot", "Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
-
   {
     "objectID": "card:experience:backend-systems-scope:thd",
     "title": "Backend systems were built across cloud and on-prem environments",
@@ -64,7 +68,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:copilot-adoption:thd-se2",
@@ -75,7 +80,8 @@
     "tags.lvl1": ["AI > GitHub Copilot", "Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:platform-modernization:thd",
@@ -86,7 +92,8 @@
     "tags.lvl1": ["Discipline > Platform Quality", "Approach > Iterative"],
     "projects": [],
     "category": "Experience",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:production-diagnostics:thd-se2",
@@ -97,7 +104,8 @@
     "tags.lvl1": ["Discipline > Reliability Engineering", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:mentorship-quality:thd-se2",
@@ -108,7 +116,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Approach > Iterative"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:onboarding-scale:thd-se1",
@@ -119,7 +128,8 @@
     "tags.lvl1": ["Approach > Iterative", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:downstream-awareness:thd-se1",
@@ -130,7 +140,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:delivery-kpis:thd-se1",
@@ -141,7 +152,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Approach > Iterative"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:early-reliability:thd-se1",
@@ -152,7 +164,8 @@
     "tags.lvl1": ["Discipline > Production Support", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:engineering-foundation:thd-se1",
@@ -163,7 +176,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:first-industry-role:greenway",
@@ -174,7 +188,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:tdd-foundation:greenway",
@@ -185,7 +200,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:early-ownership:greenway",
@@ -196,7 +212,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Operational Ownership"],
     "projects": [],
     "category": "Experience",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:system-debugging:greenway",
@@ -207,7 +224,8 @@
     "tags.lvl1": ["Discipline > Production Support", "Approach > Experimentation"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:industry-entry:greenway-ba",
@@ -218,7 +236,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:requirements-translation:greenway-ba",
@@ -229,7 +248,8 @@
     "tags.lvl1": ["Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:documentation-practice:greenway-ba",
@@ -240,7 +260,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Predictability"],
     "projects": [],
     "category": "Experience",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:agile-foundation:greenway-ba",
@@ -251,7 +272,8 @@
     "tags.lvl1": ["Approach > Iterative"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:transition-to-engineering:greenway-ba",
@@ -262,7 +284,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Operational Ownership"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:early-career-ownership:arbys",
@@ -273,7 +296,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Operational Ownership"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:people-development:arbys",
@@ -284,7 +308,8 @@
     "tags.lvl1": ["Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:process-standardization:arbys",
@@ -295,7 +320,8 @@
     "tags.lvl1": ["Principle > Predictability", "Approach > Iterative"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:district-training:arbys",
@@ -306,7 +332,8 @@
     "tags.lvl1": ["Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:leadership-foundation:arbys",
@@ -317,7 +344,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:cs-foundation:uwg",
@@ -328,7 +356,8 @@
     "tags.lvl1": ["Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:academic-excellence:uwg",
@@ -339,7 +368,8 @@
     "tags.lvl1": ["Principle > Predictability"],
     "projects": [],
     "category": "Experience",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:student-leadership:uwg",
@@ -350,7 +380,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:security-research:uwg",
@@ -361,7 +392,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Approach > Experimentation"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:genai-leader-cert:google",
@@ -372,7 +404,8 @@
     "tags.lvl1": ["AI > Gemini", "Discipline > Engineering", "Principle > Restraint"],
     "projects": [],
     "category": "Experience",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experience:copilot-cert:github",
@@ -383,7 +416,8 @@
     "tags.lvl1": ["AI > GitHub Copilot", "Discipline > Engineering"],
     "projects": [],
     "category": "Experience",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:award:homer-awards:thd",
@@ -394,7 +428,8 @@
     "tags.lvl1": [],
     "projects": [],
     "category": "Awards",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:award:homer-gold:thd",
@@ -405,7 +440,8 @@
     "tags.lvl1": [],
     "projects": [],
     "category": "Awards",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:award:boyd-award:uwg",
@@ -416,7 +452,8 @@
     "tags.lvl1": [],
     "projects": [],
     "category": "Awards",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:award:manager-of-year:arbys",
@@ -427,7 +464,8 @@
     "tags.lvl1": [],
     "projects": [],
     "category": "Awards",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:0001",
@@ -438,7 +476,8 @@
     "tags.lvl1": ["Domain > Portfolio", "Approach > Experimentation", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:0002",
@@ -449,7 +488,8 @@
     "tags.lvl1": ["Approach > Experimentation", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:ai_collaboration:0003",
@@ -466,7 +506,8 @@
     ],
     "projects": ["System Notes", "Awesome Copilot", "Hermes Agent", "Underfoot Travel"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:0002",
@@ -487,7 +528,8 @@
       "DevTO Mirror"
     ],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:0004",
@@ -498,7 +540,8 @@
     "tags.lvl1": ["Approach > Pragmatism", "Mindset > Systems Thinking"],
     "projects": ["System Notes", "Delegate Action", "RAI Lint", "Echo ESLint", "Awesome Copilot"],
     "category": "Work Style",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:public-by-design",
@@ -519,7 +562,8 @@
       "Copilot Chat Extension"
     ],
     "category": "Philosophy",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:environment-agnostic-sharing",
@@ -540,7 +584,8 @@
       "Copilot Chat Extension"
     ],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:optional-adoption",
@@ -561,7 +606,8 @@
       "Copilot Chat Extension"
     ],
     "category": "Philosophy",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:day-to-day-representation",
@@ -572,7 +618,8 @@
     "tags.lvl1": ["Discipline > Design", "Approach > Pragmatism"],
     "projects": ["System Notes", "Hermes Agent"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:design-first-process",
@@ -583,7 +630,8 @@
     "tags.lvl1": ["Discipline > Design", "Mindset > Systems Thinking"],
     "projects": ["System Notes", "Hermes Agent"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:ai_collaboration:co-developed-systems",
@@ -594,7 +642,8 @@
     "tags.lvl1": ["Approach > AI Collaboration", "AI > ChatGPT"],
     "projects": ["System Notes", "Hermes Agent"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:rigor-after-design",
@@ -605,7 +654,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": ["System Notes", "Hermes Agent"],
     "category": "Work Style",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:learning:post-ship-constraints",
@@ -621,7 +671,8 @@
     ],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:ai_collaboration:parallel-autonomy-limits",
@@ -632,7 +683,8 @@
     "tags.lvl1": ["AI > ChatGPT", "Principle > Restraint"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:intentional-piecewise-systems",
@@ -643,7 +695,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": ["Underfoot Travel"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:time-vs-perfection",
@@ -664,7 +717,8 @@
       "Copilot Chat Extension"
     ],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:diminishing-returns-awareness",
@@ -685,7 +739,8 @@
       "Copilot Chat Extension"
     ],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:unfinished-is-acceptable",
@@ -706,7 +761,8 @@
       "Copilot Chat Extension"
     ],
     "category": "Philosophy",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:ui-polish-cutoff",
@@ -717,7 +773,8 @@
     "tags.lvl1": ["Discipline > Engineering", "DEV Challenge > New Year, New You Portfolio"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:constraints:time-boxed-build",
@@ -728,7 +785,8 @@
     "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > New Year, New You Portfolio"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:ai_collaboration:delegated-commits",
@@ -739,7 +797,8 @@
     "tags.lvl1": ["Approach > AI Collaboration", "AI > ChatGPT"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:iterative-documentation-over-production",
@@ -750,7 +809,8 @@
     "tags.lvl1": ["Approach > Experimentation", "Principle > Restraint"],
     "projects": ["Underfoot Travel"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:built-public-from-start",
@@ -771,7 +831,8 @@
       "Copilot Chat Extension"
     ],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:internal-work-not-represented",
@@ -792,7 +853,8 @@
       "Copilot Chat Extension"
     ],
     "category": "Work Style",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:public-ai-experimentation",
@@ -818,7 +880,8 @@
       "Copilot Chat Extension"
     ],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:constraints:ui-avoidance-forced-decision",
@@ -829,7 +892,8 @@
     "tags.lvl1": ["Discipline > Engineering", "DEV Challenge > New Year, New You Portfolio"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:shipping-over-readiness",
@@ -840,7 +904,8 @@
     "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > New Year, New You Portfolio"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:existence-over-polish",
@@ -851,7 +916,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:ai_collaboration:ai-paired-by-opportunity",
@@ -862,7 +928,8 @@
     "tags.lvl1": ["AI > ChatGPT", "AI > Gemini", "DEV Challenge > New Year, New You Portfolio"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:constraints:missing-platform-capability",
@@ -873,7 +940,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": ["Delegate Action"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:workflow-first-design",
@@ -884,18 +952,20 @@
     "tags.lvl1": ["Discipline > Engineering", "Mindset > Systems Thinking"],
     "projects": ["Delegate Action"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
-    "objectID": "card:work_style:ai_collaboration:documentation-updates-via-agent",
-    "title": "AI is used narrowly for documentation updates",
-    "blurb": "Agent use is constrained and prompt-driven.",
-    "fact": "Delegate Action is currently focused on updating documentation per pull request using prompts defined in Awesome GitHub Copilot rather than broad or autonomous code changes.",
+    "objectID": "card:work_style:ai-collaboration:documentation-only",
+    "title": "AI collaboration is constrained to documentation updates",
+    "blurb": "Scope is intentionally narrow and prompt-controlled.",
+    "fact": "In Delegate Action, AI usage is deliberately limited to documentation updates tied to pull requests, with behavior driven by prompts defined in Awesome GitHub Copilot rather than allowing autonomous or generalized code changes.",
     "tags.lvl0": ["AI", "Approach"],
     "tags.lvl1": ["AI > ChatGPT", "AI > GitHub Copilot", "Approach > AI Collaboration"],
     "projects": ["Delegate Action", "Awesome Copilot"],
     "category": "Work Style",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:intentionally-disposable",
@@ -906,7 +976,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": ["Delegate Action"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:local-agent-playground",
@@ -917,7 +988,8 @@
     "tags.lvl1": ["Approach > Experimentation", "AI > ChatGPT", "AI > Verdent"],
     "projects": ["Hermes Agent"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:ai_collaboration:workflow-memorization",
@@ -928,7 +1000,8 @@
     "tags.lvl1": ["AI > ChatGPT", "Approach > AI Collaboration"],
     "projects": ["Hermes Agent"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:stateful-over-stateless",
@@ -939,7 +1012,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": ["Hermes Agent"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:constraints:design-phase-only",
@@ -950,7 +1024,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": ["Hermes Agent"],
     "category": "Work Style",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:locally-grounded-agency",
@@ -961,7 +1036,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": ["Hermes Agent"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:ai-authorship-disclosure",
@@ -972,7 +1048,8 @@
     "tags.lvl1": ["AI > ChatGPT", "AI > GitHub Copilot", "Principle > Restraint"],
     "projects": ["RAI Lint"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:constraints:accountability-gap",
@@ -983,7 +1060,8 @@
     "tags.lvl1": ["Principle > Restraint", "AI > ChatGPT", "AI > GitHub Copilot"],
     "projects": ["RAI Lint"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:lint-enforced-disclosure",
@@ -994,7 +1072,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": ["RAI Lint"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:outcomes:normalized-ai-attribution",
@@ -1005,7 +1084,8 @@
     "tags.lvl1": ["Approach > AI Collaboration", "AI > ChatGPT", "AI > GitHub Copilot"],
     "projects": ["RAI Lint"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:local-context-over-generic",
@@ -1016,7 +1096,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": ["Underfoot Travel"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:constraints:hackathon-origin",
@@ -1027,7 +1108,8 @@
     "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Unstoppable Workflow"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:learning:overextension-failure",
@@ -1038,7 +1120,8 @@
     "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Unstoppable Workflow"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:tooling-expiration-pivot",
@@ -1049,7 +1132,8 @@
     "tags.lvl1": ["Approach > Experimentation", "AI > Verdent"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:status:experimental-and-incomplete",
@@ -1060,7 +1144,8 @@
     "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Unstoppable Workflow"],
     "projects": ["Underfoot Travel"],
     "category": "Work Style",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:personal-pattern-library",
@@ -1071,7 +1156,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Mindset > Systems Thinking"],
     "projects": ["Awesome Copilot"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:package-what-works",
@@ -1082,7 +1168,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": ["Awesome Copilot"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:consistency-across-projects",
@@ -1093,7 +1180,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": ["Awesome Copilot"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:status:living-reference",
@@ -1104,7 +1192,8 @@
     "tags.lvl1": ["Approach > Experimentation", "Principle > Restraint"],
     "projects": ["Awesome Copilot"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:constraints:ai-visibility-gap",
@@ -1115,7 +1204,8 @@
     "tags.lvl1": ["AI > ChatGPT", "Principle > Restraint"],
     "projects": ["DevTO Mirror"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:canonical-source-preserved",
@@ -1126,7 +1216,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": ["DevTO Mirror"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:mirror-not-migration",
@@ -1137,7 +1228,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": ["DevTO Mirror"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:outcomes:lightweight-distribution-layer",
@@ -1148,7 +1240,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": ["DevTO Mirror"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:encode-decisions-once",
@@ -1159,7 +1252,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": ["Echo ESLint"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:constraints:reduce-bikeshedding",
@@ -1170,7 +1264,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": ["Echo ESLint"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:outcomes:stable-lint-behavior",
@@ -1181,7 +1276,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": ["Echo ESLint"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:learning:early-ai-experiment",
@@ -1192,7 +1288,8 @@
     "tags.lvl1": ["Approach > Experimentation", "AI > ChatGPT"],
     "projects": ["Copilot Chat Extension"],
     "category": "Work Style",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:prompt-sharing-via-chat",
@@ -1203,7 +1300,8 @@
     "tags.lvl1": ["Approach > AI Collaboration", "AI > ChatGPT"],
     "projects": ["Copilot Chat Extension"],
     "category": "Work Style",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:constraints:missing-context-persistence",
@@ -1214,7 +1312,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": ["Copilot Chat Extension"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:choosing-not-to-build",
@@ -1225,7 +1324,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": ["Copilot Chat Extension"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:leverage-over-complexity",
@@ -1236,7 +1336,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:answer-over-navigation",
@@ -1247,7 +1348,8 @@
     "tags.lvl1": ["AI > ChatGPT", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:ai_collaboration:data-not-tone-changes",
@@ -1258,7 +1360,8 @@
     "tags.lvl1": ["Approach > AI Collaboration", "AI > ChatGPT", "AI > Gemini", "AI > Verdent"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:system-boundary-discipline",
@@ -1269,7 +1372,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:ai-is-not-the-author",
@@ -1280,7 +1384,8 @@
     "tags.lvl1": ["Principle > Restraint", "AI > ChatGPT"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:ai_collaboration:no-guessing-or-inference",
@@ -1291,7 +1396,8 @@
     "tags.lvl1": ["AI > ChatGPT", "Principle > Restraint"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:closed-world-assumption",
@@ -1302,7 +1408,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:human-escalation-path",
@@ -1313,7 +1420,8 @@
     "tags.lvl1": ["Principle > Restraint", "AI > ChatGPT"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:adversarial-self-testing",
@@ -1324,7 +1432,8 @@
     "tags.lvl1": ["Approach > Experimentation", "Discipline > Engineering"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:accuracy-over-coverage",
@@ -1335,7 +1444,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:ai_collaboration:self-referential-queries",
@@ -1346,7 +1456,8 @@
     "tags.lvl1": ["AI > ChatGPT", "Principle > Restraint"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:ai-as-baseline-infrastructure",
@@ -1357,7 +1468,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:system-first-portfolio",
@@ -1368,7 +1480,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Approach > Experimentation"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:constraints:hackathon-style-build",
@@ -1379,7 +1492,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:polish-deprioritized-by-design",
@@ -1390,7 +1504,8 @@
     "tags.lvl1": ["Principle > Restraint", "Approach > AI Collaboration"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:site-is-the-artifact",
@@ -1401,7 +1516,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:behavior:active-perfectionism",
@@ -1412,7 +1528,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Approach > Experimentation"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:principles:direction-over-completion",
@@ -1423,7 +1540,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": ["System Notes"],
     "category": "Philosophy",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:work_style:workflow:iteration-is-expected",
@@ -1434,7 +1552,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Approach > Experimentation"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:background:appalachian-origin",
@@ -1445,7 +1564,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:background:isolation-as-context",
@@ -1456,7 +1576,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:background:limited-access-reality",
@@ -1467,7 +1588,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "About",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:background:relocation-to-georgia",
@@ -1478,7 +1600,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": [],
     "category": "About",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:background:mountains-as-home",
@@ -1489,7 +1612,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:career:nonlinear-education-path",
@@ -1500,7 +1624,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:career:pragmatic-decision-making",
@@ -1511,7 +1636,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:career:pragmatism-to-obsession",
@@ -1522,7 +1648,8 @@
     "tags.lvl1": ["Approach > Experimentation", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:craft:systems-over-features",
@@ -1533,7 +1660,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:craft:assumption-challenging",
@@ -1544,7 +1672,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:craft:intentional-large-changes",
@@ -1555,7 +1684,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:craft:guardrails-and-tooling",
@@ -1566,7 +1696,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:ai_practice:reduced-hand-coding",
@@ -1577,7 +1708,8 @@
     "tags.lvl1": ["AI > ChatGPT", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "About",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:ai_practice:ai-writes-like-me",
@@ -1588,7 +1720,8 @@
     "tags.lvl1": ["AI > ChatGPT", "AI > GitHub Copilot", "Principle > Restraint"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:ai_practice:system-level-review",
@@ -1599,7 +1732,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:philosophy:teaching-not-using-ai",
@@ -1610,7 +1744,8 @@
     "tags.lvl1": ["Approach > AI Collaboration", "AI > GitHub Copilot"],
     "projects": ["Awesome Copilot"],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:philosophy:durable-constrained-systems",
@@ -1621,7 +1756,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:identity:theme-song-choice",
@@ -1632,7 +1768,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:background:appalachian-ingenuity",
@@ -1643,7 +1780,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:craft:early-system-dismantling",
@@ -1654,7 +1792,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:motivation:joy-in-building",
@@ -1665,7 +1804,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Approach > Experimentation"],
     "projects": [],
     "category": "About",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:philosophy:practical-symbolism",
@@ -1676,7 +1816,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": [],
     "category": "About",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:craft:failure-hunting",
@@ -1687,7 +1828,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:craft:pre-production-failure",
@@ -1698,7 +1840,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:philosophy:clean-ships-over-fast-ships",
@@ -1709,7 +1852,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:philosophy:break-things-early",
@@ -1720,7 +1864,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Engineering"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:person:identity:joy-and-discipline-balance",
@@ -1731,7 +1876,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": [],
     "category": "About",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:challenge:progress:first-indexing-agent-attempt",
@@ -1742,18 +1888,20 @@
     "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Challenges",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
-    "objectID": "card:challenge:learning:early-attempts-failed-latency",
-    "title": "Early attempts failed due to slow responses",
-    "blurb": "Performance issues made the initial approach unusable.",
-    "fact": "The first several attempts were complete failures because the agent took far too long to respond.",
+    "objectID": "card:challenge:learning:response-latency",
+    "title": "Initial agent responses were too slow to be usable",
+    "blurb": "Latency, not correctness, blocked progress.",
+    "fact": "Early iterations of the agent produced responses with unacceptable latency, which made the approach impractical regardless of output quality.",
     "tags.lvl0": ["DEV Challenge", "Approach"],
     "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Challenges",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:decision:workflow:ground-up-redesign-with-chatgpt",
@@ -1764,7 +1912,8 @@
     "tags.lvl1": ["Approach > AI Collaboration", "AI > ChatGPT", "AI > Algolia"],
     "projects": ["System Notes"],
     "category": "Decisions",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:challenge:workflow:ground-up-redesign-with-chatgpt",
@@ -1775,7 +1924,8 @@
     "tags.lvl1": ["AI > ChatGPT", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Challenges",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:challenge:feedback:mvp-guidance-needed",
@@ -1786,7 +1936,8 @@
     "tags.lvl1": ["Principle > Restraint"],
     "projects": [],
     "category": "Challenges",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:decision:context:chat-widget-ui-shortcut",
@@ -1801,7 +1952,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Decisions",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:challenge:pain_points:implementation-understanding-cost",
@@ -1812,7 +1964,8 @@
     "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Challenges",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:process:ui-feedback-without-gating",
@@ -1823,7 +1976,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Principle > Restraint"],
     "projects": ["System Notes"],
     "category": "About",
-    "signal": 2
+    "signal": 2,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:index:two-level-tag-hierarchy",
@@ -1834,7 +1988,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Engineering"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:algolia:filter-only-facets",
@@ -1845,7 +2000,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:algolia:limited-searchable-attributes",
@@ -1856,7 +2012,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Principle > Restraint"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:algolia:signal-based-ranking",
@@ -1867,7 +2024,8 @@
     "tags.lvl1": ["Discipline > Engineering", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:retrieval:closed-world-assumption",
@@ -1878,7 +2036,8 @@
     "tags.lvl1": ["Principle > Restraint", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:retrieval:no-guessing-policy",
@@ -1889,7 +2048,8 @@
     "tags.lvl1": ["Principle > Restraint", "AI > ChatGPT"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:architecture:data-instruction-separation",
@@ -1900,7 +2060,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "AI > ChatGPT"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:process:timeboxed-agent-hardening",
@@ -1915,7 +2076,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:agent:intent-first-routing",
@@ -1926,7 +2088,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Agent Design"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:agent:single-search-discipline",
@@ -1937,7 +2100,8 @@
     "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:agent:clarification-without-invention",
@@ -1948,7 +2112,8 @@
     "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:agent:instruction-over-content",
@@ -1959,7 +2124,8 @@
     "tags.lvl1": ["Mindset > Systems Thinking", "Discipline > Agent Design"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:agent:manual-testing-loop",
@@ -1974,7 +2140,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:agent:no-guessing-invariant",
@@ -1985,7 +2152,8 @@
     "tags.lvl1": ["Discipline > Agent Design", "AI > Algolia"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:agent:iterative-prompt-hardening",
@@ -2000,7 +2168,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:system:algolia:agent-safety-alignment",
@@ -2011,7 +2180,8 @@
     "tags.lvl1": ["Principle > Responsibility", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:philosophy:experimentation:0002",
@@ -2022,7 +2192,8 @@
     "tags.lvl1": ["AI > Algolia", "Approach > Experimentation"],
     "projects": ["System Notes"],
     "category": "Work Style",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experimentation:iteration:0001",
@@ -2033,7 +2204,8 @@
     "tags.lvl1": ["Approach > Experimentation", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experimentation:retrieval:0002",
@@ -2044,7 +2216,8 @@
     "tags.lvl1": ["Approach > Experimentation", "Discipline > Agent Design"],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experimentation:authorship:0003",
@@ -2059,7 +2232,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experimentation:ux:0004",
@@ -2070,7 +2244,8 @@
     "tags.lvl1": ["Principle > Restraint", "Discipline > Agent Design"],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experimentation:fallback:0005",
@@ -2085,7 +2260,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experimentation:suggestions:0006",
@@ -2100,7 +2276,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:experimentation:algolia:0007",
@@ -2111,7 +2288,8 @@
     "tags.lvl1": ["Approach > AI Collaboration", "Discipline > Agent Design", "AI > Algolia"],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:docs:readable-and-followed",
@@ -2126,7 +2304,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:ui:widgets-over-custom-ui",
@@ -2137,7 +2316,8 @@
     "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:index:first-experience",
@@ -2152,7 +2332,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:index:best-practices-alignment",
@@ -2167,7 +2348,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:retrieval:speed-over-precision",
@@ -2178,7 +2360,8 @@
     "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:tags:hierarchical-control",
@@ -2189,7 +2372,8 @@
     "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:agent:custom-blog-tool",
@@ -2204,7 +2388,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:chat:suggestions-grounding",
@@ -2215,7 +2400,8 @@
     "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Challenges",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:docs:examples-applied",
@@ -2232,7 +2418,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:ui:widgets-plus-styling-accessible",
@@ -2248,7 +2435,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:decision:algolia:no-personalization-public-content",
@@ -2259,7 +2447,8 @@
     "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Decisions",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:build:widget-heavy-implementation",
@@ -2274,7 +2463,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:index:first-index-trial-and-error",
@@ -2289,7 +2479,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 3
+    "signal": 3,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:index:best-practices-fixed-results",
@@ -2304,7 +2495,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:architecture:prompt-vs-index-roles",
@@ -2319,7 +2511,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:tradeoff:speed-over-precision-curated",
@@ -2330,7 +2523,8 @@
     "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:tags:hierarchical-tuning-control",
@@ -2345,7 +2539,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:agent:full-blog-cache-tool",
@@ -2360,7 +2555,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:chat:suggestions-grounding-ambiguity",
@@ -2371,7 +2567,8 @@
     "tags.lvl1": ["Discipline > Agent Design", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Challenges",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:agent:productivity-mcp-support",
@@ -2387,9 +2584,9 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
-
   {
     "objectID": "card:agent:behavior:no-clarifying-questions-default",
     "title": "The Algolia agent does not ask clarifying questions by default",
@@ -2403,7 +2600,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:agent:suggestions:constraint-demonstration",
@@ -2418,7 +2616,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:analytics:feedback-loop",
@@ -2429,7 +2628,8 @@
     "tags.lvl1": ["Approach > Iterative", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:index:limited-hierarchy",
@@ -2440,7 +2640,8 @@
     "tags.lvl1": ["Principle > Restraint", "AI > Algolia", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:decision:scope:no-scale-consideration",
@@ -2451,7 +2652,8 @@
     "tags.lvl1": ["Principle > Restraint", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Decisions",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:algolia:dx:widgets-and-docs-accessible",
@@ -2466,7 +2668,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Experimentation",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:decision:stability:no-major-changes",
@@ -2481,7 +2684,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Decisions",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:decision:ui:last-minute-ask-ai",
@@ -2492,7 +2696,8 @@
     "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
     "projects": ["System Notes"],
     "category": "Decisions",
-    "signal": 5
+    "signal": 5,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:decision:algolia-crawler-minimal-scope",
@@ -2503,7 +2708,8 @@
     "tags.lvl1": ["Approach > Experimentation", "Principle > Restraint", "AI > Algolia"],
     "projects": [],
     "category": "Decisions",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:decision:index:no-supabase-json-managed",
@@ -2519,7 +2725,8 @@
     ],
     "projects": ["System Notes"],
     "category": "Decisions",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:project:challenge:algolia-agent-studio-2026-02",
@@ -2529,8 +2736,9 @@
     "tags.lvl0": ["DEV Challenge", "Approach"],
     "tags.lvl1": ["DEV Challenge > Algolia Agent Studio", "Approach > Experimentation"],
     "projects": ["System Notes"],
-    "category": "Projects",
-    "signal": 5
+    "category": "Experience",
+    "signal": 5,
+    "created_at": "2026-02-08T06:34:36-05:00"
   },
   {
     "objectID": "card:project:challenge:new-year-new-you-2026-01",
@@ -2540,8 +2748,9 @@
     "tags.lvl0": ["DEV Challenge", "Mindset"],
     "tags.lvl1": ["DEV Challenge > New Year, New You Portfolio", "Mindset > Systems Thinking"],
     "projects": ["System Notes"],
-    "category": "Projects",
-    "signal": 4
+    "category": "Experience",
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:project:challenge:unstoppable-workflow-2025-08",
@@ -2551,8 +2760,9 @@
     "tags.lvl0": ["DEV Challenge", "Approach"],
     "tags.lvl1": ["DEV Challenge > Unstoppable Workflow", "Approach > Iterative"],
     "projects": ["System Notes"],
-    "category": "Projects",
-    "signal": 4
+    "category": "Experience",
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
     "objectID": "card:decision:ui:default-algolia-styling-retained",
@@ -2569,6 +2779,19 @@
     ],
     "projects": ["System Notes"],
     "category": "Decisions",
-    "signal": 4
+    "signal": 4,
+    "created_at": "2026-02-07T06:34:36-05:00"
+  },
+  {
+    "objectID": "card:challenge:constraint:missing-api-key-blocked-recommendations",
+    "title": "Smart recommendations were not completed due to a missing API key",
+    "blurb": "Time and access constraints limited feature completion.",
+    "fact": "I ran out of time to fully implement smart recommendations because a required API key was unavailable, which blocked end-to-end integration even though early exploratory results indicated the approach was promising.",
+    "tags.lvl0": ["DEV Challenge", "Approach", "Principle"],
+    "tags.lvl1": ["DEV Challenge > Algolia Agent Studio", "Approach > Experimentation"],
+    "projects": ["System Notes"],
+    "category": "Challenges",
+    "signal": 3,
+    "created_at": "2026-02-08T07:42:54-05:00"
   }
 ]

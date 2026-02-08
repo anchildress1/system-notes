@@ -8,6 +8,7 @@ def normalize_common:
   . as $in
   | {
       objectID: ($in.objectID // error("Missing objectID")),
+      created_at: ($in.created_at // null),
       title: ($in.title // ""),
       blurb: ($in.blurb // ""),
       fact: ($in.fact // ""),
