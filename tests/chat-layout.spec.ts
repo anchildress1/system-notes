@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('AIChat Visual Layout', () => {
-  test('chat window CSS should be correct', async ({ page }) => {
+  test('chat window CSS should be correct', async ({ page, isMobile }) => {
     await page.goto('/');
 
     // Wait for hydration/content instead of networkidle
@@ -31,7 +31,7 @@ test.describe('AIChat Visual Layout', () => {
     console.log('Computed bottom:', bottomValue);
     console.log('Computed position:', positionValue);
 
-    expect(bottomValue).toBe('170px');
+    expect(bottomValue).toBe(isMobile ? '20px' : '170px');
     expect(positionValue).toBe('fixed');
   });
 });
