@@ -25,14 +25,16 @@
 :global(.ais-Chat-window[class*="maximized"]),
 :global(.ais-Chat-window[class*="fullscreen"]) {
   position: fixed !important;
+  bottom: 170px !important;
+  right: var(--space-md, 20px) !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  width: min(90vw, 800px) !important;
+  height: min(80vh, 700px) !important;
+  max-width: calc(100vw - 40px) !important;
+  max-height: calc(100vh - 190px) !important;
   z-index: var(--z-chat-maximized) !important;
-  width: 100% !important;
-  height: 100% !important;
-  max-width: none !important;
-  max-height: none !important;
-  bottom: 0 !important;
-  right: 0 !important;
-  border-radius: 0 !important;
 }
 
 
@@ -60,38 +62,15 @@
   right: calc(var(--space-md, 20px) + 375px + 20px);
 }
 
-@media (max-width: 480px) {
-  :global(.ais-Chat-window:not([class*="maximized"]):not([class*="fullscreen"])),
-  :global(.ais-Chat-container:not([class*="maximized"]):not([class*="fullscreen"])) {
-    bottom: 20px;
-    right: 16px;
-    width: calc(100vw - 32px);
-    height: calc(100vh - 100px);
-    max-height: 600px;
-    border-radius: 20px;
-  }
-
-  :global(.ais-Chat-toggleButtonWrapper) {
-    bottom: 20px !important;
-    right: 16px !important;
-  }
-
-  :global(.ais-Chat-toggleButton),
-  :global(.ais-ChatToggleButton) {
-    bottom: 20px !important;
-    right: 16px !important;
-  }
-
-  .musicWrapper {
-    bottom: 90px;
-    right: 16px;
-  }
-
-  .musicPushed {
-    right: 16px;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(20px);
+@media (max-width: 768px) {
+  :global(.ais-Chat-container[class*="maximized"]),
+  :global(.ais-Chat-container[class*="fullscreen"]),
+  :global(.ais-Chat-window[class*="maximized"]),
+  :global(.ais-Chat-window[class*="fullscreen"]) {
+    width: calc(100vw - 40px) !important;
+    height: calc(100vh - 200px) !important;
+    bottom: 170px !important;
+    right: var(--space-md, 20px) !important;
   }
 }
 

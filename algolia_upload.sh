@@ -46,6 +46,11 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
         -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
         -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}")
 
+      if echo "$RESP" | jq -e 'has("status") and (.status | tonumber) >= 400' >/dev/null 2>&1; then
+        echo "Error from Algolia: $(echo "$RESP" | jq -r '.message // "Unknown error"')" >&2
+        exit 1
+      fi
+
       echo "$RESP" | jq -c '.hits[] | {id: .objectID, created_at: .created_at}' >> sys_state.jsonl
       CURSOR=$(echo "$RESP" | jq -r '.cursor // empty')
       [ -z "$CURSOR" ] && break
@@ -124,6 +129,11 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
         -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
         -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}")
 
+      if echo "$RESP" | jq -e 'has("status") and (.status | tonumber) >= 400' >/dev/null 2>&1; then
+        echo "Error from Algolia: $(echo "$RESP" | jq -r '.message // "Unknown error"')" >&2
+        exit 1
+      fi
+
       echo "$RESP" | jq -c '.hits[] | {id: .objectID, created_at: .created_at}' >> merged_state.jsonl
       CURSOR=$(echo "$RESP" | jq -r '.cursor // empty')
       [ -z "$CURSOR" ] && break
@@ -150,6 +160,11 @@ if [ -f "apps/api/algolia/sources/index.json" ]; then
       RESP=$(curl -s "$URL" \
         -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_API_KEY}" \
         -H "X-Algolia-Application-Id: ${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}")
+
+      if echo "$RESP" | jq -e 'has("status") and (.status | tonumber) >= 400' >/dev/null 2>&1; then
+        echo "Error from Algolia: $(echo "$RESP" | jq -r '.message // "Unknown error"')" >&2
+        exit 1
+      fi
 
       echo "$RESP" | jq -c '.hits[]' >> crawler_records.jsonl
       CURSOR=$(echo "$RESP" | jq -r '.cursor // empty')
