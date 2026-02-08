@@ -97,6 +97,8 @@ function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string, e
             apiKey: apiKey,
             indexName: indexName,
             assistantId: 'XcsWYxeCArfQ',
+            insights: true,
+            suggestedQuestionsEnabled: true,
             attributes: {
               primaryText: 'title',
               secondaryText: 'blurb',
@@ -140,6 +142,15 @@ export default function SearchPage() {
         const dialog = document.querySelector('[role="dialog"], .modal-backdrop-askai');
         const closeBtn = dialog?.querySelector('button[aria-label*="lose"], button:has(svg)');
         if (closeBtn instanceof HTMLElement) closeBtn.click();
+
+        setTimeout(() => {
+          const firstCard = document.querySelector(
+            '.FactCard-module__TivY_W__cardLink, .PostCard-module__card a'
+          );
+          if (firstCard instanceof HTMLElement) {
+            firstCard.click();
+          }
+        }, 500);
       }, 100);
     };
 

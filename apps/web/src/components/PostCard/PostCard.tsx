@@ -178,7 +178,6 @@ export default function PostCard({ hit, sendEvent }: PostCardProps) {
                       }}
                       aria-label="Close expanded view"
                       tabIndex={0}
-                      autoFocus
                     >
                       <svg
                         width="24"

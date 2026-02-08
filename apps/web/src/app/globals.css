@@ -179,8 +179,10 @@ button {
 }
 
 /* ── Algolia Chat Widget Overrides (Floating Chat) ──
-   Must mirror SiteSearch Ask AI panel theme exactly:
-   Agent = purple, Human = pink, Links = teal
+   COLOR SEMANTICS:
+   - info/navigation → teal  (--color-accent-teal)
+   - action/agent    → purple (--color-accent-purple)
+   - human/identity  → pink  (--color-accent-pink)
 */
 
 .ais-Chat {
@@ -192,46 +194,103 @@ button {
 .ais-Chat-toggleButton {
   width: 60px !important;
   height: 60px !important;
-  background-color: hsl(var(--color-accent-purple)) !important;
+  background: linear-gradient(135deg, hsl(var(--color-accent-purple)), hsl(var(--color-accent-purple) / 0.85)) !important;
+  border: 2px solid hsl(var(--color-accent-purple) / 0.6) !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 0 20px hsl(var(--color-accent-purple) / 0.25) !important;
 }
 
 .ais-Chat-toggleButton svg {
   width: 30px !important;
   height: 30px !important;
+  filter: drop-shadow(0 0 4px hsl(var(--color-accent-purple) / 0.5));
 }
 
+/* Header icon: action (purple) */
 .ais-ChatHeader-titleIcon,
 .aspect-square {
   color: hsl(var(--color-accent-purple)) !important;
+  filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4));
 }
 
+/* Chat window: elevated glass with subtle purple border glow */
 .ais-Chat-window,
 .ais-Chat-container {
-  background-color: hsl(var(--color-bg-elevated)) !important;
-  border: 1px solid hsl(var(--color-border)) !important;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--color-bg-elevated)) 0%,
+    hsl(var(--color-bg-elevated) / 0.95) 100%
+  ) !important;
+  border: 1px solid hsl(var(--color-accent-purple) / 0.2) !important;
   border-radius: var(--radius-xl) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px hsl(var(--color-accent-purple) / 0.08) inset !important;
 }
 
+/* ── Chat header: action purple accent bar ── */
+.ais-Chat-header,
+.ais-ChatHeader {
+  border-bottom: 1px solid hsl(var(--color-accent-purple) / 0.15) !important;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--color-accent-purple) / 0.06) 0%,
+    transparent 100%
+  ) !important;
+}
+
+/* ── Human messages: pink outline + subtle pink glow ── */
 .ais-Chat-userMessage {
-  border-color: hsl(var(--color-accent-pink)) !important;
+  border-color: hsl(var(--color-accent-pink) / 0.5) !important;
+  border-left: 3px solid hsl(var(--color-accent-pink)) !important;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-accent-pink) / 0.06) 0%,
+    transparent 60%
+  ) !important;
+  border-radius: var(--radius-md) !important;
 }
 
 .ais-Chat-userMessage .ais-Chat-avatar {
-  background-color: hsl(var(--color-bg-surface)) !important;
+  background: hsl(var(--color-accent-pink) / 0.12) !important;
+  border: 1.5px solid hsl(var(--color-accent-pink) / 0.4) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 8px hsl(var(--color-accent-pink) / 0.2) !important;
 }
 
+/* ── Agent messages: purple outline + subtle purple glow ── */
 .ais-Chat-assistantMessage {
-  border-color: hsl(var(--color-accent-purple)) !important;
+  border-color: hsl(var(--color-accent-purple) / 0.3) !important;
+  border-left: 3px solid hsl(var(--color-accent-purple)) !important;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-accent-purple) / 0.04) 0%,
+    transparent 60%
+  ) !important;
+  border-radius: var(--radius-md) !important;
 }
 
 .ais-Chat-assistantMessage .ais-Chat-avatar {
-  background-color: hsl(var(--color-accent-purple)) !important;
+  background: hsl(var(--color-accent-purple) / 0.15) !important;
+  border: 1.5px solid hsl(var(--color-accent-purple) / 0.5) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 8px hsl(var(--color-accent-purple) / 0.25) !important;
 }
 
+/* ── Links in messages: info (teal) with underline glow ── */
 .ais-Chat-message a {
   color: hsl(var(--color-accent-teal)) !important;
+  text-decoration-color: hsl(var(--color-accent-teal) / 0.3) !important;
+  transition: all var(--transition-base) !important;
 }
 
+.ais-Chat-message a:hover {
+  text-shadow: 0 0 8px hsl(var(--color-accent-teal) / 0.4) !important;
+  text-decoration-color: hsl(var(--color-accent-teal)) !important;
+}
+
+/* ── Input: purple focus ring ── */
 .ais-Chat-input:focus,
 .ais-Chat-input:focus-visible {
   border-color: hsl(var(--color-accent-purple)) !important;
@@ -239,13 +298,21 @@ button {
   outline: none !important;
 }
 
+/* ── Submit: action (purple) gradient ── */
 .ais-Chat-submitButton {
-  background-color: hsl(var(--color-accent-purple)) !important;
+  background: linear-gradient(135deg, hsl(var(--color-accent-purple)), hsl(270 80% 60%)) !important;
   color: white !important;
+  border: none !important;
+  box-shadow: 0 2px 8px hsl(var(--color-accent-purple) / 0.3) !important;
+  transition: all var(--transition-base) !important;
 }
 
 .ais-Chat-submitButton:hover {
-  background-color: hsl(var(--color-accent-purple) / 0.8) !important;
+  background: linear-gradient(135deg, hsl(var(--color-accent-purple) / 0.9), hsl(270 80% 55%)) !important;
+  box-shadow:
+    0 4px 16px hsl(var(--color-accent-purple) / 0.4),
+    0 0 20px hsl(var(--color-accent-purple) / 0.2) !important;
+  transform: translateY(-1px) !important;
 }
 
 /* ── Chat header action buttons (maximize, minimize, close) ── */
@@ -255,12 +322,14 @@ button {
   color: hsl(var(--color-text-muted)) !important;
   opacity: 1 !important;
   visibility: visible !important;
+  transition: all var(--transition-base) !important;
 }
 
 .ais-Chat-header button:hover,
 .ais-ChatHeader button:hover,
 .ais-Chat-headerActions button:hover {
   color: hsl(var(--color-accent-purple)) !important;
+  filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4)) !important;
 }
 
 /* ── Kill ALL remaining Algolia blue ── */

@@ -117,8 +117,8 @@
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
-  background: hsl(var(--color-bg-surface));
-  color: hsl(var(--color-accent-pink));
+  background: hsl(var(--color-accent-pink) / 0.15);
+  color: hsl(var(--color-text-primary));
   border-radius: var(--radius-md);
   font-weight: 600;
   text-decoration: none;
@@ -128,8 +128,8 @@
 }
 
 .ctaButton:hover {
-  background: hsl(var(--color-bg-elevated));
-  color: hsl(var(--color-accent-pink));
+  background: hsl(var(--color-accent-pink) / 0.25);
+  color: hsl(var(--color-text-primary));
   transform: translateY(-1px);
   box-shadow: 0 4px 12px hsl(var(--color-accent-pink) / 0.4);
 }

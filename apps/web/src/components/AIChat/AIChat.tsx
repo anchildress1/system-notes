@@ -148,6 +148,7 @@ export default function AIChat() {
       </div>
       <InstantSearchNext
         searchClient={searchClient}
+        insights
         future={{ preserveSharedStateOnUnmount: true }}
       >
         <Chat

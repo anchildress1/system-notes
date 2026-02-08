@@ -6,7 +6,12 @@
    CRITICAL: Do NOT override position/size/opacity/transform on
    .ais-Chat-container. Algolia uses opacity+transform transitions
    for the open/close animation. Overriding these properties breaks
-   the animation and leaves the container at opacity:0 (invisible). */
+   the animation and leaves the container at opacity:0 (invisible).
+
+   COLOR SEMANTICS:
+   - info/navigation → teal  (--color-accent-teal)
+   - action/agent    → purple (--color-accent-purple)
+   - human/identity  → pink  (--color-accent-pink)  */
 
 .chatDock {
   isolation: isolate;
@@ -21,9 +26,12 @@
   pointer-events: auto;
 }
 
-/* Chat overlays music button instead of pushing it aside. Music button is
-   always at bottom-right; chat renders on top when open. */
+/* ── Normal open: chat sits ABOVE the toggle + music buttons ── */
+:global(.ais-Chat) {
+  bottom: 160px !important;   /* 90px toggle offset + 60px height + 10px gap */
+}
 
+/* ── Maximized: full viewport with margin ── */
 :global(.ais-Chat:has(.ais-Chat-container--maximized)),
 :global(.ais-Chat.ais-Chat--maximized) {
   top: 5vh !important;
@@ -42,6 +50,7 @@
   height: 100% !important;
 }
 
+/* ── Toggle button: action (purple) with glow ── */
 :global(.ais-Chat-toggleButton),
 :global(.ais-ChatToggleButton) {
   position: fixed !important;
@@ -49,50 +58,69 @@
   right: var(--space-md, 20px) !important;
   width: 60px !important;
   height: 60px !important;
-  background-color: hsl(var(--color-accent-purple)) !important;
+  background: linear-gradient(135deg, hsl(var(--color-accent-purple)), hsl(var(--color-accent-purple) / 0.85)) !important;
   border-radius: var(--radius-round) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-  border: none !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 0 20px hsl(var(--color-accent-purple) / 0.25) !important;
+  border: 2px solid hsl(var(--color-accent-purple) / 0.6) !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  transition: all 0.3s var(--ease-spring) !important;
 }
 
 :global(.ais-Chat-toggleButton:hover),
 :global(.ais-ChatToggleButton:hover) {
-  transform: scale(1.05) !important;
-  box-shadow: 0 8px 24px hsl(var(--color-accent-purple) / 0.5) !important;
+  transform: scale(1.08) !important;
+  box-shadow:
+    0 8px 24px hsl(var(--color-accent-purple) / 0.5),
+    0 0 30px hsl(var(--color-accent-purple) / 0.3) !important;
+  border-color: hsl(var(--color-accent-purple)) !important;
 }
 
 .toggleIcon {
-  color: inherit;
+  color: white;
+  filter: drop-shadow(0 0 4px hsl(var(--color-accent-purple) / 0.6));
 }
 
+/* ── Header icon: action (purple) glow ── */
 .headerIcon {
   color: hsl(var(--color-accent-purple));
+  filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4));
 }
 
+/* ── Agent avatar: action (purple) outline+glow ── */
 .avatar {
-  background-color: transparent;
+  background: hsl(var(--color-accent-purple) / 0.1);
   color: hsl(var(--color-accent-purple));
+  border: 1.5px solid hsl(var(--color-accent-purple) / 0.4);
+  border-radius: var(--radius-round);
   display: flex;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.3));
 }
 
+/* ── Human avatar: human (pink) outline+glow ── */
 .userAvatar {
-  background-color: transparent;
+  background: hsl(var(--color-accent-pink) / 0.1);
   color: hsl(var(--color-accent-pink));
+  border: 1.5px solid hsl(var(--color-accent-pink) / 0.4);
+  border-radius: var(--radius-round);
   display: flex;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(0 0 6px hsl(var(--color-accent-pink) / 0.3));
 }
 
+/* ── Disclaimer footer: info (teal) subtle ── */
 .disclaimer {
-  color: hsl(var(--color-text-muted));
+  color: hsl(var(--color-accent-teal) / 0.7);
   background-color: transparent;
   font-size: 0.65rem;
   text-transform: uppercase;
   padding: 8px;
+  letter-spacing: 0.5px;
 }

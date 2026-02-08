@@ -275,7 +275,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                       }}
                       aria-label="Close expanded view"
                       tabIndex={0}
-                      autoFocus
                     >
                       <svg
                         width="24"
@@ -331,7 +330,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
 
                     <div className={styles.factContent}>
                       <p id={dialogDescriptionId} className={styles.factText}>
-                        {hit.fact}
+                        {hit.content || hit.fact || hit.blurb}
                       </p>
                     </div>
 

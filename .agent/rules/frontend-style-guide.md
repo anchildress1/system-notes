@@ -5,7 +5,7 @@ description: Apply this contract when rendering or styling cards, chat, or contr
 
 # SEARCH PAGE COLOR CONTRACT (AI-OPTIMIZED)
 
-SCOPE: Cards + Chat + Search UI  
+SCOPE: Cards + Chat + Search UI
 GOAL: Deterministic color usage with no interpretation
 
 ---
