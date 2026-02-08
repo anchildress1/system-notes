@@ -1,4 +1,11 @@
-/* Algolia Chat Widget - Positioning and Custom Styling Only */
+/* Algolia Chat Widget — Portal-based, body-level dock
+   Rule: DOM order defines priority, not z-index escalation.
+   #chat-dock is appended to <body> AFTER #__next, so it naturally
+   stacks above the app. Internal layering uses local z-index only. */
+
+.chatDock {
+  isolation: isolate;
+}
 
 :global(.ais-Chat-window:not([class*="maximized"]):not([class*="fullscreen"])) {
   position: fixed;
@@ -6,7 +13,7 @@
   right: var(--space-md, 20px);
   width: min(375px, calc(100vw - 32px));
   height: min(600px, calc(100vh - 190px));
-  z-index: var(--z-chat-window);
+  z-index: 3;
 }
 
 :global(.ais-Chat-container:not([class*="maximized"]):not([class*="fullscreen"])) {
@@ -15,7 +22,7 @@
   right: var(--space-md, 20px);
   width: min(375px, calc(100vw - 32px));
   height: min(600px, calc(100vh - 190px));
-  z-index: var(--z-chat-window);
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -34,7 +41,7 @@
   height: min(80vh, 700px) !important;
   max-width: calc(100vw - 40px) !important;
   max-height: calc(100vh - 190px) !important;
-  z-index: var(--z-chat-maximized) !important;
+  z-index: 4 !important;
 }
 
 
@@ -46,14 +53,14 @@
   position: fixed !important;
   bottom: 90px !important;
   right: var(--space-md, 20px) !important;
-  z-index: var(--z-chat-toggle) !important;
+  z-index: 2 !important;
 }
 
 .musicWrapper {
   position: fixed;
   bottom: 90px;
   right: calc(var(--space-md, 20px) + 60px + 20px);
-  z-index: var(--z-chat-music);
+  z-index: 1;
   transition: all var(--transition-slow);
   pointer-events: auto;
 }
@@ -89,7 +96,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  z-index: var(--z-chat-toggle) !important;
+  z-index: 2 !important;
 }
 
 :global(.ais-Chat-toggleButton:hover),

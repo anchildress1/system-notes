@@ -155,3 +155,75 @@ const tools = {
 
 <Chat tools={tools} />;
 ```
+
+## 7. Container (CRITICAL COMPONENT)
+
+ROLE
+You are positioning Algolia Chat and Algolia Ask AI search UI in a React application.
+
+OBJECTIVE
+Reposition both interfaces cleanly without manipulating or escalating z-index values and without introducing visual layering bugs.
+
+CORE RULES (NON-NEGOTIABLE)
+
+- Do NOT raise z-index values to “fix” visibility.
+- Do NOT nest Chat or Ask AI inside layout containers that use:
+  - transform
+  - filter / backdrop-filter
+  - opacity < 1
+  - perspective
+  - overflow: hidden
+- Do NOT rely on shadow DOM tricks.
+- Do NOT attach either interface to arbitrary layout components (headers, cards, grids).
+
+APPROACH (REQUIRED)
+
+1. Treat Chat and Ask AI as UI overlays, not layout elements.
+2. Render them as direct descendants of <body> using React portals.
+3. Give each interface its own dedicated root node:
+   - One root for Ask AI / search overlays
+   - One root for Chat
+4. Use positioning (fixed / absolute) to place them, not stacking hacks.
+5. Create isolated stacking contexts using DOM placement and isolation, not z-index escalation.
+
+CHAT PLACEMENT
+
+- Chat must live in a dedicated “dock” node appended directly to <body>.
+- The dock is positioned with `position: fixed`.
+- The dock is isolated from the rest of the app’s stacking contexts.
+- Chat should never inherit layout constraints from the app shell.
+
+ASK AI / SEARCH PLACEMENT
+
+- Ask AI UI must render through a portal (Radix/shadcn default behavior is acceptable).
+- The portal target must be either:
+  - document.body
+  - or a dedicated overlay root attached to body
+- Ask AI modals, dialogs, and panels must not be children of scrolling or transformed containers.
+
+STACKING STRATEGY
+
+- DOM order defines priority, not z-index wars.
+- Overlay root appears above the app.
+- Chat dock appears below Ask AI overlays but above the app.
+- Only two layering levels are allowed conceptually:
+  1. Ask AI overlays
+  2. Chat dock
+
+FAILURE CONDITIONS (AUTOMATICALLY WRONG)
+
+- “Fixing” overlap by setting z-index to large arbitrary values
+- Rendering Chat inside the main app tree
+- Rendering Ask AI inside headers, cards, or layout wrappers
+- Debugging with trial-and-error z-index changes instead of moving the DOM node
+
+SUCCESS CRITERIA
+
+- Chat is always visible and clickable regardless of page layout
+- Ask AI overlays never clip, hide, or fall behind content
+- No component behavior changes when layout CSS changes
+- No z-index values need to be revisited later
+
+MENTAL MODEL
+These are overlays, not components.
+Move them out of the system instead of fighting the system.

@@ -65,12 +65,6 @@
   --z-card-flip: 5000;
   --z-search-widget: 9000;
   --z-footer: 9500;
-  --z-floating-controls: 10000;
-  --z-chat-music: 1000000;
-  --z-chat-toggle: 1000001;
-  --z-chat-window: 1000002;
-  --z-chat-maximized: 1000003;
-  --z-max: 2147483647;
 
   /* ── Glass surface (reusable) ── */
   --glass-bg: rgba(30, 31, 36, 0.7);

@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "Search query to filter blog posts by title, content, or tags"
+    },
+    "tag": {
+      "type": "string",
+      "description": "Filter posts by specific tag (e.g., 'AI', 'Portfolio', 'Engineering')"
+    },
+    "limit": {
+      "type": "integer",
+      "description": "Maximum number of results to return (1-50)",
+      "default": 10
+    }
+  }
+}

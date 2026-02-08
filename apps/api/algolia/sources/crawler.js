@@ -1,5 +1,5 @@
 new Crawler({
-  appId: 'EXKENZ9FHJ',
+  appId: '3Q79SRC1FP',
   apiKey: process.env.ALGOLIA_CRAWLER_API_KEY,
   indexPrefix: '',
   rateLimit: 8,

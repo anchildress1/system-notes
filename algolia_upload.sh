@@ -4,13 +4,15 @@ set -euo pipefail
 # Algolia Index Upload Script
 # Uploads both data and settings to Algolia indices from repository root
 
-# Load credentials from .env
-if [ -f ".env" ]; then
-  set -a
-  # shellcheck disable=SC1091
-  source .env
-  set +a
-fi
+# Load credentials from .env files
+for env_file in ".env" ".env.local" "apps/web/.env.local"; do
+  if [ -f "$env_file" ]; then
+    # shellcheck disable=SC1090,SC1091
+    set -a
+    source "$env_file"
+    set +a
+  fi
+done
 
 if [ -z "${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID:-}" ] || [ -z "${ALGOLIA_ADMIN_API_KEY:-}" ]; then
   echo "Error: NEXT_PUBLIC_ALGOLIA_APPLICATION_ID and ALGOLIA_ADMIN_API_KEY must be set in .env"

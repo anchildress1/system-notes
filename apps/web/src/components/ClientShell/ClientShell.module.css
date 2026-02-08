@@ -1,10 +1,1 @@
-.floatingControls {
-  position: fixed;
-  bottom: 90px;
-  right: 48px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  z-index: var(--z-floating-controls);
-  pointer-events: none;
-}
+/* ClientShell: no layout styles needed — AIChat uses a body-level portal */

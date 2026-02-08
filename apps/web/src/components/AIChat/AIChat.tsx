@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { Chat } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
@@ -62,14 +63,13 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
 
 export default function AIChat() {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  // const recommendationTools = useRecommendationTools();
+
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
     []
   );
 
-  // Memoize translations to prevent unnecessary re-renders of the Chat widget
   const translations = useMemo(
     () => ({
       header: {
@@ -114,15 +114,11 @@ export default function AIChat() {
           }
         },
       },
-      // ...recommendationTools,
     }),
     []
-    // [recommendationTools]
   );
 
   useEffect(() => {
-    // Accessibility fix: Inject aria-label into Algolia's Chat toggle button
-    // Dark mode: Add .dark class to enable Algolia's built-in dark theme
     const fixAccessibility = () => {
       if (typeof document === 'undefined') return;
 
@@ -131,13 +127,8 @@ export default function AIChat() {
       const isWindowOpen = !!chatWindow;
       setIsChatOpen((prev) => (prev === isWindowOpen ? prev : isWindowOpen));
 
-      // Apply dark mode class to Algolia Chat widget
-      if (chatWindow) {
-        chatWindow.classList.add('dark');
-      }
-      if (chatContainer) {
-        chatContainer.classList.add('dark');
-      }
+      if (chatWindow) chatWindow.classList.add('dark');
+      if (chatContainer) chatContainer.classList.add('dark');
 
       const toggleBtn = document.querySelector(
         '.ais-ChatToggleButton, .ais-Chat-toggleButton, [class*="ChatToggleButton"]'
@@ -152,7 +143,6 @@ export default function AIChat() {
       }
     };
 
-    // Run immediately in case it's already there
     fixAccessibility();
 
     const observer = new MutationObserver(fixAccessibility);
@@ -161,8 +151,8 @@ export default function AIChat() {
     return () => observer.disconnect();
   }, []);
 
-  return (
-    <>
+  const chatContent = (
+    <div className={styles.chatDock}>
       <div className={`${styles.musicWrapper} ${isChatOpen ? styles.musicPushed : ''}`}>
         <MusicPlayer />
       </div>
@@ -182,6 +172,8 @@ export default function AIChat() {
           toggleButtonIconComponent={ToggleIcon}
         />
       </InstantSearchNext>
-    </>
+    </div>
   );
+
+  return createPortal(chatContent, document.body);
 }
