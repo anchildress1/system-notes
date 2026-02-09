@@ -3,10 +3,14 @@ import { test, expect } from '@playwright/test';
 test.describe('AIChat Visual Layout', () => {
   test('chat dock portal renders with correct bottom offset', async ({ page }) => {
     await page.goto('/');
+    // Wait for hydration/content instead of networkidle
     await expect(page.locator('h1').first()).toBeVisible();
 
     // globals.css applies Algolia CSS variable overrides to .ais-Chat
     // Bottom positioning comes from the CSS module (:global scope) loaded with AIChat
+    // Inject a dummy element with the target class to verify CSS application
+    // The real widget might not open due to missing Algolia creds in test env,
+    // but the CSS should be loaded because AIChat component is mounted.
     await page.evaluate(() => {
       const dummy = document.createElement('div');
       dummy.className = 'ais-Chat';

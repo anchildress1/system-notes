@@ -7,6 +7,7 @@ description: Apply this contract when rendering or styling cards, chat, or contr
 
 SCOPE: Cards + Chat + Search UI
 GOAL: Deterministic color usage with no interpretation
+GOAL: Deterministic color usage with no interpretation
 
 ---
 

@@ -1,5 +1,10 @@
+// Avoid hardcoding credentials in source. Prefer providing via environment
+// variables and never commit real API keys or app IDs to the repo or terminal.
 new Crawler({
-  appId: '3Q79SRC1FP',
+  appId:
+    process.env.ALGOLIA_APPLICATION_ID ||
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID ||
+    'REDACTED_APP_ID',
   apiKey: process.env.ALGOLIA_CRAWLER_API_KEY,
   indexPrefix: '',
   rateLimit: 8,

@@ -14,6 +14,7 @@ Core Rules
 Low-Signal Fallback
 
 If retrieved results are empty:
+
 - Fall back to the System Notes project
 
 Prompt Construction Rules

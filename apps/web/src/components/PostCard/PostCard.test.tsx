@@ -17,7 +17,7 @@ vi.mock('next/navigation', () => ({
 // Mock Highlight to render simple text
 vi.mock('react-instantsearch', () => ({
   Highlight: ({ attribute, hit }: { attribute: string; hit: Record<string, unknown> }) => (
-    <span data-testid={`highlight-${attribute}`}>{String(hit[attribute])}</span>
+    <span data-testid={`highlight-${attribute}`}>{String((hit as any)[attribute])}</span>
   ),
 }));
 
@@ -35,7 +35,7 @@ const createMockHit = (overrides: Partial<PostHitRecord> = {}): Hit<PostHitRecor
     __position: 1,
     __queryID: 'test-query',
     ...overrides,
-  }) as Hit<PostHitRecord>;
+  }) as unknown as Hit<PostHitRecord>;
 
 describe('PostCard', () => {
   it('renders basic post info', () => {
@@ -73,8 +73,8 @@ describe('PostCard', () => {
     });
     render(<PostCard hit={hit} />);
 
-    const link = screen.getByRole('link');
     // Should create a search page URL, not use the external URL directly
+    const link = screen.getByRole('link');
     expect(link.getAttribute('href')).toContain('/search');
     expect(link.getAttribute('href')).toContain('factId=external-post');
   });
