@@ -1,12 +1,3 @@
-.floatingControls {
-    position: fixed;
-    bottom: 90px;
-    right: 48px;
-    display: flex;
-    align-items: center;
-    /* Align center so circles line up */
-    gap: 16px;
-    z-index: 10021;
-    /* Above footer */
-    pointer-events: none;
+.appRoot {
+  isolation: isolate;
 }

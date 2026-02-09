@@ -33,9 +33,10 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
         className={styles.modal}
         onClick={(e) => e.stopPropagation()}
         layoutId={`card-${project.id}`}
-        initial={{ scale: 0.9, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: 20 }}
+        initial={{ scale: 0.9, y: 20, rotateY: 180 }}
+        animate={{ scale: 1, y: 0, rotateY: 0 }}
+        exit={{ scale: 0.9, y: 20, rotateY: 180 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
       >
         <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
           ✕

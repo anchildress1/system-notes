@@ -1,103 +1,138 @@
 .footer {
-    width: 100%;
-    padding: 1rem 2rem;
-    background: hsl(var(--color-bg-elevated) / 0.8);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid hsl(var(--color-border));
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    z-index: 10000;
-    font-size: 0.85rem;
-    color: hsl(var(--color-text-secondary));
+  width: 100%;
+  padding: 1rem 2rem;
+  background: hsl(var(--color-bg-elevated) / 0.8);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid hsl(var(--color-border));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: var(--z-footer);
+  font-size: 0.85rem;
+  color: hsl(var(--color-text-secondary));
 }
 
 .left {
-    display: flex;
-    gap: 1rem;
+  display: flex;
+  gap: 1rem;
 }
 
 .right {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
 }
 
 .link {
-    color: hsl(var(--color-text-secondary));
-    text-decoration: none;
-    transition: color 0.2s ease;
+  color: hsl(var(--color-text-secondary));
+  text-decoration: none;
+  transition: color var(--transition-base);
 }
 
 .link:hover,
 .link:focus-visible {
-    color: hsl(var(--color-accent-yellow));
-    outline: 2px solid hsl(var(--color-accent-yellow));
-    outline-offset: 4px;
-    border-radius: 4px;
+  color: hsl(var(--color-accent-teal));
+  outline: 2px solid hsl(var(--color-accent-teal));
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .socialLink {
-    composes: link;
-    font-size: 1.5rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    padding: 2px;
+  composes: link;
+  font-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-round);
+  padding: 2px;
 }
 
 .socialLink:focus-visible {
-    outline-offset: 2px;
+  outline-offset: 2px;
+}
+
+.socialLink:hover,
+.socialLink:focus-visible {
+  color: hsl(338 70% 62%);
+  background: transparent;
+  outline: none;
+}
+
+.socialLink:hover svg {
+  fill: hsl(338 70% 62%);
 }
 
 .center {
-    flex: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: hsl(var(--color-text-primary));
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: hsl(var(--color-text-primary));
 }
 
 .poweredBy {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
 }
 
 .builtWith {
-    opacity: 0.9;
-    font-style: italic;
-    font-size: 0.8rem;
+  opacity: 0.9;
+  font-style: italic;
+  font-size: 0.8rem;
 }
 
 .algoliaLink {
-    composes: link;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 0.75rem;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
+  composes: link;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  opacity: 0.8;
+  transition: opacity var(--transition-base);
+  border: none;
+  outline: none;
 }
 
 .algoliaLink:hover {
-    opacity: 1;
+  opacity: 1;
+  color: hsl(var(--color-text-secondary));
+  outline: none;
+}
+
+.algoliaPrefix {
+  color: hsl(var(--color-text-secondary));
+}
+
+.algoliaHoverable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color var(--transition-base);
+}
+
+.algoliaLink:hover .algoliaHoverable {
+  color: hsl(var(--color-accent-teal));
+}
+
+.algoliaLink:hover .algoliaHoverable .algoliaIcon {
+  color: hsl(var(--color-accent-teal));
 }
 
 .algoliaIcon {
-    font-size: 1rem;
-    color: hsl(var(--color-accent-blue));
+  font-size: 1rem;
+  color: hsl(var(--color-accent-teal));
 }
 
 @media (max-width: 600px) {
-    .footer {
-        flex-direction: column;
-        gap: 0.5rem;
-        text-align: center;
-        padding: 1rem;
-    }
+  .footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+    padding: 1rem;
+  }
 }

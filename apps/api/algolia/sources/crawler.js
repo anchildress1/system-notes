@@ -1,10 +1,13 @@
+// Avoid hardcoding credentials in source. Prefer providing via environment
+// variables and never commit real API keys or app IDs to the repo or terminal.
 new Crawler({
-  appId: 'EXKENZ9FHJ',
-  apiKey: 'b64818d18623f622291609230cb797dd',
+  appId:
+    process.env.ALGOLIA_APPLICATION_ID ||
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID ||
+    'REDACTED_APP_ID',
+  apiKey: process.env.ALGOLIA_CRAWLER_API_KEY,
   indexPrefix: '',
   rateLimit: 8,
-  maxUrls: 100,
-  schedule: 'on thursday',
   startUrls: ['https://crawly.checkmarkdevtools.dev/'],
   sitemaps: ['https://crawly.checkmarkdevtools.dev/sitemap.xml'],
   saveBackup: false,
@@ -18,21 +21,61 @@ new Crawler({
       recordExtractor: function ({ url, $, helpers }) {
         var urlStr = typeof url === 'string' ? url : String(url);
 
-        var title =
+        var _rawTitle =
           $('main > h1').first().text().trim() || $('title').first().text().trim() || urlStr;
+        var title = 'Blog titled ' + _rawTitle;
 
-        var description = $('meta[name="description"]').attr('content');
-        description = description ? String(description).trim() : null;
+        var _desc = $('meta[name="description"]').attr('content');
+        var description = _desc ? String(_desc).trim().slice(0, 500) : null;
 
         var publishedAt = $('meta[name="article:published_time"]').attr('content');
-        publishedAt = publishedAt ? String(publishedAt).trim() : null;
-
-        var modifiedAt = $('meta[name="article:modified_time"]').attr('content');
-        modifiedAt = modifiedAt ? String(modifiedAt).trim() : null;
+        var epochTimestamp = null;
+        if (publishedAt) {
+          var date = new Date(String(publishedAt).trim());
+          if (!isNaN(date.getTime())) {
+            epochTimestamp = Math.floor(date.getTime() / 1000);
+          }
+        }
 
         var canonical =
-          $('link[rel="canonical"]').attr('href') || $('meta[name="canonical"]').attr('content');
+          $('link[rel="canonical"]').attr('href') ||
+          $('meta[property="og:url"]').attr('content') ||
+          $('meta[property="source-url"]').attr('content');
         canonical = canonical ? String(canonical).trim() : null;
+
+        // Always use canonical if available, otherwise fall back to crawled URL
+        var finalUrl = canonical || urlStr;
+
+        // Guard against empty URLs
+        if (!finalUrl || finalUrl.trim() === '') {
+          console.warn('Empty URL found for page, skipping record');
+          return [];
+        }
+
+        // Extract slug for objectID - use last URL segment or hash the full URL
+        var slug = '';
+        var cleanUrl = finalUrl.replace(/\/$/, '').replace(/^https?:\/\//, '');
+        var parts = cleanUrl.split('/');
+        if (parts.length > 1) {
+          // Get last non-empty segment
+          slug =
+            parts
+              .filter(function (p) {
+                return p.length > 0;
+              })
+              .pop() || '';
+        }
+
+        // Fallback: if slug is still empty, use a hash of the URL
+        if (!slug || slug.trim() === '') {
+          var hash = 0;
+          for (var i = 0; i < finalUrl.length; i++) {
+            var char = finalUrl.charCodeAt(i);
+            hash = (hash << 5) - hash + char;
+            hash = hash & hash;
+          }
+          slug = 'post-' + Math.abs(hash).toString(36);
+        }
 
         var image = $('meta[property="og:image"]').attr('content');
         image = image ? String(image).trim() : null;
@@ -49,42 +92,44 @@ new Crawler({
               return !!t;
             })
             .map(function (t) {
-              return t.charAt(0) === '#' ? t : '#' + t;
+              return 'DEV Blog > #' + t;
             });
         }
 
         var engagementRaw = $('meta[name="devto:engagement_score"]').attr('content');
-        var engagementScore = engagementRaw ? Number(engagementRaw) : 0;
-        const normalize = (score) => Math.min(5, (5 * score) / 50);
+        var engagementScore = engagementRaw ? Number(engagementRaw) - 1 : 0;
 
-        if (!isFinite(engagementScore)) engagementScore = 0;
+        if (engagementScore < 0) {
+          engagementScore = 0;
+        } else if (engagementScore > 5) {
+          engagementScore = 5;
+        }
+        if (engagementScore === 0) {
+          return [];
+        }
 
-        var content = $('main article').first().text();
-        content = content ? String(content).replace(/\s+/g, ' ').trim() : '';
+        var _content = $('main article').first().text();
+        var content = _content ? String(_content).trim().replace(/\s+/g, ' ') : null;
+        // Cap content size to avoid Algolia "record too large" errors.
+        if (content && content.length > 150) {
+          content = content.slice(0, 150);
+        }
 
         return [
           {
-            objectID: urlStr,
+            objectID: slug,
             title: title,
-            url: urlStr,
-            blurb: '',
-            fact: description,
+            url: finalUrl,
+            blurb: description,
+            fact: content,
             'tags.lvl0': ['DEV Blog'],
             'tags.lvl1': tags,
             projects: [],
             category: 'Writing',
-            signal: normalize(engagementScore),
+            signal: engagementScore,
+            created_at: epochTimestamp,
           },
         ];
-      },
-    },
-    {
-      indexName: 'crawly_pages',
-      pathsToMatch: ['https://crawly.checkmarkdevtools.dev/**'],
-      recordExtractor: function ({ url, $, helpers, contentLength, fileType }) {
-        var urlStr = typeof url === 'string' ? url : String(url);
-        if (urlStr.indexOf('/posts/') !== -1) return [];
-        return helpers.page({ $, url, contentLength, fileType });
       },
     },
   ],
@@ -92,9 +137,16 @@ new Crawler({
     crawly_posts: {
       distinct: true,
       attributeForDistinct: 'objectIDs',
-      searchableAttributes: ['unordered(title)', 'unordered(fact)', 'tags.lvl1'],
-      customRanking: ['desc(engagementScore)', 'desc(publishedAt)'],
-      attributesForFaceting: ['type', 'tags'],
+      searchableAttributes: ['title', 'blurb', 'fact', 'projects', 'tags.lvl0', 'tags.lvl1'],
+      attributesForFaceting: [
+        'category',
+        'searchable(projects)',
+        'searchable(tags.lvl0)',
+        'searchable(tags.lvl1)',
+      ],
+      customRanking: ['desc(signal)', 'desc(created_at)'],
+      hitsPerPage: 20,
+      typoTolerance: true,
     },
   },
 });

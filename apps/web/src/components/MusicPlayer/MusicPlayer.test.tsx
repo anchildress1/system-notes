@@ -64,8 +64,8 @@ describe('MusicPlayer', () => {
     const playError = new Error('NotAllowedError');
     window.HTMLMediaElement.prototype.play = vi.fn().mockRejectedValue(playError);
 
-    // Spy on console.error to avoid treating it as a test failure and to verify it was called
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    // Spy on console.warn to avoid treating it as a test failure and to verify it was called
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     render(<MusicPlayer />);
     const button = screen.getByTestId('play-button');

@@ -1,8 +1,13 @@
+'use client';
+
 import { FaCode } from 'react-icons/fa';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import styles from './Header.module.css';
 
 export default function Header() {
+  const pathname = usePathname();
+
   return (
     <header className={styles.header}>
       <a href="#main-content" className={styles.skipLink}>
@@ -18,14 +23,20 @@ export default function Header() {
       </div>
 
       <nav className={styles.nav} aria-label="Main Navigation">
-        <Link href="/" className={styles.navLink}>
-          Projects
+        <Link href="/" className={`${styles.navLink} ${pathname === '/' ? styles.active : ''}`}>
+          Choices
         </Link>
-        <Link href="/search" className={styles.navLink}>
-          Fact Index
+        <Link
+          href="/projects"
+          className={`${styles.navLink} ${pathname === '/projects' ? styles.active : ''}`}
+        >
+          Builds
         </Link>
-        <Link href="/about" className={styles.navLink}>
-          About
+        <Link
+          href="/about"
+          className={`${styles.navLink} ${pathname === '/about' ? styles.active : ''}`}
+        >
+          Human
         </Link>
         <a
           href="https://dev.to/anchildress1"

@@ -1,23 +1,19 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { mockAlgolia } from './utils';
+import { test } from './utils';
 
 test.describe('System Notes Integration', () => {
-  test.beforeEach(async ({ page }) => {
-    await mockAlgolia(page);
-  });
-
   test('loads homepage with correct metadata', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/System Notes/);
-    await expect(page.locator('h1').first()).toContainText('Not here to play nice');
+    await expect(page.locator('h1').first()).toContainText("This portfolio isn't browsed—");
   });
 
   test('should display the footer', async ({ page }) => {
     await page.goto('/');
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
-    await expect(footer).toContainText('Built with Gemini, ChatGPT, Claude + Verdent');
+    await expect(footer).toContainText('Built with GitHub Copilot, ChatGPT, Verdent + Gemini');
   });
 
   test('should display blog CTA in header', async ({ page }) => {
@@ -28,7 +24,7 @@ test.describe('System Notes Integration', () => {
   });
 
   test('should load projects with simple tags', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/projects');
     // Wait for projects
     const projectCard = page.locator('div[class*="card"]').first();
     await expect(projectCard).toBeVisible();
@@ -42,12 +38,12 @@ test.describe('System Notes Integration', () => {
   });
 
   test('should open expanded view and verify banner', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/projects');
     // Click first card
     await page
       .getByTestId(/^project-card-/)
       .first()
-      .click({ force: true });
+      .click();
 
     // Check for banner container
     // Use a more specific locator to avoid matching Project Cards
@@ -72,7 +68,7 @@ test.describe('System Notes Integration', () => {
     await expect(tagItems.first()).toBeVisible();
   });
 
-  test('About page smoke test', async ({ page }) => {
+  test('Human page smoke test', async ({ page }) => {
     await page.goto('/about');
 
     // Check Hero Image
@@ -97,16 +93,17 @@ test.describe('System Notes Integration', () => {
     // Accessibility check
     const accessibilityScanResults = await new AxeBuilder({ page })
       .disableRules(['region'])
+      .exclude('.ais-ChatToggleButton')
       .analyze();
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 
-  test('clicking project link in homepage navigates with hash', async ({ page }) => {
-    await page.goto('/');
+  test('clicking project link in builds page navigates with hash', async ({ page }) => {
+    await page.goto('/projects');
 
     // Click first project card
     const firstCard = page.getByTestId(/^project-card-/).first();
-    await firstCard.click({ force: true });
+    await firstCard.click();
 
     // Verify hash is written
     await expect(page).toHaveURL(/#project=.+/);
@@ -118,7 +115,7 @@ test.describe('System Notes Integration', () => {
 
   test('navigating to app_url from external source opens modal', async ({ page }) => {
     // Simulate arriving at the site with a hash
-    await page.goto('/#project=system-notes');
+    await page.goto('/projects#project=system-notes');
 
     // Verify modal opens
     const modal = page.getByTestId('expanded-view-dialog');

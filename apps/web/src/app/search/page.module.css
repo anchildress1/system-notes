@@ -1,4 +1,4 @@
 .main {
   min-height: 100vh;
-  background: hsl(var(--color-bg-base));
+  width: 100%;
 }

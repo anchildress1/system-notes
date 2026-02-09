@@ -54,7 +54,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.15 }}
     >
       <motion.div
         ref={cardRef}
@@ -65,10 +65,16 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         aria-labelledby="modal-title"
         tabIndex={-1} // Make focusable
         data-testid="expanded-view-dialog"
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+        layoutId={`card-${project.id}`}
+        initial={{ rotateY: 180, opacity: 0 }}
+        animate={{ rotateY: 0, opacity: 1 }}
+        exit={{ rotateY: -180, opacity: 0 }}
+        transition={{
+          rotateY: { duration: 0.35, ease: 'easeOut' },
+          opacity: { duration: 0.2, ease: 'easeOut' },
+          layout: { duration: 0.3, ease: 'easeOut' },
+        }}
+        style={{ transformStyle: 'preserve-3d', perspective: 1200 }}
       >
         <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
           <svg

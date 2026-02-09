@@ -28,14 +28,15 @@ describe('Footer Component', () => {
 
   it('renders build info', () => {
     render(<Footer />);
-    expect(screen.getByText(/Built with Gemini, ChatGPT, Claude \+ Verdent/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Built with GitHub Copilot, ChatGPT, Verdent \+ Gemini/i)
+    ).toBeInTheDocument();
   });
 
   it('renders Algolia attribution', () => {
     render(<Footer />);
     const algoliaLink = screen.getByRole('link', { name: /Powered by Algolia/i });
     expect(algoliaLink).toHaveAttribute('href', 'https://www.algolia.com');
-    expect(screen.getByText(/Search by/i)).toBeInTheDocument();
     expect(screen.getByText(/Algolia/i)).toBeInTheDocument();
   });
 });

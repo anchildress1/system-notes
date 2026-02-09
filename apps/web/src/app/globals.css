@@ -1,50 +1,73 @@
-@import 'instantsearch.css/themes/satellite.css';
-
 :root {
-  /* Agentic Morph Palette - V2 Power Theme */
-  --color-bg-base: 230 9% 13%;
-  /* #1E1F24 */
-  --color-bg-surface: 225 11% 30%;
-  /* #444854 Lighter Surface */
-  --color-bg-elevated: 225 10% 25%;
-  /* #3A3D46 */
+  /* ── Override Algolia satellite.css blue primary (#1E59FF → #B56BFF purple) ── */
+  --ais-primary-color-rgb: 181, 107, 255;
+  --ais-primary-color-alpha: 1;
 
-  --color-text-primary: 220 20% 98%;
-  --color-text-secondary: 220 10% 75%;
+  /* ── Surface Palette ── */
+  --color-bg-base: 230 9% 13%;         /* #1E1F24 */
+  --color-bg-surface: 225 11% 30%;     /* #444854 */
+  --color-bg-elevated: 225 9% 25%;     /* #3A3D46 */
+
+  /* ── Text Palette ── */
+  --color-text-primary: 240 10% 91%;   /* #E6E6EB */
+  --color-text-secondary: 229 8% 75%;  /* #B9BBC4 */
   --color-text-muted: 220 10% 55%;
 
-  /* Accents - Power & Electric */
-  --color-accent-purple: 262 100% 71%;
-  /* #A86AFF */
-  --color-accent-pink: 338 78% 61%;
-  /* #E94D88 */
-  --color-accent-teal: 178 59% 45%;
-  /* #2FB7B2 */
-  --color-accent-yellow: 174 96% 35%;
-  /* Vibrant Teal (Overriding Yellow variable for V3) */
+  /* ── Accent Palette ── */
+  --color-accent-purple: 270 100% 71%; /* #B56BFF — primary action / agent */
+  --color-accent-pink: 338 86% 66%;    /* #F16197 — human identity */
+  --color-accent-teal: 178 57% 51%;    /* #3EC7C2 — navigation / references */
 
+  /* ── Borders ── */
   --color-border: 225 10% 25%;
+  --color-border-subtle: 225 10% 25% / 0.4;
   --color-border-hover: 262 100% 71%;
-  /* Purple hover */
 
+  /* ── Shadows ── */
   --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
   --shadow-bento: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
   --highlight-top: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
 
-  /* Spacing - Breathing Room */
+  /* ── Spacing ── */
   --space-xs: 0.75rem;
   --space-sm: 1.5rem;
   --space-md: 3rem;
   --space-lg: 6rem;
   --space-xl: 12rem;
 
-  /* Typography */
+  /* ── Border Radius ── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 100px;
+  --radius-round: 50%;
+
+  /* ── Typography ── */
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Animation */
+  /* ── Animation ── */
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --ease-morph: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s var(--ease-morph);
+
+  /* ── Z-Index Scale ── */
+  --z-background: -1;
+  --z-base: 0;
+  --z-sticky: 100;
+  --z-modal: 1000;
+  --z-overlay: 2000;
+  --z-card-flip: 5000;
+  --z-search-widget: 9000;
+  --z-footer: 9500;
+
+  /* ── Glass surface (reusable) ── */
+  --glass-bg: rgba(30, 31, 36, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: blur(12px);
 }
 
 * {
@@ -67,11 +90,10 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-background);
   background-image:
     radial-gradient(circle at 50% -20%, hsl(var(--color-accent-purple) / 0.3), transparent 60%),
-    radial-gradient(circle at 85% 90%, hsl(var(--color-accent-teal) / 0.1), transparent 50%),
-    radial-gradient(circle at 10% 50%, hsl(var(--color-accent-yellow) / 0.05), transparent 40%);
+    radial-gradient(circle at 85% 90%, hsl(var(--color-accent-teal) / 0.1), transparent 50%);
   pointer-events: none;
 }
 
@@ -89,13 +111,13 @@ body::before {
   outline-color: transparent !important;
 }
 
-/* Modal Overlay Base Styles */
+/* Modal Overlay Base */
 .modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
-  z-index: 1000;
+  z-index: var(--z-modal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,6 +137,15 @@ body::before {
   border: 0;
 }
 
+.card-glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -127,7 +158,7 @@ button {
   cursor: pointer;
 }
 
-/* Custom Scrollbar */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -138,36 +169,304 @@ button {
 
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--color-bg-elevated));
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--color-accent-purple) / 0.5);
 }
 
-/* Algolia Chat Widget - Minimal Overrides */
+/* ── Algolia Chat Widget Overrides (Floating Chat) ──
+   COLOR SEMANTICS:
+   - info/navigation → teal  (--color-accent-teal)
+   - action/agent    → purple (--color-accent-purple)
+   - human/identity  → pink  (--color-accent-pink)
+*/
 
-/* Theme variable overrides */
 .ais-Chat {
-  --ais-primary-color-rgb: 47, 182, 178 !important;
-  --ais-background-color-rgb: 255, 255, 255 !important;
-  --ais-text-color-rgb: 38, 38, 38 !important;
+  --ais-primary-color-rgb: 181, 107, 255 !important;
+  --ais-background-color-rgb: 58, 61, 70 !important;
+  --ais-text-color-rgb: 230, 230, 235 !important;
 }
 
-/* Visual Overrides */
 .ais-Chat-toggleButton {
   width: 60px !important;
   height: 60px !important;
-  background-color: hsl(178, 59%, 45%) !important;
+  background: linear-gradient(135deg, hsl(var(--color-accent-purple)), hsl(var(--color-accent-purple) / 0.85)) !important;
+  border: 2px solid hsl(var(--color-accent-purple) / 0.6) !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 0 20px hsl(var(--color-accent-purple) / 0.25) !important;
 }
 
 .ais-Chat-toggleButton svg {
   width: 30px !important;
   height: 30px !important;
+  filter: drop-shadow(0 0 4px hsl(var(--color-accent-purple) / 0.5));
 }
 
-/* Header Icon Color */
+/* Header icon: action (purple) */
 .ais-ChatHeader-titleIcon,
 .aspect-square {
-  color: hsl(338 78% 61%) !important;
+  color: hsl(var(--color-accent-purple)) !important;
+  filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4));
+}
+
+/* Chat window: elevated glass with subtle purple border glow */
+.ais-Chat-window,
+.ais-Chat-container {
+  background: linear-gradient(
+    180deg,
+    hsl(var(--color-bg-elevated)) 0%,
+    hsl(var(--color-bg-elevated) / 0.95) 100%
+  ) !important;
+  border: 1px solid hsl(var(--color-accent-purple) / 0.2) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px hsl(var(--color-accent-purple) / 0.08) inset !important;
+}
+
+/* ── Chat header: action purple accent bar ── */
+.ais-Chat-header,
+.ais-ChatHeader {
+  border-bottom: 1px solid hsl(var(--color-accent-purple) / 0.15) !important;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--color-accent-purple) / 0.06) 0%,
+    transparent 100%
+  ) !important;
+}
+
+/* ── Human messages: pink outline + subtle pink glow ── */
+.ais-Chat-userMessage {
+  border-color: hsl(var(--color-accent-pink) / 0.5) !important;
+  border-left: 3px solid hsl(var(--color-accent-pink)) !important;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-accent-pink) / 0.06) 0%,
+    transparent 60%
+  ) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+.ais-Chat-userMessage .ais-Chat-avatar {
+  background: hsl(var(--color-accent-pink) / 0.12) !important;
+  border: 1.5px solid hsl(var(--color-accent-pink) / 0.4) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 8px hsl(var(--color-accent-pink) / 0.2) !important;
+}
+
+/* ── Agent messages: purple outline + subtle purple glow ── */
+.ais-Chat-assistantMessage {
+  border-color: hsl(var(--color-accent-purple) / 0.3) !important;
+  border-left: 3px solid hsl(var(--color-accent-purple)) !important;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--color-accent-purple) / 0.04) 0%,
+    transparent 60%
+  ) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+.ais-Chat-assistantMessage .ais-Chat-avatar {
+  background: hsl(var(--color-accent-purple) / 0.15) !important;
+  border: 1.5px solid hsl(var(--color-accent-purple) / 0.5) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 8px hsl(var(--color-accent-purple) / 0.25) !important;
+}
+
+/* ── Links in messages: info (teal) with underline glow ── */
+.ais-Chat-message a {
+  color: hsl(var(--color-accent-teal)) !important;
+  text-decoration-color: hsl(var(--color-accent-teal) / 0.3) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.ais-Chat-message a:hover {
+  text-shadow: 0 0 8px hsl(var(--color-accent-teal) / 0.4) !important;
+  text-decoration-color: hsl(var(--color-accent-teal)) !important;
+}
+
+/* ── Input: purple focus ring ── */
+.ais-Chat-input:focus,
+.ais-Chat-input:focus-visible {
+  border-color: hsl(var(--color-accent-purple)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--color-accent-purple) / 0.25) !important;
+  outline: none !important;
+}
+
+/* ── Submit: action (purple) gradient ── */
+.ais-Chat-submitButton {
+  background: linear-gradient(135deg, hsl(var(--color-accent-purple)), hsl(270 80% 60%)) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 2px 8px hsl(var(--color-accent-purple) / 0.3) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.ais-Chat-submitButton:hover {
+  background: linear-gradient(135deg, hsl(var(--color-accent-purple) / 0.9), hsl(270 80% 55%)) !important;
+  box-shadow:
+    0 4px 16px hsl(var(--color-accent-purple) / 0.4),
+    0 0 20px hsl(var(--color-accent-purple) / 0.2) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── Prompt suggestions: visible hover state ── */
+.ais-Chat-suggestedQuestion,
+.ais-Chat-suggestion,
+[class*="Chat-suggestion"],
+[class*="Chat-suggestedQuestion"] {
+  border: 1px solid hsl(var(--color-text-secondary) / 0.2) !important;
+  color: hsl(var(--color-text-secondary)) !important;
+  background: hsl(var(--color-bg-elevated) / 0.5) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.ais-Chat-suggestedQuestion:hover,
+.ais-Chat-suggestion:hover,
+[class*="Chat-suggestion"]:hover,
+[class*="Chat-suggestedQuestion"]:hover {
+  border-color: hsl(var(--color-accent-purple) / 0.6) !important;
+  color: hsl(var(--color-text-primary)) !important;
+  background: hsl(var(--color-accent-purple) / 0.12) !important;
+  box-shadow: 0 2px 8px hsl(var(--color-accent-purple) / 0.2) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── Chat header action buttons (maximize, minimize, close) ── */
+.ais-Chat-header button,
+.ais-ChatHeader button,
+.ais-Chat-headerActions button {
+  color: hsl(var(--color-text-muted)) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: all var(--transition-base) !important;
+}
+
+.ais-Chat-header button:hover,
+.ais-ChatHeader button:hover,
+.ais-Chat-headerActions button:hover {
+  color: hsl(var(--color-accent-purple)) !important;
+  filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4)) !important;
+}
+
+/* ── Kill ALL remaining Algolia blue ── */
+.ais-SearchBox-submit,
+.ais-SearchBox-submitIcon,
+.ais-RefinementList-checkbox:checked,
+.ais-ToggleRefinement-checkbox:checked,
+.ais-Pagination-link--selected,
+.ais-Stats-text a,
+.ais-ClearRefinements-button,
+.ais-CurrentRefinements-delete {
+  color: hsl(var(--color-accent-purple)) !important;
+}
+
+.ais-SearchBox-submit {
+  background: transparent !important;
+}
+
+.ais-Pagination-link--selected {
+  background-color: hsl(var(--color-accent-purple)) !important;
+  border-color: hsl(var(--color-accent-purple)) !important;
+  color: white !important;
+}
+
+*:focus-visible {
+  outline-color: hsl(var(--color-accent-purple)) !important;
+}
+
+.ais-SearchBox-input:focus {
+  border-color: hsl(var(--color-accent-purple)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--color-accent-purple) / 0.25) !important;
+}
+
+/* ── SiteSearch leftover blue overrides ── */
+[class*="ss-"] a,
+[class*="ss-"] button:not([class*="clear"]) {
+  color: inherit;
+}
+
+[class*="ss-"] a:hover {
+  color: hsl(var(--color-accent-teal)) !important;
+}
+
+/* ── Chat Prompt Suggestions: visible hover state ── */
+.ais-Chat-suggestedQuestion,
+.ais-Chat [class*="suggestedQuestion"],
+.ais-Chat [class*="suggestion"] {
+  background: hsl(var(--color-bg-elevated)) !important;
+  border: 1px solid hsl(var(--color-text-secondary) / 0.2) !important;
+  color: hsl(var(--color-text-secondary)) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-base) !important;
+  cursor: pointer !important;
+}
+
+.ais-Chat-suggestedQuestion:hover,
+.ais-Chat [class*="suggestedQuestion"]:hover,
+.ais-Chat [class*="suggestion"]:hover {
+  background: hsl(var(--color-accent-purple) / 0.15) !important;
+  border-color: hsl(var(--color-accent-purple) / 0.5) !important;
+  color: hsl(var(--color-text-primary)) !important;
+  box-shadow: 0 2px 8px hsl(var(--color-accent-purple) / 0.2) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── Chat Search Results (inline results within chat messages) ── */
+.ais-Chat [class*="searchResult"],
+.ais-Chat [class*="source"],
+.ais-Chat [class*="SearchResult"],
+.ais-Chat [class*="Source"] {
+  background: hsl(var(--color-bg-elevated)) !important;
+  border: 1px solid hsl(var(--color-text-secondary) / 0.15) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 0.75rem 1rem !important;
+  margin: 0.5rem 0 !important;
+  transition: all var(--transition-base) !important;
+}
+
+.ais-Chat [class*="searchResult"]:hover,
+.ais-Chat [class*="source"]:hover,
+.ais-Chat [class*="SearchResult"]:hover,
+.ais-Chat [class*="Source"]:hover {
+  border-color: hsl(var(--color-accent-purple) / 0.4) !important;
+  background: hsl(var(--color-accent-purple) / 0.06) !important;
+  box-shadow: 0 2px 8px hsl(var(--color-accent-purple) / 0.12) !important;
+}
+
+.ais-Chat [class*="searchResult"] a,
+.ais-Chat [class*="source"] a,
+.ais-Chat [class*="SearchResult"] a,
+.ais-Chat [class*="Source"] a {
+  color: hsl(var(--color-accent-teal)) !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.ais-Chat [class*="searchResult"] a:hover,
+.ais-Chat [class*="source"] a:hover,
+.ais-Chat [class*="SearchResult"] a:hover,
+.ais-Chat [class*="Source"] a:hover {
+  text-decoration: underline !important;
+  text-decoration-color: hsl(var(--color-accent-teal) / 0.5) !important;
+}
+
+/* Chat search result titles */
+.ais-Chat [class*="searchResult"] [class*="title"],
+.ais-Chat [class*="Source"] [class*="title"] {
+  color: hsl(var(--color-text-primary)) !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+}
+
+/* Chat search result snippets */
+.ais-Chat [class*="searchResult"] [class*="snippet"],
+.ais-Chat [class*="searchResult"] [class*="body"],
+.ais-Chat [class*="Source"] [class*="snippet"] {
+  color: hsl(var(--color-text-secondary)) !important;
+  font-size: 0.85rem !important;
+  line-height: 1.5 !important;
 }

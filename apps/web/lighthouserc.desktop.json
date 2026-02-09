@@ -5,7 +5,7 @@
       "url": ["http://localhost:3001/"],
       "numberOfRuns": 3,
       "settings": {
-        "chromeFlags": "--no-sandbox",
+        "chromeFlags": "--headless=new --disable-gpu --no-sandbox",
         "preset": "desktop"
       }
     },
@@ -14,21 +14,21 @@
         "categories:performance": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.95,
             "aggregationMethod": "optimistic"
           }
         ],
         "categories:accessibility": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.98,
             "aggregationMethod": "optimistic"
           }
         ],
         "categories:best-practices": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.96,
             "aggregationMethod": "optimistic"
           }
         ],

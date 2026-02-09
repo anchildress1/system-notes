@@ -1,5 +1,6 @@
 import { Project } from '@/data/projects';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import styles from './ProjectCard.module.css';
 
 interface ProjectCardProps {
@@ -12,7 +13,8 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
   const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'CheckMarK DevTools';
 
   return (
-    <div
+    <motion.div
+      layoutId={`card-${project.id}`}
       className={styles.card}
       onClick={() => onSelect(project)}
       data-testid={`project-card-${project.id}`}
@@ -97,6 +99,6 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

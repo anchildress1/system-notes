@@ -1,7 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import BackgroundMusic from '@/components/BackgroundMusic/BackgroundMusic';
 import Footer from '@/components/Footer/Footer';
 import styles from './ClientShell.module.css';
 
@@ -15,15 +14,14 @@ const AIChat = dynamic(() => import('@/components/AIChat/AIChat'), {
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <div aria-hidden="true">
-        <GlitterBomb />
+      <div className={styles.appRoot}>
+        <div aria-hidden="true">
+          <GlitterBomb />
+        </div>
+        {children}
+        <Footer />
       </div>
-      <BackgroundMusic />
-      {children}
-      <div className={styles.floatingControls}>
-        <AIChat />
-      </div>
-      <Footer />
+      <AIChat />
     </>
   );
 }

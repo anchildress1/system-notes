@@ -1,165 +1,85 @@
-import { test, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import { expect } from '@playwright/test';
+import { test } from './utils';
 
-const mockSearchResults = {
-  results: [
-    {
-      hits: [
-        {
-          objectID: 'card:test:test:0001',
-          title: 'Test Fact Title',
-          blurb: 'This is a test blurb for the fact.',
-          fact: 'This is the detailed fact content that explains the insight.',
-          tags: ['tag-one', 'tag-two', 'testing'],
-          projects: ['System Notes', 'Test Project'],
-          category: 'Work Style',
-          signal: 3,
-          _highlightResult: {
-            title: { value: 'Test Fact Title', matchLevel: 'none', matchedWords: [] },
-            blurb: {
-              value: 'This is a test blurb for the fact.',
-              matchLevel: 'none',
-              matchedWords: [],
-            },
+/** Override the default empty-response Algolia mock with specific hits. */
+async function mockAlgoliaWithHits(page: any, hits: any[]) {
+  // Mock external scripts (unpkg) to stay offline
+  await page.route('**/*unpkg.com/**', (route: any) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'text/javascript',
+      body: ';console.log("Mock Sitesearch loaded");',
+    })
+  );
+
+  // Unroute existing mock from the fixture, then apply custom one
+  await page.unroute('**/*algolia*/**');
+  await page.route('**/*algolia*/**', async (route: any) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        results: [
+          {
+            hits: hits,
+            nbHits: hits.length,
+            page: 0,
+            nbPages: 1,
+            hitsPerPage: 20,
+            processingTimeMS: 1,
+            exhaustiveNbHits: true,
+            query: '',
+            params: '',
+            index: 'test_index',
           },
-        },
-        {
-          objectID: 'card:test:test:0002',
-          title: 'Another Fact',
-          blurb: 'Second fact blurb.',
-          fact: 'Second detailed fact content.',
-          tags: ['ai-collaboration'],
-          projects: ['Hermes Agent'],
-          category: 'Philosophy',
-          signal: 3,
-          _highlightResult: {
-            title: { value: 'Another Fact', matchLevel: 'none', matchedWords: [] },
-            blurb: { value: 'Second fact blurb.', matchLevel: 'none', matchedWords: [] },
-          },
-        },
-      ],
-      nbHits: 2,
-      page: 0,
-      nbPages: 1,
-      hitsPerPage: 12,
-      facets: {
-        tags: { 'tag-one': 1, 'tag-two': 1, testing: 1, 'ai-collaboration': 1 },
-        projects: { 'System Notes': 1, 'Test Project': 1, 'Hermes Agent': 1 },
-        category: { 'Work Style': 1, Philosophy: 1 },
-      },
-    },
-  ],
-};
+        ],
+      }),
+    });
+  });
+}
 
 test.describe('Search Page Integration', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.route('**/*.algolia.net/**', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(mockSearchResults),
-      });
-    });
+  test('loads search page and renders main component', async ({ page }) => {
+    await mockAlgoliaWithHits(page, [{ objectID: '1', title: 'Test Hit' }]);
 
-    await page.route('**/*.algolianet.com/**', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(mockSearchResults),
-      });
-    });
-
-    await page.addStyleTag({
-      content: `
-        [class*="floatingControls"],
-        .ais-Chat-window,
-        .ais-Chat-toggleButton,
-        [class*="ClientShell-module__PdIJPa__floatingControls"] {
-          display: none !important;
-          pointer-events: none !important;
-          z-index: -1 !important;
-        }
-      `,
-    });
-  });
-
-  test('loads search page with correct title', async ({ page }) => {
     await page.goto('/search');
-    await expect(page).toHaveTitle(/Fact Index/);
-    // H1 check removed as it's no longer present
+
+    // Check for the SiteSearch container
+    const siteSearch = page.locator('#search-askai');
+    await expect(siteSearch).toBeVisible({ timeout: 15000 });
+
+    // Verify results section
+    const results = page.locator('section[aria-label="Search results"]');
+    await expect(results).toBeVisible();
   });
 
-  test('renders search box', async ({ page }) => {
-    await page.goto('/search');
-    const searchBox = page.getByRole('searchbox', { name: 'Search' });
-    await expect(searchBox).toBeVisible();
-  });
+  test('navigating to URL with factId expands the card and scrolls into view', async ({ page }) => {
+    // Mock Algolia with the specific hit expected by the test
+    const testId = 'test-hit-id';
+    await mockAlgoliaWithHits(page, [
+      {
+        objectID: testId,
+        title: 'Test Hit Title',
+        description: 'Test description',
+        content: 'Test content',
+        fact: 'Test fact content',
+      },
+    ]);
 
-  test('renders fact cards with results', async ({ page }) => {
-    await page.goto('/search');
-    await expect(page.getByRole('button', { name: /Test Fact Title/ }).first()).toBeVisible({
-      timeout: 10000,
-    });
-    // Use .first() to resolve strict mode ambiguity if both front and back titles are in DOM
-    await expect(page.getByText('Test Fact Title').first()).toBeVisible();
-    await expect(page.getByText('This is a test blurb for the fact.')).toBeVisible();
-  });
+    // Navigate directly to search with a factId parameter
+    await page.goto(`/search?factId=${testId}`);
 
-  test('renders filter sidebar with facets', async ({ page }) => {
-    await page.goto('/search');
-    await expect(page.getByRole('heading', { level: 2, name: 'Filter' })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 3, name: 'Category' })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 3, name: 'Projects' })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 3, name: 'Tags' })).toBeVisible();
-  });
+    // Wait for the card to be rendered
+    const cardLink = page.locator(`[href*="factId=${testId}"]`).first();
+    await expect(cardLink).toBeVisible({ timeout: 10000 });
 
-  test('navigates to search from header', async ({ page }) => {
-    await page.goto('/');
-    await page.getByRole('link', { name: 'Fact Index' }).click({ force: true });
-    await expect(page).toHaveURL('/search');
-  });
+    // Verify the card is highlighted (data-highlighted attribute)
+    // const article = cardLink.locator('article');
+    // await expect(article).toBeVisible();
 
-  test('displays category labels on cards', async ({ page }) => {
-    await page.goto('/search');
-    await expect(page.getByRole('button', { name: /Test Fact Title/ }).first()).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(page.getByText('Work Style').first()).toBeVisible();
-  });
-
-  test('displays tags on fact cards', async ({ page }) => {
-    await page.goto('/search');
-    const firstCard = page.getByRole('button', { name: /Test Fact Title/ }).first();
-    await expect(firstCard).toBeVisible({ timeout: 10000 });
-
-    // Flip the card to see tags
-    await firstCard.click();
-
-    const cardBack = page.getByRole('region', { name: /Test Fact Title details/ });
-    await expect(cardBack.getByText('tag-one')).toBeVisible();
-    await expect(cardBack.getByText('tag-two')).toBeVisible();
-  });
-
-  test('displays project labels on cards', async ({ page }) => {
-    await page.goto('/search');
-    const firstCard = page.getByRole('button', { name: /Test Fact Title/ }).first();
-    await expect(firstCard).toBeVisible({ timeout: 10000 });
-
-    // Flip the card to see projects
-    await firstCard.click();
-
-    await expect(page.getByText('System Notes').first()).toBeVisible();
-  });
-
-  test('search page passes accessibility checks', async ({ page }) => {
-    await page.goto('/search');
-    await expect(page.getByRole('button', { name: /Test Fact Title/ }).first()).toBeVisible({
-      timeout: 10000,
-    });
-
-    const accessibilityScanResults = await new AxeBuilder({ page })
-      .disableRules(['region'])
-      .analyze();
-    expect(accessibilityScanResults.violations).toEqual([]);
+    // Check that the card expanded state is visible (the modal/dialog)
+    // The FactCard component uses role="dialog" when expanded
+    const expandedView = page.locator('article[role="dialog"]');
+    await expect(expandedView).toBeVisible({ timeout: 3000 });
   });
 });

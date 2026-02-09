@@ -109,7 +109,7 @@ export const useSparkles = ({
         // Actually app.destroy() handles ticker, but let's be safe.
         app.ticker.add(animate);
       } catch (err) {
-        console.error('Failed to initialize Pixi:', err);
+        console.warn('Failed to initialize Pixi:', err);
       }
     };
 
@@ -137,7 +137,7 @@ export const useSparkles = ({
       if (!app || !app.renderer || !containerRef.current || !isMounted) return;
 
       try {
-        // If restricted to text area (like in AboutHero)
+        // If restricted to text area (like in Hero with image)
         if (sparkleNearText && textRef?.current) {
           const textRect = textRef.current.getBoundingClientRect();
           const isInText =
@@ -195,7 +195,7 @@ export const useSparkles = ({
           particles.push(particle);
         }
       } catch (err) {
-        console.error('Sparkle interaction error:', err);
+        console.warn('Sparkle interaction error:', err);
       }
     };
 

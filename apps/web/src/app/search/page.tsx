@@ -1,21 +1,10 @@
-import { Metadata } from 'next';
-import Header from '@/components/Header/Header';
-import FactsHero from '@/components/FactsHero';
-import SearchPageWrapper from '@/components/SearchPage/SearchPageWrapper';
-import styles from './page.module.css';
+import SearchPageDynamic from '@/components/SearchPage/SearchPage.dynamic';
 
-export const metadata: Metadata = {
-  title: 'Fact Index | System Notes',
-  description:
-    'Search and explore facts, principles, and insights from my portfolio of system notes and projects.',
+export const metadata = {
+  title: 'Search | System Notes',
+  description: 'Search across all system notes and facts.',
 };
 
-export default function Search() {
-  return (
-    <main className={styles.main} id="main-content">
-      <Header />
-      <FactsHero />
-      <SearchPageWrapper />
-    </main>
-  );
+export default function Page() {
+  return <SearchPageDynamic />;
 }

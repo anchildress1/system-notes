@@ -1,41 +1,39 @@
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 4rem 2rem;
-    color: var(--foreground);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  color: hsl(var(--color-text-primary));
 }
 
 .content {
-    font-family: var(--font-mono);
-    line-height: 1.6;
+  font-family: var(--font-mono);
+  line-height: 1.6;
 }
 
-/* Main Name - styled like an H2 but specific */
 .name {
-    font-size: 2rem;
-    color: var(--accent-pink);
-    margin-top: 2rem;
-    margin-bottom: .75rem;
-    font-weight: 700;
+  font-size: 2rem;
+  color: hsl(var(--color-accent-pink));
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
 }
 
-/* Subtitle - styled like body text but slightly distinct */
 .subtitle {
-    font-family: var(--font-mono);
-    font-size: 1.25rem;
-    color: var(--muted-foreground);
-    margin-bottom: 1.25rem;
-    opacity: 0.8;
-    display: block;
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  color: hsl(var(--color-text-secondary));
+  margin-bottom: 1.25rem;
+  opacity: 0.8;
+  display: block;
 }
 
 .content p {
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
 }
 
 .section:not(:first-child) {
-    margin-top: 3rem;
-    padding-top: 3rem;
-    border-top: 1px solid var(--border);
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid hsl(var(--color-border));
 }

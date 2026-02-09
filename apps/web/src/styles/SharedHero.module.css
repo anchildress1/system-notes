@@ -1,99 +1,83 @@
-/* Shared Hero Styles to ensure consistency across pages */
-
 .hero {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 8rem 2rem 6rem 2rem;
-    /* Reduced bottom padding to fix whitespace issues */
-    /* The Golden Standard Spacing */
-    margin-bottom: 2rem;
-    overflow: hidden;
-    user-select: none;
-    cursor: default;
-    /* Spark interactions */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8rem 2rem 2rem 2rem;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
 }
 
 .title {
-    font-family: var(--font-mono);
-    /* Standard small clamp size for all pages */
-    font-size: clamp(2rem, 5vw, 4rem);
-    /* Restoration of big text */
-    font-weight: 800;
-    color: hsl(var(--color-text-primary));
-    text-transform: uppercase;
-    letter-spacing: -1.6px;
-    line-height: 1.35;
-    /* Increased line-height */
-    position: relative;
-    z-index: 10;
-    pointer-events: auto;
-    /* Allow hover */
-    opacity: 1;
-    /* Was 0.9 in some, 1 in others. Settling on 1 for impact. */
-    visibility: visible;
-    margin: 0;
-    margin-bottom: 0.5rem;
-    /* Explicit spacing between title and subtitle */
+  font-family: var(--font-mono);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  color: hsl(var(--color-text-primary));
+  text-transform: uppercase;
+  letter-spacing: -1.6px;
+  line-height: 1.35;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  margin: 0;
+  margin-bottom: 0.5rem;
 }
 
 .titleInteractive {
-    composes: title;
-    cursor: pointer;
+  composes: title;
+  cursor: pointer;
 }
 
 .interactiveContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-    font-family: inherit;
-    color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
 }
 
 .textButton {
-    composes: title;
-    /* Reset button defaults safely */
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-    width: 100%;
-
-    font-family: inherit;
-    color: inherit;
+  composes: title;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
 }
 
 .subtitle {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: clamp(1.2rem, 3.2vw, 2.4rem);
-    /* Increased scale to ~60% of title */
-    font-weight: 400;
-    color: hsl(var(--color-text-primary));
-    /* Match original: White, not pink */
-    margin-top: 0;
-    font-style: italic;
-    transform: rotate(-2deg);
-    /* More specific selector used via composition, !important removed */
-    opacity: 1;
-    visibility: visible;
-    position: relative;
-    z-index: 10;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(1.2rem, 3.2vw, 2.4rem);
+  font-weight: 400;
+  color: hsl(var(--color-text-primary));
+  margin-top: 0;
+  font-style: italic;
+  transform: rotate(-2deg);
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+  z-index: 10;
 }
 
 @media (max-width: 768px) {
-    .hero {
-        padding: 4rem 1rem 3rem 1rem;
-        margin-bottom: 1rem;
-    }
+  .hero {
+    padding: 4rem 1rem 1.5rem 1rem;
+    margin-bottom: 0.25rem;
+  }
 }

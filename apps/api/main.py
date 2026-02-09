@@ -49,8 +49,10 @@ app.add_middleware(
         "http://localhost:3000",
         "https://anchildress1.dev",
         "https://www.anchildress1.dev",
+        "https://unstable.anchildress1.dev",
+        "https://algolia.anchildress1.dev",
     ],
-    allow_origin_regex=r"https://system-notes-ui-800441415595\..*\.run\.app",
+    allow_origin_regex=r"https://system-notes-ui-\d+\..*\.run\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -78,14 +80,14 @@ async def get_projects():
     try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(current_dir, "data", "projects.json")
-        
+
         if not os.path.exists(file_path):
              logger.error("projects.json not found")
              return []
 
         with open(file_path, "r") as f:
             content = json.load(f)
-        
+
         projects = []
         for item in content:
             # Map JSON fields to Project model
@@ -99,7 +101,7 @@ async def get_projects():
                 description=item.get("summary") or item.get("what_it_is", ""),
                 github_url=item.get("url") or item.get("repo_url")
             ))
-            
+
         return projects
     except Exception as e:
         logger.error(f"Error loading projects: {e}")
@@ -114,7 +116,7 @@ async def get_system_doc(doc_path: str):
         # secure_filename() ensures no component contains separators or traversal chars ('..')
         parts = doc_path.split("/")
         safe_parts = [secure_filename(part) for part in parts if part and part not in (".", "..")]
-        
+
         # If the resulting path list is empty (e.g. user sent "///" or ".."), return error
         if not safe_parts:
              return JSONResponse(status_code=400, content={"error": "Invalid path components"})
@@ -122,24 +124,24 @@ async def get_system_doc(doc_path: str):
         # Reconstruct path using pathlib, anchored to api_root
         api_root = Path(__file__).resolve().parent
         target_path = api_root.joinpath(*safe_parts).resolve()
-        
+
         # Security Rule 2.1: Safe Extensions Only
         # Check the *resolved* path's extension/name just to be sure, although secure_filename handles strictness.
         ALLOWED_EXTENSIONS = {".md", ".json", ".txt"}
         if not any(str(target_path.name).endswith(ext) for ext in ALLOWED_EXTENSIONS):
              logger.warning(f"File access blocked (disallowed extension): {target_path}")
              return JSONResponse(status_code=400, content={"error": "File type not allowed"})
-             
+
         # Security Rule 1.4: Resolve and Verify Root (Defense in Depth)
         if not target_path.is_relative_to(api_root):
              logger.warning(f"Path traversal attempt blocked (escaped root): {doc_path}")
              return JSONResponse(status_code=400, content={"error": "Invalid path resolution"})
-        
+
         if not target_path.is_file():
              return JSONResponse(status_code=404, content={"error": "Document not found"})
-             
+
         content = target_path.read_text(encoding="utf-8")
-            
+
         return {"content": content, "format": "markdown", "path": "/".join(safe_parts)}
     except Exception as e:
         logger.error(f"Error serving doc: {e}")
@@ -232,7 +234,7 @@ async def fetch_post_content(client: httpx.AsyncClient, url: str) -> Optional[Bl
         reading_time = extract_meta_content(html, "reading-time")
         description = json_ld.get("description", "")
         final_url = json_ld.get("mainEntityOfPage", {}).get("@id", url)
-        
+
         logger.info(f"Successfully parsed post: {slug}")
 
         return BlogPostInternal(
@@ -263,11 +265,11 @@ async def get_all_blog_posts() -> List[BlogPostInternal]:
 
     logger.info("Cache miss or expired. Fetching fresh blog posts...")
     urls = await fetch_sitemap_urls()
-    
+
     async with httpx.AsyncClient(timeout=10.0) as client:
         tasks = [fetch_post_content(client, url) for url in urls]
         results = await asyncio.gather(*tasks)
-        
+
     posts = [p for p in results if p is not None]
     posts.sort(key=lambda x: x.published_date or "", reverse=True)
 
@@ -284,7 +286,7 @@ async def search_blog_posts(
     limit: int = Query(3, ge=1, le=50, description="Maximum results to return"),
 ):
     logger.info(f"Search request: q='{q}', tag='{tag}', limit={limit}")
-    
+
     posts = await get_all_blog_posts()
     logger.info(f"Total posts available for filtering: {len(posts)}")
 
@@ -306,7 +308,7 @@ async def search_blog_posts(
 
     results = posts[:limit]
     logger.info(f"Returning {len(results)} results")
-    
+
     return BlogSearchResponse(
         results=results,
         total=len(posts),

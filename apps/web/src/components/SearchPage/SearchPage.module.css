@@ -1,6 +1,5 @@
 .container {
   min-height: 100vh;
-  background: hsl(var(--color-bg-base));
   padding-bottom: var(--space-xl);
 }
 
@@ -15,50 +14,75 @@
 }
 
 .errorMessage {
-  color: hsl(var(--color-text-muted));
-  font-size: 1.125rem;
-  margin-top: var(--space-md);
+  text-align: center;
+  padding: 40px;
+  color: hsl(var(--color-text-primary));
+  font-family: var(--font-mono);
 }
 
-.searchHeader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: 0 var(--space-md) var(--space-md);
-  max-width: 1300px;
-  margin: 0 auto;
+.searchSection {
+  max-width: 600px;
+  margin: 0 auto var(--space-lg);
+  padding: 0 var(--space-md);
 }
 
-.searchRow {
+.siteSearchContainer {
   width: 100%;
+  min-height: 48px;
+}
+
+.metaRow {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--space-xs) 0;
+  margin-top: var(--space-xs);
+  line-height: 1;
+}
+
+.statsRoot {
+  font-size: 0.75rem;
+  color: hsl(var(--color-text-secondary));
+  font-weight: 500;
+  line-height: 1;
+  padding-top: 0;
 }
 
 .algoliaAttribution {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.375rem 0.75rem;
-  background: rgba(0, 61, 255, 0.08);
-  border: 1px solid rgba(0, 61, 255, 0.2);
-  border-radius: 20px;
-  color: #5E85FF;
+  gap: 0.375rem;
+  color: hsl(var(--color-text-secondary));
   font-size: 0.75rem;
   font-weight: 500;
   text-decoration: none;
-  transition: all 0.2s ease;
+  line-height: 1;
+  padding-top: 0;
+  flex-direction: row-reverse;
 }
 
-.algoliaAttribution:hover {
-  background: rgba(0, 61, 255, 0.15);
-  border-color: rgba(0, 61, 255, 0.4);
-  transform: translateY(-1px);
+.algoliaAttribution:hover .algoliaHoverable {
+  color: hsl(var(--color-accent-teal));
+}
+
+.algoliaPrefix {
+  white-space: nowrap;
+  color: hsl(var(--color-text-secondary));
+}
+
+.algoliaHoverable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color var(--transition-base);
+}
+
+.algoliaName {
+  white-space: nowrap;
 }
 
 .algoliaIcon {
-  font-size: 1rem;
+  font-size: 0.875rem;
   flex-shrink: 0;
 }
 
@@ -66,91 +90,7 @@
   white-space: nowrap;
 }
 
-.searchBoxRoot {
-  width: 100%;
-  max-width: 600px;
-}
-
-.searchBoxForm {
-  display: flex;
-  align-items: center;
-  background: rgba(30, 31, 36, 0.7);
-  backdrop-filter: blur(12px);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: box-shadow 0.2s ease;
-}
-
-.searchBoxForm:focus-within {
-  box-shadow: 0 0 0 3px hsl(var(--color-accent-teal) / 0.3);
-}
-
-.searchBoxInput {
-  flex: 1;
-  padding: var(--space-sm) var(--space-md);
-  background: transparent;
-  border: none;
-  color: hsl(var(--color-text-primary));
-  font-size: 1rem;
-  outline: none;
-}
-
-.searchBoxInput::placeholder {
-  color: hsl(var(--color-text-muted));
-}
-
-.searchBoxSubmit {
-  padding: var(--space-sm) var(--space-md);
-  background: hsl(var(--color-accent-purple));
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease;
-}
-
-.searchBoxSubmit:hover {
-  background: hsl(var(--color-accent-purple) / 0.8);
-}
-
-.searchBoxReset {
-  padding: var(--space-xs) var(--space-sm);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: hsl(var(--color-text-muted));
-  display: flex;
-  align-items: center;
-}
-
-.searchBoxReset:hover {
-  color: hsl(var(--color-text-secondary));
-}
-
-.searchBoxIcon {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-}
-
-.searchBoxSubmit .searchBoxIcon {
-  fill: hsl(var(--color-bg-base));
-}
-
-.statsRow {
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 var(--space-md);
-  text-align: right;
-}
-
-.statsRoot {
-  display: inline-block;
-  font-size: 0.875rem;
-  color: hsl(var(--color-text-muted));
-}
-
+/* Layout Grid */
 .layout {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -160,49 +100,82 @@
   padding: var(--space-md);
 }
 
+/* Sidebar */
 .sidebar {
-  position: sticky;
-  top: 100px;
+  align-self: start;
   height: fit-content;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
+  max-height: none;
+  overflow: visible;
 }
 
 .filterSection {
-  background: rgba(30, 31, 36, 0.7);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
-  padding: var(--space-md);
-  box-shadow: var(--shadow-card);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid hsl(var(--color-text-secondary) / 0.1);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  box-shadow:
+    var(--shadow-card),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 2px 12px hsl(var(--color-accent-purple) / 0.08);
+  transition: all var(--transition-slow);
 }
 
 .filterTitle {
-  font-family: var(--font-ribeye), cursive;
-  font-size: 1.25rem;
-  font-weight: 400;
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 700;
   color: hsl(var(--color-text-primary));
-  margin: 0 0 var(--space-md) 0;
-  padding-bottom: var(--space-sm);
-  border-bottom: 1px solid transparent;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid hsl(var(--color-text-secondary) / 0.2);
+  letter-spacing: 0.3px;
 }
 
 .refinementGroup {
-  margin-bottom: var(--space-md);
-  padding-bottom: var(--space-sm);
-  border-bottom: 1px solid transparent;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid hsl(var(--color-text-secondary) / 0.08);
 }
 
 .refinementGroup:last-of-type {
   border-bottom: none;
+  margin-bottom: 0;
 }
 
 .refinementTitle {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.8125rem;
+  font-weight: 700;
   color: hsl(var(--color-text-secondary));
-  margin: 0 0 var(--space-sm) 0;
+  margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  font-family: var(--font-mono);
+}
+
+.refinementTitleToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin: 0 0 12px 0;
+  cursor: pointer;
+  color: hsl(var(--color-text-secondary));
+  transition: color var(--transition-base);
+  border-radius: var(--radius-sm);
+}
+
+.refinementTitleToggle:hover {
+  color: hsl(var(--color-text-primary));
+}
+
+.refinementTitleToggle:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 2px;
 }
 
 .refinementRoot {
@@ -215,7 +188,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 4px;
 }
 
 .refinementItem {
@@ -225,87 +198,148 @@
 .refinementLabel {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 10px;
   cursor: pointer;
-  padding: var(--space-xs) 0;
-  transition: color 0.2s ease;
+  padding: 10px 12px;
+  border-radius: var(--radius-lg);
+  transition: all 0.25s var(--ease-morph);
+  color: hsl(var(--color-text-secondary));
+  text-decoration: none;
+  position: relative;
 }
 
 .refinementLabel:hover {
-  color: hsl(var(--color-accent-teal));
+  color: hsl(var(--color-text-primary));
+  background: hsl(var(--color-accent-purple) / 0.08);
+  transform: translateX(2px);
+}
+
+.refinementLabel:focus-within {
+  color: hsl(var(--color-text-primary));
+  background: hsl(var(--color-accent-purple) / 0.08);
+  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
+  outline-offset: 1px;
 }
 
 .refinementCheckbox {
-  width: 16px;
-  height: 16px;
-  accent-color: hsl(var(--color-accent-teal));
+  width: 18px;
+  height: 18px;
+  accent-color: hsl(var(--color-accent-purple));
+  cursor: pointer;
+  transition: transform var(--transition-base);
+}
+
+.refinementCheckbox:hover {
+  transform: scale(1.1);
 }
 
 .refinementLabelText {
   flex: 1;
-  color: hsl(var(--color-text-secondary));
+  min-width: 0;
+  color: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  transition: color var(--transition-base);
 }
 
 .refinementItemSelected .refinementLabelText {
-  color: hsl(var(--color-accent-teal));
-  font-weight: 500;
+  color: hsl(var(--color-accent-purple));
+  font-weight: 600;
 }
 
 .refinementCount {
   font-size: 0.75rem;
-  color: hsl(var(--color-text-muted));
-  background: hsl(var(--color-bg-base));
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-.showMoreButton {
-  margin-top: var(--space-xs);
-  padding: var(--space-xs) var(--space-sm);
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 4px;
   color: hsl(var(--color-text-secondary));
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  background: hsl(var(--color-text-secondary) / 0.1);
+  padding: 4px 8px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  min-width: 28px;
+  text-align: center;
+  transition: all var(--transition-base);
 }
 
-.showMoreButton:hover {
-  background: hsl(var(--color-bg-base));
-  border-color: hsl(var(--color-accent-teal));
-  color: hsl(var(--color-accent-teal));
+.refinementLabel:hover .refinementCount {
+  background: hsl(var(--color-accent-purple) / 0.2);
+  color: hsl(var(--color-accent-purple));
 }
 
+/* Clear Filters */
 .clearRoot {
-  margin-top: var(--space-md);
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid hsl(var(--color-text-secondary) / 0.08);
 }
 
 .clearButton {
   width: 100%;
-  padding: var(--space-sm) var(--space-md);
-  background: hsl(var(--color-accent-teal));
-  border: none;
-  border-radius: 6px;
-  color: hsl(var(--color-bg-base));
+  padding: 12px 16px;
+  background: transparent;
+  border: 1.5px solid hsl(var(--color-text-secondary) / 0.2);
+  border-radius: var(--radius-lg);
+  color: hsl(var(--color-text-secondary));
   font-weight: 600;
+  font-size: 0.875rem;
+  font-family: var(--font-mono);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-slow);
+  position: relative;
+  overflow: hidden;
+}
+
+.clearButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, hsl(var(--color-accent-purple) / 0.15), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-slow);
 }
 
 .clearButton:hover {
-  background: hsl(var(--color-accent-teal) / 0.8);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px hsl(var(--color-accent-teal) / 0.3);
+  background: hsl(var(--color-accent-purple) / 0.1);
+  border-color: hsl(var(--color-accent-purple));
+  color: hsl(var(--color-accent-purple));
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 20px hsl(var(--color-accent-purple) / 0.25),
+    0 0 0 1px hsl(var(--color-accent-purple) / 0.1) inset;
+}
+
+.clearButton:hover::before {
+  opacity: 1;
+}
+
+.clearButton:active {
+  transform: translateY(0);
 }
 
 .clearButtonDisabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  border-color: hsl(var(--color-accent-purple) / 0.2);
+}
+
+.clearButtonDisabled:hover {
+  background: transparent;
   transform: none;
   box-shadow: none;
 }
 
+.clearButtonDisabled::before {
+  opacity: 0;
+}
+
+/* Results Section */
 .results {
   min-height: 400px;
 }
@@ -331,60 +365,55 @@
   margin: 0;
 }
 
-.paginationRoot {
-  display: flex;
-  justify-content: center;
-  padding-top: var(--space-lg);
-  border-top: 1px solid transparent;
+.hitsItem:focus-within {
+  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
+  outline-offset: 2px;
+  border-radius: var(--radius-xl);
 }
 
-.paginationList {
-  display: flex;
-  gap: var(--space-xs);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  align-items: center;
-}
-
-.paginationItem {
-  display: block;
-}
-
-.paginationLink {
+/* Loading Indicator */
+.loadingIndicator {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
-  height: 36px;
-  padding: 0 var(--space-sm);
-  background: hsl(var(--color-bg-surface));
-  border: 1px solid transparent;
-  border-radius: 6px;
-  color: hsl(var(--color-text-secondary));
+  gap: 0.5rem;
+  padding: 1rem;
+  color: hsl(var(--color-text-muted));
   font-size: 0.875rem;
-  text-decoration: none;
-  transition: all 0.2s ease;
+  width: 100%;
 }
 
-.paginationLink:hover {
-  background: hsl(var(--color-bg-base));
-  border-color: hsl(var(--color-accent-teal));
-  color: hsl(var(--color-accent-teal));
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid hsl(var(--color-text-muted));
+  border-top-color: transparent;
+  border-radius: var(--radius-round);
+  animation: spin 1s linear infinite;
 }
 
-.paginationItemSelected .paginationLink {
-  background: hsl(var(--color-accent-teal));
-  border-color: hsl(var(--color-accent-teal));
-  color: hsl(var(--color-bg-base));
-  font-weight: 600;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.paginationItemDisabled .paginationLink {
-  opacity: 0.4;
-  cursor: not-allowed;
+/* Highlight styles — override satellite.css blue (#5468ff) */
+:global(.ais-Highlight-highlighted),
+:global(.ais-Snippet-highlighted) {
+  color: hsl(var(--color-accent-purple)) !important;
+  background-color: transparent !important;
+  font-style: normal !important;
+  font-weight: 700;
+  text-decoration: none !important;
 }
 
+:global(.ais-Highlight-nonHighlighted),
+:global(.ais-Snippet-nonHighlighted) {
+  color: inherit !important;
+}
+
+/* Responsive */
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
@@ -393,16 +422,13 @@
   .sidebar {
     position: static;
     max-height: none;
+    max-width: 320px;
+    justify-self: start;
   }
 
   .filterSection {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
     gap: var(--space-md);
-  }
-
-  .filterTitle {
-    grid-column: 1 / -1;
   }
 
   .clearRoot {
@@ -415,16 +441,384 @@
     grid-template-columns: 1fr;
   }
 
+  .sidebar {
+    max-width: 280px;
+  }
+
   .filterSection {
     grid-template-columns: 1fr;
   }
 
   .algoliaAttribution {
     font-size: 0.625rem;
-    padding: 0.25rem 0.5rem;
   }
 
   .algoliaIcon {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
   }
+}
+
+/* Highlight animation for cards scrolled into view */
+:global([data-highlighted='true']) {
+  animation: cardHighlight 2s ease-out;
+  outline: 2px solid hsl(var(--color-accent-purple) / 0.6);
+  outline-offset: 4px;
+  border-radius: var(--radius-xl);
+}
+
+@keyframes cardHighlight {
+  0% {
+    outline-color: hsl(var(--color-accent-purple) / 0.8);
+    outline-width: 3px;
+  }
+  50% {
+    outline-color: hsl(var(--color-accent-purple) / 0.6);
+    outline-width: 2px;
+  }
+  100% {
+    outline-color: hsl(var(--color-accent-purple) / 0);
+    outline-width: 1px;
+  }
+}
+
+/* ── Algolia SiteSearch Widget Overrides ── */
+
+:global(:root) {
+  --search-primary-color: hsl(270, 100%, 71%) !important;
+  --search-secondary-color: hsl(178, 57%, 51%) !important;
+  --search-background-color: hsl(225, 9%, 25%) !important;
+  --search-neutral-color: hsl(225, 9%, 25%) !important;
+  --search-text-color: hsl(240, 10%, 91%) !important;
+  --search-subtle-text-color: hsl(229, 8%, 75%) !important;
+  --search-border-color: hsl(var(--color-text-secondary) / 0.2) !important;
+  --search-hover-color: hsl(var(--color-accent-purple) / 0.15) !important;
+  --search-input-font-family: var(--font-sans) !important;
+  --search-border-radius: var(--radius-lg) !important;
+}
+
+/* Search Button */
+:global(.sitesearch-button-aa) {
+  background: linear-gradient(135deg, hsl(var(--color-bg-elevated) / 0.7) 0%, hsl(var(--color-bg-base) / 0.8) 100%) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid hsl(var(--color-text-secondary) / 0.2) !important;
+  border-radius: var(--radius-lg) !important;
+  color: hsl(var(--color-text-secondary)) !important;
+  font-family: var(--font-sans) !important;
+  width: 100% !important;
+  justify-content: flex-start !important;
+  padding: 12px 20px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  transition: all var(--transition-slow) !important;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset !important;
+}
+
+:global(.sitesearch-button-aa:hover) {
+  background: linear-gradient(135deg, hsl(var(--color-bg-elevated) / 0.85) 0%, hsl(var(--color-bg-base) / 0.95) 100%) !important;
+  border-color: hsl(var(--color-accent-purple) / 0.5) !important;
+  color: hsl(var(--color-text-primary)) !important;
+  box-shadow:
+    0 0 0 2px hsl(var(--color-accent-purple) / 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
+  transform: translateY(-1px) !important;
+}
+
+:global(.sitesearch-button-aa .search-icon) {
+  color: hsl(var(--color-accent-purple)) !important;
+  width: 18px !important;
+  height: 18px !important;
+  filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4)) !important;
+}
+
+/* Sparkles icon - pink to purple gradient instead of blue */
+:global(.sitesearch-button-aa .sparkle-icon),
+:global(.sitesearch-button-aa svg[class*="sparkle"]),
+:global(.ss-button-icon),
+:global(.ss-sparkle),
+:global([class*="sparkle"]) {
+  background: linear-gradient(135deg, hsl(var(--color-accent-pink)), hsl(var(--color-accent-purple))) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  filter: drop-shadow(0 0 8px hsl(var(--color-accent-purple) / 0.5)) !important;
+}
+
+/* Override any sparkle/AI icon fills - direct color instead of gradient */
+:global(.sitesearch-button-aa svg path),
+:global(.sitesearch-button-aa svg),
+:global(.ss-button-icon svg path),
+:global(.ss-button-icon svg),
+:global(.ss-sparkle svg path),
+:global(.ss-sparkle svg) {
+  fill: hsl(var(--color-accent-purple)) !important;
+  color: hsl(var(--color-accent-purple)) !important;
+  stroke: hsl(var(--color-accent-purple)) !important;
+}
+
+:global(.sitesearch-button-aa) kbd {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: var(--radius-sm) !important;
+  color: hsl(var(--color-text-primary)) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.75rem !important;
+  padding: 2px 6px !important;
+  box-shadow: none !important;
+}
+
+/* Algolia "Powered By" — neutral text, teal on hover for logo only */
+:global(.ss-footer-powered-by),
+:global(.ss-footer-powered-by span) {
+  color: hsl(var(--color-text-secondary)) !important;
+  transition: color var(--transition-base) !important;
+}
+
+:global(.ss-footer-powered-by svg .cls-1),
+:global(.ss-footer-powered-by svg path) {
+  fill: hsl(var(--color-text-secondary)) !important;
+  transition: fill var(--transition-base) !important;
+}
+
+:global(.ss-footer-powered-by:hover) {
+  color: hsl(var(--color-text-secondary)) !important;
+}
+
+:global(.ss-footer-powered-by:hover span) {
+  color: hsl(var(--color-text-secondary)) !important;
+}
+
+:global(.ss-footer-powered-by:hover svg .cls-1),
+:global(.ss-footer-powered-by:hover svg path) {
+  fill: hsl(var(--color-accent-teal)) !important;
+}
+
+/* Navigation Keys — Teal */
+:global(.ss-footer kbd),
+:global(.ss-footer .ss-key) {
+  color: hsl(var(--color-accent-teal)) !important;
+  border: 1px solid hsl(var(--color-accent-teal) / 0.3) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Clear/Reset Button — Outline Purple, no underline ever */
+:global(.ss-searchbox-reset),
+:global(.ss-reset-btn),
+:global(.ss-search-clear-button) {
+  background: transparent !important;
+  border: 1px solid hsl(var(--color-accent-purple) / 0.5) !important;
+  color: hsl(var(--color-accent-purple)) !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+:global(.ss-searchbox-reset:hover),
+:global(.ss-reset-btn:hover),
+:global(.ss-search-clear-button:hover) {
+  border-color: hsl(var(--color-accent-purple)) !important;
+  background: hsl(var(--color-accent-purple) / 0.1) !important;
+  text-decoration: none !important;
+}
+
+:global(.ss-searchbox-reset:focus),
+:global(.ss-reset-btn:focus),
+:global(.ss-search-clear-button:focus),
+:global(.ss-searchbox-reset:active),
+:global(.ss-reset-btn:active),
+:global(.ss-search-clear-button:active) {
+  text-decoration: none !important;
+  outline-color: hsl(var(--color-accent-purple)) !important;
+}
+
+:global(.ss-search-clear-button svg),
+:global(.ss-searchbox-reset svg) {
+  color: hsl(var(--color-accent-purple)) !important;
+  fill: hsl(var(--color-accent-purple)) !important;
+}
+
+/* Close Button — purple, not blue */
+:global(.ss-search-close-button) {
+  color: hsl(var(--color-text-secondary)) !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  transition: all var(--transition-base) !important;
+}
+
+:global(.ss-search-close-button:hover) {
+  color: hsl(var(--color-accent-purple)) !important;
+  background: hsl(var(--color-accent-purple) / 0.1) !important;
+  border-color: transparent !important;
+}
+
+:global(.ss-search-close-button:focus),
+:global(.ss-search-close-button:active) {
+  color: hsl(var(--color-accent-purple)) !important;
+  border-color: transparent !important;
+  outline-color: hsl(var(--color-accent-purple)) !important;
+}
+
+/* Ask AI hit title — purple on hover, not blue */
+:global(.ss-infinite-hits-item-title) {
+  color: hsl(var(--color-text-primary)) !important;
+  transition: color var(--transition-base) !important;
+}
+
+:global(.ss-infinite-hits-item:hover .ss-infinite-hits-item-title),
+:global(.ss-infinite-hits-item-title:hover) {
+  color: hsl(var(--color-accent-purple)) !important;
+}
+
+:global(.ss-infinite-hits-item a),
+:global(.ss-infinite-hits-item a:hover),
+:global(.ss-infinite-hits-item a:focus),
+:global(.ss-infinite-hits-anchor),
+:global(.ss-infinite-hits-anchor:hover) {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* Search Left Icon/Button — Purple */
+:global(.ss-search-left-button),
+:global(.ss-search-left-button svg) {
+  color: hsl(var(--color-accent-purple)) !important;
+  fill: hsl(var(--color-accent-purple)) !important;
+}
+
+/* Highlight — Purple */
+:global(mark),
+:global(.ss-highlight) {
+  color: hsl(var(--color-accent-purple)) !important;
+  background: transparent !important;
+  text-decoration-color: hsl(var(--color-accent-purple) / 0.4) !important;
+}
+
+/* Modal Container */
+:global(.ss-modal),
+:global(.ss-modal-content),
+:global(.sitesearch-modal) {
+  background-color: hsl(var(--color-bg-elevated)) !important;
+  color: hsl(var(--color-text-primary)) !important;
+}
+
+/* Card/Hit Item Styling */
+:global(.ss-infinite-hits-item) {
+  border: 1px solid hsl(var(--color-text-secondary) / 0.2) !important;
+  background: transparent !important;
+}
+
+:global(.ss-infinite-hits-item:hover) {
+  border-color: hsl(var(--color-accent-purple)) !important;
+  background: hsl(var(--color-accent-purple) / 0.05) !important;
+  box-shadow: 0 4px 12px hsl(var(--color-accent-purple) / 0.15) !important;
+}
+
+/* Links — Teal */
+:global(.ss-link),
+:global(.ss-hit-url),
+:global(a[class*="ss-"]) {
+  color: hsl(var(--color-accent-teal)) !important;
+}
+
+/* ── Unified Chat Theme (Ask AI popup + Floating Chat Widget) ──
+   Both surfaces follow identical color rules:
+   - Agent/AI signals: purple (#B56BFF)
+   - Human signals: pink (#F16197)
+   - Navigation/links: teal (#3EC7C2)
+   - Surfaces: dark elevated glass
+   - Text: primary/secondary from palette
+*/
+
+/* Ask AI Chat Bubbles (SiteSearch popup) */
+:global(.ss-chat-message--user) {
+  border-color: hsl(var(--color-accent-pink)) !important;
+}
+:global(.ss-chat-message--user .ss-avatar) {
+  background-color: hsl(var(--color-bg-surface)) !important;
+}
+
+:global(.ss-chat-message--assistant) {
+  border-color: hsl(var(--color-accent-purple)) !important;
+}
+:global(.ss-chat-message--assistant .ss-avatar) {
+  background-color: hsl(var(--color-accent-purple)) !important;
+}
+
+/* Ask AI input field focus */
+:global(.ss-chat-input:focus),
+:global(.ss-chat-input:focus-visible) {
+  border-color: hsl(var(--color-accent-purple)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--color-accent-purple) / 0.25) !important;
+  outline: none !important;
+}
+
+/* Ask AI send button */
+:global(.ss-chat-send-button),
+:global(.ss-chat-submit) {
+  background-color: hsl(var(--color-accent-purple)) !important;
+  color: white !important;
+  border: none !important;
+}
+
+:global(.ss-chat-send-button:hover),
+:global(.ss-chat-submit:hover) {
+  background-color: hsl(var(--color-accent-purple) / 0.8) !important;
+}
+
+/* Chat links in responses — teal (navigation) */
+:global(.ss-chat-message a),
+:global(.ss-chat-message--assistant a) {
+  color: hsl(var(--color-accent-teal)) !important;
+}
+
+/* Ask AI panel surface */
+:global(.ss-chat-panel),
+:global(.ss-chat-container) {
+  background-color: hsl(var(--color-bg-elevated)) !important;
+  border-color: hsl(var(--color-border)) !important;
+}
+
+/* Ask AI tab / toggle */
+:global(.ss-tab--active),
+:global(.ss-tab[aria-selected="true"]) {
+  color: hsl(var(--color-accent-purple)) !important;
+  border-color: hsl(var(--color-accent-purple)) !important;
+  background-color: hsl(var(--color-accent-purple) / 0.1) !important;
+}
+
+:global(.ss-tab:hover) {
+  color: hsl(var(--color-accent-purple)) !important;
+}
+
+/* Selected/active states - ensure purple not blue */
+:global(.ss-selected),
+:global(.ss-active),
+:global([aria-selected="true"]),
+:global([data-selected="true"]),
+:global(.selected) {
+  color: hsl(var(--color-accent-purple)) !important;
+  border-color: hsl(var(--color-accent-purple)) !important;
+  background-color: hsl(var(--color-accent-purple) / 0.15) !important;
+}
+
+/* Focus states */
+:global(.ss-input:focus),
+:global(.ss-searchbox:focus-within),
+:global(.ss-chat-input:focus-visible) {
+  border-color: hsl(var(--color-accent-purple)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--color-accent-purple) / 0.25) !important;
+  outline: none !important;
+}
+
+/* Any remaining blue overrides */
+:global([class*="blue"]),
+:global([style*="blue"]),
+:global([style*="#5468ff"]) {
+  color: hsl(var(--color-accent-purple)) !important;
+  border-color: hsl(var(--color-accent-purple)) !important;
 }

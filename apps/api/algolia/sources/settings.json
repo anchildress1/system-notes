@@ -1,21 +1,30 @@
 {
-  "searchableAttributes": ["title", "blurb", "fact", "projects", "tags.lvl0", "tags.lvl1"],
+  "searchableAttributes": ["title", "blurb", "fact", "projects", "tags.lvl1"],
   "attributesForFaceting": [
     "category",
     "searchable(projects)",
     "searchable(tags.lvl0)",
-    "searchable(tags.lvl1)"
+    "searchable(tags.lvl1)",
+    "searchable(tags)"
   ],
-  "customRanking": ["desc(signal)"],
+  "unretrievableAttributes": ["signal"],
+  "indexLanguages": ["en"],
+  "queryLanguages": ["en"],
+  "ignorePlurals": true,
+  "removeWordsIfNoResults": "lastWords",
+  "customRanking": ["desc(signal)", "desc(created_at)"],
   "ranking": ["typo", "geo", "words", "filters", "proximity", "attribute", "exact", "custom"],
   "attributesToRetrieve": ["*"],
   "attributesToHighlight": ["title", "blurb"],
+  "attributesToSnippet": ["fact:100"],
+  "snippetEllipsisText": "...",
+  "sortFacetValuesBy": "alpha",
   "hitsPerPage": 12,
   "typoTolerance": true,
   "renderingContent": {
     "facetOrdering": {
       "facets": {
-        "order": ["category", "tags.lvl0", "tags.lvl1", "projects"]
+        "order": ["category", "projects", "tags"]
       }
     }
   }

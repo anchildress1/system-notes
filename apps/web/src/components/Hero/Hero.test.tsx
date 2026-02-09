@@ -2,61 +2,91 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Hero from './Hero';
 
-// Mock PIXI.js since it interacts with canvas/webgl
-vi.mock('pixi.js', () => {
-  return {
-    Application: class {
-      init = vi.fn().mockResolvedValue(undefined);
-      canvas = document.createElement('canvas'); // return a real dummy element
-      stage = {
-        addChild: vi.fn(),
-        removeChild: vi.fn(),
-      };
-      ticker = {
-        add: vi.fn(),
-      };
-      destroy = vi.fn();
-    },
-    Graphics: class {
-      circle = vi.fn();
-      fill = vi.fn();
-    },
-  };
-});
+// Mock useSparkles hook
+vi.mock('@/hooks/useSparkles', () => ({
+  useSparkles: vi.fn(),
+}));
 
 describe('Hero Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('renders the title as an accessible button', () => {
-    render(<Hero />);
-    expect(screen.getByRole('button', { name: /Click to trigger/i })).toBeInTheDocument();
-    expect(screen.getByText(/Not here to play nice/i)).toBeInTheDocument();
-    expect(screen.getByText(/Disruption is the feature—loud by design/i)).toBeInTheDocument();
+  const defaultProps = {
+    title: 'Test Title',
+    subtitle: 'Test Subtitle',
+  };
+
+  it('renders the title and subtitle', () => {
+    render(<Hero {...defaultProps} />);
+    expect(screen.getByText('Test Title')).toBeInTheDocument();
+    expect(screen.getByText('Test Subtitle')).toBeInTheDocument();
   });
 
-  it('dispatches trigger-glitter-bomb event on title click', () => {
-    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
-    render(<Hero />);
-
-    const title = screen.getByRole('button', { name: /Click to trigger/i });
-    fireEvent.click(title);
-
-    expect(dispatchSpy).toHaveBeenCalled();
-    const event = dispatchSpy.mock.calls[0][0] as Event;
-    expect(event.type).toBe('trigger-glitter-bomb');
+  it('renders correctly without a subtitle', () => {
+    render(<Hero title="Only Title" />);
+    expect(screen.getByText('Only Title')).toBeInTheDocument();
+    expect(screen.queryByText('Test Subtitle')).not.toBeInTheDocument();
   });
 
-  it('activates on Enter key press', () => {
-    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
-    render(<Hero />);
+  it('renders an image when provided', () => {
+    const imageProps = {
+      src: '/test-image.jpg',
+      alt: 'Test Image Alt',
+      width: 100,
+      height: 100,
+    };
+    render(<Hero {...defaultProps} image={imageProps} />);
+    const img = screen.getByAltText('Test Image Alt');
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute('src');
+  });
 
-    const title = screen.getByRole('button', { name: /Click to trigger/i });
-    fireEvent.keyDown(title, { key: 'Enter', code: 'Enter' });
+  it('dispatches trigger-glitter-bomb event on click', () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    render(<Hero {...defaultProps} />);
+
+    const container = screen.getByTestId('hero-interactive');
+    fireEvent.click(container);
 
     expect(dispatchSpy).toHaveBeenCalled();
-    const event = dispatchSpy.mock.calls[0][0] as Event;
-    expect(event.type).toBe('trigger-glitter-bomb');
+    const event = dispatchSpy.mock.calls.find(
+      (call) => (call[0] as Event).type === 'trigger-glitter-bomb'
+    );
+    expect(event).toBeTruthy();
+    dispatchSpy.mockRestore();
+  });
+
+  it('dispatches trigger-glitter-bomb event on Enter key', () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    render(<Hero {...defaultProps} />);
+
+    const container = screen.getByTestId('hero-interactive');
+    fireEvent.keyDown(container, { key: 'Enter' });
+
+    expect(dispatchSpy).toHaveBeenCalled();
+    dispatchSpy.mockRestore();
+  });
+
+  it('dispatches trigger-glitter-bomb event on Space key', () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    render(<Hero {...defaultProps} />);
+
+    const container = screen.getByTestId('hero-interactive');
+    fireEvent.keyDown(container, { key: ' ' });
+
+    expect(dispatchSpy).toHaveBeenCalled();
+    dispatchSpy.mockRestore();
+  });
+
+  it('does not dispatch on other keys', () => {
+    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    render(<Hero {...defaultProps} />);
+
+    const container = screen.getByTestId('hero-interactive');
+    fireEvent.keyDown(container, { key: 'Escape' });
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+    dispatchSpy.mockRestore();
   });
 });

@@ -1,12 +1,16 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { Chat } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import styles from './AIChat.module.css';
 import dynamic from 'next/dynamic';
-import { API_URL } from '@/config';
+import { API_URL, ALGOLIA_INDEX } from '@/config';
+// import { useRecommendationTools } from '@/lib/recommendations';
+import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
+import { getChatSessionId } from '@/utils/userToken';
 
 import { IoClose } from 'react-icons/io5';
 import { GiBat } from 'react-icons/gi';
@@ -14,14 +18,24 @@ import { FaBrain, FaUser } from 'react-icons/fa';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
+const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
+
+// Algolia app IDs are always 10 alphanumeric chars, API keys are 32+ hex chars.
+// Skip real SDK init when credentials are obviously fake (e.g. test_app_id)
+// to prevent failed network requests that Chrome logs as console errors.
+const hasValidCredentials = /^[A-Z0-9]{10}$/i.test(appId) && apiKey.length >= 20;
 
 // Create searchClient at module level for stable reference (prevents unnecessary re-renders)
-const searchClient =
-  appId && apiKey
-    ? algoliasearch(appId, apiKey)
-    : {
-        search: () => Promise.resolve({ results: [] }),
-      };
+const searchClient = hasValidCredentials
+  ? algoliasearch(appId, apiKey, {
+      headers: {
+        'X-Algolia-UserToken': getChatSessionId(),
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any)
+  : {
+      search: () => Promise.resolve({ results: [] }),
+    };
 
 const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || '';
 
@@ -42,7 +56,7 @@ const UserAvatar = () => (
   </div>
 );
 const PromptFooter = () => (
-  <div className={styles.disclaimer}>Powered by Algolia—fast, relevant, still imperfect.</div>
+  <div className={styles.disclaimer}>Powered by Algolia | Indexed. Not Imagined.</div>
 );
 const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
   isOpen ? (
@@ -52,9 +66,12 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
   );
 
 export default function AIChat() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const resolveSearchPageURL = useCallback(
+    (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
+      getSearchPageURL(nextUiState, indexName),
+    []
+  );
 
-  // Memoize translations to prevent unnecessary re-renders of the Chat widget
   const translations = useMemo(
     () => ({
       header: {
@@ -79,6 +96,7 @@ export default function AIChat() {
             if (typedInput?.query) urlParams.set('q', typedInput.query);
             if (typedInput?.tag) urlParams.set('tag', typedInput.tag);
             if (typedInput?.limit) urlParams.set('limit', String(typedInput.limit));
+            urlParams.set('indexName', ALGOLIA_INDEX.CHAT_SOURCE);
 
             const response = await fetch(`${API_URL}/blog/search?${urlParams.toString()}`);
             if (!response.ok) {
@@ -91,7 +109,7 @@ export default function AIChat() {
             const data = await response.json();
             addToolResult({ output: data });
           } catch (error) {
-            console.error('AIChat tool error:', error);
+            console.warn('AIChat tool error:', error);
             addToolResult({
               output: { error: 'Network error fetching blog posts', results: [] },
             });
@@ -103,13 +121,8 @@ export default function AIChat() {
   );
 
   useEffect(() => {
-    // Accessibility fix: Inject aria-label into Algolia's Chat toggle button
-    const observer = new MutationObserver(() => {
+    const fixAccessibility = () => {
       if (typeof document === 'undefined') return;
-
-      const chatWindow = document.querySelector('.ais-Chat-window');
-      const isWindowOpen = !!chatWindow;
-      setIsChatOpen((prev) => (prev === isWindowOpen ? prev : isWindowOpen));
 
       const toggleBtn = document.querySelector(
         '.ais-ChatToggleButton, .ais-Chat-toggleButton, [class*="ChatToggleButton"]'
@@ -122,33 +135,42 @@ export default function AIChat() {
           toggleBtn.setAttribute('data-testid', 'ai-chat-toggle');
         }
       }
-    });
+    };
 
+    fixAccessibility();
+
+    const observer = new MutationObserver(fixAccessibility);
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => observer.disconnect();
   }, []);
 
-  return (
-    <>
-      <div className={`${styles.musicWrapper} ${isChatOpen ? styles.musicPushed : ''}`}>
+  const chatContent = (
+    <div className={styles.chatDock}>
+      <div className={styles.musicWrapper}>
         <MusicPlayer />
       </div>
-      <InstantSearchNext
-        searchClient={searchClient}
-        future={{ preserveSharedStateOnUnmount: true }}
-      >
-        <Chat
-          agentId={AGENT_ID}
-          translations={translations}
-          tools={tools}
-          headerTitleIconComponent={HeaderIcon}
-          assistantMessageLeadingComponent={AssistantAvatar}
-          userMessageLeadingComponent={UserAvatar}
-          promptFooterComponent={PromptFooter}
-          toggleButtonIconComponent={ToggleIcon}
-        />
-      </InstantSearchNext>
-    </>
+      {hasValidCredentials && AGENT_ID ? (
+        <InstantSearchNext
+          searchClient={searchClient}
+          insights
+          future={{ preserveSharedStateOnUnmount: true }}
+        >
+          <Chat
+            agentId={AGENT_ID}
+            translations={translations}
+            tools={tools}
+            getSearchPageURL={resolveSearchPageURL}
+            headerTitleIconComponent={HeaderIcon}
+            assistantMessageLeadingComponent={AssistantAvatar}
+            userMessageLeadingComponent={UserAvatar}
+            promptFooterComponent={PromptFooter}
+            toggleButtonIconComponent={ToggleIcon}
+          />
+        </InstantSearchNext>
+      ) : null}
+    </div>
   );
+
+  return createPortal(chatContent, document.body);
 }

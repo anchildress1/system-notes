@@ -30,8 +30,8 @@ export default function FactsHero() {
         }}
         aria-label="Click to trigger a glitter effect"
       >
-        <h1 className={styles.title}>Fact Index</h1>
-        <div className={styles.subtitle}>Indexed insights from the engineering trenches</div>
+        <h1 className={styles.title}>Decisions on record</h1>
+        <div className={styles.subtitle}>so you can audit me</div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-const API_URL = process.env.API_URL || 'http://127.0.0.1:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://127.0.0.1:8000';
 
 export interface Project {
   id: string;
@@ -22,7 +22,7 @@ export async function getProjects(): Promise<Project[]> {
     }
     return res.json();
   } catch (error) {
-    console.error('API Error:', error);
+    console.warn('API Error:', error);
     return [];
   }
 }
