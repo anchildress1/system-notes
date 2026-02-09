@@ -535,7 +535,33 @@
   filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4)) !important;
 }
 
-:global(.sitesearch-button-aa kbd) {
+/* Sparkles icon - pink to purple gradient instead of blue */
+:global(.sitesearch-button-aa .sparkle-icon),
+:global(.sitesearch-button-aa svg[class*="sparkle"]),
+:global(.ss-button-icon),
+:global(.ss-sparkle),
+:global([class*="sparkle"]) {
+  background: linear-gradient(135deg, hsl(var(--color-accent-pink)), hsl(var(--color-accent-purple))) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  filter: drop-shadow(0 0 8px hsl(var(--color-accent-purple) / 0.5)) !important;
+}
+
+/* Override any sparkle/AI icon fills - direct color instead of gradient */
+:global(.sitesearch-button-aa svg path),
+:global(.sitesearch-button-aa svg),
+:global(.ss-button-icon svg path),
+:global(.ss-button-icon svg),
+:global(.ss-sparkle svg path),
+:global(.ss-sparkle svg) {
+  fill: hsl(var(--color-accent-purple)) !important;
+  color: hsl(var(--color-accent-purple)) !important;
+  stroke: hsl(var(--color-accent-purple)) !important;
+}
+
+:global(.sitesearch-button-aa) kbd {
   background: rgba(255, 255, 255, 0.1) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: var(--radius-sm) !important;
@@ -762,8 +788,37 @@
 :global(.ss-tab[aria-selected="true"]) {
   color: hsl(var(--color-accent-purple)) !important;
   border-color: hsl(var(--color-accent-purple)) !important;
+  background-color: hsl(var(--color-accent-purple) / 0.1) !important;
 }
 
 :global(.ss-tab:hover) {
   color: hsl(var(--color-accent-purple)) !important;
+}
+
+/* Selected/active states - ensure purple not blue */
+:global(.ss-selected),
+:global(.ss-active),
+:global([aria-selected="true"]),
+:global([data-selected="true"]),
+:global(.selected) {
+  color: hsl(var(--color-accent-purple)) !important;
+  border-color: hsl(var(--color-accent-purple)) !important;
+  background-color: hsl(var(--color-accent-purple) / 0.15) !important;
+}
+
+/* Focus states */
+:global(.ss-input:focus),
+:global(.ss-searchbox:focus-within),
+:global(.ss-chat-input:focus-visible) {
+  border-color: hsl(var(--color-accent-purple)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--color-accent-purple) / 0.25) !important;
+  outline: none !important;
+}
+
+/* Any remaining blue overrides */
+:global([class*="blue"]),
+:global([style*="blue"]),
+:global([style*="#5468ff"]) {
+  color: hsl(var(--color-accent-purple)) !important;
+  border-color: hsl(var(--color-accent-purple)) !important;
 }

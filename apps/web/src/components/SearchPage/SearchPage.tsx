@@ -20,16 +20,25 @@ import LoadingIndicator from './LoadingIndicator';
 import { createSearchRouting } from './searchRouting';
 import { ALGOLIA_INDEX } from '@/config';
 import { useFactIdRouting } from '@/hooks/useFactIdRouting';
+import { getChatSessionId } from '@/utils/userToken';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
+const searchAiId = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID || '';
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
 // Algolia app IDs are always 10 alphanumeric chars, API keys are 32+ hex chars.
 // Skip real SDK init when credentials are obviously fake (e.g. test_app_id)
 // to prevent failed network requests that Chrome logs as console errors.
 const hasCredentials = /^[A-Z0-9]{10}$/i.test(appId) && searchKey.length >= 20;
-const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
+const searchClient = hasCredentials
+  ? algoliasearch(appId, searchKey, {
+      headers: {
+        'X-Algolia-UserToken': getChatSessionId(),
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any)
+  : null;
 
 declare global {
   interface Window {
@@ -51,7 +60,13 @@ declare global {
   }
 }
 
-function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string, enabled: boolean) {
+function useSiteSearchWithAI(
+  appId: string,
+  apiKey: string,
+  indexName: string,
+  searchAiId: string,
+  enabled: boolean
+) {
   useEffect(() => {
     if (typeof window === 'undefined' || !enabled) return;
 
@@ -84,6 +99,16 @@ function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string, e
         return;
       }
 
+      // Debug logging for credential passing
+      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        console.debug('[SiteSearch] Initializing with config:', {
+          appId,
+          apiKeyLength: apiKey?.length || 0,
+          indexName,
+          hostname: window.location.hostname,
+        });
+      }
+
       // Check for available globals
       const candidates = [
         'SiteSearchAskAI',
@@ -95,28 +120,47 @@ function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string, e
 
       if (globalName && window[globalName]) {
         try {
-          window[globalName]?.init({
+          const config = {
             container: '#search-askai',
             applicationId: appId,
             apiKey: apiKey,
             indexName: indexName,
-            assistantId: 'XcsWYxeCArfQ',
+            assistantId: searchAiId,
             insights: true,
-            suggestedQuestionsEnabled: true,
+            suggestedQuestionsEnabled: false,
             attributes: {
               primaryText: 'title',
               secondaryText: 'blurb',
               image: undefined,
             },
-          });
+          };
+
+          // Ensure all required fields are present
+          if (!config.applicationId || !config.apiKey || !config.indexName) {
+            console.error('[SiteSearch] Missing required credentials:', {
+              hasAppId: Boolean(config.applicationId),
+              hasApiKey: Boolean(config.apiKey),
+              hasIndexName: Boolean(config.indexName),
+            });
+            return;
+          }
+
+          window[globalName]?.init(config);
         } catch (e) {
-          console.warn('Failed to init SiteSearch:', e);
+          console.error('[SiteSearch] Failed to init:', e);
         }
+      } else {
+        console.warn(
+          '[SiteSearch] Global not found. Available:',
+          Object.keys(window).filter(
+            (k) => k.toLowerCase().includes('search') || k.toLowerCase().includes('algolia')
+          )
+        );
       }
     };
 
     loadWidget();
-  }, [appId, apiKey, indexName, enabled]);
+  }, [appId, apiKey, indexName, searchAiId, enabled]);
 }
 
 export default function SearchPage() {
@@ -129,8 +173,78 @@ export default function SearchPage() {
     setCollapsedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   }, []);
 
-  useSiteSearchWithAI(appId, searchKey, indexName, isEnabled);
+  useSiteSearchWithAI(appId, searchKey, indexName, searchAiId, isEnabled);
   useFactIdRouting(indexName);
+
+  // Auto-focus chat input when Ask AI modal opens
+  useEffect(() => {
+    if (!isEnabled) return;
+
+    const focusChatInput = () => {
+      // Try multiple selectors for the chat input field
+      const selectors = [
+        '.ss-chat-input',
+        '.ss-search-input',
+        'input[placeholder*="Ask"]',
+        '.ss-searchbox input',
+        '[role="dialog"] input[type="text"]',
+        '.ss-modal input',
+      ];
+
+      for (const selector of selectors) {
+        const input = document.querySelector(selector) as HTMLInputElement;
+        if (input && document.contains(input)) {
+          // Use requestAnimationFrame for faster, smoother focus
+          requestAnimationFrame(() => {
+            input.focus();
+            input.select();
+          });
+          break;
+        }
+      }
+    };
+
+    // Watch for modal/dialog opening
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node instanceof HTMLElement) {
+            // Check if this is the Ask AI modal/dialog
+            if (
+              node.matches('[role="dialog"], .ss-modal, .modal-backdrop-askai') ||
+              node.querySelector('[role="dialog"], .ss-modal, .ss-chat-input')
+            ) {
+              // Focus immediately when detected
+              focusChatInput();
+              // Also try after a micro-delay in case widgets haven't fully rendered
+              setTimeout(focusChatInput, 10);
+            }
+          }
+        }
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Also listen for click on the Ask AI button to pre-emptively focus
+    const handleButtonClick = () => {
+      requestAnimationFrame(focusChatInput);
+      setTimeout(focusChatInput, 10);
+      setTimeout(focusChatInput, 50);
+    };
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.closest('.sitesearch-button-aa, .ss-button, [class*="ask-ai"]') ||
+        target.textContent?.includes('Ask AI')
+      ) {
+        handleButtonClick();
+      }
+    });
+
+    return () => observer.disconnect();
+  }, [isEnabled]);
 
   useEffect(() => {
     const handleLinkClick = (e: Event) => {

@@ -24,30 +24,52 @@ new Crawler({
         var description = _desc ? String(_desc).trim().slice(0, 500) : null;
 
         var publishedAt = $('meta[name="article:published_time"]').attr('content');
+        var epochTimestamp = null;
         if (publishedAt) {
           var date = new Date(String(publishedAt).trim());
           if (!isNaN(date.getTime())) {
-            publishedAt = Math.floor(date.getTime() / 1000);
-          } else {
-            publishedAt = null;
+            epochTimestamp = Math.floor(date.getTime() / 1000);
           }
-        } else {
-          publishedAt = null;
         }
 
         var canonical =
           $('link[rel="canonical"]').attr('href') ||
-          $('meta[name="og:url"]').attr('content') ||
-          $('meta[name="source-url"]').attr('content');
+          $('meta[property="og:url"]').attr('content') ||
+          $('meta[property="source-url"]').attr('content');
         canonical = canonical ? String(canonical).trim() : null;
 
+        // Always use canonical if available, otherwise fall back to crawled URL
         var finalUrl = canonical || urlStr;
 
-        var slug = finalUrl;
-        var cleanUrl = finalUrl.replace(/\/$/, '');
+        // Guard against empty URLs
+        if (!finalUrl || finalUrl.trim() === '') {
+          console.warn('Empty URL found for page, skipping record');
+          return [];
+        }
+
+        // Extract slug for objectID - use last URL segment or hash the full URL
+        var slug = '';
+        var cleanUrl = finalUrl.replace(/\/$/, '').replace(/^https?:\/\//, '');
         var parts = cleanUrl.split('/');
-        if (parts.length > 0) {
-          slug = parts.pop();
+        if (parts.length > 1) {
+          // Get last non-empty segment
+          slug =
+            parts
+              .filter(function (p) {
+                return p.length > 0;
+              })
+              .pop() || '';
+        }
+
+        // Fallback: if slug is still empty, use a hash of the URL
+        if (!slug || slug.trim() === '') {
+          var hash = 0;
+          for (var i = 0; i < finalUrl.length; i++) {
+            var char = finalUrl.charCodeAt(i);
+            hash = (hash << 5) - hash + char;
+            hash = hash & hash;
+          }
+          slug = 'post-' + Math.abs(hash).toString(36);
         }
 
         var image = $('meta[property="og:image"]').attr('content');
@@ -84,8 +106,8 @@ new Crawler({
         var _content = $('main article').first().text();
         var content = _content ? String(_content).trim().replace(/\s+/g, ' ') : null;
         // Cap content size to avoid Algolia "record too large" errors.
-        if (content && content.length > 1000) {
-          content = content.slice(0, 1000);
+        if (content && content.length > 150) {
+          content = content.slice(0, 150);
         }
 
         return [
@@ -100,7 +122,7 @@ new Crawler({
             projects: [],
             category: 'Writing',
             signal: engagementScore,
-            created_at: publishedAt,
+            created_at: epochTimestamp,
           },
         ];
       },
