@@ -1,12 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { mockAlgolia } from './utils';
+import { test } from './utils';
 
 test.describe('System Notes Integration', () => {
-  test.beforeEach(async ({ page }) => {
-    await mockAlgolia(page);
-  });
-
   test('loads homepage with correct metadata', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/System Notes/);
@@ -47,7 +43,7 @@ test.describe('System Notes Integration', () => {
     await page
       .getByTestId(/^project-card-/)
       .first()
-      .click({ force: true });
+      .click();
 
     // Check for banner container
     // Use a more specific locator to avoid matching Project Cards
@@ -107,7 +103,7 @@ test.describe('System Notes Integration', () => {
 
     // Click first project card
     const firstCard = page.getByTestId(/^project-card-/).first();
-    await firstCard.click({ force: true });
+    await firstCard.click();
 
     // Verify hash is written
     await expect(page).toHaveURL(/#project=.+/);

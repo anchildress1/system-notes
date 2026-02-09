@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, act, waitFor } from '@testing-library/react';
 import GlitterBomb from './GlitterBomb';
 
 const mockDestroy = vi.fn();
@@ -46,7 +46,7 @@ vi.mock('pixi.js', () => {
 describe('GlitterBomb', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Ensure desktop environment
+    vi.useFakeTimers();
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
@@ -56,23 +56,29 @@ describe('GlitterBomb', () => {
     delete (window as any).ontouchstart;
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('renders and initializes pixi app', async () => {
     const { unmount } = render(<GlitterBomb />);
 
-    // Wait for effect (dynamic import + delay)
-    // Wait for init
-    await import('@testing-library/react').then(async ({ waitFor }) => {
-      await waitFor(
-        () => {
-          expect(mockInit).toHaveBeenCalled();
-        },
-        { timeout: 6000 }
-      );
-      expect(mockGenerateTexture).toHaveBeenCalled();
+    // Fire the 3s setTimeout that triggers initPixi
+    act(() => {
+      vi.advanceTimersByTime(3100);
     });
+
+    // Switch to real timers so the async initPixi chain
+    // (dynamic import + app.init) can resolve naturally
+    vi.useRealTimers();
+
+    await waitFor(() => {
+      expect(mockInit).toHaveBeenCalled();
+    });
+    expect(mockGenerateTexture).toHaveBeenCalled();
 
     unmount();
 
     expect(mockDestroy).toHaveBeenCalled();
-  }, 10000);
+  });
 });

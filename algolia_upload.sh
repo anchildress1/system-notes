@@ -288,7 +288,7 @@ if [ -f "apps/api/algolia/sources/settings.json" ]; then
     -H "Content-Type: application/json" \
     --data @apps/api/algolia/sources/settings.json -w "\n" -s
 else
-  echo "Info: apps/api/algolia/sources/settings.json not found — skipping settings upload.\n  To upload settings, create the file at apps/api/algolia/config/settings.json (Algolia index settings JSON)."
+  printf "Info: apps/api/algolia/sources/settings.json not found — skipping settings upload.\n  To upload settings, create the file at apps/api/algolia/sources/settings.json (Algolia index settings JSON).\n"
 fi
 
 echo "🔤 Uploading synonyms to ${INDEX_NAME} and ${MERGED_INDEX}..."
@@ -307,7 +307,7 @@ if [ -f "apps/api/algolia/sources/synonyms.json" ]; then
     -H "Content-Type: application/json" \
     --data @apps/api/algolia/sources/synonyms.json -w "\n" -s
 else
-  echo "Info: apps/api/algolia/sources/synonyms.json not found — skipping synonyms upload.\n  To upload synonyms, create the file at apps/api/algolia/config/synonyms.json (an array of synonym objects)."
+  printf "Info: apps/api/algolia/sources/synonyms.json not found — skipping synonyms upload.\n  To upload synonyms, create the file at apps/api/algolia/sources/synonyms.json (an array of synonym objects).\n"
 fi
 
 

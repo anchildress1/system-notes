@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProjectModal from './ProjectModal';
 import { Project } from '@/data/projects';
 
@@ -34,6 +34,10 @@ const mockProject: Project = {
 
 describe('ProjectModal Component', () => {
   const onCloseMock = vi.fn();
+
+  beforeEach(() => {
+    onCloseMock.mockClear();
+  });
 
   it('renders project details correctly', () => {
     render(<ProjectModal project={mockProject} onClose={onCloseMock} />);

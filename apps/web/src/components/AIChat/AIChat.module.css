@@ -15,6 +15,9 @@
 
 .chatDock {
   isolation: isolate;
+  pointer-events: none; /* Prevent wrapper from intercepting clicks on content below.
+     Algolia's own CSS handles pointer-events for .ais-Chat,
+     .ais-Chat-container--open, and .ais-Chat-toggleButtonWrapper. */
 }
 
 /* Container positioning - only when NOT maximized */
@@ -59,8 +62,6 @@
     right: var(--space-md, 20px) !important;
   }
 }
-
-/* DO NOT override pointer-events - let Algolia control it */
 
 /* The toggle button wrapper */
 :global(.ais-Chat-toggleButtonWrapper) {

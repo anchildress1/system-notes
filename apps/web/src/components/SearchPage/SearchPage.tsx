@@ -12,6 +12,7 @@ import {
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
 import { LuPlus, LuMinus } from 'react-icons/lu';
+import 'instantsearch.css/themes/satellite.css';
 import styles from './SearchPage.module.css';
 import UnifiedHitCard from './UnifiedHitCard';
 import GroupedTagFilter from './GroupedTagFilter';
@@ -70,32 +71,19 @@ function useSiteSearchWithAI(
   useEffect(() => {
     if (typeof window === 'undefined' || !enabled) return;
 
-    const loadWidget = () => {
-      // Load CSS
-      if (!document.querySelector('link[href*="search-askai.min.css"]')) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://unpkg.com/@algolia/sitesearch@latest/dist/search-askai.min.css';
-        document.head.appendChild(link);
-      }
-
-      // Load JS
-      if (!document.querySelector('script[src*="search-askai.min.js"]')) {
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/@algolia/sitesearch@latest/dist/search-askai.min.js';
-        script.async = true;
-        script.onload = initWidget;
-        document.body.appendChild(script);
-      } else {
-        // Script already loaded, init immediately (ensure DOM is ready)
-        setTimeout(initWidget, 100);
-      }
-    };
+    // Dynamically import the widget from node_modules
+    import('@algolia/sitesearch/dist/search-askai.min.css');
+    import('@algolia/sitesearch/dist/search-askai.min.js')
+      .then(() => {
+        // Init immediately after load
+        initWidget();
+      })
+      .catch((err) => console.error('Failed to load SiteSearch script:', err));
 
     const initWidget = () => {
       // Ensure container exists
       if (!document.querySelector('#search-askai')) {
-        console.warn('SiteSearch container not found, skipping init');
+        // Retry logic handled by caller re-mount or simple delay if needed
         return;
       }
 
@@ -158,8 +146,6 @@ function useSiteSearchWithAI(
         );
       }
     };
-
-    loadWidget();
   }, [appId, apiKey, indexName, searchAiId, enabled]);
 }
 
@@ -233,7 +219,7 @@ export default function SearchPage() {
       setTimeout(focusChatInput, 50);
     };
 
-    document.addEventListener('click', (e) => {
+    const handleDocumentClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (
         target.closest('.sitesearch-button-aa, .ss-button, [class*="ask-ai"]') ||
@@ -241,9 +227,14 @@ export default function SearchPage() {
       ) {
         handleButtonClick();
       }
-    });
+    };
 
-    return () => observer.disconnect();
+    document.addEventListener('click', handleDocumentClick);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('click', handleDocumentClick);
+    };
   }, [isEnabled]);
 
   useEffect(() => {

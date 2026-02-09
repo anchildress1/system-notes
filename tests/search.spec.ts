@@ -1,13 +1,20 @@
-import { test, expect } from '@playwright/test';
-import { AxeBuilder } from '@axe-core/playwright';
+import { expect } from '@playwright/test';
+import { test } from './utils';
 
-// Helper to mock Algolia response
+/** Override the default empty-response Algolia mock with specific hits. */
 async function mockAlgoliaWithHits(page: any, hits: any[]) {
-  await page.route('**/*algolia*/**', async (route: any) => {
-    // Small delay to simulate network
-    await new Promise((resolve) => setTimeout(resolve, 200));
+  // Mock external scripts (unpkg) to stay offline
+  await page.route('**/*unpkg.com/**', (route: any) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'text/javascript',
+      body: ';console.log("Mock Sitesearch loaded");',
+    })
+  );
 
-    // Return mocked results
+  // Unroute existing mock from the fixture, then apply custom one
+  await page.unroute('**/*algolia*/**');
+  await page.route('**/*algolia*/**', async (route: any) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -33,32 +40,17 @@ async function mockAlgoliaWithHits(page: any, hits: any[]) {
 
 test.describe('Search Page Integration', () => {
   test('loads search page and renders main component', async ({ page }) => {
-    // Mock Algolia with some basic hits
     await mockAlgoliaWithHits(page, [{ objectID: '1', title: 'Test Hit' }]);
 
-    // Enhanced debugging listeners
-    page.on('console', (msg) => console.log(`PAGE LOG [${msg.type()}]:`, msg.text()));
-    page.on('pageerror', (error) => console.log('PAGE ERROR:', error.message, error.stack));
-    // Request failed listener removed as we are mocking
+    await page.goto('/search');
 
-    await page.goto('/search'); // Use relative path as baseURL is usually configured or passed via CI env
+    // Check for the SiteSearch container
+    const siteSearch = page.locator('#search-askai');
+    await expect(siteSearch).toBeVisible({ timeout: 15000 });
 
-    try {
-      // Check for the SiteSearch container instead of specific input placeholder
-      // as the widget renders dynamically
-      const siteSearch = page.locator('#search-askai');
-
-      // Wait for search to "load" (our mock)
-      await expect(siteSearch).toBeVisible({ timeout: 15000 });
-
-      // Also verify we have results (hybrid mode)
-      const results = page.locator('section[aria-label="Search results"]');
-      await expect(results).toBeVisible();
-    } catch (e) {
-      console.log('Search container not found. Page content:');
-      console.log(await page.content());
-      throw e;
-    }
+    // Verify results section
+    const results = page.locator('section[aria-label="Search results"]');
+    await expect(results).toBeVisible();
   });
 
   test('navigating to URL with factId expands the card and scrolls into view', async ({ page }) => {

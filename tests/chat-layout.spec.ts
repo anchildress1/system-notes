@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from './utils';
 
 test.describe('AIChat Visual Layout', () => {
   test('chat dock portal renders with correct bottom offset', async ({ page }) => {

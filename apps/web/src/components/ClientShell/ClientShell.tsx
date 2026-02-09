@@ -1,7 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import BackgroundMusic from '@/components/BackgroundMusic/BackgroundMusic';
 import Footer from '@/components/Footer/Footer';
 import styles from './ClientShell.module.css';
 
@@ -19,7 +18,6 @@ export default function ClientShell({ children }: { children: React.ReactNode })
         <div aria-hidden="true">
           <GlitterBomb />
         </div>
-        <BackgroundMusic />
         {children}
         <Footer />
       </div>

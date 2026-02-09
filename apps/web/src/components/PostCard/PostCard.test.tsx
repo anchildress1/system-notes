@@ -17,7 +17,9 @@ vi.mock('next/navigation', () => ({
 // Mock Highlight to render simple text
 vi.mock('react-instantsearch', () => ({
   Highlight: ({ attribute, hit }: { attribute: string; hit: Record<string, unknown> }) => (
-    <span data-testid={`highlight-${attribute}`}>{String((hit as any)[attribute])}</span>
+    <span data-testid={`highlight-${attribute}`}>
+      {String((hit as Record<string, unknown>)[attribute])}
+    </span>
   ),
 }));
 

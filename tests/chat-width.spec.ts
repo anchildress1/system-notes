@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { test } from './utils';
 
 test.describe('AIChat Width and Visibility', () => {
   test('chat toggle button should render with correct dimensions', async ({ page }) => {

@@ -34,6 +34,10 @@ describe('InfiniteHits', () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it('passes sendEvent to hit component', () => {
     const HitComponent = vi.fn(({ hit }) => <div>{hit.title}</div>);
 

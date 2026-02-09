@@ -174,10 +174,13 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
         className={styles.cardLink}
         aria-expanded={isFlipped}
         aria-label={`${hit.title}. Press to expand.`}
+        tabIndex={isFlipped ? -1 : 0}
+        aria-hidden={isFlipped}
       >
         <motion.article
           className={`${styles.card} ${isFlipped ? styles.flippedVisible : ''}`}
           data-state={isFlipped ? 'expanded' : 'collapsed'}
+          aria-hidden={isFlipped}
         >
           <div className={styles.cardInner}>
             <div className={styles.cardFront}>

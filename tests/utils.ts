@@ -1,14 +1,11 @@
-import { Page } from '@playwright/test';
+import { test as base, Page } from '@playwright/test';
 
 /**
  * Mocks Algolia network requests to prevent external calls and ensure deterministic tests.
+ * Returns empty results so Chat/Search widgets stay idle.
  */
 export async function mockAlgolia(page: Page) {
   await page.route('**/*algolia*/**', async (route) => {
-    // Small delay to simulate network but not hang
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Always return empty results to prevent Chat from opening automatically
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -23,3 +20,17 @@ export async function mockAlgolia(page: Page) {
     });
   });
 }
+
+/**
+ * Extended Playwright test fixture that automatically mocks Algolia on every page.
+ * Import `test` from this module instead of `@playwright/test` to get universal mocking.
+ */
+export const test = base.extend<{ autoMockAlgolia: void }>({
+  autoMockAlgolia: [
+    async ({ page }, use) => {
+      await mockAlgolia(page);
+      await use();
+    },
+    { auto: true },
+  ],
+});

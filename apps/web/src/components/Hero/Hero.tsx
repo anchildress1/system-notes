@@ -56,6 +56,7 @@ export default function Hero({ title, subtitle, image }: HeroProps) {
             height={image.height}
             className={styles.image}
             priority
+            sizes="(max-width: 768px) 100vw, 50vw"
           />
         </div>
       )}

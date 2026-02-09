@@ -7,10 +7,6 @@ vi.mock('@/components/GlitterBomb/GlitterBomb', () => ({
   default: () => <div data-testid="glitter-bomb">GlitterBomb</div>,
 }));
 
-vi.mock('@/components/BackgroundMusic/BackgroundMusic', () => ({
-  default: () => <div data-testid="bg-music">Music</div>,
-}));
-
 vi.mock('@/components/AIChat/AIChat', () => ({
   default: () => <div data-testid="ai-chat">AIChat</div>,
 }));
@@ -32,16 +28,11 @@ describe('ClientShell Component', () => {
     await waitFor(() => {
       expect(screen.getByTestId('glitter-bomb')).toBeInTheDocument();
     });
-    expect(screen.getByTestId('bg-music')).toBeInTheDocument();
-
-    // Wait for delayed AIChat
-    await waitFor(
-      () => {
-        expect(screen.getByTestId('ai-chat')).toBeInTheDocument();
-      },
-      { timeout: 6000 }
-    );
-
     expect(screen.getByTestId('footer')).toBeInTheDocument();
-  }, 10000);
+
+    // AIChat is dynamically imported — verify it renders
+    await waitFor(() => {
+      expect(screen.getByTestId('ai-chat')).toBeInTheDocument();
+    });
+  });
 });
