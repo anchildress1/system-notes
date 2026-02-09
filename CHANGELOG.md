@@ -1,5 +1,77 @@
 # Changelog
 
+## [1.0.0](https://github.com/anchildress1/system-notes/compare/system-notes-v1.2.0...system-notes-v1.0.0) (2026-02-09)
+
+
+### Features
+
+* **algolia-challenge:** add RAG failure modes and link capping ([9431d60](https://github.com/anchildress1/system-notes/commit/9431d60396299a547ec7722ded635753c2638ac8))
+* **algolia-challenge:** refine agent behavior and add chat session persistence ([346cd6b](https://github.com/anchildress1/system-notes/commit/346cd6bceb0a72927978bcf7c4870cdb43b10a69))
+* **algolia:** add knowledge graph indices with visual assets ([d011338](https://github.com/anchildress1/system-notes/commit/d0113383d03d83d99e4859167041f1a159c30123))
+* **algolia:** add list framing rules for result truncation ([0372952](https://github.com/anchildress1/system-notes/commit/037295297e2d7caa73b7d2ed05763d09e3b9ef07))
+* **algolia:** implement graph rag workflow and optimize agent prompt ([5226385](https://github.com/anchildress1/system-notes/commit/5226385636a8f614c0f37dc639c7464b9b8accf4))
+* **algolia:** integrate search with Algolia indices and agent ([6bd1fa9](https://github.com/anchildress1/system-notes/commit/6bd1fa986cacb5cd628b9658584c608712f9f987))
+* **algolia:** redesign about and projects indexes for RAG agent ([549e07d](https://github.com/anchildress1/system-notes/commit/549e07d9ed61051daa19fc5aa130ce1ff866bd26))
+* **algolia:** redesign about and projects indexes with narrative schema ([359cdef](https://github.com/anchildress1/system-notes/commit/359cdef0e412d51d3fe2add43283a0a0b5cd0596))
+* **algolia:** simplify indexing workflow and remove data enrichment ([8481e5d](https://github.com/anchildress1/system-notes/commit/8481e5df7c2bc1da694a02d4ee11e9eaee2fd6e3))
+* **algolia:** unify index to 'system-notes' with deploy script ([9531aa7](https://github.com/anchildress1/system-notes/commit/9531aa73fc0f50a8616b998634c8724ddffd2f7c))
+* Configure blog crawler ([#21](https://github.com/anchildress1/system-notes/issues/21)) ([399ffcc](https://github.com/anchildress1/system-notes/commit/399ffcc58b1c0130338322d4f4492f471e3cb8e4))
+* configure search metric reporting ([#19](https://github.com/anchildress1/system-notes/issues/19)) ([b84f45c](https://github.com/anchildress1/system-notes/commit/b84f45c7e93e7d70246777cbf24cc3d7efe48d50))
+* implement algolia rag chat and markdown support ([f6de9fb](https://github.com/anchildress1/system-notes/commit/f6de9fb759ddfa8e60bb951bed28ef81d716f3f5))
+* implement deterministic links and failure modes ([b31be31](https://github.com/anchildress1/system-notes/commit/b31be3192a5c7a9d0ab611e8f197605e7b094b27))
+* implement Fact Index search with 3D flip card UI ([86b4698](https://github.com/anchildress1/system-notes/commit/86b469829b8b3c640ec574604a7c474a2786fc74))
+* **search:** redesign Fact Index UI with immersive 3D flip-and-expand interaction ([52cab68](https://github.com/anchildress1/system-notes/commit/52cab682275cd488485a529057b94097aaeeaf45))
+* **search:** unify Algolia config and migrate data to tiered tags ([aac3434](https://github.com/anchildress1/system-notes/commit/aac3434151312cc830200e10f37a3741d6019de6))
+* stabilize e2e tests and cleanup codebase ([ef73fe4](https://github.com/anchildress1/system-notes/commit/ef73fe4ee3c46970672653340461703dccb69dd9))
+* **ui:** update AIChat to Ruckus 2.0 branding ([2155ba3](https://github.com/anchildress1/system-notes/commit/2155ba317c3d8a4fa893c835155861baa0005a4b))
+* **web:** add proper sitemap.xml and AI discoverability files ([#14](https://github.com/anchildress1/system-notes/issues/14)) ([1faf3aa](https://github.com/anchildress1/system-notes/commit/1faf3aa9dce353c453fce03b160b830dca94e753))
+* **web:** align chat styling and update index configuration ([714e6c1](https://github.com/anchildress1/system-notes/commit/714e6c1ddec72e27a2275310521af39899c92b1b))
+* **web:** finalize Ruckus chat UI with premium glassmorphic styling and custom components ([da3d007](https://github.com/anchildress1/system-notes/commit/da3d007289b646329da191a65b43cdbd143a4ad5))
+* **web:** replace footer text links with accessible icons ([#13](https://github.com/anchildress1/system-notes/issues/13)) ([93becd5](https://github.com/anchildress1/system-notes/commit/93becd598992e229e958ba3085143899f740c811))
+
+
+### Bug Fixes
+
+* address PR [#12](https://github.com/anchildress1/system-notes/issues/12) review comments and resolve test failures ([d56e544](https://github.com/anchildress1/system-notes/commit/d56e544f422a2e3b7a042ce22cc199b337c246b3))
+* **algolia:** correct synonyms upload method in deploy script ([5bf7f30](https://github.com/anchildress1/system-notes/commit/5bf7f305f10187fbe6a6d1647570dd4118ebfe89))
+* **api:** decouple algolia source files and remove unused docs endpoint ([867e87d](https://github.com/anchildress1/system-notes/commit/867e87d6a3133446a5d8d3011189147392970a73))
+* **api:** enforce strict path validation security rules ([1511030](https://github.com/anchildress1/system-notes/commit/15110308750d8ece1b1942426f9d20770ae111f2))
+* **api:** implement library-based path sanitization (Werkzeug) ([4722532](https://github.com/anchildress1/system-notes/commit/47225327a36c0875e98b17929e9ee457cd9339e0))
+* **api:** resolve path traversal vulnerability ([d29d37f](https://github.com/anchildress1/system-notes/commit/d29d37fe0722c0f3e10f6badb21d8ca419761cf4))
+* **build:** add rollup linux optional dependency ([c86ec53](https://github.com/anchildress1/system-notes/commit/c86ec53e807f2a44068edf7a60fc377b5f497725))
+* chat transparency and unclickable close functionality ([47b5c66](https://github.com/anchildress1/system-notes/commit/47b5c66c80307d704c54e2f82e408e411b875780))
+* **chat:** fix empty bubbles and update send button style ([e6c85ac](https://github.com/anchildress1/system-notes/commit/e6c85acdf1b05b9db9da5902321e042ebf43f161))
+* **ci:** prevent hangs in lighthouse and playwright ([ae7ec57](https://github.com/anchildress1/system-notes/commit/ae7ec572081ca4e260403d4f96901a4624f7efe9))
+* **ci:** use npm start for lighthouse ci to fix static asset loading ([dc1d9aa](https://github.com/anchildress1/system-notes/commit/dc1d9aa8d8881d0317d939e1eedc7d094de680a4))
+* configure search metrics ([#20](https://github.com/anchildress1/system-notes/issues/20)) ([78a29f1](https://github.com/anchildress1/system-notes/commit/78a29f1d4c4a9d584ef60d4b2cb3fd9870a423b3))
+* **css:** enable pointer-events for AIChat container and input ([0dc29e1](https://github.com/anchildress1/system-notes/commit/0dc29e12e4a6ce8a162335efb6ca961321d7b834))
+* **deps:** bump react to 19.2.4 to resolve mismatch ([e0946d8](https://github.com/anchildress1/system-notes/commit/e0946d80901eefcd6a611f97ad86b4370b18176d))
+* **e2e:** update homepage expectation to match new hero content ([d87e61c](https://github.com/anchildress1/system-notes/commit/d87e61c43b15987f3528d494c533210b8f2c747e))
+* **e2e:** use npm start for playwright webServer to fix static asset loading ([a1e684c](https://github.com/anchildress1/system-notes/commit/a1e684ccda586e0c2719d18efb38404f2e187a1b))
+* mobile music blog btn and performance ([#6](https://github.com/anchildress1/system-notes/issues/6)) ([1d5e096](https://github.com/anchildress1/system-notes/commit/1d5e09636054885bd493dedf26a0f63742388bde))
+* normalize fact schema keys and update deployment config ([60ebc36](https://github.com/anchildress1/system-notes/commit/60ebc36bb31237b4619ac74ac95aa232d8b88f7f))
+* **prompt:** restore ruckus voice while keeping contract ([c05a4cf](https://github.com/anchildress1/system-notes/commit/c05a4cfa8144c905f2cde77f413aae7cad034774))
+* resolve json viewer fetch error and enforce read-only mode ([3cc9635](https://github.com/anchildress1/system-notes/commit/3cc96357d766a9ffad06f709a298da2f68c8f7ff))
+* resolve PR review feedback and clean up tests ([80cb769](https://github.com/anchildress1/system-notes/commit/80cb769111db3af9c22ea5b87fae81b8c36d71d9))
+* **security:** enhance path validation and fix web linting ([3eca935](https://github.com/anchildress1/system-notes/commit/3eca93575b7d412e91693ae050636f5f991d431a))
+* **security:** resolve CodeQL path traversal and info leak ([28ba5c1](https://github.com/anchildress1/system-notes/commit/28ba5c1a2ffff1380251f2408b9b60bdc109606a))
+* **security:** resolve CodeQL path traversal and info leak ([e7c339e](https://github.com/anchildress1/system-notes/commit/e7c339e559441f11b711df397579c37caa13f2ab))
+* **test:** remove redundant build in playwright config ([03cebcb](https://github.com/anchildress1/system-notes/commit/03cebcb66e50a351f6ed24ab63b27583b14a6b53))
+* **tests:** remove flaky AI readiness test and fix robots.txt casing ([4892551](https://github.com/anchildress1/system-notes/commit/4892551fa41f5f42ce6bafad8b54e2508f3284f6))
+* **ui:** correct chat window layout and sizing constraints ([3235253](https://github.com/anchildress1/system-notes/commit/323525362273c05dac9f654f4fb6c108589691e5))
+* **web:** add accessible label to chat toggle button ([8c18a48](https://github.com/anchildress1/system-notes/commit/8c18a4808881a090d30718c52ba8258a24378b3d))
+* **web:** copy static assets for standalone lighthouse tests ([c1ac655](https://github.com/anchildress1/system-notes/commit/c1ac65522c19e402caf44ab6984200f083d224d4))
+* **web:** fix reversed text on flip cards in expanded view ([f92dee2](https://github.com/anchildress1/system-notes/commit/f92dee254cbc4843e507ca2362814d59a84dd5d1))
+* **web:** resolve chat 422 error by simplifying component structure ([45a850f](https://github.com/anchildress1/system-notes/commit/45a850f15ac8a61d9cb77cff4c8b96bc9d8055cd))
+* **web:** resolve overlapping elements blocking interaction ([f05549d](https://github.com/anchildress1/system-notes/commit/f05549da75138cf6162d4377f91efe892150421b))
+* **web:** resolve post-rebase regressions and lint errors ([ab233c8](https://github.com/anchildress1/system-notes/commit/ab233c80774406edb7f5d2f29f67e658bd94085d))
+* **web:** resolve React DOM attribute warnings in tests ([efa8909](https://github.com/anchildress1/system-notes/commit/efa8909e2f40c36a83b3cbdef296136cc3d7c4ee))
+
+
+### Miscellaneous Chores
+
+* release 1.0.0 ([8209e91](https://github.com/anchildress1/system-notes/commit/8209e918fd4313e22c33e84499f01f8c4b2dbe00))
+
 ## [1.2.0](https://github.com/anchildress1/system-notes/compare/system-notes-v1.1.0...system-notes-v1.2.0) (2026-01-28)
 
 > _In which we pretend that adding a music player counts as "system architecture"._
