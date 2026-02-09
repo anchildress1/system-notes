@@ -1,6 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
+
+// Set valid-format env vars BEFORE AIChat module evaluates (vi.hoisted runs before imports)
+vi.hoisted(() => {
+  process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+  process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID = 'test_agent_id';
+});
+
 import AIChat from './AIChat';
 
 // Mock react-instantsearch

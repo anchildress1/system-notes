@@ -29,6 +29,9 @@ export default function Hero({ title, subtitle, image }: HeroProps) {
         <div
           className={styles.interactiveContainer}
           data-testid="hero-interactive"
+          role="button"
+          tabIndex={0}
+          aria-label="Trigger glitter effect"
           onClick={() => {
             window.dispatchEvent(new Event('trigger-glitter-bomb'));
           }}

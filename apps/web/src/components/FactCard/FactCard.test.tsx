@@ -4,13 +4,10 @@ import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
 import type { Hit, BaseHit } from 'instantsearch.js';
 
-const mockPush = vi.fn();
 const mockSearchParams = new URLSearchParams();
+const pushStateSpy = vi.fn();
 
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: mockPush,
-  }),
   useSearchParams: () => mockSearchParams,
 }));
 
@@ -53,6 +50,8 @@ describe('FactCard Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockSearchParams.delete('factId');
+    pushStateSpy.mockClear();
+    vi.spyOn(window.history, 'pushState').mockImplementation(pushStateSpy);
   });
 
   it('renders fact card with front-side fields', () => {
@@ -81,9 +80,10 @@ describe('FactCard Component', () => {
     const cardLink = screen.getByRole('link', { name: /Press to expand/i });
     await user.click(cardLink);
 
-    expect(mockPush).toHaveBeenCalledWith(
-      '?factId=card%3Atest%3Atest%3A0001&category=Work+Style&project=A&project=B&project=C&project=D&project=E',
-      { scroll: false }
+    expect(pushStateSpy).toHaveBeenCalledWith(
+      null,
+      '',
+      '?factId=card%3Atest%3Atest%3A0001&category=Work+Style&project=A&project=B&project=C&project=D&project=E'
     );
   });
 
@@ -101,7 +101,7 @@ describe('FactCard Component', () => {
     const cardLink = screen.getByRole('link', { name: /Press to expand/i });
     await user.click(cardLink);
 
-    expect(mockPush).toHaveBeenCalled();
+    expect(pushStateSpy).toHaveBeenCalled();
   });
 
   it('has correct structure for accessibility', () => {
@@ -125,7 +125,7 @@ describe('FactCard Component', () => {
     card.focus();
     await user.keyboard('{Enter}');
 
-    expect(mockPush).toHaveBeenCalled();
+    expect(pushStateSpy).toHaveBeenCalled();
   });
 
   it('supports keyboard navigation with Space', async () => {
@@ -136,7 +136,7 @@ describe('FactCard Component', () => {
     card.focus();
     await user.keyboard(' ');
 
-    expect(mockPush).toHaveBeenCalled();
+    expect(pushStateSpy).toHaveBeenCalled();
   });
 
   it('tracks expansion event with insights client', async () => {

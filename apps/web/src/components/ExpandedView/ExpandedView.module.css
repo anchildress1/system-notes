@@ -7,6 +7,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-xl);
+  perspective: 1200px;
 }
 
 .expandedCard {
@@ -23,7 +24,7 @@
   flex-direction: column;
   isolation: isolate;
   will-change: transform, opacity;
-  transform: translateZ(0);
+  transform-style: preserve-3d;
   backface-visibility: hidden;
 }
 

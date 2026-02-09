@@ -14,7 +14,9 @@ export default function Footer() {
       </div>
       <div className={styles.center}>
         <div className={styles.poweredBy}>
-          <span className={styles.builtWith}>Built with Gemini, ChatGPT, Claude + Verdent</span>
+          <span className={styles.builtWith}>
+            Built with GitHub Copilot, ChatGPT, Verdent + Gemini
+          </span>
           <a
             href="https://www.algolia.com"
             target="_blank"
@@ -22,8 +24,10 @@ export default function Footer() {
             className={styles.algoliaLink}
             aria-label="Powered by Algolia"
           >
-            <span>
-              <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} /> Powered by Algolia
+            <span className={styles.algoliaPrefix}>Powered by</span>
+            <span className={styles.algoliaHoverable}>
+              <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
+              <span>Algolia</span>
             </span>
           </a>
         </div>

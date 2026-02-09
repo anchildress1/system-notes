@@ -55,13 +55,13 @@
 
 .socialLink:hover,
 .socialLink:focus-visible {
-  color: hsl(var(--color-accent-pink));
+  color: hsl(338 70% 62%);
   background: transparent;
   outline: none;
 }
 
 .socialLink:hover svg {
-  fill: hsl(var(--color-accent-pink));
+  fill: hsl(338 70% 62%);
 }
 
 .center {
@@ -102,6 +102,25 @@
   opacity: 1;
   color: hsl(var(--color-text-secondary));
   outline: none;
+}
+
+.algoliaPrefix {
+  color: hsl(var(--color-text-secondary));
+}
+
+.algoliaHoverable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color var(--transition-base);
+}
+
+.algoliaLink:hover .algoliaHoverable {
+  color: hsl(var(--color-accent-teal));
+}
+
+.algoliaLink:hover .algoliaHoverable .algoliaIcon {
+  color: hsl(var(--color-accent-teal));
 }
 
 .algoliaIcon {

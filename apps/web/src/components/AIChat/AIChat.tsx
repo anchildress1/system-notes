@@ -20,18 +20,22 @@ const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
+// Algolia app IDs are always 10 alphanumeric chars, API keys are 32+ hex chars.
+// Skip real SDK init when credentials are obviously fake (e.g. test_app_id)
+// to prevent failed network requests that Chrome logs as console errors.
+const hasValidCredentials = /^[A-Z0-9]{10}$/i.test(appId) && apiKey.length >= 20;
+
 // Create searchClient at module level for stable reference (prevents unnecessary re-renders)
-const searchClient =
-  appId && apiKey
-    ? algoliasearch(appId, apiKey, {
-        headers: {
-          'X-Algolia-UserToken': getChatSessionId(),
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any)
-    : {
-        search: () => Promise.resolve({ results: [] }),
-      };
+const searchClient = hasValidCredentials
+  ? algoliasearch(appId, apiKey, {
+      headers: {
+        'X-Algolia-UserToken': getChatSessionId(),
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any)
+  : {
+      search: () => Promise.resolve({ results: [] }),
+    };
 
 const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || '';
 
@@ -105,7 +109,7 @@ export default function AIChat() {
             const data = await response.json();
             addToolResult({ output: data });
           } catch (error) {
-            console.error('AIChat tool error:', error);
+            console.warn('AIChat tool error:', error);
             addToolResult({
               output: { error: 'Network error fetching blog posts', results: [] },
             });
@@ -146,23 +150,25 @@ export default function AIChat() {
       <div className={styles.musicWrapper}>
         <MusicPlayer />
       </div>
-      <InstantSearchNext
-        searchClient={searchClient}
-        insights
-        future={{ preserveSharedStateOnUnmount: true }}
-      >
-        <Chat
-          agentId={AGENT_ID}
-          translations={translations}
-          tools={tools}
-          getSearchPageURL={resolveSearchPageURL}
-          headerTitleIconComponent={HeaderIcon}
-          assistantMessageLeadingComponent={AssistantAvatar}
-          userMessageLeadingComponent={UserAvatar}
-          promptFooterComponent={PromptFooter}
-          toggleButtonIconComponent={ToggleIcon}
-        />
-      </InstantSearchNext>
+      {hasValidCredentials && AGENT_ID ? (
+        <InstantSearchNext
+          searchClient={searchClient}
+          insights
+          future={{ preserveSharedStateOnUnmount: true }}
+        >
+          <Chat
+            agentId={AGENT_ID}
+            translations={translations}
+            tools={tools}
+            getSearchPageURL={resolveSearchPageURL}
+            headerTitleIconComponent={HeaderIcon}
+            assistantMessageLeadingComponent={AssistantAvatar}
+            userMessageLeadingComponent={UserAvatar}
+            promptFooterComponent={PromptFooter}
+            toggleButtonIconComponent={ToggleIcon}
+          />
+        </InstantSearchNext>
+      ) : null}
     </div>
   );
 

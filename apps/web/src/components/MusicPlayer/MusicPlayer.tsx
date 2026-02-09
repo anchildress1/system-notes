@@ -19,7 +19,7 @@ export default function MusicPlayer() {
         await audioRef.current.play();
         setIsPlaying(true);
       } catch (error) {
-        console.error('Playback failed:', error);
+        console.warn('Playback failed:', error);
         setIsPlaying(false);
       }
     }

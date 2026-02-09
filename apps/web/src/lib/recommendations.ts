@@ -11,7 +11,7 @@ const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'merged-search';
 let recommendClient: ReturnType<typeof createRecommendClient> | null = null;
 
 function getRecommendClient() {
-  if (!recommendClient && appId && apiKey) {
+  if (!recommendClient && appId && apiKey && /^[A-Z0-9]{10}$/i.test(appId) && apiKey.length >= 20) {
     recommendClient = createRecommendClient(appId, apiKey);
   }
   return recommendClient;
@@ -84,7 +84,7 @@ export async function fetchRecommendations(params: RecommendParams): Promise<Rec
 
     return response.results[0].hits as RecommendResult[];
   } catch (error) {
-    console.error('Error fetching recommendations:', error);
+    console.warn('Error fetching recommendations:', error);
     return [];
   }
 }
@@ -139,7 +139,7 @@ export function useRecommendationTools() {
               },
             });
           } catch (error) {
-            console.error('getRelatedNotes error:', error);
+            console.warn('getRelatedNotes error:', error);
             addToolResult({
               output: {
                 error: 'Failed to fetch related notes',
@@ -183,7 +183,7 @@ export function useRecommendationTools() {
               },
             });
           } catch (error) {
-            console.error('getTrendingNotes error:', error);
+            console.warn('getTrendingNotes error:', error);
             addToolResult({
               output: {
                 error: 'Failed to fetch trending notes',

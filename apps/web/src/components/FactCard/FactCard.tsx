@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useRef, useEffect, useMemo } from 'react';
+import { useCallback, useRef, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Highlight } from 'react-instantsearch';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import type { Hit, BaseHit } from 'instantsearch.js';
 import type { SendEventForHits } from '@/types/algolia';
 import styles from './FactCard.module.css';
@@ -29,7 +29,6 @@ interface FactCardProps {
 }
 
 export default function FactCard({ hit, sendEvent }: FactCardProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const portalTarget = useMemo(() => (typeof document !== 'undefined' ? document.body : null), []);
   const hasTrackedFlip = useRef(false);
@@ -41,7 +40,23 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const tagsLvl0 = useMemo(() => tagsLvl0Raw || [], [tagsLvl0Raw]);
   const tagsLvl1 = useMemo(() => tagsLvl1Raw || [], [tagsLvl1Raw]);
 
-  const isFlipped = searchParams.get('factId') === hit.objectID;
+  // Use local state for instant visual feedback; sync with URL for deep-linking
+  const urlFlipped = searchParams.get('factId') === hit.objectID;
+  const [isFlipped, setIsFlipped] = useState(urlFlipped);
+
+  // Sync local state when URL changes externally (e.g. back button, popstate)
+  useEffect(() => {
+    setIsFlipped(urlFlipped);
+  }, [urlFlipped]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      setIsFlipped(params.get('factId') === hit.objectID);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [hit.objectID]);
 
   const applyHitParams = useCallback(
     (params: URLSearchParams) => {
@@ -71,18 +86,24 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
         objectIDs: [hit.objectID],
       });
     }
+    // Immediate visual feedback
+    setIsFlipped(true);
+    // Update URL without triggering re-render
     const params = new URLSearchParams(searchParams.toString());
     params.set('factId', hit.objectID);
     applyHitParams(params);
-    router.push(`?${params.toString()}`, { scroll: false });
-  }, [sendEvent, hit, searchParams, router, applyHitParams]);
+    window.history.pushState(null, '', `?${params.toString()}`);
+  }, [sendEvent, hit, searchParams, applyHitParams]);
 
   const closeCard = useCallback(() => {
+    // Immediate visual feedback
+    setIsFlipped(false);
+    // Update URL without triggering re-render
     const params = new URLSearchParams(searchParams.toString());
     params.delete('factId');
     const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
-    router.push(newUrl, { scroll: false });
-  }, [searchParams, router]);
+    window.history.pushState(null, '', newUrl);
+  }, [searchParams]);
 
   useEffect(() => {
     const handleWindowKeyDown = (e: KeyboardEvent) => {
@@ -155,7 +176,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
         aria-label={`${hit.title}. Press to expand.`}
       >
         <motion.article
-          layoutId={`card-${hit.objectID}`}
           className={`${styles.card} ${isFlipped ? styles.flippedVisible : ''}`}
           data-state={isFlipped ? 'expanded' : 'collapsed'}
         >
@@ -243,21 +263,20 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
             )}
             {createPortal(
               <motion.article
-                layoutId={`card-${hit.objectID}`}
                 className={`${styles.card} ${styles.flipped}`}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={dialogTitleId}
                 aria-describedby={dialogDescriptionId}
-                initial={{ rotateY: 180, scale: 1 }}
-                animate={{ rotateY: 0, scale: 1 }}
-                exit={{ rotateY: -180, scale: 1 }}
+                initial={{ rotateY: 180, scale: 0.85, opacity: 0 }}
+                animate={{ rotateY: 0, scale: 1, opacity: 1 }}
+                exit={{ rotateY: -180, scale: 0.85, opacity: 0 }}
                 transition={{
-                  rotateY: { duration: 0.2, ease: 'easeOut' },
-                  scale: { duration: 0.15, ease: 'easeOut', delay: 0.2 },
-                  layout: { duration: 0.15, ease: 'easeOut', delay: 0.2 },
+                  rotateY: { duration: 0.5, ease: [0.175, 0.885, 0.32, 1.275] },
+                  scale: { duration: 0.45, ease: [0.175, 0.885, 0.32, 1.275] },
+                  opacity: { duration: 0.25 },
                 }}
-                style={{ transformStyle: 'preserve-3d' }}
+                style={{ transformStyle: 'preserve-3d', perspective: 1200 }}
               >
                 <div className={styles.cardInner}>
                   <div

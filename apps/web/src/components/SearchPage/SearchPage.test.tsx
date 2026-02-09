@@ -106,8 +106,8 @@ describe('SearchPage Component', () => {
   });
 
   it('renders search box container when configuration is present', async () => {
-    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'test-app-id');
-    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'test-search-key');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'ABCDEF1234');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', '12345678901234567890abcdef123456');
 
     const { default: SearchPage } = await import('./SearchPage');
     render(<SearchPage />);

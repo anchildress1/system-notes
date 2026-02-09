@@ -34,15 +34,18 @@
 .metaRow {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: var(--space-xs) 0;
   margin-top: var(--space-xs);
+  line-height: 1;
 }
 
 .statsRoot {
   font-size: 0.75rem;
   color: hsl(var(--color-text-secondary));
   font-weight: 500;
+  line-height: 1;
+  padding-top: 0;
 }
 
 .algoliaAttribution {
@@ -53,11 +56,29 @@
   font-size: 0.75rem;
   font-weight: 500;
   text-decoration: none;
-  transition: opacity var(--transition-base);
+  line-height: 1;
+  padding-top: 0;
+  flex-direction: row-reverse;
 }
 
-.algoliaAttribution:hover {
-  opacity: 0.8;
+.algoliaAttribution:hover .algoliaHoverable {
+  color: hsl(var(--color-accent-teal));
+}
+
+.algoliaPrefix {
+  white-space: nowrap;
+  color: hsl(var(--color-text-secondary));
+}
+
+.algoliaHoverable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color var(--transition-base);
+}
+
+.algoliaName {
+  white-space: nowrap;
 }
 
 .algoliaIcon {
@@ -127,10 +148,34 @@
   font-size: 0.8125rem;
   font-weight: 700;
   color: hsl(var(--color-text-secondary));
-  margin: 0 0 12px 0;
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-family: var(--font-mono);
+}
+
+.refinementTitleToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin: 0 0 12px 0;
+  cursor: pointer;
+  color: hsl(var(--color-text-secondary));
+  transition: color var(--transition-base);
+  border-radius: var(--radius-sm);
+}
+
+.refinementTitleToggle:hover {
+  color: hsl(var(--color-text-primary));
+}
+
+.refinementTitleToggle:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 2px;
 }
 
 .refinementRoot {
@@ -167,6 +212,13 @@
   color: hsl(var(--color-text-primary));
   background: hsl(var(--color-accent-purple) / 0.08);
   transform: translateX(2px);
+}
+
+.refinementLabel:focus-within {
+  color: hsl(var(--color-text-primary));
+  background: hsl(var(--color-accent-purple) / 0.08);
+  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
+  outline-offset: 1px;
 }
 
 .refinementCheckbox {
@@ -313,6 +365,12 @@
   margin: 0;
 }
 
+.hitsItem:focus-within {
+  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
+  outline-offset: 2px;
+  border-radius: var(--radius-xl);
+}
+
 /* Loading Indicator */
 .loadingIndicator {
   display: flex;
@@ -347,6 +405,7 @@
   background-color: transparent !important;
   font-style: normal !important;
   font-weight: 700;
+  text-decoration: none !important;
 }
 
 :global(.ais-Highlight-nonHighlighted),
@@ -363,6 +422,8 @@
   .sidebar {
     position: static;
     max-height: none;
+    max-width: 320px;
+    justify-self: start;
   }
 
   .filterSection {
@@ -378,6 +439,10 @@
 @media (max-width: 600px) {
   .hitsList {
     grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    max-width: 280px;
   }
 
   .filterSection {
@@ -481,7 +546,7 @@
   box-shadow: none !important;
 }
 
-/* Algolia "Powered By" — neutral, teal on hover (navigation/info) */
+/* Algolia "Powered By" — neutral text, teal on hover for logo only */
 :global(.ss-footer-powered-by),
 :global(.ss-footer-powered-by span) {
   color: hsl(var(--color-text-secondary)) !important;
@@ -494,9 +559,12 @@
   transition: fill var(--transition-base) !important;
 }
 
-:global(.ss-footer-powered-by:hover),
+:global(.ss-footer-powered-by:hover) {
+  color: hsl(var(--color-text-secondary)) !important;
+}
+
 :global(.ss-footer-powered-by:hover span) {
-  color: hsl(var(--color-accent-teal)) !important;
+  color: hsl(var(--color-text-secondary)) !important;
 }
 
 :global(.ss-footer-powered-by:hover svg .cls-1),
@@ -513,7 +581,7 @@
   box-shadow: none !important;
 }
 
-/* Clear/Reset Button — Outline Purple */
+/* Clear/Reset Button — Outline Purple, no underline ever */
 :global(.ss-searchbox-reset),
 :global(.ss-reset-btn),
 :global(.ss-search-clear-button) {
@@ -521,6 +589,7 @@
   border: 1px solid hsl(var(--color-accent-purple) / 0.5) !important;
   color: hsl(var(--color-accent-purple)) !important;
   box-shadow: none !important;
+  text-decoration: none !important;
 }
 
 :global(.ss-searchbox-reset:hover),
@@ -528,12 +597,64 @@
 :global(.ss-search-clear-button:hover) {
   border-color: hsl(var(--color-accent-purple)) !important;
   background: hsl(var(--color-accent-purple) / 0.1) !important;
+  text-decoration: none !important;
+}
+
+:global(.ss-searchbox-reset:focus),
+:global(.ss-reset-btn:focus),
+:global(.ss-search-clear-button:focus),
+:global(.ss-searchbox-reset:active),
+:global(.ss-reset-btn:active),
+:global(.ss-search-clear-button:active) {
+  text-decoration: none !important;
+  outline-color: hsl(var(--color-accent-purple)) !important;
 }
 
 :global(.ss-search-clear-button svg),
 :global(.ss-searchbox-reset svg) {
   color: hsl(var(--color-accent-purple)) !important;
   fill: hsl(var(--color-accent-purple)) !important;
+}
+
+/* Close Button — purple, not blue */
+:global(.ss-search-close-button) {
+  color: hsl(var(--color-text-secondary)) !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  transition: all var(--transition-base) !important;
+}
+
+:global(.ss-search-close-button:hover) {
+  color: hsl(var(--color-accent-purple)) !important;
+  background: hsl(var(--color-accent-purple) / 0.1) !important;
+  border-color: transparent !important;
+}
+
+:global(.ss-search-close-button:focus),
+:global(.ss-search-close-button:active) {
+  color: hsl(var(--color-accent-purple)) !important;
+  border-color: transparent !important;
+  outline-color: hsl(var(--color-accent-purple)) !important;
+}
+
+/* Ask AI hit title — purple on hover, not blue */
+:global(.ss-infinite-hits-item-title) {
+  color: hsl(var(--color-text-primary)) !important;
+  transition: color var(--transition-base) !important;
+}
+
+:global(.ss-infinite-hits-item:hover .ss-infinite-hits-item-title),
+:global(.ss-infinite-hits-item-title:hover) {
+  color: hsl(var(--color-accent-purple)) !important;
+}
+
+:global(.ss-infinite-hits-item a),
+:global(.ss-infinite-hits-item a:hover),
+:global(.ss-infinite-hits-item a:focus),
+:global(.ss-infinite-hits-anchor),
+:global(.ss-infinite-hits-anchor:hover) {
+  color: inherit !important;
+  text-decoration: none !important;
 }
 
 /* Search Left Icon/Button — Purple */

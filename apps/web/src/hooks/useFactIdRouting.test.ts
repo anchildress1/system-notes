@@ -156,8 +156,8 @@ describe('useFactIdRouting', () => {
   it('applies metadata filters immediately when URL lacks filters', async () => {
     const mockFactId = 'card:test:fact:004';
 
-    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'test-app';
-    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-key';
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
 
     window.history.replaceState({}, '', `/search?factId=${encodeURIComponent(mockFactId)}`);
 

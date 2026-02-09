@@ -315,6 +315,28 @@ button {
   transform: translateY(-1px) !important;
 }
 
+/* ── Prompt suggestions: visible hover state ── */
+.ais-Chat-suggestedQuestion,
+.ais-Chat-suggestion,
+[class*="Chat-suggestion"],
+[class*="Chat-suggestedQuestion"] {
+  border: 1px solid hsl(var(--color-text-secondary) / 0.2) !important;
+  color: hsl(var(--color-text-secondary)) !important;
+  background: hsl(var(--color-bg-elevated) / 0.5) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.ais-Chat-suggestedQuestion:hover,
+.ais-Chat-suggestion:hover,
+[class*="Chat-suggestion"]:hover,
+[class*="Chat-suggestedQuestion"]:hover {
+  border-color: hsl(var(--color-accent-purple) / 0.6) !important;
+  color: hsl(var(--color-text-primary)) !important;
+  background: hsl(var(--color-accent-purple) / 0.12) !important;
+  box-shadow: 0 2px 8px hsl(var(--color-accent-purple) / 0.2) !important;
+  transform: translateY(-1px) !important;
+}
+
 /* ── Chat header action buttons (maximize, minimize, close) ── */
 .ais-Chat-header button,
 .ais-ChatHeader button,
@@ -371,4 +393,82 @@ button {
 
 [class*="ss-"] a:hover {
   color: hsl(var(--color-accent-teal)) !important;
+}
+
+/* ── Chat Prompt Suggestions: visible hover state ── */
+.ais-Chat-suggestedQuestion,
+.ais-Chat [class*="suggestedQuestion"],
+.ais-Chat [class*="suggestion"] {
+  background: hsl(var(--color-bg-elevated)) !important;
+  border: 1px solid hsl(var(--color-text-secondary) / 0.2) !important;
+  color: hsl(var(--color-text-secondary)) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-base) !important;
+  cursor: pointer !important;
+}
+
+.ais-Chat-suggestedQuestion:hover,
+.ais-Chat [class*="suggestedQuestion"]:hover,
+.ais-Chat [class*="suggestion"]:hover {
+  background: hsl(var(--color-accent-purple) / 0.15) !important;
+  border-color: hsl(var(--color-accent-purple) / 0.5) !important;
+  color: hsl(var(--color-text-primary)) !important;
+  box-shadow: 0 2px 8px hsl(var(--color-accent-purple) / 0.2) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── Chat Search Results (inline results within chat messages) ── */
+.ais-Chat [class*="searchResult"],
+.ais-Chat [class*="source"],
+.ais-Chat [class*="SearchResult"],
+.ais-Chat [class*="Source"] {
+  background: hsl(var(--color-bg-elevated)) !important;
+  border: 1px solid hsl(var(--color-text-secondary) / 0.15) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 0.75rem 1rem !important;
+  margin: 0.5rem 0 !important;
+  transition: all var(--transition-base) !important;
+}
+
+.ais-Chat [class*="searchResult"]:hover,
+.ais-Chat [class*="source"]:hover,
+.ais-Chat [class*="SearchResult"]:hover,
+.ais-Chat [class*="Source"]:hover {
+  border-color: hsl(var(--color-accent-purple) / 0.4) !important;
+  background: hsl(var(--color-accent-purple) / 0.06) !important;
+  box-shadow: 0 2px 8px hsl(var(--color-accent-purple) / 0.12) !important;
+}
+
+.ais-Chat [class*="searchResult"] a,
+.ais-Chat [class*="source"] a,
+.ais-Chat [class*="SearchResult"] a,
+.ais-Chat [class*="Source"] a {
+  color: hsl(var(--color-accent-teal)) !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.ais-Chat [class*="searchResult"] a:hover,
+.ais-Chat [class*="source"] a:hover,
+.ais-Chat [class*="SearchResult"] a:hover,
+.ais-Chat [class*="Source"] a:hover {
+  text-decoration: underline !important;
+  text-decoration-color: hsl(var(--color-accent-teal) / 0.5) !important;
+}
+
+/* Chat search result titles */
+.ais-Chat [class*="searchResult"] [class*="title"],
+.ais-Chat [class*="Source"] [class*="title"] {
+  color: hsl(var(--color-text-primary)) !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+}
+
+/* Chat search result snippets */
+.ais-Chat [class*="searchResult"] [class*="snippet"],
+.ais-Chat [class*="searchResult"] [class*="body"],
+.ais-Chat [class*="Source"] [class*="snippet"] {
+  color: hsl(var(--color-text-secondary)) !important;
+  font-size: 0.85rem !important;
+  line-height: 1.5 !important;
 }

@@ -17,7 +17,7 @@ test.describe('System Notes Integration', () => {
     await page.goto('/');
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
-    await expect(footer).toContainText('Built with Gemini, ChatGPT, Claude + Verdent');
+    await expect(footer).toContainText('Built with GitHub Copilot, ChatGPT, Verdent + Gemini');
   });
 
   test('should display blog CTA in header', async ({ page }) => {

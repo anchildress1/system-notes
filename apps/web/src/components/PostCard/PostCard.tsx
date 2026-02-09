@@ -152,13 +152,14 @@ export default function PostCard({ hit, sendEvent }: PostCardProps) {
                 aria-modal="true"
                 aria-labelledby={dialogTitleId}
                 aria-describedby={dialogDescriptionId}
-                initial={{ rotateY: 180, scale: 1 }}
-                animate={{ rotateY: 0, scale: 1 }}
-                exit={{ rotateY: -180, scale: 1 }}
+                initial={{ rotateY: 180, scale: 0.85, opacity: 0 }}
+                animate={{ rotateY: 0, scale: 1, opacity: 1 }}
+                exit={{ rotateY: -180, scale: 0.85, opacity: 0 }}
                 transition={{
-                  rotateY: { duration: 0.2, ease: 'easeOut' },
-                  scale: { duration: 0.15, ease: 'easeOut', delay: 0.2 },
-                  layout: { duration: 0.15, ease: 'easeOut', delay: 0.2 },
+                  rotateY: { duration: 0.5, ease: [0.175, 0.885, 0.32, 1.275] },
+                  scale: { duration: 0.45, ease: [0.175, 0.885, 0.32, 1.275] },
+                  opacity: { duration: 0.25 },
+                  layout: { duration: 0.4, ease: [0.175, 0.885, 0.32, 1.275] },
                 }}
                 style={{ transformStyle: 'preserve-3d' }}
               >

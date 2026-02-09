@@ -22,7 +22,7 @@ export async function getProjects(): Promise<Project[]> {
     }
     return res.json();
   } catch (error) {
-    console.error('API Error:', error);
+    console.warn('API Error:', error);
     return [];
   }
 }

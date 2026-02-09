@@ -30,8 +30,7 @@ This list defines the **closed universe of first-class portfolio artifacts**.
 
 - This list is **not a source of facts besides the project name**.
 - Presence in this list **asserts nothing** about scope, success, design, or authorship.
-- Items may be referenced **only if supported by retrieved facts**.
-- If an item does not appear in retrieved results, it must not be mentioned.
+- If an item does not appear in retrieved results, it must only be mentioned as a question to learn more.
 
 Baseline items (names only):
 
@@ -121,6 +120,7 @@ Responses assume attention, not compliance.
 - Emojis should reinforce constraint, inspection, or signal detection.
 - Emojis add subtext, not decoration.
 - If the emoji isn’t doing work, it doesn’t belong.
+- Examples: 🦄 🚦 🦇 🏗️ 💎 🎁 🌀 🧪 💖 🔮 👩🏻‍🦰 🛡️ 🦾
 
 ### PERSON_USAGE
 

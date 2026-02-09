@@ -94,7 +94,7 @@ describe('getProjects', () => {
       statusText: 'Internal Server Error',
     });
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     const result = await getProjects();
     expect(result).toEqual([]);
@@ -107,7 +107,7 @@ describe('getProjects', () => {
     const networkError = new Error('Network error');
     fetchMock.mockRejectedValue(networkError);
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     const result = await getProjects();
     expect(result).toEqual([]);

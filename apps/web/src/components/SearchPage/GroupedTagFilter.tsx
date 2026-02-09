@@ -66,29 +66,57 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
         if (hasChildren) {
           return (
             <div key={rootItem.value} className={styles.refinementItem}>
-              {/* Header (Expand Trigger) */}
-              <div
-                role="button"
-                tabIndex={0}
-                className={styles.refinementLabel}
-                onClick={() => toggleGroup(rootItem.label)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleGroup(rootItem.label);
-                  }
-                }}
-                aria-expanded={isExpanded}
-                aria-label={`Expand ${rootItem.label} tags`}
-                style={{ justifyContent: 'space-between', paddingRight: '4px', cursor: 'pointer' }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {isExpanded ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
-                  <span className={styles.refinementLabelText} style={{ fontWeight: 600 }}>
-                    {rootItem.label}
-                  </span>
-                </div>
+              {/* Header row: checkbox + label + expand chevron */}
+              <div className={styles.refinementLabel} style={{ cursor: 'default' }}>
+                <input
+                  type="checkbox"
+                  className={styles.refinementCheckbox}
+                  checked={rootItem.isRefined}
+                  onChange={() => lvl0.refine(rootItem.value)}
+                  aria-label={`Filter by ${rootItem.label}`}
+                />
+                <span
+                  className={styles.refinementLabelText}
+                  style={{ fontWeight: 600, cursor: 'pointer' }}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => lvl0.refine(rootItem.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      lvl0.refine(rootItem.value);
+                    }
+                  }}
+                >
+                  {rootItem.label}
+                </span>
                 <span className={styles.refinementCount}>{rootItem.count}</span>
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(rootItem.label)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      toggleGroup(rootItem.label);
+                    }
+                  }}
+                  aria-expanded={isExpanded}
+                  aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${rootItem.label} subtags`}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: 'inherit',
+                    marginLeft: '4px',
+                    borderRadius: 'var(--radius-sm)',
+                    transition: 'background var(--transition-base)',
+                  }}
+                >
+                  {isExpanded ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
+                </button>
               </div>
 
               {/* Children (Checkboxes) */}

@@ -34,20 +34,26 @@
 /* ── Maximized: full viewport with margin ── */
 :global(.ais-Chat:has(.ais-Chat-container--maximized)),
 :global(.ais-Chat.ais-Chat--maximized) {
-  top: 5vh !important;
-  left: 5vw !important;
-  right: 5vw !important;
-  bottom: 5vh !important;
+  position: fixed !important;
+  top: var(--space-sm, 24px) !important;
+  left: var(--space-sm, 24px) !important;
+  right: var(--space-sm, 24px) !important;
+  bottom: var(--space-sm, 24px) !important;
   width: auto !important;
   height: auto !important;
   max-width: none !important;
+  max-height: none !important;
   align-items: stretch !important;
+  z-index: var(--z-overlay, 2000) !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 :global(.ais-Chat-container.ais-Chat-container--maximized) {
   flex: 1 1 auto !important;
   width: 100% !important;
   height: 100% !important;
+  max-height: none !important;
 }
 
 /* ── Toggle button: action (purple) with glow ── */
@@ -115,9 +121,9 @@
   filter: drop-shadow(0 0 6px hsl(var(--color-accent-pink) / 0.3));
 }
 
-/* ── Disclaimer footer: info (teal) subtle ── */
+/* ── Disclaimer footer: neutral gray (not clickable, not interactive) ── */
 .disclaimer {
-  color: hsl(var(--color-accent-teal) / 0.7);
+  color: hsl(var(--color-text-muted));
   background-color: transparent;
   font-size: 0.65rem;
   text-transform: uppercase;

@@ -78,18 +78,19 @@
 
 .navLink.active {
   color: hsl(var(--color-text-primary));
-  background: radial-gradient(circle at center, hsl(var(--color-accent-purple) / 0.15) 0%, transparent 70%);
-  box-shadow: 0 0 15px hsl(var(--color-accent-purple) / 0.1);
+  background: transparent;
 }
 
 .navLink.active::after {
   content: '';
   position: absolute;
   bottom: -2px;
-  left: 20%;
-  right: 20%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, hsl(var(--color-accent-purple) / 0.5), transparent);
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, hsl(338 70% 62% / 0.7), transparent);
+  border-radius: 1px;
+  box-shadow: 0 0 8px hsl(338 70% 62% / 0.4), 0 0 16px hsl(338 70% 62% / 0.2);
 }
 
 .skipLink {

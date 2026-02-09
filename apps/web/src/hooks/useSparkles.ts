@@ -109,7 +109,7 @@ export const useSparkles = ({
         // Actually app.destroy() handles ticker, but let's be safe.
         app.ticker.add(animate);
       } catch (err) {
-        console.error('Failed to initialize Pixi:', err);
+        console.warn('Failed to initialize Pixi:', err);
       }
     };
 
@@ -195,7 +195,7 @@ export const useSparkles = ({
           particles.push(particle);
         }
       } catch (err) {
-        console.error('Sparkle interaction error:', err);
+        console.warn('Sparkle interaction error:', err);
       }
     };
 

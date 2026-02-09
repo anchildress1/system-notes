@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
@@ -11,6 +11,7 @@ import {
   Configure,
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
+import { LuPlus, LuMinus } from 'react-icons/lu';
 import styles from './SearchPage.module.css';
 import UnifiedHitCard from './UnifiedHitCard';
 import GroupedTagFilter from './GroupedTagFilter';
@@ -24,7 +25,10 @@ const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
 const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
-const hasCredentials = appId && searchKey;
+// Algolia app IDs are always 10 alphanumeric chars, API keys are 32+ hex chars.
+// Skip real SDK init when credentials are obviously fake (e.g. test_app_id)
+// to prevent failed network requests that Chrome logs as console errors.
+const hasCredentials = /^[A-Z0-9]{10}$/i.test(appId) && searchKey.length >= 20;
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
 
 declare global {
@@ -106,7 +110,7 @@ function useSiteSearchWithAI(appId: string, apiKey: string, indexName: string, e
             },
           });
         } catch (e) {
-          console.error('Failed to init SiteSearch:', e);
+          console.warn('Failed to init SiteSearch:', e);
         }
       }
     };
@@ -119,6 +123,11 @@ export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
   const isEnabled = Boolean(hasCredentials);
   const router = useRouter();
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
+
+  const toggleSection = useCallback((section: string) => {
+    setCollapsedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  }, []);
 
   useSiteSearchWithAI(appId, searchKey, indexName, isEnabled);
   useFactIdRouting(indexName);
@@ -210,8 +219,11 @@ export default function SearchPage() {
               className={styles.algoliaAttribution}
               aria-label="Powered by Algolia"
             >
-              <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
-              <span className={styles.algoliaText}>Powered by Algolia</span>
+              <span className={styles.algoliaHoverable}>
+                <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
+                <span className={styles.algoliaName}>Algolia</span>
+              </span>
+              <span className={styles.algoliaPrefix}>Powered by</span>
             </a>
           </div>
         </div>
@@ -220,42 +232,93 @@ export default function SearchPage() {
           <aside className={styles.sidebar}>
             <div className={styles.filterSection}>
               <div className={styles.refinementGroup}>
-                <h2 className={styles.refinementTitle}>Category</h2>
-                <RefinementList
-                  attribute="category"
-                  classNames={{
-                    root: styles.refinementRoot,
-                    list: styles.refinementList,
-                    item: styles.refinementItem,
-                    selectedItem: styles.refinementItemSelected,
-                    label: styles.refinementLabel,
-                    checkbox: styles.refinementCheckbox,
-                    labelText: styles.refinementLabelText,
-                    count: styles.refinementCount,
-                  }}
-                />
+                <button
+                  type="button"
+                  className={styles.refinementTitleToggle}
+                  onClick={() => toggleSection('category')}
+                  aria-expanded={!collapsedSections.category}
+                  aria-controls="filter-category"
+                >
+                  <h2 className={styles.refinementTitle}>Category</h2>
+                  {collapsedSections.category ? (
+                    <LuPlus size={14} aria-hidden="true" />
+                  ) : (
+                    <LuMinus size={14} aria-hidden="true" />
+                  )}
+                </button>
+                {!collapsedSections.category && (
+                  <div id="filter-category">
+                    <RefinementList
+                      attribute="category"
+                      classNames={{
+                        root: styles.refinementRoot,
+                        list: styles.refinementList,
+                        item: styles.refinementItem,
+                        selectedItem: styles.refinementItemSelected,
+                        label: styles.refinementLabel,
+                        checkbox: styles.refinementCheckbox,
+                        labelText: styles.refinementLabelText,
+                        count: styles.refinementCount,
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className={styles.refinementGroup}>
-                <h2 className={styles.refinementTitle}>Builds</h2>
-                <RefinementList
-                  attribute="projects"
-                  classNames={{
-                    root: styles.refinementRoot,
-                    list: styles.refinementList,
-                    item: styles.refinementItem,
-                    selectedItem: styles.refinementItemSelected,
-                    label: styles.refinementLabel,
-                    checkbox: styles.refinementCheckbox,
-                    labelText: styles.refinementLabelText,
-                    count: styles.refinementCount,
-                  }}
-                />
+                <button
+                  type="button"
+                  className={styles.refinementTitleToggle}
+                  onClick={() => toggleSection('builds')}
+                  aria-expanded={!collapsedSections.builds}
+                  aria-controls="filter-builds"
+                >
+                  <h2 className={styles.refinementTitle}>Builds</h2>
+                  {collapsedSections.builds ? (
+                    <LuPlus size={14} aria-hidden="true" />
+                  ) : (
+                    <LuMinus size={14} aria-hidden="true" />
+                  )}
+                </button>
+                {!collapsedSections.builds && (
+                  <div id="filter-builds">
+                    <RefinementList
+                      attribute="projects"
+                      classNames={{
+                        root: styles.refinementRoot,
+                        list: styles.refinementList,
+                        item: styles.refinementItem,
+                        selectedItem: styles.refinementItemSelected,
+                        label: styles.refinementLabel,
+                        checkbox: styles.refinementCheckbox,
+                        labelText: styles.refinementLabelText,
+                        count: styles.refinementCount,
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className={styles.refinementGroup}>
-                <h2 className={styles.refinementTitle}>Tags</h2>
-                <GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />
+                <button
+                  type="button"
+                  className={styles.refinementTitleToggle}
+                  onClick={() => toggleSection('tags')}
+                  aria-expanded={!collapsedSections.tags}
+                  aria-controls="filter-tags"
+                >
+                  <h2 className={styles.refinementTitle}>Tags</h2>
+                  {collapsedSections.tags ? (
+                    <LuPlus size={14} aria-hidden="true" />
+                  ) : (
+                    <LuMinus size={14} aria-hidden="true" />
+                  )}
+                </button>
+                {!collapsedSections.tags && (
+                  <div id="filter-tags">
+                    <GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />
+                  </div>
+                )}
               </div>
 
               <ClearRefinements

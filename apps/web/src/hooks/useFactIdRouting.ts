@@ -119,7 +119,7 @@ export function useFactIdRouting(indexName: string) {
         window.history.replaceState({}, '', newUrl);
         window.dispatchEvent(new PopStateEvent('popstate'));
       } catch (error) {
-        console.error('Error applying fallback filters:', error);
+        console.warn('Error applying fallback filters:', error);
       }
     };
 
@@ -144,7 +144,7 @@ export async function fetchFactMetadata(
 ): Promise<FactMetadata | null> {
   const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
   const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-  if (!appId || !apiKey) {
+  if (!appId || !apiKey || !/^[A-Z0-9]{10}$/i.test(appId) || apiKey.length < 20) {
     console.warn('Algolia credentials not available');
     return null;
   }
@@ -170,7 +170,7 @@ export async function fetchFactMetadata(
 
     return null;
   } catch (error) {
-    console.error('Error fetching fact metadata:', error);
+    console.warn('Error fetching fact metadata:', error);
     return null;
   }
 }
