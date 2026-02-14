@@ -1,48 +1,36 @@
 ---
 name: frontend-style
-description: Apply frontend style guide for cards, chat, and search UI
+description: Deterministic style contract for search UI, cards, and chat.
 trigger: When working on search page components, cards, chat interface, or any UI styling
 ---
 
-# Frontend Style Guide Application
+# Frontend Style Skill
 
-Before making ANY changes to card components, chat interface, or search page UI, you MUST follow the color contract defined in `.agent/rules/frontend-style-guide.md`.
+This skill is the canonical source of frontend style rules.
 
-## Quick Reference
+## Scope
 
-**Color Tokens (ONLY these are permitted):**
+- Applies to search UI, cards, chat, and controls in that surface area.
 
-- Purple `#B56BFF` → Primary Action / Agent Control
-- Pink `#F16197` → Human Identity
-- Teal `#3EC7C2` → Navigation / References
-- Surface `#3A3D46` → Backgrounds
-- Text Primary `#E6E6EB`
-- Text Secondary `#B9BBC4`
+## Color Tokens (only these)
 
-**Decision Rules:**
+- `surface`: `#3A3D46`
+- `text.primary`: `#E6E6EB`
+- `text.secondary`: `#B9BBC4`
+- `action.agent`: `#B56BFF`
+- `identity.human`: `#F16197`
+- `nav.reference`: `#3EC7C2`
 
-1. Primary action → Purple
-2. Human presence → Pink
-3. Navigation/reference → Teal
-4. Structure/container → Surface
-5. Text → Primary or Secondary
+## Deterministic Role Mapping
 
-**Typography:**
+1. Primary action or agent control -> `#B56BFF`
+2. Human identity/ownership markers -> `#F16197`
+3. Navigation/reference affordances -> `#3EC7C2`
+4. Structural surfaces/containers -> `#3A3D46`
+5. Text -> `#E6E6EB` or `#B9BBC4`
 
-- Headers/Titles: JetBrains Mono (`var(--font-mono)`)
-- Body text: Inter (`var(--font-sans)`)
-- **FORBIDDEN**: Ribeye font
+## Typography
 
-## When This Applies
-
-- Creating/modifying card components (FactCard, PostCard, ProjectCard, etc.)
-- Styling chat interface (AIChat component)
-- Search page UI (SearchPage, filters, controls)
-- Any button, link, or interactive element on these pages
-
-## Full Contract
-
-For complete specifications, always refer to:
-**`.agent/rules/frontend-style-guide.md`**
-
-This contract is deterministic - no interpretation needed. Apply colors strictly by role.
+- Headings/titles: `var(--font-mono)` (JetBrains Mono)
+- Body text: `var(--font-sans)` (Inter)
+- Forbidden font: Ribeye
