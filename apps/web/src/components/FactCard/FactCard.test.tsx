@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
-import type { Hit, BaseHit } from 'instantsearch.js';
+import { createMockHit } from '@/test-utils/fixtures';
 
 const mockSearchParams = new URLSearchParams();
 const pushStateSpy = vi.fn();
@@ -18,33 +18,6 @@ vi.mock('react-instantsearch', () => ({
     <span data-testid={`highlight-${attribute}`}>{String(hit[attribute])}</span>
   ),
 }));
-
-interface FactHitRecord extends BaseHit {
-  objectID: string;
-  title: string;
-  blurb: string;
-  fact: string;
-  content?: string;
-  tags: string[];
-  projects: string[];
-  category: string;
-  signal: number;
-}
-
-const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecord> =>
-  ({
-    objectID: 'card:test:test:0001',
-    title: 'Test Fact Title',
-    blurb: 'This is a test blurb.',
-    fact: 'This is the detailed fact content.',
-    tags: ['tag-one', 'tag-two', 'tag-three'],
-    projects: ['Project Alpha', 'Project Beta'],
-    category: 'Work Style',
-    signal: 3,
-    __position: 1,
-    __queryID: 'test-query',
-    ...overrides,
-  }) as Hit<FactHitRecord>;
 
 describe('FactCard Component', () => {
   beforeEach(() => {

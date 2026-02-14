@@ -1,36 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProjectModal from './ProjectModal';
-import { Project } from '@/data/projects';
+import { mockProject } from '@/test-utils/fixtures';
 
-// Mock next/image
-vi.mock('next/image', () => ({
-  default: ({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    fill: _fill,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    priority: _priority,
-    ...props
-  }: React.ImgHTMLAttributes<HTMLImageElement> & { fill?: boolean; priority?: boolean }) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img {...props} alt={props.alt || ''} />
-  ),
-}));
-
-const mockProject: Project = {
-  id: 'test-project',
-  title: 'Test Project',
-  status: 'Active · Testing',
-  description: 'Short description',
-  purpose: 'Test purpose for the project',
-  longDescription: 'Long description',
-  outcome: 'Test outcome for the project',
-  imageUrl: '/test-image.jpg',
-  imageAlt: 'Test Image',
-  tech: [{ name: 'React', role: 'Frontend' }],
-  repoUrl: 'https://github.com/test/repo',
-  owner: 'anchildress1',
-};
+// next/image is mocked globally in setupTests.ts
 
 describe('ProjectModal Component', () => {
   const onCloseMock = vi.fn();
@@ -43,7 +16,7 @@ describe('ProjectModal Component', () => {
     render(<ProjectModal project={mockProject} onClose={onCloseMock} />);
 
     expect(screen.getByText('Test Project')).toBeInTheDocument();
-    expect(screen.getByText('Long description')).toBeInTheDocument();
+    expect(screen.getByText('Long detailed description.')).toBeInTheDocument();
     expect(screen.getByText('Frontend')).toBeInTheDocument();
   });
 
