@@ -14,7 +14,7 @@ import { SiAlgolia } from 'react-icons/si';
 import { LuPlus, LuMinus } from 'react-icons/lu';
 import 'instantsearch.css/themes/satellite.css';
 import styles from './SearchPage.module.css';
-import UnifiedHitCard from './UnifiedHitCard';
+import FactCard from '../FactCard/FactCard';
 import GroupedTagFilter from './GroupedTagFilter';
 import InfiniteHits from './InfiniteHits';
 import LoadingIndicator from './LoadingIndicator';
@@ -446,7 +446,7 @@ export default function SearchPage() {
             <LoadingIndicator />
             <InfiniteHits
               hitComponent={
-                UnifiedHitCard as React.ComponentType<{
+                FactCard as React.ComponentType<{
                   hit: import('instantsearch.js').Hit;
                   sendEvent?: import('@/types/algolia').SendEventForHits;
                 }>

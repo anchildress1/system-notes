@@ -30,8 +30,3 @@ def test_get_projects_file_not_found():
         response = client.get("/projects")
         assert response.status_code == 200 # It returns empty list on error per main.py logic
         assert response.json() == []
-
-def test_parse_projects_logic():
-    # Test specific parsing logic if needed, but integration test covers it mostly.
-    # We can test detailed parsing if the main.py logic is complex.
-    pass
