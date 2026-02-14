@@ -234,6 +234,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
               <div className={styles.content}>
                 <div className={styles.header}>
                   <div className={styles.headerTop}>
+                    <span className="card-header-badge">{categoryLabel}</span>
                     {hit.url && (
                       <SourceLinkButton
                         url={hit.url}
@@ -260,7 +261,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                 </p>
 
                 <div className="simple-tags">
-                  <span className="tag-category">{categoryLabel}</span>
                   {displayTags.map((t) => (
                     <span key={t} className="tag-level1">
                       {t}

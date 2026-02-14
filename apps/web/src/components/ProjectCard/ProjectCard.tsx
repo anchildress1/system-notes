@@ -50,9 +50,9 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
       <div className={styles.content}>
         <div className={styles.header}>
           <div className={styles.headerTop}>
-            <span className={styles.ownerBadge}>{ownerName}</span>
+            <span className="card-header-badge">{ownerName}</span>
             {project.id === 'checkmark-copilot-chat' && (
-              <span className={styles.archivedTag}>ARCHIVED</span>
+              <span className="card-header-badge">ARCHIVED</span>
             )}
             <SourceLinkButton
               url={project.repoUrl}
