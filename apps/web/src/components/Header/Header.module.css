@@ -21,6 +21,7 @@
 }
 
 .logoLink {
+  position: relative;
   text-decoration: none;
   color: inherit;
   padding: 0.25rem 0.5rem;
@@ -28,9 +29,11 @@
   transition: all var(--transition-base);
 }
 
-.logoLink:hover {
-  box-shadow: 0 0 15px hsl(var(--color-accent-purple) / 0.3);
-  background: radial-gradient(circle at center, hsl(var(--color-accent-purple) / 0.1) 0%, transparent 70%);
+.logoLink:hover .name {
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--color-accent-pink));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 .name {
@@ -45,16 +48,6 @@
   font-size: 0.8rem;
   color: hsl(var(--color-accent-pink));
   opacity: 0.8;
-}
-
-.subtitle {
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  color: hsl(var(--color-text-primary) / 0.9);
-  margin-top: 0;
-  font-weight: 400;
-  align-self: flex-end;
-  padding-bottom: 4px;
 }
 
 .nav {

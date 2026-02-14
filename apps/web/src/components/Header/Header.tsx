@@ -17,9 +17,6 @@ export default function Header() {
         <Link href="/" className={styles.logoLink}>
           <span className={styles.name}>Ashley&apos;s System Notes</span>
         </Link>
-        <p className={styles.subtitle}>
-          A living map of software systems, decisions, and AI-assisted work.
-        </p>
       </div>
 
       <nav className={styles.nav} aria-label="Main Navigation">
