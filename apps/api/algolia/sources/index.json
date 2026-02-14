@@ -1915,18 +1915,7 @@
     "signal": 3,
     "created_at": "2026-02-07T06:34:36-05:00"
   },
-  {
-    "objectID": "card:challenge:workflow:ground-up-redesign-with-chatgpt",
-    "title": "A ground-up redesign improved results",
-    "blurb": "The turning point was rewriting the approach.",
-    "fact": "When I gave the instructions to ChatGPT and redesigned from the ground up, the output improved significantly.",
-    "tags.lvl0": ["DEV Challenge", "AI"],
-    "tags.lvl1": ["AI > ChatGPT", "DEV Challenge > Algolia Agent Studio"],
-    "projects": ["System Notes"],
-    "category": "Challenges",
-    "signal": 3,
-    "created_at": "2026-02-07T06:34:36-05:00"
-  },
+
   {
     "objectID": "card:challenge:feedback:mvp-guidance-needed",
     "title": "Lack of MVP guidance created adoption friction",
@@ -2376,22 +2365,6 @@
     "created_at": "2026-02-07T06:34:36-05:00"
   },
   {
-    "objectID": "card:algolia:agent:custom-blog-tool",
-    "title": "A custom tool prioritized full blog content for the agent",
-    "blurb": "Conversational accuracy required deeper context.",
-    "fact": "I implemented a custom tool for the chat agent that loads full blog content into cache, allowing conversational responses to use complete context instead of relying solely on indexed summaries.",
-    "tags.lvl0": ["Discipline", "AI", "DEV Challenge"],
-    "tags.lvl1": [
-      "Discipline > Agent Design",
-      "AI > Algolia",
-      "DEV Challenge > Algolia Agent Studio"
-    ],
-    "projects": ["System Notes"],
-    "category": "Experimentation",
-    "signal": 5,
-    "created_at": "2026-02-07T06:34:36-05:00"
-  },
-  {
     "objectID": "card:algolia:chat:suggestions-grounding",
     "title": "Chat suggestions were difficult to ground",
     "blurb": "Generated text and structured results were hard to separate.",
@@ -2793,5 +2766,110 @@
     "category": "Challenges",
     "signal": 3,
     "created_at": "2026-02-08T07:42:54-05:00"
+  },
+  {
+    "objectID": "card:portfolio:non-conversational-powered-by-systems",
+    "title": "The non-conversational portfolio was built as a system, not a static page",
+    "blurb": "Portfolio behavior reflects system design over traditional navigation.",
+    "fact": "The non-conversational portion of the portfolio was intentionally built to behave like a coherent system rather than a static set of pages, removing interpretation and enabling deterministic retrieval backed by indexed records.",
+    "tags.lvl0": ["Approach", "Mindset", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > AI Collaboration",
+      "Mindset > Systems Thinking",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5,
+    "created_at": "2026-02-08T23:52:01-05:00"
+  },
+  {
+    "objectID": "card:algolia:ask-ai:treated-as-pure-search",
+    "title": "Ask AI is treated as a pure search surface",
+    "blurb": "Conversational state is optional for non-chat lookup.",
+    "fact": "In this system, the Ask AI interface is intentionally treated as a pure search surface rather than a conversational agent, resolving direct queries against the index without session state.",
+    "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5,
+    "created_at": "2026-02-08T23:52:01-05:00"
+  },
+  {
+    "objectID": "card:agent:conversational-navigation-vs-resolution",
+    "title": "Conversational interface focuses on navigation over resolution",
+    "blurb": "Chat responses guide exploration rather than answer immediately.",
+    "fact": "The conversational interface was designed so that chat responses shape exploration and help users decide where to go next, instead of resolving standalone answers without context, distinguishing navigation from direct lookup.",
+    "tags.lvl0": ["Approach", "Discipline", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "Discipline > Agent Design",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5,
+    "created_at": "2026-02-08T23:52:01-05:00"
+  },
+  {
+    "objectID": "card:agent:resolved-vs-exploration-interface-design",
+    "title": "Interfaces separate fast resolution from open exploration",
+    "blurb": "Different UX posture based on query intent.",
+    "fact": "The system deliberately separates interfaces for fast, precise resolution from those intended for exploratory navigation, allowing Ask AI to answer direct queries while the chat interface supports contextual movement through indexed records and content.",
+    "tags.lvl0": ["Approach", "DEV Challenge"],
+    "tags.lvl1": ["Approach > Experimentation", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5,
+    "created_at": "2026-02-08T23:52:01-05:00"
+  },
+  {
+    "objectID": "card:agent:prompt-suggestions-as-navigation",
+    "title": "Prompt suggestions act as navigational signposts",
+    "blurb": "Suggestions narrow scope intentionally.",
+    "fact": "Prompt suggestions in the conversational interface were explicitly designed to act as navigational signposts that narrow context and reinforce direction, only suggesting questions that the system could already answer.",
+    "tags.lvl0": ["Approach", "Discipline", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "Discipline > Agent Design",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5,
+    "created_at": "2026-02-08T23:52:01-05:00"
+  },
+  {
+    "objectID": "card:agent:multi-source-retrieval-design",
+    "title": "Retrieval is multi-source with intent",
+    "blurb": "Indexed records and narrative content coexist in responses.",
+    "fact": "The system supports multi-source retrieval where conversational navigation can access both indexed decision-level records and full narrative content, enabling movement from quick lookup into deeper explanatory context without losing relevance or inventing information.",
+    "tags.lvl0": ["Approach", "AI", "DEV Challenge"],
+    "tags.lvl1": [
+      "Approach > Experimentation",
+      "AI > Algolia",
+      "DEV Challenge > Algolia Agent Studio"
+    ],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 5,
+    "created_at": "2026-02-08T23:52:01-05:00"
+  },
+  {
+    "objectID": "card:agent:behavior-rules-explicit",
+    "title": "Conversational agent behavior rules were made explicit",
+    "blurb": "Navigation constraints are codified in rules.",
+    "fact": "The conversational agent includes a set of explicit behavior constraints, such as never claiming to be the author and only operating on retrieved context, making expectations clear rather than implicit.",
+    "tags.lvl0": ["Discipline", "DEV Challenge"],
+    "tags.lvl1": ["Discipline > Agent Design", "DEV Challenge > Algolia Agent Studio"],
+    "projects": ["System Notes"],
+    "category": "Experimentation",
+    "signal": 4,
+    "created_at": "2026-02-08T23:52:01-05:00"
   }
 ]
