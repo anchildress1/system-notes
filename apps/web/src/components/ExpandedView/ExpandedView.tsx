@@ -76,7 +76,11 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         }}
         style={{ transformStyle: 'preserve-3d', perspective: 1200 }}
       >
-        <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
+        <button
+          className={`close-button-global ${styles.closeButton}`}
+          onClick={onClose}
+          aria-label="Close modal"
+        >
           <svg
             width="24"
             height="24"

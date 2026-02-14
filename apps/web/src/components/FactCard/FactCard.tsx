@@ -315,7 +315,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                     <button
                       ref={closeButtonRef}
                       type="button"
-                      className={styles.closeButton}
+                      className={`close-button-global ${styles.closeButton}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         closeCard();

@@ -318,35 +318,7 @@
 }
 
 .closeButton {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  border-radius: var(--radius-round);
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: var(--z-sticky);
-  transition: all var(--transition-base);
-  border: 1px solid var(--glass-border);
-  cursor: pointer;
-  outline: none;
-}
-
-.closeButton:hover {
-  background: hsl(var(--color-accent-purple));
-  color: white;
-  transform: rotate(90deg);
-  border-color: transparent;
-}
-
-.closeButton:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
-  outline-offset: 2px;
 }
 
 .factContent {

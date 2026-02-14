@@ -27,3 +27,8 @@ Canonical instruction source for this repository. Treat this file as authoritati
 ## Frontend Style Skill
 
 - Refer to `.claude/skills/frontend-style.md`.
+
+## Documentation
+
+- Do not add docs to project unless specifically asked
+- Aim for witty, humorous tone in docs.

@@ -103,12 +103,13 @@ test-perf:
 	npm run test:perf -w apps/web
 
 # Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
+# Note: Includes build step to ensure artifacts exist before tests
 ai-checks:
-	$(MAKE) clean
 	$(MAKE) setup
 	$(MAKE) secret-scan
 	$(MAKE) format
 	$(MAKE) lint
+	$(MAKE) build
 	$(MAKE) test
 	$(MAKE) test-e2e
 	$(MAKE) test-perf

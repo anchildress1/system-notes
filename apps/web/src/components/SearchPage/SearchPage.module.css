@@ -648,24 +648,24 @@
   fill: hsl(var(--color-accent-purple)) !important;
 }
 
-/* Close Button — purple, not blue */
+/* Close Button — purple outline on hover */
 :global(.ss-search-close-button) {
   color: hsl(var(--color-text-secondary)) !important;
-  border-color: transparent !important;
+  border: 1px solid transparent !important;
   background: transparent !important;
   transition: all var(--transition-base) !important;
 }
 
 :global(.ss-search-close-button:hover) {
   color: hsl(var(--color-accent-purple)) !important;
-  background: hsl(var(--color-accent-purple) / 0.1) !important;
-  border-color: transparent !important;
+  background: transparent !important;
+  border: 2px solid hsl(var(--color-accent-purple)) !important;
 }
 
 :global(.ss-search-close-button:focus),
 :global(.ss-search-close-button:active) {
   color: hsl(var(--color-accent-purple)) !important;
-  border-color: transparent !important;
+  border-color: hsl(var(--color-accent-purple)) !important;
   outline-color: hsl(var(--color-accent-purple)) !important;
 }
 
