@@ -1,10 +1,7 @@
 // Avoid hardcoding credentials in source. Prefer providing via environment
 // variables and never commit real API keys or app IDs to the repo or terminal.
 new Crawler({
-  appId:
-    process.env.ALGOLIA_APPLICATION_ID ||
-    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID ||
-    'REDACTED_APP_ID',
+  appId: process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || 'REDACTED_APP_ID',
   apiKey: process.env.ALGOLIA_CRAWLER_API_KEY,
   indexPrefix: '',
   rateLimit: 8,
@@ -97,16 +94,10 @@ new Crawler({
         }
 
         var engagementRaw = $('meta[name="devto:engagement_score"]').attr('content');
-        var engagementScore = engagementRaw ? Number(engagementRaw) - 1 : 0;
-
-        if (engagementScore < 0) {
-          engagementScore = 0;
-        } else if (engagementScore > 5) {
-          engagementScore = 5;
-        }
-        if (engagementScore === 0) {
-          return [];
-        }
+        var engagementScore = engagementRaw ? Math.round((Number(engagementRaw) / 615) * 100) : 0;
+        if (engagementScore === 0) return [];
+        if (engagementScore < 1) engagementScore = 1;
+        if (engagementScore > 4) engagementScore = 4;
 
         var _content = $('main article').first().text();
         var content = _content ? String(_content).trim().replace(/\s+/g, ' ') : null;
@@ -117,7 +108,6 @@ new Crawler({
 
         return [
           {
-            objectID: slug,
             title: title,
             url: finalUrl,
             blurb: description,
@@ -141,7 +131,7 @@ new Crawler({
       attributesForFaceting: [
         'category',
         'searchable(projects)',
-        'searchable(tags.lvl0)',
+        'tags.lvl0',
         'searchable(tags.lvl1)',
       ],
       customRanking: ['desc(signal)', 'desc(created_at)'],
