@@ -1,5 +1,7 @@
 {
   "type": "object",
+  "description": "Use this to explore Ashley’s writing, teaching, or blog posts.",
+  "required": [],
   "properties": {
     "query": {
       "type": "string",
@@ -12,7 +14,7 @@
     "limit": {
       "type": "integer",
       "description": "Maximum number of results to return (1-50)",
-      "default": 10
+      "default": 12
     }
   }
 }

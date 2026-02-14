@@ -49,7 +49,6 @@ app.add_middleware(
         "https://anchildress1.dev",
         "https://www.anchildress1.dev",
         "https://unstable.anchildress1.dev",
-        "https://algolia.anchildress1.dev",
     ],
     allow_origin_regex=r"https://system-notes-ui-\d+\..*\.run\.app",
     allow_credentials=True,
