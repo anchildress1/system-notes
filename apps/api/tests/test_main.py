@@ -22,18 +22,18 @@ def test_get_system_doc_success(MockPath):
     mock_path_instance = MockPath.return_value
     mock_resolved_root = mock_path_instance.resolve.return_value
     mock_parent = mock_resolved_root.parent
-    
+
     # Target path resulting from joinpath
     mock_target = MagicMock()
     mock_parent.joinpath.return_value.resolve.return_value = mock_target
-    
+
     # Configure target behavior
     mock_target.is_relative_to.return_value = True
     mock_target.is_file.return_value = True
     mock_target.read_text.return_value = "# Test Content"
     # Configure name property to satisfy extension check
-    mock_target.name = "test.md" 
-    
+    mock_target.name = "test.md"
+
     response = client.get("/system/doc/test.md")
     assert response.status_code == 200
     assert response.json()["content"] == "# Test Content"
@@ -43,11 +43,11 @@ def test_get_system_doc_not_found(MockPath):
     mock_parent = MockPath.return_value.resolve.return_value.parent
     mock_target = MagicMock()
     mock_parent.joinpath.return_value.resolve.return_value = mock_target
-    
+
     mock_target.is_relative_to.return_value = True
     mock_target.is_file.return_value = False
     mock_target.name = "missing.md"
-    
+
     response = client.get("/system/doc/missing.md")
     assert response.status_code == 404
     assert response.json()["error"] == "Document not found"
@@ -57,31 +57,25 @@ def test_get_system_doc_traversal_attempt(MockPath):
     mock_parent = MockPath.return_value.resolve.return_value.parent
     mock_target = MagicMock()
     mock_parent.joinpath.return_value.resolve.return_value = mock_target
-    
+
     # Scenario 1: Traversal via ".."
     # werkzeug.secure_filename("..") -> ignored/empty.
     # "secret.env" remains.
     # target path becomes .../secret.env
     mock_target.name = "secret.env"
-    
+
     response = client.get("/system/doc/../secret.env")
     assert response.status_code in [400, 404]
-    # assert response.json()["error"] == "File type not allowed"
 
     # Scenario 2: Invalid characters
-    # "invalid$file.md" -> "invalid_file.md"
-    # We simulate that this sanitized file does not exist
-    # Re-setup mock target for new call flow if needed, but it's the same object chain logic
-    # BUT since we are in the same test function and client is reused, we modify the SAME mock object
-    
     mock_target.name = "invalid_file.md"
     mock_target.is_relative_to.return_value = True
     mock_target.is_file.return_value = False
-    
+
     response = client.get("/system/doc/invalid$file.md")
     assert response.status_code == 404
     assert response.json()["error"] == "Document not found"
-    
+
     # Scenario 3: Safe extension check
     mock_target.name = "safe.py"
     response = client.get("/system/doc/safe.py")
@@ -93,15 +87,19 @@ def test_get_system_doc_error_handling(MockPath):
     mock_parent = MockPath.return_value.resolve.return_value.parent
     mock_target = MagicMock()
     mock_parent.joinpath.return_value.resolve.return_value = mock_target
-    
+
     mock_target.is_relative_to.return_value = True
     mock_target.is_file.return_value = True
     mock_target.name = "fail.md"
     mock_target.read_text.side_effect = Exception("Disk error")
-    
+
     response = client.get("/system/doc/fail.md")
     assert response.status_code == 500
     assert response.json()["error"] == "Internal server error"
+
+
+# --- Blog search test data and fixtures ---
+
 MOCK_SITEMAP = '''<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://crawly.checkmarkdevtools.dev/</loc></url>
@@ -152,23 +150,53 @@ def clear_blog_cache():
     _blog_cache["expires"] = None
 
 
-@patch("main.httpx.AsyncClient")
-def test_blog_search_returns_posts(mock_client_class):
+def _make_mock_httpx_client(get_side_effect):
+    """Create a configured mock httpx.AsyncClient with the given GET side effects."""
     mock_client = MagicMock()
     mock_client.__aenter__ = AsyncMock(return_value=mock_client)
     mock_client.__aexit__ = AsyncMock(return_value=None)
-    
-    sitemap_response = MagicMock()
-    sitemap_response.text = MOCK_SITEMAP
-    sitemap_response.raise_for_status = MagicMock()
-    
-    post_response = MagicMock()
-    post_response.text = MOCK_POST_HTML
-    post_response.raise_for_status = MagicMock()
-    
-    mock_client.get = AsyncMock(side_effect=[sitemap_response, post_response, post_response])
-    mock_client_class.return_value = mock_client
-    
+    mock_client.get = AsyncMock(side_effect=get_side_effect)
+    return mock_client
+
+
+def _make_mock_response(text):
+    """Create a mock httpx response with the given text body."""
+    resp = MagicMock()
+    resp.text = text
+    resp.raise_for_status = MagicMock()
+    return resp
+
+
+@pytest.fixture
+def mock_blog_client():
+    """Fixture that patches httpx.AsyncClient and provides a helper to configure responses.
+
+    Usage:
+        def test_something(mock_blog_client):
+            mock_blog_client([sitemap_resp, post1_resp, post2_resp])
+    """
+    with patch("main.httpx.AsyncClient") as mock_class:
+        def configure(side_effects):
+            mock = _make_mock_httpx_client(side_effects)
+            mock_class.return_value = mock
+            return mock
+        yield configure
+
+
+@pytest.fixture
+def standard_blog_responses():
+    """Pre-built sitemap + post responses for the common case."""
+    sitemap = _make_mock_response(MOCK_SITEMAP)
+    post = _make_mock_response(MOCK_POST_HTML)
+    return sitemap, post
+
+
+# --- Blog search tests ---
+
+def test_blog_search_returns_posts(mock_blog_client, standard_blog_responses):
+    sitemap, post = standard_blog_responses
+    mock_blog_client([sitemap, post, post])
+
     response = client.get("/blog/search")
     assert response.status_code == 200
     data = response.json()
@@ -176,46 +204,20 @@ def test_blog_search_returns_posts(mock_client_class):
     assert "total" in data
 
 
-@patch("main.httpx.AsyncClient")
-def test_blog_search_with_query_filter(mock_client_class):
-    mock_client = MagicMock()
-    mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-    mock_client.__aexit__ = AsyncMock(return_value=None)
-    
-    sitemap_response = MagicMock()
-    sitemap_response.text = MOCK_SITEMAP
-    sitemap_response.raise_for_status = MagicMock()
-    
-    post_response = MagicMock()
-    post_response.text = MOCK_POST_HTML
-    post_response.raise_for_status = MagicMock()
-    
-    mock_client.get = AsyncMock(side_effect=[sitemap_response, post_response, post_response])
-    mock_client_class.return_value = mock_client
-    
+def test_blog_search_with_query_filter(mock_blog_client, standard_blog_responses):
+    sitemap, post = standard_blog_responses
+    mock_blog_client([sitemap, post, post])
+
     response = client.get("/blog/search?q=AI")
     assert response.status_code == 200
     data = response.json()
     assert data["query"] == "AI"
 
 
-@patch("main.httpx.AsyncClient")
-def test_blog_search_with_tag_filter(mock_client_class):
-    mock_client = MagicMock()
-    mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-    mock_client.__aexit__ = AsyncMock(return_value=None)
-    
-    sitemap_response = MagicMock()
-    sitemap_response.text = MOCK_SITEMAP
-    sitemap_response.raise_for_status = MagicMock()
-    
-    post_response = MagicMock()
-    post_response.text = MOCK_POST_HTML
-    post_response.raise_for_status = MagicMock()
-    
-    mock_client.get = AsyncMock(side_effect=[sitemap_response, post_response, post_response])
-    mock_client_class.return_value = mock_client
-    
+def test_blog_search_with_tag_filter(mock_blog_client, standard_blog_responses):
+    sitemap, post = standard_blog_responses
+    mock_blog_client([sitemap, post, post])
+
     response = client.get("/blog/search?tag=testing")
     assert response.status_code == 200
 
@@ -223,21 +225,14 @@ def test_blog_search_with_tag_filter(mock_client_class):
 def test_blog_search_limit_validation():
     response = client.get("/blog/search?limit=100")
     assert response.status_code == 400
-    
+
     response = client.get("/blog/search?limit=0")
     assert response.status_code == 400
 
 
-@patch("main.httpx.AsyncClient")
-def test_blog_search_sitemap_failure(mock_client_class):
-    mock_client = MagicMock()
-    mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-    mock_client.__aexit__ = AsyncMock(return_value=None)
-    
-    # Simulate exception when fetching sitemap
-    mock_client.get = AsyncMock(side_effect=Exception("Sitemap unreachable"))
-    mock_client_class.return_value = mock_client
-    
+def test_blog_search_sitemap_failure(mock_blog_client):
+    mock_blog_client([Exception("Sitemap unreachable")])
+
     response = client.get("/blog/search")
     assert response.status_code == 200
     data = response.json()
@@ -245,67 +240,30 @@ def test_blog_search_sitemap_failure(mock_client_class):
     assert data["total"] == 0
 
 
-@patch("main.httpx.AsyncClient")
-def test_blog_search_post_failure(mock_client_class):
-    mock_client = MagicMock()
-    mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-    mock_client.__aexit__ = AsyncMock(return_value=None)
-    
-    sitemap_response = MagicMock()
-    sitemap_response.text = MOCK_SITEMAP
-    sitemap_response.raise_for_status = MagicMock()
-    
-    # First post fails, second succeeds
-    post_response = MagicMock()
-    post_response.text = MOCK_POST_HTML
-    post_response.raise_for_status = MagicMock()
-    
-    mock_client.get = AsyncMock(side_effect=[
-        sitemap_response, 
-        Exception("Post unreachable"), 
-        post_response
-    ])
-    mock_client_class.return_value = mock_client
-    
+def test_blog_search_post_failure(mock_blog_client, standard_blog_responses):
+    sitemap, post = standard_blog_responses
+    mock_blog_client([sitemap, Exception("Post unreachable"), post])
+
     response = client.get("/blog/search")
     assert response.status_code == 200
     data = response.json()
-    # One post should be skipped, one succeeded
-    # But wait, MOCK_SITEMAP has 2 post URLs.
-    # We mock side_effect for 3 calls: sitemap, post1, post2.
-    # If post1 fails, we expect post2 to be processed.
     assert len(data["results"]) == 1
     assert data["total"] == 1
 
 
-@patch("main.httpx.AsyncClient")
-def test_blog_search_response_shape(mock_client_class):
-    # Verify that the response strictly matches the index.json shape
-    # i.e., NO url, published_date, or reading_time
-    mock_client = MagicMock()
-    mock_client.__aenter__ = AsyncMock(return_value=mock_client)
-    mock_client.__aexit__ = AsyncMock(return_value=None)
-    
-    sitemap_response = MagicMock()
-    sitemap_response.text = MOCK_SITEMAP
-    sitemap_response.raise_for_status = MagicMock()
-    
-    post_response = MagicMock()
-    post_response.text = MOCK_POST_HTML
-    post_response.raise_for_status = MagicMock()
-    
-    mock_client.get = AsyncMock(side_effect=[sitemap_response, post_response, post_response])
-    mock_client_class.return_value = mock_client
-    
+def test_blog_search_response_shape(mock_blog_client, standard_blog_responses):
+    sitemap, post = standard_blog_responses
+    mock_blog_client([sitemap, post, post])
+
     response = client.get("/blog/search")
     assert response.status_code == 200
     data = response.json()
     assert len(data["results"]) > 0
-    
+
     first_result = data["results"][0]
     expected_keys = {"objectID", "title", "blurb", "fact", "tags", "projects", "category", "signal", "url"}
     assert set(first_result.keys()) == expected_keys
-    
+
     # Explicitly check for exclusion of internal fields
     assert "url" in first_result
     assert "published_date" not in first_result
@@ -316,4 +274,3 @@ def test_blog_search_response_shape(mock_client_class):
     assert first_result["blurb"] == "https://dev.to/test/test-post-123"
     assert first_result["fact"] == "This is a test description for the blog post about AI tools."
     assert first_result["url"] == "https://dev.to/test/test-post-123"
-
