@@ -16,10 +16,9 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 import httpx
 
-# Load environment variables
 from pathlib import Path
-# Load environment variables
-# Look for .env in the current directory or parents
+
+# Load environment variables from .env in the current directory or parents
 env_path = Path(__file__).resolve().parent / ".env"
 if env_path.exists():
     load_dotenv(env_path)
