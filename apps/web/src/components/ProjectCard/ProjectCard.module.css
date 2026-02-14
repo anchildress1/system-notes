@@ -162,28 +162,6 @@
   margin-left: 0.4rem;
 }
 
-.ghLink {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-round);
-  background: hsl(var(--color-bg-elevated));
-  color: hsl(var(--color-text-muted));
-  transition: all var(--transition-base);
-  z-index: 2;
-  border: 2px solid transparent;
-  will-change: transform;
-}
-
-.ghLink:hover {
-  background: hsl(var(--color-bg-surface));
-  border-color: hsl(var(--color-accent-pink));
-  color: hsl(var(--color-accent-pink));
-  transform: rotate(15deg) scale(1.1);
-  box-shadow: 0 0 15px hsl(var(--color-accent-pink) / 0.4);
-}
 
 .description {
   font-size: 0.9rem;
