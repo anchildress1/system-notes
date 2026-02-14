@@ -1,5 +1,0 @@
-{
-  "permissions": {
-    "allow": ["Bash(npx turbo run test:*)", "Bash(git commit:*)"]
-  }
-}
