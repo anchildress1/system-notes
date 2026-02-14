@@ -28,7 +28,9 @@
 
 .siteSearchContainer {
   width: 100%;
-  min-height: 48px;
+  min-height: 64px;
+  /* Reserve space for the Algolia SiteSearch widget to prevent CLS */
+  contain: layout style paint;
 }
 
 .metaRow {
@@ -346,6 +348,10 @@
 
 .hitsRoot {
   margin-bottom: var(--space-lg);
+  /* Reserve minimum space for search results to prevent CLS */
+  min-height: 800px;
+  /* Contain layout changes within this element */
+  contain: layout style;
 }
 
 .hitsList {
