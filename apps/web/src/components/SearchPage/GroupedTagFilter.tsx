@@ -67,7 +67,7 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
           return (
             <div key={rootItem.value} className={styles.refinementItem}>
               {/* Header row: checkbox + label + expand chevron */}
-              <div className={styles.refinementLabel} style={{ cursor: 'default' }}>
+              <div className={`${styles.refinementLabel} ${styles.tagGroupLabel}`}>
                 <input
                   type="checkbox"
                   className={styles.refinementCheckbox}
@@ -76,8 +76,7 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
                   aria-label={`Filter by ${rootItem.label}`}
                 />
                 <span
-                  className={styles.refinementLabelText}
-                  style={{ fontWeight: 600, cursor: 'pointer' }}
+                  className={`${styles.refinementLabelText} ${styles.tagGroupLabelText}`}
                   role="button"
                   tabIndex={0}
                   onClick={() => lvl0.refine(rootItem.value)}
@@ -93,6 +92,7 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
                 <span className={styles.refinementCount}>{rootItem.count}</span>
                 <button
                   type="button"
+                  className={styles.tagExpandButton}
                   onClick={() => toggleGroup(rootItem.label)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -102,18 +102,6 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
                   }}
                   aria-expanded={isExpanded}
                   aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${rootItem.label} subtags`}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    color: 'inherit',
-                    marginLeft: '4px',
-                    borderRadius: 'var(--radius-sm)',
-                    transition: 'background var(--transition-base)',
-                  }}
                 >
                   {isExpanded ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
                 </button>
@@ -121,15 +109,7 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
 
               {/* Children (Checkboxes) */}
               {isExpanded && (
-                <div
-                  style={{
-                    paddingLeft: '16px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
-                    marginTop: '4px',
-                  }}
-                >
+                <div className={styles.tagChildren}>
                   {children.map((child) => (
                     <label key={child.value} className={styles.refinementLabel}>
                       <input

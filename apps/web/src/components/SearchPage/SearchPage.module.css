@@ -822,3 +822,35 @@
   color: hsl(var(--color-accent-purple)) !important;
   border-color: hsl(var(--color-accent-purple)) !important;
 }
+
+/* ── GroupedTagFilter ── */
+
+.tagExpandButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  color: inherit;
+  margin-left: 4px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-base);
+}
+
+.tagGroupLabel {
+  cursor: default;
+}
+
+.tagGroupLabelText {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tagChildren {
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}

@@ -23,7 +23,7 @@ new Crawler({
 
         var _rawTitle =
           $('main > h1').first().text().trim() || $('title').first().text().trim() || urlStr;
-        var title = 'Blog titled ' + _rawTitle;
+        var title = 'Blog: ' + _rawTitle;
 
         var _desc = $('meta[name="description"]').attr('content');
         var description = _desc ? String(_desc).trim().slice(0, 500) : null;
