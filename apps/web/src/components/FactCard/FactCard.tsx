@@ -262,7 +262,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
 
                 <div className="simple-tags">
                   {displayTags.map((t) => (
-                    <span key={t} className="tag-level1">
+                    <span key={t} className="simple-tag">
                       {t}
                     </span>
                   ))}
