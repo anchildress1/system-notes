@@ -78,45 +78,7 @@
   gap: 0.5rem;
 }
 
-.simpleTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: auto;
-}
-
-.simpleTag {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  padding: 2px 8px;
-  background: hsl(var(--color-bg-elevated));
-  border-radius: var(--radius-lg);
-  color: hsl(var(--color-text-secondary));
-  border: 1px solid hsl(var(--color-border));
-}
-
-.tagCategory {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  padding: 2px 6px;
-  background: hsl(var(--color-accent-teal));
-  color: hsl(var(--color-bg-base));
-  border-radius: var(--radius-sm);
-  border: none;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.tagLevel1 {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  padding: 1px 6px;
-  background: transparent;
-  color: hsl(var(--color-accent-teal));
-  border-radius: var(--radius-sm);
-  border: 1px solid hsl(var(--color-accent-teal));
-  font-weight: 500;
-}
+/* Tag styles moved to global stylesheet */
 
 .header {
   display: flex;

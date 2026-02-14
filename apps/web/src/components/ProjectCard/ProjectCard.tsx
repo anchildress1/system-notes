@@ -85,9 +85,9 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
         <h3 className={styles.intentLabel}>Purpose</h3>
         <p className={styles.description}>{project.purpose}</p>
 
-        <div className={styles.simpleTags}>
+        <div className="simple-tags">
           {project.tech.map((t) => (
-            <span key={t.name} className={styles.simpleTag}>
+            <span key={t.name} className="simple-tag">
               {t.name}
             </span>
           ))}

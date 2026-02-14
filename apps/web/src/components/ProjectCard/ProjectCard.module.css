@@ -185,22 +185,7 @@
   letter-spacing: 0.5px;
 }
 
-.simpleTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: auto;
-}
-
-.simpleTag {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  padding: 2px 8px;
-  background: hsl(var(--color-bg-elevated));
-  border-radius: var(--radius-lg);
-  color: hsl(var(--color-text-secondary));
-  border: 1px solid hsl(var(--color-border));
-}
+/* Tag styles moved to global stylesheet */
 
 .loadoutGrid {
   display: grid;

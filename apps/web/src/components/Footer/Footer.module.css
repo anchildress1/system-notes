@@ -86,47 +86,7 @@
   font-size: 0.8rem;
 }
 
-.algoliaLink {
-  composes: link;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.75rem;
-  opacity: 0.8;
-  transition: opacity var(--transition-base);
-  border: none;
-  outline: none;
-}
-
-.algoliaLink:hover {
-  opacity: 1;
-  color: hsl(var(--color-text-secondary));
-  outline: none;
-}
-
-.algoliaPrefix {
-  color: hsl(var(--color-text-secondary));
-}
-
-.algoliaHoverable {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: color var(--transition-base);
-}
-
-.algoliaLink:hover .algoliaHoverable {
-  color: hsl(var(--color-accent-teal));
-}
-
-.algoliaLink:hover .algoliaHoverable .algoliaIcon {
-  color: hsl(var(--color-accent-teal));
-}
-
-.algoliaIcon {
-  font-size: 1rem;
-  color: hsl(var(--color-accent-teal));
-}
+/* Algolia attribution styles moved to global stylesheet */
 
 @media (max-width: 600px) {
   .footer {

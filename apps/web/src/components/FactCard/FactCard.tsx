@@ -259,10 +259,10 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                   )}
                 </p>
 
-                <div className={styles.simpleTags}>
-                  <span className={styles.tagCategory}>{categoryLabel}</span>
+                <div className="simple-tags">
+                  <span className="tag-category">{categoryLabel}</span>
                   {displayTags.map((t) => (
-                    <span key={t} className={styles.tagLevel1}>
+                    <span key={t} className="tag-level1">
                       {t}
                     </span>
                   ))}
@@ -371,9 +371,9 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                     <div className={styles.metaSection}>
                       {hit.projects && hit.projects.length > 0 && (
                         <div className={styles.facetGroup}>
-                          <div className={styles.simpleTags}>
+                          <div className="simple-tags">
                             {hit.projects.map((entity) => (
-                              <span key={entity} className={styles.simpleTag}>
+                              <span key={entity} className="simple-tag">
                                 {entity}
                               </span>
                             ))}

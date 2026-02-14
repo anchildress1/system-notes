@@ -324,14 +324,14 @@ export default function SearchPage() {
               href="https://www.algolia.com"
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.algoliaAttribution}
+              className="algolia-attribution"
               aria-label="Powered by Algolia"
             >
-              <span className={styles.algoliaHoverable}>
-                <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
-                <span className={styles.algoliaName}>Algolia</span>
+              <span className="algolia-hoverable">
+                <SiAlgolia aria-hidden="true" className="algolia-icon" />
+                <span className="algolia-name">Algolia</span>
               </span>
-              <span className={styles.algoliaPrefix}>Powered by</span>
+              <span className="algolia-prefix">Powered by</span>
             </a>
           </div>
         </div>
