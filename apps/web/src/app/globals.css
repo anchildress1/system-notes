@@ -183,50 +183,6 @@ button {
    - human/identity  → pink  (--color-accent-pink)
 */
 
-.ais-Chat {
-  --ais-primary-color-rgb: 181, 107, 255 !important;
-  --ais-background-color-rgb: 58, 61, 70 !important;
-  --ais-text-color-rgb: 230, 230, 235 !important;
-}
-
-.ais-Chat-toggleButton {
-  width: 60px !important;
-  height: 60px !important;
-  background: linear-gradient(135deg, hsl(var(--color-accent-purple)), hsl(var(--color-accent-purple) / 0.85)) !important;
-  border: 2px solid hsl(var(--color-accent-purple) / 0.6) !important;
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    0 0 20px hsl(var(--color-accent-purple) / 0.25) !important;
-}
-
-.ais-Chat-toggleButton svg {
-  width: 30px !important;
-  height: 30px !important;
-  filter: drop-shadow(0 0 4px hsl(var(--color-accent-purple) / 0.5));
-}
-
-/* Header icon: action (purple) */
-.ais-ChatHeader-titleIcon,
-.aspect-square {
-  color: hsl(var(--color-accent-purple)) !important;
-  filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4));
-}
-
-/* Chat window: elevated glass with subtle purple border glow */
-.ais-Chat-window,
-.ais-Chat-container {
-  background: linear-gradient(
-    180deg,
-    hsl(var(--color-bg-elevated)) 0%,
-    hsl(var(--color-bg-elevated) / 0.95) 100%
-  ) !important;
-  border: 1px solid hsl(var(--color-accent-purple) / 0.2) !important;
-  border-radius: var(--radius-xl) !important;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px hsl(var(--color-accent-purple) / 0.08) inset !important;
-}
-
 /* ── Chat header: action purple accent bar ── */
 .ais-Chat-header,
 .ais-ChatHeader {
@@ -391,28 +347,6 @@ button {
 
 [class*="ss-"] a:hover {
   color: hsl(var(--color-accent-teal)) !important;
-}
-
-/* ── Chat Prompt Suggestions: visible hover state ── */
-.ais-Chat-suggestedQuestion,
-.ais-Chat [class*="suggestedQuestion"],
-.ais-Chat [class*="suggestion"] {
-  background: hsl(var(--color-bg-elevated)) !important;
-  border: 1px solid hsl(var(--color-text-secondary) / 0.2) !important;
-  color: hsl(var(--color-text-secondary)) !important;
-  border-radius: var(--radius-lg) !important;
-  transition: all var(--transition-base) !important;
-  cursor: pointer !important;
-}
-
-.ais-Chat-suggestedQuestion:hover,
-.ais-Chat [class*="suggestedQuestion"]:hover,
-.ais-Chat [class*="suggestion"]:hover {
-  background: hsl(var(--color-accent-purple) / 0.15) !important;
-  border-color: hsl(var(--color-accent-purple) / 0.5) !important;
-  color: hsl(var(--color-text-primary)) !important;
-  box-shadow: 0 2px 8px hsl(var(--color-accent-purple) / 0.2) !important;
-  transform: translateY(-1px) !important;
 }
 
 /* ── Chat Search Results (inline results within chat messages) ── */

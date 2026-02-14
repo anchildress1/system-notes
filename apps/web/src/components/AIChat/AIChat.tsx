@@ -158,6 +158,11 @@ export default function AIChat() {
         >
           <Chat
             agentId={AGENT_ID}
+            classNames={{
+              root: styles.chatRoot,
+              container: styles.chatWindow,
+              toggleButton: { root: styles.chatToggle },
+            }}
             translations={translations}
             tools={tools}
             getSearchPageURL={resolveSearchPageURL}
