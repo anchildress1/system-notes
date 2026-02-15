@@ -163,6 +163,7 @@ def _make_mock_response(text):
     """Create a mock httpx response with the given text body."""
     resp = MagicMock()
     resp.text = text
+    resp.status_code = 200
     resp.raise_for_status = MagicMock()
     return resp
 

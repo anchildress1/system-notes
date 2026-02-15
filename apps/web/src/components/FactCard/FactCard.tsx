@@ -122,18 +122,21 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     return () => window.removeEventListener('keydown', handleWindowKeyDown);
   }, [isFlipped, closeCard]);
 
+  const shouldRestoreFocusRef = useRef(false);
+
   // Focus management: move focus to close button when dialog opens, return on close
   useEffect(() => {
     if (isFlipped) {
       // Wait for portal to render, then focus close button
       requestAnimationFrame(() => {
         closeButtonRef.current?.focus();
+        // Mark that focus was moved into the dialog so we can restore it on close
+        shouldRestoreFocusRef.current = true;
       });
-    } else if (cardLinkRef.current) {
-      // Return focus to card link when closing (only if we had focus in the dialog)
-      if (document.activeElement === document.body || !document.activeElement) {
-        cardLinkRef.current.focus();
-      }
+    } else if (cardLinkRef.current && shouldRestoreFocusRef.current) {
+      // Return focus to card link when closing if focus was previously moved into the dialog
+      shouldRestoreFocusRef.current = false;
+      cardLinkRef.current.focus();
     }
   }, [isFlipped]);
 

@@ -27,6 +27,9 @@ test.describe('AIChat Width and Visibility', () => {
             .getPropertyValue('--ais-primary-color-rgb')
             .trim().length > 0
       );
+      // NOTE: This test verifies the CSS variable exists but doesn't directly test
+      // toggle button rendering, which only happens when Algolia credentials are present.
+      // The test could pass even if toggle button styling is broken.
       expect(hasVar).toBe(true);
     }
   });

@@ -93,6 +93,7 @@ new Crawler({
         }
 
         var engagementRaw = $('meta[name="devto:engagement_score"]').attr('content');
+        // 615 is the maximum expected dev.to engagement_score, used to normalize to a 0–100 scale.
         var engagementScore = engagementRaw ? Math.round((Number(engagementRaw) / 615) * 100) : 0;
         if (engagementScore === 0) return [];
         if (engagementScore < 1) engagementScore = 1;
