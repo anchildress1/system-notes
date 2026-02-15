@@ -132,8 +132,15 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
 
         // If it has children, render as Accordion Header
         if (hasChildren) {
+          // Check if all children are refined to apply selected styling
+          const allChildrenRefined = children.every((child) => child.isRefined);
+          const isFullySelected = rootItem.isRefined && allChildrenRefined;
+
           return (
-            <div key={rootItem.value} className={styles.refinementItem}>
+            <div
+              key={rootItem.value}
+              className={`${styles.refinementItem} ${isFullySelected ? styles.refinementItemSelected : ''}`}
+            >
               {/* Header row: checkbox + label + expand chevron */}
               <div className={`${styles.refinementLabel} ${styles.tagGroupLabel}`}>
                 <input
@@ -186,18 +193,23 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
               {isExpanded && (
                 <div className={styles.tagChildren}>
                   {children.map((child) => (
-                    <label key={child.value} className={styles.refinementLabel}>
-                      <input
-                        type="checkbox"
-                        className={styles.refinementCheckbox}
-                        checked={child.isRefined}
-                        onChange={() => lvl1.refine(child.value)}
-                      />
-                      <span className={styles.refinementLabelText}>
-                        {child.label.split(' > ')[1]}
-                      </span>
-                      <span className={styles.refinementCount}>{child.count}</span>
-                    </label>
+                    <div
+                      key={child.value}
+                      className={`${styles.refinementItem} ${child.isRefined ? styles.refinementItemSelected : ''}`}
+                    >
+                      <label className={styles.refinementLabel}>
+                        <input
+                          type="checkbox"
+                          className={styles.refinementCheckbox}
+                          checked={child.isRefined}
+                          onChange={() => lvl1.refine(child.value)}
+                        />
+                        <span className={styles.refinementLabelText}>
+                          {child.label.split(' > ')[1]}
+                        </span>
+                        <span className={styles.refinementCount}>{child.count}</span>
+                      </label>
+                    </div>
                   ))}
                 </div>
               )}
@@ -207,7 +219,10 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
 
         // Standalone Item (No Children) - Render as Top-Level Checkbox
         return (
-          <div key={rootItem.value} className={styles.refinementItem}>
+          <div
+            key={rootItem.value}
+            className={`${styles.refinementItem} ${rootItem.isRefined ? styles.refinementItemSelected : ''}`}
+          >
             <label className={styles.refinementLabel}>
               <input
                 type="checkbox"
