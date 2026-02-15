@@ -3,12 +3,11 @@
 import dynamic from 'next/dynamic';
 import styles from './SearchPageWrapper.module.css';
 
-// Enable SSR to prevent layout shifts - Algolia's InstantSearch supports SSR
-// IMPORTANT: SearchPage uses browser APIs (document, window, DOM observers) inside useEffect hooks.
-// These are safe for SSR because useEffect only runs client-side. Any future refactoring must
-// ensure all browser API usage remains inside useEffect to maintain SSR compatibility.
+// Lazy load SearchPage to reduce initial bundle size and improve performance.
+// The search functionality is below the fold and not immediately needed for FCP/LCP.
+// This defers loading all Algolia dependencies until the component is in view.
 const SearchPage = dynamic(() => import('./SearchPage'), {
-  ssr: true,
+  ssr: false,
   loading: () => (
     <div className={styles.loadingContainer}>
       <div className={styles.loadingContent}>Loading search...</div>
