@@ -354,8 +354,8 @@ export default function SearchPage() {
                     <LuMinus size={14} aria-hidden="true" />
                   )}
                 </button>
-                {!collapsedSections.category && (
-                  <div id="filter-category">
+                <div id="filter-category">
+                  {!collapsedSections.category && (
                     <RefinementList
                       attribute="category"
                       classNames={{
@@ -369,8 +369,8 @@ export default function SearchPage() {
                         count: styles.refinementCount,
                       }}
                     />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               <div className={styles.refinementGroup}>
@@ -388,8 +388,8 @@ export default function SearchPage() {
                     <LuMinus size={14} aria-hidden="true" />
                   )}
                 </button>
-                {!collapsedSections.builds && (
-                  <div id="filter-builds">
+                <div id="filter-builds">
+                  {!collapsedSections.builds && (
                     <RefinementList
                       attribute="projects"
                       classNames={{
@@ -403,8 +403,8 @@ export default function SearchPage() {
                         count: styles.refinementCount,
                       }}
                     />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               <div className={styles.refinementGroup}>
@@ -422,11 +422,11 @@ export default function SearchPage() {
                     <LuMinus size={14} aria-hidden="true" />
                   )}
                 </button>
-                {!collapsedSections.tags && (
-                  <div id="filter-tags">
+                <div id="filter-tags">
+                  {!collapsedSections.tags && (
                     <GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               <ClearRefinements
