@@ -30,14 +30,17 @@
   width: 100%;
   min-height: 64px;
   /* Reserve space for the Algolia SiteSearch widget to prevent CLS */
-  contain: layout style paint;
+  contain: layout style;
+  /* Add padding to accommodate focus outline */
+  padding: 4px;
+  margin: -4px;
 }
 
 .metaRow {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: var(--space-xs) 0;
+  padding: var(--space-xs) 4px;
   margin-top: var(--space-xs);
   line-height: 1;
 }
@@ -48,6 +51,7 @@
   font-weight: 500;
   line-height: 1;
   padding-top: 0;
+  align-self: flex-start;
 }
 
 /* Algolia attribution styles moved to global stylesheet */
