@@ -1,0 +1,32 @@
+/* Human-written content source link button
+   Used for GitHub, DEV.to, and other external sources
+   Per style guide: Pink (#F16197) = Human Identity */
+
+.sourceLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-round);
+  background: hsl(var(--color-bg-elevated));
+  color: hsl(var(--color-text-muted));
+  transition: all var(--transition-base);
+  z-index: 2;
+  border: 2px solid transparent;
+  will-change: transform;
+  cursor: pointer;
+}
+
+.sourceLink:hover {
+  background: hsl(var(--color-bg-surface));
+  border-color: #F16197;
+  color: #F16197;
+  transform: rotate(15deg) scale(1.1);
+  box-shadow: 0 0 15px rgba(241, 97, 151, 0.4);
+}
+
+.sourceLink:focus-visible {
+  outline: 2px solid #F16197;
+  outline-offset: 2px;
+}

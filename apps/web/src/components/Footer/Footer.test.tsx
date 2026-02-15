@@ -29,7 +29,7 @@ describe('Footer Component', () => {
   it('renders build info', () => {
     render(<Footer />);
     expect(
-      screen.getByText(/Built with GitHub Copilot, ChatGPT, Verdent \+ Gemini/i)
+      screen.getByText(/Built with GitHub Copilot, ChatGPT, Verdent, Claude \+ Gemini/i)
     ).toBeInTheDocument();
   });
 

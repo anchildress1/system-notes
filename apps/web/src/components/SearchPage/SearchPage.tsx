@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useEffect, useState, useCallback } from 'react';
+import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
@@ -14,7 +14,7 @@ import { SiAlgolia } from 'react-icons/si';
 import { LuPlus, LuMinus } from 'react-icons/lu';
 import 'instantsearch.css/themes/satellite.css';
 import styles from './SearchPage.module.css';
-import UnifiedHitCard from './UnifiedHitCard';
+import FactCard from '../FactCard/FactCard';
 import GroupedTagFilter from './GroupedTagFilter';
 import InfiniteHits from './InfiniteHits';
 import LoadingIndicator from './LoadingIndicator';
@@ -162,12 +162,28 @@ export default function SearchPage() {
   useSiteSearchWithAI(appId, searchKey, indexName, searchAiId, isEnabled);
   useFactIdRouting(indexName);
 
-  // Auto-focus chat input when Ask AI modal opens
+  // Consolidated DOM observer for:
+  // 1. Auto-focus chat input when Ask AI modal opens
+  // 2. Attach click handlers to SiteSearch result links
+  const pendingTimeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
+
   useEffect(() => {
     if (!isEnabled) return;
 
+    const clearPendingTimeouts = () => {
+      pendingTimeouts.current.forEach(clearTimeout);
+      pendingTimeouts.current = [];
+    };
+
+    const scheduleTimeout = (fn: () => void, ms: number) => {
+      const id = setTimeout(() => {
+        fn();
+        pendingTimeouts.current = pendingTimeouts.current.filter((t) => t !== id);
+      }, ms);
+      pendingTimeouts.current.push(id);
+    };
+
     const focusChatInput = () => {
-      // Try multiple selectors for the chat input field
       const selectors = [
         '.ss-chat-input',
         '.ss-search-input',
@@ -180,7 +196,6 @@ export default function SearchPage() {
       for (const selector of selectors) {
         const input = document.querySelector(selector) as HTMLInputElement;
         if (input && document.contains(input)) {
-          // Use requestAnimationFrame for faster, smoother focus
           requestAnimationFrame(() => {
             input.focus();
             input.select();
@@ -190,54 +205,6 @@ export default function SearchPage() {
       }
     };
 
-    // Watch for modal/dialog opening
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        for (const node of mutation.addedNodes) {
-          if (node instanceof HTMLElement) {
-            // Check if this is the Ask AI modal/dialog
-            if (
-              node.matches('[role="dialog"], .ss-modal, .modal-backdrop-askai') ||
-              node.querySelector('[role="dialog"], .ss-modal, .ss-chat-input')
-            ) {
-              // Focus immediately when detected
-              focusChatInput();
-              // Also try after a micro-delay in case widgets haven't fully rendered
-              setTimeout(focusChatInput, 10);
-            }
-          }
-        }
-      }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Also listen for click on the Ask AI button to pre-emptively focus
-    const handleButtonClick = () => {
-      requestAnimationFrame(focusChatInput);
-      setTimeout(focusChatInput, 10);
-      setTimeout(focusChatInput, 50);
-    };
-
-    const handleDocumentClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (
-        target.closest('.sitesearch-button-aa, .ss-button, [class*="ask-ai"]') ||
-        target.textContent?.includes('Ask AI')
-      ) {
-        handleButtonClick();
-      }
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-
-    return () => {
-      observer.disconnect();
-      document.removeEventListener('click', handleDocumentClick);
-    };
-  }, [isEnabled]);
-
-  useEffect(() => {
     const handleLinkClick = (e: Event) => {
       const link = e.currentTarget as HTMLElement;
       e.preventDefault();
@@ -252,15 +219,15 @@ export default function SearchPage() {
 
       router.push(`/search?${params.toString()}`, { scroll: false });
 
-      setTimeout(() => {
+      // Close the dialog and navigate to the first matching card.
+      // Use tracked timeouts so they are cancelled on unmount.
+      scheduleTimeout(() => {
         const dialog = document.querySelector('[role="dialog"], .modal-backdrop-askai');
         const closeBtn = dialog?.querySelector('button[aria-label*="lose"], button:has(svg)');
         if (closeBtn instanceof HTMLElement) closeBtn.click();
 
-        setTimeout(() => {
-          const firstCard = document.querySelector(
-            '.FactCard-module__TivY_W__cardLink, .PostCard-module__card a'
-          );
+        scheduleTimeout(() => {
+          const firstCard = document.querySelector('[class*="cardLink"], [class*="PostCard"] a');
           if (firstCard instanceof HTMLElement) {
             firstCard.click();
           }
@@ -268,7 +235,7 @@ export default function SearchPage() {
       }, 100);
     };
 
-    const attachHandlers = () => {
+    const attachLinkHandlers = () => {
       const links = document.querySelectorAll('.ss-infinite-hits-anchor');
       links.forEach((link) => {
         if (!link.hasAttribute('data-has-handler')) {
@@ -278,12 +245,48 @@ export default function SearchPage() {
       });
     };
 
-    const observer = new MutationObserver(attachHandlers);
-    observer.observe(document.body, { childList: true, subtree: true });
-    attachHandlers();
+    // Single MutationObserver handles both concerns
+    const observer = new MutationObserver((mutations) => {
+      // Check for new Ask AI modal/dialog nodes
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node instanceof HTMLElement) {
+            if (
+              node.matches('[role="dialog"], .ss-modal, .modal-backdrop-askai') ||
+              node.querySelector('[role="dialog"], .ss-modal, .ss-chat-input')
+            ) {
+              focusChatInput();
+              scheduleTimeout(focusChatInput, 10);
+            }
+          }
+        }
+      }
 
-    return () => observer.disconnect();
-  }, [router]);
+      // Attach handlers to any new SiteSearch result links
+      attachLinkHandlers();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+    attachLinkHandlers();
+
+    // Click listener for Ask AI button — class-based selectors only
+    const handleDocumentClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.sitesearch-button-aa, .ss-button, [class*="ask-ai"]')) {
+        requestAnimationFrame(focusChatInput);
+        scheduleTimeout(focusChatInput, 10);
+        scheduleTimeout(focusChatInput, 50);
+      }
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('click', handleDocumentClick);
+      clearPendingTimeouts();
+    };
+  }, [isEnabled, router]);
 
   if (!isEnabled || !searchClient) {
     return (
@@ -321,14 +324,14 @@ export default function SearchPage() {
               href="https://www.algolia.com"
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.algoliaAttribution}
+              className="algolia-attribution"
               aria-label="Powered by Algolia"
             >
-              <span className={styles.algoliaHoverable}>
-                <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
-                <span className={styles.algoliaName}>Algolia</span>
+              <span className="algolia-hoverable">
+                <SiAlgolia aria-hidden="true" className="algolia-icon" />
+                <span className="algolia-name">Algolia</span>
               </span>
-              <span className={styles.algoliaPrefix}>Powered by</span>
+              <span className="algolia-prefix">Powered by</span>
             </a>
           </div>
         </div>
@@ -351,8 +354,8 @@ export default function SearchPage() {
                     <LuMinus size={14} aria-hidden="true" />
                   )}
                 </button>
-                {!collapsedSections.category && (
-                  <div id="filter-category">
+                <div id="filter-category">
+                  {!collapsedSections.category && (
                     <RefinementList
                       attribute="category"
                       classNames={{
@@ -366,8 +369,8 @@ export default function SearchPage() {
                         count: styles.refinementCount,
                       }}
                     />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               <div className={styles.refinementGroup}>
@@ -385,8 +388,8 @@ export default function SearchPage() {
                     <LuMinus size={14} aria-hidden="true" />
                   )}
                 </button>
-                {!collapsedSections.builds && (
-                  <div id="filter-builds">
+                <div id="filter-builds">
+                  {!collapsedSections.builds && (
                     <RefinementList
                       attribute="projects"
                       classNames={{
@@ -400,8 +403,8 @@ export default function SearchPage() {
                         count: styles.refinementCount,
                       }}
                     />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               <div className={styles.refinementGroup}>
@@ -419,11 +422,11 @@ export default function SearchPage() {
                     <LuMinus size={14} aria-hidden="true" />
                   )}
                 </button>
-                {!collapsedSections.tags && (
-                  <div id="filter-tags">
+                <div id="filter-tags">
+                  {!collapsedSections.tags && (
                     <GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               <ClearRefinements
@@ -443,7 +446,7 @@ export default function SearchPage() {
             <LoadingIndicator />
             <InfiniteHits
               hitComponent={
-                UnifiedHitCard as React.ComponentType<{
+                FactCard as React.ComponentType<{
                   hit: import('instantsearch.js').Hit;
                   sendEvent?: import('@/types/algolia').SendEventForHits;
                 }>

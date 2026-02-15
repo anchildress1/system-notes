@@ -14,22 +14,22 @@ export default function Footer() {
       </div>
       <div className={styles.center}>
         <div className={styles.poweredBy}>
-          <span className={styles.builtWith}>
-            Built with GitHub Copilot, ChatGPT, Verdent + Gemini
-          </span>
           <a
             href="https://www.algolia.com"
             target="_blank"
             rel="noopener noreferrer"
-            className={styles.algoliaLink}
+            className="algolia-attribution"
             aria-label="Powered by Algolia"
           >
-            <span className={styles.algoliaPrefix}>Powered by</span>
-            <span className={styles.algoliaHoverable}>
-              <SiAlgolia aria-hidden="true" className={styles.algoliaIcon} />
-              <span>Algolia</span>
+            <span className="algolia-hoverable">
+              <SiAlgolia aria-hidden="true" className="algolia-icon" />
+              <span className="algolia-name">Algolia</span>
             </span>
+            <span className="algolia-prefix">Powered by</span>
           </a>
+          <span className={styles.builtWith}>
+            Built with GitHub Copilot, ChatGPT, Verdent, Claude + Gemini
+          </span>
         </div>
       </div>
       <div className={styles.right}>

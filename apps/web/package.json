@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "postbuild": "STANDALONE_BASE=$(find .next/standalone -name 'server.js' -path '*apps/web/server.js' 2>/dev/null | head -1 | xargs dirname 2>/dev/null); if [ -n \"$STANDALONE_BASE\" ]; then mkdir -p \"$STANDALONE_BASE/.next\" && cp -r .next/static \"$STANDALONE_BASE/.next/static\" && cp -r public \"$STANDALONE_BASE/public\"; fi",
     "start": "next start",
     "start:standalone": "SERVER_JS=$(find .next/standalone -name 'server.js' -path '*apps/web/server.js' 2>/dev/null | head -1); [ -n \"$SERVER_JS\" ] && node \"$SERVER_JS\" || (echo 'Error: Standalone build not found. Run npm run build first.' && exit 1)",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@lhci/cli": "^0.15.1",
+    "@next/bundle-analyzer": "^16.1.6",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -56,6 +58,7 @@
     "eslint": "^9.0.0",
     "eslint-config-next": "16.1.3",
     "jsdom": "^27.4.0",
+    "lighthouse": "^12.2.1",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.0.17"

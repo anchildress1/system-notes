@@ -6,6 +6,7 @@ import styles from './MusicPlayer.module.css';
 
 export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const togglePlay = async () => {
@@ -29,12 +30,18 @@ export default function MusicPlayer() {
     setIsPlaying(false);
   };
 
+  const handleAudioError = () => {
+    setIsPlaying(false);
+    setHasError(true);
+  };
+
   return (
     <div className={styles.playerWrapper} data-testid="music-player">
       <button
         type="button"
         className={`${styles.playButton} ${isPlaying ? styles.active : ''}`}
         onClick={togglePlay}
+        disabled={hasError}
         aria-label={
           isPlaying
             ? "Pause 'I Build Things' by Twisted Game Songs"
@@ -58,6 +65,7 @@ export default function MusicPlayer() {
         ref={audioRef}
         src="/audio/twisted-game-songs-i-build-things.mp3"
         onEnded={handleEnded}
+        onError={handleAudioError}
         preload="none"
         playsInline
       />

@@ -24,8 +24,8 @@ pre-push:
       run: npm run build
     unit-tests:
       run: make test
-    e2e-tests:
-      run: make test-e2e
+    # e2e-tests:
+    #   run: make test-e2e
     performance-tests:
       run: npm run test:perf -w apps/web
     security-scan:

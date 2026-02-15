@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://algolia.anchildress1.dev/sitemap.xml
+Sitemap: https://unstable.anchildress1.dev/sitemap.xml
 
 # Algolia-Crawler-Verif: 9436900A4AC5D56A
+# Algolia-Crawler-Verif: 43962F24110CA782

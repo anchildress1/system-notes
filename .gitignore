@@ -59,3 +59,12 @@ lighthouse.json
 commit.tmp
 *.log
 .verdent/
+
+# Claude Code user-specific settings
+.claude/settings.local.json
+.claude/*.local.json
+
+# Secrets baseline - auto-generated timestamp causes churn
+# Each developer should generate their own baseline locally
+.secrets.baseline
+.secrets.baseline.tmp

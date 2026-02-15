@@ -76,7 +76,11 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         }}
         style={{ transformStyle: 'preserve-3d', perspective: 1200 }}
       >
-        <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
+        <button
+          className={`close-button-global ${styles.closeButton}`}
+          onClick={onClose}
+          aria-label="Close modal"
+        >
           <svg
             width="24"
             height="24"
@@ -91,10 +95,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         </button>
         <div className={styles.imageContainer} data-testid="expanded-image-container">
           <div className={styles.imageWrapper}>
-            <div
-              className={styles.conceptBackground}
-              style={{ backgroundImage: project.imageUrl ? `url(${project.imageUrl})` : undefined }}
-            />
+            <div className={styles.conceptBackground} />
             {project.imageUrl && (
               <Image
                 src={project.imageUrl}

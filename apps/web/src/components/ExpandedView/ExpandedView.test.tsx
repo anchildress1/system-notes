@@ -1,30 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ExpandedView from './ExpandedView';
-import { Project } from '@/data/projects';
+import { mockProject } from '@/test-utils/fixtures';
 
-// Mock Next.js Image
-vi.mock('next/image', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-  default: ({ fill: _fill, priority: _priority, ...props }: any) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img {...props} alt={props.alt} />
-  ),
-}));
-
-const mockProject: Project = {
-  id: 'test-project',
-  title: 'Test Project',
-  description: 'Short description tagline.',
-  purpose: 'The core purpose of the project.',
-  longDescription: 'Long detailed description.',
-  outcome: 'Great outcome.',
-  tech: [{ name: 'React', role: 'Frontend' }],
-  repoUrl: 'https://github.com/test/test-project',
-  owner: 'anchildress1',
-  status: 'Completed',
-  imageUrl: '/test.jpg',
-};
+// next/image is mocked globally in setupTests.ts
 
 describe('ExpandedView Component', () => {
   it('renders extensive project details', () => {

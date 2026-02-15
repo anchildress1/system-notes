@@ -6,12 +6,14 @@ const inter = Inter({
   variable: '--font-sans',
   subsets: ['latin'],
   display: 'swap',
+  preload: true,
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
   display: 'swap',
+  preload: true,
 });
 
 import ClientShell from '@/components/ClientShell/ClientShell';
@@ -113,6 +115,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Preconnect to Algolia domains for faster API requests */}
+        <link rel="preconnect" href="https://7DY9F9LQFU-dsn.algolia.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://7DY9F9LQFU-dsn.algolia.net" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
