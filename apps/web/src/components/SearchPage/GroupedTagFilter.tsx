@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useRefinementList } from 'react-instantsearch';
 import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import styles from './SearchPage.module.css';
@@ -19,6 +19,79 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
 
   // State for expanded groups
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
+
+  // Refs for parent checkboxes to set indeterminate state
+  const checkboxRefs = useRef<Map<string, HTMLInputElement>>(new Map());
+  // Track which parents we've synced to avoid infinite loops
+  const syncedParents = useRef<Set<string>>(new Set());
+
+  // Grouping Logic
+  const groups = useMemo(() => {
+    // Map of ParentLabel -> ChildItems
+    const childrenByParent: Record<string, typeof lvl1.items> = {};
+
+    lvl1.items.forEach((item) => {
+      // item.value is "Parent > Child" or "Parent > Child > Grandchild"
+      // We assume strict 2-level for this component as requested
+      const parts = item.value.split(' > ');
+      if (parts.length >= 2) {
+        const parent = parts[0];
+        if (!childrenByParent[parent]) {
+          childrenByParent[parent] = [];
+        }
+        childrenByParent[parent].push(item);
+      }
+    });
+
+    return {
+      roots: lvl0.items,
+      childrenByParent,
+    };
+  }, [lvl0.items, lvl1]);
+
+  // Auto-select children when parent is refined via URL (run only once per parent)
+  useEffect(() => {
+    groups.roots.forEach((parentItem) => {
+      if (parentItem.isRefined && !syncedParents.current.has(parentItem.value)) {
+        const children = groups.childrenByParent[parentItem.label];
+        if (children && children.length > 0) {
+          // Check if all children are refined
+          const allChildrenRefined = children.every((child) => child.isRefined);
+          if (!allChildrenRefined) {
+            // Mark as synced before refining to prevent loops
+            syncedParents.current.add(parentItem.value);
+            // Select any unrefined children
+            children.forEach((child) => {
+              if (!child.isRefined) {
+                lvl1.refine(child.value);
+              }
+            });
+          } else {
+            // All children already refined, mark as synced
+            syncedParents.current.add(parentItem.value);
+          }
+        }
+      } else if (!parentItem.isRefined && syncedParents.current.has(parentItem.value)) {
+        // Parent was deselected, remove from synced set
+        syncedParents.current.delete(parentItem.value);
+      }
+    });
+  }, [groups, lvl1]);
+
+  // Set indeterminate state on parent checkboxes
+  useEffect(() => {
+    groups.roots.forEach((parentItem) => {
+      const children = groups.childrenByParent[parentItem.label];
+      if (children && children.length > 0) {
+        const checkbox = checkboxRefs.current.get(parentItem.value);
+        if (checkbox) {
+          const refinedCount = children.filter((child) => child.isRefined).length;
+          const hasPartialSelection = refinedCount > 0 && refinedCount < children.length;
+          checkbox.indeterminate = hasPartialSelection;
+        }
+      }
+    });
+  }, [groups]);
 
   const toggleGroup = (label: string) => {
     setExpandedGroups((prev) => ({
@@ -46,30 +119,6 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
     }
   };
 
-  // Grouping Logic
-  const groups = useMemo(() => {
-    // Map of ParentLabel -> ChildItems
-    const childrenByParent: Record<string, typeof lvl1.items> = {};
-
-    lvl1.items.forEach((item) => {
-      // item.value is "Parent > Child" or "Parent > Child > Grandchild"
-      // We assume strict 2-level for this component as requested
-      const parts = item.value.split(' > ');
-      if (parts.length >= 2) {
-        const parent = parts[0];
-        if (!childrenByParent[parent]) {
-          childrenByParent[parent] = [];
-        }
-        childrenByParent[parent].push(item);
-      }
-    });
-
-    return {
-      roots: lvl0.items,
-      childrenByParent,
-    };
-  }, [lvl0.items, lvl1]);
-
   if (lvl0.items.length === 0) {
     return null;
   }
@@ -93,6 +142,13 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
                   checked={rootItem.isRefined}
                   onChange={() => handleParentToggle(rootItem, children)}
                   aria-label={`Filter by ${rootItem.label}`}
+                  ref={(el) => {
+                    if (el) {
+                      checkboxRefs.current.set(rootItem.value, el);
+                    } else {
+                      checkboxRefs.current.delete(rootItem.value);
+                    }
+                  }}
                 />
                 <span
                   className={`${styles.refinementLabelText} ${styles.tagGroupLabelText}`}
