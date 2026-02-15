@@ -40,8 +40,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: var(--space-xs) 4px;
-  margin-top: var(--space-xs);
+  padding: 0 4px;
+  margin-top: 8px;
   line-height: 1;
 }
 
