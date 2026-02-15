@@ -32,7 +32,7 @@ test.describe('System Notes Integration', () => {
     await expect(projectCard).toBeVisible();
 
     // Check for Simple Tag (no role)
-    const simpleTag = page.locator('span[class*="simpleTag"]').first();
+    const simpleTag = page.locator('.simple-tag').first();
     await expect(simpleTag).toBeVisible();
     // Role should NOT be visible text directly in the tag as separate element
     const roleBadge = page.locator('span[class*="techRole"]');
@@ -62,11 +62,13 @@ test.describe('System Notes Integration', () => {
 
     // Verify Vertical Tech Stack
     // Should have multiple tag items stacked
-    const techStack = page.locator('div[class*="tags"]');
+    // Scope to expanded view modal to avoid matching project cards
+    const modal = page.getByTestId('expanded-view-dialog');
+    const techStack = modal.locator('div[class*="tags"]');
     await expect(techStack).toBeVisible();
 
     // Check specific class for vertical items if possible (tagItem)
-    const tagItems = page.locator('div[class*="tagItem"]');
+    const tagItems = modal.locator('div[class*="tagItem"]');
     await expect(tagItems.first()).toBeVisible();
   });
 
