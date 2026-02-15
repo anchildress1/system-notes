@@ -29,14 +29,20 @@
   transition: all var(--transition-base);
 }
 
-.logoLink:hover .name {
-  text-decoration: underline;
-  text-decoration-color: hsl(var(--color-accent-pink));
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
+.logoLink:hover .name::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, hsl(var(--color-accent-pink) / 0.7), transparent);
+  border-radius: 1px;
+  box-shadow: 0 0 8px hsl(var(--color-accent-pink) / 0.4), 0 0 16px hsl(var(--color-accent-pink) / 0.2);
 }
 
 .name {
+  position: relative;
   font-size: 1.5rem;
   font-family: var(--font-mono);
   font-weight: 700;
