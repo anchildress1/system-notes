@@ -193,10 +193,51 @@
   accent-color: hsl(var(--color-accent-purple));
   cursor: pointer;
   transition: transform var(--transition-base);
+  flex-shrink: 0;
+  /* Force consistent appearance across all browsers */
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  -moz-appearance: checkbox;
 }
 
 .refinementCheckbox:hover {
   transform: scale(1.1);
+}
+
+/* Ensure all checked checkboxes have solid fill */
+.refinementCheckbox:checked {
+  accent-color: hsl(var(--color-accent-purple));
+}
+
+/* Ensure indeterminate state also uses accent color */
+.refinementCheckbox:indeterminate {
+  accent-color: hsl(var(--color-accent-purple));
+}
+
+/* Override InstantSearch satellite.css checkbox styles to ensure consistency */
+.refinementList input[type='checkbox'],
+.refinementItem input[type='checkbox'],
+.refinementLabel input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: hsl(var(--color-accent-purple));
+  cursor: pointer;
+  flex-shrink: 0;
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  -moz-appearance: checkbox;
+}
+
+.refinementList input[type='checkbox']:checked,
+.refinementItem input[type='checkbox']:checked,
+.refinementLabel input[type='checkbox']:checked {
+  accent-color: hsl(var(--color-accent-purple));
+}
+
+.refinementList input[type='checkbox']:indeterminate,
+.refinementItem input[type='checkbox']:indeterminate,
+.refinementLabel input[type='checkbox']:indeterminate {
+  accent-color: hsl(var(--color-accent-purple));
 }
 
 .refinementLabelText {
