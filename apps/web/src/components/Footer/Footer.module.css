@@ -55,13 +55,13 @@
 
 .socialLink:hover,
 .socialLink:focus-visible {
-  color: hsl(338 70% 62%);
+  color: hsl(var(--color-accent-pink));
   background: transparent;
   outline: none;
 }
 
 .socialLink:hover svg {
-  fill: hsl(338 70% 62%);
+  fill: hsl(var(--color-accent-pink));
 }
 
 .center {

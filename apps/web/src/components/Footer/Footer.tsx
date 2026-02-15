@@ -14,9 +14,6 @@ export default function Footer() {
       </div>
       <div className={styles.center}>
         <div className={styles.poweredBy}>
-          <span className={styles.builtWith}>
-            Built with GitHub Copilot, ChatGPT, Verdent + Gemini
-          </span>
           <a
             href="https://www.algolia.com"
             target="_blank"
@@ -30,6 +27,9 @@ export default function Footer() {
             </span>
             <span className="algolia-prefix">Powered by</span>
           </a>
+          <span className={styles.builtWith}>
+            Built with GitHub Copilot, ChatGPT, Verdent, Claude + Gemini
+          </span>
         </div>
       </div>
       <div className={styles.right}>
