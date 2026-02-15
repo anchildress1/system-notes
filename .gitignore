@@ -68,3 +68,5 @@ commit.tmp
 # Each developer should generate their own baseline locally
 .secrets.baseline
 .secrets.baseline.tmp
+
+.mcp.json

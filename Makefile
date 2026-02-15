@@ -88,7 +88,7 @@ test-e2e:
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
 	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=test_ai_id \
-	NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes \
+	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
 	npm run build
 	CI=true npm exec playwright test
 
@@ -99,7 +99,7 @@ test-perf:
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key \
 	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=test_ai_id \
-	NEXT_PUBLIC_ALGOLIA_INDEX_NAME=system-notes \
+	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
 	npm run test:perf -w apps/web
 
 # Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
