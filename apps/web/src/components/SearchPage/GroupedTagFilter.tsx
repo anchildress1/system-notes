@@ -27,6 +27,25 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
     }));
   };
 
+  // Handle parent refinement with auto-child selection
+  const handleParentToggle = (parentItem: (typeof lvl0.items)[0], children?: typeof lvl1.items) => {
+    // Toggle the parent
+    lvl0.refine(parentItem.value);
+
+    // If parent is being selected (currently not refined), select all children
+    // If parent is being deselected (currently refined), deselect all children
+    if (children && children.length > 0) {
+      const shouldSelectChildren = !parentItem.isRefined;
+
+      children.forEach((child) => {
+        // Only refine if the child's state doesn't match what we want
+        if (child.isRefined !== shouldSelectChildren) {
+          lvl1.refine(child.value);
+        }
+      });
+    }
+  };
+
   // Grouping Logic
   const groups = useMemo(() => {
     // Map of ParentLabel -> ChildItems
@@ -72,18 +91,18 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
                   type="checkbox"
                   className={styles.refinementCheckbox}
                   checked={rootItem.isRefined}
-                  onChange={() => lvl0.refine(rootItem.value)}
+                  onChange={() => handleParentToggle(rootItem, children)}
                   aria-label={`Filter by ${rootItem.label}`}
                 />
                 <span
                   className={`${styles.refinementLabelText} ${styles.tagGroupLabelText}`}
                   role="button"
                   tabIndex={0}
-                  onClick={() => lvl0.refine(rootItem.value)}
+                  onClick={() => handleParentToggle(rootItem, children)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      lvl0.refine(rootItem.value);
+                      handleParentToggle(rootItem, children);
                     }
                   }}
                 >
