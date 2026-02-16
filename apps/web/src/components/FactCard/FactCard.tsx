@@ -90,22 +90,22 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     // Immediate visual feedback
     setPortalVisible(true);
     setIsFlipped(true);
-    // Update URL without triggering re-render
-    const params = new URLSearchParams(searchParams.toString());
+    // Read current URL directly to avoid stale searchParams after pushState calls
+    const params = new URLSearchParams(window.location.search);
     params.set('factId', hit.objectID);
     applyHitParams(params);
     window.history.pushState(null, '', `?${params.toString()}`);
-  }, [sendEvent, hit, searchParams, applyHitParams]);
+  }, [sendEvent, hit, applyHitParams]);
 
   const closeCard = useCallback(() => {
     // Immediate visual feedback
     setIsFlipped(false);
-    // Update URL without triggering re-render
-    const params = new URLSearchParams(searchParams.toString());
+    // Read current URL directly to avoid stale searchParams after pushState calls
+    const params = new URLSearchParams(window.location.search);
     params.delete('factId');
     const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
     window.history.pushState(null, '', newUrl);
-  }, [searchParams]);
+  }, []);
 
   // Unmount portal after exit animation completes
   const handleExitComplete = useCallback(() => {
