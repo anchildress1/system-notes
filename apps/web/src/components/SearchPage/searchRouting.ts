@@ -121,15 +121,7 @@ export const createSearchRouting = (indexName: string) => ({
   }),
   stateMapping: {
     stateToRoute(uiState: UiState) {
-      const routeState = toRouteState(uiState, indexName);
-      // Preserve factId from current URL (managed by FactCard, not InstantSearch)
-      if (typeof window !== 'undefined') {
-        const factId = new URLSearchParams(window.location.search).get('factId');
-        if (factId) {
-          return { ...routeState, factId };
-        }
-      }
-      return routeState;
+      return toRouteState(uiState, indexName);
     },
     routeToState(routeState: SearchRouteState) {
       return toUiState(routeState, indexName);
