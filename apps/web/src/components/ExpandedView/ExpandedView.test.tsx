@@ -7,7 +7,14 @@ import { mockProject } from '@/test-utils/fixtures';
 
 describe('ExpandedView Component', () => {
   it('renders extensive project details', () => {
-    render(<ExpandedView project={mockProject} onClose={() => {}} />);
+    render(
+      <ExpandedView
+        project={mockProject}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
 
     expect(screen.getByText('Test Project')).toBeInTheDocument();
     expect(screen.getByText('The core purpose of the project.')).toBeInTheDocument();
@@ -18,7 +25,14 @@ describe('ExpandedView Component', () => {
 
   it('calls onClose when close button is clicked', () => {
     const handleClose = vi.fn();
-    render(<ExpandedView project={mockProject} onClose={handleClose} />);
+    render(
+      <ExpandedView
+        project={mockProject}
+        onClose={handleClose}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
 
     // Assuming the close button is the one with the svg icon
     const closeButtons = screen.getAllByRole('button');
@@ -35,14 +49,28 @@ describe('ExpandedView Component', () => {
 
   it('calls onClose when Escape key is pressed', () => {
     const handleClose = vi.fn();
-    render(<ExpandedView project={mockProject} onClose={handleClose} />);
+    render(
+      <ExpandedView
+        project={mockProject}
+        onClose={handleClose}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
 
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(handleClose).toHaveBeenCalled();
   });
 
   it('renders close button with sticky positioning attributes', async () => {
-    render(<ExpandedView project={mockProject} onClose={() => {}} />);
+    render(
+      <ExpandedView
+        project={mockProject}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
 
     const closeBtn = screen.getByRole('button', { name: /close modal/i });
     expect(closeBtn).toBeInTheDocument();
@@ -54,7 +82,14 @@ describe('ExpandedView Component', () => {
       ...mockProject,
       blogs: [{ title: 'Blog 1', url: 'https://blog1.com' }],
     };
-    render(<ExpandedView project={projectWithBlogs} onClose={() => {}} />);
+    render(
+      <ExpandedView
+        project={projectWithBlogs}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
     expect(screen.getByText('Related Reading')).toBeInTheDocument();
     expect(screen.getByText('Blog 1')).toHaveAttribute('href', 'https://blog1.com');
   });
@@ -64,7 +99,14 @@ describe('ExpandedView Component', () => {
     const scrollByMock = vi.fn();
     Element.prototype.scrollBy = scrollByMock;
 
-    render(<ExpandedView project={mockProject} onClose={() => {}} />);
+    render(
+      <ExpandedView
+        project={mockProject}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
 
     // Dispatch events on window
     fireEvent.keyDown(window, { key: 'ArrowDown' });

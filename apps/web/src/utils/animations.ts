@@ -7,25 +7,17 @@
  *   --transition-slow: 0.3s
  */
 
-import type { Transition, Variants } from 'framer-motion';
-
 /* ── Easing curves (mirrors CSS custom properties) ── */
 export const easeSpring: [number, number, number, number] = [0.175, 0.885, 0.32, 1.275];
 export const easeMorph: [number, number, number, number] = [0.4, 0, 0.2, 1];
 
 /* ── Card-flip overlay (background dim) ── */
-export const overlayVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 },
-};
-
-export const overlayTransition: Transition = { duration: 0.12, ease: 'easeOut' };
+export const overlayTransition = { duration: 0.12, ease: 'easeOut' as const };
 
 /* ── Card-flip expanded view (open + close) ── */
 const flipEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-export const cardFlipVariants: Variants = {
+export const cardFlipVariants = {
   hidden: { rotateY: 90, opacity: 0, scale: 0.92 },
   visible: {
     rotateY: 0,
@@ -47,4 +39,4 @@ export const cardFlipVariants: Variants = {
       scale: { duration: 0.18, ease: flipEase },
     },
   },
-};
+} as const;

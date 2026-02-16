@@ -5,7 +5,7 @@ import SearchPageWrapper from '@/components/SearchPage/SearchPageWrapper';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-  title: 'Choices | System Notes',
+  title: 'Choices',
   description:
     'Search and explore facts, principles, and insights from my portfolio of system notes and projects.',
 };

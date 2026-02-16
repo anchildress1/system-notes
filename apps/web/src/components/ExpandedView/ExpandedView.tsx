@@ -4,14 +4,21 @@ import { motion } from 'framer-motion';
 import { Project } from '@/data/projects';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
-import { overlayVariants, overlayTransition, cardFlipVariants } from '@/utils/animations';
+import { overlayTransition, cardFlipVariants } from '@/utils/animations';
 
 interface ExpandedViewProps {
   project: Project;
   onClose: () => void;
+  isOpen: boolean;
+  onExitComplete: () => void;
 }
 
-export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
+export default function ExpandedView({
+  project,
+  onClose,
+  isOpen,
+  onExitComplete,
+}: ExpandedViewProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,10 +58,8 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
     <motion.div
       className={styles.overlay}
       onClick={onClose}
-      variants={overlayVariants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isOpen ? 1 : 0 }}
       transition={overlayTransition}
     >
       <motion.div
@@ -66,11 +71,10 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         aria-labelledby="modal-title"
         tabIndex={-1}
         data-testid="expanded-view-dialog"
-        layoutId={`card-${project.id}`}
         variants={cardFlipVariants}
         initial="hidden"
-        animate="visible"
-        exit="exit"
+        animate={isOpen ? 'visible' : 'exit'}
+        onAnimationComplete={onExitComplete}
       >
         <button
           className={`close-button-global ${styles.closeButton}`}

@@ -15,7 +15,6 @@ export default function ProjectCard({ project, onSelect, priority = false }: Pro
 
   return (
     <motion.div
-      layoutId={`card-${project.id}`}
       className={styles.card}
       onClick={() => onSelect(project)}
       data-testid={`project-card-${project.id}`}

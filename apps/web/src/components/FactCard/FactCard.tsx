@@ -3,12 +3,12 @@
 import { useCallback, useRef, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Highlight } from 'react-instantsearch';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import type { Hit, BaseHit } from 'instantsearch.js';
 import type { SendEventForHits } from '@/types/algolia';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
-import { overlayVariants, overlayTransition, cardFlipVariants } from '@/utils/animations';
+import { overlayTransition, cardFlipVariants } from '@/utils/animations';
 import styles from './FactCard.module.css';
 
 export interface FactHitRecord extends BaseHit {
@@ -47,16 +47,15 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   // Use local state for instant visual feedback; sync with URL for deep-linking
   const urlFlipped = searchParams.get('factId') === hit.objectID;
   const [isFlipped, setIsFlipped] = useState(urlFlipped);
-
-  // Sync local state when URL changes externally (e.g. back button, popstate)
-  useEffect(() => {
-    setIsFlipped(urlFlipped);
-  }, [urlFlipped]);
+  // Keep portal mounted during exit animation
+  const [portalVisible, setPortalVisible] = useState(urlFlipped);
 
   useEffect(() => {
     const handlePopState = () => {
       const params = new URLSearchParams(window.location.search);
-      setIsFlipped(params.get('factId') === hit.objectID);
+      const flipped = params.get('factId') === hit.objectID;
+      setIsFlipped(flipped);
+      if (flipped) setPortalVisible(true);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -91,6 +90,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
       });
     }
     // Immediate visual feedback
+    setPortalVisible(true);
     setIsFlipped(true);
     // Update URL without triggering re-render
     const params = new URLSearchParams(searchParams.toString());
@@ -108,6 +108,13 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
     window.history.pushState(null, '', newUrl);
   }, [searchParams]);
+
+  // Unmount portal after exit animation completes
+  const handleExitComplete = useCallback(() => {
+    if (!isFlipped) {
+      setPortalVisible(false);
+    }
+  }, [isFlipped]);
 
   useEffect(() => {
     const handleWindowKeyDown = (e: KeyboardEvent) => {
@@ -277,116 +284,106 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
         </motion.article>
       </a>
 
-      <AnimatePresence mode="wait">
-        {isFlipped && portalTarget && (
-          <>
-            {createPortal(
-              <motion.div
-                className={styles.overlay}
-                onClick={closeCard}
-                variants={overlayVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                transition={overlayTransition}
-              >
-                <motion.article
-                  className={`${styles.card} ${styles.flipped}`}
-                  role="dialog"
-                  aria-modal="true"
-                  aria-labelledby={dialogTitleId}
-                  aria-describedby={dialogDescriptionId}
-                  onClick={(e) => e.stopPropagation()}
-                  variants={cardFlipVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
+      {portalVisible &&
+        portalTarget &&
+        createPortal(
+          <motion.div
+            className={styles.overlay}
+            onClick={closeCard}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isFlipped ? 1 : 0 }}
+            transition={overlayTransition}
+          >
+            <motion.article
+              className={`${styles.card} ${styles.flipped}`}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={dialogTitleId}
+              aria-describedby={dialogDescriptionId}
+              onClick={(e) => e.stopPropagation()}
+              variants={cardFlipVariants}
+              initial="hidden"
+              animate={isFlipped ? 'visible' : 'exit'}
+              onAnimationComplete={handleExitComplete}
+            >
+              <div className={styles.cardInner}>
+                <div
+                  className={styles.cardBack}
+                  aria-hidden={!isFlipped}
+                  role="region"
+                  aria-label={`${hit.title} details`}
                 >
-                  <div className={styles.cardInner}>
-                    <div
-                      className={styles.cardBack}
-                      aria-hidden={!isFlipped}
-                      role="region"
-                      aria-label={`${hit.title} details`}
+                  <button
+                    ref={closeButtonRef}
+                    type="button"
+                    className={`close-button-global ${styles.closeButton}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      closeCard();
+                    }}
+                    aria-label="Close expanded view"
+                    tabIndex={0}
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
                     >
-                      <button
-                        ref={closeButtonRef}
-                        type="button"
-                        className={`close-button-global ${styles.closeButton}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          closeCard();
-                        }}
-                        aria-label="Close expanded view"
-                        tabIndex={0}
-                      >
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                      </button>
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
 
-                      <div className={styles.backHeader}>
-                        <div className={styles.headerTop}>
-                          <div className={styles.headerControls}>
-                            {hit.url && (
-                              <SourceLinkButton
-                                url={hit.url}
-                                label={
-                                  isDevPost
-                                    ? `Read ${hit.title} on DEV Community`
-                                    : `View source for ${hit.title}`
-                                }
-                                icon={isDevPost ? DevIcon : GitHubIcon}
-                                onClick={(e) => e.stopPropagation()}
-                              />
-                            )}
-                          </div>
-                        </div>
-                        <h3
-                          id={dialogTitleId}
-                          className={styles.title}
-                          style={{ marginTop: '0.5rem' }}
-                        >
-                          {hit.title}
-                        </h3>
-                      </div>
-
-                      <div className={styles.factContent}>
-                        <p id={dialogDescriptionId} className={styles.factText}>
-                          {hit.content || hit.fact || hit.blurb}
-                        </p>
-                      </div>
-
-                      <div className={styles.metaSection}>
-                        {hit.projects && hit.projects.length > 0 && (
-                          <div className={styles.facetGroup}>
-                            <div className="simple-tags">
-                              {hit.projects.map((entity) => (
-                                <span key={entity} className="simple-tag">
-                                  {entity}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
+                  <div className={styles.backHeader}>
+                    <div className={styles.headerTop}>
+                      <div className={styles.headerControls}>
+                        {hit.url && (
+                          <SourceLinkButton
+                            url={hit.url}
+                            label={
+                              isDevPost
+                                ? `Read ${hit.title} on DEV Community`
+                                : `View source for ${hit.title}`
+                            }
+                            icon={isDevPost ? DevIcon : GitHubIcon}
+                            onClick={(e) => e.stopPropagation()}
+                          />
                         )}
                       </div>
                     </div>
+                    <h3 id={dialogTitleId} className={styles.title} style={{ marginTop: '0.5rem' }}>
+                      {hit.title}
+                    </h3>
                   </div>
-                </motion.article>
-              </motion.div>,
-              portalTarget
-            )}
-          </>
+
+                  <div className={styles.factContent}>
+                    <p id={dialogDescriptionId} className={styles.factText}>
+                      {hit.content || hit.fact || hit.blurb}
+                    </p>
+                  </div>
+
+                  <div className={styles.metaSection}>
+                    {hit.projects && hit.projects.length > 0 && (
+                      <div className={styles.facetGroup}>
+                        <div className="simple-tags">
+                          {hit.projects.map((entity) => (
+                            <span key={entity} className="simple-tag">
+                              {entity}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.article>
+          </motion.div>,
+          portalTarget
         )}
-      </AnimatePresence>
     </>
   );
 }

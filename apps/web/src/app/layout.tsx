@@ -25,8 +25,8 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anchildress1.dev';
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Ashley Childress' System Notes",
-    template: '%s | System Notes',
+    default: "Ashley's System Notes",
+    template: "%s | Ashley's System Notes",
   },
   description:
     "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     'Agents',
   ],
   openGraph: {
-    title: "Ashley Childress' System Notes",
+    title: "Ashley's System Notes",
     description:
       "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
     url: baseUrl,
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Ashley Childress' System Notes",
+    title: "Ashley's System Notes",
     description:
       "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
     images: ['/projects/system-notes.jpg'],
@@ -86,7 +86,7 @@ export default function RootLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: "Ashley Childress' System Notes",
+    name: "Ashley's System Notes",
     url: baseUrl,
     description: 'A living, queryable index of projects and decisions.',
     author: {
