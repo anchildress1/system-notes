@@ -74,7 +74,9 @@ export default function ExpandedView({
         variants={cardFlipVariants}
         initial="hidden"
         animate={isOpen ? 'visible' : 'exit'}
-        onAnimationComplete={onExitComplete}
+        onAnimationComplete={(definition) => {
+          if (definition === 'exit') onExitComplete();
+        }}
       >
         <button
           className={`close-button-global ${styles.closeButton}`}

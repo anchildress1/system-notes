@@ -304,7 +304,9 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
               variants={cardFlipVariants}
               initial="hidden"
               animate={isFlipped ? 'visible' : 'exit'}
-              onAnimationComplete={handleExitComplete}
+              onAnimationComplete={(definition) => {
+                if (definition === 'exit') handleExitComplete();
+              }}
             >
               <div className={styles.cardInner}>
                 <div
