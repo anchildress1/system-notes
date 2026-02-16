@@ -71,7 +71,7 @@ export const createSearchRouting = (indexName: string) => ({
   router: history<SearchRouteState>({
     windowTitle(routeState) {
       const query = routeState.query?.trim();
-      return query ? `Fact Index: ${query}` : 'Fact Index';
+      return query ? `${query} | Ashley's System Notes` : "Choices | Ashley's System Notes";
     },
     cleanUrlOnDispose: false,
     createURL({ qsModule, routeState, location }) {
