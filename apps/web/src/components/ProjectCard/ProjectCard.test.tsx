@@ -51,12 +51,13 @@ describe('ProjectCard Component', () => {
     const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
     render(<ProjectCard project={mockProject} onSelect={() => {}} />);
 
-    const link = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
+    const button = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
 
-    fireEvent.keyDown(link, { key: 'Enter' });
+    // Real buttons trigger click events on Enter/Space
+    fireEvent.click(button);
     expect(openSpy).toHaveBeenCalledWith(mockProject.repoUrl, '_blank', 'noopener,noreferrer');
 
-    fireEvent.keyDown(link, { key: ' ' });
+    fireEvent.click(button);
     expect(openSpy).toHaveBeenCalledTimes(2);
 
     openSpy.mockRestore();

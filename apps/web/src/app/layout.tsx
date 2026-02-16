@@ -21,6 +21,8 @@ import ClientShell from '@/components/ClientShell/ClientShell';
 import { allProjects } from '@/data/projects';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anchildress1.dev';
+const algoliaAppId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
+const algoliaPreconnectHost = algoliaAppId ? `https://${algoliaAppId}-dsn.algolia.net` : null;
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -116,8 +118,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Preconnect to Algolia domains for faster API requests */}
-        <link rel="preconnect" href="https://7DY9F9LQFU-dsn.algolia.net" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://7DY9F9LQFU-dsn.algolia.net" />
+        {algoliaPreconnectHost && (
+          <>
+            <link rel="preconnect" href={algoliaPreconnectHost} crossOrigin="anonymous" />
+            <link rel="dns-prefetch" href={algoliaPreconnectHost} />
+          </>
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

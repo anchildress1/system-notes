@@ -44,11 +44,23 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
       {
-        source: '/(.*)\\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif|ico)',
+        // Immutable caching only for content-hashed Next.js static assets
+        source: '/_next/static/:path*',
         headers: [
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Standard caching for other static assets (fonts, images from public/)
+        // Excludes .ico to allow favicon updates
+        source: '/(.*)\\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000',
           },
         ],
       },

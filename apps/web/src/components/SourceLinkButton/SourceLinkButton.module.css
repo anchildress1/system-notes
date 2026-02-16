@@ -8,6 +8,7 @@
   justify-content: center;
   width: 44px;
   height: 44px;
+  padding: 0;
   border-radius: var(--radius-round);
   background: hsl(var(--color-bg-elevated));
   color: hsl(var(--color-text-muted));
@@ -16,6 +17,7 @@
   border: 2px solid transparent;
   will-change: transform;
   cursor: pointer;
+  font: inherit;
 }
 
 .sourceLink:hover {

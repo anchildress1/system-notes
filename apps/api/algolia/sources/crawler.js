@@ -93,11 +93,12 @@ new Crawler({
         }
 
         var engagementRaw = $('meta[name="devto:engagement_score"]').attr('content');
-        // 615 is the maximum expected dev.to engagement_score, used to normalize to a 0–100 scale.
-        var engagementScore = engagementRaw ? Math.round((Number(engagementRaw) / 615) * 100) : 0;
-        if (engagementScore === 0) return [];
-        if (engagementScore < 1) engagementScore = 1;
-        if (engagementScore > 4) engagementScore = 4;
+        // Map dev.to engagement_score (0-615 range) to signal scale (1-5).
+        // 615 is the maximum expected engagement score. Posts with zero engagement are dropped.
+        var rawScore = engagementRaw ? Number(engagementRaw) : 0;
+        if (rawScore === 0) return [];
+        // Map to 1-5 scale: divide by 123 (615/5) and ceil to ensure minimum of 1
+        var engagementScore = Math.min(5, Math.max(1, Math.ceil(rawScore / 123)));
 
         var _content = $('main article').first().text();
         var content = _content ? String(_content).trim().replace(/\s+/g, ' ') : null;
