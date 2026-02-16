@@ -214,25 +214,34 @@ export default function SearchPage() {
       const title = titleEl?.textContent?.trim();
       if (!title) return;
 
+      // Close the SiteSearch dialog immediately before navigating
+      const dialog = document.querySelector('[role="dialog"], .modal-backdrop-askai');
+      const closeBtn = dialog?.querySelector<HTMLElement>(
+        'button[aria-label="Close"], button[aria-label="close"]'
+      );
+      if (closeBtn) closeBtn.click();
+
       const params = new URLSearchParams();
       params.set('query', title);
 
       router.push(`/search?${params.toString()}`, { scroll: false });
 
-      // Close the dialog and navigate to the first matching card.
-      // Use tracked timeouts so they are cancelled on unmount.
-      scheduleTimeout(() => {
-        const dialog = document.querySelector('[role="dialog"], .modal-backdrop-askai');
-        const closeBtn = dialog?.querySelector('button[aria-label*="lose"], button:has(svg)');
-        if (closeBtn instanceof HTMLElement) closeBtn.click();
+      // Use MutationObserver to click the first card once results render
+      const resultsContainer = document.querySelector('[aria-label="Search results"]');
+      if (!resultsContainer) return;
 
-        scheduleTimeout(() => {
-          const firstCard = document.querySelector('[class*="cardLink"], [class*="PostCard"] a');
-          if (firstCard instanceof HTMLElement) {
-            firstCard.click();
-          }
-        }, 500);
-      }, 100);
+      const resultsObserver = new MutationObserver(() => {
+        const firstCard = resultsContainer.querySelector('a[href*="factId"]');
+        if (firstCard instanceof HTMLElement) {
+          resultsObserver.disconnect();
+          firstCard.click();
+        }
+      });
+
+      resultsObserver.observe(resultsContainer, { childList: true, subtree: true });
+
+      // Safety timeout: disconnect observer if results never appear
+      scheduleTimeout(() => resultsObserver.disconnect(), 5000);
     };
 
     const attachLinkHandlers = () => {
