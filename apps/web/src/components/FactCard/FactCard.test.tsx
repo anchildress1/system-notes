@@ -120,9 +120,7 @@ describe('FactCard Component', () => {
     const cardLink = screen.getByRole('link', { name: /Press to expand/i });
     await user.click(cardLink);
 
-    expect(mockSendEvent).toHaveBeenCalledWith('click', hit, 'Fact Card Viewed', {
-      objectIDs: [hit.objectID],
-    });
+    expect(mockSendEvent).toHaveBeenCalledWith('click', hit, 'Fact Card Viewed');
   });
 
   it('only tracks expansion once per card instance', async () => {

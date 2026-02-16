@@ -85,9 +85,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const openCard = useCallback(() => {
     if (!hasTrackedFlip.current && sendEvent) {
       hasTrackedFlip.current = true;
-      sendEvent('click', hit, 'Fact Card Viewed', {
-        objectIDs: [hit.objectID],
-      });
+      sendEvent('click', hit, 'Fact Card Viewed');
     }
     // Immediate visual feedback
     setPortalVisible(true);
