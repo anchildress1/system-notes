@@ -4,12 +4,7 @@ import { motion } from 'framer-motion';
 import { Project } from '@/data/projects';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
-import {
-  overlayVariants,
-  overlayTransition,
-  cardFlipVariants,
-  cardFlipTransition,
-} from '@/utils/animations';
+import { overlayVariants, overlayTransition, cardFlipVariants } from '@/utils/animations';
 
 interface ExpandedViewProps {
   project: Project;
@@ -76,7 +71,6 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         initial="hidden"
         animate="visible"
         exit="exit"
-        transition={cardFlipTransition}
       >
         <button
           className={`close-button-global ${styles.closeButton}`}
@@ -174,7 +168,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
                     rel="noopener noreferrer"
                     className={styles.repoLink}
                   >
-                    View Source on GitHub
+                    GitHub Repo
                     <svg
                       width="16"
                       height="16"

@@ -23,15 +23,28 @@ export const overlayVariants: Variants = {
 export const overlayTransition: Transition = { duration: 0.12, ease: 'easeOut' };
 
 /* ── Card-flip expanded view (open + close) ── */
-export const cardFlipVariants: Variants = {
-  hidden: { rotateY: 90, opacity: 0, scale: 0.85 },
-  visible: { rotateY: 0, opacity: 1, scale: 1 },
-  exit: { rotateY: -90, opacity: 0, scale: 0.85 },
-};
+const flipEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-export const cardFlipTransition: Transition = {
-  rotateY: { duration: 0.25, ease: easeSpring },
-  opacity: { duration: 0.15, ease: 'easeOut' },
-  scale: { duration: 0.25, ease: easeSpring },
-  layout: { duration: 0.2, ease: easeMorph },
+export const cardFlipVariants: Variants = {
+  hidden: { rotateY: 90, opacity: 0, scale: 0.92 },
+  visible: {
+    rotateY: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      rotateY: { duration: 0.2, ease: flipEase },
+      opacity: { duration: 0.15, ease: 'easeOut' },
+      scale: { duration: 0.2, ease: flipEase },
+    },
+  },
+  exit: {
+    rotateY: -45,
+    opacity: 0,
+    scale: 0.92,
+    transition: {
+      rotateY: { duration: 0.18, ease: flipEase },
+      opacity: { duration: 0.12, ease: 'easeIn' },
+      scale: { duration: 0.18, ease: flipEase },
+    },
+  },
 };

@@ -8,12 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import type { Hit, BaseHit } from 'instantsearch.js';
 import type { SendEventForHits } from '@/types/algolia';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
-import {
-  overlayVariants,
-  overlayTransition,
-  cardFlipVariants,
-  cardFlipTransition,
-} from '@/utils/animations';
+import { overlayVariants, overlayTransition, cardFlipVariants } from '@/utils/animations';
 import styles from './FactCard.module.css';
 
 export interface FactHitRecord extends BaseHit {
@@ -306,7 +301,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  transition={cardFlipTransition}
                 >
                   <div className={styles.cardInner}>
                     <div

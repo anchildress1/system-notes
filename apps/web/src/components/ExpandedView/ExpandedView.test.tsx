@@ -13,7 +13,7 @@ describe('ExpandedView Component', () => {
     expect(screen.getByText('The core purpose of the project.')).toBeInTheDocument();
     expect(screen.getByText('Long detailed description.')).toBeInTheDocument();
     expect(screen.getByText('Great outcome.')).toBeInTheDocument();
-    expect(screen.getByText('View Source on GitHub')).toBeInTheDocument();
+    expect(screen.getByText('GitHub Repo')).toBeInTheDocument();
   });
 
   it('calls onClose when close button is clicked', () => {
