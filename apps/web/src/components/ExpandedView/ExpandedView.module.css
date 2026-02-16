@@ -2,71 +2,32 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-overlay);
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-xl);
+  padding: var(--space-md);
   perspective: 1200px;
 }
 
 .expandedCard {
   background: hsl(var(--color-bg-surface));
-  width: 100%;
-  max-width: 1200px;
-  height: 90vh;
+  width: 90vw;
+  max-width: 650px;
+  height: auto;
+  max-height: 85vh;
   border-radius: var(--radius-xl);
   overflow-y: auto;
   position: relative;
-  box-shadow: var(--shadow-bento), 0 0 20px hsl(var(--color-accent-purple) / 0.1);
-  border: 1px solid hsl(var(--color-accent-purple) / 0.2);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.8),
+    0 0 0 1px hsl(var(--color-accent-purple) / 0.2);
+  border: 1px solid hsl(var(--color-accent-purple) / 0.3);
   display: flex;
   flex-direction: column;
   isolation: isolate;
-  will-change: transform, opacity;
   transform-style: preserve-3d;
-  backface-visibility: hidden;
-}
-
-@media (min-width: 768px) {
-  .expandedCard {
-    box-shadow: var(--shadow-bento), 0 0 40px hsl(var(--color-accent-purple) / 0.15);
-  }
-}
-
-.imageContainer {
-  width: 100%;
-  height: 140px;
-  position: relative;
-  background: hsl(var(--color-bg-base));
-  flex-shrink: 0;
-  border-bottom: 1px solid hsl(var(--color-border));
-  overflow: hidden;
-}
-
-.imageWrapper {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.conceptBackground {
-  position: absolute;
-  inset: -10px;
-  background-size: cover;
-  background-position: center;
-  filter: blur(20px) brightness(0.5);
-  z-index: 0;
-}
-
-.bannerImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: relative;
-  z-index: 2;
-  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-  opacity: 0.9;
 }
 
 .closeButton {
@@ -79,8 +40,7 @@
 }
 
 .content {
-  padding: var(--space-md) var(--space-lg);
-  background: linear-gradient(to bottom, hsl(var(--color-bg-base)), hsl(var(--color-bg-surface)));
+  padding: var(--space-sm) var(--space-md);
   flex-grow: 1;
   height: auto;
 }
@@ -113,7 +73,7 @@
 }
 
 .title {
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 600;
   color: hsl(var(--color-text-primary));
   line-height: 1.1;
@@ -138,7 +98,7 @@
 }
 
 .subheader {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: hsl(var(--color-text-secondary));
   margin-top: var(--space-sm);
   line-height: 1.4;
@@ -148,44 +108,12 @@
 .body {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: var(--space-lg);
-}
-
-@media (max-width: 900px) {
-  .overlay {
-    padding: var(--space-sm);
-  }
-
-  .body {
-    grid-template-columns: 1fr;
-  }
-
-  .titleRow {
-    flex-direction: column;
-    gap: var(--space-sm);
-  }
-
-  .statusBadge {
-    align-self: flex-start;
-  }
-
-  .imageContainer {
-    height: 200px;
-    flex-shrink: 0;
-  }
-
-  .content {
-    padding: var(--space-md);
-  }
-
-  .title {
-    font-size: 2rem;
-  }
+  gap: var(--space-md);
 }
 
 .bodyText {
-  font-size: 1.25rem;
-  line-height: 2;
+  font-size: 1.1rem;
+  line-height: 1.8;
   color: hsl(var(--color-text-secondary));
   margin: 0;
 }
@@ -198,7 +126,7 @@
 .sectionTitle {
   font-family: var(--font-mono);
   text-transform: uppercase;
-  font-size: 1.25rem;
+  font-size: 1rem;
   letter-spacing: 1px;
   margin-bottom: var(--space-sm);
   color: hsl(var(--color-text-muted));
@@ -261,7 +189,7 @@
 .mainColumn {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-md);
 }
 
 .sideColumn {
@@ -294,4 +222,42 @@
 .blogLink:hover {
   color: hsl(var(--color-accent-pink));
   border-bottom-color: hsl(var(--color-accent-pink));
+}
+
+@media (max-width: 768px) {
+  .overlay {
+    padding: var(--space-sm);
+  }
+
+  .expandedCard {
+    width: 95vw;
+    max-height: 90vh;
+  }
+
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .titleRow {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .statusBadge {
+    align-self: flex-start;
+  }
+
+  .content {
+    padding: var(--space-sm);
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expandedCard {
+    transition: none;
+  }
 }

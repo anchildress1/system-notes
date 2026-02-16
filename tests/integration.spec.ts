@@ -39,18 +39,13 @@ test.describe('System Notes Integration', () => {
     await expect(roleBadge).toHaveCount(0); // Should be 0 in primary view
   });
 
-  test('should open expanded view and verify banner', async ({ page }) => {
+  test('should open expanded view and verify content', async ({ page }) => {
     await page.goto('/projects');
     // Click first card
     await page
       .getByTestId(/^project-card-/)
       .first()
       .click();
-
-    // Check for banner container
-    // Use a more specific locator to avoid matching Project Cards
-    const banner = page.getByTestId('expanded-image-container');
-    await expect(banner).toBeVisible();
 
     // Check for "Project Output" or similar text to ensure content loaded
     // Verify content loaded - check for specific section title within expanded view

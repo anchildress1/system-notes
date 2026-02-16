@@ -4,7 +4,12 @@ import { motion } from 'framer-motion';
 import { Project } from '@/data/projects';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
-import Image from 'next/image';
+import {
+  overlayVariants,
+  overlayTransition,
+  cardFlipVariants,
+  cardFlipTransition,
+} from '@/utils/animations';
 
 interface ExpandedViewProps {
   project: Project;
@@ -51,10 +56,11 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
     <motion.div
       className={styles.overlay}
       onClick={onClose}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.15 }}
+      variants={overlayVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      transition={overlayTransition}
     >
       <motion.div
         ref={cardRef}
@@ -63,18 +69,14 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        tabIndex={-1} // Make focusable
+        tabIndex={-1}
         data-testid="expanded-view-dialog"
         layoutId={`card-${project.id}`}
-        initial={{ rotateY: 180, opacity: 0 }}
-        animate={{ rotateY: 0, opacity: 1 }}
-        exit={{ rotateY: -180, opacity: 0 }}
-        transition={{
-          rotateY: { duration: 0.35, ease: 'easeOut' },
-          opacity: { duration: 0.2, ease: 'easeOut' },
-          layout: { duration: 0.3, ease: 'easeOut' },
-        }}
-        style={{ transformStyle: 'preserve-3d', perspective: 1200 }}
+        variants={cardFlipVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        transition={cardFlipTransition}
       >
         <button
           className={`close-button-global ${styles.closeButton}`}
@@ -93,22 +95,6 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
-        <div className={styles.imageContainer} data-testid="expanded-image-container">
-          <div className={styles.imageWrapper}>
-            <div className={styles.conceptBackground} />
-            {project.imageUrl && (
-              <Image
-                src={project.imageUrl}
-                alt={project.title}
-                className={styles.bannerImage}
-                fill
-                style={{ objectFit: 'cover' }}
-                priority={false}
-                sizes="(max-width: 1200px) 100vw, 1200px"
-              />
-            )}
-          </div>
-        </div>
 
         <div className={styles.content}>
           <div className={styles.header}>

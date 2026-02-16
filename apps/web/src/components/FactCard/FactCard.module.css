@@ -26,9 +26,6 @@
   cursor: pointer;
   box-shadow: var(--shadow-card);
   transition: box-shadow var(--transition-slow), border-color var(--transition-slow);
-  perspective: 1200px;
-  will-change: transform;
-  transform: translateZ(0);
 }
 
 .card:hover {
@@ -161,32 +158,34 @@
   pointer-events: none;
 }
 
-.backdrop {
+.overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  z-index: var(--z-overlay);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
-  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  perspective: 1200px;
 }
 
 .card.flipped {
-  position: fixed;
-  top: 50%;
-  left: 50%;
+  position: relative;
   width: 90vw;
-  max-width: 600px;
+  max-width: 650px;
   height: auto;
-  max-height: 80vh;
-  transform: translate(-50%, -50%) !important;
-  z-index: var(--z-card-flip);
+  max-height: 85vh;
   background: hsl(var(--color-bg-surface));
-  border-color: hsl(var(--color-accent-purple) / 0.4);
+  border-color: hsl(var(--color-accent-purple) / 0.3);
   box-shadow:
     0 25px 50px -12px rgba(0, 0, 0, 0.8),
     0 0 0 1px hsl(var(--color-accent-purple) / 0.2);
   cursor: default;
   display: flex !important;
   flex-direction: column;
+  transform-style: preserve-3d;
 }
 
 .flipped .cardInner {
@@ -308,10 +307,13 @@
 }
 
 @media (max-width: 768px) {
+  .overlay {
+    padding: var(--space-sm);
+  }
+
   .card.flipped {
     width: 95vw;
-    height: auto;
-    max-height: 85vh;
+    max-height: 90vh;
   }
 }
 
