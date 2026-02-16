@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 import path from 'path';
+import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const securityHeaders = [
   {
@@ -28,8 +29,13 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@algolia/sitesearch'],
   output: 'standalone',
   outputFileTracingRoot: path.join(__dirname, '../../'),
+  compress: true,
   images: {
     formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 31536000,
+  },
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react', 'react-icons'],
   },
   async headers() {
     return [
@@ -37,8 +43,33 @@ const nextConfig: NextConfig = {
         source: '/(.*)',
         headers: securityHeaders,
       },
+      {
+        // Immutable caching only for content-hashed Next.js static assets
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Standard caching for other static assets (fonts, images from public/)
+        // Excludes .ico to allow favicon updates
+        source: '/(.*)\\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000',
+          },
+        ],
+      },
     ];
   },
 };
 
-export default nextConfig;
+const bundleAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+export default bundleAnalyzer(nextConfig);

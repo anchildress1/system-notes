@@ -55,9 +55,9 @@
 
 .infoTooltip {
   position: absolute;
-  bottom: 100%;
-  right: 50%;
-  transform: translateX(50%);
+  top: 50%;
+  right: calc(100% + 12px);
+  transform: translateY(-50%);
   background: hsl(var(--color-bg-surface));
   border: 1px solid hsl(var(--color-border));
   padding: 8px 12px;
@@ -68,14 +68,31 @@
   pointer-events: none;
   opacity: 0;
   transition: opacity var(--transition-base), transform var(--transition-base);
-  margin-bottom: 10px;
   z-index: 10;
+  white-space: nowrap;
 }
 
 .playButton:hover + .infoTooltip,
 .playButton:focus-visible + .infoTooltip {
   opacity: 1;
-  transform: translateX(50%) translateY(-5px);
+  transform: translateY(-50%) translateX(-8px);
+}
+
+/* Mobile: tooltip above on small screens to avoid going off-screen */
+@media (max-width: 768px) {
+  .infoTooltip {
+    top: auto;
+    right: 50%;
+    bottom: calc(100% + 12px);
+    transform: translateX(50%);
+    width: 160px;
+  }
+
+  .playButton:hover + .infoTooltip,
+  .playButton:focus-visible + .infoTooltip {
+    opacity: 1;
+    transform: translateX(50%) translateY(-8px);
+  }
 }
 
 .songTitle {

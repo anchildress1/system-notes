@@ -146,6 +146,133 @@ body::before {
   box-shadow: var(--shadow-card);
 }
 
+/* ── Global Close Button Style ── */
+.close-button-global {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--radius-round);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  outline: none;
+}
+
+.close-button-global:hover {
+  background: transparent;
+  color: hsl(var(--color-accent-purple));
+  transform: rotate(90deg);
+  border: 2px solid hsl(var(--color-accent-purple));
+}
+
+.close-button-global:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 2px;
+}
+
+/* ── Global Algolia Attribution ── */
+.algolia-attribution {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: hsl(var(--color-text-secondary));
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  line-height: 1;
+  flex-direction: row-reverse;
+  transition: color var(--transition-base);
+}
+
+.algolia-attribution:hover .algolia-hoverable {
+  color: hsl(var(--color-accent-teal));
+}
+
+.algolia-prefix {
+  white-space: nowrap;
+  color: hsl(var(--color-text-secondary));
+}
+
+.algolia-hoverable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color var(--transition-base);
+}
+
+.algolia-name {
+  white-space: nowrap;
+}
+
+.algolia-icon {
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+/* ── Global Card Header Badge ── */
+.card-header-badge {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: hsl(var(--color-accent-teal) / 0.1);
+  color: hsl(var(--color-accent-teal));
+  border: 1px solid hsl(var(--color-accent-teal) / 0.5);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+/* ── Global Tag Styles ── */
+.simple-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+}
+
+.simple-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  background: hsl(var(--color-bg-elevated));
+  border-radius: var(--radius-lg);
+  color: hsl(var(--color-text-secondary));
+  border: 1px solid hsl(var(--color-border));
+}
+
+.tag-category {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: hsl(var(--color-accent-teal) / 0.1);
+  color: hsl(var(--color-accent-teal));
+  border: 1px solid hsl(var(--color-accent-teal) / 0.5);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.tag-level1 {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  background: transparent;
+  color: hsl(var(--color-accent-teal));
+  border-radius: var(--radius-sm);
+  border: 1px solid hsl(var(--color-accent-teal));
+  font-weight: 500;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -182,50 +309,6 @@ button {
    - action/agent    → purple (--color-accent-purple)
    - human/identity  → pink  (--color-accent-pink)
 */
-
-.ais-Chat {
-  --ais-primary-color-rgb: 181, 107, 255 !important;
-  --ais-background-color-rgb: 58, 61, 70 !important;
-  --ais-text-color-rgb: 230, 230, 235 !important;
-}
-
-.ais-Chat-toggleButton {
-  width: 60px !important;
-  height: 60px !important;
-  background: linear-gradient(135deg, hsl(var(--color-accent-purple)), hsl(var(--color-accent-purple) / 0.85)) !important;
-  border: 2px solid hsl(var(--color-accent-purple) / 0.6) !important;
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    0 0 20px hsl(var(--color-accent-purple) / 0.25) !important;
-}
-
-.ais-Chat-toggleButton svg {
-  width: 30px !important;
-  height: 30px !important;
-  filter: drop-shadow(0 0 4px hsl(var(--color-accent-purple) / 0.5));
-}
-
-/* Header icon: action (purple) */
-.ais-ChatHeader-titleIcon,
-.aspect-square {
-  color: hsl(var(--color-accent-purple)) !important;
-  filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4));
-}
-
-/* Chat window: elevated glass with subtle purple border glow */
-.ais-Chat-window,
-.ais-Chat-container {
-  background: linear-gradient(
-    180deg,
-    hsl(var(--color-bg-elevated)) 0%,
-    hsl(var(--color-bg-elevated) / 0.95) 100%
-  ) !important;
-  border: 1px solid hsl(var(--color-accent-purple) / 0.2) !important;
-  border-radius: var(--radius-xl) !important;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px hsl(var(--color-accent-purple) / 0.08) inset !important;
-}
 
 /* ── Chat header: action purple accent bar ── */
 .ais-Chat-header,
@@ -391,28 +474,6 @@ button {
 
 [class*="ss-"] a:hover {
   color: hsl(var(--color-accent-teal)) !important;
-}
-
-/* ── Chat Prompt Suggestions: visible hover state ── */
-.ais-Chat-suggestedQuestion,
-.ais-Chat [class*="suggestedQuestion"],
-.ais-Chat [class*="suggestion"] {
-  background: hsl(var(--color-bg-elevated)) !important;
-  border: 1px solid hsl(var(--color-text-secondary) / 0.2) !important;
-  color: hsl(var(--color-text-secondary)) !important;
-  border-radius: var(--radius-lg) !important;
-  transition: all var(--transition-base) !important;
-  cursor: pointer !important;
-}
-
-.ais-Chat-suggestedQuestion:hover,
-.ais-Chat [class*="suggestedQuestion"]:hover,
-.ais-Chat [class*="suggestion"]:hover {
-  background: hsl(var(--color-accent-purple) / 0.15) !important;
-  border-color: hsl(var(--color-accent-purple) / 0.5) !important;
-  color: hsl(var(--color-text-primary)) !important;
-  box-shadow: 0 2px 8px hsl(var(--color-accent-purple) / 0.2) !important;
-  transform: translateY(-1px) !important;
 }
 
 /* ── Chat Search Results (inline results within chat messages) ── */

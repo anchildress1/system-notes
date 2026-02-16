@@ -3,10 +3,12 @@
 import { useCallback, useRef, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Highlight } from 'react-instantsearch';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import type { Hit, BaseHit } from 'instantsearch.js';
 import type { SendEventForHits } from '@/types/algolia';
+import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
+import { overlayTransition, cardFlipVariants } from '@/utils/animations';
 import styles from './FactCard.module.css';
 
 export interface FactHitRecord extends BaseHit {
@@ -32,6 +34,8 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const searchParams = useSearchParams();
   const portalTarget = useMemo(() => (typeof document !== 'undefined' ? document.body : null), []);
   const hasTrackedFlip = useRef(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const cardLinkRef = useRef<HTMLAnchorElement>(null);
   const categoryLabel = hit.category || 'System';
   const dialogTitleId = `fact-card-title-${hit.objectID}`;
   const dialogDescriptionId = `fact-card-description-${hit.objectID}`;
@@ -43,16 +47,15 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   // Use local state for instant visual feedback; sync with URL for deep-linking
   const urlFlipped = searchParams.get('factId') === hit.objectID;
   const [isFlipped, setIsFlipped] = useState(urlFlipped);
-
-  // Sync local state when URL changes externally (e.g. back button, popstate)
-  useEffect(() => {
-    setIsFlipped(urlFlipped);
-  }, [urlFlipped]);
+  // Keep portal mounted during exit animation
+  const [portalVisible, setPortalVisible] = useState(urlFlipped);
 
   useEffect(() => {
     const handlePopState = () => {
       const params = new URLSearchParams(window.location.search);
-      setIsFlipped(params.get('factId') === hit.objectID);
+      const flipped = params.get('factId') === hit.objectID;
+      setIsFlipped(flipped);
+      if (flipped) setPortalVisible(true);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -87,6 +90,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
       });
     }
     // Immediate visual feedback
+    setPortalVisible(true);
     setIsFlipped(true);
     // Update URL without triggering re-render
     const params = new URLSearchParams(searchParams.toString());
@@ -105,6 +109,13 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     window.history.pushState(null, '', newUrl);
   }, [searchParams]);
 
+  // Unmount portal after exit animation completes
+  const handleExitComplete = useCallback(() => {
+    if (!isFlipped) {
+      setPortalVisible(false);
+    }
+  }, [isFlipped]);
+
   useEffect(() => {
     const handleWindowKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isFlipped) {
@@ -118,6 +129,24 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     }
     return () => window.removeEventListener('keydown', handleWindowKeyDown);
   }, [isFlipped, closeCard]);
+
+  const shouldRestoreFocusRef = useRef(false);
+
+  // Focus management: move focus to close button when dialog opens, return on close
+  useEffect(() => {
+    if (isFlipped) {
+      // Wait for portal to render, then focus close button
+      requestAnimationFrame(() => {
+        closeButtonRef.current?.focus();
+        // Mark that focus was moved into the dialog so we can restore it on close
+        shouldRestoreFocusRef.current = true;
+      });
+    } else if (cardLinkRef.current && shouldRestoreFocusRef.current) {
+      // Return focus to card link when closing if focus was previously moved into the dialog
+      shouldRestoreFocusRef.current = false;
+      cardLinkRef.current.focus();
+    }
+  }, [isFlipped]);
 
   const handleCardClick = useCallback(
     (e: React.MouseEvent) => {
@@ -147,6 +176,34 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
 
   const lvl1Tags = tagsLvl1;
   const displayTags = lvl1Tags.slice(0, 1);
+
+  // Detect if this is a DEV.to blog post vs GitHub source
+  const isDevPost = useMemo(() => hit.url?.includes('dev.to') ?? false, [hit.url]);
+
+  // Icon components
+  const GitHubIcon = (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+      <path d="M9 18c-4.51 2-5-2-7-2" />
+    </svg>
+  );
+
+  const DevIcon = (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M7.42 10.05c-.18-.16-.46-.23-.84-.23H6l.02 2.44.04 2.45.56-.02c.41 0 .63-.07.83-.26.24-.24.26-.36.26-2.2 0-1.91-.02-1.96-.29-2.18zM0 4.94v14.12h24V4.94H0zM8.56 15.3c-.44.58-1.06.77-2.53.77H4.71V8.53h1.4c1.67 0 2.16.18 2.6.9.27.43.29.6.32 2.57.05 2.23-.02 2.73-.47 3.3zm5.09-5.47h-2.47v1.77h1.52v1.28l-.72.04-.75.03v1.77l1.22.03 1.2.04v1.28h-1.6c-1.53 0-1.6-.01-1.87-.3l-.3-.28v-3.16c0-3.02.01-3.18.25-3.48.23-.31.25-.31 1.88-.31h1.64v1.3zm4.68 5.45c-.17.43-.64.79-1 .79-.18 0-.45-.15-.67-.39-.32-.32-.45-.63-.82-2.08l-.9-3.39-.45-1.67h.76c.4 0 .75.02.75.05 0 .06 1.16 4.54 1.26 4.83.04.15.32-.7.73-2.3l.66-2.52.74-.04c.4-.02.73 0 .73.04 0 .14-1.67 6.38-1.8 6.68z" />
+    </svg>
+  );
+
   const cardUrl = useMemo(() => {
     const params = new URLSearchParams();
     params.set('factId', hit.objectID);
@@ -168,6 +225,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   return (
     <>
       <a
+        ref={cardLinkRef}
         href={cardUrl}
         onClick={handleCardClick}
         onKeyDown={handleKeyDown}
@@ -187,39 +245,17 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
               <div className={styles.content}>
                 <div className={styles.header}>
                   <div className={styles.headerTop}>
+                    <span className="card-header-badge">{categoryLabel}</span>
                     {hit.url && (
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        className={styles.ghLink}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          window.open(hit.url, '_blank', 'noopener,noreferrer');
-                        }}
-                        onKeyDown={(e) => {
-                          e.stopPropagation();
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            window.open(hit.url, '_blank', 'noopener,noreferrer');
-                          }
-                        }}
-                        aria-label={`View source for ${hit.title}`}
-                      >
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          aria-hidden="true"
-                        >
-                          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                          <path d="M9 18c-4.51 2-5-2-7-2" />
-                        </svg>
-                      </span>
+                      <SourceLinkButton
+                        url={hit.url}
+                        label={
+                          isDevPost
+                            ? `Read ${hit.title} on DEV Community`
+                            : `View source for ${hit.title}`
+                        }
+                        icon={isDevPost ? DevIcon : GitHubIcon}
+                      />
                     )}
                   </div>
                   <h2 className={styles.title}>
@@ -235,10 +271,9 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                   )}
                 </p>
 
-                <div className={styles.simpleTags}>
-                  <span className={styles.tagCategory}>{categoryLabel}</span>
+                <div className="simple-tags">
                   {displayTags.map((t) => (
-                    <span key={t} className={styles.tagLevel1}>
+                    <span key={t} className="simple-tag">
                       {t}
                     </span>
                   ))}
@@ -249,134 +284,108 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
         </motion.article>
       </a>
 
-      <AnimatePresence mode="wait">
-        {isFlipped && portalTarget && (
-          <>
-            {createPortal(
-              <motion.div
-                className={styles.backdrop}
-                onClick={closeCard}
-                aria-hidden="true"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-              />,
-              portalTarget
-            )}
-            {createPortal(
-              <motion.article
-                className={`${styles.card} ${styles.flipped}`}
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby={dialogTitleId}
-                aria-describedby={dialogDescriptionId}
-                initial={{ rotateY: 180, scale: 0.85, opacity: 0 }}
-                animate={{ rotateY: 0, scale: 1, opacity: 1 }}
-                exit={{ rotateY: -180, scale: 0.85, opacity: 0 }}
-                transition={{
-                  rotateY: { duration: 0.5, ease: [0.175, 0.885, 0.32, 1.275] },
-                  scale: { duration: 0.45, ease: [0.175, 0.885, 0.32, 1.275] },
-                  opacity: { duration: 0.25 },
-                }}
-                style={{ transformStyle: 'preserve-3d', perspective: 1200 }}
-              >
-                <div className={styles.cardInner}>
-                  <div
-                    className={styles.cardBack}
-                    aria-hidden={!isFlipped}
-                    role="region"
-                    aria-label={`${hit.title} details`}
+      {portalVisible &&
+        portalTarget &&
+        createPortal(
+          <motion.div
+            className={styles.overlay}
+            onClick={closeCard}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isFlipped ? 1 : 0 }}
+            transition={overlayTransition}
+          >
+            <motion.article
+              className={`${styles.card} ${styles.flipped}`}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={dialogTitleId}
+              aria-describedby={dialogDescriptionId}
+              onClick={(e) => e.stopPropagation()}
+              variants={cardFlipVariants}
+              initial="hidden"
+              animate={isFlipped ? 'visible' : 'exit'}
+              onAnimationComplete={(definition) => {
+                if (definition === 'exit') handleExitComplete();
+              }}
+            >
+              <div className={styles.cardInner}>
+                <div
+                  className={styles.cardBack}
+                  aria-hidden={!isFlipped}
+                  role="region"
+                  aria-label={`${hit.title} details`}
+                >
+                  <button
+                    ref={closeButtonRef}
+                    type="button"
+                    className={`close-button-global ${styles.closeButton}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      closeCard();
+                    }}
+                    aria-label="Close expanded view"
+                    tabIndex={0}
                   >
-                    <button
-                      type="button"
-                      className={styles.closeButton}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        closeCard();
-                      }}
-                      aria-label="Close expanded view"
-                      tabIndex={0}
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
                     >
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
-                    </button>
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
 
-                    <div className={styles.backHeader}>
-                      <div className={styles.headerTop}>
-                        <div className={styles.headerControls}>
-                          {hit.url && (
-                            <a
-                              href={hit.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={styles.ghLink}
-                              aria-label={`View source for ${hit.title}`}
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <svg
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                aria-hidden="true"
-                              >
-                                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                                <path d="M9 18c-4.51 2-5-2-7-2" />
-                              </svg>
-                            </a>
-                          )}
+                  <div className={styles.backHeader}>
+                    <div className={styles.headerTop}>
+                      <div className={styles.headerControls}>
+                        {hit.url && (
+                          <SourceLinkButton
+                            url={hit.url}
+                            label={
+                              isDevPost
+                                ? `Read ${hit.title} on DEV Community`
+                                : `View source for ${hit.title}`
+                            }
+                            icon={isDevPost ? DevIcon : GitHubIcon}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <h3 id={dialogTitleId} className={styles.title} style={{ marginTop: '0.5rem' }}>
+                      {hit.title}
+                    </h3>
+                  </div>
+
+                  <div className={styles.factContent}>
+                    <p id={dialogDescriptionId} className={styles.factText}>
+                      {hit.content || hit.fact || hit.blurb}
+                    </p>
+                  </div>
+
+                  <div className={styles.metaSection}>
+                    {hit.projects && hit.projects.length > 0 && (
+                      <div className={styles.facetGroup}>
+                        <div className="simple-tags">
+                          {hit.projects.map((entity) => (
+                            <span key={entity} className="simple-tag">
+                              {entity}
+                            </span>
+                          ))}
                         </div>
                       </div>
-                      <h3
-                        id={dialogTitleId}
-                        className={styles.title}
-                        style={{ marginTop: '0.5rem' }}
-                      >
-                        {hit.title}
-                      </h3>
-                    </div>
-
-                    <div className={styles.factContent}>
-                      <p id={dialogDescriptionId} className={styles.factText}>
-                        {hit.content || hit.fact || hit.blurb}
-                      </p>
-                    </div>
-
-                    <div className={styles.metaSection}>
-                      {hit.projects && hit.projects.length > 0 && (
-                        <div className={styles.facetGroup}>
-                          <div className={styles.simpleTags}>
-                            {hit.projects.map((entity) => (
-                              <span key={entity} className={styles.simpleTag}>
-                                {entity}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
                 </div>
-              </motion.article>,
-              portalTarget
-            )}
-          </>
+              </div>
+            </motion.article>
+          </motion.div>,
+          portalTarget
         )}
-      </AnimatePresence>
     </>
   );
 }

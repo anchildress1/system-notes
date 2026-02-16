@@ -1,0 +1,15 @@
+/* Loading placeholder that matches SearchPage dimensions to prevent CLS */
+.loadingContainer {
+  min-height: 100vh;
+  padding-bottom: var(--space-xl);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 150px;
+}
+
+.loadingContent {
+  text-align: center;
+  color: hsl(var(--color-text-secondary));
+  font-size: 0.875rem;
+}

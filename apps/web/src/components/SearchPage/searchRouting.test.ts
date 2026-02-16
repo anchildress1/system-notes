@@ -147,8 +147,8 @@ describe('searchRouting', () => {
     });
 
     it('generates correct window title', () => {
-      expect(routerConfig.windowTitle({ query: 'test' })).toBe('Fact Index: test');
-      expect(routerConfig.windowTitle({})).toBe('Fact Index');
+      expect(routerConfig.windowTitle({ query: 'test' })).toBe("test | Ashley's System Notes");
+      expect(routerConfig.windowTitle({})).toBe("Choices | Ashley's System Notes");
     });
 
     it('creates URL correctly', () => {

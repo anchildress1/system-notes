@@ -22,21 +22,26 @@
 
 .searchSection {
   max-width: 600px;
-  margin: 0 auto var(--space-lg);
+  margin: var(--space-sm) auto 8px;
   padding: 0 var(--space-md);
 }
 
 .siteSearchContainer {
   width: 100%;
-  min-height: 48px;
+  min-height: 64px;
+  /* Reserve space for the Algolia SiteSearch widget to prevent CLS */
+  contain: layout style;
+  /* Add padding to accommodate focus outline */
+  padding: 4px;
+  margin: -4px;
 }
 
 .metaRow {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: var(--space-xs) 0;
-  margin-top: var(--space-xs);
+  padding: 0 4px;
+  margin-top: 16px;
   line-height: 1;
 }
 
@@ -46,49 +51,10 @@
   font-weight: 500;
   line-height: 1;
   padding-top: 0;
+  align-self: flex-start;
 }
 
-.algoliaAttribution {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  color: hsl(var(--color-text-secondary));
-  font-size: 0.75rem;
-  font-weight: 500;
-  text-decoration: none;
-  line-height: 1;
-  padding-top: 0;
-  flex-direction: row-reverse;
-}
-
-.algoliaAttribution:hover .algoliaHoverable {
-  color: hsl(var(--color-accent-teal));
-}
-
-.algoliaPrefix {
-  white-space: nowrap;
-  color: hsl(var(--color-text-secondary));
-}
-
-.algoliaHoverable {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: color var(--transition-base);
-}
-
-.algoliaName {
-  white-space: nowrap;
-}
-
-.algoliaIcon {
-  font-size: 0.875rem;
-  flex-shrink: 0;
-}
-
-.algoliaText {
-  white-space: nowrap;
-}
+/* Algolia attribution styles moved to global stylesheet */
 
 /* Layout Grid */
 .layout {
@@ -227,10 +193,51 @@
   accent-color: hsl(var(--color-accent-purple));
   cursor: pointer;
   transition: transform var(--transition-base);
+  flex-shrink: 0;
+  /* Force consistent appearance across all browsers */
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  -moz-appearance: checkbox;
 }
 
 .refinementCheckbox:hover {
   transform: scale(1.1);
+}
+
+/* Ensure all checked checkboxes have solid fill */
+.refinementCheckbox:checked {
+  accent-color: hsl(var(--color-accent-purple));
+}
+
+/* Ensure indeterminate state also uses accent color */
+.refinementCheckbox:indeterminate {
+  accent-color: hsl(var(--color-accent-purple));
+}
+
+/* Override InstantSearch satellite.css checkbox styles to ensure consistency */
+.refinementList input[type='checkbox'],
+.refinementItem input[type='checkbox'],
+.refinementLabel input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: hsl(var(--color-accent-purple));
+  cursor: pointer;
+  flex-shrink: 0;
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  -moz-appearance: checkbox;
+}
+
+.refinementList input[type='checkbox']:checked,
+.refinementItem input[type='checkbox']:checked,
+.refinementLabel input[type='checkbox']:checked {
+  accent-color: hsl(var(--color-accent-purple));
+}
+
+.refinementList input[type='checkbox']:indeterminate,
+.refinementItem input[type='checkbox']:indeterminate,
+.refinementLabel input[type='checkbox']:indeterminate {
+  accent-color: hsl(var(--color-accent-purple));
 }
 
 .refinementLabelText {
@@ -346,6 +353,10 @@
 
 .hitsRoot {
   margin-bottom: var(--space-lg);
+  /* Reserve minimum space for search results to prevent CLS */
+  min-height: 800px;
+  /* Contain layout changes within this element */
+  contain: layout style;
 }
 
 .hitsList {
@@ -642,24 +653,24 @@
   fill: hsl(var(--color-accent-purple)) !important;
 }
 
-/* Close Button — purple, not blue */
+/* Close Button — purple outline on hover */
 :global(.ss-search-close-button) {
   color: hsl(var(--color-text-secondary)) !important;
-  border-color: transparent !important;
+  border: 1px solid transparent !important;
   background: transparent !important;
   transition: all var(--transition-base) !important;
 }
 
 :global(.ss-search-close-button:hover) {
   color: hsl(var(--color-accent-purple)) !important;
-  background: hsl(var(--color-accent-purple) / 0.1) !important;
-  border-color: transparent !important;
+  background: transparent !important;
+  border: 2px solid hsl(var(--color-accent-purple)) !important;
 }
 
 :global(.ss-search-close-button:focus),
 :global(.ss-search-close-button:active) {
   color: hsl(var(--color-accent-purple)) !important;
-  border-color: transparent !important;
+  border-color: hsl(var(--color-accent-purple)) !important;
   outline-color: hsl(var(--color-accent-purple)) !important;
 }
 
@@ -821,4 +832,36 @@
 :global([style*="#5468ff"]) {
   color: hsl(var(--color-accent-purple)) !important;
   border-color: hsl(var(--color-accent-purple)) !important;
+}
+
+/* ── GroupedTagFilter ── */
+
+.tagExpandButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  color: inherit;
+  margin-left: 4px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-base);
+}
+
+.tagGroupLabel {
+  cursor: default;
+}
+
+.tagGroupLabelText {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tagChildren {
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
 }

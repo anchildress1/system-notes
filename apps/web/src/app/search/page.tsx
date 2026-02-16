@@ -1,7 +1,7 @@
 import SearchPageDynamic from '@/components/SearchPage/SearchPage.dynamic';
 
 export const metadata = {
-  title: 'Search | System Notes',
+  title: 'Choices',
   description: 'Search across all system notes and facts.',
 };
 

@@ -1,10 +1,7 @@
 // Avoid hardcoding credentials in source. Prefer providing via environment
 // variables and never commit real API keys or app IDs to the repo or terminal.
 new Crawler({
-  appId:
-    process.env.ALGOLIA_APPLICATION_ID ||
-    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID ||
-    'REDACTED_APP_ID',
+  appId: process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || 'REDACTED_APP_ID',
   apiKey: process.env.ALGOLIA_CRAWLER_API_KEY,
   indexPrefix: '',
   rateLimit: 8,
@@ -21,9 +18,8 @@ new Crawler({
       recordExtractor: function ({ url, $, helpers }) {
         var urlStr = typeof url === 'string' ? url : String(url);
 
-        var _rawTitle =
+        var title =
           $('main > h1').first().text().trim() || $('title').first().text().trim() || urlStr;
-        var title = 'Blog titled ' + _rawTitle;
 
         var _desc = $('meta[name="description"]').attr('content');
         var description = _desc ? String(_desc).trim().slice(0, 500) : null;
@@ -97,16 +93,12 @@ new Crawler({
         }
 
         var engagementRaw = $('meta[name="devto:engagement_score"]').attr('content');
-        var engagementScore = engagementRaw ? Number(engagementRaw) - 1 : 0;
-
-        if (engagementScore < 0) {
-          engagementScore = 0;
-        } else if (engagementScore > 5) {
-          engagementScore = 5;
-        }
-        if (engagementScore === 0) {
-          return [];
-        }
+        // Map dev.to engagement_score (0-615 range) to signal scale (1-5).
+        // 615 is the maximum expected engagement score. Posts with zero engagement are dropped.
+        var rawScore = engagementRaw ? Number(engagementRaw) : 0;
+        if (rawScore === 0) return [];
+        // Map to 1-5 scale: divide by 123 (615/5) and ceil to ensure minimum of 1
+        var engagementScore = Math.min(5, Math.max(1, Math.ceil(rawScore / 123)));
 
         var _content = $('main article').first().text();
         var content = _content ? String(_content).trim().replace(/\s+/g, ' ') : null;
@@ -117,7 +109,6 @@ new Crawler({
 
         return [
           {
-            objectID: slug,
             title: title,
             url: finalUrl,
             blurb: description,
@@ -141,7 +132,7 @@ new Crawler({
       attributesForFaceting: [
         'category',
         'searchable(projects)',
-        'searchable(tags.lvl0)',
+        'tags.lvl0',
         'searchable(tags.lvl1)',
       ],
       customRanking: ['desc(signal)', 'desc(created_at)'],

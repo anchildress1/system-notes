@@ -1,15 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-
 import ProjectGrid from './ProjectGrid';
 
-vi.mock('next/image', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-  default: ({ fill: _fill, priority: _priority, ...props }: any) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img {...props} alt={props.alt} />
-  ),
-}));
+// next/image is mocked globally in setupTests.ts
 
 describe('ProjectGrid', () => {
   beforeEach(() => {

@@ -1,6 +1,7 @@
 'use client';
 
 import Header from '@/components/Header/Header';
+import Image from 'next/image';
 import styles from './page.module.css';
 import Hero from '@/components/Hero/Hero';
 import { aboutData } from '@/data/about';
@@ -19,7 +20,20 @@ export default function Human() {
   return (
     <main id="main-content">
       <Header />
-      <Hero title={heroTitle.trim()} subtitle={heroSubtitle?.trim()} image={aboutData.heroImage} />
+      <Hero title={heroTitle.trim()} subtitle={heroSubtitle?.trim()} />
+
+      <div className={styles.profileImageWrapper}>
+        <Image
+          src={aboutData.heroImage.src}
+          alt={aboutData.heroImage.alt}
+          width={aboutData.heroImage.width}
+          height={aboutData.heroImage.height}
+          className={styles.profileImage}
+          priority
+          sizes="(max-width: 768px) 100vw, 450px"
+        />
+      </div>
+
       <div className={styles.container}>
         <div className={styles.content}>
           {aboutData.sections.map((section, index) => {

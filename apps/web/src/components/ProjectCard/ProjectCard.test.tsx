@@ -1,30 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ProjectCard from './ProjectCard';
-import { Project } from '@/data/projects';
+import { mockProject } from '@/test-utils/fixtures';
 
-// Mock Next.js Image
-vi.mock('next/image', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-  default: ({ fill: _fill, priority: _priority, ...props }: any) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img {...props} alt={props.alt} />
-  ),
-}));
-
-const mockProject: Project = {
-  id: 'test-project',
-  title: 'Test Project',
-  description: 'This is a test tagline.',
-  purpose: 'This is a test purpose statement.',
-  longDescription: 'Long detailed description.',
-  outcome: 'Outcome details.',
-  tech: [{ name: 'React', role: 'Frontend' }],
-  repoUrl: 'https://github.com/test/test-project',
-  owner: 'anchildress1',
-  status: 'Active',
-  imageUrl: '/test-image.jpg',
-};
+// next/image is mocked globally in setupTests.ts
 
 describe('ProjectCard Component', () => {
   it('renders project details correctly', () => {
@@ -32,7 +11,7 @@ describe('ProjectCard Component', () => {
 
     expect(screen.getByText('Test Project')).toBeInTheDocument();
     expect(screen.getByText('Purpose')).toBeInTheDocument();
-    expect(screen.getByText('This is a test purpose statement.')).toBeInTheDocument();
+    expect(screen.getByText('The core purpose of the project.')).toBeInTheDocument();
     expect(screen.getByText('React')).toBeInTheDocument();
     expect(screen.getByText('ANCHildress1')).toBeInTheDocument();
   });
@@ -72,12 +51,13 @@ describe('ProjectCard Component', () => {
     const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
     render(<ProjectCard project={mockProject} onSelect={() => {}} />);
 
-    const link = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
+    const button = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
 
-    fireEvent.keyDown(link, { key: 'Enter' });
+    // Real buttons trigger click events on Enter/Space
+    fireEvent.click(button);
     expect(openSpy).toHaveBeenCalledWith(mockProject.repoUrl, '_blank', 'noopener,noreferrer');
 
-    fireEvent.keyDown(link, { key: ' ' });
+    fireEvent.click(button);
     expect(openSpy).toHaveBeenCalledTimes(2);
 
     openSpy.mockRestore();

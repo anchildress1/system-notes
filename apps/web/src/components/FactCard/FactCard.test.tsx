@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
-import type { Hit, BaseHit } from 'instantsearch.js';
+import { createMockHit } from '@/test-utils/fixtures';
 
 const mockSearchParams = new URLSearchParams();
 const pushStateSpy = vi.fn();
@@ -18,33 +18,6 @@ vi.mock('react-instantsearch', () => ({
     <span data-testid={`highlight-${attribute}`}>{String(hit[attribute])}</span>
   ),
 }));
-
-interface FactHitRecord extends BaseHit {
-  objectID: string;
-  title: string;
-  blurb: string;
-  fact: string;
-  content?: string;
-  tags: string[];
-  projects: string[];
-  category: string;
-  signal: number;
-}
-
-const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecord> =>
-  ({
-    objectID: 'card:test:test:0001',
-    title: 'Test Fact Title',
-    blurb: 'This is a test blurb.',
-    fact: 'This is the detailed fact content.',
-    tags: ['tag-one', 'tag-two', 'tag-three'],
-    projects: ['Project Alpha', 'Project Beta'],
-    category: 'Work Style',
-    signal: 3,
-    __position: 1,
-    __queryID: 'test-query',
-    ...overrides,
-  }) as Hit<FactHitRecord>;
 
 describe('FactCard Component', () => {
   beforeEach(() => {
@@ -172,5 +145,55 @@ describe('FactCard Component', () => {
     await user.click(cardLink);
 
     expect(mockSendEvent).not.toHaveBeenCalled();
+  });
+
+  it('renders GitHub link for GitHub URLs', () => {
+    render(<FactCard hit={createMockHit({ url: 'https://github.com/user/repo' })} />);
+
+    expect(screen.getByLabelText('View source for Test Fact Title')).toBeInTheDocument();
+  });
+
+  it('does not render GitHub link for DEV.to URLs', () => {
+    render(<FactCard hit={createMockHit({ url: 'https://dev.to/user/post-title' })} />);
+
+    expect(screen.queryByLabelText('View source for Test Fact Title')).not.toBeInTheDocument();
+  });
+
+  it('renders DEV icon when expanded for DEV.to URLs', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit({ url: 'https://dev.to/user/post-title' })} />);
+
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
+
+    // Should have 2 DEV icons: one on front (hidden), one on back (visible)
+    const devIcons = screen.getAllByLabelText(/Read .* on DEV Community/i);
+    expect(devIcons).toHaveLength(2);
+  });
+
+  it('does not render DEV icon for GitHub URLs', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit({ url: 'https://github.com/user/repo' })} />);
+
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
+
+    expect(screen.queryByLabelText(/Read .* on DEV Community/i)).not.toBeInTheDocument();
+  });
+
+  it('does not render DEV icon when no URL is present', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit({ url: undefined })} />);
+
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
+
+    expect(screen.queryByLabelText(/Read .* on DEV Community/i)).not.toBeInTheDocument();
+  });
+
+  it('renders DEV icon on card front for DEV.to URLs', () => {
+    render(<FactCard hit={createMockHit({ url: 'https://dev.to/user/post-title' })} />);
+
+    expect(screen.getByLabelText(/Read .* on DEV Community/i)).toBeInTheDocument();
   });
 });

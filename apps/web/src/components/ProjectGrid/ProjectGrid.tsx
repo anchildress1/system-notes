@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Project, allProjects } from '@/data/projects';
 import ProjectCard from '@/components/ProjectCard/ProjectCard';
@@ -24,17 +24,24 @@ function parseProjectIdFromHash(hash: string): string | null {
 
 export default function ProjectGrid() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const applyHash = () => {
       const projectId = parseProjectIdFromHash(window.location.hash);
       if (!projectId) {
         setSelectedProject(null);
+        setIsOpen(false);
         return;
       }
 
       const match = allProjects.find((p) => p.id === projectId);
       setSelectedProject(match ?? null);
+      if (match) {
+        setDialogVisible(true);
+        setIsOpen(true);
+      }
     };
 
     applyHash();
@@ -45,12 +52,21 @@ export default function ProjectGrid() {
   const handleSelect = (project: Project) => {
     window.location.hash = `project=${encodeURIComponent(project.id)}`;
     setSelectedProject(project);
+    setDialogVisible(true);
+    setIsOpen(true);
   };
 
-  const handleClose = () => {
-    setSelectedProject(null);
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
     window.history.replaceState(null, '', window.location.pathname + window.location.search);
-  };
+  }, []);
+
+  const handleExitComplete = useCallback(() => {
+    if (!isOpen) {
+      setDialogVisible(false);
+      setSelectedProject(null);
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -69,7 +85,15 @@ export default function ProjectGrid() {
       </section>
 
       <AnimatePresence>
-        {selectedProject && <ExpandedView project={selectedProject} onClose={handleClose} />}
+        {dialogVisible && selectedProject && (
+          <ExpandedView
+            key={selectedProject.id}
+            project={selectedProject}
+            onClose={handleClose}
+            isOpen={isOpen}
+            onExitComplete={handleExitComplete}
+          />
+        )}
       </AnimatePresence>
     </>
   );

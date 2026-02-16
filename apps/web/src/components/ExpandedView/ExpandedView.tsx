@@ -4,14 +4,21 @@ import { motion } from 'framer-motion';
 import { Project } from '@/data/projects';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
-import Image from 'next/image';
+import { overlayTransition, cardFlipVariants } from '@/utils/animations';
 
 interface ExpandedViewProps {
   project: Project;
   onClose: () => void;
+  isOpen: boolean;
+  onExitComplete: () => void;
 }
 
-export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
+export default function ExpandedView({
+  project,
+  onClose,
+  isOpen,
+  onExitComplete,
+}: ExpandedViewProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -52,9 +59,8 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
       className={styles.overlay}
       onClick={onClose}
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.15 }}
+      animate={{ opacity: isOpen ? 1 : 0 }}
+      transition={overlayTransition}
     >
       <motion.div
         ref={cardRef}
@@ -63,20 +69,20 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        tabIndex={-1} // Make focusable
+        tabIndex={-1}
         data-testid="expanded-view-dialog"
-        layoutId={`card-${project.id}`}
-        initial={{ rotateY: 180, opacity: 0 }}
-        animate={{ rotateY: 0, opacity: 1 }}
-        exit={{ rotateY: -180, opacity: 0 }}
-        transition={{
-          rotateY: { duration: 0.35, ease: 'easeOut' },
-          opacity: { duration: 0.2, ease: 'easeOut' },
-          layout: { duration: 0.3, ease: 'easeOut' },
+        variants={cardFlipVariants}
+        initial="hidden"
+        animate={isOpen ? 'visible' : 'exit'}
+        onAnimationComplete={(definition) => {
+          if (definition === 'exit') onExitComplete();
         }}
-        style={{ transformStyle: 'preserve-3d', perspective: 1200 }}
       >
-        <button className={styles.closeButton} onClick={onClose} aria-label="Close modal">
+        <button
+          className={`close-button-global ${styles.closeButton}`}
+          onClick={onClose}
+          aria-label="Close modal"
+        >
           <svg
             width="24"
             height="24"
@@ -89,25 +95,6 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
-        <div className={styles.imageContainer} data-testid="expanded-image-container">
-          <div className={styles.imageWrapper}>
-            <div
-              className={styles.conceptBackground}
-              style={{ backgroundImage: project.imageUrl ? `url(${project.imageUrl})` : undefined }}
-            />
-            {project.imageUrl && (
-              <Image
-                src={project.imageUrl}
-                alt={project.title}
-                className={styles.bannerImage}
-                fill
-                style={{ objectFit: 'cover' }}
-                priority={false}
-                sizes="(max-width: 1200px) 100vw, 1200px"
-              />
-            )}
-          </div>
-        </div>
 
         <div className={styles.content}>
           <div className={styles.header}>
@@ -187,7 +174,7 @@ export default function ExpandedView({ project, onClose }: ExpandedViewProps) {
                     rel="noopener noreferrer"
                     className={styles.repoLink}
                   >
-                    View Source on GitHub
+                    GitHub Repo
                     <svg
                       width="16"
                       height="16"

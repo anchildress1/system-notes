@@ -10,7 +10,7 @@ describe('ExpandedView Performance', () => {
   bench(
     'render ExpandedView',
     () => {
-      render(<ExpandedView project={project} onClose={noop} />);
+      render(<ExpandedView project={project} onClose={noop} isOpen={true} onExitComplete={noop} />);
     },
     {
       time: 100,

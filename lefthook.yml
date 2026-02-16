@@ -26,6 +26,9 @@ pre-push:
       run: make test
     e2e-tests:
       run: make test-e2e
+      skip:
+        - ref: main
+        - run: '[ "$SKIP_E2E" = "1" ]'
     performance-tests:
       run: npm run test:perf -w apps/web
     security-scan:

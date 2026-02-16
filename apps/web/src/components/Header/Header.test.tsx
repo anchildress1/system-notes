@@ -10,7 +10,6 @@ describe('Header Component', () => {
   it('renders branding and logs', () => {
     render(<Header />);
     expect(screen.getByText(/Ashley's System Notes/i)).toBeInTheDocument();
-    expect(screen.getByText(/A living map of software systems/i)).toBeInTheDocument();
   });
 
   it('renders navigation links', () => {

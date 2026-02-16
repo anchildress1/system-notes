@@ -22,10 +22,10 @@ fi
 # Sanitize variables to remove potential carriage returns or spaces
 NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$(echo "$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID" | tr -d '\r' | xargs)
 ALGOLIA_ADMIN_API_KEY=$(echo "$ALGOLIA_ADMIN_API_KEY" | tr -d '\r' | xargs)
-NEXT_PUBLIC_ALGOLIA_INDEX_NAME=$(echo "${NEXT_PUBLIC_ALGOLIA_INDEX_NAME:-system-notes}" | tr -d '\r' | xargs)
+NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$(echo "${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME:-system-notes}" | tr -d '\r' | xargs)
 
 BASE_URL="https://${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}.algolia.net/1"
-INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_INDEX_NAME:-system-notes}"
+INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME:-system-notes}"
 MERGED_INDEX="${ALGOLIA_MERGED_INDEX:-merged-search}"
 CRAWLER_INDEX="${ALGOLIA_CRAWLER_INDEX:-crawly_posts}"
 

@@ -6,7 +6,7 @@ import ProjectGrid from '@/components/ProjectGrid/ProjectGrid';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-  title: 'Builds | System Notes',
+  title: 'Builds',
   description: 'Explore my portfolio of software systems, tools, and experiments.',
 };
 

@@ -3,10 +3,9 @@
    The chatDock portal appears AFTER .appRoot in DOM, so it naturally
    paints on top — zero z-index escalation needed.
 
-   CRITICAL: Do NOT override position/size/opacity/transform on
-   .ais-Chat-container. Algolia uses opacity+transform transitions
-   for the open/close animation. Overriding these properties breaks
-   the animation and leaves the container at opacity:0 (invisible).
+   POSITIONING: Controlled via Algolia's documented CSS custom properties
+   (--ais-chat-margin, --ais-chat-width, etc.) set on .chatRoot via the
+   classNames prop. No internal selector overrides needed.
 
    COLOR SEMANTICS:
    - info/navigation → teal  (--color-accent-teal)
@@ -14,108 +13,26 @@
    - human/identity  → pink  (--color-accent-pink)  */
 
 .chatDock {
+  --chat-dock-margin: 5rem; /* shared by chat root + music player for alignment */
   isolation: isolate;
   pointer-events: none; /* Prevent wrapper from intercepting clicks on content below.
      Algolia's own CSS handles pointer-events for .ais-Chat,
      .ais-Chat-container--open, and .ais-Chat-toggleButtonWrapper. */
 }
 
-/* Container positioning - only when NOT maximized */
-:global(.ais-Chat-container:not([class*="maximized"]):not([class*="fullscreen"])) {
-  position: fixed;
-  bottom: 170px;
-  right: var(--space-md, 20px);
-  width: 375px;
-  max-width: calc(100vw - 40px);
-  height: 600px;
-  max-height: calc(100vh - 190px);
-  z-index: 10002;
+/* ── Root: documented CSS custom properties for position + color ── */
+.chatRoot {
+  --ais-chat-margin: var(--chat-dock-margin);
+  --ais-primary-color-rgb: 181, 107, 255;
+  --ais-background-color-rgb: 58, 61, 70;
+  --ais-text-color-rgb: 230, 230, 235;
+  --ais-muted-color-rgb: 185, 187, 196;
+  --ais-border-color-rgb: 100, 100, 110;
+  --ais-shadow-color-rgb: 0, 0, 0;
 }
 
-/* Maximized/fullscreen mode - anchor to bottom-right, expand upward/leftward */
-:global(.ais-Chat-container[class*="maximized"]),
-:global(.ais-Chat-container[class*="fullscreen"]),
-:global(.ais-Chat-window[class*="maximized"]),
-:global(.ais-Chat-window[class*="fullscreen"]) {
-  position: fixed !important;
-  bottom: 170px !important;
-  right: var(--space-md, 20px) !important;
-  top: auto !important;
-  left: auto !important;
-  transform: none !important;
-  width: min(90vw, 800px) !important;
-  height: min(80vh, 700px) !important;
-  max-width: calc(100vw - 40px) !important;
-  max-height: calc(100vh - 190px) !important;
-  z-index: 10003 !important;
-}
-
-/* Mobile responsive - expanded takes more space */
-@media (max-width: 768px) {
-  :global(.ais-Chat-container[class*="maximized"]),
-  :global(.ais-Chat-container[class*="fullscreen"]),
-  :global(.ais-Chat-window[class*="maximized"]),
-  :global(.ais-Chat-window[class*="fullscreen"]) {
-    width: calc(100vw - 40px) !important;
-    height: calc(100vh - 200px) !important;
-    bottom: 170px !important;
-    right: var(--space-md, 20px) !important;
-  }
-}
-
-/* The toggle button wrapper */
-:global(.ais-Chat-toggleButtonWrapper) {
-  position: fixed !important;
-  bottom: 90px !important;
-  right: var(--space-md, 20px) !important;
-  z-index: 10001 !important;
-}
-
-.musicWrapper {
-  position: fixed;
-  bottom: 90px;
-  right: calc(var(--space-md, 20px) + 60px + 20px);
-  z-index: 1;
-  transition: all var(--transition-slow);
-  pointer-events: auto;
-}
-
-/* ── Normal open: chat sits ABOVE the toggle + music buttons ── */
-:global(.ais-Chat) {
-  bottom: 160px !important;   /* 90px toggle offset + 60px height + 10px gap */
-}
-
-/* ── Maximized: full viewport with margin ── */
-:global(.ais-Chat:has(.ais-Chat-container--maximized)),
-:global(.ais-Chat.ais-Chat--maximized) {
-  position: fixed !important;
-  top: var(--space-sm, 24px) !important;
-  left: var(--space-sm, 24px) !important;
-  right: var(--space-sm, 24px) !important;
-  bottom: var(--space-sm, 24px) !important;
-  width: auto !important;
-  height: auto !important;
-  max-width: none !important;
-  max-height: none !important;
-  align-items: stretch !important;
-  z-index: var(--z-overlay, 2000) !important;
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-:global(.ais-Chat-container.ais-Chat-container--maximized) {
-  flex: 1 1 auto !important;
-  width: 100% !important;
-  height: 100% !important;
-  max-height: none !important;
-}
-
-/* ── Toggle button: action (purple) with glow ── */
-:global(.ais-Chat-toggleButton),
-:global(.ais-ChatToggleButton) {
-  position: fixed !important;
-  bottom: 90px !important;
-  right: var(--space-md, 20px) !important;
+/* ── Toggle button: action (purple) with glow — appearance only, no position ── */
+.chatToggle {
   width: 60px !important;
   height: 60px !important;
   background: linear-gradient(135deg, hsl(var(--color-accent-purple)), hsl(var(--color-accent-purple) / 0.85)) !important;
@@ -131,14 +48,48 @@
   transition: all 0.3s var(--ease-spring) !important;
 }
 
-:global(.ais-Chat-toggleButton:hover),
-:global(.ais-ChatToggleButton:hover) {
+.chatToggle:hover {
   transform: scale(1.08) !important;
   box-shadow:
     0 8px 24px hsl(var(--color-accent-purple) / 0.5),
     0 0 30px hsl(var(--color-accent-purple) / 0.3) !important;
   border-color: hsl(var(--color-accent-purple)) !important;
 }
+
+/* ── Chat window: glass with purple border glow — appearance only, no position ── */
+.chatWindow {
+  background: linear-gradient(
+    180deg,
+    hsl(var(--color-bg-elevated)) 0%,
+    hsl(var(--color-bg-elevated) / 0.95) 100%
+  ) !important;
+  border: 1px solid hsl(var(--color-accent-purple) / 0.2) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px hsl(var(--color-accent-purple) / 0.08) inset !important;
+}
+
+/* ── Music player: syncs position with chat margin ── */
+.musicWrapper {
+  position: fixed;
+  bottom: var(--chat-dock-margin);
+  right: calc(var(--chat-dock-margin) + 60px + 20px); /* chat margin + chat width + gap */
+  z-index: 1;
+  transition: all var(--transition-slow);
+  pointer-events: auto;
+}
+
+/* Ensure adequate spacing on mobile */
+@media (max-width: 768px) {
+  .musicWrapper {
+    right: calc(var(--chat-dock-margin) + 60px + 16px);
+  }
+}
+
+/* Music player stays at bottom during maximized state —
+   Algolia's maximized layout respects --ais-chat-margin, and the
+   music player shares --chat-dock-margin, so both stay aligned. */
 
 .toggleIcon {
   color: white;

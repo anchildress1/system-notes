@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { Chat } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
+import 'instantsearch.css/themes/satellite.css';
 import styles from './AIChat.module.css';
 import dynamic from 'next/dynamic';
 import { API_URL, ALGOLIA_INDEX } from '@/config';
@@ -158,6 +159,11 @@ export default function AIChat() {
         >
           <Chat
             agentId={AGENT_ID}
+            classNames={{
+              root: styles.chatRoot,
+              container: styles.chatWindow,
+              toggleButton: { root: styles.chatToggle },
+            }}
             translations={translations}
             tools={tools}
             getSearchPageURL={resolveSearchPageURL}
