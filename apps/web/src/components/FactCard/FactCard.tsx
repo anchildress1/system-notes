@@ -39,9 +39,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const categoryLabel = hit.category || 'System';
   const dialogTitleId = `fact-card-title-${hit.objectID}`;
   const dialogDescriptionId = `fact-card-description-${hit.objectID}`;
-  const tagsLvl0Raw = hit['tags.lvl0'];
   const tagsLvl1Raw = hit['tags.lvl1'];
-  const tagsLvl0 = useMemo(() => tagsLvl0Raw || [], [tagsLvl0Raw]);
   const tagsLvl1 = useMemo(() => tagsLvl1Raw || [], [tagsLvl1Raw]);
 
   // Use local state for instant visual feedback; sync with URL for deep-linking
@@ -61,27 +59,6 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [hit.objectID]);
 
-  const applyHitParams = useCallback(
-    (params: URLSearchParams) => {
-      if (!params.has('category') && hit.category) {
-        params.append('category', hit.category);
-      }
-
-      if (!params.has('project') && hit.projects?.length) {
-        hit.projects.forEach((project) => params.append('project', project));
-      }
-
-      if (!params.has('tag0') && tagsLvl0.length) {
-        tagsLvl0.forEach((tag) => params.append('tag0', tag));
-      }
-
-      if (!params.has('tag1') && tagsLvl1.length) {
-        tagsLvl1.forEach((tag) => params.append('tag1', tag));
-      }
-    },
-    [hit.category, hit.projects, tagsLvl0, tagsLvl1]
-  );
-
   const openCard = useCallback(() => {
     if (!hasTrackedFlip.current && sendEvent) {
       hasTrackedFlip.current = true;
@@ -90,12 +67,11 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
     // Immediate visual feedback
     setPortalVisible(true);
     setIsFlipped(true);
-    // Read current URL directly to avoid stale searchParams after pushState calls
+    // Write only factId to URL — filters stay independent (managed by InstantSearch)
     const params = new URLSearchParams(window.location.search);
     params.set('factId', hit.objectID);
-    applyHitParams(params);
     window.history.pushState(null, '', `?${params.toString()}`);
-  }, [sendEvent, hit, applyHitParams]);
+  }, [sendEvent, hit]);
 
   const closeCard = useCallback(() => {
     // Immediate visual feedback
@@ -205,20 +181,8 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const cardUrl = useMemo(() => {
     const params = new URLSearchParams();
     params.set('factId', hit.objectID);
-
-    if (hit.category) {
-      params.append('category', hit.category);
-    }
-
-    if (hit.projects?.length) {
-      hit.projects.forEach((project) => params.append('project', project));
-    }
-
-    tagsLvl0.forEach((tag) => params.append('tag0', tag));
-    tagsLvl1.forEach((tag) => params.append('tag1', tag));
-
     return `/search?${params.toString()}`;
-  }, [hit.objectID, hit.category, hit.projects, tagsLvl0, tagsLvl1]);
+  }, [hit.objectID]);
 
   return (
     <>

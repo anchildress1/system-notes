@@ -1,147 +1,71 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 
-interface FactMetadata {
+export interface OverlayHit {
   objectID: string;
-  category?: string;
-  projects?: string[];
+  title: string;
+  blurb: string;
+  fact: string;
+  content?: string;
   'tags.lvl0'?: string[];
   'tags.lvl1'?: string[];
+  projects: string[];
+  category: string;
+  signal: number;
+  url?: string;
 }
 
 /**
- * Hook to handle factId in URL and scroll card into view when rendered
- * Optimized for performance to maintain Lighthouse scores
+ * Hook to handle factId deep-linking.
+ * When factId is in the URL (direct navigation / shared link), fetches the
+ * card from Algolia and returns it for a standalone overlay.
+ * Filters are NOT modified — the overlay is independent of search state.
  */
 export function useFactIdRouting(indexName: string) {
   const searchParams = useSearchParams();
   const factId = searchParams?.get('factId') ?? null;
-  const scrollAttempted = useRef(false);
-  const fallbackSearchApplied = useRef(false);
+  const [fetchedHit, setFetchedHit] = useState<{ id: string; hit: OverlayHit } | null>(null);
+
+  // Derive overlayHit: only show when factId matches what we fetched
+  const overlayHit = factId && fetchedHit?.id === factId ? fetchedHit.hit : null;
 
   useEffect(() => {
-    if (!factId) {
-      scrollAttempted.current = false;
-      fallbackSearchApplied.current = false;
-      return;
-    }
+    if (!factId) return;
 
-    const scrollToCard = () => {
-      if (scrollAttempted.current) return;
+    // FactCard uses pushState which doesn't trigger useSearchParams update,
+    // so if we're here it means factId came from real navigation (page load, router.push, popstate).
+    let cancelled = false;
 
-      const cardLink = document.querySelector(`[href*="factId=${encodeURIComponent(factId)}"]`);
-      if (cardLink && typeof (cardLink as HTMLElement).scrollIntoView === 'function') {
-        scrollAttempted.current = true;
-
-        // Use requestAnimationFrame for smooth, performant scrolling
-        requestAnimationFrame(() => {
-          cardLink.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-          });
-
-          // Add subtle focus indicator without forcing browser focus
-          // This doesn't trigger layout shift or reflow
-          const article = cardLink.querySelector('article');
-          if (article) {
-            article.setAttribute('data-highlighted', 'true');
-            setTimeout(() => {
-              article.removeAttribute('data-highlighted');
-            }, 2000);
-          }
-        });
-      }
-    };
-
-    // Initial attempt - quick check if card is already rendered
-    scrollToCard();
-
-    // Set up MutationObserver to detect when card is added to DOM
-    // This is more efficient than polling setInterval
-    const observer = new MutationObserver(() => {
-      scrollToCard();
-      if (scrollAttempted.current) {
-        observer.disconnect();
+    fetchFactById(factId, indexName).then((data) => {
+      if (!cancelled && data) {
+        setFetchedHit({ id: factId, hit: data });
       }
     });
 
-    // Observe the results container for new cards
-    const resultsContainer = document.querySelector('[aria-label="Search results"]');
-    if (resultsContainer) {
-      observer.observe(resultsContainer, {
-        childList: true,
-        subtree: true,
-      });
-    }
-
-    const hasFilterParams = () => {
-      if (!searchParams) return false;
-      return (
-        searchParams.get('category') ||
-        searchParams.get('project') ||
-        searchParams.get('tag0') ||
-        searchParams.get('tag1') ||
-        searchParams.get('query')
-      );
-    };
-
-    const applyMetadataFilters = async () => {
-      if (fallbackSearchApplied.current || hasFilterParams()) return;
-      fallbackSearchApplied.current = true;
-
-      try {
-        const metadata = await fetchFactMetadata(factId, indexName);
-        if (!metadata) return;
-
-        const params = new URLSearchParams(window.location.search);
-        params.set('factId', factId);
-
-        if (!params.has('category') && metadata.category) {
-          params.append('category', metadata.category);
-        }
-
-        if (!params.has('project') && metadata.projects?.length) {
-          metadata.projects.forEach((project) => params.append('project', project));
-        }
-
-        if (!params.has('tag0') && metadata['tags.lvl0']?.length) {
-          metadata['tags.lvl0'].forEach((tag) => params.append('tag0', tag));
-        }
-
-        if (!params.has('tag1') && metadata['tags.lvl1']?.length) {
-          metadata['tags.lvl1'].forEach((tag) => params.append('tag1', tag));
-        }
-
-        const newUrl = `${window.location.pathname}?${params.toString()}`;
-        window.history.replaceState({}, '', newUrl);
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      } catch (error) {
-        console.warn('Error applying fallback filters:', error);
-      }
-    };
-
-    void applyMetadataFilters();
-
-    // Cleanup
     return () => {
-      observer.disconnect();
+      cancelled = true;
     };
-  }, [factId, indexName, searchParams]);
+  }, [factId, indexName]);
 
-  return { factId };
+  const closeOverlay = useCallback(() => {
+    setFetchedHit(null);
+    const params = new URLSearchParams(window.location.search);
+    params.delete('factId');
+    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+    window.history.pushState(null, '', newUrl);
+  }, []);
+
+  return { factId, overlayHit, closeOverlay };
 }
 
 /**
- * Fetch fact metadata from Algolia to enable smart filtering
- * This is used when arriving at a URL with factId but no matching results
+ * Fetch a single fact card from Algolia by objectID.
+ * Returns all fields needed to render the overlay.
  */
-export async function fetchFactMetadata(
-  factId: string,
-  indexName: string
-): Promise<FactMetadata | null> {
+export async function fetchFactById(factId: string, indexName: string): Promise<OverlayHit | null> {
   const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
   const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
   if (!appId || !apiKey || !/^[A-Z0-9]{10}$/i.test(appId) || apiKey.length < 20) {
@@ -158,19 +82,31 @@ export async function fetchFactMetadata(
           query: '',
           filters: `objectID:${factId}`,
           hitsPerPage: 1,
-          attributesToRetrieve: ['objectID', 'category', 'projects', 'tags.lvl0', 'tags.lvl1'],
+          attributesToRetrieve: [
+            'objectID',
+            'title',
+            'blurb',
+            'fact',
+            'content',
+            'category',
+            'projects',
+            'tags.lvl0',
+            'tags.lvl1',
+            'signal',
+            'url',
+          ],
         },
       ],
     });
 
     const firstResult = results[0];
     if ('hits' in firstResult && firstResult.hits.length > 0) {
-      return firstResult.hits[0] as FactMetadata;
+      return firstResult.hits[0] as OverlayHit;
     }
 
     return null;
   } catch (error) {
-    console.warn('Error fetching fact metadata:', error);
+    console.warn('Error fetching fact by ID:', error);
     return null;
   }
 }

@@ -21,6 +21,7 @@ import LoadingIndicator from './LoadingIndicator';
 import { createSearchRouting } from './searchRouting';
 import { ALGOLIA_INDEX } from '@/config';
 import { useFactIdRouting } from '@/hooks/useFactIdRouting';
+import FactCardOverlay from '../FactCard/FactCardOverlay';
 import { getChatSessionId } from '@/utils/userToken';
 
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
@@ -160,7 +161,7 @@ export default function SearchPage() {
   }, []);
 
   useSiteSearchWithAI(appId, searchKey, indexName, searchAiId, isEnabled);
-  useFactIdRouting(indexName);
+  const { overlayHit, closeOverlay } = useFactIdRouting(indexName);
 
   // Consolidated DOM observer for:
   // 1. Auto-focus chat input when Ask AI modal opens
@@ -469,6 +470,7 @@ export default function SearchPage() {
           </section>
         </div>
       </InstantSearch>
+      {overlayHit && <FactCardOverlay hit={overlayHit} onClose={closeOverlay} />}
     </div>
   );
 }
