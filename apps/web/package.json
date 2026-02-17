@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 3001",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
     "postbuild": "STANDALONE_BASE=$(find .next/standalone -name 'server.js' -path '*apps/web/server.js' 2>/dev/null | head -1 | xargs dirname 2>/dev/null); if [ -n \"$STANDALONE_BASE\" ]; then mkdir -p \"$STANDALONE_BASE/.next\" && cp -r .next/static \"$STANDALONE_BASE/.next/static\" && cp -r public \"$STANDALONE_BASE/public\"; fi",
