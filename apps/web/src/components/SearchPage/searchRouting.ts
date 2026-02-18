@@ -8,7 +8,6 @@ export type SearchRouteState = {
   projects?: string[];
   tag0?: string[];
   tag1?: string[];
-  factId?: string;
 };
 
 const normalizeArrayParam = (value?: unknown): string[] => {
@@ -84,11 +83,6 @@ export const createSearchRouting = (indexName: string) => ({
       if (routeState.tag0?.length) queryParameters.tag0 = routeState.tag0;
       if (routeState.tag1?.length) queryParameters.tag1 = routeState.tag1;
 
-      // Preserve factId from current URL (managed by FactCard, not InstantSearch)
-      const currentParams = new URLSearchParams(location.search);
-      const factId = currentParams.get('factId');
-      if (factId) queryParameters.factId = factId;
-
       const queryString = qsModule.stringify(queryParameters, {
         addQueryPrefix: true,
         arrayFormat: 'repeat',
@@ -103,11 +97,6 @@ export const createSearchRouting = (indexName: string) => ({
         ? parsedParams.query[0]
         : parsedParams.query;
 
-      // Preserve factId (managed by FactCard component, not InstantSearch)
-      const factIdValue = Array.isArray(parsedParams.factId)
-        ? parsedParams.factId[0]
-        : parsedParams.factId;
-
       return {
         query: typeof queryValue === 'string' ? queryValue : '',
         page: parsePageParam(parsedParams.page),
@@ -115,7 +104,6 @@ export const createSearchRouting = (indexName: string) => ({
         projects: normalizeArrayParam(parsedParams.project),
         tag0: normalizeArrayParam(parsedParams.tag0),
         tag1: normalizeArrayParam(parsedParams.tag1),
-        factId: typeof factIdValue === 'string' ? factIdValue : undefined,
       };
     },
   }),

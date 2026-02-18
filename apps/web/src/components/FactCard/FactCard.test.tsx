@@ -4,11 +4,8 @@ import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
 import { createMockHit } from '@/test-utils/fixtures';
 
-const mockSearchParams = new URLSearchParams();
-const pushStateSpy = vi.fn();
-
 vi.mock('next/navigation', () => ({
-  useSearchParams: () => mockSearchParams,
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 const mockSendEvent = vi.fn();
@@ -22,9 +19,6 @@ vi.mock('react-instantsearch', () => ({
 describe('FactCard Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockSearchParams.delete('factId');
-    pushStateSpy.mockClear();
-    vi.spyOn(window.history, 'pushState').mockImplementation(pushStateSpy);
   });
 
   it('renders fact card with front-side fields', () => {
@@ -53,7 +47,7 @@ describe('FactCard Component', () => {
     const cardLink = screen.getByRole('link', { name: /Press to expand/i });
     await user.click(cardLink);
 
-    expect(pushStateSpy).toHaveBeenCalledWith(null, '', '?factId=card%3Atest%3Atest%3A0001');
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   it('renders without tags when empty', () => {
@@ -70,7 +64,7 @@ describe('FactCard Component', () => {
     const cardLink = screen.getByRole('link', { name: /Press to expand/i });
     await user.click(cardLink);
 
-    expect(pushStateSpy).toHaveBeenCalled();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   it('has correct structure for accessibility', () => {
@@ -91,7 +85,7 @@ describe('FactCard Component', () => {
     card.focus();
     await user.keyboard('{Enter}');
 
-    expect(pushStateSpy).toHaveBeenCalled();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   it('supports keyboard navigation with Space', async () => {
@@ -102,7 +96,7 @@ describe('FactCard Component', () => {
     card.focus();
     await user.keyboard(' ');
 
-    expect(pushStateSpy).toHaveBeenCalled();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   it('tracks expansion event with insights client', async () => {

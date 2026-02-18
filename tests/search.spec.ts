@@ -78,8 +78,8 @@ test.describe('Search Page Integration', () => {
     // await expect(article).toBeVisible();
 
     // Check that the card expanded state is visible (the modal/dialog)
-    // The FactCard component uses role="dialog" when expanded
-    const expandedView = page.locator('article[role="dialog"]');
+    // Both FactCard and useFactIdRouting overlay may render role="dialog"; target first match
+    const expandedView = page.locator('article[role="dialog"]').first();
     await expect(expandedView).toBeVisible({ timeout: 3000 });
   });
 });

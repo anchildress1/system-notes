@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   // Normalize baseUrl to remove trailing slash
-  const rawBaseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001';
+  const rawBaseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   const baseUrl = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

@@ -45,7 +45,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3001",
+        "http://localhost:3000",
         "https://anchildress1.dev",
         "https://www.anchildress1.dev",
         "https://unstable.anchildress1.dev",

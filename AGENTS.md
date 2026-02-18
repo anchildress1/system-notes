@@ -24,6 +24,32 @@ Canonical instruction source for this repository. Treat this file as authoritati
 - Use Conventional Commits.
 - Include required RAI footer.
 
+## URL State Architecture: Search Page
+
+### Core rule: InstantSearch owns the URL; FactCard owns local overlay state
+
+InstantSearch manages all URL serialization (query, facets, page) via its default routing. FactCard does NOT write to the URL — it toggles a local overlay and fires Algolia click events.
+
+Deep-linking via `?factId=...` is handled separately by `useFactIdRouting`, which fetches the card from Algolia and renders a standalone overlay.
+
+### Implementation contracts
+
+| Component                                            | Responsibility                                        | Writes to URL       |
+| ---------------------------------------------------- | ----------------------------------------------------- | ------------------- |
+| `FactCard.openCard`                                  | Toggle local overlay state; fire `sendEvent`          | No                  |
+| `FactCard.closeCard`                                 | Toggle local overlay state                            | No                  |
+| `FactCard.cardUrl` (href)                            | Static link for right-click / new tab                 | `factId` only       |
+| `searchRouting`                                      | Serialize InstantSearch state (query, facets, page)   | Search params       |
+| `useFactIdRouting`                                   | Deep-link overlay for direct navigation with `factId` | Removes on close    |
+| Facet widgets (`RefinementList`, `GroupedTagFilter`) | Refine via InstantSearch hooks                        | Via `searchRouting` |
+
+### Rules for future changes
+
+- FactCard must NOT call `window.history.pushState`. InstantSearch manages the URL.
+- `searchRouting` must NOT handle `factId`. That param belongs to `useFactIdRouting`.
+- Algolia events (`sendEvent`) fire on card open. Never gate events on URL state.
+- Do not add custom `createURL` logic that fights InstantSearch's default routing behavior.
+
 ## Frontend Style Skill
 
 - Refer to `.claude/skills/frontend-style.md`.

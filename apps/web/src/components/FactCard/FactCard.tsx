@@ -4,7 +4,6 @@ import { useCallback, useRef, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Highlight } from 'react-instantsearch';
 import { motion } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
 import type { Hit, BaseHit } from 'instantsearch.js';
 import type { SendEventForHits } from '@/types/algolia';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
@@ -31,7 +30,6 @@ interface FactCardProps {
 }
 
 export default function FactCard({ hit, sendEvent }: FactCardProps) {
-  const searchParams = useSearchParams();
   const portalTarget = useMemo(() => (typeof document !== 'undefined' ? document.body : null), []);
   const hasTrackedFlip = useRef(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -42,45 +40,21 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const tagsLvl1Raw = hit['tags.lvl1'];
   const tagsLvl1 = useMemo(() => tagsLvl1Raw || [], [tagsLvl1Raw]);
 
-  // Use local state for instant visual feedback; sync with URL for deep-linking
-  const urlFlipped = searchParams.get('factId') === hit.objectID;
-  const [isFlipped, setIsFlipped] = useState(urlFlipped);
+  const [isFlipped, setIsFlipped] = useState(false);
   // Keep portal mounted during exit animation
-  const [portalVisible, setPortalVisible] = useState(urlFlipped);
-
-  useEffect(() => {
-    const handlePopState = () => {
-      const params = new URLSearchParams(window.location.search);
-      const flipped = params.get('factId') === hit.objectID;
-      setIsFlipped(flipped);
-      if (flipped) setPortalVisible(true);
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [hit.objectID]);
+  const [portalVisible, setPortalVisible] = useState(false);
 
   const openCard = useCallback(() => {
     if (!hasTrackedFlip.current && sendEvent) {
       hasTrackedFlip.current = true;
       sendEvent('click', hit, 'Fact Card Viewed');
     }
-    // Immediate visual feedback
     setPortalVisible(true);
     setIsFlipped(true);
-    // Write only factId to URL — filters stay independent (managed by InstantSearch)
-    const params = new URLSearchParams(window.location.search);
-    params.set('factId', hit.objectID);
-    window.history.pushState(null, '', `?${params.toString()}`);
   }, [sendEvent, hit]);
 
   const closeCard = useCallback(() => {
-    // Immediate visual feedback
     setIsFlipped(false);
-    // Read current URL directly to avoid stale searchParams after pushState calls
-    const params = new URLSearchParams(window.location.search);
-    params.delete('factId');
-    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
-    window.history.pushState(null, '', newUrl);
   }, []);
 
   // Unmount portal after exit animation completes

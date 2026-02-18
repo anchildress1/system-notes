@@ -1,8 +1,8 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "PORT=3001 node .next/standalone/apps/web/server.js",
-      "url": ["http://localhost:3001/"],
+      "startServerCommand": "PORT=3000 node .next/standalone/apps/web/server.js",
+      "url": ["http://localhost:3000/"],
       "numberOfRuns": 5,
       "settings": {
         "chromeFlags": "--headless=new --disable-gpu --no-sandbox",
