@@ -35,15 +35,21 @@ export function useFactIdRouting(indexName: string) {
   useEffect(() => {
     if (!factId) return;
 
-    // FactCard uses pushState which doesn't trigger useSearchParams update,
-    // so if we're here it means factId came from real navigation (page load, router.push, popstate).
+    // FactCard manages only local state and does not write factId to the URL.
+    // If we're here, factId came from the URL (initial load, router navigation, or history navigation).
     let cancelled = false;
 
-    fetchFactById(factId, indexName).then((data) => {
-      if (!cancelled && data) {
-        setFetchedHit({ id: factId, hit: data });
-      }
-    });
+    fetchFactById(factId, indexName)
+      .then((data) => {
+        if (!cancelled && data) {
+          setFetchedHit({ id: factId, hit: data });
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          console.error('Error loading deep-linked fact card:', error);
+        }
+      });
 
     return () => {
       cancelled = true;

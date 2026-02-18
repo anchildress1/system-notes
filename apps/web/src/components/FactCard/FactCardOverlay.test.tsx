@@ -15,10 +15,16 @@ vi.mock('framer-motion', () => ({
       );
     },
     article: (props: Record<string, unknown>) => {
-      const { children, onClick, className, role, ...rest } =
-        props as React.HTMLAttributes<HTMLElement> & Record<string, unknown>;
+      const { children, onClick, className, role, animate, ...rest } =
+        props as React.HTMLAttributes<HTMLElement> & { animate?: string } & Record<string, unknown>;
       return (
-        <article onClick={onClick} className={className} role={role} {...rest}>
+        <article
+          onClick={onClick}
+          className={className}
+          role={role}
+          data-animate={animate as string}
+          {...rest}
+        >
           {children}
         </article>
       );
@@ -76,6 +82,21 @@ describe('FactCardOverlay', () => {
     render(<FactCardOverlay hit={mockHit} onClose={mockOnClose} />);
 
     expect(screen.getByLabelText('Close expanded view')).toBeInTheDocument();
+  });
+
+  it('begins exit animation when close button is clicked', async () => {
+    const user = userEvent.setup();
+    render(<FactCardOverlay hit={mockHit} onClose={mockOnClose} />);
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('data-animate', 'visible');
+
+    const closeButton = screen.getByLabelText('Close expanded view');
+    await user.click(closeButton);
+
+    // handleClose sets isVisible=false, transitioning animate to 'exit'.
+    // onClose fires after animation completes (via onAnimationComplete callback).
+    expect(dialog).toHaveAttribute('data-animate', 'exit');
   });
 
   it('renders dialog with accessibility attributes', () => {

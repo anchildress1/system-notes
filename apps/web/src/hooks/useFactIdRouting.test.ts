@@ -253,4 +253,14 @@ describe('fetchFactById', () => {
     const result = await fetchFactById('card:test:fact:001', 'test-index');
     expect(result).toBeNull();
   });
+
+  it('returns null when the Algolia search rejects', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    searchMock.mockRejectedValue(new Error('API error'));
+
+    const result = await fetchFactById('card:test:fact:001', 'test-index');
+    expect(result).toBeNull();
+  });
 });
