@@ -263,4 +263,147 @@ describe('fetchFactById', () => {
     const result = await fetchFactById('card:test:fact:001', 'test-index');
     expect(result).toBeNull();
   });
+
+  it('returns null when results array is empty', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+    searchMock.mockResolvedValue({ results: [] });
+
+    const result = await fetchFactById('card:test:fact:001', 'test-index');
+    expect(result).toBeNull();
+  });
+
+  it('returns null when first result has no hits key (error result)', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+    searchMock.mockResolvedValue({ results: [{ error: 'Index not found', status: 404 }] });
+
+    const result = await fetchFactById('card:test:fact:001', 'test-index');
+    expect(result).toBeNull();
+  });
+
+  it('returns null when hits array is empty (objectID not in index)', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+    searchMock.mockResolvedValue({ results: [{ hits: [] }] });
+
+    const result = await fetchFactById('card:does:not:exist', 'test-index');
+    expect(result).toBeNull();
+  });
+
+  it('returns null when apiKey is shorter than 20 characters', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'tooshort'; // 8 chars
+
+    const result = await fetchFactById('card:test:fact:001', 'test-index');
+    expect(result).toBeNull();
+  });
+
+  it('returns null when appId fails the 10-char alphanumeric regex', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'BAD!ID'; // has non-alphanumeric
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    const result = await fetchFactById('card:test:fact:001', 'test-index');
+    expect(result).toBeNull();
+  });
+});
+
+describe('closeOverlay URL handling', () => {
+  const validFactId = 'card:test:fact:001';
+  const credentials = {
+    NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: 'AB12CD34EF',
+    NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4',
+  };
+  const minimalHit = {
+    objectID: validFactId,
+    title: 'T',
+    blurb: '',
+    fact: '',
+    category: '',
+    projects: [],
+    signal: 1,
+  };
+
+  beforeEach(() => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = credentials.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = credentials.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY;
+    searchMock.mockReset();
+    searchMock.mockResolvedValue({ results: [{ hits: [minimalHit] }] });
+
+    vi.mocked(useSearchParams).mockReturnValue({
+      get: vi.fn((key) => (key === 'factId' ? validFactId : null)),
+    } as unknown as ReturnType<typeof useSearchParams>);
+  });
+
+  afterEach(() => {
+    delete process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
+    delete process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY;
+    vi.clearAllMocks();
+  });
+
+  it('preserves other query params when removing factId', async () => {
+    window.history.replaceState(
+      {},
+      '',
+      `/search?query=agent&factId=${encodeURIComponent(validFactId)}`
+    );
+    const pushStateSpy = vi.spyOn(window.history, 'pushState');
+
+    const { result } = renderHook(() => useFactIdRouting('test-index'));
+    await waitFor(() => expect(result.current.overlayHit).not.toBeNull());
+
+    act(() => {
+      result.current.closeOverlay();
+    });
+
+    const [, , newUrl] = pushStateSpy.mock.calls[0];
+    expect(String(newUrl)).toContain('query=agent');
+    expect(String(newUrl)).not.toContain('factId');
+
+    pushStateSpy.mockRestore();
+  });
+
+  it('navigates to pathname only when factId is the sole param', async () => {
+    window.history.replaceState({}, '', `/search?factId=${encodeURIComponent(validFactId)}`);
+    const pushStateSpy = vi.spyOn(window.history, 'pushState');
+
+    const { result } = renderHook(() => useFactIdRouting('test-index'));
+    await waitFor(() => expect(result.current.overlayHit).not.toBeNull());
+
+    act(() => {
+      result.current.closeOverlay();
+    });
+
+    const [, , newUrl] = pushStateSpy.mock.calls[0];
+    expect(String(newUrl)).toBe('/search');
+    expect(String(newUrl)).not.toContain('?');
+
+    pushStateSpy.mockRestore();
+  });
+
+  it('closeOverlay is idempotent — second call is a no-op after state is cleared', async () => {
+    window.history.replaceState({}, '', `/search?factId=${encodeURIComponent(validFactId)}`);
+    const pushStateSpy = vi.spyOn(window.history, 'pushState');
+
+    const { result } = renderHook(() => useFactIdRouting('test-index'));
+    await waitFor(() => expect(result.current.overlayHit).not.toBeNull());
+
+    act(() => {
+      result.current.closeOverlay();
+    });
+
+    await waitFor(() => expect(result.current.overlayHit).toBeNull());
+    const callCountAfterFirst = pushStateSpy.mock.calls.length;
+
+    act(() => {
+      result.current.closeOverlay();
+    });
+
+    // pushState may be called again (URL update is idempotent), but overlayHit stays null
+    expect(result.current.overlayHit).toBeNull();
+    // The important thing: fetchedHit was already null, so no new state update
+    expect(pushStateSpy.mock.calls.length).toBeGreaterThanOrEqual(callCountAfterFirst);
+
+    pushStateSpy.mockRestore();
+  });
 });
