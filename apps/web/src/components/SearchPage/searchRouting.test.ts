@@ -160,6 +160,7 @@ describe('searchRouting', () => {
       const location = {
         origin: 'https://example.com',
         pathname: '/search',
+        search: '',
       } as unknown as Location;
 
       const mockStringify = vi.fn().mockReturnValue('mocked-query-string');
@@ -176,6 +177,44 @@ describe('searchRouting', () => {
         expect.any(Object)
       );
       expect(url).toBe('https://example.com/searchmocked-query-string');
+    });
+
+    it('preserves factId in createURL when present in the current URL', () => {
+      const routeState = { query: 'test' };
+      const location = {
+        origin: 'https://example.com',
+        pathname: '/search',
+        search: '?factId=card%3Atest%3Afact%3A001',
+      } as unknown as Location;
+
+      const mockStringify = vi.fn().mockReturnValue('mocked-query-string');
+      const customQsModule = { ...qsModule, stringify: mockStringify };
+
+      routerConfig.createURL({ qsModule: customQsModule, routeState, location });
+
+      expect(mockStringify).toHaveBeenCalledWith(
+        expect.objectContaining({ factId: 'card:test:fact:001' }),
+        expect.any(Object)
+      );
+    });
+
+    it('does not inject factId into createURL when absent from current URL', () => {
+      const routeState = { query: 'test' };
+      const location = {
+        origin: 'https://example.com',
+        pathname: '/search',
+        search: '?query=test',
+      } as unknown as Location;
+
+      const mockStringify = vi.fn().mockReturnValue('mocked-query-string');
+      const customQsModule = { ...qsModule, stringify: mockStringify };
+
+      routerConfig.createURL({ qsModule: customQsModule, routeState, location });
+
+      expect(mockStringify).toHaveBeenCalledWith(
+        expect.not.objectContaining({ factId: expect.anything() }),
+        expect.any(Object)
+      );
     });
 
     it('parses URL correctly', () => {

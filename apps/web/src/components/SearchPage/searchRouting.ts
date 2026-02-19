@@ -83,6 +83,14 @@ export const createSearchRouting = (indexName: string) => ({
       if (routeState.tag0?.length) queryParameters.tag0 = routeState.tag0;
       if (routeState.tag1?.length) queryParameters.tag1 = routeState.tag1;
 
+      // Pass factId through as an opaque param — it is owned by useFactIdRouting,
+      // not by InstantSearch. Without this, InstantSearch would strip it from the
+      // URL on every route update, breaking the deep-link overlay.
+      const existingParams = qsModule.parse(location.search.slice(1));
+      if (existingParams.factId) {
+        queryParameters.factId = existingParams.factId as string;
+      }
+
       const queryString = qsModule.stringify(queryParameters, {
         addQueryPrefix: true,
         arrayFormat: 'repeat',
