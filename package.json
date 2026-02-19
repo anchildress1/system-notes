@@ -38,6 +38,10 @@
   },
   "overrides": {
     "inquirer": "^8.2.7",
-    "tmp": "^0.2.5"
+    "tmp": "^0.2.5",
+    "qs": "^6.14.2",
+    "instantsearch.js": {
+      "qs": "^6.14.2"
+    }
   }
 }

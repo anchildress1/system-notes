@@ -4,7 +4,6 @@ import { useCallback, useRef, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Highlight } from 'react-instantsearch';
 import { motion } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
 import type { Hit, BaseHit } from 'instantsearch.js';
 import type { SendEventForHits } from '@/types/algolia';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
@@ -31,7 +30,6 @@ interface FactCardProps {
 }
 
 export default function FactCard({ hit, sendEvent }: FactCardProps) {
-  const searchParams = useSearchParams();
   const portalTarget = useMemo(() => (typeof document !== 'undefined' ? document.body : null), []);
   const hasTrackedFlip = useRef(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -39,75 +37,25 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const categoryLabel = hit.category || 'System';
   const dialogTitleId = `fact-card-title-${hit.objectID}`;
   const dialogDescriptionId = `fact-card-description-${hit.objectID}`;
-  const tagsLvl0Raw = hit['tags.lvl0'];
   const tagsLvl1Raw = hit['tags.lvl1'];
-  const tagsLvl0 = useMemo(() => tagsLvl0Raw || [], [tagsLvl0Raw]);
   const tagsLvl1 = useMemo(() => tagsLvl1Raw || [], [tagsLvl1Raw]);
 
-  // Use local state for instant visual feedback; sync with URL for deep-linking
-  const urlFlipped = searchParams.get('factId') === hit.objectID;
-  const [isFlipped, setIsFlipped] = useState(urlFlipped);
+  const [isFlipped, setIsFlipped] = useState(false);
   // Keep portal mounted during exit animation
-  const [portalVisible, setPortalVisible] = useState(urlFlipped);
-
-  useEffect(() => {
-    const handlePopState = () => {
-      const params = new URLSearchParams(window.location.search);
-      const flipped = params.get('factId') === hit.objectID;
-      setIsFlipped(flipped);
-      if (flipped) setPortalVisible(true);
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [hit.objectID]);
-
-  const applyHitParams = useCallback(
-    (params: URLSearchParams) => {
-      if (!params.has('category') && hit.category) {
-        params.append('category', hit.category);
-      }
-
-      if (!params.has('project') && hit.projects?.length) {
-        hit.projects.forEach((project) => params.append('project', project));
-      }
-
-      if (!params.has('tag0') && tagsLvl0.length) {
-        tagsLvl0.forEach((tag) => params.append('tag0', tag));
-      }
-
-      if (!params.has('tag1') && tagsLvl1.length) {
-        tagsLvl1.forEach((tag) => params.append('tag1', tag));
-      }
-    },
-    [hit.category, hit.projects, tagsLvl0, tagsLvl1]
-  );
+  const [portalVisible, setPortalVisible] = useState(false);
 
   const openCard = useCallback(() => {
     if (!hasTrackedFlip.current && sendEvent) {
       hasTrackedFlip.current = true;
-      sendEvent('click', hit, 'Fact Card Viewed', {
-        objectIDs: [hit.objectID],
-      });
+      sendEvent('click', hit, 'Fact Card Viewed');
     }
-    // Immediate visual feedback
     setPortalVisible(true);
     setIsFlipped(true);
-    // Update URL without triggering re-render
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('factId', hit.objectID);
-    applyHitParams(params);
-    window.history.pushState(null, '', `?${params.toString()}`);
-  }, [sendEvent, hit, searchParams, applyHitParams]);
+  }, [sendEvent, hit]);
 
   const closeCard = useCallback(() => {
-    // Immediate visual feedback
     setIsFlipped(false);
-    // Update URL without triggering re-render
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete('factId');
-    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
-    window.history.pushState(null, '', newUrl);
-  }, [searchParams]);
+  }, []);
 
   // Unmount portal after exit animation completes
   const handleExitComplete = useCallback(() => {
@@ -207,20 +155,8 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
   const cardUrl = useMemo(() => {
     const params = new URLSearchParams();
     params.set('factId', hit.objectID);
-
-    if (hit.category) {
-      params.append('category', hit.category);
-    }
-
-    if (hit.projects?.length) {
-      hit.projects.forEach((project) => params.append('project', project));
-    }
-
-    tagsLvl0.forEach((tag) => params.append('tag0', tag));
-    tagsLvl1.forEach((tag) => params.append('tag1', tag));
-
     return `/search?${params.toString()}`;
-  }, [hit.objectID, hit.category, hit.projects, tagsLvl0, tagsLvl1]);
+  }, [hit.objectID]);
 
   return (
     <>

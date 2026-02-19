@@ -3,7 +3,14 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "dist/**"]
+      "outputs": [".next/**", "dist/**"],
+      "env": [
+        "NEXT_PUBLIC_ALGOLIA_APPLICATION_ID",
+        "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY",
+        "NEXT_PUBLIC_ALGOLIA_AGENT_ID",
+        "NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID",
+        "NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME"
+      ]
     },
     "lint": {
       "outputs": []

@@ -77,9 +77,9 @@ test.describe('Search Page Integration', () => {
     // const article = cardLink.locator('article');
     // await expect(article).toBeVisible();
 
-    // Check that the card expanded state is visible (the modal/dialog)
-    // The FactCard component uses role="dialog" when expanded
-    const expandedView = page.locator('article[role="dialog"]');
-    await expect(expandedView).toBeVisible({ timeout: 3000 });
+    // FactCardOverlay renders article[role="dialog"] once useFactIdRouting fetches the card.
+    // Give it a full 10s — the fetch is async post-hydration and CI can be slow.
+    const expandedView = page.locator('article[role="dialog"]').first();
+    await expect(expandedView).toBeVisible({ timeout: 10000 });
   });
 });

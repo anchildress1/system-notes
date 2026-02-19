@@ -115,6 +115,33 @@ describe('searchRouting', () => {
     expect(url).toBe('/');
   });
 
+  it('respects a custom basePath', () => {
+    const url = getSearchPageURL({ query: 'test' }, indexName, '/search');
+    expect(url).toBe('/search?query=test');
+  });
+
+  it('handles uiState without refinementList gracefully', () => {
+    const uiState = { [indexName]: { query: 'hello' } };
+    expect(toRouteState(uiState as never, indexName)).toEqual({
+      query: 'hello',
+      page: undefined,
+      category: undefined,
+      projects: undefined,
+      tag0: undefined,
+      tag1: undefined,
+    });
+  });
+
+  it('handles a completely empty routeState in toUiState', () => {
+    expect(toUiState({}, indexName)).toEqual({
+      [indexName]: {
+        query: undefined,
+        page: undefined,
+        refinementList: {},
+      },
+    });
+  });
+
   describe('router configuration', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let routerConfig: any;
@@ -160,6 +187,7 @@ describe('searchRouting', () => {
       const location = {
         origin: 'https://example.com',
         pathname: '/search',
+        search: '',
       } as unknown as Location;
 
       const mockStringify = vi.fn().mockReturnValue('mocked-query-string');
@@ -176,6 +204,44 @@ describe('searchRouting', () => {
         expect.any(Object)
       );
       expect(url).toBe('https://example.com/searchmocked-query-string');
+    });
+
+    it('preserves factId in createURL when present in the current URL', () => {
+      const routeState = { query: 'test' };
+      const location = {
+        origin: 'https://example.com',
+        pathname: '/search',
+        search: '?factId=card%3Atest%3Afact%3A001',
+      } as unknown as Location;
+
+      const mockStringify = vi.fn().mockReturnValue('mocked-query-string');
+      const customQsModule = { ...qsModule, stringify: mockStringify };
+
+      routerConfig.createURL({ qsModule: customQsModule, routeState, location });
+
+      expect(mockStringify).toHaveBeenCalledWith(
+        expect.objectContaining({ factId: 'card:test:fact:001' }),
+        expect.any(Object)
+      );
+    });
+
+    it('does not inject factId into createURL when absent from current URL', () => {
+      const routeState = { query: 'test' };
+      const location = {
+        origin: 'https://example.com',
+        pathname: '/search',
+        search: '?query=test',
+      } as unknown as Location;
+
+      const mockStringify = vi.fn().mockReturnValue('mocked-query-string');
+      const customQsModule = { ...qsModule, stringify: mockStringify };
+
+      routerConfig.createURL({ qsModule: customQsModule, routeState, location });
+
+      expect(mockStringify).toHaveBeenCalledWith(
+        expect.not.objectContaining({ factId: expect.anything() }),
+        expect.any(Object)
+      );
     });
 
     it('parses URL correctly', () => {
@@ -211,6 +277,39 @@ describe('searchRouting', () => {
       const location = { search: '?page=invalid' } as unknown as Location;
       const parsed = routerConfig.parseURL({ qsModule, location });
       expect(parsed.page).toBeUndefined();
+    });
+
+    it('filters page=0 from parseURL (below valid range)', () => {
+      const location = { search: '?page=0' } as unknown as Location;
+      const parsed = routerConfig.parseURL({ qsModule, location });
+      expect(parsed.page).toBeUndefined();
+    });
+
+    it('filters page=1 from parseURL (first page is the default, not serialised)', () => {
+      const location = { search: '?page=1' } as unknown as Location;
+      const parsed = routerConfig.parseURL({ qsModule, location });
+      expect(parsed.page).toBeUndefined();
+    });
+
+    it('filters negative page from parseURL', () => {
+      const location = { search: '?page=-5' } as unknown as Location;
+      const parsed = routerConfig.parseURL({ qsModule, location });
+      expect(parsed.page).toBeUndefined();
+    });
+
+    it('creates URL with no query string when routeState is empty', () => {
+      const location = {
+        origin: 'https://example.com',
+        pathname: '/search',
+        search: '',
+      } as unknown as Location;
+      const mockStringify = vi.fn().mockReturnValue('');
+      const customQsModule = { ...qsModule, stringify: mockStringify };
+
+      const url = routerConfig.createURL({ qsModule: customQsModule, routeState: {}, location });
+
+      expect(mockStringify).toHaveBeenCalledWith({}, expect.any(Object));
+      expect(url).toBe('https://example.com/search');
     });
   });
 });
