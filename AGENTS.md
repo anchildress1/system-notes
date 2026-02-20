@@ -67,7 +67,7 @@ Deep-linking via `?factId=...` is handled separately by `useFactIdRouting`, whic
 
 ## Performance / Lighthouse
 
-- **Targets**: 90%+ all Lighthouse categories (mobile and desktop).
+- **Targets**: 70%+ mobile performance, 80%+ desktop performance, 95%+ accessibility/best-practices/SEO.
 - Below-the-fold components must be deferred via `IntersectionObserver` or `next/dynamic` (see `SearchPageWrapper.tsx`).
 - Prefer `instantsearch.css/themes/reset.css` over `satellite.css` to minimize CSS payload.
 
