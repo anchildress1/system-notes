@@ -181,4 +181,41 @@ describe('FactCard Component', () => {
 
     expect(screen.getByLabelText(/Read .* on DEV Community/i)).toBeInTheDocument();
   });
+
+  it('renders default category label when category is empty', () => {
+    render(<FactCard hit={createMockHit({ category: '' })} />);
+    // Empty category falls through to 'System' default
+    expect(screen.getByText('System')).toBeInTheDocument();
+  });
+
+  it('handles hit with no content, fact, or blurb gracefully', () => {
+    render(<FactCard hit={createMockHit({ blurb: '', fact: '', content: '' })} />);
+    // Should render "..." for empty truncated content
+    expect(screen.getByText('...')).toBeInTheDocument();
+  });
+
+  it('handles very long title without crashing', () => {
+    const longTitle = 'A'.repeat(500);
+    render(<FactCard hit={createMockHit({ title: longTitle })} />);
+    expect(screen.getByTestId('highlight-title')).toHaveTextContent(longTitle);
+  });
+
+  it('does not render source link when url is missing', () => {
+    render(<FactCard hit={createMockHit({ url: undefined })} />);
+    expect(screen.queryByLabelText(/View source/)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Read .* on DEV/)).not.toBeInTheDocument();
+  });
+
+  it('closes expanded card via Escape key', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} />);
+
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+    // Dialog should begin exit animation (card no longer expanded)
+    expect(cardLink).toHaveAttribute('aria-expanded', 'false');
+  });
 });

@@ -116,3 +116,58 @@ describe('getProjects', () => {
     consoleSpy.mockRestore();
   });
 });
+
+describe('getSystemDoc edge cases', () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it('should handle 500 server error', async () => {
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Server Error',
+      text: async () => 'Something went wrong',
+    });
+
+    const result = await getSystemDoc('test/path');
+
+    expect(result).toEqual({
+      content: '',
+      format: 'text',
+      path: 'test/path',
+      error: 'Error 500: Something went wrong',
+    });
+  });
+
+  it('should handle response.text() failure gracefully', async () => {
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 502,
+      statusText: 'Bad Gateway',
+      text: async () => {
+        throw new Error('Body read failed');
+      },
+    });
+
+    const result = await getSystemDoc('test/path');
+
+    expect(result).toEqual({
+      content: '',
+      format: 'text',
+      path: 'test/path',
+      error: 'Error 502: Bad Gateway',
+    });
+  });
+
+  it('should handle non-Error thrown values', async () => {
+    fetchMock.mockRejectedValue('string error');
+
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const result = await getSystemDoc('test/path');
+    expect(result?.error).toBe('string error');
+
+    consoleSpy.mockRestore();
+  });
+});

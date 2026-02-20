@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { memo, ReactNode } from 'react';
 import styles from './SourceLinkButton.module.css';
 
 interface SourceLinkButtonProps {
@@ -10,7 +10,12 @@ interface SourceLinkButtonProps {
   onClick?: (e: React.MouseEvent) => void;
 }
 
-export default function SourceLinkButton({ url, label, icon, onClick }: SourceLinkButtonProps) {
+export default memo(function SourceLinkButton({
+  url,
+  label,
+  icon,
+  onClick,
+}: SourceLinkButtonProps) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -27,4 +32,4 @@ export default function SourceLinkButton({ url, label, icon, onClick }: SourceLi
       {icon}
     </button>
   );
-}
+});

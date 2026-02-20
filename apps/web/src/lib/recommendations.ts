@@ -3,16 +3,17 @@
 import { useMemo } from 'react';
 import { recommendClient as createRecommendClient } from '@algolia/recommend';
 import { ALGOLIA_INDEX } from '@/config';
+import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
 
-const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
-const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
+const appId = ALGOLIA_APP_ID;
+const apiKey = ALGOLIA_SEARCH_KEY;
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
 // Lazy initialize Algolia Recommend client
 let recommendClient: ReturnType<typeof createRecommendClient> | null = null;
 
 function getRecommendClient() {
-  if (!recommendClient && appId && apiKey && /^[A-Z0-9]{10}$/i.test(appId) && apiKey.length >= 20) {
+  if (!recommendClient && appId && apiKey && hasValidAlgoliaCredentials(appId, apiKey)) {
     recommendClient = createRecommendClient(appId, apiKey);
   }
   return recommendClient;

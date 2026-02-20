@@ -11,8 +11,8 @@ import {
   Configure,
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
-import { LuPlus, LuMinus } from 'react-icons/lu';
-import 'instantsearch.css/themes/satellite.css';
+import { Plus, Minus } from 'lucide-react';
+import 'instantsearch.css/themes/reset.css';
 import styles from './SearchPage.module.css';
 import FactCard from '../FactCard/FactCard';
 import GroupedTagFilter from './GroupedTagFilter';
@@ -23,16 +23,19 @@ import { ALGOLIA_INDEX } from '@/config';
 import { useFactIdRouting } from '@/hooks/useFactIdRouting';
 import FactCardOverlay from '../FactCard/FactCardOverlay';
 import { getChatSessionId } from '@/utils/userToken';
+import {
+  ALGOLIA_APP_ID,
+  ALGOLIA_SEARCH_KEY,
+  ALGOLIA_AI_ID,
+  hasValidAlgoliaCredentials,
+} from '@/lib/algolia';
 
-const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
-const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-const searchAiId = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID || '';
+const appId = ALGOLIA_APP_ID;
+const searchKey = ALGOLIA_SEARCH_KEY;
+const searchAiId = ALGOLIA_AI_ID;
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
-// Algolia app IDs are always 10 alphanumeric chars, API keys are 32+ hex chars.
-// Skip real SDK init when credentials are obviously fake (e.g. test_app_id)
-// to prevent failed network requests that Chrome logs as console errors.
-const hasCredentials = /^[A-Z0-9]{10}$/i.test(appId) && searchKey.length >= 20;
+const hasCredentials = hasValidAlgoliaCredentials();
 const searchClient = hasCredentials
   ? algoliasearch(appId, searchKey, {
       headers: {
@@ -359,9 +362,9 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Category</h2>
                   {collapsedSections.category ? (
-                    <LuPlus size={14} aria-hidden="true" />
+                    <Plus size={14} aria-hidden="true" />
                   ) : (
-                    <LuMinus size={14} aria-hidden="true" />
+                    <Minus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-category">
@@ -393,9 +396,9 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Builds</h2>
                   {collapsedSections.builds ? (
-                    <LuPlus size={14} aria-hidden="true" />
+                    <Plus size={14} aria-hidden="true" />
                   ) : (
-                    <LuMinus size={14} aria-hidden="true" />
+                    <Minus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-builds">
@@ -427,9 +430,9 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Tags</h2>
                   {collapsedSections.tags ? (
-                    <LuPlus size={14} aria-hidden="true" />
+                    <Plus size={14} aria-hidden="true" />
                   ) : (
-                    <LuMinus size={14} aria-hidden="true" />
+                    <Minus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-tags">

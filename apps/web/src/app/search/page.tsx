@@ -1,4 +1,4 @@
-import SearchPageDynamic from '@/components/SearchPage/SearchPage.dynamic';
+import SearchPageWrapper from '@/components/SearchPage/SearchPageWrapper';
 
 export const metadata = {
   title: 'Choices',
@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <SearchPageDynamic />;
+  return <SearchPageWrapper />;
 }

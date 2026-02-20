@@ -134,6 +134,11 @@ deploy_service() {
         DEPLOY_ARGS+=("--set-env-vars" "$ENV_VARS")
     fi
 
+    # Enable startup CPU boost for faster cold starts (UI service)
+    if [ "$SERVICE_NAME" = "$UI_SERVICE" ]; then
+        DEPLOY_ARGS+=("--startup-cpu-boost")
+    fi
+
     gcloud run "${DEPLOY_ARGS[@]}"
 }
 
