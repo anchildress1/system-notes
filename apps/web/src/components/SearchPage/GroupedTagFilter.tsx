@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useRefinementList } from 'react-instantsearch';
-import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import styles from './SearchPage.module.css';
 
 interface GroupedTagFilterProps {
@@ -185,7 +185,7 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
                   aria-expanded={isExpanded}
                   aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${rootItem.label} subtags`}
                 >
-                  {isExpanded ? <FaChevronDown size={10} /> : <FaChevronRight size={10} />}
+                  {isExpanded ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
                 </button>
               </div>
 

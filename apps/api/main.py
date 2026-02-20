@@ -15,6 +15,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 import httpx
+import time as _time
 
 from pathlib import Path
 
@@ -52,9 +53,24 @@ app.add_middleware(
     ],
     allow_origin_regex=r"https://system-notes-ui-\d+\..*\.run\.app",
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "OPTIONS"],
+    allow_headers=["Content-Type", "Accept", "Origin"],
 )
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start = _time.perf_counter()
+    response = await call_next(request)
+    duration_ms = round((_time.perf_counter() - start) * 1000, 1)
+    logger.info(
+        "%s %s -> %s (%sms)",
+        request.method,
+        request.url.path,
+        response.status_code,
+        duration_ms,
+    )
+    return response
+
 
 class Project(BaseModel):
     id: str

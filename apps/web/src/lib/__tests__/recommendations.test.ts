@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { useRecommendationTools } from '../recommendations';
+import { useRecommendationTools, fetchRecommendations } from '../recommendations';
 
 // Mock the @algolia/recommend module at the top level
 vi.mock('@algolia/recommend', () => ({
@@ -9,6 +9,13 @@ vi.mock('@algolia/recommend', () => ({
       results: [{ hits: [] }],
     }),
   })),
+}));
+
+// Also mock the algolia lib since recommendations imports it
+vi.mock('../algolia', () => ({
+  ALGOLIA_APP_ID: 'test-app-id',
+  ALGOLIA_SEARCH_KEY: 'test-api-key',
+  hasValidAlgoliaCredentials: vi.fn(() => false),
 }));
 
 describe('Recommendations Library', () => {
@@ -172,6 +179,18 @@ describe('Recommendations Library', () => {
           }),
         })
       );
+    });
+  });
+
+  describe('fetchRecommendations', () => {
+    it('returns empty array when client is not initialized', async () => {
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const results = await fetchRecommendations({
+        objectID: 'test',
+        modelName: 'related-products',
+      });
+      expect(results).toEqual([]);
+      consoleSpy.mockRestore();
     });
   });
 
