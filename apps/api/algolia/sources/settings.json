@@ -4,8 +4,7 @@
     "category",
     "searchable(projects)",
     "searchable(tags.lvl0)",
-    "searchable(tags.lvl1)",
-    "searchable(tags)"
+    "searchable(tags.lvl1)"
   ],
   "unretrievableAttributes": ["signal"],
   "indexLanguages": ["en"],
@@ -24,7 +23,7 @@
   "renderingContent": {
     "facetOrdering": {
       "facets": {
-        "order": ["category", "projects", "tags"]
+        "order": ["category", "projects", "tags.lvl0"]
       }
     }
   }

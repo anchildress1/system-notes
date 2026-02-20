@@ -45,14 +45,12 @@ UI_SA="system-notes-ui@$PROJECT_ID.iam.gserviceaccount.com"
 
 # Env loading (PUBLIC keys are safe for client-side)
 # For sensitive secrets, use Secret Manager instead of env vars
-for env_file in ".env" ".env.local" "apps/web/.env.local"; do
-    if [ -f "$env_file" ]; then
-        set -a
-        # shellcheck disable=SC1090
-        . "$env_file"
-        set +a
-    fi
-done
+if [ -f ".env" ]; then
+    set -a
+    # shellcheck disable=SC1090
+    . ".env"
+    set +a
+fi
 
 require_env() {
     local name=$1
