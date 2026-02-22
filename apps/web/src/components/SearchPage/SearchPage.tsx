@@ -46,15 +46,10 @@ const searchClient = hasCredentials
   : null;
 
 declare global {
-  // eslint-disable-next-line no-var
   var SiteSearchAskAI: { init: (config: unknown) => void } | undefined;
-  // eslint-disable-next-line no-var
   var SiteSearch: { init: (config: unknown) => void } | undefined;
-  // eslint-disable-next-line no-var
   var SiteSearchWithAI: { init: (config: unknown) => void } | undefined;
-  // eslint-disable-next-line no-var
   var sitesearch: { init: (config: unknown) => void } | undefined;
-  // eslint-disable-next-line no-var
   var AlgoliaSiteSearch: { init: (config: unknown) => void } | undefined;
 }
 
