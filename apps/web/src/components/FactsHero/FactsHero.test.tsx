@@ -16,7 +16,7 @@ describe('FactsHero', () => {
 
   it('dispatches glitter event on click', async () => {
     const user = userEvent.setup();
-    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     render(<FactsHero />);
 
     const button = screen.getByRole('button');
@@ -30,7 +30,7 @@ describe('FactsHero', () => {
 
   it('dispatches glitter event on Enter key', async () => {
     const user = userEvent.setup();
-    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     render(<FactsHero />);
 
     const button = screen.getByRole('button');
@@ -45,7 +45,7 @@ describe('FactsHero', () => {
 
   it('dispatches glitter event on Space key', async () => {
     const user = userEvent.setup();
-    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     render(<FactsHero />);
 
     const button = screen.getByRole('button');

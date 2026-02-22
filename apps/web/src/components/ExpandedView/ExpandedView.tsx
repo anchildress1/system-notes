@@ -47,10 +47,10 @@ export default function ExpandedView({
     };
 
     document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', handleKeyDown);
+    globalThis.addEventListener('keydown', handleKeyDown);
     return () => {
       document.body.style.overflow = 'unset';
-      window.removeEventListener('keydown', handleKeyDown);
+      globalThis.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);
 

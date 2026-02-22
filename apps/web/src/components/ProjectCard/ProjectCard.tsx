@@ -62,7 +62,7 @@ export default function ProjectCard({
               label={`View ${project.title} source code on GitHub`}
               onClick={(e) => {
                 e.stopPropagation();
-                window.open(project.repoUrl, '_blank', 'noopener,noreferrer');
+                globalThis.open(project.repoUrl, '_blank', 'noopener,noreferrer');
               }}
               icon={
                 <svg

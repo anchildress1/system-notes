@@ -16,15 +16,15 @@ export default function FactsHero() {
         tabIndex={0}
         className={styles.interactiveContainer}
         onClick={() => {
-          if (typeof window !== 'undefined') {
-            window.dispatchEvent(new Event('trigger-glitter-bomb'));
+          if (typeof globalThis !== 'undefined') {
+            globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
           }
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            if (typeof window !== 'undefined') {
-              window.dispatchEvent(new Event('trigger-glitter-bomb'));
+            if (typeof globalThis !== 'undefined') {
+              globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
             }
           }
         }}

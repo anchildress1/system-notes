@@ -46,8 +46,8 @@ export default function FactCardOverlay({ hit, onClose }: Readonly<FactCardOverl
         handleClose();
       }
     };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    globalThis.addEventListener('keydown', handler);
+    return () => globalThis.removeEventListener('keydown', handler);
   }, [handleClose]);
 
   const handleExitComplete = useCallback(() => {

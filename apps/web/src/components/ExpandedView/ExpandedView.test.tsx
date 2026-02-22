@@ -58,7 +58,7 @@ describe('ExpandedView Component', () => {
       />
     );
 
-    fireEvent.keyDown(window, { key: 'Escape' });
+    fireEvent.keyDown(globalThis, { key: 'Escape' });
     expect(handleClose).toHaveBeenCalled();
   });
 
@@ -109,10 +109,10 @@ describe('ExpandedView Component', () => {
     );
 
     // Dispatch events on window
-    fireEvent.keyDown(window, { key: 'ArrowDown' });
+    fireEvent.keyDown(globalThis, { key: 'ArrowDown' });
     expect(scrollByMock).toHaveBeenCalledWith(expect.objectContaining({ top: 60 }));
 
-    fireEvent.keyDown(window, { key: 'ArrowUp' });
+    fireEvent.keyDown(globalThis, { key: 'ArrowUp' });
     expect(scrollByMock).toHaveBeenCalledWith(expect.objectContaining({ top: -60 }));
   });
 });

@@ -33,12 +33,12 @@ export default function Hero({ title, subtitle, image }: Readonly<HeroProps>) {
           tabIndex={0}
           aria-label="Trigger glitter effect"
           onClick={() => {
-            window.dispatchEvent(new Event('trigger-glitter-bomb'));
+            globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              window.dispatchEvent(new Event('trigger-glitter-bomb'));
+              globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
             }
           }}
         >

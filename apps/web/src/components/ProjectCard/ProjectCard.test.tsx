@@ -36,7 +36,7 @@ describe('ProjectCard Component', () => {
   });
   it('opens GitHub URL on link click and stops propagation', () => {
     const handleSelect = vi.fn();
-    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     render(<ProjectCard project={mockProject} onSelect={handleSelect} />);
 
     const link = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
@@ -48,7 +48,7 @@ describe('ProjectCard Component', () => {
   });
 
   it('opens GitHub URL on Enter/Space key', () => {
-    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     render(<ProjectCard project={mockProject} onSelect={() => {}} />);
 
     const button = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);

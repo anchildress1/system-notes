@@ -74,9 +74,9 @@ export default function FactCard({ hit, sendEvent }: Readonly<FactCardProps>) {
     };
 
     if (isFlipped) {
-      window.addEventListener('keydown', handleWindowKeyDown);
+      globalThis.addEventListener('keydown', handleWindowKeyDown);
     }
-    return () => window.removeEventListener('keydown', handleWindowKeyDown);
+    return () => globalThis.removeEventListener('keydown', handleWindowKeyDown);
   }, [isFlipped, closeCard]);
 
   const shouldRestoreFocusRef = useRef(false);

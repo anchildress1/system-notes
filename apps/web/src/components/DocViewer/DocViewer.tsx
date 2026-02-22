@@ -14,7 +14,7 @@ export default function DocViewer({ content }: Readonly<DocViewerProps>) {
 
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash;
+      const hash = globalThis.location.hash;
       if (hash) {
         // Parse #Lx-Ly or #Lx
         const match = hash.match(/#L(\d+)(?:-L(\d+))?/);
@@ -37,8 +37,8 @@ export default function DocViewer({ content }: Readonly<DocViewerProps>) {
     };
 
     handleHashChange(); // Initial check
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    globalThis.addEventListener('hashchange', handleHashChange);
+    return () => globalThis.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   const isHighlighted = (lineNumber: number) => {

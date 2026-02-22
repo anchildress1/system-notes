@@ -10,8 +10,8 @@ interface DocViewerProps {
 export default function DocViewer({ content }: DocViewerProps) {
   // Handle hash navigation on mount
   useEffect(() => {
-    if (window.location.hash) {
-      const id = window.location.hash.substring(1);
+    if (globalThis.location.hash) {
+      const id = globalThis.location.hash.substring(1);
       const element = document.getElementById(id);
       if (element) {
         element.scrollIntoView();

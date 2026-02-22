@@ -4,20 +4,20 @@ import MusicPlayer from './MusicPlayer';
 
 describe('MusicPlayer', () => {
   // Store original implementations to restore them later
-  const originalPlay = window.HTMLMediaElement.prototype.play;
-  const originalPause = window.HTMLMediaElement.prototype.pause;
+  const originalPlay = globalThis.HTMLMediaElement.prototype.play;
+  const originalPause = globalThis.HTMLMediaElement.prototype.pause;
 
   beforeEach(() => {
     // Mock audio play/pause methods
     // play returns a Promise
-    window.HTMLMediaElement.prototype.play = vi.fn().mockResolvedValue(undefined);
-    window.HTMLMediaElement.prototype.pause = vi.fn();
+    globalThis.HTMLMediaElement.prototype.play = vi.fn().mockResolvedValue(undefined);
+    globalThis.HTMLMediaElement.prototype.pause = vi.fn();
   });
 
   afterEach(() => {
     // Restore original implementations
-    window.HTMLMediaElement.prototype.play = originalPlay;
-    window.HTMLMediaElement.prototype.pause = originalPause;
+    globalThis.HTMLMediaElement.prototype.play = originalPlay;
+    globalThis.HTMLMediaElement.prototype.pause = originalPause;
     vi.restoreAllMocks();
   });
 
@@ -35,13 +35,13 @@ describe('MusicPlayer', () => {
     const button = screen.getByTestId('play-button');
 
     // Initial state: Not playing
-    expect(window.HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+    expect(globalThis.HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
 
     // 1. Click Play
     fireEvent.click(button);
 
     // Should call audio.play()
-    expect(window.HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1);
+    expect(globalThis.HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1);
 
     // Wait for the async state update (play promise resolution)
     await waitFor(() => {
@@ -53,7 +53,7 @@ describe('MusicPlayer', () => {
     fireEvent.click(button);
 
     // Should call audio.pause()
-    expect(window.HTMLMediaElement.prototype.pause).toHaveBeenCalledTimes(1);
+    expect(globalThis.HTMLMediaElement.prototype.pause).toHaveBeenCalledTimes(1);
 
     // Should immediately switch back to Play state (pause is synchronous in the handler)
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
@@ -62,7 +62,7 @@ describe('MusicPlayer', () => {
   it('handles playback failure gracefully', async () => {
     // Mock a rejected promise for play to simulate autoplay block or other error
     const playError = new Error('NotAllowedError');
-    window.HTMLMediaElement.prototype.play = vi.fn().mockRejectedValue(playError);
+    globalThis.HTMLMediaElement.prototype.play = vi.fn().mockRejectedValue(playError);
 
     // Spy on console.warn to avoid treating it as a test failure and to verify it was called
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -73,7 +73,7 @@ describe('MusicPlayer', () => {
     // Click Play
     fireEvent.click(button);
 
-    expect(window.HTMLMediaElement.prototype.play).toHaveBeenCalled();
+    expect(globalThis.HTMLMediaElement.prototype.play).toHaveBeenCalled();
 
     // Wait for the validation of the error handling
     await waitFor(() => {

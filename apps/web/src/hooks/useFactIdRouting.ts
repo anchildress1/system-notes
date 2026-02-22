@@ -59,10 +59,10 @@ export function useFactIdRouting(indexName: string) {
 
   const closeOverlay = useCallback(() => {
     setFetchedHit(null);
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(globalThis.location.search);
     params.delete('factId');
-    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
-    window.history.pushState(null, '', newUrl);
+    const newUrl = params.toString() ? `?${params.toString()}` : globalThis.location.pathname;
+    globalThis.history.pushState(null, '', newUrl);
   }, []);
 
   return { factId, overlayHit, closeOverlay };

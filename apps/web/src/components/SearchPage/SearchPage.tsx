@@ -46,23 +46,16 @@ const searchClient = hasCredentials
   : null;
 
 declare global {
-  interface Window {
-    SiteSearchAskAI?: {
-      init: (config: unknown) => void;
-    };
-    SiteSearch?: {
-      init: (config: unknown) => void;
-    };
-    SiteSearchWithAI?: {
-      init: (config: unknown) => void;
-    };
-    sitesearch?: {
-      init: (config: unknown) => void;
-    };
-    AlgoliaSiteSearch?: {
-      init: (config: unknown) => void;
-    };
-  }
+  // eslint-disable-next-line no-var
+  var SiteSearchAskAI: { init: (config: unknown) => void } | undefined;
+  // eslint-disable-next-line no-var
+  var SiteSearch: { init: (config: unknown) => void } | undefined;
+  // eslint-disable-next-line no-var
+  var SiteSearchWithAI: { init: (config: unknown) => void } | undefined;
+  // eslint-disable-next-line no-var
+  var sitesearch: { init: (config: unknown) => void } | undefined;
+  // eslint-disable-next-line no-var
+  var AlgoliaSiteSearch: { init: (config: unknown) => void } | undefined;
 }
 
 function useSiteSearchWithAI(
@@ -73,7 +66,7 @@ function useSiteSearchWithAI(
   enabled: boolean
 ) {
   useEffect(() => {
-    if (typeof window === 'undefined' || !enabled) return;
+    if (typeof globalThis === 'undefined' || !enabled) return;
 
     // Dynamically import the widget from node_modules
     import('@algolia/sitesearch/dist/search-askai.min.css');
@@ -92,12 +85,12 @@ function useSiteSearchWithAI(
       }
 
       // Debug logging for credential passing
-      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      if (typeof globalThis !== 'undefined' && globalThis.location.hostname === 'localhost') {
         console.debug('[SiteSearch] Initializing with config:', {
           appId,
           apiKeyLength: apiKey?.length || 0,
           indexName,
-          hostname: window.location.hostname,
+          hostname: globalThis.location.hostname,
         });
       }
 
@@ -108,9 +101,9 @@ function useSiteSearchWithAI(
         'sitesearch',
         'AlgoliaSiteSearch',
       ] as const;
-      const globalName = candidates.find((c) => window[c]);
+      const globalName = candidates.find((c) => globalThis[c]);
 
-      if (globalName && window[globalName]) {
+      if (globalName && globalThis[globalName]) {
         try {
           const config = {
             container: '#search-askai',
@@ -137,14 +130,14 @@ function useSiteSearchWithAI(
             return;
           }
 
-          window[globalName]?.init(config);
+          globalThis[globalName]?.init(config);
         } catch (e) {
           console.error('[SiteSearch] Failed to init:', e);
         }
       } else {
         console.warn(
           '[SiteSearch] Global not found. Available:',
-          Object.keys(window).filter(
+          Object.keys(globalThis).filter(
             (k) => k.toLowerCase().includes('search') || k.toLowerCase().includes('algolia')
           )
         );

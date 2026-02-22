@@ -26,7 +26,8 @@ export const useSparkles = ({
 
     // Feature detect mobile for optimizations
     const isMobile =
-      typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
+      typeof globalThis !== 'undefined' &&
+      (globalThis.innerWidth < 768 || 'ontouchstart' in globalThis);
 
     // Completely disable sparkles on mobile for maximum performance
     if (isMobile) return;
@@ -45,7 +46,7 @@ export const useSparkles = ({
           height: containerRef.current.clientHeight,
           backgroundAlpha: 0,
           // Optimize resolution for mobile to save GPU (1x instead of Retina)
-          resolution: isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2),
+          resolution: isMobile ? 1 : Math.min(globalThis.devicePixelRatio || 1, 2),
           autoDensity: true,
           // Disable antialias on mobile for performance
           antialias: false,

@@ -13,7 +13,7 @@ export default function GlitterBomb() {
   useEffect(() => {
     const initPixi = async () => {
       // Feature detect rather than just width check for better "lite" mode
-      const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
+      const isMobile = globalThis.innerWidth < 768 || 'ontouchstart' in globalThis;
 
       // Disable entirely on mobile
       // feature flag logic removed per user request
@@ -25,9 +25,10 @@ export default function GlitterBomb() {
       // Create Pixi Application
       const app = new PIXI.Application();
       await app.init({
-        resizeTo: window,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        resizeTo: globalThis as any,
         backgroundAlpha: 0,
-        resolution: isMobile ? 1 : window.devicePixelRatio || 1, // Force 1x resolution on mobile
+        resolution: isMobile ? 1 : globalThis.devicePixelRatio || 1, // Force 1x resolution on mobile
         autoDensity: true,
         antialias: false, // Always disable antialias for performance
         powerPreference: 'high-performance', // Hint to browser
@@ -144,12 +145,12 @@ export default function GlitterBomb() {
       // Trigger initial explosion - REMOVED for performance
 
       // Listen for custom event
-      window.addEventListener('trigger-glitter-bomb', trigger);
+      globalThis.addEventListener('trigger-glitter-bomb', trigger);
 
       // Cleanup listener
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any)._glitterCleanup = () =>
-        window.removeEventListener('trigger-glitter-bomb', trigger);
+      (globalThis as any)._glitterCleanup = () =>
+        globalThis.removeEventListener('trigger-glitter-bomb', trigger);
     };
 
     // Delay initialization to improve LCP/TBT scores
@@ -158,7 +159,7 @@ export default function GlitterBomb() {
     return () => {
       clearTimeout(timerId);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((window as any)._glitterCleanup) (window as any)._glitterCleanup();
+      if ((globalThis as any)._glitterCleanup) (globalThis as any)._glitterCleanup();
       if (appRef.current) {
         const app = appRef.current;
         if (app.ticker) app.ticker.stop();

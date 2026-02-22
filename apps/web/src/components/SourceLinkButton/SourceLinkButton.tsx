@@ -19,7 +19,7 @@ export default memo(
       if (onClick) {
         onClick(e);
       } else {
-        window.open(url, '_blank', 'noopener,noreferrer');
+        globalThis.open(url, '_blank', 'noopener,noreferrer');
       }
     };
 

@@ -5,7 +5,7 @@ import DocViewer from './DocViewer';
 describe('DocViewer', () => {
   beforeEach(() => {
     // Reset hash
-    window.location.hash = '';
+    globalThis.location.hash = '';
     // jsdom doesn't implement scrollIntoView
     Element.prototype.scrollIntoView = vi.fn();
   });
@@ -20,7 +20,7 @@ describe('DocViewer', () => {
   });
 
   it('highlights a single line from hash', () => {
-    window.location.hash = '#L2';
+    globalThis.location.hash = '#L2';
     const { container } = render(<DocViewer content={'a\nb\nc'} />);
     const lines = container.querySelectorAll('[id]');
     // L2 should have highlighted class
@@ -31,7 +31,7 @@ describe('DocViewer', () => {
   });
 
   it('highlights a range of lines from hash', () => {
-    window.location.hash = '#L1-L3';
+    globalThis.location.hash = '#L1-L3';
     const { container } = render(<DocViewer content={'a\nb\nc\nd'} />);
     expect(container.querySelector('#L1')?.className).toContain('highlighted');
     expect(container.querySelector('#L2')?.className).toContain('highlighted');
@@ -54,7 +54,7 @@ describe('DocViewer', () => {
   });
 
   it('does not highlight with invalid hash', () => {
-    window.location.hash = '#invalid';
+    globalThis.location.hash = '#invalid';
     const { container } = render(<DocViewer content={'a\nb'} />);
     expect(container.querySelector('#L1')?.className).not.toContain('highlighted');
     expect(container.querySelector('#L2')?.className).not.toContain('highlighted');
