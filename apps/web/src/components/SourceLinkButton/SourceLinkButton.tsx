@@ -11,7 +11,7 @@ interface SourceLinkButtonProps {
 }
 
 export default memo(
-  function SourceLinkButton({ url, label, icon, onClick }: SourceLinkButtonProps) {
+  function SourceLinkButton({ url, label, icon, onClick }: Readonly<SourceLinkButtonProps>) {
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();

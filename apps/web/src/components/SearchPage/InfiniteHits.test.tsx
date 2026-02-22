@@ -36,7 +36,6 @@ class DefaultIntersectionObserver {
   disconnect = vi.fn();
   unobserve = vi.fn();
   takeRecords = vi.fn();
-  constructor() {}
 }
 
 describe('InfiniteHits', () => {
@@ -133,7 +132,6 @@ describe('InfiniteHits', () => {
       disconnect = disconnect;
       unobserve = vi.fn();
       takeRecords = vi.fn();
-      constructor() {}
     }
 
     vi.stubGlobal('IntersectionObserver', MockObserver);

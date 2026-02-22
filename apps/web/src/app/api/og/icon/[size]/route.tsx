@@ -8,9 +8,9 @@ export async function GET(
   { params }: { params: Promise<{ size: string }> }
 ) {
   const sizeParam = (await params).size;
-  const size = parseInt(sizeParam, 10);
+  const size = Number.parseInt(sizeParam, 10);
 
-  if (isNaN(size) || size <= 0) {
+  if (Number.isNaN(size) || size <= 0) {
     return new Response('Invalid size', { status: 400 });
   }
 

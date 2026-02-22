@@ -16,7 +16,7 @@ interface HeroProps {
   };
 }
 
-export default function Hero({ title, subtitle, image }: HeroProps) {
+export default function Hero({ title, subtitle, image }: Readonly<HeroProps>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 

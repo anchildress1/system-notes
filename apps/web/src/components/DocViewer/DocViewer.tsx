@@ -7,7 +7,7 @@ interface DocViewerProps {
   content: string;
 }
 
-export default function DocViewer({ content }: DocViewerProps) {
+export default function DocViewer({ content }: Readonly<DocViewerProps>) {
   // Ensure we split correctly on newlines, handling potential CRLF
   const lines = content.replace(/\r\n/g, '\n').split('\n');
   const [highlightedRange, setHighlightedRange] = useState<[number, number] | null>(null);
@@ -19,8 +19,8 @@ export default function DocViewer({ content }: DocViewerProps) {
         // Parse #Lx-Ly or #Lx
         const match = hash.match(/#L(\d+)(?:-L(\d+))?/);
         if (match) {
-          const start = parseInt(match[1], 10);
-          const end = match[2] ? parseInt(match[2], 10) : start;
+          const start = Number.parseInt(match[1], 10);
+          const end = match[2] ? Number.parseInt(match[2], 10) : start;
           setHighlightedRange([start, end]);
 
           // Scroll to the first line

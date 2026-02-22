@@ -19,7 +19,7 @@ interface FactCardOverlayProps {
  * Renders the same expanded card view as FactCard's portal, but isn't
  * tied to a card in the search results list.
  */
-export default function FactCardOverlay({ hit, onClose }: FactCardOverlayProps) {
+export default function FactCardOverlay({ hit, onClose }: Readonly<FactCardOverlayProps>) {
   const portalTarget = useMemo(() => (typeof document !== 'undefined' ? document.body : null), []);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [isVisible, setIsVisible] = useState(true);
@@ -79,7 +79,7 @@ export default function FactCardOverlay({ hit, onClose }: FactCardOverlayProps) 
         }}
       >
         <div className={styles.cardInner}>
-          <div className={styles.cardBack} role="region" aria-label={`${hit.title} details`}>
+          <section className={styles.cardBack} aria-label={`${hit.title} details`}>
             <button
               ref={closeButtonRef}
               type="button"
@@ -135,7 +135,7 @@ export default function FactCardOverlay({ hit, onClose }: FactCardOverlayProps) 
                 </div>
               )}
             </div>
-          </div>
+          </section>
         </div>
       </motion.article>
     </motion.div>,

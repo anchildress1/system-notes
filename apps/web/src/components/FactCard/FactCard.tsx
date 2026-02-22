@@ -30,7 +30,7 @@ interface FactCardProps {
   sendEvent?: SendEventForHits;
 }
 
-export default function FactCard({ hit, sendEvent }: FactCardProps) {
+export default function FactCard({ hit, sendEvent }: Readonly<FactCardProps>) {
   const portalTarget = useMemo(() => (typeof document !== 'undefined' ? document.body : null), []);
   const hasTrackedFlip = useRef(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -222,10 +222,9 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
               }}
             >
               <div className={styles.cardInner}>
-                <div
+                <section
                   className={styles.cardBack}
                   aria-hidden={!isFlipped}
-                  role="region"
                   aria-label={`${hit.title} details`}
                 >
                   <button
@@ -283,7 +282,7 @@ export default function FactCard({ hit, sendEvent }: FactCardProps) {
                       </div>
                     )}
                   </div>
-                </div>
+                </section>
               </div>
             </motion.article>
           </motion.div>,

@@ -67,7 +67,6 @@ export default function MusicPlayer() {
         onEnded={handleEnded}
         onError={handleAudioError}
         preload="none"
-        playsInline
       />
     </div>
   );

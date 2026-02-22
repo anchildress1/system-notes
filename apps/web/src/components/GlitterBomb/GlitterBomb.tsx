@@ -78,7 +78,7 @@ export default function GlitterBomb() {
             p.visible = false;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            if ((p as any).parent) (p as any).parent.removeChild(p as any);
+            (p as any).removeFromParent?.();
           }
         });
 

@@ -252,9 +252,9 @@ export default function SearchPage() {
     const attachLinkHandlers = () => {
       const links = document.querySelectorAll('.ss-infinite-hits-anchor');
       links.forEach((link) => {
-        if (!link.hasAttribute('data-has-handler')) {
+        if (!(link as HTMLElement).dataset.hasHandler) {
           link.addEventListener('click', handleLinkClick);
-          link.setAttribute('data-has-handler', 'true');
+          (link as HTMLElement).dataset.hasHandler = 'true';
         }
       });
     };

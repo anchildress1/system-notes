@@ -18,7 +18,7 @@ export default function ExpandedView({
   onClose,
   isOpen,
   onExitComplete,
-}: ExpandedViewProps) {
+}: Readonly<ExpandedViewProps>) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

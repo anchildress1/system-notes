@@ -9,7 +9,6 @@ import 'instantsearch.css/themes/satellite.css';
 import styles from './AIChat.module.css';
 import dynamic from 'next/dynamic';
 import { API_URL, ALGOLIA_INDEX } from '@/config';
-// import { useRecommendationTools } from '@/lib/recommendations';
 import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
 import { getChatSessionId } from '@/utils/userToken';
 import {
@@ -135,8 +134,8 @@ export default function AIChat() {
         if (!toggleBtn.hasAttribute('aria-label')) {
           toggleBtn.setAttribute('aria-label', 'Open AI Chat');
         }
-        if (!toggleBtn.hasAttribute('data-testid')) {
-          toggleBtn.setAttribute('data-testid', 'ai-chat-toggle');
+        if (!(toggleBtn as HTMLElement).dataset.testid) {
+          (toggleBtn as HTMLElement).dataset.testid = 'ai-chat-toggle';
         }
       }
     };

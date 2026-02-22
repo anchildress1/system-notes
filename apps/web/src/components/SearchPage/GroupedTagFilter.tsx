@@ -10,7 +10,10 @@ interface GroupedTagFilterProps {
   limit?: number;
 }
 
-export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagFilterProps) {
+export default function GroupedTagFilter({
+  attributes,
+  limit = 50,
+}: Readonly<GroupedTagFilterProps>) {
   const [lvl0Attr, lvl1Attr] = attributes;
 
   // Fetch both levels

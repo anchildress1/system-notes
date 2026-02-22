@@ -10,7 +10,11 @@ interface ProjectCardProps {
   priority?: boolean;
 }
 
-export default function ProjectCard({ project, onSelect, priority = false }: ProjectCardProps) {
+export default function ProjectCard({
+  project,
+  onSelect,
+  priority = false,
+}: Readonly<ProjectCardProps>) {
   const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'CheckMarK DevTools';
 
   return (

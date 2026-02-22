@@ -93,7 +93,7 @@ export const useSparkles = ({
             if (p.life <= 0) {
               p.visible = false;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              app.stage.removeChild(p as any);
+              (p as any).removeFromParent?.();
               particles.splice(i, 1);
             } else {
               p.x += Math.cos(p.direction) * p.speed;

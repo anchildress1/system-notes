@@ -11,7 +11,7 @@ const AIChat = dynamic(() => import('@/components/AIChat/AIChat'), {
   ssr: false,
 });
 
-export default function ClientShell({ children }: { children: React.ReactNode }) {
+export default function ClientShell({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
       <div className={styles.appRoot}>
