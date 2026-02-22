@@ -17,9 +17,9 @@ def test_health_check():
     assert response.json() == {"status": "ok"}
 
 @patch("main.Path")
-def test_get_system_doc_success(MockPath):
+def test_get_system_doc_success(mock_path):
     # Construct the mock chain carefully
-    mock_path_instance = MockPath.return_value
+    mock_path_instance = mock_path.return_value
     mock_resolved_root = mock_path_instance.resolve.return_value
     mock_parent = mock_resolved_root.parent
 
@@ -39,8 +39,8 @@ def test_get_system_doc_success(MockPath):
     assert response.json()["content"] == "# Test Content"
 
 @patch("main.Path")
-def test_get_system_doc_not_found(MockPath):
-    mock_parent = MockPath.return_value.resolve.return_value.parent
+def test_get_system_doc_not_found(mock_path):
+    mock_parent = mock_path.return_value.resolve.return_value.parent
     mock_target = MagicMock()
     mock_parent.joinpath.return_value.resolve.return_value = mock_target
 
@@ -53,8 +53,8 @@ def test_get_system_doc_not_found(MockPath):
     assert response.json()["error"] == "Document not found"
 
 @patch("main.Path")
-def test_get_system_doc_traversal_attempt(MockPath):
-    mock_parent = MockPath.return_value.resolve.return_value.parent
+def test_get_system_doc_traversal_attempt(mock_path):
+    mock_parent = mock_path.return_value.resolve.return_value.parent
     mock_target = MagicMock()
     mock_parent.joinpath.return_value.resolve.return_value = mock_target
 
@@ -83,8 +83,8 @@ def test_get_system_doc_traversal_attempt(MockPath):
     assert response.json()["error"] == "File type not allowed"
 
 @patch("main.Path")
-def test_get_system_doc_error_handling(MockPath):
-    mock_parent = MockPath.return_value.resolve.return_value.parent
+def test_get_system_doc_error_handling(mock_path):
+    mock_parent = mock_path.return_value.resolve.return_value.parent
     mock_target = MagicMock()
     mock_parent.joinpath.return_value.resolve.return_value = mock_target
 
