@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import Annotated, List, Optional
 from werkzeug.utils import secure_filename
 import os
 import json
@@ -295,9 +295,9 @@ async def get_all_blog_posts() -> List[BlogPostInternal]:
 
 @app.get("/blog/search", response_model=BlogSearchResponse)
 async def search_blog_posts(
-    q: Optional[str] = Query(None, description="Search query to filter posts"),
-    tag: Optional[str] = Query(None, description="Filter by tag"),
-    limit: int = Query(3, ge=1, le=50, description="Maximum results to return"),
+    q: Annotated[Optional[str], Query(description="Search query to filter posts")] = None,
+    tag: Annotated[Optional[str], Query(description="Filter by tag")] = None,
+    limit: Annotated[int, Query(ge=1, le=50, description="Maximum results to return")] = 3,
 ):
     logger.info(f"Search request: q='{q}', tag='{tag}', limit={limit}")
 
