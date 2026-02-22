@@ -48,6 +48,45 @@ export default function GlitterBomb() {
       circleGraphics.fill({ color: 0xffffff });
       const circleTexture = app.renderer.generateTexture(circleGraphics);
 
+      // Shared mutable particle list — replaced on each explosion trigger
+      const currentParticles: Particle[] = [];
+
+      // Animation tick lives at initPixi scope to avoid exceeding 4 nesting levels
+      const tick = () => {
+        let activeParticles = 0;
+        currentParticles.forEach((p) => {
+          if (p.life > 0) {
+            activeParticles++;
+
+            // Move
+            p.x += Math.cos(p.direction) * p.speed;
+            p.y += Math.sin(p.direction) * p.speed;
+
+            // Simplified physics for mobile
+            if (!isMobile) {
+              p.speed *= 0.98; // Gentle drag
+              p.y += 0.5; // Floaty gravity
+            } else {
+              p.speed *= 0.95; // Stronger drag to stop movement faster
+            }
+
+            // Fade out
+            p.life -= p.decay;
+            p.alpha = p.life;
+            p.scale.set(p.life * 0.5); // scaling down
+          } else {
+            p.visible = false;
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            if ((p as any).parent) (p as any).parent.removeChild(p as any);
+          }
+        });
+
+        if (activeParticles === 0) {
+          app.ticker.remove(tick);
+        }
+      };
+
       // Function to trigger explosion
       const trigger = () => {
         if (!app.renderer) return;
@@ -56,7 +95,7 @@ export default function GlitterBomb() {
         if (!app.ticker.started) app.start();
 
         // --- Optimized Explosion Config ---
-        const particles: Particle[] = [];
+        currentParticles.length = 0; // Reset shared particle list for new explosion
         const colors = [0xffd700, 0xffec8b, 0xffffff, 0xb56bff];
 
         // Massive reduction for mobile
@@ -96,43 +135,9 @@ export default function GlitterBomb() {
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           app.stage.addChild(particle as unknown as any);
-          particles.push(particle);
+          currentParticles.push(particle);
         }
 
-        const tick = () => {
-          let activeParticles = 0;
-          particles.forEach((p) => {
-            if (p.life > 0) {
-              activeParticles++;
-
-              // Move
-              p.x += Math.cos(p.direction) * p.speed;
-              p.y += Math.sin(p.direction) * p.speed;
-
-              // Simplified physics for mobile
-              if (!isMobile) {
-                p.speed *= 0.98; // Gentle drag
-                p.y += 0.5; // Floaty gravity
-              } else {
-                p.speed *= 0.95; // Stronger drag to stop movement faster
-              }
-
-              // Fade out
-              p.life -= p.decay;
-              p.alpha = p.life;
-              p.scale.set(p.life * 0.5); // scaling down
-            } else {
-              p.visible = false;
-
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              if ((p as any).parent) (p as any).parent.removeChild(p as any);
-            }
-          });
-
-          if (activeParticles === 0) {
-            app.ticker.remove(tick);
-          }
-        };
         app.ticker.add(tick);
       };
 

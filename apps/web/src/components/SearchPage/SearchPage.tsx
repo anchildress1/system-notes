@@ -182,7 +182,8 @@ export default function SearchPage() {
     const scheduleTimeout = (fn: () => void, ms: number) => {
       const id = setTimeout(() => {
         fn();
-        pendingTimeouts.current = pendingTimeouts.current.filter((t) => t !== id);
+        const idx = pendingTimeouts.current.indexOf(id);
+        if (idx !== -1) pendingTimeouts.current.splice(idx, 1);
       }, ms);
       pendingTimeouts.current.push(id);
     };

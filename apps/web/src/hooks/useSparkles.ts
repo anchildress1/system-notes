@@ -132,23 +132,23 @@ export const useSparkles = ({
       observer.observe(containerRef.current);
     }
 
+    const isInTextArea = (clientX: number, clientY: number): boolean => {
+      if (!sparkleNearText || !textRef?.current) return true;
+      const textRect = textRef.current.getBoundingClientRect();
+      return (
+        clientX >= textRect.left &&
+        clientX <= textRect.right &&
+        clientY >= textRect.top &&
+        clientY <= textRect.bottom
+      );
+    };
+
     const handleInteraction = async (clientX: number, clientY: number) => {
       // Early check
       if (!app || !app.renderer || !containerRef.current || !isMounted) return;
+      if (!isInTextArea(clientX, clientY)) return;
 
       try {
-        // If restricted to text area (like in Hero with image)
-        if (sparkleNearText && textRef?.current) {
-          const textRect = textRef.current.getBoundingClientRect();
-          const isInText =
-            clientX >= textRect.left &&
-            clientX <= textRect.right &&
-            clientY >= textRect.top &&
-            clientY <= textRect.bottom;
-
-          if (!isInText) return;
-        }
-
         const PIXI = await import('pixi.js');
         // Re-check EVERYTHING after async await
         if (!isMounted || !app || !app.renderer || !circleTexture) return;
