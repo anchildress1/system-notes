@@ -38,6 +38,21 @@ class DefaultIntersectionObserver {
   takeRecords = vi.fn();
 }
 
+// Shared triggering observer: immediately fires the callback on construction.
+// Used by multiple tests to simulate sentinel intersection.
+class TriggeringObserver {
+  constructor(callback: IntersectionObserverCallback) {
+    callback(
+      [{ isIntersecting: true } as IntersectionObserverEntry],
+      this as unknown as IntersectionObserver
+    );
+  }
+  observe = vi.fn();
+  disconnect = vi.fn();
+  unobserve = vi.fn();
+  takeRecords = vi.fn();
+}
+
 describe('InfiniteHits', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -63,25 +78,7 @@ describe('InfiniteHits', () => {
   });
 
   it('triggers showMore when intersection observer detects visibility and has more pages', () => {
-    // Mock IntersectionObserver
-    const observe = vi.fn();
-    const disconnect = vi.fn();
-
-    class MockObserver {
-      constructor(callback: IntersectionObserverCallback) {
-        // Trigger callback immediately to simulate intersection
-        callback(
-          [{ isIntersecting: true } as IntersectionObserverEntry],
-          this as unknown as IntersectionObserver
-        );
-      }
-      observe = observe;
-      disconnect = disconnect;
-      unobserve = vi.fn();
-      takeRecords = vi.fn();
-    }
-
-    vi.stubGlobal('IntersectionObserver', MockObserver);
+    vi.stubGlobal('IntersectionObserver', TriggeringObserver);
 
     // Must mock useInfiniteHits to return isLastPage: false
     vi.mocked(useInfiniteHits).mockReturnValue({
@@ -98,20 +95,7 @@ describe('InfiniteHits', () => {
   });
 
   it('does not call showMore when isLastPage is true even if sentinel intersects', () => {
-    class MockObserver {
-      constructor(callback: IntersectionObserverCallback) {
-        callback(
-          [{ isIntersecting: true } as IntersectionObserverEntry],
-          this as unknown as IntersectionObserver
-        );
-      }
-      observe = vi.fn();
-      disconnect = vi.fn();
-      unobserve = vi.fn();
-      takeRecords = vi.fn();
-    }
-
-    vi.stubGlobal('IntersectionObserver', MockObserver);
+    vi.stubGlobal('IntersectionObserver', TriggeringObserver);
 
     vi.mocked(useInfiniteHits).mockReturnValue({
       hits: [],

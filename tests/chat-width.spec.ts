@@ -13,8 +13,8 @@ test.describe('AIChat Width and Visibility', () => {
     const isVisible = await toggle.isVisible().catch(() => false);
 
     if (isVisible) {
-      const width = await toggle.evaluate((el) => window.getComputedStyle(el).width);
-      const height = await toggle.evaluate((el) => window.getComputedStyle(el).height);
+      const width = await toggle.evaluate((el) => globalThis.getComputedStyle(el).width);
+      const height = await toggle.evaluate((el) => globalThis.getComputedStyle(el).height);
       expect(parseFloat(width)).toBe(60);
       expect(parseFloat(height)).toBe(60);
     } else {
@@ -22,7 +22,7 @@ test.describe('AIChat Width and Visibility', () => {
       // Verify the CSS module is loaded by checking :root variable as proxy.
       const hasVar = await page.evaluate(
         () =>
-          window
+          globalThis
             .getComputedStyle(document.documentElement)
             .getPropertyValue('--ais-primary-color-rgb')
             .trim().length > 0

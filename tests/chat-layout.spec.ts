@@ -12,7 +12,7 @@ test.describe('AIChat Visual Layout', () => {
     // also sets it, but Algolia's satellite CSS can override at :root level
     // depending on load order. Verify the variable is set (non-empty).
     const primaryColor = await page.evaluate(() =>
-      window
+      globalThis
         .getComputedStyle(document.documentElement)
         .getPropertyValue('--ais-primary-color-rgb')
         .trim()
@@ -31,8 +31,8 @@ test.describe('AIChat Visual Layout', () => {
     const isVisible = await toggle.isVisible().catch(() => false);
 
     if (isVisible) {
-      const width = await toggle.evaluate((el) => window.getComputedStyle(el).width);
-      const height = await toggle.evaluate((el) => window.getComputedStyle(el).height);
+      const width = await toggle.evaluate((el) => globalThis.getComputedStyle(el).width);
+      const height = await toggle.evaluate((el) => globalThis.getComputedStyle(el).height);
       expect(parseFloat(width)).toBe(60);
       expect(parseFloat(height)).toBe(60);
     } else {
@@ -40,7 +40,7 @@ test.describe('AIChat Visual Layout', () => {
       // Verify the CSS module is loaded by checking that the :root variable exists.
       const hasVar = await page.evaluate(
         () =>
-          window
+          globalThis
             .getComputedStyle(document.documentElement)
             .getPropertyValue('--ais-primary-color-rgb')
             .trim().length > 0

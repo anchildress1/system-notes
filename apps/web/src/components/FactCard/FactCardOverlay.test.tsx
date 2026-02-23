@@ -15,10 +15,9 @@ vi.mock('framer-motion', () => ({
       );
     },
     article: (props: Record<string, unknown>) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {
         children,
-        onClick: _onClick,
+        onClick: _onClick, // eslint-disable-line @typescript-eslint/no-unused-vars
         className,
         role,
         animate,

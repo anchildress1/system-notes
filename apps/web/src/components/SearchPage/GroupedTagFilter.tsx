@@ -60,7 +60,10 @@ export default function GroupedTagFilter({
         if (children && children.length > 0) {
           // Check if all children are refined
           const allChildrenRefined = children.every((child) => child.isRefined);
-          if (!allChildrenRefined) {
+          if (allChildrenRefined) {
+            // All children already refined, mark as synced
+            syncedParents.current.add(parentItem.value);
+          } else {
             // Mark as synced before refining to prevent loops
             syncedParents.current.add(parentItem.value);
             // Select any unrefined children
@@ -69,9 +72,6 @@ export default function GroupedTagFilter({
                 lvl1.refine(child.value);
               }
             });
-          } else {
-            // All children already refined, mark as synced
-            syncedParents.current.add(parentItem.value);
           }
         }
       } else if (!parentItem.isRefined && syncedParents.current.has(parentItem.value)) {
