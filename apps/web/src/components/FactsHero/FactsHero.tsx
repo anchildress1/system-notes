@@ -11,9 +11,8 @@ export default function FactsHero() {
 
   return (
     <div className={styles.hero} ref={containerRef}>
-      <div
-        role="button"
-        tabIndex={0}
+      <button
+        type="button"
         className={styles.interactiveContainer}
         onClick={() => {
           if (typeof globalThis !== 'undefined') {
@@ -30,9 +29,11 @@ export default function FactsHero() {
         }}
         aria-label="Click to trigger a glitter effect"
       >
-        <h1 className={styles.title}>Decisions on record</h1>
-        <div className={styles.subtitle}>so you can audit me</div>
-      </div>
+        <span role="heading" aria-level={1} className={styles.title}>
+          Decisions on record
+        </span>
+        <span className={styles.subtitle}>so you can audit me</span>
+      </button>
     </div>
   );
 }

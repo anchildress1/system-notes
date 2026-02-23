@@ -26,11 +26,10 @@ export default function Hero({ title, subtitle, image }: Readonly<HeroProps>) {
   return (
     <div className={styles.hero} ref={containerRef}>
       <div className={styles.titleContainer} ref={textRef}>
-        <div
+        <button
+          type="button"
           className={styles.interactiveContainer}
           data-testid="hero-interactive"
-          role="button"
-          tabIndex={0}
           aria-label="Trigger glitter effect"
           onClick={() => {
             globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
@@ -42,9 +41,11 @@ export default function Hero({ title, subtitle, image }: Readonly<HeroProps>) {
             }
           }}
         >
-          <h1 className={styles.title}>{title}</h1>
-          {subtitle && <div className={styles.subtitle}>{subtitle}</div>}
-        </div>
+          <span role="heading" aria-level={1} className={styles.title}>
+            {title}
+          </span>
+          {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
+        </button>
       </div>
 
       {image && (

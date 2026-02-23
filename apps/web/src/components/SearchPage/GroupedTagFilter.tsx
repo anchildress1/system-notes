@@ -160,20 +160,13 @@ export default function GroupedTagFilter({
                     }
                   }}
                 />
-                <span
+                <button
+                  type="button"
                   className={`${styles.refinementLabelText} ${styles.tagGroupLabelText}`}
-                  role="button"
-                  tabIndex={0}
                   onClick={() => handleParentToggle(rootItem, children)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      handleParentToggle(rootItem, children);
-                    }
-                  }}
                 >
                   {rootItem.label}
-                </span>
+                </button>
                 <span className={styles.refinementCount}>{rootItem.count}</span>
                 <button
                   type="button"
