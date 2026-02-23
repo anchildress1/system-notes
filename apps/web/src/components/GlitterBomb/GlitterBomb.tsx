@@ -52,38 +52,38 @@ export default function GlitterBomb() {
       // Shared mutable particle list — replaced on each explosion trigger
       const currentParticles: Particle[] = [];
 
-      // Animation tick lives at initPixi scope to avoid exceeding 4 nesting levels
-      const tick = () => {
-        let activeParticles = 0;
-        currentParticles.forEach((p) => {
-          if (p.life > 0) {
-            activeParticles++;
-
-            // Move
-            p.x += Math.cos(p.direction) * p.speed;
-            p.y += Math.sin(p.direction) * p.speed;
-
-            // Simplified physics for mobile
-            if (!isMobile) {
-              p.speed *= 0.98; // Gentle drag
-              p.y += 0.5; // Floaty gravity
-            } else {
-              p.speed *= 0.95; // Stronger drag to stop movement faster
-            }
-
-            // Fade out
-            p.life -= p.decay;
-            p.alpha = p.life;
-            p.scale.set(p.life * 0.5); // scaling down
+      // Particle update extracted to avoid exceeding 4 function-nesting levels (S2004)
+      const updateParticle = (p: Particle): boolean => {
+        if (p.life > 0) {
+          p.x += Math.cos(p.direction) * p.speed;
+          p.y += Math.sin(p.direction) * p.speed;
+          if (!isMobile) {
+            p.speed *= 0.98;
+            p.y += 0.5;
           } else {
-            p.visible = false;
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (p as any).remove?.();
+            p.speed *= 0.95;
           }
-        });
+          p.life -= p.decay;
+          p.alpha = p.life;
+          p.scale.set(p.life * 0.5);
+          return true;
+        }
+        p.visible = false;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (p as any).remove?.();
+        return false;
+      };
 
-        if (activeParticles === 0) {
+      const tick = () => {
+        currentParticles.forEach(updateParticle);
+        let hasActive = false;
+        for (const p of currentParticles) {
+          if (p.life > 0) {
+            hasActive = true;
+            break;
+          }
+        }
+        if (!hasActive) {
           app.ticker.remove(tick);
         }
       };

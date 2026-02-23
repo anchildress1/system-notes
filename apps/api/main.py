@@ -153,7 +153,7 @@ async def get_system_doc(doc_path: str):
 
         # Security Rule 1.4: Resolve and Verify Root (Defense in Depth)
         if not target_path.is_relative_to(api_root):
-             logger.warning("Path traversal attempt blocked (escaped root): %s", _sanitize_log(doc_path))
+             logger.warning("Path traversal attempt blocked (escaped root)")
              return JSONResponse(status_code=400, content={"error": "Invalid path resolution"})
 
         if not target_path.is_file():
@@ -304,7 +304,7 @@ async def search_blog_posts(
     tag: Annotated[Optional[str], Query(description="Filter by tag")] = None,
     limit: Annotated[int, Query(ge=1, le=50, description="Maximum results to return")] = 3,
 ):
-    logger.info("Search request: q='%s', tag='%s', limit=%s", _sanitize_log(q or ''), _sanitize_log(tag or ''), limit)
+    logger.info("Search request: q_present=%s, tag_present=%s, limit=%s", bool(q), bool(tag), limit)
 
     posts = await get_all_blog_posts()
     logger.info(f"Total posts available for filtering: {len(posts)}")
