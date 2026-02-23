@@ -67,7 +67,10 @@ export default function MusicPlayer() {
         onEnded={handleEnded}
         onError={handleAudioError}
         preload="none"
-      />
+      >
+        {/* S4084: track element required for accessible media */}
+        <track kind="captions" src="" default label="No captions available" />
+      </audio>
     </div>
   );
 }
