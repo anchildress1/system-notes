@@ -22,7 +22,6 @@ describe('DocViewer', () => {
   it('highlights a single line from hash', () => {
     globalThis.location.hash = '#L2';
     const { container } = render(<DocViewer content={'a\nb\nc'} />);
-    const lines = container.querySelectorAll('[id]');
     // L2 should have highlighted class
     const l2 = container.querySelector('#L2');
     expect(l2?.className).toContain('highlighted');
