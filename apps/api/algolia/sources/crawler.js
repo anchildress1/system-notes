@@ -1,24 +1,24 @@
 // Avoid hardcoding credentials in source. Prefer providing via environment
 // variables and never commit real API keys or app IDs to the repo or terminal.
 
-function generateSlug(finalUrl) {
-  const cleanUrl = finalUrl.replace(/\/$/, '').replace(/^https?:\/\//, '');
-  const parts = cleanUrl.split('/');
-  if (parts.length > 1) {
-    const slug = parts.filter((p) => p.length > 0).pop() || '';
-    if (slug) return slug;
-  }
-  // Fallback: hash of the URL
+function urlHash(url) {
   let hash = 0;
-  for (let i = 0; i < finalUrl.length; i++) {
-    const char = finalUrl.charCodeAt(i);
+  for (let i = 0; i < url.length; i++) {
+    const char = url.codePointAt(i) ?? 0;
     hash = (hash << 5) - hash + char;
     hash = hash & hash;
   }
   return 'post-' + Math.abs(hash).toString(36);
 }
 
-const _crawler = new Crawler({
+function generateSlug(finalUrl) {
+  const cleanUrl = finalUrl.replace(/\/$/, '').replace(/^https?:\/\//, '');
+  const parts = cleanUrl.split('/');
+  const slug = parts.findLast((p) => p.length > 0);
+  return slug || urlHash(finalUrl);
+}
+
+new Crawler({
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || 'REDACTED_APP_ID',
   apiKey: process.env.ALGOLIA_CRAWLER_API_KEY,
   indexPrefix: '',
@@ -46,16 +46,16 @@ const _crawler = new Crawler({
         let epochTimestamp = null;
         if (publishedAt) {
           const date = new Date(String(publishedAt).trim());
-          if (!isNaN(date.getTime())) {
+          if (!Number.isNaN(date.getTime())) {
             epochTimestamp = Math.floor(date.getTime() / 1000);
           }
         }
 
-        let canonical =
+        const rawCanonical =
           $('link[rel="canonical"]').attr('href') ||
           $('meta[property="og:url"]').attr('content') ||
           $('meta[property="source-url"]').attr('content');
-        canonical = canonical ? String(canonical).trim() : null;
+        const canonical = rawCanonical ? String(rawCanonical).trim() : null;
 
         // Always use canonical if available, otherwise fall back to crawled URL
         const finalUrl = canonical || urlStr;
@@ -68,8 +68,8 @@ const _crawler = new Crawler({
 
         const slug = generateSlug(finalUrl);
 
-        let image = $('meta[property="og:image"]').attr('content');
-        image = image ? String(image).trim() : null;
+        const rawImage = $('meta[property="og:image"]').attr('content');
+        const image = rawImage ? String(rawImage).trim() : null;
 
         const keywords = $('meta[name="keywords"]').attr('content');
         let tags = [];
@@ -96,7 +96,7 @@ const _crawler = new Crawler({
         const engagementScore = Math.min(5, Math.max(1, Math.ceil(rawScore / 123)));
 
         const _content = $('main article').first().text();
-        let content = _content ? String(_content).trim().replace(/\s+/g, ' ') : null;
+        let content = _content ? String(_content).trim().replaceAll(/\s+/g, ' ') : null;
         // Cap content size to avoid Algolia "record too large" errors.
         if (content && content.length > 150) {
           content = content.slice(0, 150);
