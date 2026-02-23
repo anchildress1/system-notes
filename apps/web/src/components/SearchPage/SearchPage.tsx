@@ -141,6 +141,17 @@ function useSiteSearchWithAI(
   }, [appId, apiKey, indexName, searchAiId, enabled]);
 }
 
+const refinementClassNames = {
+  root: styles.refinementRoot,
+  list: styles.refinementList,
+  item: styles.refinementItem,
+  selectedItem: styles.refinementItemSelected,
+  label: styles.refinementLabel,
+  checkbox: styles.refinementCheckbox,
+  labelText: styles.refinementLabelText,
+  count: styles.refinementCount,
+};
+
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
   const isEnabled = Boolean(hasCredentials);
@@ -358,19 +369,7 @@ export default function SearchPage() {
                 </button>
                 <div id="filter-category">
                   {!collapsedSections.category && (
-                    <RefinementList
-                      attribute="category"
-                      classNames={{
-                        root: styles.refinementRoot,
-                        list: styles.refinementList,
-                        item: styles.refinementItem,
-                        selectedItem: styles.refinementItemSelected,
-                        label: styles.refinementLabel,
-                        checkbox: styles.refinementCheckbox,
-                        labelText: styles.refinementLabelText,
-                        count: styles.refinementCount,
-                      }}
-                    />
+                    <RefinementList attribute="category" classNames={refinementClassNames} />
                   )}
                 </div>
               </div>
@@ -392,19 +391,7 @@ export default function SearchPage() {
                 </button>
                 <div id="filter-builds">
                   {!collapsedSections.builds && (
-                    <RefinementList
-                      attribute="projects"
-                      classNames={{
-                        root: styles.refinementRoot,
-                        list: styles.refinementList,
-                        item: styles.refinementItem,
-                        selectedItem: styles.refinementItemSelected,
-                        label: styles.refinementLabel,
-                        checkbox: styles.refinementCheckbox,
-                        labelText: styles.refinementLabelText,
-                        count: styles.refinementCount,
-                      }}
-                    />
+                    <RefinementList attribute="projects" classNames={refinementClassNames} />
                   )}
                 </div>
               </div>
