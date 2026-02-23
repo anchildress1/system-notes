@@ -131,8 +131,8 @@ export default function AIChat() {
         '.ais-ChatToggleButton, .ais-Chat-toggleButton, [class*="ChatToggleButton"]'
       );
       if (toggleBtn) {
-        if (!toggleBtn.hasAttribute('aria-label')) {
-          toggleBtn.setAttribute('aria-label', 'Open AI Chat');
+        if (!(toggleBtn as HTMLElement).ariaLabel) {
+          (toggleBtn as HTMLElement).ariaLabel = 'Open AI Chat';
         }
         if (!(toggleBtn as HTMLElement).dataset.testid) {
           (toggleBtn as HTMLElement).dataset.testid = 'ai-chat-toggle';

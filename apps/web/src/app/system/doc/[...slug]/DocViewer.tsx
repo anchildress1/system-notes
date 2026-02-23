@@ -24,18 +24,24 @@ export default function DocViewer({ content }: DocViewerProps) {
   return (
     <div className={styles.editor}>
       <div className={styles.gutter}>
-        {lines.map((_, i) => (
-          <div key={i} id={`L${i + 1}`} className={styles.lineNumber}>
-            <a href={`#content-L${i + 1}`}>{i + 1}</a>
-          </div>
-        ))}
+        {lines.map((_, i) => {
+          const lineNum = i + 1;
+          return (
+            <div key={lineNum} id={`L${lineNum}`} className={styles.lineNumber}>
+              <a href={`#content-L${lineNum}`}>{lineNum}</a>
+            </div>
+          );
+        })}
       </div>
       <div className={styles.content}>
-        {lines.map((line, i) => (
-          <div key={i} className={styles.lineContent} id={`content-L${i + 1}`}>
-            {line}
-          </div>
-        ))}
+        {lines.map((line, i) => {
+          const lineNum = i + 1;
+          return (
+            <div key={lineNum} className={styles.lineContent} id={`content-L${lineNum}`}>
+              {line}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

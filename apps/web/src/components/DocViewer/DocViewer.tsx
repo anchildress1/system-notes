@@ -9,7 +9,7 @@ interface DocViewerProps {
 
 export default function DocViewer({ content }: Readonly<DocViewerProps>) {
   // Ensure we split correctly on newlines, handling potential CRLF
-  const lines = content.replace(/\r\n/g, '\n').split('\n');
+  const lines = content.replaceAll('\r\n', '\n').split('\n');
   const [highlightedRange, setHighlightedRange] = useState<[number, number] | null>(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function DocViewer({ content }: Readonly<DocViewerProps>) {
       const hash = globalThis.location.hash;
       if (hash) {
         // Parse #Lx-Ly or #Lx
-        const match = hash.match(/#L(\d+)(?:-L(\d+))?/);
+        const match = /#L(\d+)(?:-L(\d+))?/.exec(hash);
         if (match) {
           const start = Number.parseInt(match[1], 10);
           const end = match[2] ? Number.parseInt(match[2], 10) : start;
@@ -54,7 +54,7 @@ export default function DocViewer({ content }: Readonly<DocViewerProps>) {
 
         return (
           <div
-            key={index}
+            key={lineNumber}
             id={`L${lineNumber}`}
             className={`${styles.line} ${highlighted ? styles.highlighted : ''}`}
           >
