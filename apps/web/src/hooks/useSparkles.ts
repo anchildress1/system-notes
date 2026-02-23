@@ -94,7 +94,7 @@ export const useSparkles = ({
             if (p.life <= 0) {
               p.visible = false;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (p as any).removeFromParent?.();
+              (p as any).remove?.();
               particles.splice(i, 1);
             } else {
               p.x += Math.cos(p.direction) * p.speed;
@@ -186,7 +186,7 @@ export const useSparkles = ({
 
           particle.direction = angle;
           particle.speed = velocity;
-          particle.life = 1.0;
+          particle.life = 1;
 
           // Faster decay on mobile to clear buffer
           particle.decay = Math.random() * (isMobile ? 0.05 : 0.03) + 0.01;

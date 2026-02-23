@@ -79,7 +79,7 @@ export default function GlitterBomb() {
             p.visible = false;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (p as any).removeFromParent?.();
+            (p as any).remove?.();
           }
         });
 
@@ -130,12 +130,12 @@ export default function GlitterBomb() {
 
           particle.direction = angle;
           particle.speed = velocity;
-          particle.life = 1.0;
+          particle.life = 1;
           // Faster decay on mobile to clear buffer sooner
           particle.decay = Math.random() * (isMobile ? 0.04 : 0.01) + 0.005;
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          app.stage.addChild(particle as unknown as any);
+          app.stage.addChild(particle as any);
           currentParticles.push(particle);
         }
 
