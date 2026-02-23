@@ -41,9 +41,7 @@ export default function Hero({ title, subtitle, image }: Readonly<HeroProps>) {
             }
           }}
         >
-          <span role="heading" aria-level={1} className={styles.title}>
-            {title}
-          </span>
+          <h1 className={styles.title}>{title}</h1>
           {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
         </button>
       </div>

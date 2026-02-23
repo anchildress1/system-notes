@@ -29,9 +29,7 @@ export default function FactsHero() {
         }}
         aria-label="Click to trigger a glitter effect"
       >
-        <span role="heading" aria-level={1} className={styles.title}>
-          Decisions on record
-        </span>
+        <h1 className={styles.title}>Decisions on record</h1>
         <span className={styles.subtitle}>so you can audit me</span>
       </button>
     </div>

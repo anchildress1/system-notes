@@ -1,23 +1,6 @@
 // Avoid hardcoding credentials in source. Prefer providing via environment
 // variables and never commit real API keys or app IDs to the repo or terminal.
 
-function urlHash(url) {
-  let hash = 0;
-  for (let i = 0; i < url.length; i++) {
-    const char = url.codePointAt(i) ?? 0;
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash;
-  }
-  return 'post-' + Math.abs(hash).toString(36);
-}
-
-function generateSlug(finalUrl) {
-  const cleanUrl = finalUrl.replace(/\/$/, '').replace(/^https?:\/\//, '');
-  const parts = cleanUrl.split('/');
-  const slug = parts.findLast((p) => p.length > 0);
-  return slug || urlHash(finalUrl);
-}
-
 new Crawler({
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || 'REDACTED_APP_ID',
   apiKey: process.env.ALGOLIA_CRAWLER_API_KEY,
@@ -65,11 +48,6 @@ new Crawler({
           console.warn('Empty URL found for page, skipping record');
           return [];
         }
-
-        const slug = generateSlug(finalUrl);
-
-        const rawImage = $('meta[property="og:image"]').attr('content');
-        const image = rawImage ? String(rawImage).trim() : null;
 
         const keywords = $('meta[name="keywords"]').attr('content');
         let tags = [];
