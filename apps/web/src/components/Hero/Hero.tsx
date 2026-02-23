@@ -26,24 +26,25 @@ export default function Hero({ title, subtitle, image }: Readonly<HeroProps>) {
   return (
     <div className={styles.hero} ref={containerRef}>
       <div className={styles.titleContainer} ref={textRef}>
-        <button
-          type="button"
-          className={styles.interactiveContainer}
-          data-testid="hero-interactive"
-          aria-label="Trigger glitter effect"
-          onClick={() => {
-            globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
-            }
-          }}
-        >
+        <div className={styles.interactiveContainer}>
           <h1 className={styles.title}>{title}</h1>
           {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
-        </button>
+          <button
+            type="button"
+            className={styles.glitterTrigger}
+            data-testid="hero-interactive"
+            aria-label="Trigger glitter effect"
+            onClick={() => {
+              globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
+              }
+            }}
+          />
+        </div>
       </div>
 
       {image && (
