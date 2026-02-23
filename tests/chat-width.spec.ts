@@ -4,7 +4,7 @@ import { test } from './utils';
 test.describe('AIChat Width and Visibility', () => {
   test('chat toggle button should render with correct dimensions', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('h1').first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
 
     // The toggle button sizing is now applied via CSS module class (.chatToggle)
     // through the classNames prop, not a global .ais-Chat-toggleButton rule.

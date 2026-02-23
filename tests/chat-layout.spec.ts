@@ -5,7 +5,7 @@ test.describe('AIChat Visual Layout', () => {
   test('chat root applies Algolia CSS custom properties', async ({ page }) => {
     await page.goto('/');
     // Wait for hydration/content
-    await expect(page.locator('h1').first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
 
     // The classNames prop applies .chatRoot to the Algolia root element,
     // setting --ais-primary-color-rgb. The :root declaration in globals.css
@@ -22,7 +22,7 @@ test.describe('AIChat Visual Layout', () => {
 
   test('chat toggle button should have correct size and position', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('h1').first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
 
     // The real toggle button is rendered by the Chat component with the
     // .chatToggle CSS module class applied via classNames prop.
