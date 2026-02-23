@@ -83,7 +83,6 @@ deploy_service() {
     local service_account=$4
     local env_vars=$5
     local dockerfile_path=$6
-    local build_args=$7
 
     echo ""
     echo "--- Deploying $service_name ---"
