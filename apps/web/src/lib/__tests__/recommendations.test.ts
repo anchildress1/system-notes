@@ -196,7 +196,11 @@ describe('Recommendations Library', () => {
     it('should limit default recommendations to 5 for related notes', async () => {
       const addToolResult = await invokeRelatedNotes();
       // Default maxRecommendations is 5 (set in fetchRecommendations)
-      expect(addToolResult).toHaveBeenCalled();
+      expect(addToolResult).toHaveBeenCalledWith(
+        expect.objectContaining({
+          output: expect.objectContaining({ count: expect.any(Number) }),
+        })
+      );
     });
 
     it('should limit default recommendations to 10 for trending notes', async () => {
