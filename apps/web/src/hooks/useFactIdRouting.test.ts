@@ -12,6 +12,23 @@ vi.mock('next/navigation', () => ({
   useSearchParams: vi.fn(),
 }));
 
+// Mock @/lib/algolia so constants re-read process.env at access time (test isolation)
+vi.mock('@/lib/algolia', () => ({
+  get ALGOLIA_APP_ID() {
+    return process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID ?? '';
+  },
+  get ALGOLIA_SEARCH_KEY() {
+    return process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY ?? '';
+  },
+  hasValidAlgoliaCredentials: (appId?: string, apiKey?: string) => {
+    const a = appId ?? process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID ?? '';
+    const k = apiKey ?? process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY ?? '';
+    return /^[A-Z0-9]{10}$/i.test(a) && k.length >= 20;
+  },
+  isValidAppId: (appId: string) => /^[A-Z0-9]{10}$/i.test(appId),
+  isValidApiKey: (apiKey: string) => apiKey.length >= 20,
+}));
+
 // Mock algoliasearch
 vi.mock('algoliasearch/lite', () => ({
   liteClient: vi.fn(() => ({

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { hasValidAlgoliaCredentials } from '@/lib/algolia';
+import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
 
 export interface OverlayHit {
   objectID: string;
@@ -73,8 +73,8 @@ export function useFactIdRouting(indexName: string) {
  * Returns all fields needed to render the overlay.
  */
 export async function fetchFactById(factId: string, indexName: string): Promise<OverlayHit | null> {
-  const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
-  const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
+  const appId = ALGOLIA_APP_ID;
+  const apiKey = ALGOLIA_SEARCH_KEY;
   if (!appId || !apiKey || !hasValidAlgoliaCredentials(appId, apiKey)) {
     console.warn('Algolia credentials not available');
     return null;

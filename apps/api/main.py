@@ -202,7 +202,7 @@ async def fetch_sitemap_urls() -> List[str]:
             response = await client.get(CRAWLY_SITEMAP_URL)
             response.raise_for_status()
             root = ET.fromstring(response.text)
-            ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+            ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}  # nosonar - XML namespace identifier, not a network request
             urls = [
                 loc.text for loc in root.findall(".//sm:loc", ns)
                 if loc.text and "/posts/" in loc.text
