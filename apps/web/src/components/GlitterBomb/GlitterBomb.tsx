@@ -87,7 +87,8 @@ export default function GlitterBomb() {
       // Function to trigger explosion
       const trigger = () => {
         if (!app.renderer) return;
-        if (app._destroyed) return; // Safety check
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((app as any)._destroyed) return; // Safety check - _destroyed is a private PIXI internal // NOSONAR
         if (!app.ticker.started) app.start();
 
         // --- Optimized Explosion Config ---
