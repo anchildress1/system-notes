@@ -87,7 +87,6 @@ export default function GlitterBomb() {
       // Function to trigger explosion
       const trigger = () => {
         if (!app.renderer) return;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (app._destroyed) return; // Safety check
         if (!app.ticker.started) app.start();
 
@@ -103,7 +102,6 @@ export default function GlitterBomb() {
 
         for (let i = 0; i < particleCount; i++) {
           // Use Sprite instead of Graphics for immense performance boost (batching)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const particle = new PIXI.Sprite(circleTexture) as unknown as Particle;
           const color = colors[Math.floor(Math.random() * colors.length)]; // NOSONAR - visual randomness, not security-sensitive
           particle.tint = color; // Sprites use tint instead of fill
