@@ -1,4 +1,4 @@
-.PHONY: setup setup-python setup-node dev build deploy clean ai-checks secret-scan test test-e2e format lint
+.PHONY: setup setup-python setup-node dev build deploy clean ai-checks secret-scan test test-e2e format format-check lint typecheck
 
 # Default target
 all: setup
@@ -27,10 +27,20 @@ format:
 	@echo "✨ Formatting code..."
 	npm run format
 
+# Check formatting (non-destructive, for CI)
+format-check:
+	@echo "✨ Checking formatting..."
+	npx prettier --check "**/*.{ts,tsx,md,json,js}"
+
 # Lint code (ESLint)
 lint:
 	@echo "🔍 Linting code..."
 	npm run lint
+
+# TypeScript type checking
+typecheck:
+	@echo "🔎 Type checking..."
+	cd apps/web && npx tsc --noEmit
 
 # Run tests
 test:
@@ -96,7 +106,7 @@ test-e2e:
 test-perf:
 	@echo "🚀 Running Performance tests..."
 	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
-	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key \
+	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
 	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=test_ai_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \

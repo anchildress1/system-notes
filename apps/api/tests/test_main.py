@@ -17,9 +17,9 @@ def test_health_check():
     assert response.json() == {"status": "ok"}
 
 @patch("main.Path")
-def test_get_system_doc_success(MockPath):
+def test_get_system_doc_success(mock_path):
     # Construct the mock chain carefully
-    mock_path_instance = MockPath.return_value
+    mock_path_instance = mock_path.return_value
     mock_resolved_root = mock_path_instance.resolve.return_value
     mock_parent = mock_resolved_root.parent
 
@@ -39,8 +39,8 @@ def test_get_system_doc_success(MockPath):
     assert response.json()["content"] == "# Test Content"
 
 @patch("main.Path")
-def test_get_system_doc_not_found(MockPath):
-    mock_parent = MockPath.return_value.resolve.return_value.parent
+def test_get_system_doc_not_found(mock_path):
+    mock_parent = mock_path.return_value.resolve.return_value.parent
     mock_target = MagicMock()
     mock_parent.joinpath.return_value.resolve.return_value = mock_target
 
@@ -53,8 +53,8 @@ def test_get_system_doc_not_found(MockPath):
     assert response.json()["error"] == "Document not found"
 
 @patch("main.Path")
-def test_get_system_doc_traversal_attempt(MockPath):
-    mock_parent = MockPath.return_value.resolve.return_value.parent
+def test_get_system_doc_traversal_attempt(mock_path):
+    mock_parent = mock_path.return_value.resolve.return_value.parent
     mock_target = MagicMock()
     mock_parent.joinpath.return_value.resolve.return_value = mock_target
 
@@ -83,8 +83,8 @@ def test_get_system_doc_traversal_attempt(MockPath):
     assert response.json()["error"] == "File type not allowed"
 
 @patch("main.Path")
-def test_get_system_doc_error_handling(MockPath):
-    mock_parent = MockPath.return_value.resolve.return_value.parent
+def test_get_system_doc_error_handling(mock_path):
+    mock_parent = mock_path.return_value.resolve.return_value.parent
     mock_target = MagicMock()
     mock_parent.joinpath.return_value.resolve.return_value = mock_target
 
@@ -250,6 +250,77 @@ def test_blog_search_post_failure(mock_blog_client, standard_blog_responses):
     data = response.json()
     assert len(data["results"]) == 1
     assert data["total"] == 1
+
+
+def test_cors_headers_present_on_allowed_origin():
+    """CORS should include Access-Control-Allow-Origin for allowed origins."""
+    response = client.options(
+        "/health",
+        headers={
+            "Origin": "http://localhost:3000",
+            "Access-Control-Request-Method": "GET",
+        },
+    )
+    assert response.status_code == 200
+    assert "access-control-allow-origin" in response.headers
+
+
+def test_cors_restricts_methods():
+    """CORS should only allow GET and OPTIONS methods."""
+    response = client.options(
+        "/health",
+        headers={
+            "Origin": "http://localhost:3000",
+            "Access-Control-Request-Method": "GET",
+        },
+    )
+    allowed = response.headers.get("access-control-allow-methods", "")
+    assert "GET" in allowed
+    # POST/PUT/DELETE should not be allowed
+    assert "POST" not in allowed
+    assert "DELETE" not in allowed
+
+
+def test_get_system_doc_empty_path():
+    """Empty path components should be rejected."""
+    response = client.get("/system/doc/")
+    # FastAPI returns 404 for unmatched route or 400 for empty path
+    assert response.status_code in [307, 400, 404, 405]
+
+
+def test_blog_search_negative_limit():
+    """Negative limit should be rejected by Pydantic validation."""
+    response = client.get("/blog/search?limit=-1")
+    assert response.status_code == 400
+
+
+def test_blog_cache_returns_cached_data(mock_blog_client, standard_blog_responses):
+    """Second request should hit cache (no new HTTP calls)."""
+    sitemap, post = standard_blog_responses
+    mock_blog_client([sitemap, post, post])
+
+    # First request populates cache
+    response1 = client.get("/blog/search")
+    assert response1.status_code == 200
+
+    # Second request should use cache
+    response2 = client.get("/blog/search")
+    assert response2.status_code == 200
+    assert response2.json()["total"] == response1.json()["total"]
+
+
+def test_extract_json_ld_malformed():
+    """Malformed JSON in JSON-LD script tag should return None."""
+    html = '<script type="application/ld+json">{ broken json }</script>'
+    result = extract_json_ld(html)
+    assert result is None
+
+
+def test_extract_json_ld_non_article_type():
+    """JSON-LD with non-Article type should be skipped."""
+    html = '<script type="application/ld+json">{"@type": "WebPage", "name": "Test"}</script>'
+    result = extract_json_ld(html)
+    assert result is None
 
 
 def test_blog_search_response_shape(mock_blog_client, standard_blog_responses):

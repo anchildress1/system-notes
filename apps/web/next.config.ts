@@ -1,5 +1,5 @@
 import type { NextConfig } from 'next';
-import path from 'path';
+import path from 'node:path';
 import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const securityHeaders = [
@@ -56,7 +56,7 @@ const nextConfig: NextConfig = {
       {
         // Standard caching for other static assets (fonts, images from public/)
         // Excludes .ico to allow favicon updates
-        source: '/(.*)\\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif)',
+        source: String.raw`/(.*)\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif)`,
         headers: [
           {
             key: 'Cache-Control',

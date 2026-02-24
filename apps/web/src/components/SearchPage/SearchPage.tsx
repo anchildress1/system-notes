@@ -11,8 +11,8 @@ import {
   Configure,
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
-import { LuPlus, LuMinus } from 'react-icons/lu';
-import 'instantsearch.css/themes/satellite.css';
+import { Plus, Minus } from 'lucide-react';
+import 'instantsearch.css/themes/reset.css';
 import styles from './SearchPage.module.css';
 import FactCard from '../FactCard/FactCard';
 import GroupedTagFilter from './GroupedTagFilter';
@@ -23,16 +23,19 @@ import { ALGOLIA_INDEX } from '@/config';
 import { useFactIdRouting } from '@/hooks/useFactIdRouting';
 import FactCardOverlay from '../FactCard/FactCardOverlay';
 import { getChatSessionId } from '@/utils/userToken';
+import {
+  ALGOLIA_APP_ID,
+  ALGOLIA_SEARCH_KEY,
+  ALGOLIA_AI_ID,
+  hasValidAlgoliaCredentials,
+} from '@/lib/algolia';
 
-const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
-const searchKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
-const searchAiId = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID || '';
+const appId = ALGOLIA_APP_ID;
+const searchKey = ALGOLIA_SEARCH_KEY;
+const searchAiId = ALGOLIA_AI_ID;
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
-// Algolia app IDs are always 10 alphanumeric chars, API keys are 32+ hex chars.
-// Skip real SDK init when credentials are obviously fake (e.g. test_app_id)
-// to prevent failed network requests that Chrome logs as console errors.
-const hasCredentials = /^[A-Z0-9]{10}$/i.test(appId) && searchKey.length >= 20;
+const hasCredentials = hasValidAlgoliaCredentials();
 const searchClient = hasCredentials
   ? algoliasearch(appId, searchKey, {
       headers: {
@@ -43,23 +46,11 @@ const searchClient = hasCredentials
   : null;
 
 declare global {
-  interface Window {
-    SiteSearchAskAI?: {
-      init: (config: unknown) => void;
-    };
-    SiteSearch?: {
-      init: (config: unknown) => void;
-    };
-    SiteSearchWithAI?: {
-      init: (config: unknown) => void;
-    };
-    sitesearch?: {
-      init: (config: unknown) => void;
-    };
-    AlgoliaSiteSearch?: {
-      init: (config: unknown) => void;
-    };
-  }
+  var SiteSearchAskAI: { init: (config: unknown) => void } | undefined;
+  var SiteSearch: { init: (config: unknown) => void } | undefined;
+  var SiteSearchWithAI: { init: (config: unknown) => void } | undefined;
+  var sitesearch: { init: (config: unknown) => void } | undefined;
+  var AlgoliaSiteSearch: { init: (config: unknown) => void } | undefined;
 }
 
 function useSiteSearchWithAI(
@@ -70,7 +61,7 @@ function useSiteSearchWithAI(
   enabled: boolean
 ) {
   useEffect(() => {
-    if (typeof window === 'undefined' || !enabled) return;
+    if (typeof globalThis === 'undefined' || !enabled) return;
 
     // Dynamically import the widget from node_modules
     import('@algolia/sitesearch/dist/search-askai.min.css');
@@ -89,12 +80,12 @@ function useSiteSearchWithAI(
       }
 
       // Debug logging for credential passing
-      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      if (typeof globalThis !== 'undefined' && globalThis.location.hostname === 'localhost') {
         console.debug('[SiteSearch] Initializing with config:', {
           appId,
           apiKeyLength: apiKey?.length || 0,
           indexName,
-          hostname: window.location.hostname,
+          hostname: globalThis.location.hostname,
         });
       }
 
@@ -105,9 +96,9 @@ function useSiteSearchWithAI(
         'sitesearch',
         'AlgoliaSiteSearch',
       ] as const;
-      const globalName = candidates.find((c) => window[c]);
+      const globalName = candidates.find((c) => globalThis[c]);
 
-      if (globalName && window[globalName]) {
+      if (globalName && globalThis[globalName]) {
         try {
           const config = {
             container: '#search-askai',
@@ -134,14 +125,14 @@ function useSiteSearchWithAI(
             return;
           }
 
-          window[globalName]?.init(config);
+          globalThis[globalName]?.init(config);
         } catch (e) {
           console.error('[SiteSearch] Failed to init:', e);
         }
       } else {
         console.warn(
           '[SiteSearch] Global not found. Available:',
-          Object.keys(window).filter(
+          Object.keys(globalThis).filter(
             (k) => k.toLowerCase().includes('search') || k.toLowerCase().includes('algolia')
           )
         );
@@ -149,6 +140,17 @@ function useSiteSearchWithAI(
     };
   }, [appId, apiKey, indexName, searchAiId, enabled]);
 }
+
+const refinementClassNames = {
+  root: styles.refinementRoot,
+  list: styles.refinementList,
+  item: styles.refinementItem,
+  selectedItem: styles.refinementItemSelected,
+  label: styles.refinementLabel,
+  checkbox: styles.refinementCheckbox,
+  labelText: styles.refinementLabelText,
+  count: styles.refinementCount,
+};
 
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
@@ -179,7 +181,8 @@ export default function SearchPage() {
     const scheduleTimeout = (fn: () => void, ms: number) => {
       const id = setTimeout(() => {
         fn();
-        pendingTimeouts.current = pendingTimeouts.current.filter((t) => t !== id);
+        const idx = pendingTimeouts.current.indexOf(id);
+        if (idx !== -1) pendingTimeouts.current.splice(idx, 1);
       }, ms);
       pendingTimeouts.current.push(id);
     };
@@ -248,9 +251,9 @@ export default function SearchPage() {
     const attachLinkHandlers = () => {
       const links = document.querySelectorAll('.ss-infinite-hits-anchor');
       links.forEach((link) => {
-        if (!link.hasAttribute('data-has-handler')) {
+        if (!(link as HTMLElement).dataset.hasHandler) {
           link.addEventListener('click', handleLinkClick);
-          link.setAttribute('data-has-handler', 'true');
+          (link as HTMLElement).dataset.hasHandler = 'true';
         }
       });
     };
@@ -359,26 +362,14 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Category</h2>
                   {collapsedSections.category ? (
-                    <LuPlus size={14} aria-hidden="true" />
+                    <Plus size={14} aria-hidden="true" />
                   ) : (
-                    <LuMinus size={14} aria-hidden="true" />
+                    <Minus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-category">
                   {!collapsedSections.category && (
-                    <RefinementList
-                      attribute="category"
-                      classNames={{
-                        root: styles.refinementRoot,
-                        list: styles.refinementList,
-                        item: styles.refinementItem,
-                        selectedItem: styles.refinementItemSelected,
-                        label: styles.refinementLabel,
-                        checkbox: styles.refinementCheckbox,
-                        labelText: styles.refinementLabelText,
-                        count: styles.refinementCount,
-                      }}
-                    />
+                    <RefinementList attribute="category" classNames={refinementClassNames} />
                   )}
                 </div>
               </div>
@@ -393,26 +384,14 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Builds</h2>
                   {collapsedSections.builds ? (
-                    <LuPlus size={14} aria-hidden="true" />
+                    <Plus size={14} aria-hidden="true" />
                   ) : (
-                    <LuMinus size={14} aria-hidden="true" />
+                    <Minus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-builds">
                   {!collapsedSections.builds && (
-                    <RefinementList
-                      attribute="projects"
-                      classNames={{
-                        root: styles.refinementRoot,
-                        list: styles.refinementList,
-                        item: styles.refinementItem,
-                        selectedItem: styles.refinementItemSelected,
-                        label: styles.refinementLabel,
-                        checkbox: styles.refinementCheckbox,
-                        labelText: styles.refinementLabelText,
-                        count: styles.refinementCount,
-                      }}
-                    />
+                    <RefinementList attribute="projects" classNames={refinementClassNames} />
                   )}
                 </div>
               </div>
@@ -427,9 +406,9 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Tags</h2>
                   {collapsedSections.tags ? (
-                    <LuPlus size={14} aria-hidden="true" />
+                    <Plus size={14} aria-hidden="true" />
                   ) : (
-                    <LuMinus size={14} aria-hidden="true" />
+                    <Minus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-tags">

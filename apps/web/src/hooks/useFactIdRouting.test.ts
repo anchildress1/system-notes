@@ -177,8 +177,8 @@ describe('useFactIdRouting', () => {
       get: vi.fn((key) => (key === 'factId' ? mockFactId : null)),
     } as unknown as ReturnType<typeof useSearchParams>);
 
-    window.history.replaceState({}, '', `/search?factId=${encodeURIComponent(mockFactId)}`);
-    const pushStateSpy = vi.spyOn(window.history, 'pushState');
+    globalThis.history.replaceState({}, '', `/search?factId=${encodeURIComponent(mockFactId)}`);
+    const pushStateSpy = vi.spyOn(globalThis.history, 'pushState');
 
     const { result } = renderHook(() => useFactIdRouting('test-index'));
 
@@ -226,7 +226,7 @@ describe('useFactIdRouting', () => {
       get: vi.fn((key) => (key === 'factId' ? mockFactId : null)),
     } as unknown as ReturnType<typeof useSearchParams>);
 
-    const replaceStateSpy = vi.spyOn(window.history, 'replaceState');
+    const replaceStateSpy = vi.spyOn(globalThis.history, 'replaceState');
 
     renderHook(() => useFactIdRouting('test-index'));
 
@@ -342,12 +342,12 @@ describe('closeOverlay URL handling', () => {
   });
 
   it('preserves other query params when removing factId', async () => {
-    window.history.replaceState(
+    globalThis.history.replaceState(
       {},
       '',
       `/search?query=agent&factId=${encodeURIComponent(validFactId)}`
     );
-    const pushStateSpy = vi.spyOn(window.history, 'pushState');
+    const pushStateSpy = vi.spyOn(globalThis.history, 'pushState');
 
     const { result } = renderHook(() => useFactIdRouting('test-index'));
     await waitFor(() => expect(result.current.overlayHit).not.toBeNull());
@@ -363,12 +363,16 @@ describe('closeOverlay URL handling', () => {
     pushStateSpy.mockRestore();
   });
 
-  it('navigates to pathname only when factId is the sole param', async () => {
-    window.history.replaceState({}, '', `/search?factId=${encodeURIComponent(validFactId)}`);
-    const pushStateSpy = vi.spyOn(window.history, 'pushState');
-
+  async function setupCloseOverlay() {
+    globalThis.history.replaceState({}, '', `/search?factId=${encodeURIComponent(validFactId)}`);
+    const pushStateSpy = vi.spyOn(globalThis.history, 'pushState');
     const { result } = renderHook(() => useFactIdRouting('test-index'));
     await waitFor(() => expect(result.current.overlayHit).not.toBeNull());
+    return { result, pushStateSpy };
+  }
+
+  it('navigates to pathname only when factId is the sole param', async () => {
+    const { result, pushStateSpy } = await setupCloseOverlay();
 
     act(() => {
       result.current.closeOverlay();
@@ -382,11 +386,7 @@ describe('closeOverlay URL handling', () => {
   });
 
   it('closeOverlay is idempotent — second call is a no-op after state is cleared', async () => {
-    window.history.replaceState({}, '', `/search?factId=${encodeURIComponent(validFactId)}`);
-    const pushStateSpy = vi.spyOn(window.history, 'pushState');
-
-    const { result } = renderHook(() => useFactIdRouting('test-index'));
-    await waitFor(() => expect(result.current.overlayHit).not.toBeNull());
+    const { result, pushStateSpy } = await setupCloseOverlay();
 
     act(() => {
       result.current.closeOverlay();

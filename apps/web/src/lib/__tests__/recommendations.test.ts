@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { useRecommendationTools } from '../recommendations';
+import { useRecommendationTools, fetchRecommendations } from '../recommendations';
 
 // Mock the @algolia/recommend module at the top level
 vi.mock('@algolia/recommend', () => ({
@@ -10,6 +10,20 @@ vi.mock('@algolia/recommend', () => ({
     }),
   })),
 }));
+
+// Also mock the algolia lib since recommendations imports it
+vi.mock('../algolia', () => ({
+  ALGOLIA_APP_ID: 'test-app-id',
+  ALGOLIA_SEARCH_KEY: 'test-api-key',
+  hasValidAlgoliaCredentials: vi.fn(() => false),
+}));
+
+async function invokeRelatedNotes(objectID = 'test') {
+  const { result } = renderHook(() => useRecommendationTools());
+  const addToolResult = vi.fn();
+  await result.current.getRelatedNotes.onToolCall({ input: { objectID }, addToolResult });
+  return addToolResult;
+}
 
 describe('Recommendations Library', () => {
   beforeEach(() => {
@@ -140,16 +154,7 @@ describe('Recommendations Library', () => {
 
   describe('Error Handling', () => {
     it('should handle network errors gracefully', async () => {
-      const { result } = renderHook(() => useRecommendationTools());
-
-      const addToolResult = vi.fn();
-
-      // Test with valid input to ensure error handling works
-      await result.current.getRelatedNotes.onToolCall({
-        input: { objectID: 'test' },
-        addToolResult,
-      });
-
+      const addToolResult = await invokeRelatedNotes();
       // Should always call addToolResult, even on error
       expect(addToolResult).toHaveBeenCalled();
     });
@@ -175,19 +180,27 @@ describe('Recommendations Library', () => {
     });
   });
 
+  describe('fetchRecommendations', () => {
+    it('returns empty array when client is not initialized', async () => {
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const results = await fetchRecommendations({
+        objectID: 'test',
+        modelName: 'related-products',
+      });
+      expect(results).toEqual([]);
+      consoleSpy.mockRestore();
+    });
+  });
+
   describe('Performance', () => {
     it('should limit default recommendations to 5 for related notes', async () => {
-      const { result } = renderHook(() => useRecommendationTools());
-
-      const addToolResult = vi.fn();
-
-      await result.current.getRelatedNotes.onToolCall({
-        input: { objectID: 'test' },
-        addToolResult,
-      });
-
+      const addToolResult = await invokeRelatedNotes();
       // Default maxRecommendations is 5 (set in fetchRecommendations)
-      expect(addToolResult).toHaveBeenCalled();
+      expect(addToolResult).toHaveBeenCalledWith(
+        expect.objectContaining({
+          output: expect.objectContaining({ count: expect.any(Number) }),
+        })
+      );
     });
 
     it('should limit default recommendations to 10 for trending notes', async () => {

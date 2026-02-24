@@ -29,7 +29,7 @@ export default function ProjectGrid() {
 
   useEffect(() => {
     const applyHash = () => {
-      const projectId = parseProjectIdFromHash(window.location.hash);
+      const projectId = parseProjectIdFromHash(globalThis.location.hash);
       if (!projectId) {
         setSelectedProject(null);
         setIsOpen(false);
@@ -45,12 +45,12 @@ export default function ProjectGrid() {
     };
 
     applyHash();
-    window.addEventListener('hashchange', applyHash);
-    return () => window.removeEventListener('hashchange', applyHash);
+    globalThis.addEventListener('hashchange', applyHash);
+    return () => globalThis.removeEventListener('hashchange', applyHash);
   }, []);
 
   const handleSelect = (project: Project) => {
-    window.location.hash = `project=${encodeURIComponent(project.id)}`;
+    globalThis.location.hash = `project=${encodeURIComponent(project.id)}`;
     setSelectedProject(project);
     setDialogVisible(true);
     setIsOpen(true);
@@ -58,7 +58,11 @@ export default function ProjectGrid() {
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
-    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    globalThis.history.replaceState(
+      null,
+      '',
+      globalThis.location.pathname + globalThis.location.search
+    );
   }, []);
 
   const handleExitComplete = useCallback(() => {

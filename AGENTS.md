@@ -54,6 +54,35 @@ Deep-linking via `?factId=...` is handled separately by `useFactIdRouting`, whic
 
 - Refer to `.claude/skills/frontend-style.md`.
 
+## Test Standards
+
+- **Coverage thresholds**: 85% lines/functions/statements, 80% branches (enforced by `vitest.config.ts` and `pyproject.toml`).
+- Every new component or utility must ship with positive, negative, and edge-case tests.
+- Integration-heavy modules (e.g. `SearchPage.tsx`, `recommendations.ts`) are excluded from coverage; test them via E2E instead.
+
+## TypeScript Strictness
+
+- `strict: true` is enforced in `tsconfig.json`. Run `make typecheck` to verify.
+- Do not weaken strict settings or add `// @ts-ignore` without a justifying comment.
+
+## Performance / Lighthouse
+
+- **Targets**: 70%+ mobile performance, 80%+ desktop performance, 95%+ accessibility/best-practices/SEO.
+- Below-the-fold components must be deferred via `IntersectionObserver` or `next/dynamic` (see `SearchPageWrapper.tsx`).
+- Prefer `instantsearch.css/themes/reset.css` over `satellite.css` to minimize CSS payload.
+
+## API Design
+
+- **Methods**: GET and OPTIONS only. CORS explicitly restricts to these.
+- **CORS origins**: localhost:3000, production domains, and Cloud Run revision URLs.
+- **Logging**: Request logging middleware emits method, path, status, and duration_ms for every request.
+
+## Shared Utilities
+
+- **`@/lib/algolia.ts`**: Credential validation (`hasValidAlgoliaCredentials`, `isValidAppId`, `isValidApiKey`). Use instead of inline regex checks.
+- **`@/components/icons/`**: Shared SVG icon components (`GitHubIcon`, `DevIcon`, `CloseIcon`). Use instead of inline SVG.
+- **Icon libraries**: Use `lucide-react` for UI icons. Keep `react-icons` only for brand icons (`FaGithub`, `SiAlgolia`, `FaDev`, etc.) that lucide doesn't provide.
+
 ## Documentation
 
 - Do not add docs to project unless specifically asked

@@ -1,12 +1,13 @@
 'use client';
 
+import { memo } from 'react';
 import { FaGithub, FaLinkedin, FaDev } from 'react-icons/fa';
 import { SiAlgolia } from 'react-icons/si';
 import styles from './Footer.module.css';
 
-export default function Footer() {
-  const currentYear = new Date().getFullYear();
+const currentYear = new Date().getFullYear();
 
+export default memo(function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.left}>
@@ -63,4 +64,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+});

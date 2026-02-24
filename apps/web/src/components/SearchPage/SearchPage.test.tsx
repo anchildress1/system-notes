@@ -95,12 +95,16 @@ describe('SearchPage Component', () => {
     vi.unstubAllEnvs();
   });
 
+  async function renderSearchPage() {
+    const { default: SearchPage } = await import('./SearchPage');
+    render(<SearchPage />);
+  }
+
   it('renders error state when configuration is missing', async () => {
     vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', '');
     vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', '');
 
-    const { default: SearchPage } = await import('./SearchPage');
-    render(<SearchPage />);
+    await renderSearchPage();
 
     expect(screen.getByText(/Search is currently unavailable/)).toBeInTheDocument();
   });
@@ -109,9 +113,26 @@ describe('SearchPage Component', () => {
     vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'ABCDEF1234');
     vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', '12345678901234567890abcdef123456');
 
-    const { default: SearchPage } = await import('./SearchPage');
-    render(<SearchPage />);
+    await renderSearchPage();
 
     expect(screen.getByTestId('sitesearch')).toBeInTheDocument();
+  });
+
+  it('renders error state when app ID is invalid format', async () => {
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'bad_id');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', '12345678901234567890abcdef123456');
+
+    await renderSearchPage();
+
+    expect(screen.getByText(/Search is currently unavailable/)).toBeInTheDocument();
+  });
+
+  it('renders error state when API key is too short', async () => {
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'ABCDEF1234');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'short');
+
+    await renderSearchPage();
+
+    expect(screen.getByText(/Search is currently unavailable/)).toBeInTheDocument();
   });
 });

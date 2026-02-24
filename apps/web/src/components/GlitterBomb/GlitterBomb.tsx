@@ -13,7 +13,7 @@ export default function GlitterBomb() {
   useEffect(() => {
     const initPixi = async () => {
       // Feature detect rather than just width check for better "lite" mode
-      const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
+      const isMobile = globalThis.innerWidth < 768 || 'ontouchstart' in globalThis;
 
       // Disable entirely on mobile
       // feature flag logic removed per user request
@@ -25,9 +25,10 @@ export default function GlitterBomb() {
       // Create Pixi Application
       const app = new PIXI.Application();
       await app.init({
-        resizeTo: window,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        resizeTo: globalThis as any,
         backgroundAlpha: 0,
-        resolution: isMobile ? 1 : window.devicePixelRatio || 1, // Force 1x resolution on mobile
+        resolution: isMobile ? 1 : globalThis.devicePixelRatio || 1, // Force 1x resolution on mobile
         autoDensity: true,
         antialias: false, // Always disable antialias for performance
         powerPreference: 'high-performance', // Hint to browser
@@ -48,6 +49,41 @@ export default function GlitterBomb() {
       circleGraphics.fill({ color: 0xffffff });
       const circleTexture = app.renderer.generateTexture(circleGraphics);
 
+      // Shared mutable particle list — replaced on each explosion trigger
+      const currentParticles: Particle[] = [];
+
+      // Particle update extracted to avoid exceeding 4 function-nesting levels (S2004)
+      const updateParticle = (p: Particle): boolean => {
+        if (p.life > 0) {
+          p.x += Math.cos(p.direction) * p.speed;
+          p.y += Math.sin(p.direction) * p.speed;
+          if (!isMobile) {
+            p.speed *= 0.98;
+            p.y += 0.5;
+          } else {
+            p.speed *= 0.95;
+          }
+          p.life -= p.decay;
+          p.alpha = p.life;
+          p.scale.set(p.life * 0.5);
+          return true;
+        }
+        p.visible = false;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (p as any).remove?.();
+        return false;
+      };
+
+      const tick = () => {
+        let hasActive = false;
+        for (const p of currentParticles) {
+          if (updateParticle(p)) hasActive = true;
+        }
+        if (!hasActive) {
+          app.ticker.remove(tick);
+        }
+      };
+
       // Function to trigger explosion
       const trigger = () => {
         if (!app.renderer) return;
@@ -56,7 +92,7 @@ export default function GlitterBomb() {
         if (!app.ticker.started) app.start();
 
         // --- Optimized Explosion Config ---
-        const particles: Particle[] = [];
+        currentParticles.length = 0; // Reset shared particle list for new explosion
         const colors = [0xffd700, 0xffec8b, 0xffffff, 0xb56bff];
 
         // Massive reduction for mobile
@@ -90,61 +126,27 @@ export default function GlitterBomb() {
 
           particle.direction = angle;
           particle.speed = velocity;
-          particle.life = 1.0;
+          particle.life = 1;
           // Faster decay on mobile to clear buffer sooner
           particle.decay = Math.random() * (isMobile ? 0.04 : 0.01) + 0.005;
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          app.stage.addChild(particle as unknown as any);
-          particles.push(particle);
+          app.stage.addChild(particle as any);
+          currentParticles.push(particle);
         }
 
-        const tick = () => {
-          let activeParticles = 0;
-          particles.forEach((p) => {
-            if (p.life > 0) {
-              activeParticles++;
-
-              // Move
-              p.x += Math.cos(p.direction) * p.speed;
-              p.y += Math.sin(p.direction) * p.speed;
-
-              // Simplified physics for mobile
-              if (!isMobile) {
-                p.speed *= 0.98; // Gentle drag
-                p.y += 0.5; // Floaty gravity
-              } else {
-                p.speed *= 0.95; // Stronger drag to stop movement faster
-              }
-
-              // Fade out
-              p.life -= p.decay;
-              p.alpha = p.life;
-              p.scale.set(p.life * 0.5); // scaling down
-            } else {
-              p.visible = false;
-
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              if ((p as any).parent) (p as any).parent.removeChild(p as any);
-            }
-          });
-
-          if (activeParticles === 0) {
-            app.ticker.remove(tick);
-          }
-        };
         app.ticker.add(tick);
       };
 
       // Trigger initial explosion - REMOVED for performance
 
       // Listen for custom event
-      window.addEventListener('trigger-glitter-bomb', trigger);
+      globalThis.addEventListener('trigger-glitter-bomb', trigger);
 
       // Cleanup listener
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any)._glitterCleanup = () =>
-        window.removeEventListener('trigger-glitter-bomb', trigger);
+      (globalThis as any)._glitterCleanup = () =>
+        globalThis.removeEventListener('trigger-glitter-bomb', trigger);
     };
 
     // Delay initialization to improve LCP/TBT scores
@@ -153,7 +155,7 @@ export default function GlitterBomb() {
     return () => {
       clearTimeout(timerId);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((window as any)._glitterCleanup) (window as any)._glitterCleanup();
+      if ((globalThis as any)._glitterCleanup) (globalThis as any)._glitterCleanup();
       if (appRef.current) {
         const app = appRef.current;
         if (app.ticker) app.ticker.stop();

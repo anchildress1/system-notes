@@ -124,6 +124,7 @@ export default function RootLayout({
             <link rel="dns-prefetch" href={algoliaPreconnectHost} />
           </>
         )}
+        <link rel="preconnect" href="https://insights.algolia.io" crossOrigin="anonymous" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

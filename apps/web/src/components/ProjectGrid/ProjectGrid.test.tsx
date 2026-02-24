@@ -6,7 +6,7 @@ import ProjectGrid from './ProjectGrid';
 
 describe('ProjectGrid', () => {
   beforeEach(() => {
-    window.location.hash = '';
+    globalThis.location.hash = '';
   });
 
   afterEach(() => {
@@ -19,7 +19,7 @@ describe('ProjectGrid', () => {
     const firstProjectTitle = screen.getAllByRole('heading', { level: 3 })[0];
     fireEvent.click(firstProjectTitle);
 
-    expect(window.location.hash).toMatch(/^#project=/);
+    expect(globalThis.location.hash).toMatch(/^#project=/);
   });
 
   it('opens modal when hash matches a project id', async () => {
@@ -28,10 +28,10 @@ describe('ProjectGrid', () => {
     const firstProjectTitle = screen.getAllByRole('heading', { level: 3 })[0];
     fireEvent.click(firstProjectTitle);
 
-    const selectedId = decodeURIComponent(window.location.hash.replace(/^#project=/, ''));
+    const selectedId = decodeURIComponent(globalThis.location.hash.replace(/^#project=/, ''));
 
-    window.location.hash = `project=${encodeURIComponent(selectedId)}`;
-    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    globalThis.location.hash = `project=${encodeURIComponent(selectedId)}`;
+    globalThis.dispatchEvent(new HashChangeEvent('hashchange'));
 
     expect(await screen.findByLabelText('Close modal')).toBeInTheDocument();
   });
@@ -42,10 +42,10 @@ describe('ProjectGrid', () => {
     const firstProjectTitle = screen.getAllByRole('heading', { level: 3 })[0];
     fireEvent.click(firstProjectTitle);
 
-    expect(window.location.hash).toMatch(/^#project=/);
+    expect(globalThis.location.hash).toMatch(/^#project=/);
 
     fireEvent.click(await screen.findByLabelText('Close modal'));
 
-    expect(window.location.hash).toBe('');
+    expect(globalThis.location.hash).toBe('');
   });
 });

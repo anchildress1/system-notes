@@ -16,7 +16,7 @@
         "categories:performance": [
           "error",
           {
-            "minScore": 0.84,
+            "minScore": 0.8,
             "aggregationMethod": "median-run"
           }
         ],

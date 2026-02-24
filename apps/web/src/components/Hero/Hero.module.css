@@ -11,6 +11,10 @@
   composes: interactiveContainer from "@/styles/SharedHero.module.css";
 }
 
+.glitterTrigger {
+  composes: glitterTrigger from "@/styles/SharedHero.module.css";
+}
+
 .title {
   composes: title from "@/styles/SharedHero.module.css";
 }

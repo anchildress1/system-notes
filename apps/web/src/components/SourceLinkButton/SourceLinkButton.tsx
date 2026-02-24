@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { memo, ReactNode } from 'react';
 import styles from './SourceLinkButton.module.css';
 
 interface SourceLinkButtonProps {
@@ -10,21 +10,25 @@ interface SourceLinkButtonProps {
   onClick?: (e: React.MouseEvent) => void;
 }
 
-export default function SourceLinkButton({ url, label, icon, onClick }: SourceLinkButtonProps) {
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
+export default memo(
+  function SourceLinkButton({ url, label, icon, onClick }: Readonly<SourceLinkButtonProps>) {
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    if (onClick) {
-      onClick(e);
-    } else {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-  };
+      if (onClick) {
+        onClick(e);
+      } else {
+        globalThis.open(url, '_blank', 'noopener,noreferrer');
+      }
+    };
 
-  return (
-    <button type="button" className={styles.sourceLink} onClick={handleClick} aria-label={label}>
-      {icon}
-    </button>
-  );
-}
+    return (
+      <button type="button" className={styles.sourceLink} onClick={handleClick} aria-label={label}>
+        {icon}
+      </button>
+    );
+  },
+  (prev, next) =>
+    prev.url === next.url && prev.label === next.label && prev.onClick === next.onClick
+);

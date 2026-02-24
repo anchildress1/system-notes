@@ -47,13 +47,13 @@ describe('GlitterBomb', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
-    Object.defineProperty(window, 'innerWidth', {
+    Object.defineProperty(globalThis, 'innerWidth', {
       writable: true,
       configurable: true,
       value: 1024,
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    delete (window as any).ontouchstart;
+    delete (globalThis as any).ontouchstart;
   });
 
   afterEach(() => {
