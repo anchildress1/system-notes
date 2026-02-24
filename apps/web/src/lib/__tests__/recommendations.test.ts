@@ -18,6 +18,13 @@ vi.mock('../algolia', () => ({
   hasValidAlgoliaCredentials: vi.fn(() => false),
 }));
 
+async function invokeRelatedNotes(objectID = 'test') {
+  const { result } = renderHook(() => useRecommendationTools());
+  const addToolResult = vi.fn();
+  await result.current.getRelatedNotes.onToolCall({ input: { objectID }, addToolResult });
+  return addToolResult;
+}
+
 describe('Recommendations Library', () => {
   beforeEach(() => {
     // Set required environment variables
@@ -144,13 +151,6 @@ describe('Recommendations Library', () => {
       );
     });
   });
-
-  async function invokeRelatedNotes(objectID = 'test') {
-    const { result } = renderHook(() => useRecommendationTools());
-    const addToolResult = vi.fn();
-    await result.current.getRelatedNotes.onToolCall({ input: { objectID }, addToolResult });
-    return addToolResult;
-  }
 
   describe('Error Handling', () => {
     it('should handle network errors gracefully', async () => {
