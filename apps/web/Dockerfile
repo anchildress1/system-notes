@@ -1,7 +1,7 @@
 # Block 1: The Pruner
 FROM node:20-bookworm-slim AS pruner
 WORKDIR /app
-COPY . . # NOSONAR - .dockerignore excludes .env and secrets; full tree needed for turbo prune
+COPY . . # NOSONAR(S6470) - .dockerignore excludes .env and secrets; full tree needed for turbo prune
 RUN npm install -g turbo@2.8.1 && \
     turbo prune --scope=web --docker
 
@@ -25,8 +25,8 @@ COPY turbo.json turbo.json
 ARG NEXT_PUBLIC_ALGOLIA_APPLICATION_ID
 ENV NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID
 
-ARG NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY # NOSONAR - public search-only key, intentionally client-embedded
-ENV NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY # NOSONAR
+ARG NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY # NOSONAR(S6472) - public search-only key, intentionally client-embedded
+ENV NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY # NOSONAR(S6472)
 
 ARG NEXT_PUBLIC_ALGOLIA_AGENT_ID
 ENV NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID
