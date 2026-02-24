@@ -43,10 +43,3 @@ export function getChatSessionId(): string {
   }
   return chatSessionId;
 }
-
-/**
- * @deprecated Use getSearchSessionId or getChatSessionId instead
- */
-export function getOrCreateUserToken(): string {
-  return getSearchSessionId();
-}

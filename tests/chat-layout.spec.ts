@@ -33,8 +33,8 @@ test.describe('AIChat Visual Layout', () => {
     if (isVisible) {
       const width = await toggle.evaluate((el) => globalThis.getComputedStyle(el).width);
       const height = await toggle.evaluate((el) => globalThis.getComputedStyle(el).height);
-      expect(parseFloat(width)).toBe(60);
-      expect(parseFloat(height)).toBe(60);
+      expect(Number.parseFloat(width)).toBe(60);
+      expect(Number.parseFloat(height)).toBe(60);
     } else {
       // Widget may not render without valid Algolia credentials in test env.
       // Verify the CSS module is loaded by checking that the :root variable exists.

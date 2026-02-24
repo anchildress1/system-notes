@@ -7,7 +7,7 @@ interface DocViewerProps {
   content: string;
 }
 
-export default function DocViewer({ content }: DocViewerProps) {
+export default function DocViewer({ content }: Readonly<DocViewerProps>) {
   // Handle hash navigation on mount
   useEffect(() => {
     if (globalThis.location.hash) {

@@ -95,7 +95,8 @@ describe('MusicPlayer', () => {
     expect(audioElement).toBeInTheDocument();
 
     // Trigger onEnded event manually since we can't easily wait for real audio to end in JSDOM
-    fireEvent.ended(audioElement!);
+    if (!audioElement) throw new Error('Expected audio element');
+    fireEvent.ended(audioElement);
 
     // Should ensure it is in paused state (showing Play button)
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();

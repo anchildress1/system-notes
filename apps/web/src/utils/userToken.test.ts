@@ -34,11 +34,6 @@ describe('userToken', () => {
     expect(getSearchSessionId()).not.toBe(getChatSessionId());
   });
 
-  it('getOrCreateUserToken (deprecated) returns the same token as getSearchSessionId', async () => {
-    const { getSearchSessionId, getOrCreateUserToken } = await import('./userToken');
-    expect(getOrCreateUserToken()).toBe(getSearchSessionId());
-  });
-
   it('falls back to crypto.getRandomValues and produces a valid UUID v4 when randomUUID is absent', async () => {
     const mockGetRandomValues = vi.fn((buf: Uint8Array) => {
       for (let i = 0; i < buf.length; i++) buf[i] = i + 1;
