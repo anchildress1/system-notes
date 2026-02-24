@@ -61,9 +61,9 @@ USER nextjs
 COPY --from=installer /app/apps/web/next.config.ts .
 COPY --from=installer /app/apps/web/package.json .
 
-# Copy standalone build
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+# Copy standalone build — --chmod=555 (read+execute, no write) satisfies S6504
+COPY --from=installer --chown=nextjs:nodejs --chmod=555 /app/apps/web/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs --chmod=555 /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=installer --chown=nextjs:nodejs --chmod=555 /app/apps/web/public ./apps/web/public
 
 CMD ["node", "apps/web/server.js"]
