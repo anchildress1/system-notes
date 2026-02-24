@@ -85,7 +85,7 @@ export const useSparkles = ({
         const animate = () => {
           if (isObserverPaused || !isMounted) return;
           // Critical check: ensure app and renderer exist before attempting any render or update
-          if (!app || !app.renderer || !app.stage) return;
+          if (!app?.renderer || !app?.stage) return;
 
           for (let i = particles.length - 1; i >= 0; i--) {
             const p = particles[i];
@@ -146,13 +146,13 @@ export const useSparkles = ({
 
     const handleInteraction = async (clientX: number, clientY: number) => {
       // Early check
-      if (!app || !app.renderer || !containerRef.current || !isMounted) return;
+      if (!app?.renderer || !containerRef.current || !isMounted) return;
       if (!isInTextArea(clientX, clientY)) return;
 
       try {
         const PIXI = await import('pixi.js');
         // Re-check EVERYTHING after async await
-        if (!isMounted || !app || !app.renderer || !circleTexture) return;
+        if (!isMounted || !app?.renderer || !circleTexture) return;
 
         const rect = containerRef.current.getBoundingClientRect();
         const x = clientX - rect.left;
@@ -166,8 +166,7 @@ export const useSparkles = ({
           // Double check app state and texture
           if (!app.renderer || !circleTexture) return;
 
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const particle = new PIXI.Sprite(circleTexture) as any as Particle;
+          const particle = new PIXI.Sprite(circleTexture) as unknown as Particle;
           const color = colors[Math.floor(Math.random() * colors.length)];
 
           particle.tint = color;
@@ -246,7 +245,6 @@ export const useSparkles = ({
       observer.disconnect();
       if (containerRef.current) {
         containerRef.current.removeEventListener('mousemove', handleMouseMove);
-        // eslint-disable-next-line
         containerRef.current.removeEventListener('touchmove', handleTouchMove);
       }
     };

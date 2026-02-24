@@ -50,9 +50,9 @@ describe('SourceLinkButton', () => {
     const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
 
     render(
-      <div onClick={parentClick}>
+      <button type="button" onClick={parentClick}>
         <SourceLinkButton {...defaultProps} />
-      </div>
+      </button>
     );
 
     await user.click(screen.getByLabelText('View source'));

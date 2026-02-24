@@ -26,15 +26,12 @@ beforeEach(() => {
     unobserve: vi.fn(),
   };
 
-  // Use a class-style constructor so `new IntersectionObserver(...)` works
-  class MockIntersectionObserver {
-    constructor(cb: IntersectionObserverCallback) {
-      observerCallback = cb;
-      return observerInstance as unknown as IntersectionObserver;
-    }
-  }
-
-  vi.stubGlobal('IntersectionObserver', MockIntersectionObserver);
+  vi.stubGlobal('IntersectionObserver', function MockIntersectionObserver(
+    cb: IntersectionObserverCallback
+  ) {
+    observerCallback = cb;
+    return observerInstance as unknown as IntersectionObserver;
+  } as unknown as typeof IntersectionObserver);
 });
 
 describe('SearchPageWrapper', () => {
