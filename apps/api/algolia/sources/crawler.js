@@ -8,13 +8,13 @@ function generateSlug(finalUrl) {
   const cleanUrl = finalUrl.replace(/\/$/, '').replace(/^https?:\/\//, '');
   const parts = cleanUrl.split('/');
   if (parts.length > 1) {
-    const slug = parts.filter((p) => p.length > 0).pop() || '';
+    const slug = parts.findLast((p) => p.length > 0) || '';
     if (slug) return slug;
   }
   // Fallback: hash of the URL for stable objectIDs when path is ambiguous
   let hash = 0;
   for (let i = 0; i < finalUrl.length; i++) {
-    const char = finalUrl.charCodeAt(i);
+    const char = finalUrl.codePointAt(i);
     hash = (hash << 5) - hash + char;
     hash = hash & hash;
   }
