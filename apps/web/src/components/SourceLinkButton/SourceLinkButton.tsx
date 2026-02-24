@@ -10,25 +10,26 @@ interface SourceLinkButtonProps {
   onClick?: (e: React.MouseEvent) => void;
 }
 
-export default memo(
-  function SourceLinkButton({ url, label, icon, onClick }: Readonly<SourceLinkButtonProps>) {
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
+export default memo(function SourceLinkButton({
+  url,
+  label,
+  icon,
+  onClick,
+}: Readonly<SourceLinkButtonProps>) {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-      if (onClick) {
-        onClick(e);
-      } else {
-        globalThis.open(url, '_blank', 'noopener,noreferrer');
-      }
-    };
+    if (onClick) {
+      onClick(e);
+    } else {
+      globalThis.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
 
-    return (
-      <button type="button" className={styles.sourceLink} onClick={handleClick} aria-label={label}>
-        {icon}
-      </button>
-    );
-  },
-  (prev, next) =>
-    prev.url === next.url && prev.label === next.label && prev.onClick === next.onClick
-);
+  return (
+    <button type="button" className={styles.sourceLink} onClick={handleClick} aria-label={label}>
+      {icon}
+    </button>
+  );
+});

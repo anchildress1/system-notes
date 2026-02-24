@@ -75,13 +75,9 @@ export default function GlitterBomb() {
       };
 
       const tick = () => {
-        currentParticles.forEach(updateParticle);
         let hasActive = false;
         for (const p of currentParticles) {
-          if (p.life > 0) {
-            hasActive = true;
-            break;
-          }
+          if (updateParticle(p)) hasActive = true;
         }
         if (!hasActive) {
           app.ticker.remove(tick);

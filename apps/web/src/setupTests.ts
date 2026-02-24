@@ -21,7 +21,6 @@ class IntersectionObserverMock {
 }
 
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
-globalThis.IntersectionObserver = IntersectionObserverMock;
 
 import React from 'react';
 

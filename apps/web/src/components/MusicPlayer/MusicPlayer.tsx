@@ -69,7 +69,7 @@ export default function MusicPlayer() {
         preload="none"
       >
         {/* S4084: track element required for accessible media */}
-        <track kind="captions" src="" default label="No captions available" />
+        <track kind="captions" src="data:text/vtt," default label="No captions available" />
       </audio>
     </div>
   );

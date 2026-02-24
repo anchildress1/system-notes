@@ -1,5 +1,25 @@
 // Avoid hardcoding credentials in source. Prefer providing via environment
 // variables and never commit real API keys or app IDs to the repo or terminal.
+//
+// This file is loaded by the Algolia Crawler CLI for its side effect of
+// registering the Crawler instance — it is intentionally not exported.
+
+function generateSlug(finalUrl) {
+  const cleanUrl = finalUrl.replace(/\/$/, '').replace(/^https?:\/\//, '');
+  const parts = cleanUrl.split('/');
+  if (parts.length > 1) {
+    const slug = parts.filter((p) => p.length > 0).pop() || '';
+    if (slug) return slug;
+  }
+  // Fallback: hash of the URL for stable objectIDs when path is ambiguous
+  let hash = 0;
+  for (let i = 0; i < finalUrl.length; i++) {
+    const char = finalUrl.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return 'post-' + Math.abs(hash).toString(36);
+}
 
 new Crawler({
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || 'REDACTED_APP_ID',
@@ -82,6 +102,7 @@ new Crawler({
 
         return [
           {
+            objectID: generateSlug(finalUrl),
             title: title,
             url: finalUrl,
             blurb: description,
