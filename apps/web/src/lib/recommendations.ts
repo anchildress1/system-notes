@@ -80,7 +80,7 @@ export async function fetchRecommendations(params: RecommendParams): Promise<Rec
 
     const response = await client.getRecommendations(queries);
 
-    if (!response || !response.results || response.results.length === 0) {
+    if (!response?.results?.length) {
       return [];
     }
 

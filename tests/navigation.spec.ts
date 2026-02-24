@@ -21,7 +21,9 @@ test.describe('Primary Navigation Flows', () => {
 
     await page.getByRole('link', { name: 'Builds' }).click();
     await expect(page).toHaveURL('/projects');
-    await expect(page.locator('h1').first()).toContainText('Not here to play nice');
+    await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
+      'Not here to play nice'
+    );
 
     await page.getByRole('link', { name: 'Choices' }).click();
     await expect(page).toHaveURL('/');

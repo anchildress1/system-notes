@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from unittest.mock import patch, mock_open
+from unittest.mock import patch
 from main import app
 
 client = TestClient(app)
@@ -17,7 +17,7 @@ MOCK_PROJECTS_JSON = """
 
 def test_get_projects_success():
     with patch("os.path.exists", return_value=True), \
-         patch("builtins.open", mock_open(read_data=MOCK_PROJECTS_JSON)):
+         patch("pathlib.Path.read_text", return_value=MOCK_PROJECTS_JSON):
         response = client.get("/projects")
         assert response.status_code == 200
         data = response.json()

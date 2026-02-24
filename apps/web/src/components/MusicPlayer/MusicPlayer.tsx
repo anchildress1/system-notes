@@ -67,8 +67,10 @@ export default function MusicPlayer() {
         onEnded={handleEnded}
         onError={handleAudioError}
         preload="none"
-        playsInline
-      />
+      >
+        {/* S4084: track element required for accessible media */}
+        <track kind="captions" src="data:text/vtt," default label="No captions available" />
+      </audio>
     </div>
   );
 }

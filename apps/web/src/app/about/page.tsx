@@ -8,8 +8,8 @@ import { aboutData } from '@/data/about';
 
 const TextContent = ({ text }: { text: string }) => (
   <>
-    {text.split('\n\n').map((paragraph, i) => (
-      <p key={i}>{paragraph.trim()}</p>
+    {text.split('\n\n').map((paragraph) => (
+      <p key={paragraph.slice(0, 40)}>{paragraph.trim()}</p>
     ))}
   </>
 );
@@ -39,7 +39,7 @@ export default function Human() {
           {aboutData.sections.map((section, index) => {
             const TitleTag = index === 0 ? 'h1' : 'h2';
             return (
-              <div key={index} className={styles.section}>
+              <div key={section.title} className={styles.section}>
                 <TitleTag className={styles.name}>{section.title}</TitleTag>
                 {section.subtitle && <span className={styles.subtitle}>{section.subtitle}</span>}
                 <TextContent text={section.content} />

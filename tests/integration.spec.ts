@@ -6,7 +6,9 @@ test.describe('System Notes Integration', () => {
   test('loads homepage with correct metadata', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/Ashley's System Notes/);
-    await expect(page.locator('h1').first()).toContainText("This portfolio isn't browsed—");
+    await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
+      "This portfolio isn't browsed—"
+    );
   });
 
   test('should display the footer', async ({ page }) => {

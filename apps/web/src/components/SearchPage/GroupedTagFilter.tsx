@@ -10,7 +10,10 @@ interface GroupedTagFilterProps {
   limit?: number;
 }
 
-export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagFilterProps) {
+export default function GroupedTagFilter({
+  attributes,
+  limit = 50,
+}: Readonly<GroupedTagFilterProps>) {
   const [lvl0Attr, lvl1Attr] = attributes;
 
   // Fetch both levels
@@ -57,7 +60,10 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
         if (children && children.length > 0) {
           // Check if all children are refined
           const allChildrenRefined = children.every((child) => child.isRefined);
-          if (!allChildrenRefined) {
+          if (allChildrenRefined) {
+            // All children already refined, mark as synced
+            syncedParents.current.add(parentItem.value);
+          } else {
             // Mark as synced before refining to prevent loops
             syncedParents.current.add(parentItem.value);
             // Select any unrefined children
@@ -66,9 +72,6 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
                 lvl1.refine(child.value);
               }
             });
-          } else {
-            // All children already refined, mark as synced
-            syncedParents.current.add(parentItem.value);
           }
         }
       } else if (!parentItem.isRefined && syncedParents.current.has(parentItem.value)) {
@@ -157,20 +160,13 @@ export default function GroupedTagFilter({ attributes, limit = 50 }: GroupedTagF
                     }
                   }}
                 />
-                <span
+                <button
+                  type="button"
                   className={`${styles.refinementLabelText} ${styles.tagGroupLabelText}`}
-                  role="button"
-                  tabIndex={0}
                   onClick={() => handleParentToggle(rootItem, children)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      handleParentToggle(rootItem, children);
-                    }
-                  }}
                 >
                   {rootItem.label}
-                </span>
+                </button>
                 <span className={styles.refinementCount}>{rootItem.count}</span>
                 <button
                   type="button"

@@ -21,7 +21,7 @@ export default function InfiniteHits({
   hitComponent: HitComponent,
   classNames = {},
   ...props
-}: InfiniteHitsProps) {
+}: Readonly<InfiniteHitsProps>) {
   const { hits, isLastPage, showMore, sendEvent } = useInfiniteHits(props);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();

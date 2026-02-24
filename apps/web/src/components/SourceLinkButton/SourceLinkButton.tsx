@@ -15,7 +15,7 @@ export default memo(function SourceLinkButton({
   label,
   icon,
   onClick,
-}: SourceLinkButtonProps) {
+}: Readonly<SourceLinkButtonProps>) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -23,7 +23,7 @@ export default memo(function SourceLinkButton({
     if (onClick) {
       onClick(e);
     } else {
-      window.open(url, '_blank', 'noopener,noreferrer');
+      globalThis.open(url, '_blank', 'noopener,noreferrer');
     }
   };
 

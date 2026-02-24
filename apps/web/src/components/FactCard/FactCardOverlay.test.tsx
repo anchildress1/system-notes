@@ -7,24 +7,27 @@ import type { OverlayHit } from '@/hooks/useFactIdRouting';
 vi.mock('framer-motion', () => ({
   motion: {
     div: (props: Record<string, unknown>) => {
-      const { children, onClick, className } = props as React.HTMLAttributes<HTMLDivElement>;
+      const { children, className } = props as React.HTMLAttributes<HTMLDivElement>;
       return (
-        <div onClick={onClick} className={className} data-testid="overlay-backdrop">
+        <div className={className} data-testid="overlay-backdrop">
           {children}
         </div>
       );
     },
     article: (props: Record<string, unknown>) => {
-      const { children, onClick, className, role, animate, ...rest } =
-        props as React.HTMLAttributes<HTMLElement> & { animate?: string } & Record<string, unknown>;
+      const {
+        children,
+        onClick: _onClick, // eslint-disable-line @typescript-eslint/no-unused-vars
+        className,
+        role,
+        animate,
+        ...rest
+      } = props as React.HTMLAttributes<HTMLElement> & { animate?: string } & Record<
+          string,
+          unknown
+        >;
       return (
-        <article
-          onClick={onClick}
-          className={className}
-          role={role}
-          data-animate={animate as string}
-          {...rest}
-        >
+        <article className={className} role={role} data-animate={animate as string} {...rest}>
           {children}
         </article>
       );

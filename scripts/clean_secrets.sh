@@ -13,7 +13,7 @@ set -euo pipefail
 #
 ################################################################################
 
-if [ "$#" -lt 1 ]; then
+if [[ "$#" -lt 1 ]]; then
   echo "Usage: $0 <remote-git-url> [replace-text-file]"
   exit 2
 fi
@@ -28,13 +28,13 @@ git clone --mirror "$REMOTE_URL" "$TMPDIR"
 cd "$TMPDIR"
 
 echo "Found replace file: $REPLACE_FILE"
-if [ ! -f "$REPLACE_FILE" ]; then
+if [[ ! -f "$REPLACE_FILE" ]]; then
   echo "Warning: replace-text file not found at $REPLACE_FILE. Create it with lines like: secret==>[REDACTED]"
 fi
 
 if command -v git-filter-repo >/dev/null 2>&1; then
   echo "Using git-filter-repo to rewrite history..."
-  if [ -f "$REPLACE_FILE" ]; then
+  if [[ -f "$REPLACE_FILE" ]]; then
     git filter-repo --replace-text "$REPLACE_FILE"
   else
     echo "No replace file provided. Use --invert-paths or provide patterns. Exiting."
@@ -42,10 +42,10 @@ if command -v git-filter-repo >/dev/null 2>&1; then
   fi
 else
   echo "git-filter-repo not found. Trying BFG if available..."
-  if command -v java >/dev/null 2>&1 && [ -f "/usr/local/bin/bfg.jar" -o -f "./bfg.jar" ]; then
-    BFG_JAR="$( [ -f ./bfg.jar ] && echo ./bfg.jar || echo /usr/local/bin/bfg.jar )"
+  if command -v java >/dev/null 2>&1 && [[ -f "/usr/local/bin/bfg.jar" || -f "./bfg.jar" ]]; then
+    BFG_JAR="$( [[ -f ./bfg.jar ]] && echo ./bfg.jar || echo /usr/local/bin/bfg.jar )"
     echo "Using BFG at: $BFG_JAR"
-    if [ -f "$REPLACE_FILE" ]; then
+    if [[ -f "$REPLACE_FILE" ]]; then
       java -jar "$BFG_JAR" --replace-text "$REPLACE_FILE" .
     else
       echo "No replace file provided for BFG. Exiting."

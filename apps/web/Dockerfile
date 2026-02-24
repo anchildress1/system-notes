@@ -2,8 +2,8 @@
 FROM node:20-bookworm-slim AS pruner
 WORKDIR /app
 COPY . .
-RUN npm install -g turbo@2.8.1
-RUN turbo prune --scope=web --docker
+RUN npm install -g turbo@2.8.1 && \
+    turbo prune --scope=web --docker
 
 # Block 2: The Installer
 FROM node:20-bookworm-slim AS installer
@@ -54,8 +54,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 # Don't run production as root
-RUN groupadd --system --gid 1001 nodejs
-RUN useradd --system --uid 1001 nextjs
+RUN groupadd --system --gid 1001 nodejs && \
+    useradd --system --uid 1001 nextjs
 USER nextjs
 
 COPY --from=installer /app/apps/web/next.config.ts .

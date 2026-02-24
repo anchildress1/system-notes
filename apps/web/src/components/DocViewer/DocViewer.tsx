@@ -7,20 +7,20 @@ interface DocViewerProps {
   content: string;
 }
 
-export default function DocViewer({ content }: DocViewerProps) {
+export default function DocViewer({ content }: Readonly<DocViewerProps>) {
   // Ensure we split correctly on newlines, handling potential CRLF
-  const lines = content.replace(/\r\n/g, '\n').split('\n');
+  const lines = content.replaceAll('\r\n', '\n').split('\n');
   const [highlightedRange, setHighlightedRange] = useState<[number, number] | null>(null);
 
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash;
+      const hash = globalThis.location.hash;
       if (hash) {
         // Parse #Lx-Ly or #Lx
-        const match = hash.match(/#L(\d+)(?:-L(\d+))?/);
+        const match = /#L(\d+)(?:-L(\d+))?/.exec(hash);
         if (match) {
-          const start = parseInt(match[1], 10);
-          const end = match[2] ? parseInt(match[2], 10) : start;
+          const start = Number.parseInt(match[1], 10);
+          const end = match[2] ? Number.parseInt(match[2], 10) : start;
           setHighlightedRange([start, end]);
 
           // Scroll to the first line
@@ -37,8 +37,8 @@ export default function DocViewer({ content }: DocViewerProps) {
     };
 
     handleHashChange(); // Initial check
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    globalThis.addEventListener('hashchange', handleHashChange);
+    return () => globalThis.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   const isHighlighted = (lineNumber: number) => {
@@ -54,7 +54,7 @@ export default function DocViewer({ content }: DocViewerProps) {
 
         return (
           <div
-            key={index}
+            key={lineNumber}
             id={`L${lineNumber}`}
             className={`${styles.line} ${highlighted ? styles.highlighted : ''}`}
           >

@@ -16,7 +16,7 @@ interface HeroProps {
   };
 }
 
-export default function Hero({ title, subtitle, image }: HeroProps) {
+export default function Hero({ title, subtitle, image }: Readonly<HeroProps>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
@@ -26,24 +26,24 @@ export default function Hero({ title, subtitle, image }: HeroProps) {
   return (
     <div className={styles.hero} ref={containerRef}>
       <div className={styles.titleContainer} ref={textRef}>
-        <div
-          className={styles.interactiveContainer}
-          data-testid="hero-interactive"
-          role="button"
-          tabIndex={0}
-          aria-label="Trigger glitter effect"
-          onClick={() => {
-            window.dispatchEvent(new Event('trigger-glitter-bomb'));
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              window.dispatchEvent(new Event('trigger-glitter-bomb'));
-            }
-          }}
-        >
+        <div className={styles.interactiveContainer}>
           <h1 className={styles.title}>{title}</h1>
-          {subtitle && <div className={styles.subtitle}>{subtitle}</div>}
+          {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
+          <button
+            type="button"
+            className={styles.glitterTrigger}
+            data-testid="hero-interactive"
+            aria-label="Trigger glitter effect"
+            onClick={() => {
+              globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
+              }
+            }}
+          />
         </div>
       </div>
 

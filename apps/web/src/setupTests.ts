@@ -14,8 +14,6 @@ class IntersectionObserverMock {
   readonly rootMargin: string = '';
   readonly thresholds: ReadonlyArray<number> = [];
 
-  constructor() {}
-
   disconnect = vi.fn();
   observe = vi.fn();
   takeRecords = vi.fn();
@@ -23,8 +21,6 @@ class IntersectionObserverMock {
 }
 
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
-window.IntersectionObserver = IntersectionObserverMock;
-global.IntersectionObserver = IntersectionObserverMock;
 
 import React from 'react';
 

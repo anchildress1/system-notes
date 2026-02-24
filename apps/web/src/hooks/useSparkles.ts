@@ -26,7 +26,8 @@ export const useSparkles = ({
 
     // Feature detect mobile for optimizations
     const isMobile =
-      typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
+      typeof globalThis !== 'undefined' &&
+      (globalThis.innerWidth < 768 || 'ontouchstart' in globalThis);
 
     // Completely disable sparkles on mobile for maximum performance
     if (isMobile) return;
@@ -45,7 +46,7 @@ export const useSparkles = ({
           height: containerRef.current.clientHeight,
           backgroundAlpha: 0,
           // Optimize resolution for mobile to save GPU (1x instead of Retina)
-          resolution: isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2),
+          resolution: isMobile ? 1 : Math.min(globalThis.devicePixelRatio || 1, 2),
           autoDensity: true,
           // Disable antialias on mobile for performance
           antialias: false,
@@ -93,7 +94,7 @@ export const useSparkles = ({
             if (p.life <= 0) {
               p.visible = false;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              app.stage.removeChild(p as any);
+              (p as any).remove?.();
               particles.splice(i, 1);
             } else {
               p.x += Math.cos(p.direction) * p.speed;
@@ -132,23 +133,23 @@ export const useSparkles = ({
       observer.observe(containerRef.current);
     }
 
+    const isInTextArea = (clientX: number, clientY: number): boolean => {
+      if (!sparkleNearText || !textRef?.current) return true;
+      const textRect = textRef.current.getBoundingClientRect();
+      return (
+        clientX >= textRect.left &&
+        clientX <= textRect.right &&
+        clientY >= textRect.top &&
+        clientY <= textRect.bottom
+      );
+    };
+
     const handleInteraction = async (clientX: number, clientY: number) => {
       // Early check
       if (!app || !app.renderer || !containerRef.current || !isMounted) return;
+      if (!isInTextArea(clientX, clientY)) return;
 
       try {
-        // If restricted to text area (like in Hero with image)
-        if (sparkleNearText && textRef?.current) {
-          const textRect = textRef.current.getBoundingClientRect();
-          const isInText =
-            clientX >= textRect.left &&
-            clientX <= textRect.right &&
-            clientY >= textRect.top &&
-            clientY <= textRect.bottom;
-
-          if (!isInText) return;
-        }
-
         const PIXI = await import('pixi.js');
         // Re-check EVERYTHING after async await
         if (!isMounted || !app || !app.renderer || !circleTexture) return;
@@ -185,7 +186,7 @@ export const useSparkles = ({
 
           particle.direction = angle;
           particle.speed = velocity;
-          particle.life = 1.0;
+          particle.life = 1;
 
           // Faster decay on mobile to clear buffer
           particle.decay = Math.random() * (isMobile ? 0.05 : 0.03) + 0.01;

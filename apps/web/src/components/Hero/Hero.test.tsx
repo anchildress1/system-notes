@@ -43,7 +43,7 @@ describe('Hero Component', () => {
   });
 
   it('dispatches trigger-glitter-bomb event on click', () => {
-    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     render(<Hero {...defaultProps} />);
 
     const container = screen.getByTestId('hero-interactive');
@@ -58,7 +58,7 @@ describe('Hero Component', () => {
   });
 
   it('dispatches trigger-glitter-bomb event on Enter key', () => {
-    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     render(<Hero {...defaultProps} />);
 
     const container = screen.getByTestId('hero-interactive');
@@ -69,7 +69,7 @@ describe('Hero Component', () => {
   });
 
   it('dispatches trigger-glitter-bomb event on Space key', () => {
-    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     render(<Hero {...defaultProps} />);
 
     const container = screen.getByTestId('hero-interactive');
@@ -80,7 +80,7 @@ describe('Hero Component', () => {
   });
 
   it('does not dispatch on other keys', () => {
-    const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+    const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     render(<Hero {...defaultProps} />);
 
     const container = screen.getByTestId('hero-interactive');

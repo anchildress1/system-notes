@@ -9,22 +9,24 @@ import 'instantsearch.css/themes/satellite.css';
 import styles from './AIChat.module.css';
 import dynamic from 'next/dynamic';
 import { API_URL, ALGOLIA_INDEX } from '@/config';
-// import { useRecommendationTools } from '@/lib/recommendations';
 import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
 import { getChatSessionId } from '@/utils/userToken';
+import {
+  ALGOLIA_APP_ID,
+  ALGOLIA_SEARCH_KEY,
+  ALGOLIA_AGENT_ID,
+  hasValidAlgoliaCredentials,
+} from '@/lib/algolia';
 
 import { IoClose } from 'react-icons/io5';
 import { GiBat } from 'react-icons/gi';
 import { FaBrain, FaUser } from 'react-icons/fa';
 
-const appId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';
-const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '';
+const appId = ALGOLIA_APP_ID;
+const apiKey = ALGOLIA_SEARCH_KEY;
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
-// Algolia app IDs are always 10 alphanumeric chars, API keys are 32+ hex chars.
-// Skip real SDK init when credentials are obviously fake (e.g. test_app_id)
-// to prevent failed network requests that Chrome logs as console errors.
-const hasValidCredentials = /^[A-Z0-9]{10}$/i.test(appId) && apiKey.length >= 20;
+const hasValidCredentials = hasValidAlgoliaCredentials();
 
 // Create searchClient at module level for stable reference (prevents unnecessary re-renders)
 const searchClient = hasValidCredentials
@@ -38,7 +40,7 @@ const searchClient = hasValidCredentials
       search: () => Promise.resolve({ results: [] }),
     };
 
-const AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || '';
+const AGENT_ID = ALGOLIA_AGENT_ID;
 
 const MusicPlayer = dynamic(() => import('../MusicPlayer/MusicPlayer'), {
   ssr: false,
@@ -129,11 +131,11 @@ export default function AIChat() {
         '.ais-ChatToggleButton, .ais-Chat-toggleButton, [class*="ChatToggleButton"]'
       );
       if (toggleBtn) {
-        if (!toggleBtn.hasAttribute('aria-label')) {
-          toggleBtn.setAttribute('aria-label', 'Open AI Chat');
+        if (!(toggleBtn as HTMLElement).ariaLabel) {
+          (toggleBtn as HTMLElement).ariaLabel = 'Open AI Chat';
         }
-        if (!toggleBtn.hasAttribute('data-testid')) {
-          toggleBtn.setAttribute('data-testid', 'ai-chat-toggle');
+        if (!(toggleBtn as HTMLElement).dataset.testid) {
+          (toggleBtn as HTMLElement).dataset.testid = 'ai-chat-toggle';
         }
       }
     };

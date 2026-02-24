@@ -5,6 +5,7 @@ import { Project } from '@/data/projects';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
 import { overlayTransition, cardFlipVariants } from '@/utils/animations';
+import { CloseIcon } from '@/components/icons';
 
 interface ExpandedViewProps {
   project: Project;
@@ -18,7 +19,7 @@ export default function ExpandedView({
   onClose,
   isOpen,
   onExitComplete,
-}: ExpandedViewProps) {
+}: Readonly<ExpandedViewProps>) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,10 +48,10 @@ export default function ExpandedView({
     };
 
     document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', handleKeyDown);
+    globalThis.addEventListener('keydown', handleKeyDown);
     return () => {
       document.body.style.overflow = 'unset';
-      window.removeEventListener('keydown', handleKeyDown);
+      globalThis.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);
 
@@ -83,17 +84,7 @@ export default function ExpandedView({
           onClick={onClose}
           aria-label="Close modal"
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
+          <CloseIcon />
         </button>
 
         <div className={styles.content}>

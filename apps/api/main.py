@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import Annotated, List, Optional
 from werkzeug.utils import secure_filename
 import os
 import json
@@ -33,9 +33,14 @@ app = FastAPI(title="System Notes API", version="0.1.0")
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
+def _sanitize_log(value: object) -> str:
+    """Strip newlines from user-controlled values to prevent log injection (S5145)."""
+    return str(value).replace('\n', '\\n').replace('\r', '\\r')
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    logger.error(f"Validation error: {exc.body}")
+    logger.error("Validation error: %s", _sanitize_log(exc.body))
     return JSONResponse(
         status_code=400,
         content={"detail": exc.errors(), "body": str(exc.body)},
@@ -99,8 +104,8 @@ async def get_projects():
              logger.error("projects.json not found")
              return []
 
-        with open(file_path, "r") as f:
-            content = json.load(f)
+        raw = await asyncio.to_thread(Path(file_path).read_text, encoding="utf-8")
+        content = json.loads(raw)
 
         projects = []
         for item in content:
@@ -148,13 +153,13 @@ async def get_system_doc(doc_path: str):
 
         # Security Rule 1.4: Resolve and Verify Root (Defense in Depth)
         if not target_path.is_relative_to(api_root):
-             logger.warning(f"Path traversal attempt blocked (escaped root): {doc_path}")
+             logger.warning("Path traversal attempt blocked (escaped root)")
              return JSONResponse(status_code=400, content={"error": "Invalid path resolution"})
 
         if not target_path.is_file():
              return JSONResponse(status_code=404, content={"error": "Document not found"})
 
-        content = target_path.read_text(encoding="utf-8")
+        content = await asyncio.to_thread(target_path.read_text, encoding="utf-8")
 
         return {"content": content, "format": "markdown", "path": "/".join(safe_parts)}
     except Exception as e:
@@ -295,11 +300,11 @@ async def get_all_blog_posts() -> List[BlogPostInternal]:
 
 @app.get("/blog/search", response_model=BlogSearchResponse)
 async def search_blog_posts(
-    q: Optional[str] = Query(None, description="Search query to filter posts"),
-    tag: Optional[str] = Query(None, description="Filter by tag"),
-    limit: int = Query(3, ge=1, le=50, description="Maximum results to return"),
+    q: Annotated[Optional[str], Query(description="Search query to filter posts")] = None,
+    tag: Annotated[Optional[str], Query(description="Filter by tag")] = None,
+    limit: Annotated[int, Query(ge=1, le=50, description="Maximum results to return")] = 3,
 ):
-    logger.info(f"Search request: q='{q}', tag='{tag}', limit={limit}")
+    logger.info("Search request: q_present=%s, tag_present=%s, limit=%s", bool(q), bool(tag), limit)
 
     posts = await get_all_blog_posts()
     logger.info(f"Total posts available for filtering: {len(posts)}")

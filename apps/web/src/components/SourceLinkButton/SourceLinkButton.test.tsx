@@ -18,7 +18,7 @@ describe('SourceLinkButton', () => {
 
   it('opens URL in new tab on click', async () => {
     const user = userEvent.setup();
-    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     render(<SourceLinkButton {...defaultProps} />);
 
     await user.click(screen.getByLabelText('View source'));
@@ -34,7 +34,7 @@ describe('SourceLinkButton', () => {
   it('calls custom onClick instead of window.open when provided', async () => {
     const user = userEvent.setup();
     const customClick = vi.fn();
-    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     render(<SourceLinkButton {...defaultProps} onClick={customClick} />);
 
     await user.click(screen.getByLabelText('View source'));
@@ -47,7 +47,7 @@ describe('SourceLinkButton', () => {
   it('stops event propagation', async () => {
     const user = userEvent.setup();
     const parentClick = vi.fn();
-    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
 
     render(
       <div onClick={parentClick}>
