@@ -77,24 +77,16 @@ describe('FactCard Component', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'Test Fact Title' })).toBeInTheDocument();
   });
 
-  it('supports keyboard navigation with Enter', async () => {
+  it.each([
+    { key: '{Enter}', label: 'Enter' },
+    { key: ' ', label: 'Space' },
+  ])('supports keyboard navigation with $label', async ({ key }) => {
     const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} />);
 
     const card = screen.getByRole('link', { name: /Press to expand/i });
     card.focus();
-    await user.keyboard('{Enter}');
-
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-  });
-
-  it('supports keyboard navigation with Space', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} />);
-
-    const card = screen.getByRole('link', { name: /Press to expand/i });
-    card.focus();
-    await user.keyboard(' ');
+    await user.keyboard(key);
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });

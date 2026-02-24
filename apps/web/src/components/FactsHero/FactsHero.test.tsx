@@ -28,29 +28,17 @@ describe('FactsHero', () => {
     dispatchSpy.mockRestore();
   });
 
-  it('dispatches glitter event on Enter key', async () => {
+  it.each([
+    { key: '{Enter}', label: 'Enter' },
+    { key: ' ', label: 'Space' },
+  ])('dispatches glitter event on $label key', async ({ key }) => {
     const user = userEvent.setup();
     const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     render(<FactsHero />);
 
     const button = screen.getByRole('button');
     button.focus();
-    await user.keyboard('{Enter}');
-
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ type: 'trigger-glitter-bomb' })
-    );
-    dispatchSpy.mockRestore();
-  });
-
-  it('dispatches glitter event on Space key', async () => {
-    const user = userEvent.setup();
-    const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
-    render(<FactsHero />);
-
-    const button = screen.getByRole('button');
-    button.focus();
-    await user.keyboard(' ');
+    await user.keyboard(key);
 
     expect(dispatchSpy).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'trigger-glitter-bomb' })

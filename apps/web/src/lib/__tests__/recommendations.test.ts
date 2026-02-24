@@ -145,18 +145,16 @@ describe('Recommendations Library', () => {
     });
   });
 
+  async function invokeRelatedNotes(objectID = 'test') {
+    const { result } = renderHook(() => useRecommendationTools());
+    const addToolResult = vi.fn();
+    await result.current.getRelatedNotes.onToolCall({ input: { objectID }, addToolResult });
+    return addToolResult;
+  }
+
   describe('Error Handling', () => {
     it('should handle network errors gracefully', async () => {
-      const { result } = renderHook(() => useRecommendationTools());
-
-      const addToolResult = vi.fn();
-
-      // Test with valid input to ensure error handling works
-      await result.current.getRelatedNotes.onToolCall({
-        input: { objectID: 'test' },
-        addToolResult,
-      });
-
+      const addToolResult = await invokeRelatedNotes();
       // Should always call addToolResult, even on error
       expect(addToolResult).toHaveBeenCalled();
     });
@@ -196,15 +194,7 @@ describe('Recommendations Library', () => {
 
   describe('Performance', () => {
     it('should limit default recommendations to 5 for related notes', async () => {
-      const { result } = renderHook(() => useRecommendationTools());
-
-      const addToolResult = vi.fn();
-
-      await result.current.getRelatedNotes.onToolCall({
-        input: { objectID: 'test' },
-        addToolResult,
-      });
-
+      const addToolResult = await invokeRelatedNotes();
       // Default maxRecommendations is 5 (set in fetchRecommendations)
       expect(addToolResult).toHaveBeenCalled();
     });

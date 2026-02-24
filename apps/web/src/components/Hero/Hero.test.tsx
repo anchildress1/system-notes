@@ -57,23 +57,15 @@ describe('Hero Component', () => {
     dispatchSpy.mockRestore();
   });
 
-  it('dispatches trigger-glitter-bomb event on Enter key', () => {
+  it.each([
+    { key: 'Enter', label: 'Enter' },
+    { key: ' ', label: 'Space' },
+  ])('dispatches trigger-glitter-bomb event on $label key', ({ key }) => {
     const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     render(<Hero {...defaultProps} />);
 
     const container = screen.getByTestId('hero-interactive');
-    fireEvent.keyDown(container, { key: 'Enter' });
-
-    expect(dispatchSpy).toHaveBeenCalled();
-    dispatchSpy.mockRestore();
-  });
-
-  it('dispatches trigger-glitter-bomb event on Space key', () => {
-    const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
-    render(<Hero {...defaultProps} />);
-
-    const container = screen.getByTestId('hero-interactive');
-    fireEvent.keyDown(container, { key: ' ' });
+    fireEvent.keyDown(container, { key });
 
     expect(dispatchSpy).toHaveBeenCalled();
     dispatchSpy.mockRestore();
