@@ -1,7 +1,7 @@
 # Block 1: The Pruner
 FROM node:20-bookworm-slim AS pruner
 WORKDIR /app
-COPY . .
+COPY . . # NOSONAR - .dockerignore excludes .env and secrets; full tree needed for turbo prune
 RUN npm install -g turbo@2.8.1 && \
     turbo prune --scope=web --docker
 
