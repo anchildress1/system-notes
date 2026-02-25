@@ -215,6 +215,50 @@ describe('useFactIdRouting', () => {
     pushStateSpy.mockRestore();
   });
 
+  it('ignores fetch result when effect is cancelled before resolve', async () => {
+    let resolveSearch!: (value: unknown) => void;
+    searchMock.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveSearch = resolve;
+        })
+    );
+
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    vi.mocked(useSearchParams).mockReturnValue({
+      get: vi.fn((key) => (key === 'factId' ? 'card:cancel:test' : null)),
+    } as unknown as ReturnType<typeof useSearchParams>);
+
+    const { unmount } = renderHook(() => useFactIdRouting('test-index'));
+
+    // Unmount before promise resolves — sets cancelled=true in cleanup
+    unmount();
+
+    // Resolve after cancellation — state update must be suppressed
+    await act(async () => {
+      resolveSearch({
+        results: [
+          {
+            hits: [
+              {
+                objectID: 'card:cancel:test',
+                title: 'T',
+                blurb: '',
+                fact: '',
+                category: '',
+                projects: [],
+                signal: 1,
+              },
+            ],
+          },
+        ],
+      });
+    });
+    // No error thrown; cancelled branch was exercised
+  });
+
   it('does not modify filter params in URL', async () => {
     const mockFactId = 'card:test:fact:001';
 

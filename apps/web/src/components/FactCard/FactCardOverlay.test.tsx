@@ -164,6 +164,16 @@ describe('FactCardOverlay', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
+  it('ignores non-Escape key presses', async () => {
+    const user = userEvent.setup();
+    render(<FactCardOverlay hit={mockHit} onClose={mockOnClose} />);
+
+    await user.keyboard('{Tab}');
+
+    expect(screen.getByLabelText('Close expanded view')).toBeInTheDocument();
+    expect(mockOnClose).not.toHaveBeenCalled();
+  });
+
   it('does not call onClose when animation completes while still visible', () => {
     render(<FactCardOverlay hit={mockHit} onClose={mockOnClose} />);
 

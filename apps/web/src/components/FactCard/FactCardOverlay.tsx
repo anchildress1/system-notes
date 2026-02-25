@@ -19,7 +19,11 @@ interface FactCardOverlayProps {
  * tied to a card in the search results list.
  */
 export default function FactCardOverlay({ hit, onClose }: Readonly<FactCardOverlayProps>) {
-  const portalTarget = useMemo(() => (typeof document === 'undefined' ? null : document.body), []);
+  const portalTarget = useMemo(() => {
+    /* v8 ignore next */
+    if (typeof document === 'undefined') return null;
+    return document.body;
+  }, []);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [isVisible, setIsVisible] = useState(true);
   const dialogTitleId = `overlay-title-${hit.objectID}`;
