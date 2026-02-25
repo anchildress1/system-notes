@@ -50,42 +50,33 @@ test:
 # Secret scanning (Non-interactive)
 secret-scan:
 	@echo "🔐 Scanning for secrets..."
-	@if command -v uvx > /dev/null; then \
-		uvx detect-secrets scan --exclude-files 'node_modules|dist|.next|.turbo|.venv|.secrets.baseline|.secrets.baseline.tmp' > .secrets.baseline.tmp; \
+	@_run_scan() { \
+		SCANNER="$$1"; \
+		$$SCANNER scan --exclude-files 'node_modules|dist|.next|.turbo|.venv|.secrets.baseline|.secrets.baseline.tmp' > .secrets.baseline.tmp 2>&1 || true; \
+		if [ ! -f .secrets.baseline.tmp ]; then \
+			echo "⚠️ detect-secrets scan did not produce output. Skipping."; \
+			return 0; \
+		fi; \
 		if [ -f .secrets.baseline ]; then \
 			echo "Checking against baseline..."; \
-			NEW_SECRETS=$$(uvx detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results | length' 2>/dev/null || echo 0); \
+			NEW_SECRETS=$$($$SCANNER scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results | length' 2>/dev/null || echo 0); \
 			if [ "$${NEW_SECRETS:-0}" -gt 0 ]; then \
 				echo "❌ New secrets found! Run 'detect-secrets audit .secrets.baseline' to review."; \
-				uvx detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results'; \
-				rm .secrets.baseline.tmp; \
-				exit 1; \
+				$$SCANNER scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results'; \
+				rm -f .secrets.baseline.tmp; \
+				return 1; \
 			else \
 				echo "✅ No new secrets found. Updating baseline timestamp."; \
-				mv .secrets.baseline.tmp .secrets.baseline; \
+				[ -f .secrets.baseline.tmp ] && mv .secrets.baseline.tmp .secrets.baseline || true; \
 			fi; \
 		else \
-			mv .secrets.baseline.tmp .secrets.baseline; \
-			echo "✅ Secrets baseline created at .secrets.baseline"; \
+			[ -f .secrets.baseline.tmp ] && mv .secrets.baseline.tmp .secrets.baseline && echo "✅ Secrets baseline created at .secrets.baseline" || echo "⚠️ Could not create baseline."; \
 		fi; \
+	}; \
+	if command -v uvx > /dev/null; then \
+		_run_scan "uvx detect-secrets" || exit 1; \
 	elif command -v detect-secrets > /dev/null; then \
-		detect-secrets scan --exclude-files 'node_modules|dist|.next|.turbo|.venv|.secrets.baseline|.secrets.baseline.tmp' > .secrets.baseline.tmp; \
-		if [ -f .secrets.baseline ]; then \
-			echo "Checking against baseline..."; \
-			NEW_SECRETS=$$(detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results | length' 2>/dev/null || echo 0); \
-			if [ "$${NEW_SECRETS:-0}" -gt 0 ]; then \
-				echo "❌ New secrets found! Run 'detect-secrets audit .secrets.baseline' to review."; \
-				detect-secrets scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results'; \
-				rm .secrets.baseline.tmp; \
-				exit 1; \
-			else \
-				echo "✅ No new secrets found. Updating baseline timestamp."; \
-				mv .secrets.baseline.tmp .secrets.baseline; \
-			fi; \
-		else \
-			mv .secrets.baseline.tmp .secrets.baseline; \
-			echo "✅ Secrets baseline created at .secrets.baseline"; \
-		fi; \
+		_run_scan "detect-secrets" || exit 1; \
 	else \
 		echo "⚠️ detect-secrets not found. Skipping scan."; \
 	fi
