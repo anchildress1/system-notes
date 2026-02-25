@@ -1,4 +1,4 @@
-.PHONY: setup setup-python setup-node dev build deploy clean ai-checks secret-scan test test-e2e format format-check lint typecheck
+.PHONY: setup setup-python setup-node dev build deploy clean ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf
 
 # Default target
 all: setup
@@ -151,9 +151,3 @@ clean:
 	rm -f .secrets.baseline.tmp
 	@echo "✨ Clean complete."
 
-# Deploy Algolia indices
-algolia_deploy:
-	@echo "🔍 indexing algolia..."
-	cd apps/api && uv run python scripts/index_algolia.py
-
-index-algolia: algolia_deploy

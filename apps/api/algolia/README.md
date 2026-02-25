@@ -11,9 +11,10 @@ apps/api/algolia/
 ├── sources/             # Consolidated data and configuration
 │   ├── index.json       # The Master Knowledge Graph (facts, narratives, projects)
 │   ├── settings.json    # Searchable attributes, faceting, ranking
-│   └── synonyms.json    # Synonym definitions
+│   ├── synonyms.json    # Synonym definitions
+│   └── crawler.js       # Algolia web crawler config for blog post indexing
 ├── diagrams/            # Architecture diagrams
-└── scripts/             # Python indexing scripts (in ../scripts/)
+└── prompts/             # Algolia Agent Studio prompts
 ```
 
 ## 🧠 Index Schema
@@ -37,18 +38,3 @@ The `system-notes` index uses a **Granular Fact Architecture**. Instead of index
 | `projects` | `array`  | Related projects: `System Notes`, `Hermes Agent`, etc.          |
 | `tags`     | `array`  | Thematic tags: `Architecture`, `UX`, `Performance`              |
 | `signal`   | `string` | Priority/Relevance signal: `High`, `Medium`, `Low`              |
-
-## 🚀 Indexing Workflow
-
-Indexing is handled by the `apps/api/scripts/index_algolia.py` script.
-
-1.  **Load Source**: Reads `sources/index.json`.
-2.  **Apply Settings**: Reads `sources/settings.json` and `sources/synonyms.json`.
-3.  **Atomic Replace**: Performs a zero-downtime atomic replacement of the index.
-
-### Command
-
-```bash
-# Run via Makefile (from root)
-make index-algolia
-```
