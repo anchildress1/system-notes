@@ -19,10 +19,10 @@ const securityHeaders = [
     key: 'Cross-Origin-Opener-Policy',
     value: 'same-origin',
   },
-  {
-    key: 'Strict-Transport-Security',
-    value: 'max-age=63072000; includeSubDomains; preload',
-  },
+  // HSTS is intentionally omitted here — it is gated to HTTPS requests below.
+  // RFC 6797 §7.2: servers MUST NOT include HSTS over plain HTTP.
+  // Sending it unconditionally causes Chrome to cache the policy for localhost,
+  // which makes Lighthouse redirect HTTP→HTTPS and fail with CHROME_INTERSTITIAL_ERROR.
 ];
 
 const nextConfig: NextConfig = {
@@ -42,6 +42,18 @@ const nextConfig: NextConfig = {
       {
         source: '/(.*)',
         headers: securityHeaders,
+      },
+      {
+        // HSTS only on HTTPS — Cloud Run sets x-forwarded-proto: https for production traffic.
+        // Local dev and Lighthouse runs (plain HTTP) never receive this header.
+        source: '/(.*)',
+        has: [{ type: 'header', key: 'x-forwarded-proto', value: 'https' }],
+        headers: [
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+        ],
       },
       {
         // Immutable caching only for content-hashed Next.js static assets
