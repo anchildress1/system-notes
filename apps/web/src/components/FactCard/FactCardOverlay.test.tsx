@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FactCardOverlay from './FactCardOverlay';
 import type { OverlayHit } from '@/hooks/useFactIdRouting';
@@ -21,13 +21,21 @@ vi.mock('framer-motion', () => ({
         className,
         role,
         animate,
+        onAnimationComplete,
         ...rest
-      } = props as React.HTMLAttributes<HTMLElement> & { animate?: string } & Record<
-          string,
-          unknown
-        >;
+      } = props as React.HTMLAttributes<HTMLElement> & {
+        animate?: string;
+        onAnimationComplete?: (definition: string) => void;
+      } & Record<string, unknown>;
       return (
-        <article className={className} role={role} data-animate={animate as string} {...rest}>
+        <article
+          className={className}
+          role={role}
+          data-animate={animate as string}
+          data-testid="overlay-article"
+          onTransitionEnd={() => onAnimationComplete?.(animate as string)}
+          {...rest}
+        >
           {children}
         </article>
       );
@@ -140,5 +148,29 @@ describe('FactCardOverlay', () => {
     const { container } = render(<FactCardOverlay hit={hitNoProjects} onClose={mockOnClose} />);
 
     expect(container.querySelector('.simple-tags')).not.toBeInTheDocument();
+  });
+
+  it('calls onClose after exit animation completes', async () => {
+    const user = userEvent.setup();
+    render(<FactCardOverlay hit={mockHit} onClose={mockOnClose} />);
+
+    const closeButton = screen.getByLabelText('Close expanded view');
+    await user.click(closeButton);
+
+    // Simulate framer-motion firing onAnimationComplete with 'exit'
+    const article = screen.getByTestId('overlay-article');
+    fireEvent.transitionEnd(article);
+
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not call onClose when animation completes while still visible', () => {
+    render(<FactCardOverlay hit={mockHit} onClose={mockOnClose} />);
+
+    // Fire onAnimationComplete while isVisible is still true (no close triggered)
+    const article = screen.getByTestId('overlay-article');
+    fireEvent.transitionEnd(article);
+
+    expect(mockOnClose).not.toHaveBeenCalled();
   });
 });
