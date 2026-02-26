@@ -74,7 +74,7 @@ secret-scan:
 		fi; \
 	}; \
 	if command -v uvx > /dev/null; then \
-		_run_scan "uvx detect-secrets" || exit 1; \
+		_run_scan "uvx --from detect-secrets==1.5.0 detect-secrets" || exit 1; \
 	elif command -v detect-secrets > /dev/null; then \
 		_run_scan "detect-secrets" || exit 1; \
 	else \
