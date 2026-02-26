@@ -29,7 +29,8 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 # Copy application code
-COPY . . # .dockerignore excludes .env, .venv, __pycache__, and tests (S6470 reviewed SAFE)
+# .dockerignore excludes .env, .venv, __pycache__, and tests (S6470 reviewed SAFE)
+COPY . .
 
 # Don't run production as root for security and to avoid pip warnings
 RUN groupadd --system --gid 1001 appuser && \
