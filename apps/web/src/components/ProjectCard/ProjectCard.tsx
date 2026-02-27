@@ -56,15 +56,17 @@ export default function ProjectCard({
           <div className={styles.headerTop}>
             <span className="card-header-badge">{ownerName}</span>
             {project.status === 'Archived' && <span className="card-header-badge">ARCHIVED</span>}
-            <SourceLinkButton
-              url={project.repo_url}
-              label={`View ${project.title} source code on GitHub`}
-              onClick={(e) => {
-                e.stopPropagation();
-                globalThis.open(project.repo_url, '_blank', 'noopener,noreferrer');
-              }}
-              icon={<GitHubIcon />}
-            />
+            {project.repo_url && (
+              <SourceLinkButton
+                url={project.repo_url}
+                label={`View ${project.title} source code on GitHub`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  globalThis.open(project.repo_url, '_blank', 'noopener,noreferrer');
+                }}
+                icon={<GitHubIcon />}
+              />
+            )}
           </div>
           <h2 className={styles.title}>{project.title}</h2>
         </div>

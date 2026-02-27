@@ -19,7 +19,7 @@ export interface Project {
   long_description: string;
   outcome: string;
   tech: TechItem[];
-  repo_url: string;
+  repo_url?: string;
   image_url?: string;
   image_alt?: string;
   owner: string;
