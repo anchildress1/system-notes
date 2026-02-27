@@ -97,7 +97,6 @@ class Project(BaseModel):
     outcome: str = ""
     tech: List[TechItem] = []
     repo_url: Optional[str] = None
-    app_url: Optional[str] = None
     image_url: Optional[str] = None
     image_alt: Optional[str] = None
     owner: str = ""
@@ -140,7 +139,6 @@ async def get_projects():
                 outcome=item.get("outcome", ""),
                 tech=[TechItem(**t) for t in item.get("tech", [])],
                 repo_url=item.get("repo_url"),
-                app_url=item.get("app_url"),
                 image_url=item.get("image_url"),
                 image_alt=item.get("image_alt"),
                 owner=item.get("owner", ""),
