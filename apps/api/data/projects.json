@@ -4,10 +4,35 @@
     "node_type": "project",
     "name": "System Notes",
     "aliases": ["portfolio site", "challenge site"],
-    "what_it_is": "AI-generated portfolio system built as a constrained experiment",
-    "why_it_exists": "To explore orchestration, authorship boundaries, and evaluation clarity",
-    "what_happened": "Deployed as a read-only system documenting decisions rather than selling outcomes",
-    "tech_stack": ["Google Cloud Run", "Gemini 3 Pro", "Antigravity", "ChatGPT", "GPT 5.2"],
+    "what_it_is": "AI-generated challenge site used to test orchestration and authorship boundaries.",
+    "why_it_exists": "Built to satisfy a required challenge deliverable and used as a controlled AI experiment with Antigravity.",
+    "long_description": "System Notes exists because the challenge required a site, and I treated that requirement as another AI experiment. Instead of hand-authoring a polished portfolio, I delegated structure and content generation to Antigravity and ChatGPT while constraining scope, intent, and boundaries. The value is not the site itself, but the traceability of decisions made when AI assembles a system under human supervision.",
+    "outcome": "A strictly read-only, AI-assembled site that documents decision boundaries rather than presenting a curated portfolio narrative.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/system-notes.jpg",
+    "image_alt": "System Notes project dashboard showing AI-generated portfolio entries and architecture decisions",
+    "tech": [
+      { "name": "Gemini 3 Pro", "role": "The Architect" },
+      { "name": "Antigravity", "role": "Orchestration Layer" },
+      { "name": "Google Cloud Run", "role": "Runtime" },
+      { "name": "ChatGPT", "role": "The Manager" },
+      { "name": "GPT 5.2", "role": "Conversational Interface" }
+    ],
+    "blog_posts": [
+      {
+        "title": "Can We Set the Record Straight? AI Content and a Bit of Sanity",
+        "url": "https://dev.to/anchildress1/can-we-set-the-record-straight-ai-content-and-a-bit-of-sanity-1inj"
+      },
+      {
+        "title": "Waiting With Intent: Designing AI Systems for the Long Game",
+        "url": "https://dev.to/anchildress1/waiting-with-intent-designing-ai-systems-for-the-long-game-1abg"
+      },
+      {
+        "title": "Fact Checking the Fear Behind the Dark Side of AI",
+        "url": "https://dev.to/anchildress1/fact-checking-the-fear-behind-the-dark-side-of-ai-the-real-story-366p"
+      }
+    ],
     "project_type": "experiment",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/system-notes",
@@ -18,11 +43,6 @@
       "underfoot-underground-travel-planner",
       "delegate-action",
       "devto-mirror"
-    ],
-    "related_links": [
-      "https://dev.to/anchildress1/conversational-retrieval-when-chat-becomes-navigation-2gij",
-      "https://dev.to/anchildress1/from-static-portfolio-to-indexed-decisions-46bf",
-      "https://dev.to/anchildress1/my-portfolio-doesnt-live-on-the-page-218e"
     ]
   },
   {
@@ -30,10 +50,22 @@
     "node_type": "project",
     "name": "SupaScribe Notes",
     "aliases": ["system notes writer", "index card generator", "structured notes app"],
-    "what_it_is": "A lightweight app that turns messy thoughts into structured System Notes index cards stored in Supabase",
-    "why_it_exists": "To reduce the friction between capture and clarity while enforcing a consistent note schema when working in ChatGPT",
-    "what_happened": "Built as an opinionated pipeline: freeform input → structured card → durable storage, with a focus on simplicity and schema adherence over flexibility",
-    "tech_stack": ["Supabase", "Postgres", "Edge Functions", "OpenAI API", "TypeScript"],
+    "what_it_is": "A lightweight app that turns messy thoughts into structured System Notes index cards stored in Supabase.",
+    "why_it_exists": "To reduce the friction between capture and clarity while enforcing a consistent note schema when working in ChatGPT.",
+    "long_description": "SupaScribe Notes exists because the gap between freeform thought and structured output is where most note-taking tools fail. It enforces schema adherence at capture time rather than cleanup time — freeform input goes in, structured System Notes cards come out, and Supabase stores them durably. The pipeline is intentionally opinionated: no flexibility, no freeform persistence, no exceptions.",
+    "outcome": "Built as an opinionated pipeline: freeform input → structured card → durable storage, with a focus on simplicity and schema adherence over flexibility.",
+    "status": "Active · Tool",
+    "owner": "anchildress1",
+    "image_url": "/projects/supascribe-notes.jpg",
+    "image_alt": "SupaScribe Notes app interface showing structured note card generation powered by AI and Supabase",
+    "tech": [
+      { "name": "Supabase", "role": "The Database" },
+      { "name": "Postgres", "role": "Storage" },
+      { "name": "Edge Functions", "role": "Logic Layer" },
+      { "name": "OpenAI API", "role": "Intelligence" },
+      { "name": "TypeScript", "role": "Language" }
+    ],
+    "blog_posts": [],
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/supascribe-notes-mcp",
@@ -46,10 +78,21 @@
     "node_type": "project",
     "name": "Delegate Action",
     "aliases": ["GitHub Action", "PR generator"],
-    "what_it_is": "Temporary AI coding agent implemented as a GitHub Action",
-    "why_it_exists": "Placeholder solution until Copilot coding agent supports valid user PAT tokens via CLI in GitHub Actions",
-    "what_happened": "A working stopgap that enables AI-generated PRs today while waiting for native platform support",
-    "tech_stack": ["GitHub Actions", "Node.js", "Security", "PAT"],
+    "what_it_is": "Temporary AI coding agent implemented as a GitHub Action.",
+    "why_it_exists": "Placeholder solution until Copilot coding agent supports valid user PAT tokens via CLI in GitHub Actions.",
+    "long_description": "Delegate Action exists because the functionality I wanted does not yet exist in Copilot. I needed AI-generated pull requests immediately, under my own credentials, without waiting on upstream support. This Action fills that gap by generating draft PRs using my PAT, with explicit human review and ownership.",
+    "outcome": "A working stopgap that enables AI-generated PRs today while waiting for native platform support.",
+    "status": "Active · POC",
+    "owner": "CheckMarKDevTools",
+    "image_url": "/projects/delegate-action.jpg",
+    "image_alt": "Delegate Action GitHub workflow allowing secure AI-generated pull requests via personal access tokens",
+    "tech": [
+      { "name": "GitHub Actions", "role": "The Runtime" },
+      { "name": "Node.js", "role": "Logic Layer" },
+      { "name": "Security", "role": "Injection Detection" },
+      { "name": "PAT", "role": "Auth Shortcut" }
+    ],
+    "blog_posts": [],
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/delegate-action",
@@ -62,10 +105,21 @@
     "node_type": "project",
     "name": "Hermes Agent",
     "aliases": ["Hermes", "local agent", "memory playground"],
-    "what_it_is": "Personal AI agent playground with early memory experiments",
-    "why_it_exists": "A zero-stakes environment to experiment with memory and agent behavior for a personal local AI system",
-    "what_happened": "A functional local sandbox that informs future agent and memory design decisions",
-    "tech_stack": ["Python", "Ollama", "PostgreSQL", "Local"],
+    "what_it_is": "Personal AI agent playground with early memory experiments.",
+    "why_it_exists": "A zero-stakes environment to experiment with memory and agent behavior for a personal local AI system.",
+    "long_description": "Hermes is a personal playground where I am starting with memory as a first-class concern while the stakes are low. I use it to explore how an agent behaves when memory exists, evolves, and occasionally misbehaves, without production pressure or polish influencing decisions.",
+    "outcome": "A functional local sandbox that informs future agent and memory design decisions.",
+    "status": "Active · In Progress",
+    "owner": "anchildress1",
+    "image_url": "/projects/my-hermantic-agent.jpg",
+    "image_alt": "Hermes Agent interface showing local AI memory experiments and conversational history",
+    "tech": [
+      { "name": "Python", "role": "The Mind" },
+      { "name": "Ollama", "role": "The Engine" },
+      { "name": "PostgreSQL", "role": "Long-term Memory" },
+      { "name": "Local", "role": "The Environment" }
+    ],
+    "blog_posts": [],
     "project_type": "experiment",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/my-hermantic-agent",
@@ -78,92 +132,177 @@
     "node_type": "project",
     "name": "RAI Lint",
     "aliases": ["commit attribution", "AI tagging"],
-    "what_it_is": "Hard enforcement for AI attribution in commit workflows",
-    "why_it_exists": "To make AI usage explicit and enforceable instead of implied and ignored",
-    "what_happened": "Live adoption that turns invisible AI assistance into explicit, auditable data",
-    "tech_stack": ["TypeScript", "Python", "commitlint", "gitlint", "PolyForm Shield"],
+    "what_it_is": "Hard enforcement for AI attribution in commit workflows.",
+    "why_it_exists": "To make AI usage explicit and enforceable instead of implied and ignored.",
+    "long_description": "RAI Lint integrates directly into commit workflows to require explicit attribution when AI tools are used. It is intentionally strict and mechanical. The goal is traceability, not policy theater.",
+    "outcome": "Live adoption that turns invisible AI assistance into explicit, auditable data.",
+    "status": "Active · Published",
+    "owner": "CheckMarKDevTools",
+    "image_url": "/projects/rai-lint.jpg",
+    "image_alt": "RAI Lint banner enforcing explicit AI attribution in git commits and workflows",
+    "tech": [
+      { "name": "TypeScript", "role": "Rule Logic" },
+      { "name": "Python", "role": "Rule Logic" },
+      { "name": "commitlint", "role": "Node Enforcement" },
+      { "name": "gitlint", "role": "Python Enforcement" },
+      { "name": "PolyForm Shield", "role": "License" }
+    ],
+    "blog_posts": [
+      {
+        "title": "Is GitHub Copilot Safe? The Fun and Hard Truth About Responsible AI",
+        "url": "https://dev.to/anchildress1/is-github-copilot-safe-the-fun-and-hard-truth-about-responsible-ai-3b95"
+      },
+      {
+        "title": "Did AI Erase Attribution? Your Git History is Missing a Co-Author",
+        "url": "https://dev.to/anchildress1/did-ai-erase-attribution-your-git-history-is-missing-a-co-author-1m2l"
+      },
+      {
+        "title": "Signing Your Name on AI-Assisted Commits with RAI Footers",
+        "url": "https://dev.to/anchildress1/signing-your-name-on-ai-assisted-commits-with-rai-footers-2b0o"
+      }
+    ],
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/rai-lint",
     "order_rank": 40,
     "updated_at": "2026-02-01",
-    "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"],
-    "related_links": [
-      "https://dev.to/anchildress1/is-github-copilot-safe-the-fun-and-hard-truth-about-responsible-ai-3b95",
-      "https://dev.to/anchildress1/did-ai-erase-attribution-your-git-history-is-missing-a-co-author-1m2l",
-      "https://dev.to/anchildress1/signing-your-name-on-ai-assisted-commits-with-rai-footers-2b0o"
-    ]
+    "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"]
   },
   {
     "objectID": "underfoot-underground-travel-planner",
     "node_type": "project",
-    "name": "Underfoot",
+    "name": "Underfoot Travel",
     "aliases": ["travel planner", "narrative discovery"],
-    "what_it_is": "Narrative travel discovery explored through AI orchestration experiments",
-    "why_it_exists": "To explore AI orchestration and narrative synthesis using a real-world travel discovery problem",
-    "what_happened": "An unfinished but instructive experiment that reframed cost failure as an orchestration problem",
-    "tech_stack": ["Python", "Supabase", "React", "Data Ingestion"],
+    "what_it_is": "Narrative travel discovery explored through AI orchestration experiments.",
+    "why_it_exists": "To explore AI orchestration and narrative synthesis using a real-world travel discovery problem.",
+    "long_description": "Underfoot began as a travel discovery hackathon and was repurposed as an AI orchestration experiment once real-world constraints shaped its direction. Rather than redesigning the system from scratch, I used the existing application as a surface for testing orchestration patterns and parallel workflows. The project focuses on how AI can generate discovery paths and context from incomplete systems.",
+    "outcome": "An unfinished but instructive experiment that reframed cost failure as an orchestration problem. At least, until I get back to it...",
+    "status": "Archived",
+    "owner": "CheckMarKDevTools",
+    "image_url": "/projects/underfoot-underground-travel-planner.jpg",
+    "image_alt": "Underfoot travel planner interface showing AI-orchestrated discovery of hidden travel destinations",
+    "tech": [
+      { "name": "Python", "role": "The Orchestrator" },
+      { "name": "Supabase", "role": "The Brain" },
+      { "name": "React", "role": "The Face" },
+      { "name": "Data Ingestion", "role": "Sourcing" }
+    ],
+    "blog_posts": [
+      {
+        "title": "Underfoot: The Chatpot for Hidden Places and Why I Don't Do Hackathons",
+        "url": "https://dev.to/anchildress1/underfoot-the-chatpot-for-hidden-places-and-why-i-dont-do-hackathons-2684"
+      },
+      {
+        "title": "The Hackathon I Swore Off and the Exhaustion That Mostly Compiled",
+        "url": "https://dev.to/anchildress1/the-hackathon-i-swore-off-and-the-exhaustion-that-mostly-compiled-c4l"
+      }
+    ],
     "project_type": "experiment",
     "completion_state": "archived",
     "repo_url": "https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner",
     "order_rank": 50,
     "updated_at": "2026-02-01",
-    "related_project_ids": ["my-hermantic-agent"],
-    "related_links": [
-      "https://dev.to/anchildress1/underfoot-the-chatpot-for-hidden-places-and-why-i-dont-do-hackathons-2684",
-      "https://dev.to/anchildress1/the-hackathon-i-swore-off-and-the-exhaustion-that-mostly-compiled-c4l"
-    ]
+    "related_project_ids": ["my-hermantic-agent"]
   },
   {
     "objectID": "awesome-github-copilot",
     "node_type": "project",
-    "name": "Awesome GitHub Copilot",
+    "name": "Awesome Copilot",
     "aliases": ["curated list", "copilot workflows"],
-    "what_it_is": "Curated GitHub Copilot workflows, agents, and patterns",
-    "why_it_exists": "A place for GitHub Copilot tools and patterns that earned their keep instead of just sounding clever",
-    "what_happened": "A widely adopted resource that favors practical utility over volume",
-    "tech_stack": ["Markdown", "GitHub Copilot", "MCP"],
+    "what_it_is": "Curated GitHub Copilot workflows, agents, and patterns.",
+    "why_it_exists": "A place for GitHub Copilot tools and patterns that earned their keep instead of just sounding clever.",
+    "long_description": "This repo is not a list and not neutral. I build a lot of Copilot-assisted tooling locally, and most of it dies there. Only workflows that survive daily use, frustration, and edge cases make it into this repository. It reflects how I actually work with Copilot, not how documentation suggests I should.",
+    "outcome": "A widely adopted resource that favors practical utility over volume.",
+    "status": "Active",
+    "owner": "anchildress1",
+    "image_url": "/projects/awesome-github-copilot.jpg",
+    "image_alt": "Awesome GitHub Copilot repository banner listing curated AI workflows and agent patterns",
+    "tech": [
+      { "name": "Markdown", "role": "The Format" },
+      { "name": "GitHub Copilot", "role": "The Platform" },
+      { "name": "MCP", "role": "Agent Protocols" },
+      { "name": "Manual Curation", "role": "Quality Control" }
+    ],
+    "blog_posts": [
+      {
+        "title": "Troubleshooting Production with GitHub Copilot",
+        "url": "https://dev.to/anchildress1/troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o"
+      },
+      {
+        "title": "Oh I Have Big News—I'm GitHub Copilot Certified!",
+        "url": "https://dev.to/anchildress1/oh-i-have-big-news-guess-what-i-got-yesterday-1jca"
+      },
+      {
+        "title": "Everything I Know About GitHub Copilot Instructions",
+        "url": "https://dev.to/anchildress1/everything-i-know-about-github-copilot-instructions-from-zero-to-onboarded-for-real-4nb0"
+      },
+      {
+        "title": "GitHub Copilot Chat Modes Explained with Personality",
+        "url": "https://dev.to/anchildress1/github-copilot-chat-modes-explained-with-personality-2f4c"
+      },
+      {
+        "title": "Leash not Autopilot: Building Predictable AI Behavior with Copilot Instructions",
+        "url": "https://dev.to/anchildress1/leash-not-autopilot-building-predictable-ai-behavior-with-copilot-instructions-14ip"
+      }
+    ],
     "project_type": "resource",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
     "order_rank": 60,
     "updated_at": "2026-02-01",
-    "related_project_ids": ["delegate-action", "checkmark-copilot-chat"],
-    "related_links": [
-      "https://dev.to/anchildress1/troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o",
-      "https://dev.to/anchildress1/oh-i-have-big-news-guess-what-i-got-yesterday-1jca",
-      "https://dev.to/anchildress1/everything-i-know-about-github-copilot-instructions-from-zero-to-onboarded-for-real-4nb0",
-      "https://dev.to/anchildress1/github-copilot-chat-modes-explained-with-personality-2f4c",
-      "https://dev.to/anchildress1/leash-not-autopilot-building-predictable-ai-behavior-with-copilot-instructions-14ip"
-    ]
+    "related_project_ids": ["delegate-action", "checkmark-copilot-chat"]
   },
   {
     "objectID": "devto-mirror",
     "node_type": "project",
     "name": "Dev.to Mirror",
     "aliases": ["blog mirror", "AI ingestion"],
-    "what_it_is": "Automated AI-optimized mirror of technical writing",
-    "why_it_exists": "To make long-form technical writing legible to AI systems",
-    "what_happened": "Increased AI discoverability with zero ongoing maintenance",
-    "tech_stack": ["Python", "GitHub Actions", "GitHub Pages"],
+    "what_it_is": "Automated AI-optimized mirror of technical writing.",
+    "why_it_exists": "To make long-form technical writing legible to AI systems.",
+    "long_description": "Dev.to Mirror pulls my DEV posts, restructures them for AI ingestion, and deploys them automatically. This is not SEO or analytics-driven optimization. It exists to ensure AI systems can correctly index and reference my work.",
+    "outcome": "Increased AI discoverability with zero ongoing maintenance.",
+    "status": "Active",
+    "owner": "CheckMarKDevTools",
+    "image_url": "/projects/devto-mirror.jpg",
+    "image_alt": "Dev.to Mirror workflow diagram showing automated syncing of technical blogs for AI ingestion",
+    "tech": [
+      { "name": "Python", "role": "The Script" },
+      { "name": "GitHub Actions", "role": "The Cron" },
+      { "name": "GitHub Pages", "role": "The Host" },
+      { "name": "AI Discoverability", "role": "The Goal" }
+    ],
+    "blog_posts": [
+      {
+        "title": "Weekend Hack: Making My Blog AI Searchable (No Flames Required)",
+        "url": "https://dev.to/anchildress1/weekend-hack-making-my-blog-ai-searchable-no-flames-required-16h5"
+      }
+    ],
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/devto-mirror",
     "order_rank": 70,
-    "updated_at": "2026-02-01",
-    "related_links": [
-      "https://dev.to/anchildress1/weekend-hack-making-my-blog-ai-searchable-no-flames-required-16h5"
-    ]
+    "updated_at": "2026-02-01"
   },
   {
     "objectID": "eslint-config-echo",
     "node_type": "project",
-    "name": "Echo",
+    "name": "Echo ESLint",
     "aliases": ["ESLint config", "AI boundaries"],
-    "what_it_is": "Reusable linting boundaries designed for AI-assisted codebases",
-    "why_it_exists": "To provide AI strict, reusable formatting and linting constraints across projects",
-    "what_happened": "Reduced drift and predictable AI-assisted code output",
-    "tech_stack": ["Node.js", "ESLint", "Jest", "Sonar"],
+    "what_it_is": "Reusable linting boundaries designed for AI-assisted codebases.",
+    "why_it_exists": "To provide AI strict, reusable formatting and linting constraints across projects.",
+    "long_description": "Echo exists primarily for AI, not humans. By collapsing formatting and linting rules into a single shared configuration, I can reuse the same boundaries across projects and AI agents without restating preferences.",
+    "outcome": "Reduced drift and predictable AI-assisted code output.",
+    "status": "Active · Testing",
+    "owner": "CheckMarKDevTools",
+    "image_url": "/projects/eslint-config-echo.jpg",
+    "image_alt": "Echo ESLint configuration banner representing reusable linting boundaries for AI coding agents",
+    "tech": [
+      { "name": "Node.js", "role": "Ecosystem" },
+      { "name": "ESLint", "role": "The Enforcer" },
+      { "name": "Jest", "role": "Verification" },
+      { "name": "Sonar", "role": "Static Analysis" }
+    ],
+    "blog_posts": [],
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/eslint-config-echo",
@@ -175,10 +314,20 @@
     "node_type": "project",
     "name": "Copilot Chat Extension",
     "aliases": ["IntelliJ chat", "portable context"],
-    "what_it_is": "Failed experiment in portable Copilot chat context",
-    "why_it_exists": "To test whether Copilot chat context could persist across environments",
-    "what_happened": "A falsified hypothesis that redirected focus to more viable Copilot tooling",
-    "tech_stack": ["Copilot Chat", "JavaScript"],
+    "what_it_is": "Failed experiment in portable Copilot chat context.",
+    "why_it_exists": "To test whether Copilot chat context could persist across environments.",
+    "long_description": "I attempted to build portable Copilot chat context for IntelliJ teams and discovered the API could not support the persistence required. The project was archived immediately to avoid wasted effort.",
+    "outcome": "A falsified hypothesis that redirected focus to more viable Copilot tooling.",
+    "status": "Archived",
+    "owner": "CheckMarKDevTools",
+    "image_url": "/projects/checkmark-copilot-chat.jpg",
+    "image_alt": "Copilot Chat Extension interface showing an experimental portable chat context for IDEs",
+    "tech": [
+      { "name": "Copilot Chat", "role": "The Constraint" },
+      { "name": "JavaScript", "role": "The Glue" },
+      { "name": "Failure", "role": "The Lesson" }
+    ],
+    "blog_posts": [],
     "project_type": "experiment",
     "completion_state": "failed",
     "repo_url": "https://github.com/CheckMarKDevTools/checkmark-copilot-chat",
