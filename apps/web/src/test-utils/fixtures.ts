@@ -1,4 +1,4 @@
-import type { Project } from '@/data/projects';
+import type { Project } from '@/lib/api';
 import type { Hit, BaseHit } from 'instantsearch.js';
 
 /**
@@ -9,15 +9,15 @@ import type { Hit, BaseHit } from 'instantsearch.js';
 export const mockProject: Project = {
   id: 'test-project',
   title: 'Test Project',
+  status: 'Active',
   description: 'Short description tagline.',
   purpose: 'The core purpose of the project.',
-  longDescription: 'Long detailed description.',
+  long_description: 'Long detailed description.',
   outcome: 'Great outcome.',
   tech: [{ name: 'React', role: 'Frontend' }],
-  repoUrl: 'https://github.com/test/test-project',
+  repo_url: 'https://github.com/test/test-project',
   owner: 'anchildress1',
-  status: 'Active',
-  imageUrl: '/test-image.jpg',
+  image_url: '/test-image.jpg',
 };
 
 export interface FactHitRecord extends BaseHit {

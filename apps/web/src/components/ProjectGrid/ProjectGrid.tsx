@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { Project, allProjects } from '@/data/projects';
+import { Project } from '@/lib/api';
 import ProjectCard from '@/components/ProjectCard/ProjectCard';
 import dynamic from 'next/dynamic';
 import styles from './ProjectGrid.module.css';
@@ -22,7 +22,11 @@ function parseProjectIdFromHash(hash: string): string | null {
   return projectId;
 }
 
-export default function ProjectGrid() {
+interface ProjectGridProps {
+  projects: Project[];
+}
+
+export default function ProjectGrid({ projects }: Readonly<ProjectGridProps>) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +40,7 @@ export default function ProjectGrid() {
         return;
       }
 
-      const match = allProjects.find((p) => p.id === projectId);
+      const match = projects.find((p) => p.id === projectId);
       setSelectedProject(match ?? null);
       if (match) {
         setDialogVisible(true);
@@ -47,7 +51,7 @@ export default function ProjectGrid() {
     applyHash();
     globalThis.addEventListener('hashchange', applyHash);
     return () => globalThis.removeEventListener('hashchange', applyHash);
-  }, []);
+  }, [projects]);
 
   const handleSelect = (project: Project) => {
     globalThis.location.hash = `project=${encodeURIComponent(project.id)}`;
@@ -76,13 +80,9 @@ export default function ProjectGrid() {
     <>
       <section className={styles.gridSection}>
         <div className={styles.grid}>
-          {allProjects.map((p) => (
+          {projects.map((p, index) => (
             <div key={p.id} className={styles.cardWrapper}>
-              <ProjectCard
-                project={p}
-                onSelect={handleSelect}
-                priority={allProjects.indexOf(p) < 2}
-              />
+              <ProjectCard project={p} onSelect={handleSelect} priority={index < 2} />
             </div>
           ))}
         </div>

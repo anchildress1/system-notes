@@ -17,8 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 import ClientShell from '@/components/ClientShell/ClientShell';
-
-import { allProjects } from '@/data/projects';
+import { getProjects } from '@/lib/api';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anchildress1.dev';
 const algoliaAppId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
@@ -80,11 +79,13 @@ export const viewport: Viewport = {
   themeColor: '#000000',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const projects = await getProjects();
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -97,15 +98,15 @@ export default function RootLayout({
       url: baseUrl,
       sameAs: [baseUrl, 'https://github.com/anchildress1', 'https://dev.to/anchildress1'],
     },
-    hasPart: allProjects.map((p) => ({
+    hasPart: projects.map((p) => ({
       '@type': 'SoftwareApplication',
       name: p.title,
       description: p.description,
       applicationCategory: 'DeveloperApplication',
       operatingSystem: 'Any',
       url: p.id === 'system-notes' ? baseUrl : undefined,
-      codeRepository: p.repoUrl,
-      relatedLink: p.blogs?.map((b) => b.url) || [],
+      codeRepository: p.repo_url,
+      relatedLink: p.blog_posts?.map((b) => b.url) || [],
       offers: {
         '@type': 'Offer',
         price: '0',

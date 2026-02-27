@@ -1,4 +1,4 @@
-import { Project } from '@/data/projects';
+import { Project } from '@/lib/api';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
@@ -27,11 +27,11 @@ export default function ProjectCard({
       <div className={styles.imageContainer}>
         <div className={styles.imageWrapper}>
           <div className={styles.conceptBackground} />
-          {project.imageUrl ? (
+          {project.image_url ? (
             <Image
-              src={project.imageUrl}
+              src={project.image_url}
               alt={
-                project.imageAlt ||
+                project.image_alt ||
                 `Project concept art for ${project.title}: ${project.description}`
               }
               fill
@@ -55,15 +55,13 @@ export default function ProjectCard({
         <div className={styles.header}>
           <div className={styles.headerTop}>
             <span className="card-header-badge">{ownerName}</span>
-            {project.id === 'checkmark-copilot-chat' && (
-              <span className="card-header-badge">ARCHIVED</span>
-            )}
+            {project.status === 'Archived' && <span className="card-header-badge">ARCHIVED</span>}
             <SourceLinkButton
-              url={project.repoUrl}
+              url={project.repo_url}
               label={`View ${project.title} source code on GitHub`}
               onClick={(e) => {
                 e.stopPropagation();
-                globalThis.open(project.repoUrl, '_blank', 'noopener,noreferrer');
+                globalThis.open(project.repo_url, '_blank', 'noopener,noreferrer');
               }}
               icon={<GitHubIcon />}
             />

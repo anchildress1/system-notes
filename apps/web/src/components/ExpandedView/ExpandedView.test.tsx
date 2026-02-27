@@ -80,7 +80,7 @@ describe('ExpandedView Component', () => {
   it('renders blog links if provided', () => {
     const projectWithBlogs = {
       ...mockProject,
-      blogs: [{ title: 'Blog 1', url: 'https://blog1.com' }],
+      blog_posts: [{ title: 'Blog 1', url: 'https://blog1.com' }],
     };
     render(
       <ExpandedView

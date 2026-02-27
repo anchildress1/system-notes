@@ -1,10 +1,30 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://127.0.0.1:8000';
 
+export interface TechItem {
+  name: string;
+  role: string;
+}
+
+export interface BlogLink {
+  title: string;
+  url: string;
+}
+
 export interface Project {
   id: string;
   title: string;
+  status: string;
   description: string;
-  github_url?: string;
+  purpose: string;
+  long_description: string;
+  outcome: string;
+  tech: TechItem[];
+  repo_url: string;
+  image_url?: string;
+  image_alt?: string;
+  owner: string;
+  blog_posts?: BlogLink[];
+  order_rank?: number;
 }
 
 export interface SystemDoc {

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Project } from '@/data/projects';
+import { Project } from '@/lib/api';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
 import { overlayTransition, cardFlipVariants } from '@/utils/animations';
@@ -111,10 +111,10 @@ export default function ExpandedView({
                   <p className={styles.bodyText}>{project.purpose}</p>
                 </div>
               )}
-              {project.longDescription && (
+              {project.long_description && (
                 <div className={styles.section}>
                   <h2 className={styles.sectionTitle}>Project Output</h2>
-                  <p className={styles.bodyText}>{project.longDescription}</p>
+                  <p className={styles.bodyText}>{project.long_description}</p>
                 </div>
               )}
 
@@ -125,11 +125,11 @@ export default function ExpandedView({
                 </div>
               )}
 
-              {project.blogs && project.blogs.length > 0 && (
+              {project.blog_posts && project.blog_posts.length > 0 && (
                 <div className={styles.section}>
                   <h2 className={styles.sectionTitle}>Related Reading</h2>
                   <ul className={styles.blogList}>
-                    {project.blogs.map((blog) => (
+                    {project.blog_posts.map((blog) => (
                       <li key={blog.url} className={styles.blogItem}>
                         <a
                           href={blog.url}
@@ -160,7 +160,7 @@ export default function ExpandedView({
 
                 <div className={styles.actions}>
                   <a
-                    href={project.repoUrl}
+                    href={project.repo_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.repoLink}

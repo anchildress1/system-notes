@@ -28,12 +28,13 @@ describe('ProjectCard Component', () => {
   });
 
   it('renders placeholder if no image provided', () => {
-    const noImageProject = { ...mockProject, imageUrl: undefined };
+    const noImageProject = { ...mockProject, image_url: undefined };
     render(<ProjectCard project={noImageProject} onSelect={() => {}} />);
 
     // Checks for initials
     expect(screen.getByText('TE')).toBeInTheDocument();
   });
+
   it('opens GitHub URL on link click and stops propagation', () => {
     const handleSelect = vi.fn();
     const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
@@ -42,7 +43,7 @@ describe('ProjectCard Component', () => {
     const link = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
     fireEvent.click(link);
 
-    expect(openSpy).toHaveBeenCalledWith(mockProject.repoUrl, '_blank', 'noopener,noreferrer');
+    expect(openSpy).toHaveBeenCalledWith(mockProject.repo_url, '_blank', 'noopener,noreferrer');
     expect(handleSelect).not.toHaveBeenCalled();
     openSpy.mockRestore();
   });
@@ -55,11 +56,22 @@ describe('ProjectCard Component', () => {
 
     // Real buttons trigger click events on Enter/Space
     fireEvent.click(button);
-    expect(openSpy).toHaveBeenCalledWith(mockProject.repoUrl, '_blank', 'noopener,noreferrer');
+    expect(openSpy).toHaveBeenCalledWith(mockProject.repo_url, '_blank', 'noopener,noreferrer');
 
     fireEvent.click(button);
     expect(openSpy).toHaveBeenCalledTimes(2);
 
     openSpy.mockRestore();
+  });
+
+  it('shows ARCHIVED badge for archived projects', () => {
+    const archivedProject = { ...mockProject, status: 'Archived' };
+    render(<ProjectCard project={archivedProject} onSelect={() => {}} />);
+    expect(screen.getByText('ARCHIVED')).toBeInTheDocument();
+  });
+
+  it('does not show ARCHIVED badge for active projects', () => {
+    render(<ProjectCard project={mockProject} onSelect={() => {}} />);
+    expect(screen.queryByText('ARCHIVED')).not.toBeInTheDocument();
   });
 });
