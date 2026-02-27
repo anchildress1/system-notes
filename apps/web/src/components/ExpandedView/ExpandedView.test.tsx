@@ -77,6 +77,44 @@ describe('ExpandedView Component', () => {
     expect(closeBtn).toHaveAttribute('aria-label', 'Close modal');
   });
 
+  it('does not render GitHub Repo link when repo_url is absent', () => {
+    const projectWithoutRepo = { ...mockProject, repo_url: undefined };
+    render(
+      <ExpandedView
+        project={projectWithoutRepo}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.queryByText('GitHub Repo')).not.toBeInTheDocument();
+  });
+
+  it('renders Live Site link when app_url is provided', () => {
+    const projectWithAppUrl = { ...mockProject, app_url: 'https://example.com' };
+    render(
+      <ExpandedView
+        project={projectWithAppUrl}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.getByText('Live Site')).toHaveAttribute('href', 'https://example.com');
+  });
+
+  it('does not render Live Site link when app_url is absent', () => {
+    render(
+      <ExpandedView
+        project={mockProject}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.queryByText('Live Site')).not.toBeInTheDocument();
+  });
+
   it('renders blog links if provided', () => {
     const projectWithBlogs = {
       ...mockProject,
