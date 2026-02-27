@@ -20,10 +20,26 @@
       "devto-mirror"
     ],
     "related_links": [
-      "https://dev.to/anchildress1/can-we-set-the-record-straight-ai-content-and-a-bit-of-sanity-1inj",
-      "https://dev.to/anchildress1/waiting-with-intent-designing-ai-systems-for-the-long-game-1abg",
-      "https://dev.to/anchildress1/fact-checking-the-fear-behind-the-dark-side-of-ai-the-real-story-366p"
+      "https://dev.to/anchildress1/conversational-retrieval-when-chat-becomes-navigation-2gij",
+      "https://dev.to/anchildress1/from-static-portfolio-to-indexed-decisions-46bf",
+      "https://dev.to/anchildress1/my-portfolio-doesnt-live-on-the-page-218e"
     ]
+  },
+  {
+    "objectID": "supascribe-notes",
+    "node_type": "project",
+    "name": "SupaScribe Notes",
+    "aliases": ["system notes writer", "index card generator", "structured notes app"],
+    "what_it_is": "A lightweight app that turns messy thoughts into structured System Notes index cards stored in Supabase",
+    "why_it_exists": "To reduce the friction between capture and clarity while enforcing a consistent note schema when working in ChatGPT",
+    "what_happened": "Built as an opinionated pipeline: freeform input → structured card → durable storage, with a focus on simplicity and schema adherence over flexibility",
+    "tech_stack": ["Supabase", "Postgres", "Edge Functions", "OpenAI API", "TypeScript"],
+    "project_type": "tool",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/supascribe-notes-mcp",
+    "order_rank": 15,
+    "updated_at": "2026-02-26",
+    "related_project_ids": ["system-notes"]
   },
   {
     "objectID": "delegate-action",
