@@ -124,26 +124,6 @@ export default function ExpandedView({
                   <p className={styles.bodyText}>{project.outcome}</p>
                 </div>
               )}
-
-              {project.blog_posts && project.blog_posts.length > 0 && (
-                <div className={styles.section}>
-                  <h2 className={styles.sectionTitle}>Related Reading</h2>
-                  <ul className={styles.blogList}>
-                    {project.blog_posts.map((blog) => (
-                      <li key={blog.url} className={styles.blogItem}>
-                        <a
-                          href={blog.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.blogLink}
-                        >
-                          {blog.title}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
 
             <div className={styles.sideColumn}>
@@ -208,6 +188,26 @@ export default function ExpandedView({
                     </a>
                   )}
                 </div>
+
+                {project.blog_posts && project.blog_posts.length > 0 && (
+                  <div className={styles.section}>
+                    <h2 className={styles.sectionTitle}>Related Reading</h2>
+                    <ul className={styles.blogList}>
+                      {project.blog_posts.map((blog) => (
+                        <li key={blog.url} className={styles.blogItem}>
+                          <a
+                            href={blog.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.blogLink}
+                          >
+                            {blog.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           </div>
