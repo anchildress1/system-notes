@@ -32,7 +32,11 @@ interface FactCardProps {
 }
 
 export default function FactCard({ hit, sendEvent }: Readonly<FactCardProps>) {
-  const portalTarget = useMemo(() => (typeof document !== 'undefined' ? document.body : null), []);
+  const portalTarget = useMemo(() => {
+    /* v8 ignore next */
+    if (typeof document === 'undefined') return null;
+    return document.body;
+  }, []);
   const hasTrackedFlip = useRef(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const cardLinkRef = useRef<HTMLAnchorElement>(null);

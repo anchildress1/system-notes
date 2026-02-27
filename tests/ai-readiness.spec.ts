@@ -11,8 +11,9 @@ test.describe('AI Readiness & SEO', () => {
 
     const jsonLdContent = await jsonLdHandle.textContent();
     expect(jsonLdContent).toBeTruthy();
+    if (!jsonLdContent) throw new Error('Expected JSON-LD content');
 
-    const data = JSON.parse(jsonLdContent!);
+    const data = JSON.parse(jsonLdContent);
 
     // Validate Schema.org structure
     expect(data['@context']).toBe('https://schema.org');

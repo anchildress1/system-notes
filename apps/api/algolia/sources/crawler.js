@@ -21,7 +21,7 @@ function generateSlug(finalUrl) {
   return 'post-' + Math.abs(hash).toString(36);
 }
 
-new Crawler({
+const _crawler = new Crawler({
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || 'REDACTED_APP_ID',
   apiKey: process.env.ALGOLIA_CRAWLER_API_KEY,
   indexPrefix: '',

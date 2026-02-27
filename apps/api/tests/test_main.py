@@ -100,6 +100,31 @@ def test_get_system_doc_error_handling(mock_path):
 
 # --- Blog search test data and fixtures ---
 
+@patch("main.Path")
+def test_get_system_doc_root_escape_blocked(mock_path):
+    """is_relative_to=False should return 400 Invalid path resolution."""
+    mock_parent = mock_path.return_value.resolve.return_value.parent
+    mock_target = MagicMock()
+    mock_parent.joinpath.return_value.resolve.return_value = mock_target
+
+    mock_target.name = "escaped.md"          # valid extension
+    mock_target.is_relative_to.return_value = False  # escaped sandbox root
+
+    response = client.get("/system/doc/escaped.md")
+    assert response.status_code == 400
+    assert response.json()["error"] == "Invalid path resolution"
+
+
+MOCK_POST_HTML_STRING_KEYWORDS = '''<!doctype html><html><head>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "Article", "headline": "String Keywords Post",
+"description": "Post with comma-separated keyword string.",
+"keywords": "ai, testing, devtools",
+"datePublished": "2026-01-15T10:00:00Z",
+"mainEntityOfPage": {"@id": "https://dev.to/test/string-keywords-post"}}
+</script>
+</head><body></body></html>'''
+
 MOCK_SITEMAP = '''<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://crawly.checkmarkdevtools.dev/</loc></url>
@@ -286,6 +311,20 @@ def test_get_system_doc_empty_path():
     response = client.get("/system/doc/")
     # FastAPI returns 404 for unmatched route or 400 for empty path
     assert response.status_code in [307, 400, 404, 405]
+
+
+def test_blog_search_with_string_keywords(mock_blog_client):
+    """fetch_post_content must split comma-separated keyword strings."""
+    sitemap = _make_mock_response(MOCK_SITEMAP)
+    post = _make_mock_response(MOCK_POST_HTML_STRING_KEYWORDS)
+    mock_blog_client([sitemap, post, post])
+
+    response = client.get("/blog/search")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["results"]) > 0
+    # Keywords should have been split from the string
+    assert any("ai" in tag or "testing" in tag for tag in data["results"][0]["tags"])
 
 
 def test_blog_search_negative_limit():

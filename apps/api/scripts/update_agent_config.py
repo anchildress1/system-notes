@@ -20,7 +20,7 @@ if not all([ALGOLIA_APP_ID, ALGOLIA_API_KEY, AGENT_ID]):
 
 # Read the prompt file
 script_dir = Path(__file__).parent
-prompt_path = script_dir.parent / "algolia" / "algolia_prompt.md"
+prompt_path = script_dir.parent / "algolia" / "prompts" / "algolia_prompt.md"
 
 with open(prompt_path, 'r') as f:
     prompt_content = f.read()

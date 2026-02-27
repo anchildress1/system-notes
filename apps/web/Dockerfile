@@ -1,6 +1,7 @@
 # Block 1: The Pruner
 FROM node:20-bookworm-slim AS pruner
 WORKDIR /app
+# .dockerignore excludes .env and secrets; full tree needed for turbo prune (S6470 reviewed SAFE)
 COPY . .
 RUN npm install -g turbo@2.8.1 && \
     turbo prune --scope=web --docker
@@ -25,6 +26,7 @@ COPY turbo.json turbo.json
 ARG NEXT_PUBLIC_ALGOLIA_APPLICATION_ID
 ENV NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID
 
+# NOSONAR(S6472) - public search-only key, intentionally client-embedded
 ARG NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY
 ENV NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY
 
@@ -61,9 +63,9 @@ USER nextjs
 COPY --from=installer /app/apps/web/next.config.ts .
 COPY --from=installer /app/apps/web/package.json .
 
-# Copy standalone build
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+# Copy standalone build — --chmod=555 (read+execute, no write) satisfies S6504
+COPY --from=installer --chown=nextjs:nodejs --chmod=555 /app/apps/web/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs --chmod=555 /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=installer --chown=nextjs:nodejs --chmod=555 /app/apps/web/public ./apps/web/public
 
 CMD ["node", "apps/web/server.js"]

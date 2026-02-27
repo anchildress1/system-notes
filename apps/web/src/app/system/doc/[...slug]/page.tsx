@@ -9,7 +9,7 @@ interface Props {
   };
 }
 
-export default async function SystemDocPage({ params }: Props) {
+export default async function SystemDocPage({ params }: Readonly<Props>) {
   // Reconstruct path from slug array
   const docPath = params.slug.join('/');
   const doc = await getSystemDoc(docPath);

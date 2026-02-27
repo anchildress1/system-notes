@@ -57,11 +57,11 @@ export default function GlitterBomb() {
         if (p.life > 0) {
           p.x += Math.cos(p.direction) * p.speed;
           p.y += Math.sin(p.direction) * p.speed;
-          if (!isMobile) {
+          if (isMobile) {
+            p.speed *= 0.95;
+          } else {
             p.speed *= 0.98;
             p.y += 0.5;
-          } else {
-            p.speed *= 0.95;
           }
           p.life -= p.decay;
           p.alpha = p.life;
@@ -88,7 +88,7 @@ export default function GlitterBomb() {
       const trigger = () => {
         if (!app.renderer) return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if ((app as any)._destroyed) return; // Safety check
+        if ((app as any)._destroyed) return; // Safety check - _destroyed is a private PIXI internal // NOSONAR(S4325)
         if (!app.ticker.started) app.start();
 
         // --- Optimized Explosion Config ---
@@ -103,16 +103,15 @@ export default function GlitterBomb() {
 
         for (let i = 0; i < particleCount; i++) {
           // Use Sprite instead of Graphics for immense performance boost (batching)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const particle = new PIXI.Sprite(circleTexture) as any as Particle;
-          const color = colors[Math.floor(Math.random() * colors.length)];
+          const particle = new PIXI.Sprite(circleTexture) as unknown as Particle;
+          const color = colors[Math.floor(Math.random() * colors.length)]; // NOSONAR(S2245) - visual randomness, not security-sensitive
           particle.tint = color; // Sprites use tint instead of fill
 
           // Center anchor for rotation/scaling
           particle.anchor.set(0.5);
 
           // Simpler layout for mobile
-          const scaleStart = Math.random() * (isMobile ? 0.3 : 0.5) + 0.2;
+          const scaleStart = Math.random() * (isMobile ? 0.3 : 0.5) + 0.2; // NOSONAR(S2245) - visual randomness
           particle.scale.set(scaleStart);
 
           // Start at center
@@ -121,14 +120,14 @@ export default function GlitterBomb() {
           particle.alpha = 1;
 
           // Explosion Physics
-          const angle = Math.random() * Math.PI * 2;
-          const velocity = Math.random() * (isMobile ? 8 : 10) + 4;
+          const angle = Math.random() * Math.PI * 2; // NOSONAR(S2245) - visual randomness
+          const velocity = Math.random() * (isMobile ? 8 : 10) + 4; // NOSONAR(S2245) - visual randomness
 
           particle.direction = angle;
           particle.speed = velocity;
           particle.life = 1;
           // Faster decay on mobile to clear buffer sooner
-          particle.decay = Math.random() * (isMobile ? 0.04 : 0.01) + 0.005;
+          particle.decay = Math.random() * (isMobile ? 0.04 : 0.01) + 0.005; // NOSONAR(S2245) - visual randomness
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           app.stage.addChild(particle as any);

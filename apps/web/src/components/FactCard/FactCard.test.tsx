@@ -1,8 +1,41 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
 import { createMockHit } from '@/test-utils/fixtures';
+
+vi.mock('framer-motion', () => ({
+  motion: {
+    div: ({ children, className, onClick }: Record<string, unknown>) => (
+      <div className={className as string} onClick={onClick as React.MouseEventHandler}>
+        {children as React.ReactNode}
+      </div>
+    ),
+    article: ({
+      children,
+      className,
+      role,
+      animate,
+      onAnimationComplete,
+      initial: _i,
+      variants: _v,
+      transition: _t,
+      ...rest
+    }: Record<string, unknown>) => (
+      <article
+        className={className as string}
+        role={role as string}
+        data-animate={animate as string}
+        onTransitionEnd={() =>
+          (onAnimationComplete as ((d: string) => void) | undefined)?.(animate as string)
+        }
+        {...(rest as React.HTMLAttributes<HTMLElement>)}
+      >
+        {children as React.ReactNode}
+      </article>
+    ),
+  },
+}));
 
 vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
@@ -196,6 +229,37 @@ describe('FactCard Component', () => {
     render(<FactCard hit={createMockHit({ url: undefined })} />);
     expect(screen.queryByLabelText(/View source/)).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/Read .* on DEV/)).not.toBeInTheDocument();
+  });
+
+  it('closes card via keyboard when already expanded', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} />);
+
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
+    expect(cardLink).toHaveAttribute('aria-expanded', 'true');
+
+    // Fire Space directly — covers handleKeyDown when isFlipped=true
+    fireEvent.keyDown(cardLink, { key: ' ' });
+    expect(cardLink).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('unmounts portal after exit animation completes', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} />);
+
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // Close — portal stays mounted during exit animation
+    await user.click(cardLink);
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('data-animate', 'exit');
+
+    // Simulate onAnimationComplete('exit') → handleExitComplete → setPortalVisible(false)
+    fireEvent.transitionEnd(dialog);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it('closes expanded card via Escape key', async () => {

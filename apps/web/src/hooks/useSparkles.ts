@@ -167,28 +167,28 @@ export const useSparkles = ({
           if (!app.renderer || !circleTexture) return;
 
           const particle = new PIXI.Sprite(circleTexture) as unknown as Particle;
-          const color = colors[Math.floor(Math.random() * colors.length)];
+          const color = colors[Math.floor(Math.random() * colors.length)]; // NOSONAR(S2245) - visual randomness, not security-sensitive
 
           particle.tint = color;
           particle.anchor.set(0.5);
 
           // Smaller particles on mobile
           const baseScale = isMobile ? 0.2 : 0.4;
-          particle.scale.set(Math.random() * baseScale + 0.1);
+          particle.scale.set(Math.random() * baseScale + 0.1); // NOSONAR(S2245) - visual randomness
 
-          particle.x = x + (Math.random() - 0.5) * 20; // Jitter
-          particle.y = y + (Math.random() - 0.5) * 20;
+          particle.x = x + (Math.random() - 0.5) * 20; // NOSONAR(S2245) - visual randomness (jitter)
+          particle.y = y + (Math.random() - 0.5) * 20; // NOSONAR(S2245) - visual randomness (jitter)
           particle.alpha = 1;
 
-          const angle = Math.random() * Math.PI * 2;
-          const velocity = Math.random() * 5 + 2;
+          const angle = Math.random() * Math.PI * 2; // NOSONAR(S2245) - visual randomness
+          const velocity = Math.random() * 5 + 2; // NOSONAR(S2245) - visual randomness
 
           particle.direction = angle;
           particle.speed = velocity;
           particle.life = 1;
 
           // Faster decay on mobile to clear buffer
-          particle.decay = Math.random() * (isMobile ? 0.05 : 0.03) + 0.01;
+          particle.decay = Math.random() * (isMobile ? 0.05 : 0.03) + 0.01; // NOSONAR(S2245) - visual randomness
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           app.stage.addChild(particle as any);

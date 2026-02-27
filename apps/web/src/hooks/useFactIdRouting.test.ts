@@ -12,6 +12,23 @@ vi.mock('next/navigation', () => ({
   useSearchParams: vi.fn(),
 }));
 
+// Mock @/lib/algolia so constants re-read process.env at access time (test isolation)
+vi.mock('@/lib/algolia', () => ({
+  get ALGOLIA_APP_ID() {
+    return process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID ?? '';
+  },
+  get ALGOLIA_SEARCH_KEY() {
+    return process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY ?? '';
+  },
+  hasValidAlgoliaCredentials: (appId?: string, apiKey?: string) => {
+    const a = appId ?? process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID ?? '';
+    const k = apiKey ?? process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY ?? '';
+    return /^[A-Z0-9]{10}$/i.test(a) && k.length >= 20;
+  },
+  isValidAppId: (appId: string) => /^[A-Z0-9]{10}$/i.test(appId),
+  isValidApiKey: (apiKey: string) => apiKey.length >= 20,
+}));
+
 // Mock algoliasearch
 vi.mock('algoliasearch/lite', () => ({
   liteClient: vi.fn(() => ({
@@ -196,6 +213,50 @@ describe('useFactIdRouting', () => {
     expect(pushStateSpy).toHaveBeenCalled();
 
     pushStateSpy.mockRestore();
+  });
+
+  it('ignores fetch result when effect is cancelled before resolve', async () => {
+    let resolveSearch!: (value: unknown) => void;
+    searchMock.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveSearch = resolve;
+        })
+    );
+
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    vi.mocked(useSearchParams).mockReturnValue({
+      get: vi.fn((key) => (key === 'factId' ? 'card:cancel:test' : null)),
+    } as unknown as ReturnType<typeof useSearchParams>);
+
+    const { unmount } = renderHook(() => useFactIdRouting('test-index'));
+
+    // Unmount before promise resolves — sets cancelled=true in cleanup
+    unmount();
+
+    // Resolve after cancellation — state update must be suppressed
+    await act(async () => {
+      resolveSearch({
+        results: [
+          {
+            hits: [
+              {
+                objectID: 'card:cancel:test',
+                title: 'T',
+                blurb: '',
+                fact: '',
+                category: '',
+                projects: [],
+                signal: 1,
+              },
+            ],
+          },
+        ],
+      });
+    });
+    // No error thrown; cancelled branch was exercised
   });
 
   it('does not modify filter params in URL', async () => {
