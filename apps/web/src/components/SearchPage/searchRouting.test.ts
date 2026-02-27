@@ -20,7 +20,6 @@ describe('searchRouting', () => {
   it('maps uiState to route state with refinements', () => {
     const uiState = {
       [indexName]: {
-        query: 'agent design',
         page: 2,
         refinementList: {
           category: ['Work Style'],
@@ -32,7 +31,6 @@ describe('searchRouting', () => {
     };
 
     expect(toRouteState(uiState, indexName)).toEqual({
-      query: 'agent design',
       page: 2,
       category: ['Work Style'],
       projects: ['System Notes'],
@@ -43,7 +41,6 @@ describe('searchRouting', () => {
 
   it('maps route state back to uiState', () => {
     const routeState = {
-      query: 'portfolio',
       page: 3,
       category: ['Philosophy'],
       projects: ['Hermes Agent'],
@@ -53,7 +50,6 @@ describe('searchRouting', () => {
 
     expect(toUiState(routeState, indexName)).toEqual({
       [indexName]: {
-        query: 'portfolio',
         page: 3,
         refinementList: {
           category: ['Philosophy'],
@@ -67,7 +63,6 @@ describe('searchRouting', () => {
 
   it('omits empty refinements from uiState', () => {
     const routeState = {
-      query: 'ai',
       page: undefined,
       category: [],
       projects: [],
@@ -77,7 +72,6 @@ describe('searchRouting', () => {
 
     expect(toUiState(routeState, indexName)).toEqual({
       [indexName]: {
-        query: 'ai',
         page: undefined,
         refinementList: {},
       },
@@ -86,7 +80,6 @@ describe('searchRouting', () => {
 
   it('builds a search page URL from index ui state', () => {
     const indexUiState = {
-      query: 'ai workflows',
       page: 2,
       refinementList: {
         category: ['Work Style'],
@@ -99,13 +92,12 @@ describe('searchRouting', () => {
     const url = getSearchPageURL(indexUiState, indexName);
 
     expect(url).toBe(
-      '/?query=ai+workflows&page=2&category=Work+Style&project=System+Notes&tag0=Approach&tag1=Approach+%3E+Iterative'
+      '/?page=2&category=Work+Style&project=System+Notes&tag0=Approach&tag1=Approach+%3E+Iterative'
     );
   });
 
   it('returns base path when no refinements exist', () => {
     const indexUiState = {
-      query: '',
       page: 1,
       refinementList: {},
     };
@@ -116,14 +108,13 @@ describe('searchRouting', () => {
   });
 
   it('respects a custom basePath', () => {
-    const url = getSearchPageURL({ query: 'test' }, indexName, '/search');
-    expect(url).toBe('/search?query=test');
+    const url = getSearchPageURL({ refinementList: {} }, indexName, '/search');
+    expect(url).toBe('/search');
   });
 
   it('handles uiState without refinementList gracefully', () => {
-    const uiState = { [indexName]: { query: 'hello' } };
+    const uiState = { [indexName]: {} };
     expect(toRouteState(uiState as never, indexName)).toEqual({
-      query: 'hello',
       page: undefined,
       category: undefined,
       projects: undefined,
@@ -135,7 +126,6 @@ describe('searchRouting', () => {
   it('handles a completely empty routeState in toUiState', () => {
     expect(toUiState({}, indexName)).toEqual({
       [indexName]: {
-        query: undefined,
         page: undefined,
         refinementList: {},
       },
@@ -174,13 +164,11 @@ describe('searchRouting', () => {
     });
 
     it('generates correct window title', () => {
-      expect(routerConfig.windowTitle({ query: 'test' })).toBe("test | Ashley's System Notes");
-      expect(routerConfig.windowTitle({})).toBe("Choices | Ashley's System Notes");
+      expect(routerConfig.windowTitle()).toBe("Choices | Ashley's System Notes");
     });
 
     it('creates URL correctly', () => {
       const routeState = {
-        query: 'test',
         page: 2,
         category: ['cat1'],
       };
@@ -197,7 +185,6 @@ describe('searchRouting', () => {
 
       expect(mockStringify).toHaveBeenCalledWith(
         expect.objectContaining({
-          query: 'test',
           page: 2,
           category: ['cat1'],
         }),
@@ -207,7 +194,7 @@ describe('searchRouting', () => {
     });
 
     it('preserves factId in createURL when present in the current URL', () => {
-      const routeState = { query: 'test' };
+      const routeState = {};
       const location = {
         origin: 'https://example.com',
         pathname: '/search',
@@ -226,11 +213,11 @@ describe('searchRouting', () => {
     });
 
     it('does not inject factId into createURL when absent from current URL', () => {
-      const routeState = { query: 'test' };
+      const routeState = {};
       const location = {
         origin: 'https://example.com',
         pathname: '/search',
-        search: '?query=test',
+        search: '',
       } as unknown as Location;
 
       const mockStringify = vi.fn().mockReturnValue('mocked-query-string');
@@ -246,17 +233,12 @@ describe('searchRouting', () => {
 
     it('parses URL correctly', () => {
       const location = {
-        search: '?query=test&page=2&category=cat1&project=proj1',
+        search: '?page=2&category=cat1&project=proj1',
       } as unknown as Location;
-
-      // Helper to mock array return from qs parse for specific keys if needed,
-      // but our simple mock above might handle single values as strings.
-      // The implementation handles both string and array.
 
       const parsed = routerConfig.parseURL({ qsModule, location });
 
       expect(parsed).toEqual({
-        query: 'test',
         page: 2,
         category: ['cat1'],
         projects: ['proj1'],
