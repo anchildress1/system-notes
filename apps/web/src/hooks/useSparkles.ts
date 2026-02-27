@@ -19,7 +19,6 @@ export const useSparkles = ({
     let app: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let circleTexture: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let pixiModule: typeof import('pixi.js') | null = null;
 
     const particles: Particle[] = [];
