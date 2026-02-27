@@ -19,6 +19,8 @@ export const useSparkles = ({
     let app: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let circleTexture: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let pixiModule: typeof import('pixi.js') | null = null;
 
     const particles: Particle[] = [];
     let isObserverPaused = false;
@@ -35,7 +37,8 @@ export const useSparkles = ({
     const initPixi = async () => {
       try {
         if (!containerRef.current || !isMounted) return;
-        const PIXI = await import('pixi.js');
+        pixiModule = await import('pixi.js');
+        const PIXI = pixiModule;
         // Re-check after async import
         if (!containerRef.current || !isMounted) return;
 
@@ -115,9 +118,8 @@ export const useSparkles = ({
     };
 
     // Use simple setTimeout for lazy load to avoid requestIdleCallback instability
-    // Delay longer on mobile to avoid blocking main thread during initial load (improves Lighthouse Performance)
-    // Increased to 2000ms to further reduce TBT during Lighthouse tests
-    const timeoutId = setTimeout(initPixi, 2000);
+    // Short delay lets the initial paint complete without blocking the main thread
+    const timeoutId = setTimeout(initPixi, 500);
 
     // Intersection Observer to pause rendering when out of view
     const observer = new IntersectionObserver(
@@ -144,16 +146,14 @@ export const useSparkles = ({
       );
     };
 
-    const handleInteraction = async (clientX: number, clientY: number) => {
-      // Early check
+    const handleInteraction = (clientX: number, clientY: number) => {
+      // pixiModule is set once during initPixi — no re-import on every event
       if (!app?.renderer || !containerRef.current || !isMounted) return;
       if (!isInTextArea(clientX, clientY)) return;
+      if (!pixiModule || !circleTexture) return;
 
       try {
-        const PIXI = await import('pixi.js');
-        // Re-check EVERYTHING after async await
-        if (!isMounted || !app?.renderer || !circleTexture) return;
-
+        const PIXI = pixiModule;
         const rect = containerRef.current.getBoundingClientRect();
         const x = clientX - rect.left;
         const y = clientY - rect.top;
@@ -163,9 +163,6 @@ export const useSparkles = ({
         const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
 
         for (let i = 0; i < count; i++) {
-          // Double check app state and texture
-          if (!app.renderer || !circleTexture) return;
-
           const particle = new PIXI.Sprite(circleTexture) as unknown as Particle;
           const color = colors[Math.floor(Math.random() * colors.length)]; // NOSONAR(S2245) - visual randomness, not security-sensitive
 
