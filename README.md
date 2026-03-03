@@ -1,5 +1,8 @@
 # System Notes
 
+> [!NOTE]
+> Triggering a Sonar scan from v1.0.0.
+
 ![CI](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-Polyform%20Shield%201.0.0-blue)
 ![Status](https://img.shields.io/badge/status-active%20%26%20evolving-success)
