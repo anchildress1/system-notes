@@ -21,16 +21,20 @@
     ],
     "blog_posts": [
       {
-        "title": "Can We Set the Record Straight? AI Content and a Bit of Sanity",
-        "url": "https://dev.to/anchildress1/can-we-set-the-record-straight-ai-content-and-a-bit-of-sanity-1inj"
+        "title": "I Stopped Reviewing Code: A Backend Dev's Experiment with Google Gemini",
+        "url": "https://dev.to/anchildress1/i-stopped-reviewing-code-a-backend-devs-experiment-with-google-gemini-5424"
       },
       {
-        "title": "Waiting With Intent: Designing AI Systems for the Long Game",
-        "url": "https://dev.to/anchildress1/waiting-with-intent-designing-ai-systems-for-the-long-game-1abg"
+        "title": "Conversational Retrieval: When Chat Becomes Navigation",
+        "url": "https://dev.to/anchildress1/conversational-retrieval-when-chat-becomes-navigation-2gij"
       },
       {
-        "title": "Fact Checking the Fear Behind the Dark Side of AI",
-        "url": "https://dev.to/anchildress1/fact-checking-the-fear-behind-the-dark-side-of-ai-the-real-story-366p"
+        "title": "From Static Portfolio to Indexed Decisions",
+        "url": "https://dev.to/anchildress1/from-static-portfolio-to-indexed-decisions-46bf"
+      },
+      {
+        "title": "My Portfolio Doesn't Live on the Page",
+        "url": "https://dev.to/anchildress1/my-portfolio-doesnt-live-on-the-page-218e"
       }
     ],
     "project_type": "experiment",
@@ -72,6 +76,45 @@
     "order_rank": 15,
     "updated_at": "2026-02-26",
     "related_project_ids": ["system-notes"]
+  },
+  {
+    "objectID": "dev-community-dashboard",
+    "node_type": "project",
+    "name": "DEV Community Dashboard",
+    "aliases": [
+      "DEV triage dashboard",
+      "community attention router",
+      "DEV signal dashboard",
+      "DEV post prioritization tool"
+    ],
+    "what_it_is": "A public signal triage dashboard that helps DEV members find posts where thoughtful human replies may matter most.",
+    "why_it_exists": "To make it easier for volunteers to see which posts may benefit from engagement when normal feeds prioritize recency and popularity.",
+    "long_description": "DEV Community Dashboard explores a simple idea: communities often have plenty of people willing to help, but no easy way to see where that help is needed most. Traditional feeds surface posts by recency or engagement, which means questions, early discussions, or help-seeking posts can quietly disappear beneath higher-performing content. This project introduces a signal-based prioritization layer that surfaces posts with meaningful indicators but limited interaction. Using only public DEV data, the system evaluates engagement patterns and conversational signals to highlight opportunities where a thoughtful reply could have the greatest impact.",
+    "outcome": "Created a signal-driven triage dashboard that routes attention toward posts likely to benefit from human interaction, helping volunteers respond more quickly to unanswered questions and emerging discussions.",
+    "status": "Active · Deployed",
+    "owner": "ChecKMarK DevTools",
+    "image_url": "/projects/dev-community-dashboard.jpg",
+    "image_alt": "DEV Community Dashboard interface showing prioritized posts and signal-based interaction metrics",
+    "tech": [
+      { "name": "Forem API", "role": "Data Source" },
+      { "name": "Node.js", "role": "Application Runtime" },
+      { "name": "TypeScript", "role": "Language" },
+      { "name": "Cloud Run", "role": "Deployment Platform" },
+      { "name": "LLM Analysis", "role": "Conversation Signal Evaluation" }
+    ],
+    "blog_posts": [
+      {
+        "title": "Find the DEV Post That Needs You Now 🫶",
+        "url": "https://dev.to/anchildress1/find-the-dev-post-that-needs-you-now-33ng"
+      }
+    ],
+    "project_type": "tool",
+    "completion_state": "active",
+    "repo_url": "https://github.com/ChecKMarKDevTools/dev-community-dashboard",
+    "app_url": "https://dev-community-dashboard.checkmarkdevtools.dev",
+    "order_rank": 17,
+    "updated_at": "2026-03-04",
+    "related_project_ids": []
   },
   {
     "objectID": "delegate-action",

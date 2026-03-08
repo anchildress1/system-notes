@@ -9,6 +9,12 @@ Canonical instruction source for this repository. Treat this file as authoritati
 
 ## Non-Negotiable Constraints
 
+###
+
+- Goal is long-term maintainable and reliable solutions only.
+- Do not implement quick fixes in this codebase for any reason.
+- Any test files introduced for local validation must be removed, not committed.
+
 ### Security: file access and path handling
 
 - If changes touch file loading, path resolution, or file-serving behavior, apply `SECURITY_RULES.md` as mandatory policy.

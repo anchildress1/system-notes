@@ -192,6 +192,12 @@
   gap: var(--space-md);
 }
 
+.fullWidthSection {
+  grid-column: 1 / -1;
+  border-top: 1px solid hsl(var(--color-border));
+  padding-top: var(--space-md);
+}
+
 .sideColumn {
   display: flex;
   flex-direction: column;
