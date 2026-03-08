@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://127.0.0.1:8000';
 
 export interface TechItem {
@@ -34,9 +36,11 @@ export interface SystemDoc {
   error?: string;
 }
 
-export async function getProjects(): Promise<Project[]> {
+// cache() deduplicates calls within a single request (layout + page both call this).
+// cache: 'no-store' ensures data is always fresh at request time, never statically pre-rendered.
+export const getProjects: () => Promise<Project[]> = cache(async () => {
   try {
-    const res = await fetch(`${API_URL}/projects`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API_URL}/projects`, { cache: 'no-store' });
     if (!res.ok) {
       throw new Error('Failed to fetch projects');
     }
@@ -45,7 +49,7 @@ export async function getProjects(): Promise<Project[]> {
     console.warn('API Error:', error);
     return [];
   }
-}
+});
 
 export async function getSystemDoc(path: string): Promise<SystemDoc | null> {
   try {
