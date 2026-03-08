@@ -92,7 +92,7 @@
     "long_description": "DEV Community Dashboard explores a simple idea: communities often have plenty of people willing to help, but no easy way to see where that help is needed most. Traditional feeds surface posts by recency or engagement, which means questions, early discussions, or help-seeking posts can quietly disappear beneath higher-performing content. This project introduces a signal-based prioritization layer that surfaces posts with meaningful indicators but limited interaction. Using only public DEV data, the system evaluates engagement patterns and conversational signals to highlight opportunities where a thoughtful reply could have the greatest impact.",
     "outcome": "Created a signal-driven triage dashboard that routes attention toward posts likely to benefit from human interaction, helping volunteers respond more quickly to unanswered questions and emerging discussions.",
     "status": "Active · Deployed",
-    "owner": "ChecKMarK DevTools",
+    "owner": "ChecKMarKDevTools",
     "image_url": "/projects/dev-community-dashboard.jpg",
     "image_alt": "DEV Community Dashboard interface showing prioritized posts and signal-based interaction metrics",
     "tech": [

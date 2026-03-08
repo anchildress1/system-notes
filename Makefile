@@ -26,7 +26,7 @@ kill:
 # Run the development environment (Turbo)
 dev:
 	@echo "🚀 Starting development servers..."
-	set -a && . ./.env && set +a && npm run dev -- --parallel
+	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run dev -- --parallel
 
 # Format code (Prettier)
 format:
@@ -125,7 +125,7 @@ ai-checks:
 # Build the project
 build:
 	@echo "🏗️ Building project..."
-	set -a && . ./.env && set +a && npm run build
+	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run build
 
 # Deploy the application to Google Cloud
 deploy:

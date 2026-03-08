@@ -16,13 +16,20 @@ export default function ProjectCard({
   onSelect,
   priority = false,
 }: Readonly<ProjectCardProps>) {
-  const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'CheckMarK DevTools';
+  const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'ChecKMarKDevTools';
 
   return (
-    <motion.button
-      type="button"
+    <motion.div
+      role="button"
+      tabIndex={0}
       className={styles.card}
       onClick={() => onSelect(project)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect(project);
+        }
+      }}
       data-testid={`project-card-${project.id}`}
     >
       <div className={styles.imageContainer}>
@@ -83,6 +90,6 @@ export default function ProjectCard({
           ))}
         </div>
       </div>
-    </motion.button>
+    </motion.div>
   );
 }

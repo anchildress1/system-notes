@@ -9,7 +9,7 @@ Canonical instruction source for this repository. Treat this file as authoritati
 
 ## Non-Negotiable Constraints
 
-###
+### Code Quality Standards
 
 - Goal is long-term maintainable and reliable solutions only.
 - Do not implement quick fixes in this codebase for any reason.

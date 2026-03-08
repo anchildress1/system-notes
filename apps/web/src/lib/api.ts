@@ -36,7 +36,7 @@ export interface SystemDoc {
 
 export async function getProjects(): Promise<Project[]> {
   try {
-    const res = await fetch(`${API_URL}/projects`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/projects`, { next: { revalidate: 3600 } });
     if (!res.ok) {
       throw new Error('Failed to fetch projects');
     }
