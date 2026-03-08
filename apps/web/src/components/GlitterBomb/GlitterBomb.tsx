@@ -80,8 +80,7 @@ export default function GlitterBomb() {
           return true;
         }
         p.visible = false;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        app.stage.removeChild(p as any);
+        p.removeFromParent();
         return false;
       };
 
@@ -90,9 +89,8 @@ export default function GlitterBomb() {
         for (const p of currentParticles) {
           if (updateParticle(p)) hasActive = true;
         }
-        if (!hasActive) {
-          app.ticker.remove(tick);
-        }
+        if (hasActive) return;
+        app.ticker.remove(tick);
       };
 
       // Function to trigger explosion
@@ -104,8 +102,7 @@ export default function GlitterBomb() {
 
         // Remove any lingering particles from the stage before reusing the list
         for (const p of currentParticles) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          app.stage.removeChild(p as any);
+          p.removeFromParent();
         }
         currentParticles.length = 0;
 

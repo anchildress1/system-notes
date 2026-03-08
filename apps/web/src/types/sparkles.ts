@@ -13,4 +13,5 @@ export interface Particle {
   scale: { x: number; y: number; set: (v: number) => void };
   anchor: { set: (v: number) => void };
   visible: boolean;
+  removeFromParent: () => void;
 }

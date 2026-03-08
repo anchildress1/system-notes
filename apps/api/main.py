@@ -114,6 +114,26 @@ async def health_check():
     return {"status": "ok"}
 
 
+def _parse_project_item(item: dict) -> Project:
+    """Map a raw JSON dict to a Project model — extracted to reduce cognitive complexity (S3776)."""
+    return Project(
+        id=item.get("objectID", ""),
+        title=item.get("name", ""),
+        status=item.get("status", ""),
+        description=item.get("what_it_is", ""),
+        purpose=item.get("why_it_exists", ""),
+        long_description=item.get("long_description", ""),
+        outcome=item.get("outcome", ""),
+        tech=[TechItem(**t) for t in item.get("tech", [])],
+        repo_url=item.get("repo_url"),
+        image_url=item.get("image_url"),
+        image_alt=item.get("image_alt"),
+        owner=item.get("owner", ""),
+        blog_posts=[ProjectBlogLink(**b) for b in item.get("blog_posts", [])],
+        order_rank=item.get("order_rank", 999),
+    )
+
+
 @app.get("/projects", response_model=List[Project])
 async def get_projects():
     try:
@@ -127,25 +147,7 @@ async def get_projects():
         raw = await asyncio.to_thread(Path(file_path).read_text, encoding="utf-8")
         content = json.loads(raw)
 
-        projects = []
-        for item in content:
-            projects.append(Project(
-                id=item.get("objectID", ""),
-                title=item.get("name", ""),
-                status=item.get("status", ""),
-                description=item.get("what_it_is", ""),
-                purpose=item.get("why_it_exists", ""),
-                long_description=item.get("long_description", ""),
-                outcome=item.get("outcome", ""),
-                tech=[TechItem(**t) for t in item.get("tech", [])],
-                repo_url=item.get("repo_url"),
-                image_url=item.get("image_url"),
-                image_alt=item.get("image_alt"),
-                owner=item.get("owner", ""),
-                blog_posts=[ProjectBlogLink(**b) for b in item.get("blog_posts", [])],
-                order_rank=item.get("order_rank", 999),
-            ))
-
+        projects = [_parse_project_item(item) for item in content]
         projects.sort(key=lambda p: p.order_rank)
         return projects
     except Exception as e:

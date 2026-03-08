@@ -117,7 +117,7 @@ deploy_service() {
     echo "Deploying to Cloud Run..."
 
     # Use array to prevent word splitting issues
-    DEPLOY_ARGS=(
+    local -a deploy_args=(
         "deploy" "$service_name"
         "--image" "$image_uri"
         "--region" "$REGION"
@@ -127,19 +127,19 @@ deploy_service() {
     )
 
     if [[ -n "$service_account" ]]; then
-        DEPLOY_ARGS+=("--service-account" "$service_account")
+        deploy_args+=("--service-account" "$service_account")
     fi
 
     if [[ -n "$env_vars" ]]; then
-        DEPLOY_ARGS+=("--set-env-vars" "$env_vars")
+        deploy_args+=("--set-env-vars" "$env_vars")
     fi
 
     # Enable startup CPU boost for faster cold starts (UI service)
     if [[ "$service_name" = "$UI_SERVICE" ]]; then
-        DEPLOY_ARGS+=("--cpu-boost")
+        deploy_args+=("--cpu-boost")
     fi
 
-    gcloud run "${DEPLOY_ARGS[@]}"
+    gcloud run "${deploy_args[@]}"
     return 0
 }
 

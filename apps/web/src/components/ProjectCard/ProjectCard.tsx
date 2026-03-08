@@ -19,7 +19,8 @@ export default function ProjectCard({
   const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'CheckMarK DevTools';
 
   return (
-    <motion.div
+    <motion.button
+      type="button"
       className={styles.card}
       onClick={() => onSelect(project)}
       data-testid={`project-card-${project.id}`}
@@ -82,6 +83,6 @@ export default function ProjectCard({
           ))}
         </div>
       </div>
-    </motion.div>
+    </motion.button>
   );
 }
