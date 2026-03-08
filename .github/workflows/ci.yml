@@ -23,7 +23,6 @@ jobs:
       NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: 'test_search_key'
       NEXT_PUBLIC_ALGOLIA_AGENT_ID: 'mck_agent_id'
       NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME: 'my-public-index'
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -81,13 +80,6 @@ jobs:
           name: api-unit-tests
           path: apps/api/htmlcov/
           retention-days: 30
-
-      - name: SonarQube Scan
-        if: env.SONAR_TOKEN != ''
-        uses: SonarSource/sonarqube-scan-action@v6
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
 
       - name: Run E2E Tests
         run: make test-e2e
