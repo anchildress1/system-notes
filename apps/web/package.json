@@ -61,6 +61,7 @@
     "lighthouse": "^12.2.1",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "rollup": "^4.59.0",
     "vitest": "^4.0.17"
   }
 }
