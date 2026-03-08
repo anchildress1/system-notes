@@ -17,12 +17,10 @@ setup-python:
 	@echo "🐍 Setting up Python with uv sync..."
 	cd apps/api && uv sync
 
-# Kill this project's dev and test servers (scoped to project paths only)
+# Kill this project's dev and test servers by port (avoids self-kill from pkill -f matching own cmdline)
 kill:
 	@echo "🛑 Killing dev/test servers..."
-	@pkill -f "apps/web/server.js" 2>/dev/null || true
-	@pkill -f "apps/web" 2>/dev/null || true
-	@pkill -f "apps/api" 2>/dev/null || true
+	@kill $$(lsof -ti:3000,3002,8000 2>/dev/null) 2>/dev/null || true
 	@echo "✅ Servers stopped."
 
 # Run the development environment (Turbo)
