@@ -43,11 +43,7 @@ export default function FactCard({ hit, sendEvent }: Readonly<FactCardProps>) {
   const categoryLabel = hit.category || 'System';
   const dialogTitleId = `fact-card-title-${hit.objectID}`;
   const dialogDescriptionId = `fact-card-description-${hit.objectID}`;
-  const tagsLvl1Raw = hit['tags.lvl1'];
-  const tagsLvl1 = useMemo(() => tagsLvl1Raw || [], [tagsLvl1Raw]);
-
   const [isFlipped, setIsFlipped] = useState(false);
-  // Keep portal mounted during exit animation
   const [portalVisible, setPortalVisible] = useState(false);
 
   const openCard = useCallback(() => {
@@ -128,9 +124,6 @@ export default function FactCard({ hit, sendEvent }: Readonly<FactCardProps>) {
     [isFlipped, openCard, closeCard]
   );
 
-  const lvl1Tags = tagsLvl1;
-  const displayTags = lvl1Tags.slice(0, 1);
-
   // Detect if this is a DEV.to blog post vs GitHub source
   const isDevPost = useMemo(() => hit.url?.includes('dev.to') ?? false, [hit.url]);
 
@@ -189,13 +182,15 @@ export default function FactCard({ hit, sendEvent }: Readonly<FactCardProps>) {
                   )}
                 </p>
 
-                <div className="simple-tags">
-                  {displayTags.map((t) => (
-                    <span key={t} className="simple-tag">
-                      {t}
-                    </span>
-                  ))}
-                </div>
+                {hit.projects && hit.projects.length > 0 && (
+                  <div className="simple-tags">
+                    {hit.projects.map((p) => (
+                      <span key={p} className="simple-tag">
+                        {p}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -42,6 +42,8 @@ export const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactH
     blurb: 'This is a test blurb.',
     fact: 'This is the detailed fact content.',
     tags: ['tag-one', 'tag-two', 'tag-three'],
+    'tags.lvl0': ['Engineering'],
+    'tags.lvl1': ['Engineering > Frontend', 'Engineering > TypeScript'],
     projects: ['Project Alpha', 'Project Beta'],
     category: 'Work Style',
     signal: 3,
