@@ -40,8 +40,13 @@
     "inquirer": "^8.2.7",
     "tmp": "^0.2.5",
     "qs": "^6.14.2",
+    "minimatch": "^9.0.9",
+    "rollup": "^4.59.0",
     "instantsearch.js": {
       "qs": "^6.14.2"
     }
+  },
+  "volta": {
+    "node": "20.20.0"
   }
 }

@@ -1,10 +1,32 @@
+import { cache } from 'react';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://127.0.0.1:8000';
+
+export interface TechItem {
+  name: string;
+  role: string;
+}
+
+export interface BlogLink {
+  title: string;
+  url: string;
+}
 
 export interface Project {
   id: string;
   title: string;
+  status: string;
   description: string;
-  github_url?: string;
+  purpose: string;
+  long_description: string;
+  outcome: string;
+  tech: TechItem[];
+  repo_url?: string;
+  image_url?: string;
+  image_alt?: string;
+  owner: string;
+  blog_posts?: BlogLink[];
+  order_rank?: number;
 }
 
 export interface SystemDoc {
@@ -14,7 +36,9 @@ export interface SystemDoc {
   error?: string;
 }
 
-export async function getProjects(): Promise<Project[]> {
+// cache() deduplicates calls within a single request (layout + page both call this).
+// cache: 'no-store' ensures data is always fresh at request time, never statically pre-rendered.
+export const getProjects: () => Promise<Project[]> = cache(async () => {
   try {
     const res = await fetch(`${API_URL}/projects`, { cache: 'no-store' });
     if (!res.ok) {
@@ -25,7 +49,7 @@ export async function getProjects(): Promise<Project[]> {
     console.warn('API Error:', error);
     return [];
   }
-}
+});
 
 export async function getSystemDoc(path: string): Promise<SystemDoc | null> {
   try {

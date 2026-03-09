@@ -1,4 +1,4 @@
-.PHONY: setup setup-python setup-node dev build deploy clean ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf
+.PHONY: setup setup-python setup-node dev build deploy clean kill ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf
 
 # Default target
 all: setup
@@ -17,10 +17,16 @@ setup-python:
 	@echo "🐍 Setting up Python with uv sync..."
 	cd apps/api && uv sync
 
+# Kill this project's dev and test servers by port (avoids self-kill from pkill -f matching own cmdline)
+kill:
+	@echo "🛑 Killing dev/test servers..."
+	@kill $$(lsof -ti:3000,3002,8000 2>/dev/null) 2>/dev/null || true
+	@echo "✅ Servers stopped."
+
 # Run the development environment (Turbo)
 dev:
 	@echo "🚀 Starting development servers..."
-	npm run dev -- --parallel
+	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run dev -- --parallel
 
 # Format code (Prettier)
 format:
@@ -84,7 +90,7 @@ secret-scan:
 # Run Playwright E2E tests
 test-e2e:
 	@echo "🎭 Running Playwright E2E tests..."
-	@lsof -ti:3002 | xargs kill -9 2>/dev/null || true
+	$(MAKE) kill
 	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
 	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
@@ -119,7 +125,7 @@ ai-checks:
 # Build the project
 build:
 	@echo "🏗️ Building project..."
-	npm run build
+	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run build
 
 # Deploy the application to Google Cloud
 deploy:

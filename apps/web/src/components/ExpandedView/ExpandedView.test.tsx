@@ -77,10 +77,23 @@ describe('ExpandedView Component', () => {
     expect(closeBtn).toHaveAttribute('aria-label', 'Close modal');
   });
 
+  it('does not render GitHub Repo link when repo_url is absent', () => {
+    const projectWithoutRepo = { ...mockProject, repo_url: undefined };
+    render(
+      <ExpandedView
+        project={projectWithoutRepo}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.queryByText('GitHub Repo')).not.toBeInTheDocument();
+  });
+
   it('renders blog links if provided', () => {
     const projectWithBlogs = {
       ...mockProject,
-      blogs: [{ title: 'Blog 1', url: 'https://blog1.com' }],
+      blog_posts: [{ title: 'Blog 1', url: 'https://blog1.com' }],
     };
     render(
       <ExpandedView

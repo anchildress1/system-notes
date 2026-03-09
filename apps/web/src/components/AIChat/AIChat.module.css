@@ -1,16 +1,14 @@
 /* Algolia Chat Widget — Portal-based, body-level dock
-   .appRoot (isolation:isolate) contains all app z-index values.
-   The chatDock portal appears AFTER .appRoot in DOM, so it naturally
-   paints on top — zero z-index escalation needed.
+   appRoot uses isolation:isolate; chatDock portal renders after appRoot in DOM,
+   so it naturally paints on top with no z-index escalation needed.
 
-   POSITIONING: Controlled via Algolia's documented CSS custom properties
-   (--ais-chat-margin, --ais-chat-width, etc.) set on .chatRoot via the
-   classNames prop. No internal selector overrides needed.
+   POSITIONING: Algolia's documented CSS custom properties on chatRoot control
+   position and width via the classNames prop. No internal selector overrides needed.
 
    COLOR SEMANTICS:
-   - info/navigation → teal  (--color-accent-teal)
-   - action/agent    → purple (--color-accent-purple)
-   - human/identity  → pink  (--color-accent-pink)  */
+   - info/navigation uses teal accent
+   - action/agent uses purple accent
+   - human/identity uses pink accent */
 
 .chatDock {
   --chat-dock-margin: 5rem; /* shared by chat root + music player for alignment */

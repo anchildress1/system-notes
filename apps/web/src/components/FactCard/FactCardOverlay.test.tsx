@@ -51,6 +51,8 @@ const mockHit: OverlayHit = {
   content: 'Full content of the card',
   category: 'Work Style',
   projects: ['Project Alpha', 'Project Beta'],
+  'tags.lvl0': ['Engineering'],
+  'tags.lvl1': ['Engineering > TypeScript', 'Engineering > React'],
   signal: 3,
   url: 'https://github.com/test/repo',
 };
@@ -69,11 +71,12 @@ describe('FactCardOverlay', () => {
     expect(screen.getByText('Full content of the card')).toBeInTheDocument();
   });
 
-  it('renders project tags', () => {
+  it('renders leaf topic tags', () => {
     render(<FactCardOverlay hit={mockHit} onClose={mockOnClose} />);
 
-    expect(screen.getByText('Project Alpha')).toBeInTheDocument();
-    expect(screen.getByText('Project Beta')).toBeInTheDocument();
+    // lvl1 leaf parts only (strips "Engineering > " prefix)
+    expect(screen.getByText('TypeScript')).toBeInTheDocument();
+    expect(screen.getByText('React')).toBeInTheDocument();
   });
 
   it('renders source link for GitHub URLs', () => {
@@ -143,9 +146,9 @@ describe('FactCardOverlay', () => {
     expect(screen.getByLabelText('Close expanded view')).toBeInTheDocument();
   });
 
-  it('does not render project tags when projects is empty', () => {
-    const hitNoProjects = { ...mockHit, projects: [] };
-    const { container } = render(<FactCardOverlay hit={hitNoProjects} onClose={mockOnClose} />);
+  it('does not render topic tags when tags are absent', () => {
+    const hitNoTags = { ...mockHit, 'tags.lvl0': [], 'tags.lvl1': [] };
+    const { container } = render(<FactCardOverlay hit={hitNoTags} onClose={mockOnClose} />);
 
     expect(container.querySelector('.simple-tags')).not.toBeInTheDocument();
   });

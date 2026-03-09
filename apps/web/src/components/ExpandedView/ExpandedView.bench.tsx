@@ -1,16 +1,17 @@
 import { bench, describe } from 'vitest';
 import { render } from '@testing-library/react';
 import ExpandedView from './ExpandedView';
-import { allProjects } from '../../data/projects';
+import { mockProject } from '@/test-utils/fixtures';
 
 describe('ExpandedView Performance', () => {
-  const project = allProjects[0];
   const noop = () => {};
 
   bench(
     'render ExpandedView',
     () => {
-      render(<ExpandedView project={project} onClose={noop} isOpen={true} onExitComplete={noop} />);
+      render(
+        <ExpandedView project={mockProject} onClose={noop} isOpen={true} onExitComplete={noop} />
+      );
     },
     {
       time: 100,

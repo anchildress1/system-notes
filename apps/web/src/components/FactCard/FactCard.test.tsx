@@ -54,12 +54,15 @@ describe('FactCard Component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders fact card with front-side fields', () => {
+  it('renders fact card with front-side fields including projects', () => {
     render(<FactCard hit={createMockHit()} />);
 
     expect(screen.getByTestId('highlight-title')).toHaveTextContent('Test Fact Title');
     expect(screen.getByTestId('highlight-blurb')).toHaveTextContent('This is a test blurb.');
     expect(screen.getByText('Work Style')).toBeInTheDocument();
+    // Projects are now displayed on the front
+    expect(screen.getByText('Project Alpha')).toBeInTheDocument();
+    expect(screen.getByText('Project Beta')).toBeInTheDocument();
   });
 
   it('renders category label', () => {
@@ -83,11 +86,32 @@ describe('FactCard Component', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
-  it('renders without tags when empty', () => {
-    const { container } = render(<FactCard hit={createMockHit({ tags: [] })} />);
+  it('renders without projects on front when projects is empty', () => {
+    render(<FactCard hit={createMockHit({ projects: [] })} />);
+    // No project badges on the front
+    expect(screen.queryByText('Project Alpha')).not.toBeInTheDocument();
+    expect(screen.queryByText('Project Beta')).not.toBeInTheDocument();
+  });
 
-    const tags = container.querySelectorAll('.simpleTag');
-    expect(tags.length).toBe(0);
+  it('renders leaf topic tags on back when expanded', async () => {
+    const user = userEvent.setup();
+    render(
+      <FactCard
+        hit={createMockHit({
+          'tags.lvl0': ['Engineering', 'Design'],
+          'tags.lvl1': ['Engineering > TypeScript', 'Engineering > React', 'Design > Motion'],
+        })}
+      />
+    );
+
+    const cardLink = screen.getByRole('link', { name: /Press to expand/i });
+    await user.click(cardLink);
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    // lvl1 leaf parts only — parent categories from lvl0 are not separately displayed
+    expect(screen.getByText('TypeScript')).toBeInTheDocument();
+    expect(screen.getByText('React')).toBeInTheDocument();
+    expect(screen.getByText('Motion')).toBeInTheDocument();
   });
 
   it('renders without projects when empty', async () => {

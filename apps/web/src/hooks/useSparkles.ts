@@ -19,6 +19,7 @@ export const useSparkles = ({
     let app: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let circleTexture: any;
+    let pixiModule: typeof import('pixi.js') | null = null;
 
     const particles: Particle[] = [];
     let isObserverPaused = false;
@@ -35,7 +36,8 @@ export const useSparkles = ({
     const initPixi = async () => {
       try {
         if (!containerRef.current || !isMounted) return;
-        const PIXI = await import('pixi.js');
+        pixiModule = await import('pixi.js');
+        const PIXI = pixiModule;
         // Re-check after async import
         if (!containerRef.current || !isMounted) return;
 
@@ -93,8 +95,7 @@ export const useSparkles = ({
 
             if (p.life <= 0) {
               p.visible = false;
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (p as any).remove?.();
+              p.removeFromParent();
               particles.splice(i, 1);
             } else {
               p.x += Math.cos(p.direction) * p.speed;
@@ -115,9 +116,8 @@ export const useSparkles = ({
     };
 
     // Use simple setTimeout for lazy load to avoid requestIdleCallback instability
-    // Delay longer on mobile to avoid blocking main thread during initial load (improves Lighthouse Performance)
-    // Increased to 2000ms to further reduce TBT during Lighthouse tests
-    const timeoutId = setTimeout(initPixi, 2000);
+    // Short delay lets the initial paint complete without blocking the main thread
+    const timeoutId = setTimeout(initPixi, 500);
 
     // Intersection Observer to pause rendering when out of view
     const observer = new IntersectionObserver(
@@ -144,55 +144,45 @@ export const useSparkles = ({
       );
     };
 
-    const handleInteraction = async (clientX: number, clientY: number) => {
-      // Early check
+    // Spawn a single sparkle particle at (x, y) — extracted to reduce cognitive complexity (S3776)
+    const spawnParticle = (PIXI: typeof import('pixi.js'), x: number, y: number) => {
+      const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
+      const particle = new PIXI.Sprite(circleTexture) as unknown as Particle;
+      const color = colors[Math.floor(Math.random() * colors.length)]; // NOSONAR(S2245) - visual randomness, not security-sensitive
+
+      particle.tint = color;
+      particle.anchor.set(0.5);
+
+      const baseScale = isMobile ? 0.2 : 0.4;
+      particle.scale.set(Math.random() * baseScale + 0.1); // NOSONAR(S2245) - visual randomness
+
+      particle.x = x + (Math.random() - 0.5) * 20; // NOSONAR(S2245) - visual randomness (jitter)
+      particle.y = y + (Math.random() - 0.5) * 20; // NOSONAR(S2245) - visual randomness (jitter)
+      particle.alpha = 1;
+      particle.direction = Math.random() * Math.PI * 2; // NOSONAR(S2245) - visual randomness
+      particle.speed = Math.random() * 5 + 2; // NOSONAR(S2245) - visual randomness
+      particle.life = 1;
+      particle.decay = Math.random() * (isMobile ? 0.05 : 0.03) + 0.01; // NOSONAR(S2245) - visual randomness
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      app.stage.addChild(particle as any);
+      particles.push(particle);
+    };
+
+    const handleInteraction = (clientX: number, clientY: number) => {
+      // pixiModule is set once during initPixi — no re-import on every event
       if (!app?.renderer || !containerRef.current || !isMounted) return;
       if (!isInTextArea(clientX, clientY)) return;
+      if (!pixiModule || !circleTexture) return;
 
       try {
-        const PIXI = await import('pixi.js');
-        // Re-check EVERYTHING after async await
-        if (!isMounted || !app?.renderer || !circleTexture) return;
-
         const rect = containerRef.current.getBoundingClientRect();
         const x = clientX - rect.left;
         const y = clientY - rect.top;
-
-        // Reduce count on mobile to maintain FPS
         const count = isMobile ? 2 : 5;
-        const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
 
         for (let i = 0; i < count; i++) {
-          // Double check app state and texture
-          if (!app.renderer || !circleTexture) return;
-
-          const particle = new PIXI.Sprite(circleTexture) as unknown as Particle;
-          const color = colors[Math.floor(Math.random() * colors.length)]; // NOSONAR(S2245) - visual randomness, not security-sensitive
-
-          particle.tint = color;
-          particle.anchor.set(0.5);
-
-          // Smaller particles on mobile
-          const baseScale = isMobile ? 0.2 : 0.4;
-          particle.scale.set(Math.random() * baseScale + 0.1); // NOSONAR(S2245) - visual randomness
-
-          particle.x = x + (Math.random() - 0.5) * 20; // NOSONAR(S2245) - visual randomness (jitter)
-          particle.y = y + (Math.random() - 0.5) * 20; // NOSONAR(S2245) - visual randomness (jitter)
-          particle.alpha = 1;
-
-          const angle = Math.random() * Math.PI * 2; // NOSONAR(S2245) - visual randomness
-          const velocity = Math.random() * 5 + 2; // NOSONAR(S2245) - visual randomness
-
-          particle.direction = angle;
-          particle.speed = velocity;
-          particle.life = 1;
-
-          // Faster decay on mobile to clear buffer
-          particle.decay = Math.random() * (isMobile ? 0.05 : 0.03) + 0.01; // NOSONAR(S2245) - visual randomness
-
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          app.stage.addChild(particle as any);
-          particles.push(particle);
+          spawnParticle(pixiModule, x, y);
         }
       } catch (err) {
         console.warn('Sparkle interaction error:', err);
@@ -213,10 +203,8 @@ export const useSparkles = ({
       handleInteraction(touch.clientX, touch.clientY);
     };
 
-    if (containerRef.current) {
-      containerRef.current.addEventListener('mousemove', handleMouseMove);
-      containerRef.current.addEventListener('touchmove', handleTouchMove, { passive: true });
-    }
+    containerRef.current?.addEventListener('mousemove', handleMouseMove);
+    containerRef.current?.addEventListener('touchmove', handleTouchMove, { passive: true });
 
     return () => {
       isMounted = false;
@@ -243,10 +231,8 @@ export const useSparkles = ({
         console.warn('Failed to destroy Pixi app:', err);
       }
       observer.disconnect();
-      if (containerRef.current) {
-        containerRef.current.removeEventListener('mousemove', handleMouseMove);
-        containerRef.current.removeEventListener('touchmove', handleTouchMove);
-      }
+      containerRef.current?.removeEventListener('mousemove', handleMouseMove);
+      containerRef.current?.removeEventListener('touchmove', handleTouchMove);
     };
   }, [containerRef, textRef, sparkleOnHover, sparkleNearText]);
 };

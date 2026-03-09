@@ -83,7 +83,6 @@ function useSiteSearchWithAI(
       if (typeof globalThis !== 'undefined' && globalThis.location.hostname === 'localhost') {
         console.debug('[SiteSearch] Initializing with config:', {
           appId,
-          apiKeyLength: apiKey?.length || 0,
           indexName,
           hostname: globalThis.location.hostname,
         });
@@ -119,7 +118,6 @@ function useSiteSearchWithAI(
           if (!config.applicationId || !config.apiKey || !config.indexName) {
             console.error('[SiteSearch] Missing required credentials:', {
               hasAppId: Boolean(config.applicationId),
-              hasApiKey: Boolean(config.apiKey),
               hasIndexName: Boolean(config.indexName),
             });
             return;

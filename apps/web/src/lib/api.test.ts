@@ -70,8 +70,32 @@ describe('getProjects', () => {
 
   it('should return projects on successful fetch', async () => {
     const mockProjects = [
-      { id: '1', title: 'Project 1', description: 'Description 1' },
-      { id: '2', title: 'Project 2', description: 'Description 2' },
+      {
+        id: '1',
+        title: 'Project 1',
+        status: 'Active',
+        description: 'Description 1',
+        purpose: 'Purpose 1',
+        long_description: 'Long 1',
+        outcome: 'Outcome 1',
+        tech: [{ name: 'TypeScript', role: 'Language' }],
+        repo_url: 'https://github.com/test/1',
+        owner: 'anchildress1',
+        blog_posts: [],
+      },
+      {
+        id: '2',
+        title: 'Project 2',
+        status: 'Active',
+        description: 'Description 2',
+        purpose: 'Purpose 2',
+        long_description: 'Long 2',
+        outcome: 'Outcome 2',
+        tech: [],
+        repo_url: 'https://github.com/test/2',
+        owner: 'CheckMarKDevTools',
+        blog_posts: [],
+      },
     ];
 
     fetchMock.mockResolvedValue({

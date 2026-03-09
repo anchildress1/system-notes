@@ -306,6 +306,7 @@
   letter-spacing: 0.5px;
 }
 
+
 @media (max-width: 768px) {
   .overlay {
     padding: var(--space-sm);

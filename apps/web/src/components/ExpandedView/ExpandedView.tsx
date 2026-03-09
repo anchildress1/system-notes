@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Project } from '@/data/projects';
+import { Project } from '@/lib/api';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
 import { overlayTransition, cardFlipVariants } from '@/utils/animations';
@@ -111,10 +111,10 @@ export default function ExpandedView({
                   <p className={styles.bodyText}>{project.purpose}</p>
                 </div>
               )}
-              {project.longDescription && (
+              {project.long_description && (
                 <div className={styles.section}>
                   <h2 className={styles.sectionTitle}>Project Output</h2>
-                  <p className={styles.bodyText}>{project.longDescription}</p>
+                  <p className={styles.bodyText}>{project.long_description}</p>
                 </div>
               )}
 
@@ -122,26 +122,6 @@ export default function ExpandedView({
                 <div className={styles.section}>
                   <h2 className={styles.sectionTitle}>Outcome</h2>
                   <p className={styles.bodyText}>{project.outcome}</p>
-                </div>
-              )}
-
-              {project.blogs && project.blogs.length > 0 && (
-                <div className={styles.section}>
-                  <h2 className={styles.sectionTitle}>Related Reading</h2>
-                  <ul className={styles.blogList}>
-                    {project.blogs.map((blog) => (
-                      <li key={blog.url} className={styles.blogItem}>
-                        <a
-                          href={blog.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.blogLink}
-                        >
-                          {blog.title}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
               )}
             </div>
@@ -159,31 +139,53 @@ export default function ExpandedView({
                 </div>
 
                 <div className={styles.actions}>
-                  <a
-                    href={project.repoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.repoLink}
-                  >
-                    GitHub Repo
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                  {project.repo_url && (
+                    <a
+                      href={project.repo_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.repoLink}
                     >
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                      <polyline points="15 3 21 3 21 9"></polyline>
-                      <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                  </a>
+                      GitHub Repo
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
+
+            {project.blog_posts && project.blog_posts.length > 0 && (
+              <div className={styles.fullWidthSection}>
+                <h2 className={styles.sectionTitle}>Related Reading</h2>
+                <ul className={styles.blogList}>
+                  {project.blog_posts.map((blog) => (
+                    <li key={blog.url} className={styles.blogItem}>
+                      <a
+                        href={blog.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.blogLink}
+                      >
+                        {blog.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </motion.div>

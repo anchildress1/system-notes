@@ -11,13 +11,24 @@ export default function GlitterBomb() {
   const appRef = useRef<any>(null);
 
   useEffect(() => {
+    // Feature detect rather than just width check for better "lite" mode
+    const isMobile = globalThis.innerWidth < 768 || 'ontouchstart' in globalThis;
+
+    let pendingExplosion = false;
+    let triggerFn: (() => void) | null = null;
+
+    // Register listener immediately — events fired during the init delay would
+    // otherwise be silently lost.
+    const onGlitterBomb = () => {
+      if (triggerFn) {
+        triggerFn();
+      } else {
+        pendingExplosion = true;
+      }
+    };
+    globalThis.addEventListener('trigger-glitter-bomb', onGlitterBomb);
+
     const initPixi = async () => {
-      // Feature detect rather than just width check for better "lite" mode
-      const isMobile = globalThis.innerWidth < 768 || 'ontouchstart' in globalThis;
-
-      // Disable entirely on mobile
-      // feature flag logic removed per user request
-
       const PIXI = await import('pixi.js');
 
       if (!containerRef.current) return;
@@ -69,8 +80,7 @@ export default function GlitterBomb() {
           return true;
         }
         p.visible = false;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (p as any).remove?.();
+        p.removeFromParent();
         return false;
       };
 
@@ -79,9 +89,8 @@ export default function GlitterBomb() {
         for (const p of currentParticles) {
           if (updateParticle(p)) hasActive = true;
         }
-        if (!hasActive) {
-          app.ticker.remove(tick);
-        }
+        if (hasActive) return;
+        app.ticker.remove(tick);
       };
 
       // Function to trigger explosion
@@ -91,8 +100,13 @@ export default function GlitterBomb() {
         if ((app as any)._destroyed) return; // Safety check - _destroyed is a private PIXI internal // NOSONAR(S4325)
         if (!app.ticker.started) app.start();
 
+        // Remove any lingering particles from the stage before reusing the list
+        for (const p of currentParticles) {
+          p.removeFromParent();
+        }
+        currentParticles.length = 0;
+
         // --- Optimized Explosion Config ---
-        currentParticles.length = 0; // Reset shared particle list for new explosion
         const colors = [0xffd700, 0xffec8b, 0xffffff, 0xb56bff];
 
         // Massive reduction for mobile
@@ -137,24 +151,20 @@ export default function GlitterBomb() {
         app.ticker.add(tick);
       };
 
-      // Trigger initial explosion - REMOVED for performance
-
-      // Listen for custom event
-      globalThis.addEventListener('trigger-glitter-bomb', trigger);
-
-      // Cleanup listener
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (globalThis as any)._glitterCleanup = () =>
-        globalThis.removeEventListener('trigger-glitter-bomb', trigger);
+      // Wire up trigger and fire any event that arrived during init
+      triggerFn = trigger;
+      if (pendingExplosion) {
+        pendingExplosion = false;
+        trigger();
+      }
     };
 
     // Delay initialization to improve LCP/TBT scores
-    const timerId = setTimeout(initPixi, 3000);
+    const timerId = setTimeout(initPixi, 1500);
 
     return () => {
       clearTimeout(timerId);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((globalThis as any)._glitterCleanup) (globalThis as any)._glitterCleanup();
+      globalThis.removeEventListener('trigger-glitter-bomb', onGlitterBomb);
       if (appRef.current) {
         const app = appRef.current;
         if (app.ticker) app.ticker.stop();

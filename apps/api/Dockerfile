@@ -7,15 +7,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy
 
-# The installer requires curl (and certificates) to download the release archive
+# Install uv from pinned official image — avoids curl|sh supply-chain risk
+COPY --from=ghcr.io/astral-sh/uv:0.10.9 /uv /usr/local/bin/uv
+
+# Install system dependencies in a single layer to minimize image size
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
     apt-get upgrade -y && \
     rm -rf /var/lib/apt/lists/*
-
-# Install uv directly using the official installer script
-ADD https://astral.sh/uv/install.sh /uv-installer.sh
-RUN env UV_INSTALL_DIR="/usr/local/bin" sh /uv-installer.sh && rm /uv-installer.sh
 
 # Set working directory
 WORKDIR /app

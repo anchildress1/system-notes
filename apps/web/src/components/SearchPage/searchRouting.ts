@@ -2,7 +2,6 @@ import { history } from 'instantsearch.js/es/lib/routers';
 import type { IndexUiState, UiState } from 'instantsearch.js';
 
 export type SearchRouteState = {
-  query?: string;
   page?: number;
   category?: string[];
   projects?: string[];
@@ -36,7 +35,6 @@ export const toRouteState = (uiState: UiState, indexName: string): SearchRouteSt
   const indexState = uiState[indexName] || {};
 
   return {
-    query: indexState.query,
     page: indexState.page,
     category: withValues(indexState.refinementList?.category),
     projects: withValues(indexState.refinementList?.projects),
@@ -59,7 +57,6 @@ export const toUiState = (routeState: SearchRouteState, indexName: string): UiSt
 
   return {
     [indexName]: {
-      query: routeState.query,
       page: routeState.page,
       refinementList: cleanedRefinements,
     },
@@ -68,15 +65,13 @@ export const toUiState = (routeState: SearchRouteState, indexName: string): UiSt
 
 export const createSearchRouting = (indexName: string) => ({
   router: history<SearchRouteState>({
-    windowTitle(routeState) {
-      const query = routeState.query?.trim();
-      return query ? `${query} | Ashley's System Notes` : "Choices | Ashley's System Notes";
+    windowTitle() {
+      return "Choices | Ashley's System Notes";
     },
     cleanUrlOnDispose: false,
     createURL({ qsModule, routeState, location }) {
       const queryParameters: Record<string, string | string[] | number> = {};
 
-      if (routeState.query) queryParameters.query = routeState.query;
       if (routeState.page && routeState.page > 1) queryParameters.page = routeState.page;
       if (routeState.category?.length) queryParameters.category = routeState.category;
       if (routeState.projects?.length) queryParameters.project = routeState.projects;
@@ -101,12 +96,8 @@ export const createSearchRouting = (indexName: string) => ({
     },
     parseURL({ qsModule, location }) {
       const parsedParams = qsModule.parse(location.search.slice(1));
-      const queryValue = Array.isArray(parsedParams.query)
-        ? parsedParams.query[0]
-        : parsedParams.query;
 
       return {
-        query: typeof queryValue === 'string' ? queryValue : '',
         page: parsePageParam(parsedParams.page),
         category: normalizeArrayParam(parsedParams.category),
         projects: normalizeArrayParam(parsedParams.project),
@@ -133,7 +124,6 @@ export const getSearchPageURL = (
   const routeState = toRouteState({ [indexName]: indexUiState } as UiState, indexName);
   const params = new URLSearchParams();
 
-  if (routeState.query) params.set('query', routeState.query);
   if (routeState.page && routeState.page > 1) params.set('page', String(routeState.page));
   routeState.category?.forEach((value) => params.append('category', value));
   routeState.projects?.forEach((value) => params.append('project', value));

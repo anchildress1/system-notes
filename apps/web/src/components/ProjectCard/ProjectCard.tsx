@@ -1,4 +1,4 @@
-import { Project } from '@/data/projects';
+import { Project } from '@/lib/api';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
@@ -16,22 +16,30 @@ export default function ProjectCard({
   onSelect,
   priority = false,
 }: Readonly<ProjectCardProps>) {
-  const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'CheckMarK DevTools';
+  const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'ChecKMarKDevTools';
 
   return (
     <motion.div
+      role="button"
+      tabIndex={0}
       className={styles.card}
       onClick={() => onSelect(project)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect(project);
+        }
+      }}
       data-testid={`project-card-${project.id}`}
     >
       <div className={styles.imageContainer}>
         <div className={styles.imageWrapper}>
           <div className={styles.conceptBackground} />
-          {project.imageUrl ? (
+          {project.image_url ? (
             <Image
-              src={project.imageUrl}
+              src={project.image_url}
               alt={
-                project.imageAlt ||
+                project.image_alt ||
                 `Project concept art for ${project.title}: ${project.description}`
               }
               fill
@@ -55,18 +63,18 @@ export default function ProjectCard({
         <div className={styles.header}>
           <div className={styles.headerTop}>
             <span className="card-header-badge">{ownerName}</span>
-            {project.id === 'checkmark-copilot-chat' && (
-              <span className="card-header-badge">ARCHIVED</span>
+            {project.status === 'Archived' && <span className="card-header-badge">ARCHIVED</span>}
+            {project.repo_url && (
+              <SourceLinkButton
+                url={project.repo_url}
+                label={`View ${project.title} source code on GitHub`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  globalThis.open(project.repo_url, '_blank', 'noopener,noreferrer');
+                }}
+                icon={<GitHubIcon />}
+              />
             )}
-            <SourceLinkButton
-              url={project.repoUrl}
-              label={`View ${project.title} source code on GitHub`}
-              onClick={(e) => {
-                e.stopPropagation();
-                globalThis.open(project.repoUrl, '_blank', 'noopener,noreferrer');
-              }}
-              icon={<GitHubIcon />}
-            />
           </div>
           <h2 className={styles.title}>{project.title}</h2>
         </div>
