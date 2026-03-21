@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0](https://github.com/anchildress1/system-notes/compare/v2.0.0...v2.1.0) (2026-03-21)
+
+
+### Features
+
+* API-driven project cards and search routing fix ([#36](https://github.com/anchildress1/system-notes/issues/36)) ([4822bd4](https://github.com/anchildress1/system-notes/commit/4822bd470314481a52be19af7cef553d851bb42e))
+* Cleanup improvements ([#29](https://github.com/anchildress1/system-notes/issues/29)) ([e645821](https://github.com/anchildress1/system-notes/commit/e64582115ff9ef3eb66c4136fe4227c111df39c4))
+* env refs and sonar fixes ([#34](https://github.com/anchildress1/system-notes/issues/34)) ([42de5c0](https://github.com/anchildress1/system-notes/commit/42de5c020a1db4de133ccb9d65b9e7e97bcb92af))
+
+
+### Bug Fixes
+
+* decouple FactCard URL management, introduce standalone deep-link overlay ([#30](https://github.com/anchildress1/system-notes/issues/30)) ([1dc384e](https://github.com/anchildress1/system-notes/commit/1dc384e08d5ef67dfc4499b21e9d47b6464acc40))
+
 ## [2.0.0](https://github.com/anchildress1/system-notes/compare/v1.2.0...v2.0.0) (2026-02-08) 🧿
 
 > _In which I ship search improvements, then immediately declare victory._
