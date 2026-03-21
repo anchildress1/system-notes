@@ -16,9 +16,51 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: write
-      pull-requests: write # This token now has permission to create PRs
-      issues: write # Allows linking releases to issues
+      pull-requests: write
+      issues: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4.4.0
+      - id: release
+        uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4.4.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: deploy
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID || 'anchildress1-unstable' }}
+      GCP_REGION: ${{ vars.GCP_REGION || 'us-east1' }}
+      NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID }}
+      NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY }}
+      NEXT_PUBLIC_ALGOLIA_AGENT_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_AGENT_ID }}
+      NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID }}
+      NEXT_PUBLIC_BASE_URL: ${{ vars.NEXT_PUBLIC_BASE_URL }}
+      NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME: ${{ vars.NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME || 'system-notes' }}
+      NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME: ${{ vars.NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2.1.13
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_WIF_SERVICE_ACCOUNT }}
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f # v2.2.1
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Deploy to Cloud Run
+        run: ./deploy.sh
