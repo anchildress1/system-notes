@@ -10,7 +10,7 @@ UI_SERVICE="system-notes-ui"
 UI_SOURCE="apps/web"
 UI_PORT="3000"
 
-REGION="us-east1"
+REGION="${GCP_REGION:-us-east1}"
 
 SEPARATOR="=================================================="
 
