@@ -48,6 +48,7 @@
 .glitterTrigger {
   position: absolute;
   inset: 0;
+  z-index: 15;
   background: transparent;
   border: none;
   cursor: pointer;
