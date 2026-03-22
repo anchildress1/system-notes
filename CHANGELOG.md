@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/anchildress1/system-notes/compare/v2.1.0...v2.1.1) (2026-03-22)
+
+
+### Bug Fixes
+
+* install gcloud beta component in release-please deploy step ([#43](https://github.com/anchildress1/system-notes/issues/43)) ([2f3b1f9](https://github.com/anchildress1/system-notes/commit/2f3b1f919ac2d26af05b0b867c9138f722c8e301))
+
 ## [2.1.0](https://github.com/anchildress1/system-notes/compare/v2.0.0...v2.1.0) (2026-03-21)
 
 
