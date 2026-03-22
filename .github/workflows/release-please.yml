@@ -61,6 +61,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f # v2.2.1
         with:
           project_id: ${{ env.GCP_PROJECT_ID }}
+          install_components: 'beta'
 
       - name: Deploy to Cloud Run
         run: ./deploy.sh
