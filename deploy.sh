@@ -74,6 +74,38 @@ NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME:-
 NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME:-${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME}_query_suggestions}"
 
 # ==========================================
+# Build Helpers
+# ==========================================
+
+# gcloud builds submit exits 1 when it can't stream logs from the default
+# Cloud Build bucket (SA lacks storage.objectViewer). Submit async and poll
+# the build status instead.
+submit_build() {
+    local build_id
+    build_id=$(gcloud beta builds submit "$@" --async --format='value(id)')
+    echo "Build $build_id submitted"
+    local status
+    while true; do
+        status=$(gcloud builds describe "$build_id" --project "$PROJECT_ID" --format='value(status)')
+        case "$status" in
+            SUCCESS)
+                echo "Build $build_id succeeded"
+                return 0
+                ;;
+            FAILURE|CANCELLED|TIMEOUT|INTERNAL_ERROR)
+                echo "Build $build_id failed: $status" >&2
+                echo "Logs: https://console.cloud.google.com/cloud-build/builds/$build_id?project=$PROJECT_ID" >&2
+                return 1
+                ;;
+            *)
+                echo "Build $build_id: $status — waiting..."
+                sleep 15
+                ;;
+        esac
+    done
+}
+
+# ==========================================
 # Deployment Function
 # ==========================================
 deploy_service() {
@@ -104,13 +136,13 @@ deploy_service() {
     if [[ -n "$dockerfile_path" ]]; then
         # Use cloudbuild.yaml for web app with build args
         # Prefix sensitive vars with _ to prevent Cloud Build from logging them
-        gcloud beta builds submit "$source_dir" \
+        submit_build "$source_dir" \
             --config "apps/web/cloudbuild.yaml" \
             --project "$PROJECT_ID" \
             --substitutions "_IMAGE_URI=$image_uri,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=$NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID,_NEXT_PUBLIC_API_URL=$API_URL,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME,_NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME"
     else
         # Standard build from root of service directory
-        gcloud beta builds submit --tag "$image_uri" "$source_dir" --project "$PROJECT_ID"
+        submit_build --tag "$image_uri" "$source_dir" --project "$PROJECT_ID"
     fi
 
     # 3. Deploy to Cloud Run
