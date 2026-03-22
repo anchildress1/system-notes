@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.2](https://github.com/anchildress1/system-notes/compare/v2.1.1...v2.1.2) (2026-03-22)
+
+
+### Bug Fixes
+
+* **deploy:** submit Cloud Build async and poll instead of streaming logs ([#46](https://github.com/anchildress1/system-notes/issues/46)) ([3f3f4aa](https://github.com/anchildress1/system-notes/commit/3f3f4aadd3cf4c9038b4e3b9ad1c72044a02e4fe))
+* **release:** set explicit PR title pattern and empty component ([#45](https://github.com/anchildress1/system-notes/issues/45)) ([f5977a1](https://github.com/anchildress1/system-notes/commit/f5977a1dca133742a411ac9c196c4b741560fa32))
+
 ## [2.1.1](https://github.com/anchildress1/system-notes/compare/v2.1.0...v2.1.1) (2026-03-22)
 
 
