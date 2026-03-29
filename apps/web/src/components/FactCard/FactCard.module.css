@@ -250,15 +250,6 @@
   transform: none;
 }
 
-.backHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  flex-shrink: 0;
-  padding-right: 4rem;
-}
-
 .headerControls {
   display: flex;
   align-items: center;
