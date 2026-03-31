@@ -75,7 +75,7 @@ const ChatItemComponent = ({
   onAuxClick?: () => void;
 }) => {
   const ctx = useContext(ChatNavContext);
-  const href = `/search?factId=${item.objectID}`;
+  const href = `/search?${new URLSearchParams({ factId: item.objectID }).toString()}`;
   return (
     <a
       href={href}

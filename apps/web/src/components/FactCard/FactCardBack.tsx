@@ -1,5 +1,6 @@
 import { RefObject, useMemo } from 'react';
-import { CloseIcon } from '@/components/icons';
+import { CloseIcon, GitHubIcon, DevIcon } from '@/components/icons';
+import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
 import styles from './FactCard.module.css';
 
 export interface FactCardBackHit {
@@ -30,6 +31,8 @@ export default function FactCardBack({
   dialogDescriptionId,
   ariaHidden,
 }: Readonly<FactCardBackProps>) {
+  const isDevPost = hit.url?.includes('dev.to') ?? false;
+
   // Derive display tags from lvl1 leaf parts (Algolia format: "Parent > Child").
   // lvl1 already encodes the full hierarchy; lvl0 is redundant for display purposes.
   // Falls back to lvl0 category names when no lvl1 entries exist.
@@ -63,6 +66,14 @@ export default function FactCardBack({
       >
         <CloseIcon />
       </button>
+
+      {hit.url && (
+        <SourceLinkButton
+          url={hit.url}
+          label={isDevPost ? `Read ${hit.title} on DEV Community` : `View source for ${hit.title}`}
+          icon={isDevPost ? <DevIcon /> : <GitHubIcon />}
+        />
+      )}
 
       <h3 id={dialogTitleId} className="sr-only">
         {hit.title}

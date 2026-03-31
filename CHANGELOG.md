@@ -2,32 +2,28 @@
 
 ## [2.1.2](https://github.com/anchildress1/system-notes/compare/v2.1.1...v2.1.2) (2026-03-22)
 
-
 ### Bug Fixes
 
-* **deploy:** submit Cloud Build async and poll instead of streaming logs ([#46](https://github.com/anchildress1/system-notes/issues/46)) ([3f3f4aa](https://github.com/anchildress1/system-notes/commit/3f3f4aadd3cf4c9038b4e3b9ad1c72044a02e4fe))
-* **release:** set explicit PR title pattern and empty component ([#45](https://github.com/anchildress1/system-notes/issues/45)) ([f5977a1](https://github.com/anchildress1/system-notes/commit/f5977a1dca133742a411ac9c196c4b741560fa32))
+- **deploy:** submit Cloud Build async and poll instead of streaming logs ([#46](https://github.com/anchildress1/system-notes/issues/46)) ([3f3f4aa](https://github.com/anchildress1/system-notes/commit/3f3f4aadd3cf4c9038b4e3b9ad1c72044a02e4fe))
+- **release:** set explicit PR title pattern and empty component ([#45](https://github.com/anchildress1/system-notes/issues/45)) ([f5977a1](https://github.com/anchildress1/system-notes/commit/f5977a1dca133742a411ac9c196c4b741560fa32))
 
 ## [2.1.1](https://github.com/anchildress1/system-notes/compare/v2.1.0...v2.1.1) (2026-03-22)
 
-
 ### Bug Fixes
 
-* install gcloud beta component in release-please deploy step ([#43](https://github.com/anchildress1/system-notes/issues/43)) ([2f3b1f9](https://github.com/anchildress1/system-notes/commit/2f3b1f919ac2d26af05b0b867c9138f722c8e301))
+- install gcloud beta component in release-please deploy step ([#43](https://github.com/anchildress1/system-notes/issues/43)) ([2f3b1f9](https://github.com/anchildress1/system-notes/commit/2f3b1f919ac2d26af05b0b867c9138f722c8e301))
 
 ## [2.1.0](https://github.com/anchildress1/system-notes/compare/v2.0.0...v2.1.0) (2026-03-21)
 
-
 ### Features
 
-* API-driven project cards and search routing fix ([#36](https://github.com/anchildress1/system-notes/issues/36)) ([4822bd4](https://github.com/anchildress1/system-notes/commit/4822bd470314481a52be19af7cef553d851bb42e))
-* Cleanup improvements ([#29](https://github.com/anchildress1/system-notes/issues/29)) ([e645821](https://github.com/anchildress1/system-notes/commit/e64582115ff9ef3eb66c4136fe4227c111df39c4))
-* env refs and sonar fixes ([#34](https://github.com/anchildress1/system-notes/issues/34)) ([42de5c0](https://github.com/anchildress1/system-notes/commit/42de5c020a1db4de133ccb9d65b9e7e97bcb92af))
-
+- API-driven project cards and search routing fix ([#36](https://github.com/anchildress1/system-notes/issues/36)) ([4822bd4](https://github.com/anchildress1/system-notes/commit/4822bd470314481a52be19af7cef553d851bb42e))
+- Cleanup improvements ([#29](https://github.com/anchildress1/system-notes/issues/29)) ([e645821](https://github.com/anchildress1/system-notes/commit/e64582115ff9ef3eb66c4136fe4227c111df39c4))
+- env refs and sonar fixes ([#34](https://github.com/anchildress1/system-notes/issues/34)) ([42de5c0](https://github.com/anchildress1/system-notes/commit/42de5c020a1db4de133ccb9d65b9e7e97bcb92af))
 
 ### Bug Fixes
 
-* decouple FactCard URL management, introduce standalone deep-link overlay ([#30](https://github.com/anchildress1/system-notes/issues/30)) ([1dc384e](https://github.com/anchildress1/system-notes/commit/1dc384e08d5ef67dfc4499b21e9d47b6464acc40))
+- decouple FactCard URL management, introduce standalone deep-link overlay ([#30](https://github.com/anchildress1/system-notes/issues/30)) ([1dc384e](https://github.com/anchildress1/system-notes/commit/1dc384e08d5ef67dfc4499b21e9d47b6464acc40))
 
 ## [2.0.0](https://github.com/anchildress1/system-notes/compare/v1.2.0...v2.0.0) (2026-02-08) 🧿
 
