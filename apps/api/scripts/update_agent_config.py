@@ -3,6 +3,7 @@
 Update Algolia Agent Studio configuration with the prompt from algolia_prompt.md
 """
 import os
+import sys
 import requests
 from pathlib import Path
 from dotenv import load_dotenv
@@ -16,7 +17,7 @@ AGENT_ID = os.getenv("NEXT_PUBLIC_ALGOLIA_AGENT_ID")
 
 if not all([ALGOLIA_APP_ID, ALGOLIA_API_KEY, AGENT_ID]):
     print("Error: Missing required environment variables")
-    exit(1)
+    sys.exit(1)
 
 # Read the prompt file
 script_dir = Path(__file__).parent
@@ -94,7 +95,8 @@ try:
         else:
             print(f"❌ Alternative endpoint also failed: {response.status_code}")
             print(f"Response: {response.text}")
-            
+            sys.exit(1)
+
 except Exception as e:
     print(f"❌ Error: {e}")
     print()
@@ -102,3 +104,4 @@ except Exception as e:
     print(f"  1. Go to https://dashboard.algolia.com/apps/{ALGOLIA_APP_ID}/agent-studio")
     print(f"  2. Select agent {AGENT_ID}")
     print(f"  3. Update the system prompt with content from {prompt_path}")
+    sys.exit(1)
