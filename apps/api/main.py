@@ -175,7 +175,7 @@ async def get_system_doc(doc_path: str):
         # Check the *resolved* path's extension/name just to be sure, although secure_filename handles strictness.
         ALLOWED_EXTENSIONS = {".md", ".json", ".txt"}
         if not any(str(target_path.name).endswith(ext) for ext in ALLOWED_EXTENSIONS):
-             logger.warning(f"File access blocked (disallowed extension): {target_path}")
+             logger.warning("File access blocked (disallowed extension): %s", target_path)
              return JSONResponse(status_code=400, content={"error": "File type not allowed"})
 
         # Security Rule 1.4: Resolve and Verify Root (Defense in Depth)
@@ -190,7 +190,7 @@ async def get_system_doc(doc_path: str):
 
         return {"content": content, "format": "markdown", "path": "/".join(safe_parts)}
     except Exception as e:
-        logger.error(f"Error serving doc: {e}")
+        logger.error("Error serving doc: %s", e)
         return JSONResponse(status_code=500, content={"error": "Internal server error"})
 CRAWLY_BASE_URL = "https://crawly.checkmarkdevtools.dev"
 CRAWLY_SITEMAP_URL = f"{CRAWLY_BASE_URL}/sitemap.xml"
@@ -223,7 +223,7 @@ class BlogSearchResponse(BaseModel):
 
 
 async def fetch_sitemap_urls() -> List[str]:
-    logger.info(f"Fetching sitemap from {CRAWLY_SITEMAP_URL}")
+    logger.info("Fetching sitemap from %s", CRAWLY_SITEMAP_URL)
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(CRAWLY_SITEMAP_URL)
@@ -234,10 +234,10 @@ async def fetch_sitemap_urls() -> List[str]:
                 loc.text for loc in root.findall(".//sm:loc", ns)
                 if loc.text and "/posts/" in loc.text
             ]
-            logger.info(f"Found {len(urls)} post URLs in sitemap")
+            logger.info("Found %s post URLs in sitemap", len(urls))
             return urls
     except Exception as e:
-        logger.error(f"Error fetching sitemap: {e}")
+        logger.error("Error fetching sitemap: %s", e)
         return []
 
 
@@ -250,7 +250,7 @@ def extract_json_ld(html: str) -> Optional[dict]:
             if data.get("@type") == "Article":
                 return data
         except json.JSONDecodeError as e:
-            logger.warning(f"Failed to parse JSON-LD: {e}")
+            logger.warning("Failed to parse JSON-LD: %s", e)
             continue
     return None
 
@@ -263,13 +263,13 @@ def extract_meta_content(html: str, name: str) -> Optional[str]:
 
 async def fetch_post_content(client: httpx.AsyncClient, url: str) -> Optional[BlogPostInternal]:
     try:
-        logger.info(f"Fetching metadata for {url}")
+        logger.info("Fetching metadata for %s", url)
         response = await client.get(url)
         response.raise_for_status()
         html = response.text
         json_ld = extract_json_ld(html)
         if not json_ld:
-            logger.warning(f"Skipping {url}: No JSON-LD found")
+            logger.warning("Skipping %s: No JSON-LD found", url)
             return None
 
         slug = url.split("/")[-1].replace(".html", "")
@@ -281,7 +281,7 @@ async def fetch_post_content(client: httpx.AsyncClient, url: str) -> Optional[Bl
         description = json_ld.get("description", "")
         final_url = json_ld.get("mainEntityOfPage", {}).get("@id", url)
 
-        logger.info(f"Successfully parsed post: {slug}")
+        logger.info("Successfully parsed post: %s", slug)
 
         return BlogPostInternal(
             objectID=f"blog:{slug}",
@@ -297,7 +297,7 @@ async def fetch_post_content(client: httpx.AsyncClient, url: str) -> Optional[Bl
             reading_time=reading_time,
         )
     except Exception as e:
-        logger.warning(f"Failed to fetch post {url}: {e}")
+        logger.warning("Failed to fetch post %s: %s", url, e)
         return None
 
 
@@ -306,7 +306,7 @@ async def get_all_blog_posts() -> List[BlogPostInternal]:
     now = datetime.now()
 
     if _blog_cache["data"] and _blog_cache["expires"] and now < _blog_cache["expires"]:
-        logger.info(f"Returning {len(_blog_cache['data'])} posts from cache")
+        logger.info("Returning %s posts from cache", len(_blog_cache['data']))
         return _blog_cache["data"]
 
     logger.info("Cache miss or expired. Fetching fresh blog posts...")
@@ -319,7 +319,7 @@ async def get_all_blog_posts() -> List[BlogPostInternal]:
     posts = [p for p in results if p is not None]
     posts.sort(key=lambda x: x.published_date or "", reverse=True)
 
-    logger.info(f"Fetched {len(posts)} valid posts")
+    logger.info("Fetched %s valid posts", len(posts))
     if posts:
         _blog_cache["data"] = posts
         _blog_cache["expires"] = now + timedelta(minutes=15)
@@ -335,7 +335,7 @@ async def search_blog_posts(
     logger.info("Search request: q_present=%s, tag_present=%s, limit=%s", bool(q), bool(tag), limit)
 
     posts = await get_all_blog_posts()
-    logger.info(f"Total posts available for filtering: {len(posts)}")
+    logger.info("Total posts available for filtering: %s", len(posts))
 
     if q:
         q_lower = q.lower()
@@ -346,15 +346,15 @@ async def search_blog_posts(
             or q_lower in p.fact.lower()
             or any(q_lower in t.lower() for t in p.tags)
         ]
-        logger.info(f"After query filter: {len(posts)} results")
+        logger.info("After query filter: %s results", len(posts))
 
     if tag and isinstance(tag, str):
         tag_lower = tag.lower()
         posts = [p for p in posts if any(tag_lower in t.lower() for t in p.tags)]
-        logger.info(f"After tag filter: {len(posts)} results")
+        logger.info("After tag filter: %s results", len(posts))
 
     results = posts[:limit]
-    logger.info(f"Returning {len(results)} results")
+    logger.info("Returning %s results", len(results))
 
     return BlogSearchResponse(
         results=results,

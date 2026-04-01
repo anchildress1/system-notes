@@ -117,7 +117,7 @@ export async function fetchFactById(
 
     return null;
   } catch (error) {
-    console.warn('Error fetching fact by ID:', error);
+    console.error('Error fetching fact by ID:', error);
     return null;
   }
 }

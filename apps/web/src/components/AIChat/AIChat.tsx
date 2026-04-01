@@ -123,7 +123,6 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
 export default function AIChat() {
   const router = useRouter();
   const lastChatQuery = useRef<string | null>(null);
-
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
@@ -168,7 +167,7 @@ export default function AIChat() {
             const data = await response.json();
             addToolResult({ output: data });
           } catch (error) {
-            console.warn('AIChat tool error:', error);
+            console.error('AIChat tool error:', error);
             addToolResult({
               output: { error: 'Network error fetching blog posts', results: [] },
             });

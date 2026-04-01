@@ -64,7 +64,7 @@ export async function getSystemDoc(path: string): Promise<SystemDoc | null> {
     }
     return res.json();
   } catch (error) {
-    console.warn('[SystemDoc] Network/API Error:', error);
+    console.error('[SystemDoc] Network/API Error:', error);
     return {
       content: '',
       format: 'text',
