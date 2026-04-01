@@ -124,6 +124,63 @@
   filter: drop-shadow(0 0 6px hsl(var(--color-accent-pink) / 0.3));
 }
 
+/* ── Chat result cards: search hits rendered inside the carousel ── */
+.chatResultCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem;
+  background: hsl(var(--color-bg-surface));
+  border: 1px solid hsl(var(--color-border));
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  min-width: 180px;
+  max-width: 220px;
+}
+
+.chatResultCard:hover {
+  border-color: hsl(var(--color-accent-purple) / 0.4);
+  box-shadow: 0 0 12px hsl(var(--color-accent-purple) / 0.15);
+}
+
+.chatResultCard:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 2px;
+  border-color: hsl(var(--color-accent-purple) / 0.4);
+  box-shadow: 0 0 12px hsl(var(--color-accent-purple) / 0.2);
+}
+
+.chatResultCategory {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: hsl(var(--color-accent-teal));
+}
+
+.chatResultTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: hsl(var(--color-text-primary));
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.chatResultBlurb {
+  font-size: 0.7rem;
+  color: hsl(var(--color-text-muted));
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* ── Disclaimer footer: neutral gray (not clickable, not interactive) ── */
 .disclaimer {
   color: hsl(var(--color-text-muted));

@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useContext, createContext, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useRouter } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { Chat } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
@@ -21,6 +22,12 @@ import {
 import { IoClose } from 'react-icons/io5';
 import { GiBat } from 'react-icons/gi';
 import { FaBrain, FaUser } from 'react-icons/fa';
+
+interface ChatNavContextType {
+  navigate: (item: ChatHitItem) => void;
+  getItemUrl: (item: ChatHitItem) => string;
+}
+const ChatNavContext = createContext<ChatNavContextType | null>(null);
 
 const appId = ALGOLIA_APP_ID;
 const apiKey = ALGOLIA_SEARCH_KEY;
@@ -46,6 +53,52 @@ const MusicPlayer = dynamic(() => import('../MusicPlayer/MusicPlayer'), {
   ssr: false,
 });
 
+// Item component for rendering search results in the chat carousel
+interface ChatHitItem {
+  objectID: string;
+  title?: string;
+  blurb?: string;
+  category?: string;
+  url?: string;
+  __position: number;
+  __queryID?: string;
+}
+
+const ChatItemComponent = ({
+  item,
+  onAuxClick,
+  sendEvent,
+  onClick,
+}: {
+  item: ChatHitItem;
+  sendEvent: (eventType: string, item: ChatHitItem, eventName: string) => void;
+  onClick?: () => void;
+  onAuxClick?: () => void;
+}) => {
+  const ctx = useContext(ChatNavContext);
+  const href =
+    ctx?.getItemUrl(item) ?? `/search?${new URLSearchParams({ factId: item.objectID }).toString()}`;
+  return (
+    <a
+      href={href}
+      className={styles.chatResultCard}
+      onClick={(e) => {
+        sendEvent('click', item, 'Item Clicked');
+        onClick?.();
+        if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+          e.preventDefault();
+          ctx?.navigate(item);
+        }
+      }}
+      onAuxClick={onAuxClick}
+    >
+      {item.category && <span className={styles.chatResultCategory}>{item.category}</span>}
+      <span className={styles.chatResultTitle}>{item.title || item.objectID}</span>
+      {item.blurb && <span className={styles.chatResultBlurb}>{item.blurb}</span>}
+    </a>
+  );
+};
+
 // Custom components to enrich the chat experience
 const HeaderIcon = () => <GiBat className={styles.headerIcon} />;
 const AssistantAvatar = () => (
@@ -69,6 +122,9 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
   );
 
 export default function AIChat() {
+  const router = useRouter();
+  const lastChatQuery = useRef<string | null>(null);
+
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
@@ -94,6 +150,7 @@ export default function AIChat() {
         }) => {
           const { input, addToolResult } = params;
           const typedInput = input as { query?: string; tag?: string; limit?: number } | undefined;
+          lastChatQuery.current = typedInput?.query ?? null;
           try {
             const urlParams = new URLSearchParams();
             if (typedInput?.query) urlParams.set('q', typedInput.query);
@@ -148,6 +205,25 @@ export default function AIChat() {
     return () => observer.disconnect();
   }, []);
 
+  const getItemUrl = useCallback((item: ChatHitItem): string => {
+    const params = new URLSearchParams();
+    params.set('factId', item.objectID);
+    if (lastChatQuery.current) params.set('query', lastChatQuery.current);
+    return `/search?${params.toString()}`;
+  }, []);
+
+  const handleChatItemNavigate = useCallback(
+    (item: ChatHitItem) => {
+      router.push(getItemUrl(item));
+    },
+    [router, getItemUrl]
+  );
+
+  const chatNavContext = useMemo(
+    () => ({ navigate: handleChatItemNavigate, getItemUrl }),
+    [handleChatItemNavigate, getItemUrl]
+  );
+
   const chatContent = (
     <div className={styles.chatDock}>
       <div className={styles.musicWrapper}>
@@ -168,6 +244,7 @@ export default function AIChat() {
             }}
             translations={translations}
             tools={tools}
+            itemComponent={ChatItemComponent}
             getSearchPageURL={resolveSearchPageURL}
             headerTitleIconComponent={HeaderIcon}
             assistantMessageLeadingComponent={AssistantAvatar}
@@ -180,5 +257,8 @@ export default function AIChat() {
     </div>
   );
 
-  return createPortal(chatContent, document.body);
+  return createPortal(
+    <ChatNavContext.Provider value={chatNavContext}>{chatContent}</ChatNavContext.Provider>,
+    document.body
+  );
 }

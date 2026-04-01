@@ -110,6 +110,7 @@ function useSiteSearchWithAI(
             attributes: {
               primaryText: 'title',
               secondaryText: 'blurb',
+              tertiaryText: 'tags.lvl1',
               image: undefined,
             },
           };

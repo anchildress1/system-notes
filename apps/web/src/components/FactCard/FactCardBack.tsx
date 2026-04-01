@@ -1,6 +1,6 @@
 import { RefObject, useMemo } from 'react';
+import { CloseIcon, GitHubIcon, DevIcon } from '@/components/icons';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
-import { GitHubIcon, DevIcon, CloseIcon } from '@/components/icons';
 import styles from './FactCard.module.css';
 
 export interface FactCardBackHit {
@@ -67,25 +67,17 @@ export default function FactCardBack({
         <CloseIcon />
       </button>
 
-      <div className={styles.backHeader}>
-        <div className={styles.headerTop}>
-          <div className={styles.headerControls}>
-            {hit.url && (
-              <SourceLinkButton
-                url={hit.url}
-                label={
-                  isDevPost ? `Read ${hit.title} on DEV Community` : `View source for ${hit.title}`
-                }
-                icon={isDevPost ? <DevIcon /> : <GitHubIcon />}
-                onClick={(e) => e.stopPropagation()}
-              />
-            )}
-          </div>
-        </div>
-        <h3 id={dialogTitleId} className={styles.title} style={{ marginTop: '0.5rem' }}>
-          {hit.title}
-        </h3>
-      </div>
+      {hit.url && (
+        <SourceLinkButton
+          url={hit.url}
+          label={isDevPost ? `Read ${hit.title} on DEV Community` : `View source for ${hit.title}`}
+          icon={isDevPost ? <DevIcon /> : <GitHubIcon />}
+        />
+      )}
+
+      <h3 id={dialogTitleId} className="visually-hidden">
+        {hit.title}
+      </h3>
 
       <div className={styles.factContent}>
         <p id={dialogDescriptionId} className={styles.factText}>
