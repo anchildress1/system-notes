@@ -68,6 +68,11 @@ export function useFactIdRouting(indexName: string) {
   return { factId, overlayHit, closeOverlay };
 }
 
+/** Validates that a factId contains only safe characters for use in an Algolia filter. */
+function isValidFactId(id: string): boolean {
+  return /^[a-zA-Z0-9_:\-]{1,200}$/.test(id);
+}
+
 /**
  * Fetch a single fact card from Algolia by objectID.
  * Returns all fields needed to render the overlay.
@@ -80,6 +85,11 @@ export async function fetchFactById(factId: string, indexName: string): Promise<
     return null;
   }
 
+  if (!isValidFactId(factId)) {
+    console.error('Invalid factId — rejected before Algolia filter:', factId);
+    return null;
+  }
+
   try {
     const client = algoliasearch(appId, apiKey);
     const { results } = await client.search({
@@ -87,7 +97,7 @@ export async function fetchFactById(factId: string, indexName: string): Promise<
         {
           indexName,
           query: '',
-          filters: `objectID:${factId}`,
+          filters: `objectID:"${factId}"`,
           hitsPerPage: 1,
           attributesToRetrieve: [
             'objectID',

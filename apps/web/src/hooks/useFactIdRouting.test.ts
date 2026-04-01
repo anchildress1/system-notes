@@ -308,6 +308,7 @@ describe('fetchFactById', () => {
   beforeEach(() => {
     delete process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
     delete process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY;
+    searchMock.mockReset();
   });
 
   it('returns null when credentials are missing', async () => {
@@ -366,6 +367,25 @@ describe('fetchFactById', () => {
 
     const result = await fetchFactById('card:test:fact:001', 'test-index');
     expect(result).toBeNull();
+  });
+
+  it('returns null and does not call Algolia when factId contains filter operators', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    const result = await fetchFactById('xxx OR category:secret', 'test-index');
+    expect(result).toBeNull();
+    expect(searchMock).not.toHaveBeenCalled();
+  });
+
+  it('returns null and does not call Algolia when factId exceeds 200 characters', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    const longId = 'a'.repeat(201);
+    const result = await fetchFactById(longId, 'test-index');
+    expect(result).toBeNull();
+    expect(searchMock).not.toHaveBeenCalled();
   });
 });
 
