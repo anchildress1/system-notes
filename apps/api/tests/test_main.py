@@ -385,3 +385,30 @@ def test_blog_search_response_shape(mock_blog_client, standard_blog_responses):
     assert first_result["blurb"] == "This is a test description for the blog post about AI tools."
     assert first_result["fact"] == "This is a test description for the blog post about AI tools."
     assert first_result["url"] == "https://dev.to/test/test-post-123"
+
+
+def test_blog_cache_not_poisoned_on_fetch_failure(mock_blog_client):
+    """A failed fetch (empty sitemap) must not write an empty list to cache.
+    The second request should retry the upstream fetch instead of serving stale empty results.
+    """
+    # First request: sitemap fetch succeeds but returns no post URLs
+    empty_sitemap = _make_mock_response(
+        '<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>'
+    )
+    mock_blog_client([empty_sitemap])
+
+    response1 = client.get("/blog/search")
+    assert response1.status_code == 200
+    assert response1.json()["total"] == 0
+
+    # Cache must NOT have been populated — expires should still be None
+    assert _blog_cache["expires"] is None, "Cache should not be populated when fetch returns no posts"
+
+    # Second request: sitemap now has posts — should fetch fresh, not serve cached empty list
+    sitemap = _make_mock_response(MOCK_SITEMAP)
+    post = _make_mock_response(MOCK_POST_HTML)
+    mock_blog_client([sitemap, post, post])
+
+    response2 = client.get("/blog/search")
+    assert response2.status_code == 200
+    assert response2.json()["total"] > 0, "Second request should reflect fresh posts, not cached empty list"

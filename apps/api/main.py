@@ -320,8 +320,9 @@ async def get_all_blog_posts() -> List[BlogPostInternal]:
     posts.sort(key=lambda x: x.published_date or "", reverse=True)
 
     logger.info(f"Fetched {len(posts)} valid posts")
-    _blog_cache["data"] = posts
-    _blog_cache["expires"] = now + timedelta(minutes=15)
+    if posts:
+        _blog_cache["data"] = posts
+        _blog_cache["expires"] = now + timedelta(minutes=15)
     return posts
 
 
