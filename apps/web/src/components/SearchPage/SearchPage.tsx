@@ -48,7 +48,6 @@ const searchClient = hasCredentials
 declare global {
   var SiteSearchAskAI: { init: (config: unknown) => void } | undefined;
   var SiteSearch: { init: (config: unknown) => void } | undefined;
-  var SiteSearchWithAI: { init: (config: unknown) => void } | undefined;
   var sitesearch: { init: (config: unknown) => void } | undefined;
   var AlgoliaSiteSearch: { init: (config: unknown) => void } | undefined;
 }

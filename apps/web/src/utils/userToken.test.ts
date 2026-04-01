@@ -14,24 +14,14 @@ describe('userToken', () => {
     vi.unstubAllGlobals();
   });
 
-  it('getSearchSessionId returns a UUID-format string', async () => {
-    const { getSearchSessionId } = await import('./userToken');
-    expect(getSearchSessionId()).toMatch(UUID_PATTERN);
-  });
-
-  it('getSearchSessionId is memoised — same value on every call within a session', async () => {
-    const { getSearchSessionId } = await import('./userToken');
-    expect(getSearchSessionId()).toBe(getSearchSessionId());
+  it('getChatSessionId returns a UUID-format string', async () => {
+    const { getChatSessionId } = await import('./userToken');
+    expect(getChatSessionId()).toMatch(UUID_PATTERN);
   });
 
   it('getChatSessionId is memoised — same value on every call within a session', async () => {
     const { getChatSessionId } = await import('./userToken');
     expect(getChatSessionId()).toBe(getChatSessionId());
-  });
-
-  it('getSearchSessionId and getChatSessionId produce distinct tokens', async () => {
-    const { getSearchSessionId, getChatSessionId } = await import('./userToken');
-    expect(getSearchSessionId()).not.toBe(getChatSessionId());
   });
 
   it('falls back to crypto.getRandomValues and produces a valid UUID v4 when randomUUID is absent', async () => {
@@ -41,8 +31,8 @@ describe('userToken', () => {
     });
     vi.stubGlobal('crypto', { getRandomValues: mockGetRandomValues });
 
-    const { getSearchSessionId } = await import('./userToken');
-    const id = getSearchSessionId();
+    const { getChatSessionId } = await import('./userToken');
+    const id = getChatSessionId();
 
     expect(mockGetRandomValues).toHaveBeenCalled();
     expect(id).toMatch(UUID_V4_PATTERN);
@@ -51,7 +41,7 @@ describe('userToken', () => {
   it('throws when neither crypto.randomUUID nor crypto.getRandomValues is available', async () => {
     vi.stubGlobal('crypto', {});
 
-    const { getSearchSessionId } = await import('./userToken');
-    expect(() => getSearchSessionId()).toThrow('Secure random number generator is not available.');
+    const { getChatSessionId } = await import('./userToken');
+    expect(() => getChatSessionId()).toThrow('Secure random number generator is not available.');
   });
 });

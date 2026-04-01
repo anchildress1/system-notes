@@ -1,11 +1,9 @@
 /**
- * Generate unique user tokens for Algolia sessions.
- * Returns distinct tokens for Search vs Chat to prevent context pollution.
- * Tokens are generated per-page-load (refresh updates them) and not persisted.
+ * Generate a unique user token for Algolia chat sessions.
+ * Token is generated per-page-load (refresh updates it) and not persisted.
  */
 
 // In-memory storage for the current page session
-let searchSessionId: string | null = null;
 let chatSessionId: string | null = null;
 
 const generateUUID = () => {
@@ -29,13 +27,6 @@ const generateUUID = () => {
     .join('');
   return `${hex.substring(0, 8)}-${hex.substring(8, 12)}-${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20)}`;
 };
-
-export function getSearchSessionId(): string {
-  if (!searchSessionId) {
-    searchSessionId = generateUUID();
-  }
-  return searchSessionId;
-}
 
 export function getChatSessionId(): string {
   if (!chatSessionId) {

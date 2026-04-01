@@ -7,10 +7,6 @@
  *   --transition-slow: 0.3s
  */
 
-/* ── Easing curves (mirrors CSS custom properties) ── */
-export const easeSpring: [number, number, number, number] = [0.175, 0.885, 0.32, 1.275];
-export const easeMorph: [number, number, number, number] = [0.4, 0, 0.2, 1];
-
 /* ── Card-flip overlay (background dim) ── */
 export const overlayTransition = { duration: 0.12, ease: 'easeOut' as const };
 
