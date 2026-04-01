@@ -136,23 +136,22 @@ def _parse_project_item(item: dict) -> Project:
 
 @app.get("/projects", response_model=List[Project])
 async def get_projects():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, "data", "projects.json")
+
+    if not os.path.exists(file_path):
+        logger.error("projects.json not found")
+        return JSONResponse(status_code=500, content={"error": "Projects data unavailable"})
+
     try:
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(current_dir, "data", "projects.json")
-
-        if not os.path.exists(file_path):
-            logger.error("projects.json not found")
-            return []
-
         raw = await asyncio.to_thread(Path(file_path).read_text, encoding="utf-8")
         content = json.loads(raw)
-
         projects = [_parse_project_item(item) for item in content]
         projects.sort(key=lambda p: p.order_rank)
         return projects
     except Exception as e:
         logger.error("Error loading projects: %s", e)
-        return []
+        return JSONResponse(status_code=500, content={"error": "Failed to load projects"})
 
 
 @app.get("/system/doc/{doc_path:path}")
