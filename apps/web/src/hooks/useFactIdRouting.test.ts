@@ -1,5 +1,5 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { useFactIdRouting, fetchFactById } from './useFactIdRouting';
 
@@ -10,6 +10,8 @@ const { searchMock } = vi.hoisted(() => ({
 // Mock next/navigation
 vi.mock('next/navigation', () => ({
   useSearchParams: vi.fn(),
+  useRouter: vi.fn(),
+  usePathname: vi.fn(),
 }));
 
 // Mock @/lib/algolia so constants re-read process.env at access time (test isolation)
@@ -41,6 +43,10 @@ describe('useFactIdRouting', () => {
     delete process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
     delete process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY;
     searchMock.mockReset();
+    vi.mocked(useRouter).mockReturnValue({ replace: vi.fn() } as unknown as ReturnType<
+      typeof useRouter
+    >);
+    vi.mocked(usePathname).mockReturnValue('/search');
   });
 
   afterEach(() => {
@@ -190,12 +196,15 @@ describe('useFactIdRouting', () => {
       ],
     });
 
-    vi.mocked(useSearchParams).mockReturnValue({
-      get: vi.fn((key) => (key === 'factId' ? mockFactId : null)),
-    } as unknown as ReturnType<typeof useSearchParams>);
-
-    globalThis.history.replaceState({}, '', `/search?factId=${encodeURIComponent(mockFactId)}`);
-    const pushStateSpy = vi.spyOn(globalThis.history, 'pushState');
+    const mockReplace = vi.fn();
+    vi.mocked(useRouter).mockReturnValue({ replace: mockReplace } as unknown as ReturnType<
+      typeof useRouter
+    >);
+    vi.mocked(useSearchParams).mockReturnValue(
+      new URLSearchParams(`factId=${encodeURIComponent(mockFactId)}`) as unknown as ReturnType<
+        typeof useSearchParams
+      >
+    );
 
     const { result } = renderHook(() => useFactIdRouting('test-index'));
 
@@ -210,9 +219,7 @@ describe('useFactIdRouting', () => {
     await waitFor(() => {
       expect(result.current.overlayHit).toBeNull();
     });
-    expect(pushStateSpy).toHaveBeenCalled();
-
-    pushStateSpy.mockRestore();
+    expect(mockReplace).toHaveBeenCalled();
   });
 
   it('ignores fetch result when effect is cancelled before resolve', async () => {
@@ -283,24 +290,26 @@ describe('useFactIdRouting', () => {
       ],
     });
 
-    vi.mocked(useSearchParams).mockReturnValue({
-      get: vi.fn((key) => (key === 'factId' ? mockFactId : null)),
-    } as unknown as ReturnType<typeof useSearchParams>);
-
-    const replaceStateSpy = vi.spyOn(globalThis.history, 'replaceState');
+    const mockReplace = vi.fn();
+    vi.mocked(useRouter).mockReturnValue({ replace: mockReplace } as unknown as ReturnType<
+      typeof useRouter
+    >);
+    vi.mocked(useSearchParams).mockReturnValue(
+      new URLSearchParams(`factId=${encodeURIComponent(mockFactId)}`) as unknown as ReturnType<
+        typeof useSearchParams
+      >
+    );
 
     renderHook(() => useFactIdRouting('test-index'));
 
     // Wait for any async operations to complete
     await new Promise((resolve) => setTimeout(resolve, 50));
 
-    // Should NOT have called replaceState to add filter params
-    const filterCalls = replaceStateSpy.mock.calls.filter(
-      (call) => typeof call[2] === 'string' && call[2].includes('category=')
+    // router.replace must NOT have been called to add filter params — only user actions trigger closeOverlay
+    const filterCalls = mockReplace.mock.calls.filter(
+      (call) => typeof call[0] === 'string' && call[0].includes('category=')
     );
     expect(filterCalls).toHaveLength(0);
-
-    replaceStateSpy.mockRestore();
   });
 });
 
@@ -404,6 +413,7 @@ describe('closeOverlay URL handling', () => {
     projects: [],
     signal: 1,
   };
+  let mockReplace: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = credentials.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
@@ -411,9 +421,17 @@ describe('closeOverlay URL handling', () => {
     searchMock.mockReset();
     searchMock.mockResolvedValue({ results: [{ hits: [minimalHit] }] });
 
-    vi.mocked(useSearchParams).mockReturnValue({
-      get: vi.fn((key) => (key === 'factId' ? validFactId : null)),
-    } as unknown as ReturnType<typeof useSearchParams>);
+    mockReplace = vi.fn();
+    vi.mocked(useRouter).mockReturnValue({ replace: mockReplace } as unknown as ReturnType<
+      typeof useRouter
+    >);
+    vi.mocked(usePathname).mockReturnValue('/search');
+
+    vi.mocked(useSearchParams).mockReturnValue(
+      new URLSearchParams(`factId=${encodeURIComponent(validFactId)}`) as unknown as ReturnType<
+        typeof useSearchParams
+      >
+    );
   });
 
   afterEach(() => {
@@ -423,12 +441,11 @@ describe('closeOverlay URL handling', () => {
   });
 
   it('preserves other query params when removing factId', async () => {
-    globalThis.history.replaceState(
-      {},
-      '',
-      `/search?query=agent&factId=${encodeURIComponent(validFactId)}`
+    vi.mocked(useSearchParams).mockReturnValue(
+      new URLSearchParams(
+        `query=agent&factId=${encodeURIComponent(validFactId)}`
+      ) as unknown as ReturnType<typeof useSearchParams>
     );
-    const pushStateSpy = vi.spyOn(globalThis.history, 'pushState');
 
     const { result } = renderHook(() => useFactIdRouting('test-index'));
     await waitFor(() => expect(result.current.overlayHit).not.toBeNull());
@@ -437,54 +454,47 @@ describe('closeOverlay URL handling', () => {
       result.current.closeOverlay();
     });
 
-    const [, , newUrl] = pushStateSpy.mock.calls[0];
+    expect(mockReplace).toHaveBeenCalled();
+    const [newUrl] = mockReplace.mock.calls[0];
     expect(String(newUrl)).toContain('query=agent');
     expect(String(newUrl)).not.toContain('factId');
-
-    pushStateSpy.mockRestore();
   });
 
   async function setupCloseOverlay() {
-    globalThis.history.replaceState({}, '', `/search?factId=${encodeURIComponent(validFactId)}`);
-    const pushStateSpy = vi.spyOn(globalThis.history, 'pushState');
     const { result } = renderHook(() => useFactIdRouting('test-index'));
     await waitFor(() => expect(result.current.overlayHit).not.toBeNull());
-    return { result, pushStateSpy };
+    return { result };
   }
 
   it('navigates to pathname only when factId is the sole param', async () => {
-    const { result, pushStateSpy } = await setupCloseOverlay();
+    const { result } = await setupCloseOverlay();
 
     act(() => {
       result.current.closeOverlay();
     });
 
-    const [, , newUrl] = pushStateSpy.mock.calls[0];
+    expect(mockReplace).toHaveBeenCalled();
+    const [newUrl] = mockReplace.mock.calls[0];
     expect(String(newUrl)).toBe('/search');
     expect(String(newUrl)).not.toContain('?');
-
-    pushStateSpy.mockRestore();
   });
 
   it('closeOverlay is idempotent — second call is a no-op after state is cleared', async () => {
-    const { result, pushStateSpy } = await setupCloseOverlay();
+    const { result } = await setupCloseOverlay();
 
     act(() => {
       result.current.closeOverlay();
     });
 
     await waitFor(() => expect(result.current.overlayHit).toBeNull());
-    const callCountAfterFirst = pushStateSpy.mock.calls.length;
+    const callCountAfterFirst = mockReplace.mock.calls.length;
 
     act(() => {
       result.current.closeOverlay();
     });
 
-    // pushState may be called again (URL update is idempotent), but overlayHit stays null
+    // router.replace may be called again (URL update is idempotent), but overlayHit stays null
     expect(result.current.overlayHit).toBeNull();
-    // The important thing: fetchedHit was already null, so no new state update
-    expect(pushStateSpy.mock.calls.length).toBeGreaterThanOrEqual(callCountAfterFirst);
-
-    pushStateSpy.mockRestore();
+    expect(mockReplace.mock.calls.length).toBeGreaterThanOrEqual(callCountAfterFirst);
   });
 });

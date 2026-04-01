@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
 
@@ -27,6 +27,8 @@ export interface OverlayHit {
  */
 export function useFactIdRouting(indexName: string) {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const factId = searchParams?.get('factId') ?? null;
   const [fetchedHit, setFetchedHit] = useState<{ id: string; hit: OverlayHit } | null>(null);
 
@@ -59,11 +61,11 @@ export function useFactIdRouting(indexName: string) {
 
   const closeOverlay = useCallback(() => {
     setFetchedHit(null);
-    const params = new URLSearchParams(globalThis.location.search);
+    const params = new URLSearchParams(searchParams?.toString() ?? '');
     params.delete('factId');
-    const newUrl = params.toString() ? `?${params.toString()}` : globalThis.location.pathname;
-    globalThis.history.pushState(null, '', newUrl);
-  }, []);
+    const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+    router.replace(newUrl, { scroll: false });
+  }, [router, pathname, searchParams]);
 
   return { factId, overlayHit, closeOverlay };
 }
