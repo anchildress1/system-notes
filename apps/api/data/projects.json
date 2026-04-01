@@ -10,7 +10,7 @@
     "outcome": "A strictly read-only, AI-assembled site that documents decision boundaries rather than presenting a curated portfolio narrative.",
     "status": "Active · Deployed",
     "owner": "anchildress1",
-    "image_url": "/projects/system-notes.jpg",
+    "image_url": "/projects/system-notes.webp",
     "image_alt": "System Notes project dashboard showing AI-generated portfolio entries and architecture decisions",
     "tech": [
       { "name": "Gemini 3 Pro", "role": "The Architect" },
@@ -43,11 +43,7 @@
     "app_url": "https://unstable.anchildress1.dev",
     "order_rank": 10,
     "updated_at": "2026-02-08",
-    "related_project_ids": [
-      "underfoot-underground-travel-planner",
-      "delegate-action",
-      "devto-mirror"
-    ]
+    "related_project_ids": ["underfoot-underground-travel-planner", "devto-mirror"]
   },
   {
     "objectID": "supascribe-notes",
@@ -60,7 +56,7 @@
     "outcome": "Built as an opinionated pipeline: freeform input → structured card → durable storage, with a focus on simplicity and schema adherence over flexibility.",
     "status": "Active · Tool",
     "owner": "anchildress1",
-    "image_url": "/projects/supascribe-notes.jpg",
+    "image_url": "/projects/supascribe-notes.webp",
     "image_alt": "SupaScribe Notes app interface showing structured note card generation powered by AI and Supabase",
     "tech": [
       { "name": "Supabase", "role": "The Database" },
@@ -78,6 +74,36 @@
     "related_project_ids": ["system-notes"]
   },
   {
+    "objectID": "carbon-trace",
+    "node_type": "project",
+    "name": "Carbon Trace",
+    "aliases": ["WeCoded 2026", "frontend art", "narrative scene engine"],
+    "what_it_is": "An interactive narrative art experience that follows a diamond's consciousness through 12 painted scenes, from coal seam to circuit to light.",
+    "why_it_exists": "Built for the WeCoded 2026 DEV Challenge to translate the experience of being a woman in tech—rooted in Appalachian coal country—into something you feel instead of read.",
+    "long_description": "Carbon Trace exists because some stories resist summary. It uses a deterministic scene engine to move through a metaphorical carbon cycle—coal to diamond to circuit to light—with synchronized narration, ambient audio, and GPU-accelerated visual effects. Every scene is painted, every word is narrated in Appalachian dialect, and the whole thing is fully keyboard-navigable and screen-reader accessible. The project was built by a backend developer who treated frontend art as an engineering problem: adversarial AI code review, 11 ADRs, full test coverage, and a 5-state machine architecture holding it all together.",
+    "outcome": "A deployed, WCAG AA-compliant narrative experience that proves technical rigor and emotional storytelling are not mutually exclusive.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/carbon-trace.webp",
+    "image_alt": "Carbon Trace interactive narrative showing painted scenes of a diamond's journey from coal to circuit",
+    "tech": [
+      { "name": "Canvas 2D", "role": "Scene Rendering" },
+      { "name": "PixiJS", "role": "GPU Effects" },
+      { "name": "GSAP", "role": "Timeline Sequencing" },
+      { "name": "Howler.js", "role": "Audio Engine" },
+      { "name": "Vite", "role": "Build Tooling" },
+      { "name": "Cloud Run", "role": "Deployment" }
+    ],
+    "blog_posts": [],
+    "project_type": "submission",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/carbon-trace",
+    "app_url": "https://carbon-trace.anchildress1.dev",
+    "order_rank": 16,
+    "updated_at": "2026-03-31",
+    "related_project_ids": []
+  },
+  {
     "objectID": "dev-community-dashboard",
     "node_type": "project",
     "name": "DEV Community Dashboard",
@@ -93,7 +119,7 @@
     "outcome": "Created a signal-driven triage dashboard that routes attention toward posts likely to benefit from human interaction, helping volunteers respond more quickly to unanswered questions and emerging discussions.",
     "status": "Active · Deployed",
     "owner": "ChecKMarKDevTools",
-    "image_url": "/projects/dev-community-dashboard.jpg",
+    "image_url": "/projects/dev-community-dashboard.webp",
     "image_alt": "DEV Community Dashboard interface showing prioritized posts and signal-based interaction metrics",
     "tech": [
       { "name": "Forem API", "role": "Data Source" },
@@ -127,7 +153,7 @@
     "outcome": "A working stopgap that enables AI-generated PRs today while waiting for native platform support.",
     "status": "Active · POC",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/delegate-action.jpg",
+    "image_url": "/projects/delegate-action.webp",
     "image_alt": "Delegate Action GitHub workflow allowing secure AI-generated pull requests via personal access tokens",
     "tech": [
       { "name": "GitHub Actions", "role": "The Runtime" },
@@ -154,7 +180,7 @@
     "outcome": "A functional local sandbox that informs future agent and memory design decisions.",
     "status": "Active · In Progress",
     "owner": "anchildress1",
-    "image_url": "/projects/my-hermantic-agent.jpg",
+    "image_url": "/projects/my-hermantic-agent.webp",
     "image_alt": "Hermes Agent interface showing local AI memory experiments and conversational history",
     "tech": [
       { "name": "Python", "role": "The Mind" },
@@ -181,7 +207,7 @@
     "outcome": "Live adoption that turns invisible AI assistance into explicit, auditable data.",
     "status": "Active · Published",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/rai-lint.jpg",
+    "image_url": "/projects/rai-lint.webp",
     "image_alt": "RAI Lint banner enforcing explicit AI attribution in git commits and workflows",
     "tech": [
       { "name": "TypeScript", "role": "Rule Logic" },
@@ -222,7 +248,7 @@
     "outcome": "An unfinished but instructive experiment that reframed cost failure as an orchestration problem. At least, until I get back to it...",
     "status": "Archived",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/underfoot-underground-travel-planner.jpg",
+    "image_url": "/projects/underfoot-underground-travel-planner.webp",
     "image_alt": "Underfoot travel planner interface showing AI-orchestrated discovery of hidden travel destinations",
     "tech": [
       { "name": "Python", "role": "The Orchestrator" },
@@ -258,7 +284,7 @@
     "outcome": "A widely adopted resource that favors practical utility over volume.",
     "status": "Active",
     "owner": "anchildress1",
-    "image_url": "/projects/awesome-github-copilot.jpg",
+    "image_url": "/projects/awesome-github-copilot.webp",
     "image_alt": "Awesome GitHub Copilot repository banner listing curated AI workflows and agent patterns",
     "tech": [
       { "name": "Markdown", "role": "The Format" },
@@ -293,7 +319,7 @@
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
     "order_rank": 60,
     "updated_at": "2026-02-01",
-    "related_project_ids": ["delegate-action", "checkmark-copilot-chat"]
+    "related_project_ids": []
   },
   {
     "objectID": "devto-mirror",
@@ -306,7 +332,7 @@
     "outcome": "Increased AI discoverability with zero ongoing maintenance.",
     "status": "Active",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/devto-mirror.jpg",
+    "image_url": "/projects/devto-mirror.webp",
     "image_alt": "Dev.to Mirror workflow diagram showing automated syncing of technical blogs for AI ingestion",
     "tech": [
       { "name": "Python", "role": "The Script" },
@@ -337,7 +363,7 @@
     "outcome": "Reduced drift and predictable AI-assisted code output.",
     "status": "Active · Testing",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/eslint-config-echo.jpg",
+    "image_url": "/projects/eslint-config-echo.webp",
     "image_alt": "Echo ESLint configuration banner representing reusable linting boundaries for AI coding agents",
     "tech": [
       { "name": "Node.js", "role": "Ecosystem" },
@@ -363,7 +389,7 @@
     "outcome": "A falsified hypothesis that redirected focus to more viable Copilot tooling.",
     "status": "Archived",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/checkmark-copilot-chat.jpg",
+    "image_url": "/projects/checkmark-copilot-chat.webp",
     "image_alt": "Copilot Chat Extension interface showing an experimental portable chat context for IDEs",
     "tech": [
       { "name": "Copilot Chat", "role": "The Constraint" },

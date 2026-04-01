@@ -77,6 +77,31 @@ describe('ExpandedView Component', () => {
     expect(closeBtn).toHaveAttribute('aria-label', 'Close modal');
   });
 
+  it('renders the banner image when image_url is provided', () => {
+    render(
+      <ExpandedView
+        project={mockProject}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.getByTestId('expanded-image-container')).toBeInTheDocument();
+  });
+
+  it('omits the banner when image_url is absent', () => {
+    const projectWithoutImage = { ...mockProject, image_url: undefined };
+    render(
+      <ExpandedView
+        project={projectWithoutImage}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.queryByTestId('expanded-image-container')).not.toBeInTheDocument();
+  });
+
   it('does not render GitHub Repo link when repo_url is absent', () => {
     const projectWithoutRepo = { ...mockProject, repo_url: undefined };
     render(

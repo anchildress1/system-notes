@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Project } from '@/lib/api';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
@@ -87,6 +88,26 @@ export default function ExpandedView({
         >
           <CloseIcon />
         </button>
+
+        {project.image_url && (
+          <div className={styles.imageContainer} data-testid="expanded-image-container">
+            <div className={styles.imageWrapper}>
+              <div
+                className={styles.conceptBackground}
+                style={{ backgroundImage: `url(${project.image_url})` }}
+              />
+              <Image
+                src={project.image_url}
+                alt={project.image_alt || project.title}
+                className={styles.bannerImage}
+                fill
+                style={{ objectFit: 'cover' }}
+                priority={false}
+                sizes="(max-width: 1200px) 100vw, 1200px"
+              />
+            </div>
+          </div>
+        )}
 
         <div className={styles.content}>
           <div className={styles.header}>
