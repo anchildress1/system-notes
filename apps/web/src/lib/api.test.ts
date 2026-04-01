@@ -111,33 +111,21 @@ describe('getProjects', () => {
     );
   });
 
-  it('should return empty array on fetch failure', async () => {
+  it('should throw on fetch failure so Next.js error boundary catches it', async () => {
     fetchMock.mockResolvedValue({
       ok: false,
       status: 500,
       statusText: 'Internal Server Error',
     });
 
-    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-    const result = await getProjects();
-    expect(result).toEqual([]);
-    expect(consoleSpy).toHaveBeenCalled();
-
-    consoleSpy.mockRestore();
+    await expect(getProjects()).rejects.toThrow('Failed to fetch projects: 500');
   });
 
-  it('should return empty array on network error', async () => {
+  it('should throw on network error so Next.js error boundary catches it', async () => {
     const networkError = new Error('Network error');
     fetchMock.mockRejectedValue(networkError);
 
-    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-    const result = await getProjects();
-    expect(result).toEqual([]);
-    expect(consoleSpy).toHaveBeenCalledWith('API Error:', networkError);
-
-    consoleSpy.mockRestore();
+    await expect(getProjects()).rejects.toThrow('Network error');
   });
 });
 

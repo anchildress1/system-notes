@@ -38,17 +38,13 @@ export interface SystemDoc {
 
 // cache() deduplicates calls within a single request (layout + page both call this).
 // cache: 'no-store' ensures data is always fresh at request time, never statically pre-rendered.
+// Errors propagate to Next.js error boundaries — callers must not swallow failures silently.
 export const getProjects: () => Promise<Project[]> = cache(async () => {
-  try {
-    const res = await fetch(`${API_URL}/projects`, { cache: 'no-store' });
-    if (!res.ok) {
-      throw new Error('Failed to fetch projects');
-    }
-    return res.json();
-  } catch (error) {
-    console.warn('API Error:', error);
-    return [];
+  const res = await fetch(`${API_URL}/projects`, { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch projects: ${res.status} ${res.statusText}`);
   }
+  return res.json();
 });
 
 export async function getSystemDoc(path: string): Promise<SystemDoc | null> {
