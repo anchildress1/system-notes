@@ -287,7 +287,7 @@ async def fetch_post_content(client: httpx.AsyncClient, url: str) -> Optional[Bl
         return BlogPostInternal(
             objectID=f"blog:{slug}",
             title=json_ld.get("headline", ""),
-            blurb=final_url,
+            blurb=description,
             fact=description,
             tags=keywords,
             projects=["DEV Blog"],
