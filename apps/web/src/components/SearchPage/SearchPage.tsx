@@ -59,7 +59,7 @@ function useSiteSearchWithAI(
   enabled: boolean
 ) {
   useEffect(() => {
-    if (typeof globalThis === 'undefined' || !enabled) return;
+    if (!enabled) return;
 
     // Dynamically import the widget from node_modules
     import('@algolia/sitesearch/dist/search-askai.min.css');
@@ -78,7 +78,7 @@ function useSiteSearchWithAI(
       }
 
       // Debug logging for credential passing
-      if (typeof globalThis !== 'undefined' && globalThis.location.hostname === 'localhost') {
+      if (globalThis.location?.hostname === 'localhost') {
         console.debug('[SiteSearch] Initializing with config:', {
           appId,
           indexName,

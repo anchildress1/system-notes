@@ -62,7 +62,6 @@ export default function FactCardBack({
           onClose();
         }}
         aria-label="Close expanded view"
-        tabIndex={0}
       >
         <CloseIcon />
       </button>

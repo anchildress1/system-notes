@@ -26,9 +26,7 @@ export const useSparkles = ({
     let isMounted = true; // Track mount status to prevent leaks/crashes
 
     // Feature detect mobile for optimizations
-    const isMobile =
-      typeof globalThis !== 'undefined' &&
-      (globalThis.innerWidth < 768 || 'ontouchstart' in globalThis);
+    const isMobile = globalThis.innerWidth < 768 || 'ontouchstart' in globalThis;
 
     // Completely disable sparkles on mobile for maximum performance
     if (isMobile) return;
