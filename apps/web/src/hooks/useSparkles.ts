@@ -195,16 +195,7 @@ export const useSparkles = ({
       }
     };
 
-    // Add touch support: treat touch moves as mouse moves to spawn sparkles
-    const handleTouchMove = (e: TouchEvent) => {
-      // Only trigger on mobile to avoid double events on some devices
-      if (!isMobile) return;
-      const touch = e.touches[0];
-      handleInteraction(touch.clientX, touch.clientY);
-    };
-
     containerRef.current?.addEventListener('mousemove', handleMouseMove);
-    containerRef.current?.addEventListener('touchmove', handleTouchMove, { passive: true });
 
     return () => {
       isMounted = false;
@@ -232,7 +223,6 @@ export const useSparkles = ({
       }
       observer.disconnect();
       containerRef.current?.removeEventListener('mousemove', handleMouseMove);
-      containerRef.current?.removeEventListener('touchmove', handleTouchMove);
     };
   }, [containerRef, textRef, sparkleOnHover, sparkleNearText]);
 };
