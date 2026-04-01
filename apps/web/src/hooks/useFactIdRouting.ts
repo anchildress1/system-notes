@@ -4,20 +4,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
+import type { FactHitRecord } from '@/types/algolia';
 
-export interface OverlayHit {
-  objectID: string;
-  title: string;
-  blurb: string;
-  fact: string;
-  content?: string;
-  'tags.lvl0'?: string[];
-  'tags.lvl1'?: string[];
-  projects: string[];
-  category: string;
-  signal: number;
-  url?: string;
-}
+export type { FactHitRecord as OverlayHit };
 
 /**
  * Hook to handle factId deep-linking.
@@ -30,7 +19,7 @@ export function useFactIdRouting(indexName: string) {
   const router = useRouter();
   const pathname = usePathname();
   const factId = searchParams?.get('factId') ?? null;
-  const [fetchedHit, setFetchedHit] = useState<{ id: string; hit: OverlayHit } | null>(null);
+  const [fetchedHit, setFetchedHit] = useState<{ id: string; hit: FactHitRecord } | null>(null);
 
   // Derive overlayHit: only show when factId matches what we fetched
   const overlayHit = factId && fetchedHit?.id === factId ? fetchedHit.hit : null;
@@ -79,7 +68,10 @@ function isValidFactId(id: string): boolean {
  * Fetch a single fact card from Algolia by objectID.
  * Returns all fields needed to render the overlay.
  */
-export async function fetchFactById(factId: string, indexName: string): Promise<OverlayHit | null> {
+export async function fetchFactById(
+  factId: string,
+  indexName: string
+): Promise<FactHitRecord | null> {
   const appId = ALGOLIA_APP_ID;
   const apiKey = ALGOLIA_SEARCH_KEY;
   if (!appId || !apiKey || !hasValidAlgoliaCredentials(appId, apiKey)) {
@@ -120,7 +112,7 @@ export async function fetchFactById(factId: string, indexName: string): Promise<
 
     const firstResult = results[0];
     if ('hits' in firstResult && firstResult.hits.length > 0) {
-      return firstResult.hits[0] as OverlayHit;
+      return firstResult.hits[0] as FactHitRecord;
     }
 
     return null;
