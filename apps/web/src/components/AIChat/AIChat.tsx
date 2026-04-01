@@ -25,6 +25,7 @@ import { FaBrain, FaUser } from 'react-icons/fa';
 
 interface ChatNavContextType {
   navigate: (item: ChatHitItem) => void;
+  getItemUrl: (item: ChatHitItem) => string;
 }
 const ChatNavContext = createContext<ChatNavContextType | null>(null);
 
@@ -66,23 +67,28 @@ interface ChatHitItem {
 const ChatItemComponent = ({
   item,
   onAuxClick,
-  sendEvent: _sendEvent,
-  onClick: _onClick,
+  sendEvent,
+  onClick,
 }: {
   item: ChatHitItem;
-  sendEvent: unknown;
+  sendEvent: (eventType: string, item: ChatHitItem, eventName: string) => void;
   onClick?: () => void;
   onAuxClick?: () => void;
 }) => {
   const ctx = useContext(ChatNavContext);
-  const href = `/search?${new URLSearchParams({ factId: item.objectID }).toString()}`;
+  const href =
+    ctx?.getItemUrl(item) ?? `/search?${new URLSearchParams({ factId: item.objectID }).toString()}`;
   return (
     <a
       href={href}
       className={styles.chatResultCard}
       onClick={(e) => {
-        e.preventDefault();
-        ctx?.navigate(item);
+        sendEvent('click', item, 'Item Clicked');
+        onClick?.();
+        if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+          e.preventDefault();
+          ctx?.navigate(item);
+        }
       }}
       onAuxClick={onAuxClick}
     >
@@ -199,19 +205,23 @@ export default function AIChat() {
     return () => observer.disconnect();
   }, []);
 
+  const getItemUrl = useCallback((item: ChatHitItem): string => {
+    const params = new URLSearchParams();
+    params.set('factId', item.objectID);
+    if (lastChatQuery.current) params.set('query', lastChatQuery.current);
+    return `/search?${params.toString()}`;
+  }, []);
+
   const handleChatItemNavigate = useCallback(
     (item: ChatHitItem) => {
-      const params = new URLSearchParams();
-      params.set('factId', item.objectID);
-      if (lastChatQuery.current) params.set('query', lastChatQuery.current);
-      router.push(`/search?${params.toString()}`);
+      router.push(getItemUrl(item));
     },
-    [router]
+    [router, getItemUrl]
   );
 
   const chatNavContext = useMemo(
-    () => ({ navigate: handleChatItemNavigate }),
-    [handleChatItemNavigate]
+    () => ({ navigate: handleChatItemNavigate, getItemUrl }),
+    [handleChatItemNavigate, getItemUrl]
   );
 
   const chatContent = (

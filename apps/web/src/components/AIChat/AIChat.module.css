@@ -145,6 +145,13 @@
   box-shadow: 0 0 12px hsl(var(--color-accent-purple) / 0.15);
 }
 
+.chatResultCard:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 2px;
+  border-color: hsl(var(--color-accent-purple) / 0.4);
+  box-shadow: 0 0 12px hsl(var(--color-accent-purple) / 0.2);
+}
+
 .chatResultCategory {
   font-family: var(--font-mono);
   font-size: 0.6rem;

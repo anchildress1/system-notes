@@ -75,7 +75,7 @@ export default function FactCardBack({
         />
       )}
 
-      <h3 id={dialogTitleId} className="sr-only">
+      <h3 id={dialogTitleId} className="visually-hidden">
         {hit.title}
       </h3>
 
