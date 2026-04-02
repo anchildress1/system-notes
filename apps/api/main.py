@@ -8,7 +8,7 @@ import json
 import logging
 import re
 import asyncio
-import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from fastapi.exceptions import RequestValidationError
