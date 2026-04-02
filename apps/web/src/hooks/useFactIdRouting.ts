@@ -59,9 +59,21 @@ export function useFactIdRouting(indexName: string) {
   return { factId, overlayHit, closeOverlay };
 }
 
-/** Validates that a factId contains only safe characters for use in an Algolia filter. */
+/** Lightweight structural check that an Algolia hit contains the fields FactHitRecord requires. */
+function isFactHitRecord(hit: unknown): hit is FactHitRecord {
+  return (
+    typeof hit === 'object' &&
+    hit !== null &&
+    'objectID' in hit &&
+    'title' in hit &&
+    'category' in hit &&
+    'projects' in hit
+  );
+}
+
+/** Validates that a factId contains only safe alphanumeric/separator characters and is at most 200 chars. Prevents filter injection before the value reaches Algolia. */
 function isValidFactId(id: string): boolean {
-  return /^[a-zA-Z0-9_:\-]{1,200}$/.test(id);
+  return /^[a-zA-Z0-9_.:\-]{1,200}$/.test(id);
 }
 
 /**
@@ -112,7 +124,11 @@ export async function fetchFactById(
 
     const firstResult = results[0];
     if ('hits' in firstResult && firstResult.hits.length > 0) {
-      return firstResult.hits[0] as FactHitRecord;
+      const candidate = firstResult.hits[0];
+      if (isFactHitRecord(candidate)) {
+        return candidate;
+      }
+      console.error('Algolia returned a hit missing required FactHitRecord fields:', candidate);
     }
 
     return null;

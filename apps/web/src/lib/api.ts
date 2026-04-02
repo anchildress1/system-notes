@@ -36,9 +36,10 @@ export interface SystemDoc {
   error?: string;
 }
 
-// cache() deduplicates calls within a single request (layout + page both call this).
+// React.cache() deduplicates getProjects calls within a single server request
+// (layout.tsx + page.tsx both call it). This is request-scoped memoization, not persistent caching.
 // cache: 'no-store' ensures data is always fresh at request time, never statically pre-rendered.
-// Errors propagate to Next.js error boundaries — callers must not swallow failures silently.
+// Throws on failure — root layout catches with a fallback; route pages surface via error.tsx.
 export const getProjects: () => Promise<Project[]> = cache(async () => {
   const res = await fetch(`${API_URL}/projects`, { cache: 'no-store' });
   if (!res.ok) {

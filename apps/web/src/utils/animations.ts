@@ -1,10 +1,7 @@
 /**
- * Shared Framer Motion animation variants and transitions.
- * Keeps Choices (search) and Builds (projects) pages consistent.
- * Durations align with globals.css tokens:
- *   --transition-fast: 0.15s
- *   --transition-base: 0.2s
- *   --transition-slow: 0.3s
+ * Shared Framer Motion animation variants and transitions for card-flip overlays.
+ * Used by FactCard and ExpandedView. Durations are tuned for perceived performance
+ * and intentionally differ from the CSS transition tokens in globals.css.
  */
 
 /* ── Card-flip overlay (background dim) ── */

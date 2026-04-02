@@ -175,7 +175,7 @@ describe('getSystemDoc edge cases', () => {
   it('should handle non-Error thrown values', async () => {
     fetchMock.mockRejectedValue('string error');
 
-    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     const result = await getSystemDoc('test/path');
     expect(result?.error).toBe('string error');

@@ -387,6 +387,24 @@ describe('fetchFactById', () => {
     expect(searchMock).not.toHaveBeenCalled();
   });
 
+  it('returns null and does not call Algolia when factId contains double-quote characters', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    const result = await fetchFactById('card"OR 1:1', 'test-index');
+    expect(result).toBeNull();
+    expect(searchMock).not.toHaveBeenCalled();
+  });
+
+  it('returns null and does not call Algolia when factId is an empty string', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    const result = await fetchFactById('', 'test-index');
+    expect(result).toBeNull();
+    expect(searchMock).not.toHaveBeenCalled();
+  });
+
   it('returns null and does not call Algolia when factId exceeds 200 characters', async () => {
     process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
     process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
@@ -477,6 +495,16 @@ describe('closeOverlay URL handling', () => {
     const [newUrl] = mockReplace.mock.calls[0];
     expect(String(newUrl)).toBe('/search');
     expect(String(newUrl)).not.toContain('?');
+  });
+
+  it('passes { scroll: false } to router.replace to prevent scroll-to-top', async () => {
+    const { result } = await setupCloseOverlay();
+
+    act(() => {
+      result.current.closeOverlay();
+    });
+
+    expect(mockReplace).toHaveBeenCalledWith(expect.any(String), { scroll: false });
   });
 
   it('closeOverlay is idempotent — second call is a no-op after state is cleared', async () => {
