@@ -300,10 +300,10 @@ describe('useFactIdRouting', () => {
       >
     );
 
-    renderHook(() => useFactIdRouting('test-index'));
+    const { result } = renderHook(() => useFactIdRouting('test-index'));
 
-    // Wait for any async operations to complete
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    // Wait for the fetch to settle before checking router calls
+    await waitFor(() => expect(result.current.overlayHit).not.toBeNull());
 
     // router.replace must NOT have been called to add filter params — only user actions trigger closeOverlay
     const filterCalls = mockReplace.mock.calls.filter(
