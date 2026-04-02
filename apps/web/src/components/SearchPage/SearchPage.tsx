@@ -10,7 +10,7 @@ import {
   Configure,
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
-import { Plus, Minus } from 'lucide-react';
+import { FiPlus, FiMinus } from 'react-icons/fi';
 import 'instantsearch.css/themes/reset.css';
 import styles from './SearchPage.module.css';
 import FactCard from '../FactCard/FactCard';
@@ -301,9 +301,9 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Category</h2>
                   {collapsedSections.category ? (
-                    <Plus size={14} aria-hidden="true" />
+                    <FiPlus size={14} aria-hidden="true" />
                   ) : (
-                    <Minus size={14} aria-hidden="true" />
+                    <FiMinus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-category">
@@ -323,9 +323,9 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Builds</h2>
                   {collapsedSections.builds ? (
-                    <Plus size={14} aria-hidden="true" />
+                    <FiPlus size={14} aria-hidden="true" />
                   ) : (
-                    <Minus size={14} aria-hidden="true" />
+                    <FiMinus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-builds">
@@ -345,9 +345,9 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Tags</h2>
                   {collapsedSections.tags ? (
-                    <Plus size={14} aria-hidden="true" />
+                    <FiPlus size={14} aria-hidden="true" />
                   ) : (
-                    <Minus size={14} aria-hidden="true" />
+                    <FiMinus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-tags">

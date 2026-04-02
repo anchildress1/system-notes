@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Play, Pause } from 'lucide-react';
+import { FiPlay, FiPause } from 'react-icons/fi';
 import styles from './MusicPlayer.module.css';
 
 export default function MusicPlayer() {
@@ -49,7 +49,7 @@ export default function MusicPlayer() {
         }
         data-testid="play-button"
       >
-        {isPlaying ? <Pause size={24} /> : <Play size={24} />}
+        {isPlaying ? <FiPause size={24} /> : <FiPlay size={24} />}
         <span className={styles.explicitBadge} aria-hidden="true">
           E
         </span>
