@@ -149,7 +149,7 @@ async def get_projects():
         projects = [_parse_project_item(item) for item in content]
         projects.sort(key=lambda p: p.order_rank)
         return projects
-    except Exception as e:
+    except (OSError, json.JSONDecodeError, ValueError) as e:
         logger.error("Error loading projects: %s", e)
         return JSONResponse(status_code=500, content={"error": "Failed to load projects"})
 
@@ -189,9 +189,10 @@ async def get_system_doc(doc_path: str):
         content = await asyncio.to_thread(target_path.read_text, encoding="utf-8")
 
         return {"content": content, "format": "markdown", "path": "/".join(safe_parts)}
-    except Exception as e:
+    except (OSError, ValueError) as e:
         logger.error("Error serving doc: %s", e)
         return JSONResponse(status_code=500, content={"error": "Internal server error"})
+
 CRAWLY_BASE_URL = "https://crawly.checkmarkdevtools.dev"
 CRAWLY_SITEMAP_URL = f"{CRAWLY_BASE_URL}/sitemap.xml"
 
@@ -236,7 +237,7 @@ async def fetch_sitemap_urls() -> List[str]:
             ]
             logger.info("Found %s post URLs in sitemap", len(urls))
             return urls
-    except Exception as e:
+    except (httpx.HTTPError, ET.ParseError) as e:
         logger.error("Error fetching sitemap: %s", e)
         return []
 
@@ -296,7 +297,7 @@ async def fetch_post_content(client: httpx.AsyncClient, url: str) -> Optional[Bl
             published_date=json_ld.get("datePublished"),
             reading_time=reading_time,
         )
-    except Exception as e:
+    except (httpx.HTTPError, KeyError, ValueError) as e:
         logger.warning("Failed to fetch post %s: %s", url, e)
         return None
 
