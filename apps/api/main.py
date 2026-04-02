@@ -43,7 +43,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     logger.error("Validation error: %s", _sanitize_log(exc.body))
     return JSONResponse(
         status_code=400,
-        content={"detail": exc.errors(), "body": str(exc.body)},
+        content={"detail": exc.errors()},
     )
 
 
