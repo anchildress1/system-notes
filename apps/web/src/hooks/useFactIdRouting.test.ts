@@ -405,6 +405,94 @@ describe('fetchFactById', () => {
     expect(searchMock).not.toHaveBeenCalled();
   });
 
+  it('accepts factId containing dots (blog slugs like v2.0-release)', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    searchMock.mockResolvedValue({
+      results: [
+        {
+          hits: [
+            {
+              objectID: 'blog:v2.0-release',
+              title: 'V2 Release',
+              blurb: 'Release notes',
+              fact: 'Shipped v2',
+              category: 'Technical',
+              projects: ['system-notes'],
+              signal: 5,
+            },
+          ],
+        },
+      ],
+    });
+
+    const result = await fetchFactById('blog:v2.0-release', 'test-index');
+    expect(result).not.toBeNull();
+    expect(result?.objectID).toBe('blog:v2.0-release');
+    expect(searchMock).toHaveBeenCalled();
+  });
+
+  it('returns null when Algolia hit is missing required title field', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    searchMock.mockResolvedValue({
+      results: [{ hits: [{ objectID: 'card:malformed', category: 'X', projects: [] }] }],
+    });
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const result = await fetchFactById('card:malformed', 'test-index');
+    expect(result).toBeNull();
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Algolia returned a hit missing required FactHitRecord fields:',
+      expect.any(Object)
+    );
+    consoleSpy.mockRestore();
+  });
+
+  it('returns null when Algolia hit is missing required category field', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    searchMock.mockResolvedValue({
+      results: [{ hits: [{ objectID: 'card:no-cat', title: 'T', projects: [] }] }],
+    });
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const result = await fetchFactById('card:no-cat', 'test-index');
+    expect(result).toBeNull();
+    consoleSpy.mockRestore();
+  });
+
+  it('returns null when Algolia hit is missing required projects field', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    searchMock.mockResolvedValue({
+      results: [{ hits: [{ objectID: 'card:no-proj', title: 'T', category: 'X' }] }],
+    });
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const result = await fetchFactById('card:no-proj', 'test-index');
+    expect(result).toBeNull();
+    consoleSpy.mockRestore();
+  });
+
+  it('returns null when Algolia hit is not an object', async () => {
+    process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+
+    searchMock.mockResolvedValue({
+      results: [{ hits: ['not-an-object'] }],
+    });
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const result = await fetchFactById('card:string-hit', 'test-index');
+    expect(result).toBeNull();
+    consoleSpy.mockRestore();
+  });
+
   it('returns null and does not call Algolia when factId exceeds 200 characters', async () => {
     process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
     process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
