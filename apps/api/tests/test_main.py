@@ -2,6 +2,7 @@
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock, AsyncMock
 from main import app, _blog_cache, extract_json_ld, extract_meta_content
+import httpx
 import pytest
 
 client = TestClient(app)
@@ -91,7 +92,7 @@ def test_get_system_doc_error_handling(mock_path):
     mock_target.is_relative_to.return_value = True
     mock_target.is_file.return_value = True
     mock_target.name = "fail.md"
-    mock_target.read_text.side_effect = Exception("Disk error")
+    mock_target.read_text.side_effect = OSError("Disk error")
 
     response = client.get("/system/doc/fail.md")
     assert response.status_code == 500
@@ -257,7 +258,7 @@ def test_blog_search_limit_validation():
 
 
 def test_blog_search_sitemap_failure(mock_blog_client):
-    mock_blog_client([Exception("Sitemap unreachable")])
+    mock_blog_client([httpx.HTTPError("Sitemap unreachable")])
 
     response = client.get("/blog/search")
     assert response.status_code == 200
@@ -268,7 +269,7 @@ def test_blog_search_sitemap_failure(mock_blog_client):
 
 def test_blog_search_post_failure(mock_blog_client, standard_blog_responses):
     sitemap, post = standard_blog_responses
-    mock_blog_client([sitemap, Exception("Post unreachable"), post])
+    mock_blog_client([sitemap, httpx.HTTPError("Post unreachable"), post])
 
     response = client.get("/blog/search")
     assert response.status_code == 200
