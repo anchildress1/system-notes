@@ -203,12 +203,10 @@ export const useSparkles = ({
           if (app.ticker) app.ticker.stop();
 
           try {
-            // PIXI v8 destruction - use options object
+            // PIXI v8 destroy accepts removeView and children; texture/baseTexture are not valid v8 options
             app.destroy({
               removeView: true,
               children: true,
-              texture: true,
-              baseTexture: true,
             });
           } catch (e) {
             console.warn('PIXI destroy error:', e);
