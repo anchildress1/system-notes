@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     siteName: 'System Notes',
     images: [
       {
-        url: '/projects/system-notes.jpg',
+        url: '/projects/system-notes.webp',
         width: 1200,
         height: 630,
         alt: 'System Notes interface showing a grid of AI engineering projects and architectural decisions',
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     title: "Ashley's System Notes",
     description:
       "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
-    images: ['/projects/system-notes.jpg'],
+    images: ['/projects/system-notes.webp'],
   },
   robots: {
     index: true,
