@@ -80,6 +80,7 @@ export default function ExpandedView({
         }}
       >
         <button
+          type="button"
           className={`close-button-global ${styles.closeButton}`}
           onClick={onClose}
           aria-label="Close modal"
