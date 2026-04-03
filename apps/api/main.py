@@ -165,7 +165,7 @@ async def get_system_doc(doc_path: str):
 
         # If the resulting path list is empty (e.g. user sent "///" or ".."), return error
         if not safe_parts:
-             return JSONResponse(status_code=400, content={"error": "Invalid path components"})
+            return JSONResponse(status_code=400, content={"error": "Invalid path components"})
 
         # Reconstruct path using pathlib, anchored to api_root
         api_root = Path(__file__).resolve().parent
@@ -175,16 +175,16 @@ async def get_system_doc(doc_path: str):
         # Check the *resolved* path's extension/name just to be sure, although secure_filename handles strictness.
         ALLOWED_EXTENSIONS = {".md", ".json", ".txt"}
         if not any(str(target_path.name).endswith(ext) for ext in ALLOWED_EXTENSIONS):
-             logger.warning("File access blocked (disallowed extension): %s", target_path)
-             return JSONResponse(status_code=400, content={"error": "File type not allowed"})
+            logger.warning("File access blocked (disallowed extension): %s", target_path)
+            return JSONResponse(status_code=400, content={"error": "File type not allowed"})
 
         # Security Rule 1.4: Resolve and Verify Root (Defense in Depth)
         if not target_path.is_relative_to(api_root):
-             logger.warning("Path traversal attempt blocked (escaped root)")
-             return JSONResponse(status_code=400, content={"error": "Invalid path resolution"})
+            logger.warning("Path traversal attempt blocked (escaped root)")
+            return JSONResponse(status_code=400, content={"error": "Invalid path resolution"})
 
         if not target_path.is_file():
-             return JSONResponse(status_code=404, content={"error": "Document not found"})
+            return JSONResponse(status_code=404, content={"error": "Document not found"})
 
         content = await asyncio.to_thread(target_path.read_text, encoding="utf-8")
 
@@ -321,9 +321,12 @@ async def get_all_blog_posts() -> List[BlogPostInternal]:
     posts.sort(key=lambda x: x.published_date or "", reverse=True)
 
     logger.info("Fetched %s valid posts", len(posts))
-    if posts:
-        _blog_cache["data"] = posts
-        _blog_cache["expires"] = now + timedelta(minutes=15)
+    # Cache results even when empty to avoid repeatedly hammering upstream services.
+    # Use a shorter TTL for the empty (negative) cache so we can recover quickly
+    # when posts eventually become available.
+    ttl_minutes = 15 if posts else 1
+    _blog_cache["data"] = posts
+    _blog_cache["expires"] = now + timedelta(minutes=ttl_minutes)
     return posts
 
 
