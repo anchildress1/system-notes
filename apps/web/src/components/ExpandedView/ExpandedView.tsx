@@ -6,7 +6,7 @@ import { Project } from '@/lib/api';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
 import { overlayTransition, cardFlipVariants } from '@/utils/animations';
-import { CloseIcon, TrophyIcon } from '@/components/icons';
+import { CloseIcon } from '@/components/icons';
 
 interface ExpandedViewProps {
   project: Project;
@@ -112,59 +112,19 @@ export default function ExpandedView({
           </div>
         )}
 
-        {project.image_url && (
-          <div className={styles.imageContainer} data-testid="expanded-image-container">
-            <div className={styles.imageWrapper}>
-              <div
-                className={styles.conceptBackground}
-                style={{ backgroundImage: `url(${project.image_url})` }}
-              />
-              <Image
-                src={project.image_url}
-                alt={project.image_alt || project.title}
-                className={styles.bannerImage}
-                fill
-                style={{ objectFit: 'cover' }}
-                priority={false}
-                sizes="(max-width: 1200px) 100vw, 1200px"
-              />
-            </div>
-          </div>
-        )}
-
         <div className={styles.content}>
           <div className={styles.header}>
             <div className={styles.headerContent}>
               <div className={styles.titleRow}>
-                <div className={styles.titleGroup}>
-                  <h2 className={styles.title} id="modal-title">
-                    {project.title}
-                  </h2>
-                  <div className={styles.metaRow}>
-                    <span>{project.owner}</span>
-                    {project.repo_url && (
-                      <a
-                        href={project.repo_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.repoLinkCompact}
-                        aria-label={`View ${project.title} on GitHub`}
-                      >
-                        GitHub
-                      </a>
-                    )}
-                  </div>
-                </div>
-                <div className={styles.titleActions}>
-                  {project.award && (
-                    <div className="award-badge">
-                      <TrophyIcon className="award-badge-icon" />
-                      <span>{project.award}</span>
-                    </div>
-                  )}
-                  {project.status && <span className={styles.statusBadge}>{project.status}</span>}
-                </div>
+                <h2 className={styles.title} id="modal-title">
+                  {project.title}
+                </h2>
+                {project.status && <span className={styles.statusBadge}>{project.status}</span>}
               </div>
+              <div className={styles.metaRow}>
+                <span>{project.owner}</span>
+              </div>
+              {project.description && <p className={styles.subheader}>{project.description}</p>}
             </div>
           </div>
 
@@ -201,6 +161,33 @@ export default function ExpandedView({
                       <span className={styles.tagRole}>{t.role}</span>
                     </div>
                   ))}
+                </div>
+
+                <div className={styles.actions}>
+                  {project.repo_url && (
+                    <a
+                      href={project.repo_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.repoLink}
+                    >
+                      GitHub Repo
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
