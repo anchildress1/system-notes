@@ -112,6 +112,26 @@ export default function ExpandedView({
           </div>
         )}
 
+        {project.image_url && (
+          <div className={styles.imageContainer} data-testid="expanded-image-container">
+            <div className={styles.imageWrapper}>
+              <div
+                className={styles.conceptBackground}
+                style={{ backgroundImage: `url(${project.image_url})` }}
+              />
+              <Image
+                src={project.image_url}
+                alt={project.image_alt || project.title}
+                className={styles.bannerImage}
+                fill
+                style={{ objectFit: 'cover' }}
+                priority={false}
+                sizes="(max-width: 1200px) 100vw, 1200px"
+              />
+            </div>
+          </div>
+        )}
+
         <div className={styles.content}>
           <div className={styles.header}>
             <div className={styles.headerContent}>
