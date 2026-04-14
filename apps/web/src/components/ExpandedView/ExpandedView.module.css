@@ -49,7 +49,7 @@
 
 .imageContainer {
   width: 100%;
-  height: 200px;
+  height: 160px;
   position: relative;
   background: black;
   flex-shrink: 0;
@@ -102,11 +102,27 @@
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
+  gap: var(--space-sm);
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.titleActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-xs);
+  flex-shrink: 0;
 }
 
 .metaRow {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: hsl(var(--color-accent-teal));
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -137,12 +153,26 @@
   box-shadow: 0 0 10px hsl(var(--color-accent-teal) / 0.1);
 }
 
-.subheader {
-  font-size: 1.1rem;
-  color: hsl(var(--color-text-secondary));
-  margin-top: var(--space-sm);
-  line-height: 1.4;
-  max-width: 80ch;
+.repoLinkCompact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.8rem;
+  background: hsl(var(--color-text-primary) / 0.08);
+  color: hsl(var(--color-text-primary));
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  border: 1px solid hsl(var(--color-border));
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.repoLinkCompact:hover {
+  background: hsl(var(--color-accent-pink) / 0.1);
+  border-color: hsl(var(--color-accent-pink) / 0.5);
+  color: hsl(var(--color-accent-pink));
 }
 
 .body {
@@ -198,33 +228,6 @@
   color: hsl(var(--color-text-secondary));
 }
 
-.actions {
-  margin-top: var(--space-md);
-  display: flex;
-  justify-content: flex-start;
-}
-
-.repoLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.8rem 1.8rem;
-  background: hsl(var(--color-text-primary));
-  color: hsl(var(--color-bg-base));
-  font-weight: 600;
-  font-size: 0.95rem;
-  border-radius: var(--radius-pill);
-  transition: transform var(--transition-base);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.repoLink:hover {
-  background: hsl(var(--color-bg-surface));
-  border: 2px solid hsl(var(--color-accent-pink));
-  color: hsl(var(--color-accent-pink));
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px hsl(var(--color-accent-pink) / 0.3);
-}
 
 .mainColumn {
   display: flex;
@@ -281,7 +284,7 @@
   }
 
   .imageContainer {
-    height: 240px;
+    height: 180px;
   }
 
   .body {

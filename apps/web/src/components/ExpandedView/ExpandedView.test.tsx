@@ -20,7 +20,7 @@ describe('ExpandedView Component', () => {
     expect(screen.getByText('The core purpose of the project.')).toBeInTheDocument();
     expect(screen.getByText('Long detailed description.')).toBeInTheDocument();
     expect(screen.getByText('Great outcome.')).toBeInTheDocument();
-    expect(screen.getByText('GitHub Repo')).toBeInTheDocument();
+    expect(screen.getByText('GitHub')).toBeInTheDocument();
   });
 
   it('calls onClose when close button is clicked', () => {
@@ -112,7 +112,7 @@ describe('ExpandedView Component', () => {
         onExitComplete={() => {}}
       />
     );
-    expect(screen.queryByText('GitHub Repo')).not.toBeInTheDocument();
+    expect(screen.queryByText('GitHub')).not.toBeInTheDocument();
   });
 
   it('renders blog links if provided', () => {

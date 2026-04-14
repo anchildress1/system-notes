@@ -116,15 +116,29 @@ export default function ExpandedView({
           <div className={styles.header}>
             <div className={styles.headerContent}>
               <div className={styles.titleRow}>
-                <h2 className={styles.title} id="modal-title">
-                  {project.title}
-                </h2>
-                {project.status && <span className={styles.statusBadge}>{project.status}</span>}
+                <div className={styles.titleGroup}>
+                  <h2 className={styles.title} id="modal-title">
+                    {project.title}
+                  </h2>
+                  <div className={styles.metaRow}>
+                    <span>{project.owner}</span>
+                  </div>
+                </div>
+                <div className={styles.titleActions}>
+                  {project.status && <span className={styles.statusBadge}>{project.status}</span>}
+                  {project.repo_url && (
+                    <a
+                      href={project.repo_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.repoLinkCompact}
+                      aria-label={`View ${project.title} on GitHub`}
+                    >
+                      GitHub
+                    </a>
+                  )}
+                </div>
               </div>
-              <div className={styles.metaRow}>
-                <span>{project.owner}</span>
-              </div>
-              {project.description && <p className={styles.subheader}>{project.description}</p>}
             </div>
           </div>
 
@@ -161,33 +175,6 @@ export default function ExpandedView({
                       <span className={styles.tagRole}>{t.role}</span>
                     </div>
                   ))}
-                </div>
-
-                <div className={styles.actions}>
-                  {project.repo_url && (
-                    <a
-                      href={project.repo_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.repoLink}
-                    >
-                      GitHub Repo
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                      </svg>
-                    </a>
-                  )}
                 </div>
               </div>
             </div>
