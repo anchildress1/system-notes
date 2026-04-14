@@ -41,7 +41,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/system-notes",
     "app_url": "https://unstable.anchildress1.dev",
-    "order_rank": 10,
+    "order_rank": 1,
     "updated_at": "2026-02-08",
     "related_project_ids": [
       "underfoot-underground-travel-planner",
@@ -73,9 +73,78 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/supascribe-notes-mcp",
-    "order_rank": 15,
+    "order_rank": 2,
     "updated_at": "2026-02-26",
     "related_project_ids": ["system-notes"]
+  },
+  {
+    "objectID": "legacy-smelter",
+    "node_type": "project",
+    "name": "Legacy Smelter",
+    "aliases": ["Hotfix"],
+    "what_it_is": "A satirical incident reporting app where Hotfix the dragon roasts uploaded screenshots and thermally decommissions them.",
+    "why_it_exists": "Built for the DEV April Fools Challenge to turn legacy-code frustration into a shared, funny incident-management experience.",
+    "long_description": "Legacy Smelter is a satire project built around a simple premise: some software problems feel less fixable than condemnable. Users upload screenshots of cursed code, bad UI, bugs, or other digital offenses, and Hotfix the dragon generates a deadpan enterprise-style incident report before smelting the offending artifact into slag. The system adds each report to a global manifest where the community can escalate and share incidents, turning individual developer pain into a public leaderboard of P0 disasters.",
+    "outcome": "Delivered a live, shareable joke product that combines structured Gemini-generated incident reports, animated dragon-based remediation, and community escalation into a polished challenge submission.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/legacy-smelter.webp",
+    "image_alt": "Hotfix the dragon smelting an uploaded legacy-code screenshot into molten slag while generating a structured incident report",
+    "tech": [
+      { "name": "React 19", "role": "Frontend Framework" },
+      { "name": "Tailwind CSS v4", "role": "Styling" },
+      { "name": "PixiJS 8", "role": "Dragon Animation" },
+      { "name": "Howler.js", "role": "Audio" },
+      { "name": "Gemini Flash", "role": "AI Analysis" },
+      { "name": "Google Cloud", "role": "Deployment" }
+    ],
+    "blog_posts": [
+      {
+        "title": "Meet Hotfix—The Dragon Your Legacy Code Deserves",
+        "url": "https://dev.to/anchildress1/meet-hotfix-the-dragon-your-legacy-code-deserves-4141"
+      }
+    ],
+    "project_type": "experiment",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/legacy-smelter",
+    "app_url": "https://hotfix.anchildress1.dev",
+    "order_rank": 100,
+    "updated_at": "2026-04-13",
+    "related_project_ids": []
+  },
+  {
+    "objectID": "carbon-trace",
+    "node_type": "project",
+    "name": "Carbon Trace",
+    "aliases": ["coal and code"],
+    "what_it_is": "An immersive memoir about growing up under rigid gender expectations and fighting to become an engineer anyway.",
+    "why_it_exists": "Built to turn a personal story about gender bias, endurance, and becoming into something people can feel rather than just understand intellectually.",
+    "long_description": "Carbon Trace is a narrative art experience drawn from my own life growing up in a small Appalachian coal town where gender roles were sharply defined. It follows the emotional and symbolic path from those early expectations to the engineer I became, using the diamond as a metaphor for pressure, transformation, and persistence. The project is intentionally immersive because it is not meant to present abstract ideas about equality. It is meant to carry the feeling of living through bias, pushing back, and refusing to disappear inside a world that was not built with you in mind.",
+    "outcome": "Delivered a personal, immersive impact piece that transforms lived experience with gender bias into a narrative others can feel and recognize.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/carbon-trace.webp",
+    "image_alt": "Carbon Trace visual experience following a diamond metaphor through pressure, bias, and transformation toward becoming",
+    "tech": [
+      { "name": "Canvas 2D", "role": "Primary Rendering Layer" },
+      { "name": "PixiJS", "role": "Displacement Effects" },
+      { "name": "GSAP", "role": "Scene Timelines" },
+      { "name": "Howler.js", "role": "Layered Audio" },
+      { "name": "Vanilla JavaScript", "role": "Application Architecture" }
+    ],
+    "blog_posts": [
+      {
+        "title": "Forged Between Coal and Code",
+        "url": "https://dev.to/anchildress1/forged-between-coal-and-code-phi"
+      }
+    ],
+    "project_type": "experience",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/carbon-trace",
+    "app_url": "https://carbon-trace.anchildress1.dev",
+    "order_rank": 26,
+    "updated_at": "2026-04-13",
+    "related_project_ids": []
   },
   {
     "objectID": "dev-community-dashboard",
@@ -112,7 +181,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/ChecKMarKDevTools/dev-community-dashboard",
     "app_url": "https://dev-community-dashboard.checkmarkdevtools.dev",
-    "order_rank": 17,
+    "order_rank": 170,
     "updated_at": "2026-03-04",
     "related_project_ids": []
   },
@@ -139,7 +208,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/delegate-action",
-    "order_rank": 20,
+    "order_rank": 200,
     "updated_at": "2026-02-01",
     "related_project_ids": ["rai-lint", "awesome-github-copilot"]
   },
@@ -166,7 +235,7 @@
     "project_type": "experiment",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/my-hermantic-agent",
-    "order_rank": 30,
+    "order_rank": 300,
     "updated_at": "2026-02-01",
     "related_project_ids": ["underfoot-underground-travel-planner"]
   },
@@ -207,7 +276,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/rai-lint",
-    "order_rank": 40,
+    "order_rank": 400,
     "updated_at": "2026-02-01",
     "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"]
   },
@@ -243,7 +312,7 @@
     "project_type": "experiment",
     "completion_state": "archived",
     "repo_url": "https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner",
-    "order_rank": 50,
+    "order_rank": 500,
     "updated_at": "2026-02-01",
     "related_project_ids": ["my-hermantic-agent"]
   },
@@ -291,7 +360,7 @@
     "project_type": "resource",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
-    "order_rank": 60,
+    "order_rank": 600,
     "updated_at": "2026-02-01",
     "related_project_ids": ["delegate-action", "checkmark-copilot-chat"]
   },
@@ -323,7 +392,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/devto-mirror",
-    "order_rank": 70,
+    "order_rank": 700,
     "updated_at": "2026-02-01"
   },
   {
@@ -349,7 +418,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/eslint-config-echo",
-    "order_rank": 80,
+    "order_rank": 800,
     "updated_at": "2026-02-01"
   },
   {
@@ -374,7 +443,7 @@
     "project_type": "experiment",
     "completion_state": "failed",
     "repo_url": "https://github.com/CheckMarKDevTools/checkmark-copilot-chat",
-    "order_rank": 90,
+    "order_rank": 900,
     "updated_at": "2026-02-01",
     "related_project_ids": ["awesome-github-copilot"]
   }
