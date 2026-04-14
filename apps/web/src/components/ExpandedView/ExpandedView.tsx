@@ -80,13 +80,17 @@ export default function ExpandedView({
           if (definition === 'exit') onExitComplete();
         }}
       >
-        <button
-          className={`close-button-global ${styles.closeButton}`}
-          onClick={onClose}
-          aria-label="Close modal"
-        >
-          <CloseIcon />
-        </button>
+        {/* Zero-height sticky wrapper keeps button visible over scroll without displacing content */}
+        <div className={styles.closeWrap}>
+          <button
+            type="button"
+            className={`close-button-global ${styles.closeButton}`}
+            onClick={onClose}
+            aria-label="Close modal"
+          >
+            <CloseIcon />
+          </button>
+        </div>
 
         {project.image_url && (
           <div className={styles.imageContainer} data-testid="expanded-image-container">
@@ -128,20 +132,20 @@ export default function ExpandedView({
             <div className={styles.mainColumn}>
               {project.purpose && (
                 <div className={styles.section}>
-                  <h2 className={styles.sectionTitle}>Purpose</h2>
+                  <h3 className={styles.sectionTitle}>Purpose</h3>
                   <p className={styles.bodyText}>{project.purpose}</p>
                 </div>
               )}
               {project.long_description && (
                 <div className={styles.section}>
-                  <h2 className={styles.sectionTitle}>Project Output</h2>
+                  <h3 className={styles.sectionTitle}>Project Output</h3>
                   <p className={styles.bodyText}>{project.long_description}</p>
                 </div>
               )}
 
               {project.outcome && (
                 <div className={styles.section}>
-                  <h2 className={styles.sectionTitle}>Outcome</h2>
+                  <h3 className={styles.sectionTitle}>Outcome</h3>
                   <p className={styles.bodyText}>{project.outcome}</p>
                 </div>
               )}
@@ -149,7 +153,7 @@ export default function ExpandedView({
 
             <div className={styles.sideColumn}>
               <div className={styles.techStack}>
-                <h2 className={styles.sectionTitle}>Tech Stack</h2>
+                <h3 className={styles.sectionTitle}>Tech Stack</h3>
                 <div className={styles.tags}>
                   {project.tech.map((t) => (
                     <div key={t.name} className={styles.tagItem}>
@@ -190,7 +194,7 @@ export default function ExpandedView({
 
             {project.blog_posts && project.blog_posts.length > 0 && (
               <div className={styles.fullWidthSection}>
-                <h2 className={styles.sectionTitle}>Related Reading</h2>
+                <h3 className={styles.sectionTitle}>Related Reading</h3>
                 <ul className={styles.blogList}>
                   {project.blog_posts.map((blog) => (
                     <li key={blog.url} className={styles.blogItem}>

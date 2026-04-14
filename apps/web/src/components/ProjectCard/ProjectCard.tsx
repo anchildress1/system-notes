@@ -79,14 +79,14 @@ export default function ProjectCard({
           <h2 className={styles.title}>{project.title}</h2>
         </div>
 
-        <h3 className={styles.intentLabel}>Purpose</h3>
         <p className={styles.description}>{project.purpose}</p>
 
-        <div className="simple-tags">
-          {project.tech.map((t) => (
-            <span key={t.name} className="simple-tag">
-              {t.name}
-            </span>
+        <div className={styles.loadoutGrid}>
+          {project.tech.slice(0, 4).map((t) => (
+            <div key={t.name} className={styles.loadoutBadge}>
+              <span className={styles.techName}>{t.name}</span>
+              <span className={styles.techRole}>{t.role}</span>
+            </div>
           ))}
         </div>
       </div>
