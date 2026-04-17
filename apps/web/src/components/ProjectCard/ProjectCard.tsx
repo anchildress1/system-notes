@@ -2,7 +2,7 @@ import { Project } from '@/lib/api';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
-import { GitHubIcon } from '@/components/icons';
+import { GitHubIcon, TrophyIcon } from '@/components/icons';
 import styles from './ProjectCard.module.css';
 
 interface ProjectCardProps {
@@ -77,6 +77,12 @@ export default function ProjectCard({
             )}
           </div>
           <h2 className={styles.title}>{project.title}</h2>
+          {project.award && (
+            <div className="award-badge">
+              <TrophyIcon className="award-badge-icon" />
+              <span>{project.award}</span>
+            </div>
+          )}
         </div>
 
         <p className={styles.description}>{project.purpose}</p>

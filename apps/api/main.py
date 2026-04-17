@@ -101,6 +101,7 @@ class Project(BaseModel):
     image_alt: Optional[str] = None
     owner: str = ""
     blog_posts: List[ProjectBlogLink] = []
+    award: Optional[str] = None
     order_rank: int = 999
 
 
@@ -130,6 +131,7 @@ def _parse_project_item(item: dict) -> Project:
         image_alt=item.get("image_alt"),
         owner=item.get("owner", ""),
         blog_posts=[ProjectBlogLink(**b) for b in item.get("blog_posts", [])],
+        award=item.get("award"),
         order_rank=item.get("order_rank", 999),
     )
 

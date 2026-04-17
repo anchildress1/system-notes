@@ -26,6 +26,7 @@ export interface Project {
   image_alt?: string;
   owner: string;
   blog_posts?: BlogLink[];
+  award?: string;
   order_rank?: number;
 }
 

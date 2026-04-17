@@ -6,7 +6,7 @@ import { Project } from '@/lib/api';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
 import { overlayTransition, cardFlipVariants } from '@/utils/animations';
-import { CloseIcon } from '@/components/icons';
+import { CloseIcon, TrophyIcon } from '@/components/icons';
 
 interface ExpandedViewProps {
   project: Project;
@@ -125,6 +125,12 @@ export default function ExpandedView({
                   </div>
                 </div>
                 <div className={styles.titleActions}>
+                  {project.award && (
+                    <div className="award-badge">
+                      <TrophyIcon className="award-badge-icon" />
+                      <span>{project.award}</span>
+                    </div>
+                  )}
                   {project.status && <span className={styles.statusBadge}>{project.status}</span>}
                   {project.repo_url && (
                     <a
