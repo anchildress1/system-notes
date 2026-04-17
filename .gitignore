@@ -47,6 +47,7 @@ test-results/
 playwright-report/
 .playwright-mcp/
 *.png
+!apps/web/public/icon-*.png
 network-requests.txt
 # Python
 __pycache__/
