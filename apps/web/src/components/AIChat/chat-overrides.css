@@ -1,0 +1,7 @@
+/* Overrides for Algolia chat.css focus states.
+   Imported as a plain CSS file (not a module) so Turbopack
+   includes it without tree-shaking the selectors. */
+.ais-Chat .ais-ChatPrompt-body:focus-within {
+  outline: none;
+  border-color: rgba(var(--ais-border-color-rgb), 0.6);
+}

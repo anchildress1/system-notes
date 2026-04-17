@@ -1,24 +1,15 @@
-/* Algolia Chat Widget — Portal-based, body-level dock
-   appRoot uses isolation:isolate; chatDock portal renders after appRoot in DOM,
-   so it naturally paints on top with no z-index escalation needed.
-
-   POSITIONING: Algolia's documented CSS custom properties on chatRoot control
-   position and width via the classNames prop. No internal selector overrides needed.
-
-   COLOR SEMANTICS:
-   - info/navigation uses teal accent
-   - action/agent uses purple accent
-   - human/identity uses pink accent */
+/* Algolia Chat Widget — Portal-based, body-level dock.
+   Theming is handled entirely via CSS custom properties on .chatRoot.
+   Algolia's chat.css reads these variables internally — no need to
+   target internal selectors. */
 
 .chatDock {
-  --chat-dock-margin: 5rem; /* shared by chat root + music player for alignment */
+  --chat-dock-margin: 5rem;
   isolation: isolate;
-  pointer-events: none; /* Prevent wrapper from intercepting clicks on content below.
-     Algolia's own CSS handles pointer-events for .ais-Chat,
-     .ais-Chat-container--open, and .ais-Chat-toggleButtonWrapper. */
+  pointer-events: none;
 }
 
-/* ── Root: documented CSS custom properties for position + color ── */
+/* ── Root: Algolia CSS custom properties for position + color ── */
 .chatRoot {
   --ais-chat-margin: var(--chat-dock-margin);
   --ais-primary-color-rgb: 181, 107, 255;
@@ -27,22 +18,19 @@
   --ais-muted-color-rgb: 185, 187, 196;
   --ais-border-color-rgb: 100, 100, 110;
   --ais-shadow-color-rgb: 0, 0, 0;
+  --ais-border-radius-lg: var(--radius-xl);
+  --ais-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px hsl(var(--color-accent-purple) / 0.08) inset;
 }
 
-/* ── Toggle button: action (purple) with glow — appearance only, no position ── */
+/* ── Toggle button ── */
 .chatToggle {
   width: 60px !important;
   height: 60px !important;
-  background: linear-gradient(135deg, hsl(var(--color-accent-purple)), hsl(var(--color-accent-purple) / 0.85)) !important;
-  border-radius: var(--radius-round) !important;
+  border: 2px solid hsl(var(--color-accent-purple) / 0.6) !important;
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.4),
     0 0 20px hsl(var(--color-accent-purple) / 0.25) !important;
-  border: 2px solid hsl(var(--color-accent-purple) / 0.6) !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
   transition: all 0.3s var(--ease-spring) !important;
 }
 
@@ -54,53 +42,39 @@
   border-color: hsl(var(--color-accent-purple)) !important;
 }
 
-/* ── Chat window: glass with purple border glow — appearance only, no position ── */
+/* ── Chat container: purple border accent ── */
 .chatWindow {
-  background: linear-gradient(
-    180deg,
-    hsl(var(--color-bg-elevated)) 0%,
-    hsl(var(--color-bg-elevated) / 0.95) 100%
-  ) !important;
-  border: 1px solid hsl(var(--color-accent-purple) / 0.2) !important;
-  border-radius: var(--radius-xl) !important;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px hsl(var(--color-accent-purple) / 0.08) inset !important;
+  border: 1px solid hsl(var(--color-accent-purple) / 0.2);
 }
+
 
 /* ── Music player: syncs position with chat margin ── */
 .musicWrapper {
   position: fixed;
   bottom: var(--chat-dock-margin);
-  right: calc(var(--chat-dock-margin) + 60px + 20px); /* chat margin + chat width + gap */
+  right: calc(var(--chat-dock-margin) + 60px + 20px);
   z-index: 1;
   transition: all var(--transition-slow);
   pointer-events: auto;
 }
 
-/* Ensure adequate spacing on mobile */
 @media (max-width: 768px) {
   .musicWrapper {
     right: calc(var(--chat-dock-margin) + 60px + 16px);
   }
 }
 
-/* Music player stays at bottom during maximized state —
-   Algolia's maximized layout respects --ais-chat-margin, and the
-   music player shares --chat-dock-margin, so both stay aligned. */
-
 .toggleIcon {
   color: white;
   filter: drop-shadow(0 0 4px hsl(var(--color-accent-purple) / 0.6));
 }
 
-/* ── Header icon: action (purple) glow ── */
 .headerIcon {
   color: hsl(var(--color-accent-purple));
   filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4));
 }
 
-/* ── Agent avatar: action (purple) outline+glow ── */
+/* ── Avatars ── */
 .avatar {
   background: hsl(var(--color-accent-purple) / 0.1);
   color: hsl(var(--color-accent-purple));
@@ -112,7 +86,6 @@
   filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.3));
 }
 
-/* ── Human avatar: human (pink) outline+glow ── */
 .userAvatar {
   background: hsl(var(--color-accent-pink) / 0.1);
   color: hsl(var(--color-accent-pink));
@@ -124,7 +97,7 @@
   filter: drop-shadow(0 0 6px hsl(var(--color-accent-pink) / 0.3));
 }
 
-/* ── Chat result cards: search hits rendered inside the carousel ── */
+/* ── Chat result cards (custom itemComponent) ── */
 .chatResultCard {
   display: flex;
   flex-direction: column;
@@ -148,8 +121,6 @@
 .chatResultCard:focus-visible {
   outline: 2px solid hsl(var(--color-accent-purple));
   outline-offset: 2px;
-  border-color: hsl(var(--color-accent-purple) / 0.4);
-  box-shadow: 0 0 12px hsl(var(--color-accent-purple) / 0.2);
 }
 
 .chatResultCategory {
@@ -181,10 +152,9 @@
   overflow: hidden;
 }
 
-/* ── Disclaimer footer: neutral gray (not clickable, not interactive) ── */
+/* ── Disclaimer footer ── */
 .disclaimer {
   color: hsl(var(--color-text-muted));
-  background-color: transparent;
   font-size: 0.65rem;
   text-transform: uppercase;
   padding: 8px;
