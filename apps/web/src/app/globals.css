@@ -240,8 +240,8 @@ body::before {
   padding: 4px 10px;
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
-  color: hsl(var(--color-accent-pink));
-  border: 1px solid hsl(var(--color-accent-pink) / 0.4);
+  color: hsl(var(--color-accent-gold));
+  border: 1px solid hsl(var(--color-accent-gold) / 0.4);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -249,12 +249,12 @@ body::before {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
-  box-shadow: 0 0 12px hsl(var(--color-accent-purple) / 0.2);
+  box-shadow: 0 0 12px hsl(var(--color-accent-gold) / 0.15);
 }
 
 .award-badge-icon {
   font-size: 0.75rem;
-  filter: drop-shadow(0 0 4px hsl(var(--color-accent-pink) / 0.5));
+  filter: drop-shadow(0 0 4px hsl(var(--color-accent-gold) / 0.4));
 }
 
 /* ── Global Tag Styles ── */

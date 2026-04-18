@@ -122,6 +122,17 @@ export default function ExpandedView({
                   </h2>
                   <div className={styles.metaRow}>
                     <span>{project.owner}</span>
+                    {project.repo_url && (
+                      <a
+                        href={project.repo_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.repoLinkCompact}
+                        aria-label={`View ${project.title} on GitHub`}
+                      >
+                        GitHub
+                      </a>
+                    )}
                   </div>
                 </div>
                 <div className={styles.titleActions}>
@@ -132,17 +143,6 @@ export default function ExpandedView({
                     </div>
                   )}
                   {project.status && <span className={styles.statusBadge}>{project.status}</span>}
-                  {project.repo_url && (
-                    <a
-                      href={project.repo_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.repoLinkCompact}
-                      aria-label={`View ${project.title} on GitHub`}
-                    >
-                      GitHub
-                    </a>
-                  )}
                 </div>
               </div>
             </div>
