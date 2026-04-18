@@ -107,8 +107,11 @@ body::before {
   border-radius: 2px;
 }
 
-/* Algolia chat widget manages its own focus styles */
-.ais-Chat :focus-visible {
+/* Algolia chat widget manages its own focus styles;
+   scope to prompt elements where chat-overrides.css
+   provides a visible border-color replacement. */
+.ais-Chat textarea:focus-visible,
+.ais-Chat .ais-ChatPrompt-body:focus-visible {
   outline: none;
 }
 

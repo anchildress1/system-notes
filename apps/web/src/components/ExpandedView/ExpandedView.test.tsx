@@ -132,6 +132,31 @@ describe('ExpandedView Component', () => {
     expect(screen.getByText('Blog 1')).toHaveAttribute('href', 'https://blog1.com');
   });
 
+  it('renders award badge when project has an award', () => {
+    const awardProject = { ...mockProject, award: 'Best in Show' };
+    render(
+      <ExpandedView
+        project={awardProject}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.getByText('Best in Show')).toBeInTheDocument();
+  });
+
+  it('does not render award badge when project has no award', () => {
+    render(
+      <ExpandedView
+        project={mockProject}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.queryByText('Best in Show')).not.toBeInTheDocument();
+  });
+
   it('handles keyboard scrolling', () => {
     // Mock scrollBy
     const scrollByMock = vi.fn();

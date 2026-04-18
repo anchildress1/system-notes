@@ -73,4 +73,15 @@ describe('ProjectCard Component', () => {
     render(<ProjectCard project={mockProject} onSelect={() => {}} />);
     expect(screen.queryByText('ARCHIVED')).not.toBeInTheDocument();
   });
+
+  it('renders award badge when project has an award', () => {
+    const awardProject = { ...mockProject, award: 'Best in Show' };
+    render(<ProjectCard project={awardProject} onSelect={() => {}} />);
+    expect(screen.getByText('Best in Show')).toBeInTheDocument();
+  });
+
+  it('does not render award badge when project has no award', () => {
+    render(<ProjectCard project={mockProject} onSelect={() => {}} />);
+    expect(screen.queryByText('Best in Show')).not.toBeInTheDocument();
+  });
 });

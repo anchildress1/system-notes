@@ -160,9 +160,7 @@
   overflow: hidden;
 }
 
-/* Award badge styles moved to global stylesheet */
-
-/* Tag styles moved to global stylesheet */
+/* Award badge styles live in globals.css */
 
 .loadoutGrid {
   display: grid;
