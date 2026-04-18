@@ -5,7 +5,7 @@ import { test } from './utils';
 test.describe('System Notes Integration', () => {
   test('loads homepage with correct metadata', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/Choices/);
+    await expect(page).toHaveTitle('Choices');
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
       "This portfolio isn't browsed—"
     );
