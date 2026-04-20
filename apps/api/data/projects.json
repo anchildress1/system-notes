@@ -108,6 +108,59 @@
     "related_project_ids": ["system-notes"]
   },
   {
+    "objectID": "unearthed",
+    "node_type": "project",
+    "name": "Unearthed",
+    "aliases": ["coal mine lookup", "energy grid tracer"],
+    "what_it_is": "An interactive tool that traces a user's electricity back to the specific coal mine feeding their grid.",
+    "why_it_exists": "To connect electricity consumers with the human and environmental costs of coal mining by naming the mine, operator, and accident history behind every light switch.",
+    "long_description": "Unearthed takes an address and walks the energy supply chain backward: from the outlet to the power plant, from the plant to the fuel contract, from the contract to the specific mine. It surfaces MSHA accident records, production tonnage, and EPA emissions data for each mine, then lets users interrogate the data through natural language queries powered by Snowflake Cortex. A real-time tonnage ticker shows current extraction rates while AI-generated narratives describe each mine's impact.",
+    "outcome": "A deployed tool that names the coal mine feeding any U.S. address, backed by federal data from MSHA, EIA, and EPA, with natural language querying via Snowflake Cortex.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/unearthed.webp",
+    "image_alt": "Unearthed application interface tracing electricity from a user's address to the coal mine feeding their grid",
+    "tech": [
+      {
+        "name": "Snowflake Cortex",
+        "role": "AI Query Engine"
+      },
+      {
+        "name": "SvelteKit 2",
+        "role": "Frontend Framework"
+      },
+      {
+        "name": "FastAPI",
+        "role": "Backend API"
+      },
+      {
+        "name": "Google Cloud Run",
+        "role": "Runtime"
+      },
+      {
+        "name": "Google Maps API",
+        "role": "Address Lookup"
+      },
+      {
+        "name": "H3 Hexbin",
+        "role": "Geospatial Density"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Unearthed—The Coal Mine Behind Every Light Switch",
+        "url": "https://dev.to/anchildress1/unearthed-the-coal-mine-behind-every-light-switch-234m"
+      }
+    ],
+    "project_type": "tool",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/unearthed",
+    "app_url": "https://unearthed.anchildress1.dev",
+    "order_rank": 3,
+    "updated_at": "2026-04-20",
+    "related_project_ids": ["carbon-trace"]
+  },
+  {
     "objectID": "legacy-smelter",
     "node_type": "project",
     "name": "Legacy Smelter",
