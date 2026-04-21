@@ -1,7 +1,7 @@
 import Header from '@/components/Header/Header';
 import { getSystemDoc } from '@/lib/api';
 import styles from './page.module.css';
-import DocViewer from './DocViewer';
+import DocViewer from '@/components/DocViewer/DocViewer';
 
 interface Props {
   params: {

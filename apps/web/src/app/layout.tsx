@@ -84,7 +84,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const projects = await getProjects();
+  const projects = await getProjects().catch((err) => {
+    console.error('[RootLayout] Failed to load projects:', err);
+    return [] as Awaited<ReturnType<typeof getProjects>>;
+  });
 
   const jsonLd = {
     '@context': 'https://schema.org',

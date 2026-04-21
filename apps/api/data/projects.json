@@ -58,11 +58,7 @@
     "app_url": "https://unstable.anchildress1.dev",
     "order_rank": 1,
     "updated_at": "2026-02-08",
-    "related_project_ids": [
-      "underfoot-underground-travel-planner",
-      "delegate-action",
-      "devto-mirror"
-    ]
+    "related_project_ids": ["underfoot-underground-travel-planner", "devto-mirror"]
   },
   {
     "objectID": "supascribe-notes",
@@ -557,7 +553,7 @@
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
     "order_rank": 600,
     "updated_at": "2026-02-01",
-    "related_project_ids": ["delegate-action", "checkmark-copilot-chat"]
+    "related_project_ids": []
   },
   {
     "objectID": "devto-mirror",

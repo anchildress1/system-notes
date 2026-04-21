@@ -72,6 +72,8 @@ test.describe('Search Page — credentialed environment', () => {
         description: 'Test description',
         content: 'Test content',
         fact: 'Test fact content',
+        category: 'Engineering',
+        projects: ['test-project'],
       },
     ]);
 

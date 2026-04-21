@@ -427,6 +427,358 @@ describe('GroupedTagFilter', () => {
     });
   });
 
+  it('selects all unrefined children when parent checkbox is clicked', async () => {
+    const user = userEvent.setup();
+    const lvl0Refine = vi.fn();
+    const lvl1Refine = vi.fn();
+    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
+      if (attribute === 'tags.lvl0') {
+        return {
+          items: [
+            {
+              label: 'Events',
+              value: 'Events',
+              count: 10,
+              isRefined: false,
+              highlighted: 'Events',
+            },
+          ],
+          refine: lvl0Refine,
+          canRefine: true,
+          canToggleShowMore: false,
+          isFromSearch: false,
+          isShowingMore: false,
+          searchForItems: vi.fn(),
+          toggleShowMore: vi.fn(),
+          sendEvent: vi.fn(),
+          createURL: vi.fn(),
+        };
+      }
+      return {
+        items: [
+          {
+            label: 'Events > Conference',
+            value: 'Events > Conference',
+            count: 5,
+            isRefined: false,
+            highlighted: 'Events > Conference',
+          },
+          {
+            label: 'Events > Meetup',
+            value: 'Events > Meetup',
+            count: 3,
+            isRefined: true,
+            highlighted: 'Events > Meetup',
+          },
+        ],
+        refine: lvl1Refine,
+        canRefine: true,
+        canToggleShowMore: false,
+        isFromSearch: false,
+        isShowingMore: false,
+        searchForItems: vi.fn(),
+        toggleShowMore: vi.fn(),
+        sendEvent: vi.fn(),
+        createURL: vi.fn(),
+      };
+    });
+
+    render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
+
+    const checkbox = screen.getByRole('checkbox', { name: /filter by events/i });
+    await user.click(checkbox);
+
+    expect(lvl0Refine).toHaveBeenCalledWith('Events');
+    // Only the unrefined child should be toggled
+    expect(lvl1Refine).toHaveBeenCalledWith('Events > Conference');
+    expect(lvl1Refine).not.toHaveBeenCalledWith('Events > Meetup');
+  });
+
+  it('deselects all children when refined parent checkbox is clicked', async () => {
+    const user = userEvent.setup();
+    const lvl0Refine = vi.fn();
+    const lvl1Refine = vi.fn();
+    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
+      if (attribute === 'tags.lvl0') {
+        return {
+          items: [
+            { label: 'Events', value: 'Events', count: 10, isRefined: true, highlighted: 'Events' },
+          ],
+          refine: lvl0Refine,
+          canRefine: true,
+          canToggleShowMore: false,
+          isFromSearch: false,
+          isShowingMore: false,
+          searchForItems: vi.fn(),
+          toggleShowMore: vi.fn(),
+          sendEvent: vi.fn(),
+          createURL: vi.fn(),
+        };
+      }
+      return {
+        items: [
+          {
+            label: 'Events > Conference',
+            value: 'Events > Conference',
+            count: 5,
+            isRefined: true,
+            highlighted: 'Events > Conference',
+          },
+          {
+            label: 'Events > Meetup',
+            value: 'Events > Meetup',
+            count: 3,
+            isRefined: true,
+            highlighted: 'Events > Meetup',
+          },
+        ],
+        refine: lvl1Refine,
+        canRefine: true,
+        canToggleShowMore: false,
+        isFromSearch: false,
+        isShowingMore: false,
+        searchForItems: vi.fn(),
+        toggleShowMore: vi.fn(),
+        sendEvent: vi.fn(),
+        createURL: vi.fn(),
+      };
+    });
+
+    render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
+
+    const checkbox = screen.getByRole('checkbox', { name: /filter by events/i });
+    await user.click(checkbox);
+
+    expect(lvl0Refine).toHaveBeenCalledWith('Events');
+    expect(lvl1Refine).toHaveBeenCalledWith('Events > Conference');
+    expect(lvl1Refine).toHaveBeenCalledWith('Events > Meetup');
+  });
+
+  it('selects children via parent label text click', async () => {
+    const user = userEvent.setup();
+    const lvl0Refine = vi.fn();
+    const lvl1Refine = vi.fn();
+    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
+      if (attribute === 'tags.lvl0') {
+        return {
+          items: [
+            {
+              label: 'Events',
+              value: 'Events',
+              count: 10,
+              isRefined: false,
+              highlighted: 'Events',
+            },
+          ],
+          refine: lvl0Refine,
+          canRefine: true,
+          canToggleShowMore: false,
+          isFromSearch: false,
+          isShowingMore: false,
+          searchForItems: vi.fn(),
+          toggleShowMore: vi.fn(),
+          sendEvent: vi.fn(),
+          createURL: vi.fn(),
+        };
+      }
+      return {
+        items: [
+          {
+            label: 'Events > Conference',
+            value: 'Events > Conference',
+            count: 5,
+            isRefined: false,
+            highlighted: 'Events > Conference',
+          },
+        ],
+        refine: lvl1Refine,
+        canRefine: true,
+        canToggleShowMore: false,
+        isFromSearch: false,
+        isShowingMore: false,
+        searchForItems: vi.fn(),
+        toggleShowMore: vi.fn(),
+        sendEvent: vi.fn(),
+        createURL: vi.fn(),
+      };
+    });
+
+    render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
+
+    // Click the label button (not the checkbox)
+    const labelButton = screen.getByRole('button', { name: 'Events' });
+    await user.click(labelButton);
+
+    expect(lvl0Refine).toHaveBeenCalledWith('Events');
+    expect(lvl1Refine).toHaveBeenCalledWith('Events > Conference');
+  });
+
+  it('skips auto-sync when all children are already refined', () => {
+    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
+      if (attribute === 'tags.lvl0') {
+        return {
+          items: [
+            { label: 'Events', value: 'Events', count: 10, isRefined: true, highlighted: 'Events' },
+          ],
+          refine: mockRefine,
+          canRefine: true,
+          canToggleShowMore: false,
+          isFromSearch: false,
+          isShowingMore: false,
+          searchForItems: vi.fn(),
+          toggleShowMore: vi.fn(),
+          sendEvent: vi.fn(),
+          createURL: vi.fn(),
+        };
+      }
+      return {
+        items: [
+          {
+            label: 'Events > Conference',
+            value: 'Events > Conference',
+            count: 5,
+            isRefined: true,
+            highlighted: 'Events > Conference',
+          },
+        ],
+        refine: mockRefine,
+        canRefine: true,
+        canToggleShowMore: false,
+        isFromSearch: false,
+        isShowingMore: false,
+        searchForItems: vi.fn(),
+        toggleShowMore: vi.fn(),
+        sendEvent: vi.fn(),
+        createURL: vi.fn(),
+      };
+    });
+
+    render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
+
+    // mockRefine for lvl1 should NOT be called since all children are already refined
+    expect(mockRefine).not.toHaveBeenCalled();
+  });
+
+  it('expands group via Enter key on expand button', async () => {
+    const user = userEvent.setup();
+    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
+      if (attribute === 'tags.lvl0') {
+        return {
+          items: [
+            {
+              label: 'Events',
+              value: 'Events',
+              count: 10,
+              isRefined: false,
+              highlighted: 'Events',
+            },
+          ],
+          refine: mockRefine,
+          canRefine: true,
+          canToggleShowMore: false,
+          isFromSearch: false,
+          isShowingMore: false,
+          searchForItems: vi.fn(),
+          toggleShowMore: vi.fn(),
+          sendEvent: vi.fn(),
+          createURL: vi.fn(),
+        };
+      }
+      return {
+        items: [
+          {
+            label: 'Events > Conference',
+            value: 'Events > Conference',
+            count: 5,
+            isRefined: false,
+            highlighted: 'Events > Conference',
+          },
+        ],
+        refine: mockRefine,
+        canRefine: true,
+        canToggleShowMore: false,
+        isFromSearch: false,
+        isShowingMore: false,
+        searchForItems: vi.fn(),
+        toggleShowMore: vi.fn(),
+        sendEvent: vi.fn(),
+        createURL: vi.fn(),
+      };
+    });
+
+    render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
+
+    const expandButton = screen.getByLabelText('Expand Events subtags');
+    expandButton.focus();
+    await user.keyboard('{Enter}');
+
+    await waitFor(() => {
+      expect(screen.getByText('Conference')).toBeInTheDocument();
+    });
+  });
+
+  it('refines child when child checkbox is clicked', async () => {
+    const user = userEvent.setup();
+    const lvl1Refine = vi.fn();
+    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
+      if (attribute === 'tags.lvl0') {
+        return {
+          items: [
+            {
+              label: 'Events',
+              value: 'Events',
+              count: 10,
+              isRefined: false,
+              highlighted: 'Events',
+            },
+          ],
+          refine: mockRefine,
+          canRefine: true,
+          canToggleShowMore: false,
+          isFromSearch: false,
+          isShowingMore: false,
+          searchForItems: vi.fn(),
+          toggleShowMore: vi.fn(),
+          sendEvent: vi.fn(),
+          createURL: vi.fn(),
+        };
+      }
+      return {
+        items: [
+          {
+            label: 'Events > Conference',
+            value: 'Events > Conference',
+            count: 5,
+            isRefined: false,
+            highlighted: 'Events > Conference',
+          },
+        ],
+        refine: lvl1Refine,
+        canRefine: true,
+        canToggleShowMore: false,
+        isFromSearch: false,
+        isShowingMore: false,
+        searchForItems: vi.fn(),
+        toggleShowMore: vi.fn(),
+        sendEvent: vi.fn(),
+        createURL: vi.fn(),
+      };
+    });
+
+    render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
+
+    // Expand first
+    await user.click(screen.getByLabelText('Expand Events subtags'));
+    await waitFor(() => expect(screen.getByText('Conference')).toBeInTheDocument());
+
+    // Click child checkbox (second unchecked checkbox — first is the parent)
+    const checkboxes = screen.getAllByRole('checkbox', { checked: false });
+    const childCheckbox = checkboxes[checkboxes.length - 1];
+    await user.click(childCheckbox);
+
+    expect(lvl1Refine).toHaveBeenCalledWith('Events > Conference');
+  });
+
   it('sets indeterminate state when some children are refined', () => {
     vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
       if (attribute === 'tags.lvl0') {

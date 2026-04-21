@@ -4,27 +4,15 @@ import { useCallback, useRef, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Highlight } from 'react-instantsearch';
 import { motion } from 'framer-motion';
-import type { Hit, BaseHit } from 'instantsearch.js';
-import type { SendEventForHits } from '@/types/algolia';
+import type { Hit } from 'instantsearch.js';
+import type { SendEventForHits, FactHitRecord } from '@/types/algolia';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
 import { GitHubIcon, DevIcon } from '@/components/icons';
 import { overlayTransition, cardFlipVariants } from '@/utils/animations';
 import FactCardBack from './FactCardBack';
 import styles from './FactCard.module.css';
 
-export interface FactHitRecord extends BaseHit {
-  objectID: string;
-  title: string;
-  blurb: string;
-  fact: string;
-  content?: string;
-  'tags.lvl0'?: string[];
-  'tags.lvl1'?: string[];
-  projects: string[];
-  category: string;
-  signal: number;
-  url?: string;
-}
+export type { FactHitRecord } from '@/types/algolia';
 
 interface FactCardProps {
   hit: Hit<FactHitRecord>;

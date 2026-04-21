@@ -1,23 +1,12 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
+import type { FactHitRecord } from '@/types/algolia';
 
-export interface OverlayHit {
-  objectID: string;
-  title: string;
-  blurb: string;
-  fact: string;
-  content?: string;
-  'tags.lvl0'?: string[];
-  'tags.lvl1'?: string[];
-  projects: string[];
-  category: string;
-  signal: number;
-  url?: string;
-}
+export type { FactHitRecord as OverlayHit } from '@/types/algolia';
 
 /**
  * Hook to handle factId deep-linking.
@@ -27,8 +16,10 @@ export interface OverlayHit {
  */
 export function useFactIdRouting(indexName: string) {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const factId = searchParams?.get('factId') ?? null;
-  const [fetchedHit, setFetchedHit] = useState<{ id: string; hit: OverlayHit } | null>(null);
+  const [fetchedHit, setFetchedHit] = useState<{ id: string; hit: FactHitRecord } | null>(null);
 
   // Derive overlayHit: only show when factId matches what we fetched
   const overlayHit = factId && fetchedHit?.id === factId ? fetchedHit.hit : null;
@@ -59,24 +50,49 @@ export function useFactIdRouting(indexName: string) {
 
   const closeOverlay = useCallback(() => {
     setFetchedHit(null);
-    const params = new URLSearchParams(globalThis.location.search);
+    const params = new URLSearchParams(searchParams?.toString() ?? '');
     params.delete('factId');
-    const newUrl = params.toString() ? `?${params.toString()}` : globalThis.location.pathname;
-    globalThis.history.pushState(null, '', newUrl);
-  }, []);
+    const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+    router.replace(newUrl, { scroll: false });
+  }, [router, pathname, searchParams]);
 
   return { factId, overlayHit, closeOverlay };
+}
+
+/** Lightweight structural check that an Algolia hit contains the fields FactHitRecord requires. */
+function isFactHitRecord(hit: unknown): hit is FactHitRecord {
+  return (
+    typeof hit === 'object' &&
+    hit !== null &&
+    'objectID' in hit &&
+    'title' in hit &&
+    'category' in hit &&
+    'projects' in hit
+  );
+}
+
+/** Validates that a factId contains only safe alphanumeric/separator characters and is at most 200 chars. Prevents filter injection before the value reaches Algolia. */
+function isValidFactId(id: string): boolean {
+  return /^[a-zA-Z0-9_.:-]{1,200}$/.test(id);
 }
 
 /**
  * Fetch a single fact card from Algolia by objectID.
  * Returns all fields needed to render the overlay.
  */
-export async function fetchFactById(factId: string, indexName: string): Promise<OverlayHit | null> {
+export async function fetchFactById(
+  factId: string,
+  indexName: string
+): Promise<FactHitRecord | null> {
   const appId = ALGOLIA_APP_ID;
   const apiKey = ALGOLIA_SEARCH_KEY;
   if (!appId || !apiKey || !hasValidAlgoliaCredentials(appId, apiKey)) {
     console.warn('Algolia credentials not available');
+    return null;
+  }
+
+  if (!isValidFactId(factId)) {
+    console.error('Invalid factId — rejected before Algolia filter:', factId);
     return null;
   }
 
@@ -87,7 +103,7 @@ export async function fetchFactById(factId: string, indexName: string): Promise<
         {
           indexName,
           query: '',
-          filters: `objectID:${factId}`,
+          filters: `objectID:"${factId}"`,
           hitsPerPage: 1,
           attributesToRetrieve: [
             'objectID',
@@ -108,12 +124,16 @@ export async function fetchFactById(factId: string, indexName: string): Promise<
 
     const firstResult = results[0];
     if ('hits' in firstResult && firstResult.hits.length > 0) {
-      return firstResult.hits[0] as OverlayHit;
+      const candidate = firstResult.hits[0];
+      if (isFactHitRecord(candidate)) {
+        return candidate;
+      }
+      console.error('Algolia returned a hit missing required FactHitRecord fields:', candidate);
     }
 
     return null;
   } catch (error) {
-    console.warn('Error fetching fact by ID:', error);
+    console.error('Error fetching fact by ID:', error);
     return null;
   }
 }

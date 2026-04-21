@@ -1,7 +1,9 @@
 
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock, AsyncMock
+from datetime import timedelta
 from main import app, _blog_cache, extract_json_ld, extract_meta_content
+import httpx
 import pytest
 
 client = TestClient(app)
@@ -91,7 +93,7 @@ def test_get_system_doc_error_handling(mock_path):
     mock_target.is_relative_to.return_value = True
     mock_target.is_file.return_value = True
     mock_target.name = "fail.md"
-    mock_target.read_text.side_effect = Exception("Disk error")
+    mock_target.read_text.side_effect = OSError("Disk error")
 
     response = client.get("/system/doc/fail.md")
     assert response.status_code == 500
@@ -257,7 +259,7 @@ def test_blog_search_limit_validation():
 
 
 def test_blog_search_sitemap_failure(mock_blog_client):
-    mock_blog_client([Exception("Sitemap unreachable")])
+    mock_blog_client([httpx.HTTPError("Sitemap unreachable")])
 
     response = client.get("/blog/search")
     assert response.status_code == 200
@@ -268,7 +270,7 @@ def test_blog_search_sitemap_failure(mock_blog_client):
 
 def test_blog_search_post_failure(mock_blog_client, standard_blog_responses):
     sitemap, post = standard_blog_responses
-    mock_blog_client([sitemap, Exception("Post unreachable"), post])
+    mock_blog_client([sitemap, httpx.HTTPError("Post unreachable"), post])
 
     response = client.get("/blog/search")
     assert response.status_code == 200
@@ -380,8 +382,39 @@ def test_blog_search_response_shape(mock_blog_client, standard_blog_responses):
     assert "published_date" not in first_result
     assert "reading_time" not in first_result
 
-    # Verify user-requested field mappings
+    # Verify field mappings — blurb is the human-readable description, not the URL
     assert first_result["projects"] == ["DEV Blog"]
-    assert first_result["blurb"] == "https://dev.to/test/test-post-123"
+    assert first_result["blurb"] == "This is a test description for the blog post about AI tools."
     assert first_result["fact"] == "This is a test description for the blog post about AI tools."
     assert first_result["url"] == "https://dev.to/test/test-post-123"
+
+
+def test_blog_cache_negative_ttl_on_empty_results(mock_blog_client):
+    """Empty results use a short negative-cache TTL (1 minute) instead of the normal 15 minutes.
+    This prevents hammering upstream on every request during outages while still recovering quickly.
+    """
+    # First request: sitemap fetch succeeds but returns no post URLs
+    empty_sitemap = _make_mock_response(
+        '<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>'
+    )
+    mock_blog_client([empty_sitemap])
+
+    response1 = client.get("/blog/search")
+    assert response1.status_code == 200
+    assert response1.json()["total"] == 0
+
+    # Negative cache should be populated with empty list and a short TTL (~1 minute)
+    assert _blog_cache["data"] == [], "Empty results should be cached"
+    assert _blog_cache["expires"] is not None, "Negative cache should have an expiry"
+
+    # Expire the negative cache to simulate 1 minute passing
+    _blog_cache["expires"] = _blog_cache["expires"] - timedelta(minutes=2)
+
+    # Second request: sitemap now has posts — should fetch fresh after negative cache expired
+    sitemap = _make_mock_response(MOCK_SITEMAP)
+    post = _make_mock_response(MOCK_POST_HTML)
+    mock_blog_client([sitemap, post, post])
+
+    response2 = client.get("/blog/search")
+    assert response2.status_code == 200
+    assert response2.json()["total"] > 0, "Should reflect fresh posts after negative cache expired"

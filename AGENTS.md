@@ -52,7 +52,7 @@ Deep-linking via `?factId=...` is handled separately by `useFactIdRouting`, whic
 ### Rules for future changes
 
 - FactCard must NOT call `window.history.pushState`. InstantSearch manages the URL.
-- `searchRouting` must NOT handle `factId`. That param belongs to `useFactIdRouting`.
+- `searchRouting` must NOT serialize or deserialize `factId` as search state. It may passthrough `factId` as an opaque param in `createURL` to prevent InstantSearch from stripping it during URL rewrites. Ownership of `factId` belongs to `useFactIdRouting`.
 - Algolia events (`sendEvent`) fire on card open. Never gate events on URL state.
 - Do not add custom `createURL` logic that fights InstantSearch's default routing behavior.
 
@@ -64,7 +64,7 @@ Deep-linking via `?factId=...` is handled separately by `useFactIdRouting`, whic
 
 - **Coverage thresholds**: 85% lines/functions/statements, 80% branches (enforced by `vitest.config.ts` and `pyproject.toml`).
 - Every new component or utility must ship with positive, negative, and edge-case tests.
-- Integration-heavy modules (e.g. `SearchPage.tsx`, `recommendations.ts`) are excluded from coverage; test them via E2E instead.
+- Integration-heavy modules (e.g. `SearchPage.tsx`) are excluded from coverage; test them via E2E instead.
 
 ## TypeScript Strictness
 
@@ -87,7 +87,7 @@ Deep-linking via `?factId=...` is handled separately by `useFactIdRouting`, whic
 
 - **`@/lib/algolia.ts`**: Credential validation (`hasValidAlgoliaCredentials`, `isValidAppId`, `isValidApiKey`). Use instead of inline regex checks.
 - **`@/components/icons/`**: Shared SVG icon components (`GitHubIcon`, `DevIcon`, `CloseIcon`). Use instead of inline SVG.
-- **Icon libraries**: Use `lucide-react` for UI icons. Keep `react-icons` only for brand icons (`FaGithub`, `SiAlgolia`, `FaDev`, etc.) that lucide doesn't provide.
+- **Icon libraries**: Use `react-icons` for all icons (UI and brand). Prefer `react-icons/fa`, `react-icons/io5`, `react-icons/si`, etc.
 
 ## Documentation
 

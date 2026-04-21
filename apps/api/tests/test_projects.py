@@ -129,5 +129,14 @@ def test_get_projects_minimal_fields():
 def test_get_projects_file_not_found():
     with patch("os.path.exists", return_value=False):
         response = client.get("/projects")
-        assert response.status_code == 200  # Returns empty list on error per main.py logic
-        assert response.json() == []
+        assert response.status_code == 500
+        assert response.json()["error"] == "Projects data unavailable"
+
+
+def test_get_projects_json_parse_error():
+    """Malformed JSON must return 500, not a silent empty list."""
+    with patch("os.path.exists", return_value=True), \
+         patch("pathlib.Path.read_text", return_value="not valid json"):
+        response = client.get("/projects")
+        assert response.status_code == 500
+        assert response.json()["error"] == "Failed to load projects"

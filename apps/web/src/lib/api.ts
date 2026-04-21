@@ -1,6 +1,5 @@
 import { cache } from 'react';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://127.0.0.1:8000';
+import { API_URL } from '@/config';
 
 export interface TechItem {
   name: string;
@@ -37,19 +36,16 @@ export interface SystemDoc {
   error?: string;
 }
 
-// cache() deduplicates calls within a single request (layout + page both call this).
+// React.cache() deduplicates getProjects calls within a single server request
+// (layout.tsx + page.tsx both call it). This is request-scoped memoization, not persistent caching.
 // cache: 'no-store' ensures data is always fresh at request time, never statically pre-rendered.
+// Throws on failure — root layout catches with a fallback; route pages surface via error.tsx.
 export const getProjects: () => Promise<Project[]> = cache(async () => {
-  try {
-    const res = await fetch(`${API_URL}/projects`, { cache: 'no-store' });
-    if (!res.ok) {
-      throw new Error('Failed to fetch projects');
-    }
-    return res.json();
-  } catch (error) {
-    console.warn('API Error:', error);
-    return [];
+  const res = await fetch(`${API_URL}/projects`, { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch projects: ${res.status} ${res.statusText}`);
   }
+  return res.json();
 });
 
 export async function getSystemDoc(path: string): Promise<SystemDoc | null> {
@@ -69,7 +65,7 @@ export async function getSystemDoc(path: string): Promise<SystemDoc | null> {
     }
     return res.json();
   } catch (error) {
-    console.warn('[SystemDoc] Network/API Error:', error);
+    console.error('[SystemDoc] Network/API Error:', error);
     return {
       content: '',
       format: 'text',

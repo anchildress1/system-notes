@@ -26,9 +26,7 @@ export const useSparkles = ({
     let isMounted = true; // Track mount status to prevent leaks/crashes
 
     // Feature detect mobile for optimizations
-    const isMobile =
-      typeof globalThis !== 'undefined' &&
-      (globalThis.innerWidth < 768 || 'ontouchstart' in globalThis);
+    const isMobile = globalThis.innerWidth < 768 || 'ontouchstart' in globalThis;
 
     // Completely disable sparkles on mobile for maximum performance
     if (isMobile) return;
@@ -195,16 +193,7 @@ export const useSparkles = ({
       }
     };
 
-    // Add touch support: treat touch moves as mouse moves to spawn sparkles
-    const handleTouchMove = (e: TouchEvent) => {
-      // Only trigger on mobile to avoid double events on some devices
-      if (!isMobile) return;
-      const touch = e.touches[0];
-      handleInteraction(touch.clientX, touch.clientY);
-    };
-
     containerRef.current?.addEventListener('mousemove', handleMouseMove);
-    containerRef.current?.addEventListener('touchmove', handleTouchMove, { passive: true });
 
     return () => {
       isMounted = false;
@@ -214,12 +203,10 @@ export const useSparkles = ({
           if (app.ticker) app.ticker.stop();
 
           try {
-            // PIXI v8 destruction - use options object
+            // PIXI v8 destroy accepts removeView and children; texture/baseTexture are not valid v8 options
             app.destroy({
               removeView: true,
               children: true,
-              texture: true,
-              baseTexture: true,
             });
           } catch (e) {
             console.warn('PIXI destroy error:', e);
@@ -232,7 +219,6 @@ export const useSparkles = ({
       }
       observer.disconnect();
       containerRef.current?.removeEventListener('mousemove', handleMouseMove);
-      containerRef.current?.removeEventListener('touchmove', handleTouchMove);
     };
   }, [containerRef, textRef, sparkleOnHover, sparkleNearText]);
 };

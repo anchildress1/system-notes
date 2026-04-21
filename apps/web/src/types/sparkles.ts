@@ -5,7 +5,7 @@ export interface Particle {
   direction: number;
   life: number; // Current life
   decay: number; // Fade speed
-  // properties from PIXI.Graphics (partial)
+  // Properties from PIXI.Sprite (particles are Sprites, not Graphics)
   circle: (x: number, y: number, radius: number) => void;
   fill: (color: number | { color: number }) => void;
   tint: number;

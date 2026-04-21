@@ -37,7 +37,8 @@ const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
 const hasValidCredentials = hasValidAlgoliaCredentials();
 
-// Create searchClient at module level for stable reference (prevents unnecessary re-renders)
+// Create searchClient at module level for stable reference (prevents unnecessary re-renders).
+// null when credentials are absent — InstantSearchNext is only rendered when this is non-null.
 const searchClient = hasValidCredentials
   ? algoliasearch(appId, apiKey, {
       headers: {
@@ -45,9 +46,7 @@ const searchClient = hasValidCredentials
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any)
-  : {
-      search: () => Promise.resolve({ results: [] }),
-    };
+  : null;
 
 const AGENT_ID = ALGOLIA_AGENT_ID;
 
@@ -126,7 +125,6 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
 export default function AIChat() {
   const router = useRouter();
   const lastChatQuery = useRef<string | null>(null);
-
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
@@ -171,7 +169,7 @@ export default function AIChat() {
             const data = await response.json();
             addToolResult({ output: data });
           } catch (error) {
-            console.warn('AIChat tool error:', error);
+            console.error('AIChat tool error:', error);
             addToolResult({
               output: { error: 'Network error fetching blog posts', results: [] },
             });
@@ -231,7 +229,7 @@ export default function AIChat() {
       <div className={styles.musicWrapper}>
         <MusicPlayer />
       </div>
-      {hasValidCredentials && AGENT_ID ? (
+      {searchClient && AGENT_ID ? (
         <InstantSearchNext
           searchClient={searchClient}
           insights

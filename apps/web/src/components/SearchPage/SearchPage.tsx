@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
   InstantSearch,
@@ -11,7 +10,7 @@ import {
   Configure,
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
-import { Plus, Minus } from 'lucide-react';
+import { FiPlus, FiMinus } from 'react-icons/fi';
 import 'instantsearch.css/themes/reset.css';
 import styles from './SearchPage.module.css';
 import FactCard from '../FactCard/FactCard';
@@ -48,7 +47,6 @@ const searchClient = hasCredentials
 declare global {
   var SiteSearchAskAI: { init: (config: unknown) => void } | undefined;
   var SiteSearch: { init: (config: unknown) => void } | undefined;
-  var SiteSearchWithAI: { init: (config: unknown) => void } | undefined;
   var sitesearch: { init: (config: unknown) => void } | undefined;
   var AlgoliaSiteSearch: { init: (config: unknown) => void } | undefined;
 }
@@ -61,7 +59,7 @@ function useSiteSearchWithAI(
   enabled: boolean
 ) {
   useEffect(() => {
-    if (typeof globalThis === 'undefined' || !enabled) return;
+    if (!enabled) return;
 
     // Dynamically import the widget from node_modules
     import('@algolia/sitesearch/dist/search-askai.min.css');
@@ -80,7 +78,7 @@ function useSiteSearchWithAI(
       }
 
       // Debug logging for credential passing
-      if (typeof globalThis !== 'undefined' && globalThis.location.hostname === 'localhost') {
+      if (globalThis.location?.hostname === 'localhost') {
         console.debug('[SiteSearch] Initializing with config:', {
           appId,
           indexName,
@@ -154,7 +152,6 @@ const refinementClassNames = {
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
   const isEnabled = Boolean(hasCredentials);
-  const router = useRouter();
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
 
   const toggleSection = useCallback((section: string) => {
@@ -164,9 +161,7 @@ export default function SearchPage() {
   useSiteSearchWithAI(appId, searchKey, indexName, searchAiId, isEnabled);
   const { overlayHit, closeOverlay } = useFactIdRouting(indexName);
 
-  // Consolidated DOM observer for:
-  // 1. Auto-focus chat input when Ask AI modal opens
-  // 2. Attach click handlers to SiteSearch result links
+  // Auto-focus the Ask AI chat input when the SiteSearch modal opens
   const pendingTimeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
@@ -208,58 +203,7 @@ export default function SearchPage() {
       }
     };
 
-    const handleLinkClick = (e: Event) => {
-      const link = e.currentTarget as HTMLElement;
-      e.preventDefault();
-      e.stopPropagation();
-
-      const titleEl = link.querySelector('.ss-infinite-hits-item-title');
-      const title = titleEl?.textContent?.trim();
-      if (!title) return;
-
-      // Close the SiteSearch dialog immediately before navigating
-      const dialog = document.querySelector('[role="dialog"], .modal-backdrop-askai');
-      const closeBtn = dialog?.querySelector<HTMLElement>(
-        'button[aria-label="Close"], button[aria-label="close"]'
-      );
-      if (closeBtn) closeBtn.click();
-
-      const params = new URLSearchParams();
-      params.set('query', title);
-
-      router.push(`/search?${params.toString()}`, { scroll: false });
-
-      // Use MutationObserver to click the first card once results render
-      const resultsContainer = document.querySelector('[aria-label="Search results"]');
-      if (!resultsContainer) return;
-
-      const resultsObserver = new MutationObserver(() => {
-        const firstCard = resultsContainer.querySelector('a[href*="factId"]');
-        if (firstCard instanceof HTMLElement) {
-          resultsObserver.disconnect();
-          firstCard.click();
-        }
-      });
-
-      resultsObserver.observe(resultsContainer, { childList: true, subtree: true });
-
-      // Safety timeout: disconnect observer if results never appear
-      scheduleTimeout(() => resultsObserver.disconnect(), 5000);
-    };
-
-    const attachLinkHandlers = () => {
-      const links = document.querySelectorAll('.ss-infinite-hits-anchor');
-      links.forEach((link) => {
-        if (!(link as HTMLElement).dataset.hasHandler) {
-          link.addEventListener('click', handleLinkClick);
-          (link as HTMLElement).dataset.hasHandler = 'true';
-        }
-      });
-    };
-
-    // Single MutationObserver handles both concerns
     const observer = new MutationObserver((mutations) => {
-      // Check for new Ask AI modal/dialog nodes
       for (const mutation of mutations) {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLElement) {
@@ -273,13 +217,9 @@ export default function SearchPage() {
           }
         }
       }
-
-      // Attach handlers to any new SiteSearch result links
-      attachLinkHandlers();
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
-    attachLinkHandlers();
 
     // Click listener for Ask AI button — class-based selectors only
     const handleDocumentClick = (e: MouseEvent) => {
@@ -298,7 +238,7 @@ export default function SearchPage() {
       document.removeEventListener('click', handleDocumentClick);
       clearPendingTimeouts();
     };
-  }, [isEnabled, router]);
+  }, [isEnabled]);
 
   if (!isEnabled || !searchClient) {
     return (
@@ -361,9 +301,9 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Category</h2>
                   {collapsedSections.category ? (
-                    <Plus size={14} aria-hidden="true" />
+                    <FiPlus size={14} aria-hidden="true" />
                   ) : (
-                    <Minus size={14} aria-hidden="true" />
+                    <FiMinus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-category">
@@ -383,9 +323,9 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Builds</h2>
                   {collapsedSections.builds ? (
-                    <Plus size={14} aria-hidden="true" />
+                    <FiPlus size={14} aria-hidden="true" />
                   ) : (
-                    <Minus size={14} aria-hidden="true" />
+                    <FiMinus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-builds">
@@ -405,9 +345,9 @@ export default function SearchPage() {
                 >
                   <h2 className={styles.refinementTitle}>Tags</h2>
                   {collapsedSections.tags ? (
-                    <Plus size={14} aria-hidden="true" />
+                    <FiPlus size={14} aria-hidden="true" />
                   ) : (
-                    <Minus size={14} aria-hidden="true" />
+                    <FiMinus size={14} aria-hidden="true" />
                   )}
                 </button>
                 <div id="filter-tags">

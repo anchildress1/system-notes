@@ -1,5 +1,6 @@
 import type { Project } from '@/lib/api';
-import type { Hit, BaseHit } from 'instantsearch.js';
+import type { Hit } from 'instantsearch.js';
+import type { FactHitRecord } from '@/types/algolia';
 
 /**
  * Shared mock data factories for tests.
@@ -20,20 +21,7 @@ export const mockProject: Project = {
   image_url: '/test-image.jpg',
 };
 
-export interface FactHitRecord extends BaseHit {
-  objectID: string;
-  title: string;
-  blurb: string;
-  fact: string;
-  content?: string;
-  url?: string;
-  tags: string[];
-  projects: string[];
-  category: string;
-  signal: number;
-  'tags.lvl0'?: string[];
-  'tags.lvl1'?: string[];
-}
+export type { FactHitRecord } from '@/types/algolia';
 
 export const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecord> =>
   ({
@@ -41,7 +29,6 @@ export const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactH
     title: 'Test Fact Title',
     blurb: 'This is a test blurb.',
     fact: 'This is the detailed fact content.',
-    tags: ['tag-one', 'tag-two', 'tag-three'],
     'tags.lvl0': ['Engineering'],
     'tags.lvl1': ['Engineering > Frontend', 'Engineering > TypeScript'],
     projects: ['Project Alpha', 'Project Beta'],

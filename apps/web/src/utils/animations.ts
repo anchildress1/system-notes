@@ -1,15 +1,8 @@
 /**
- * Shared Framer Motion animation variants and transitions.
- * Keeps Choices (search) and Builds (projects) pages consistent.
- * Durations align with globals.css tokens:
- *   --transition-fast: 0.15s
- *   --transition-base: 0.2s
- *   --transition-slow: 0.3s
+ * Shared Framer Motion animation variants and transitions for card-flip overlays.
+ * Used by FactCard and ExpandedView. Durations are tuned for perceived performance
+ * and intentionally differ from the CSS transition tokens in globals.css.
  */
-
-/* ── Easing curves (mirrors CSS custom properties) ── */
-export const easeSpring: [number, number, number, number] = [0.175, 0.885, 0.32, 1.275];
-export const easeMorph: [number, number, number, number] = [0.4, 0, 0.2, 1];
 
 /* ── Card-flip overlay (background dim) ── */
 export const overlayTransition = { duration: 0.12, ease: 'easeOut' as const };

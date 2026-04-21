@@ -48,9 +48,9 @@ typecheck:
 	@echo "🔎 Type checking..."
 	cd apps/web && npx tsc --noEmit
 
-# Run tests
+# Run all tests (frontend via vitest, backend via pytest — orchestrated by Turbo)
 test:
-	@echo "🧪 Running tests..."
+	@echo "🧪 Running frontend + backend tests..."
 	npm run test
 
 # Secret scanning (Non-interactive)

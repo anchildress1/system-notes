@@ -36,16 +36,18 @@ export default function FactCardBack({
   // Derive display tags from lvl1 leaf parts (Algolia format: "Parent > Child").
   // lvl1 already encodes the full hierarchy; lvl0 is redundant for display purposes.
   // Falls back to lvl0 category names when no lvl1 entries exist.
+  const tagsLvl0 = hit['tags.lvl0'];
+  const tagsLvl1 = hit['tags.lvl1'];
   const displayTags = useMemo(() => {
-    const lvl1 = hit['tags.lvl1'] ?? [];
+    const lvl1 = tagsLvl1 ?? [];
     if (lvl1.length > 0) {
       return lvl1.map((tag) => {
         const sepIdx = tag.indexOf(' > ');
         return sepIdx > -1 ? tag.slice(sepIdx + 3) : tag;
       });
     }
-    return hit['tags.lvl0'] ?? [];
-  }, [hit]);
+    return tagsLvl0 ?? [];
+  }, [tagsLvl1, tagsLvl0]);
 
   return (
     <section
@@ -62,7 +64,6 @@ export default function FactCardBack({
           onClose();
         }}
         aria-label="Close expanded view"
-        tabIndex={0}
       >
         <CloseIcon />
       </button>

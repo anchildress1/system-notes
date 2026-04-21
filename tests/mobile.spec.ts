@@ -35,8 +35,9 @@ test.describe('Mobile Responsiveness', () => {
     const modalTitle = modal.getByRole('heading', { name: 'System Notes', level: 2 });
     await expect(modalTitle).toBeVisible();
 
-    // Close it
-    await page.keyboard.press('Escape');
+    // Close via button — keyboard.press('Escape') is unreliable on mobile viewports
+    const closeBtn = modal.getByRole('button', { name: /close modal/i });
+    await closeBtn.click();
     await expect(modal).not.toBeVisible();
   });
 
