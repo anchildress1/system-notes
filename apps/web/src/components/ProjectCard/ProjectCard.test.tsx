@@ -47,13 +47,14 @@ describe('ProjectCard Component', () => {
     openSpy.mockRestore();
   });
 
-  it('opens GitHub URL on Enter/Space key', () => {
+  it('opens GitHub URL on repeated clicks without calling onSelect', () => {
     const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     render(<ProjectCard project={mockProject} onSelect={() => {}} />);
 
     const button = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
 
-    // Real buttons trigger click events on Enter/Space
+    // Native <button> elements fire a synthetic click on Enter/Space in real browsers;
+    // in jsdom we simulate this directly with fireEvent.click.
     fireEvent.click(button);
     expect(openSpy).toHaveBeenCalledWith(mockProject.repo_url, '_blank', 'noopener,noreferrer');
 
@@ -83,5 +84,50 @@ describe('ProjectCard Component', () => {
   it('does not render award badge when project has no award', () => {
     render(<ProjectCard project={mockProject} onSelect={() => {}} />);
     expect(screen.queryByText('Best in Show')).not.toBeInTheDocument();
+  });
+
+  it('calls onSelect when Enter key is pressed on the card', () => {
+    const handleSelect = vi.fn();
+    render(<ProjectCard project={mockProject} onSelect={handleSelect} />);
+
+    const card = screen.getByTestId(`project-card-${mockProject.id}`);
+    fireEvent.keyDown(card, { key: 'Enter' });
+
+    expect(handleSelect).toHaveBeenCalledWith(mockProject);
+  });
+
+  it('calls onSelect when Space key is pressed on the card', () => {
+    const handleSelect = vi.fn();
+    render(<ProjectCard project={mockProject} onSelect={handleSelect} />);
+
+    const card = screen.getByTestId(`project-card-${mockProject.id}`);
+    fireEvent.keyDown(card, { key: ' ' });
+
+    expect(handleSelect).toHaveBeenCalledWith(mockProject);
+  });
+
+  it('does not call onSelect for non-activation keys', () => {
+    const handleSelect = vi.fn();
+    render(<ProjectCard project={mockProject} onSelect={handleSelect} />);
+
+    const card = screen.getByTestId(`project-card-${mockProject.id}`);
+    fireEvent.keyDown(card, { key: 'Tab' });
+    fireEvent.keyDown(card, { key: 'ArrowDown' });
+
+    expect(handleSelect).not.toHaveBeenCalled();
+  });
+
+  it('shows ChecKMarKDevTools badge for non-anchildress1 owner', () => {
+    const externalProject = { ...mockProject, owner: 'checkmarkdevtools' };
+    render(<ProjectCard project={externalProject} onSelect={() => {}} />);
+    expect(screen.getByText('ChecKMarKDevTools')).toBeInTheDocument();
+  });
+
+  it('does not render GitHub button when repo_url is absent', () => {
+    const noRepoProject = { ...mockProject, repo_url: undefined };
+    render(<ProjectCard project={noRepoProject} onSelect={() => {}} />);
+    expect(
+      screen.queryByLabelText(`View ${mockProject.title} source code on GitHub`)
+    ).not.toBeInTheDocument();
   });
 });

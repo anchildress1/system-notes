@@ -27,6 +27,7 @@ describe('GroupedTagFilter', () => {
       toggleShowMore: vi.fn(),
       sendEvent: vi.fn(),
       createURL: vi.fn(),
+      hasExhaustiveItems: false,
     });
 
     const { container } = render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
@@ -34,20 +35,35 @@ describe('GroupedTagFilter', () => {
   });
 
   it('renders parent items without children', () => {
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Standalone',
+                value: 'standalone',
+                count: 5,
+                isRefined: false,
+                highlighted: 'Standalone',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
-          items: [
-            {
-              label: 'Standalone',
-              value: 'standalone',
-              count: 5,
-              isRefined: false,
-              highlighted: 'Standalone',
-            },
-          ],
+          items: [],
           refine: mockRefine,
-          canRefine: true,
+          canRefine: false,
           canToggleShowMore: false,
           isFromSearch: false,
           isShowingMore: false,
@@ -55,21 +71,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [],
-        refine: mockRefine,
-        canRefine: false,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
     expect(screen.getByText('Standalone')).toBeInTheDocument();
@@ -77,16 +82,46 @@ describe('GroupedTagFilter', () => {
   });
 
   it('renders parent items with children collapsed by default', () => {
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: false,
+                highlighted: 'Events',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
             {
-              label: 'Events',
-              value: 'Events',
-              count: 10,
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
               isRefined: false,
-              highlighted: 'Events',
+              highlighted: 'Events > Conference',
+            },
+            {
+              label: 'Events > Meetup',
+              value: 'Events > Meetup',
+              count: 5,
+              isRefined: false,
+              highlighted: 'Events > Meetup',
             },
           ],
           refine: mockRefine,
@@ -98,36 +133,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Conference',
-          },
-          {
-            label: 'Events > Meetup',
-            value: 'Events > Meetup',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Meetup',
-          },
-        ],
-        refine: mockRefine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -137,23 +146,46 @@ describe('GroupedTagFilter', () => {
   });
 
   it('handles mixed parent items with and without children', () => {
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: false,
+                highlighted: 'Events',
+              },
+              {
+                label: 'Standalone',
+                value: 'Standalone',
+                count: 5,
+                isRefined: false,
+                highlighted: 'Standalone',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
             {
-              label: 'Events',
-              value: 'Events',
-              count: 10,
-              isRefined: false,
-              highlighted: 'Events',
-            },
-            {
-              label: 'Standalone',
-              value: 'Standalone',
+              label: 'Events > Conference',
+              value: 'Events > Conference',
               count: 5,
               isRefined: false,
-              highlighted: 'Standalone',
+              highlighted: 'Events > Conference',
             },
           ],
           refine: mockRefine,
@@ -165,29 +197,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Conference',
-          },
-        ],
-        refine: mockRefine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -197,16 +210,46 @@ describe('GroupedTagFilter', () => {
 
   it('expands children when expand button is clicked', async () => {
     const user = userEvent.setup();
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: false,
+                highlighted: 'Events',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
             {
-              label: 'Events',
-              value: 'Events',
-              count: 10,
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
               isRefined: false,
-              highlighted: 'Events',
+              highlighted: 'Events > Conference',
+            },
+            {
+              label: 'Events > Meetup',
+              value: 'Events > Meetup',
+              count: 5,
+              isRefined: false,
+              highlighted: 'Events > Meetup',
             },
           ],
           refine: mockRefine,
@@ -218,36 +261,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Conference',
-          },
-          {
-            label: 'Events > Meetup',
-            value: 'Events > Meetup',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Meetup',
-          },
-        ],
-        refine: mockRefine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -262,16 +279,39 @@ describe('GroupedTagFilter', () => {
 
   it('collapses children when collapse button is clicked', async () => {
     const user = userEvent.setup();
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: false,
+                highlighted: 'Events',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
             {
-              label: 'Events',
-              value: 'Events',
-              count: 10,
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
               isRefined: false,
-              highlighted: 'Events',
+              highlighted: 'Events > Conference',
             },
           ],
           refine: mockRefine,
@@ -283,29 +323,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Conference',
-          },
-        ],
-        refine: mockRefine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -326,20 +347,35 @@ describe('GroupedTagFilter', () => {
 
   it('calls refine for standalone items when checkbox is clicked', async () => {
     const user = userEvent.setup();
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Standalone',
+                value: 'standalone',
+                count: 5,
+                isRefined: false,
+                highlighted: 'Standalone',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
-          items: [
-            {
-              label: 'Standalone',
-              value: 'standalone',
-              count: 5,
-              isRefined: false,
-              highlighted: 'Standalone',
-            },
-          ],
+          items: [],
           refine: mockRefine,
-          canRefine: true,
+          canRefine: false,
           canToggleShowMore: false,
           isFromSearch: false,
           isShowingMore: false,
@@ -347,21 +383,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [],
-        refine: mockRefine,
-        canRefine: false,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -373,13 +398,49 @@ describe('GroupedTagFilter', () => {
 
   it('auto-selects all children when parent is refined via URL', async () => {
     const lvl1Refine = vi.fn();
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: true,
+                highlighted: 'Events',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
-            { label: 'Events', value: 'Events', count: 10, isRefined: true, highlighted: 'Events' },
+            {
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
+              isRefined: false,
+              highlighted: 'Events > Conference',
+            },
+            {
+              label: 'Events > Meetup',
+              value: 'Events > Meetup',
+              count: 3,
+              isRefined: false,
+              highlighted: 'Events > Meetup',
+            },
           ],
-          refine: mockRefine,
+          refine: lvl1Refine,
           canRefine: true,
           canToggleShowMore: false,
           isFromSearch: false,
@@ -388,36 +449,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Conference',
-          },
-          {
-            label: 'Events > Meetup',
-            value: 'Events > Meetup',
-            count: 3,
-            isRefined: false,
-            highlighted: 'Events > Meetup',
-          },
-        ],
-        refine: lvl1Refine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -431,19 +466,49 @@ describe('GroupedTagFilter', () => {
     const user = userEvent.setup();
     const lvl0Refine = vi.fn();
     const lvl1Refine = vi.fn();
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: false,
+                highlighted: 'Events',
+              },
+            ],
+            refine: lvl0Refine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
             {
-              label: 'Events',
-              value: 'Events',
-              count: 10,
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
               isRefined: false,
-              highlighted: 'Events',
+              highlighted: 'Events > Conference',
+            },
+            {
+              label: 'Events > Meetup',
+              value: 'Events > Meetup',
+              count: 3,
+              isRefined: true,
+              highlighted: 'Events > Meetup',
             },
           ],
-          refine: lvl0Refine,
+          refine: lvl1Refine,
           canRefine: true,
           canToggleShowMore: false,
           isFromSearch: false,
@@ -452,36 +517,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Conference',
-          },
-          {
-            label: 'Events > Meetup',
-            value: 'Events > Meetup',
-            count: 3,
-            isRefined: true,
-            highlighted: 'Events > Meetup',
-          },
-        ],
-        refine: lvl1Refine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -498,13 +537,49 @@ describe('GroupedTagFilter', () => {
     const user = userEvent.setup();
     const lvl0Refine = vi.fn();
     const lvl1Refine = vi.fn();
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: true,
+                highlighted: 'Events',
+              },
+            ],
+            refine: lvl0Refine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
-            { label: 'Events', value: 'Events', count: 10, isRefined: true, highlighted: 'Events' },
+            {
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
+              isRefined: true,
+              highlighted: 'Events > Conference',
+            },
+            {
+              label: 'Events > Meetup',
+              value: 'Events > Meetup',
+              count: 3,
+              isRefined: true,
+              highlighted: 'Events > Meetup',
+            },
           ],
-          refine: lvl0Refine,
+          refine: lvl1Refine,
           canRefine: true,
           canToggleShowMore: false,
           isFromSearch: false,
@@ -513,36 +588,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: true,
-            highlighted: 'Events > Conference',
-          },
-          {
-            label: 'Events > Meetup',
-            value: 'Events > Meetup',
-            count: 3,
-            isRefined: true,
-            highlighted: 'Events > Meetup',
-          },
-        ],
-        refine: lvl1Refine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -558,19 +607,42 @@ describe('GroupedTagFilter', () => {
     const user = userEvent.setup();
     const lvl0Refine = vi.fn();
     const lvl1Refine = vi.fn();
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: false,
+                highlighted: 'Events',
+              },
+            ],
+            refine: lvl0Refine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
             {
-              label: 'Events',
-              value: 'Events',
-              count: 10,
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
               isRefined: false,
-              highlighted: 'Events',
+              highlighted: 'Events > Conference',
             },
           ],
-          refine: lvl0Refine,
+          refine: lvl1Refine,
           canRefine: true,
           canToggleShowMore: false,
           isFromSearch: false,
@@ -579,29 +651,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Conference',
-          },
-        ],
-        refine: lvl1Refine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -614,63 +667,39 @@ describe('GroupedTagFilter', () => {
   });
 
   it('skips auto-sync when all children are already refined', () => {
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
-        return {
-          items: [
-            { label: 'Events', value: 'Events', count: 10, isRefined: true, highlighted: 'Events' },
-          ],
-          refine: mockRefine,
-          canRefine: true,
-          canToggleShowMore: false,
-          isFromSearch: false,
-          isShowingMore: false,
-          searchForItems: vi.fn(),
-          toggleShowMore: vi.fn(),
-          sendEvent: vi.fn(),
-          createURL: vi.fn(),
-        };
-      }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: true,
-            highlighted: 'Events > Conference',
-          },
-        ],
-        refine: mockRefine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
-
-    render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
-
-    // mockRefine for lvl1 should NOT be called since all children are already refined
-    expect(mockRefine).not.toHaveBeenCalled();
-  });
-
-  it('expands group via Enter key on expand button', async () => {
-    const user = userEvent.setup();
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: true,
+                highlighted: 'Events',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
             {
-              label: 'Events',
-              value: 'Events',
-              count: 10,
-              isRefined: false,
-              highlighted: 'Events',
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
+              isRefined: true,
+              highlighted: 'Events > Conference',
             },
           ],
           refine: mockRefine,
@@ -682,29 +711,67 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Conference',
-          },
-        ],
-        refine: mockRefine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
+
+    render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
+
+    // mockRefine for lvl1 should NOT be called since all children are already refined
+    expect(mockRefine).not.toHaveBeenCalled();
+  });
+
+  it('expands group via Enter key on expand button', async () => {
+    const user = userEvent.setup();
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: false,
+                highlighted: 'Events',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
+        return {
+          items: [
+            {
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
+              isRefined: false,
+              highlighted: 'Events > Conference',
+            },
+          ],
+          refine: mockRefine,
+          canRefine: true,
+          canToggleShowMore: false,
+          isFromSearch: false,
+          isShowingMore: false,
+          searchForItems: vi.fn(),
+          toggleShowMore: vi.fn(),
+          sendEvent: vi.fn(),
+          createURL: vi.fn(),
+          hasExhaustiveItems: false,
+        };
+      }
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -720,19 +787,42 @@ describe('GroupedTagFilter', () => {
   it('refines child when child checkbox is clicked', async () => {
     const user = userEvent.setup();
     const lvl1Refine = vi.fn();
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: false,
+                highlighted: 'Events',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
             {
-              label: 'Events',
-              value: 'Events',
-              count: 10,
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
               isRefined: false,
-              highlighted: 'Events',
+              highlighted: 'Events > Conference',
             },
           ],
-          refine: mockRefine,
+          refine: lvl1Refine,
           canRefine: true,
           canToggleShowMore: false,
           isFromSearch: false,
@@ -741,29 +831,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: false,
-            highlighted: 'Events > Conference',
-          },
-        ],
-        refine: lvl1Refine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 
@@ -780,16 +851,46 @@ describe('GroupedTagFilter', () => {
   });
 
   it('sets indeterminate state when some children are refined', () => {
-    vi.mocked(useRefinementList).mockImplementation(({ attribute }) => {
-      if (attribute === 'tags.lvl0') {
+    vi.mocked(useRefinementList).mockImplementation(
+      ({ attribute }): ReturnType<typeof useRefinementList> => {
+        if (attribute === 'tags.lvl0') {
+          return {
+            items: [
+              {
+                label: 'Events',
+                value: 'Events',
+                count: 10,
+                isRefined: false,
+                highlighted: 'Events',
+              },
+            ],
+            refine: mockRefine,
+            canRefine: true,
+            canToggleShowMore: false,
+            isFromSearch: false,
+            isShowingMore: false,
+            searchForItems: vi.fn(),
+            toggleShowMore: vi.fn(),
+            sendEvent: vi.fn(),
+            createURL: vi.fn(),
+            hasExhaustiveItems: false,
+          };
+        }
         return {
           items: [
             {
-              label: 'Events',
-              value: 'Events',
-              count: 10,
+              label: 'Events > Conference',
+              value: 'Events > Conference',
+              count: 5,
+              isRefined: true,
+              highlighted: 'Events > Conference',
+            },
+            {
+              label: 'Events > Meetup',
+              value: 'Events > Meetup',
+              count: 3,
               isRefined: false,
-              highlighted: 'Events',
+              highlighted: 'Events > Meetup',
             },
           ],
           refine: mockRefine,
@@ -801,36 +902,10 @@ describe('GroupedTagFilter', () => {
           toggleShowMore: vi.fn(),
           sendEvent: vi.fn(),
           createURL: vi.fn(),
+          hasExhaustiveItems: false,
         };
       }
-      return {
-        items: [
-          {
-            label: 'Events > Conference',
-            value: 'Events > Conference',
-            count: 5,
-            isRefined: true,
-            highlighted: 'Events > Conference',
-          },
-          {
-            label: 'Events > Meetup',
-            value: 'Events > Meetup',
-            count: 3,
-            isRefined: false,
-            highlighted: 'Events > Meetup',
-          },
-        ],
-        refine: mockRefine,
-        canRefine: true,
-        canToggleShowMore: false,
-        isFromSearch: false,
-        isShowingMore: false,
-        searchForItems: vi.fn(),
-        toggleShowMore: vi.fn(),
-        sendEvent: vi.fn(),
-        createURL: vi.fn(),
-      };
-    });
+    );
 
     render(<GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />);
 

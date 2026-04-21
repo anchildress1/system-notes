@@ -101,4 +101,31 @@ describe('MusicPlayer', () => {
     // Should ensure it is in paused state (showing Play button)
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
   });
+
+  it('disables button and shows error state when audio fails to load', () => {
+    render(<MusicPlayer />);
+
+    const audioElement = screen.getByTestId('music-player').querySelector('audio');
+    if (!audioElement) throw new Error('Expected audio element');
+
+    // Trigger the onError handler
+    fireEvent.error(audioElement);
+
+    // Button should be disabled after an audio error
+    const button = screen.getByTestId('play-button');
+    expect(button).toBeDisabled();
+
+    // Should remain in Play (not Pause) state
+    expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+  });
+
+  it('does not call play on initial mount without user interaction', () => {
+    // Verify the component renders in a paused state and does not auto-play.
+    // The `if (!audioRef.current) return` null guard in togglePlay cannot be triggered
+    // in a real render (React always sets the ref), but this test confirms the mount
+    // state is correct and play is never called until the user explicitly clicks.
+    render(<MusicPlayer />);
+    expect(globalThis.HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+    expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+  });
 });
