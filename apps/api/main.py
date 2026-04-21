@@ -149,7 +149,7 @@ async def get_projects():
         projects = [_parse_project_item(item) for item in content]
         projects.sort(key=lambda p: p.order_rank)
         return projects
-    except (OSError, json.JSONDecodeError, ValueError) as e:
+    except (OSError, ValueError) as e:
         logger.error("Error loading projects: %s", e)
         return JSONResponse(status_code=500, content={"error": "Failed to load projects"})
 

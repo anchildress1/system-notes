@@ -6,7 +6,7 @@ import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
 import type { FactHitRecord } from '@/types/algolia';
 
-export type { FactHitRecord as OverlayHit };
+export type { FactHitRecord as OverlayHit } from '@/types/algolia';
 
 /**
  * Hook to handle factId deep-linking.
@@ -73,7 +73,7 @@ function isFactHitRecord(hit: unknown): hit is FactHitRecord {
 
 /** Validates that a factId contains only safe alphanumeric/separator characters and is at most 200 chars. Prevents filter injection before the value reaches Algolia. */
 function isValidFactId(id: string): boolean {
-  return /^[a-zA-Z0-9_.:\-]{1,200}$/.test(id);
+  return /^[a-zA-Z0-9_.:-]{1,200}$/.test(id);
 }
 
 /**

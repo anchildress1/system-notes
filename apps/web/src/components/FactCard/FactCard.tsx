@@ -12,7 +12,7 @@ import { overlayTransition, cardFlipVariants } from '@/utils/animations';
 import FactCardBack from './FactCardBack';
 import styles from './FactCard.module.css';
 
-export type { FactHitRecord };
+export type { FactHitRecord } from '@/types/algolia';
 
 interface FactCardProps {
   hit: Hit<FactHitRecord>;

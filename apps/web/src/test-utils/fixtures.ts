@@ -21,7 +21,7 @@ export const mockProject: Project = {
   image_url: '/test-image.jpg',
 };
 
-export type { FactHitRecord };
+export type { FactHitRecord } from '@/types/algolia';
 
 export const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecord> =>
   ({
