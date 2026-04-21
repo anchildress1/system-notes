@@ -63,6 +63,8 @@ test.describe('Search Page Integration', () => {
         description: 'Test description',
         content: 'Test content',
         fact: 'Test fact content',
+        category: 'Engineering',
+        projects: ['test-project'],
       },
     ]);
 
