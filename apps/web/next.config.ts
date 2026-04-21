@@ -55,27 +55,30 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      {
-        // Immutable caching only for content-hashed Next.js static assets
-        source: '/_next/static/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        // Standard caching for other static assets (fonts, images from public/)
-        // Excludes .ico to allow favicon updates
-        source: String.raw`/(.*)\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif)`,
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000',
-          },
-        ],
-      },
+      ...(process.env.NODE_ENV === 'production'
+        ? [
+            {
+              // Immutable caching only for content-hashed Next.js static assets (production only)
+              source: '/_next/static/:path*',
+              headers: [
+                {
+                  key: 'Cache-Control',
+                  value: 'public, max-age=31536000, immutable',
+                },
+              ],
+            },
+            {
+              // Standard caching for other static assets (fonts, images from public/)
+              source: String.raw`/(.*)\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif)`,
+              headers: [
+                {
+                  key: 'Cache-Control',
+                  value: 'public, max-age=31536000',
+                },
+              ],
+            },
+          ]
+        : []),
     ];
   },
 };
