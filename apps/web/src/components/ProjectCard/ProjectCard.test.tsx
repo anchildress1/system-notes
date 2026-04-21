@@ -53,8 +53,6 @@ describe('ProjectCard Component', () => {
 
     const button = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
 
-    // Native <button> elements fire a synthetic click on Enter/Space in real browsers;
-    // in jsdom we simulate this directly with fireEvent.click.
     fireEvent.click(button);
     expect(openSpy).toHaveBeenCalledWith(mockProject.repo_url, '_blank', 'noopener,noreferrer');
 

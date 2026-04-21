@@ -30,7 +30,13 @@ export default function InfiniteHits({
     const params = new URLSearchParams(searchParams?.toString() || '');
     const currentPageRaw = params.get('page');
     const currentPage = currentPageRaw ? Number(currentPageRaw) : 1;
-    const nextPage = Number.isFinite(currentPage) && currentPage > 0 ? currentPage + 1 : 2;
+    const pageIsValid = Number.isFinite(currentPage) && currentPage > 0;
+    if (currentPageRaw && !pageIsValid) {
+      console.warn('InfiniteHits: invalid page param, resetting to page 2', {
+        page: currentPageRaw,
+      });
+    }
+    const nextPage = pageIsValid ? currentPage + 1 : 2;
     params.set('page', String(nextPage));
     const queryString = params.toString();
     // params.set() above always produces a non-empty string; false branch is structurally unreachable

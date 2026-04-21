@@ -20,8 +20,9 @@ export default function MusicPlayer() {
         await audioRef.current.play();
         setIsPlaying(true);
       } catch (error) {
-        console.warn('Playback failed:', error);
+        console.error('Playback failed:', error);
         setIsPlaying(false);
+        setHasError(true);
       }
     }
   };
@@ -31,6 +32,12 @@ export default function MusicPlayer() {
   };
 
   const handleAudioError = () => {
+    const mediaError = audioRef.current?.error;
+    console.error('Audio element error:', {
+      code: mediaError?.code,
+      message: mediaError?.message,
+      src: audioRef.current?.src,
+    });
     setIsPlaying(false);
     setHasError(true);
   };

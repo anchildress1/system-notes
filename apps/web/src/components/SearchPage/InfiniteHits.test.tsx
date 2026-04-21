@@ -51,11 +51,12 @@ const baseHitsState = {
   currentPageHits: [] as Hit[],
   isFirstPage: true,
   showPrevious: mockShowPrevious,
+  showMore: mockShowMore,
+  sendEvent: mockSendEvent,
   bindEvent: mockBindEvent,
 };
 
 // Default no-op IntersectionObserver for tests that don't need custom observer behaviour.
-// vi.unstubAllGlobals() (called in afterEach) removes the setupTests stub, so we re-apply it.
 class DefaultIntersectionObserver {
   observe = vi.fn();
   disconnect = vi.fn();
@@ -81,7 +82,7 @@ class TriggeringObserver {
 describe('InfiniteHits', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Restore default mock after unstubAllGlobals() may have cleared the setupTests version
+    // vi.unstubAllGlobals() (called in afterEach) removes the setupTests stub, so we re-apply it here.
     vi.stubGlobal('IntersectionObserver', DefaultIntersectionObserver);
   });
 
@@ -109,8 +110,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     const HitComponent = () => <div>Hit</div>;
@@ -125,8 +124,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: true,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -148,8 +145,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     const { unmount } = render(<InfiniteHits hitComponent={() => <div />} />);
@@ -161,8 +156,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -173,8 +166,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: true,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -185,8 +176,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -199,8 +188,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -215,8 +202,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -231,8 +216,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -245,8 +228,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: true,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     const { container } = render(<InfiniteHits hitComponent={() => <div />} />);
@@ -266,8 +247,6 @@ describe('InfiniteHits', () => {
       hits: [hit],
       currentPageHits: [hit],
       isLastPage: true,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={({ hit: h }) => <div>{String(h.title)}</div>} />);
@@ -294,8 +273,6 @@ describe('InfiniteHits', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -311,8 +288,6 @@ describe('InfiniteHits', () => {
       hits: [hit],
       currentPageHits: [hit],
       isLastPage: true,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     const { container } = render(
