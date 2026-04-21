@@ -38,23 +38,32 @@ async function mockAlgoliaWithHits(page: any, hits: any[]) {
   });
 }
 
-test.describe('Search Page Integration', () => {
-  test('loads search page and renders main component', async ({ page }) => {
-    await mockAlgoliaWithHits(page, [{ objectID: '1', title: 'Test Hit' }]);
+/**
+ * Detect whether Algolia credentials are baked into the build.
+ * SearchPage renders #search-askai when credentialed, error state otherwise.
+ * Must be called after navigating to a /search URL.
+ */
+async function hasAlgoliaCredentials(page: any): Promise<boolean> {
+  const siteSearch = page.locator('#search-askai');
+  const errorState = page.locator('div[class*="errorState"]');
+  await expect(siteSearch.or(errorState).first()).toBeVisible({ timeout: 15000 });
+  return siteSearch.isVisible().catch(() => false);
+}
 
+test.describe('Search Page — credentialed environment', () => {
+  test('renders search UI with SiteSearch widget', async ({ page }) => {
+    await mockAlgoliaWithHits(page, [{ objectID: '1', title: 'Test Hit' }]);
     await page.goto('/search');
 
-    // Check for the SiteSearch container
-    const siteSearch = page.locator('#search-askai');
-    await expect(siteSearch).toBeVisible({ timeout: 15000 });
+    const credentialed = await hasAlgoliaCredentials(page);
+    test.skip(!credentialed, 'Algolia credentials not baked into build');
 
-    // Verify results section
+    await expect(page.locator('#search-askai')).toBeVisible();
     const results = page.locator('section[aria-label="Search results"]');
     await expect(results).toBeVisible();
   });
 
-  test('navigating to URL with factId expands the card and scrolls into view', async ({ page }) => {
-    // Mock Algolia with the specific hit expected by the test
+  test('factId deep-link opens overlay', async ({ page }) => {
     const testId = 'test-hit-id';
     await mockAlgoliaWithHits(page, [
       {
@@ -66,20 +75,40 @@ test.describe('Search Page Integration', () => {
       },
     ]);
 
-    // Navigate directly to search with a factId parameter
     await page.goto(`/search?factId=${testId}`);
 
-    // Wait for the card to be rendered
+    const credentialed = await hasAlgoliaCredentials(page);
+    test.skip(!credentialed, 'Algolia credentials not baked into build');
+
     const cardLink = page.locator(`[href*="factId=${testId}"]`).first();
     await expect(cardLink).toBeVisible({ timeout: 10000 });
 
-    // Verify the card is highlighted (data-highlighted attribute)
-    // const article = cardLink.locator('article');
-    // await expect(article).toBeVisible();
-
     // FactCardOverlay renders article[role="dialog"] once useFactIdRouting fetches the card.
-    // Give it a full 10s — the fetch is async post-hydration and CI can be slow.
     const expandedView = page.locator('article[role="dialog"]').first();
     await expect(expandedView).toBeVisible({ timeout: 10000 });
+  });
+});
+
+test.describe('Search Page — no-credential environment', () => {
+  test('renders error state with user-friendly message', async ({ page }) => {
+    await page.goto('/search');
+
+    const credentialed = await hasAlgoliaCredentials(page);
+    test.skip(credentialed, 'Algolia credentials are configured — error state will not render');
+
+    const errorState = page.locator('div[class*="errorState"]');
+    await expect(errorState).toBeVisible();
+    await expect(page.locator('text=Search is currently unavailable')).toBeVisible();
+  });
+
+  test('factId deep-link shows error state', async ({ page }) => {
+    await page.goto('/search?factId=test-hit-id');
+
+    const credentialed = await hasAlgoliaCredentials(page);
+    test.skip(credentialed, 'Algolia credentials are configured — error state will not render');
+
+    const errorState = page.locator('div[class*="errorState"]');
+    await expect(errorState).toBeVisible();
+    await expect(page.locator('text=Search is currently unavailable')).toBeVisible();
   });
 });

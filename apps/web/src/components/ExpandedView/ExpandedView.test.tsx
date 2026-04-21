@@ -20,7 +20,7 @@ describe('ExpandedView Component', () => {
     expect(screen.getByText('The core purpose of the project.')).toBeInTheDocument();
     expect(screen.getByText('Long detailed description.')).toBeInTheDocument();
     expect(screen.getByText('Great outcome.')).toBeInTheDocument();
-    expect(screen.getByText('GitHub Repo')).toBeInTheDocument();
+    expect(screen.getByText('GitHub')).toBeInTheDocument();
   });
 
   it('calls onClose when close button is clicked', () => {
@@ -77,6 +77,31 @@ describe('ExpandedView Component', () => {
     expect(closeBtn).toHaveAttribute('aria-label', 'Close modal');
   });
 
+  it('renders the banner image when image_url is provided', () => {
+    render(
+      <ExpandedView
+        project={mockProject}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.getByTestId('expanded-image-container')).toBeInTheDocument();
+  });
+
+  it('omits the banner when image_url is absent', () => {
+    const projectWithoutImage = { ...mockProject, image_url: undefined };
+    render(
+      <ExpandedView
+        project={projectWithoutImage}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.queryByTestId('expanded-image-container')).not.toBeInTheDocument();
+  });
+
   it('does not render GitHub Repo link when repo_url is absent', () => {
     const projectWithoutRepo = { ...mockProject, repo_url: undefined };
     render(
@@ -87,7 +112,7 @@ describe('ExpandedView Component', () => {
         onExitComplete={() => {}}
       />
     );
-    expect(screen.queryByText('GitHub Repo')).not.toBeInTheDocument();
+    expect(screen.queryByText('GitHub')).not.toBeInTheDocument();
   });
 
   it('renders blog links if provided', () => {
@@ -105,6 +130,31 @@ describe('ExpandedView Component', () => {
     );
     expect(screen.getByText('Related Reading')).toBeInTheDocument();
     expect(screen.getByText('Blog 1')).toHaveAttribute('href', 'https://blog1.com');
+  });
+
+  it('renders award badge when project has an award', () => {
+    const awardProject = { ...mockProject, award: 'Best in Show' };
+    render(
+      <ExpandedView
+        project={awardProject}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.getByText('Best in Show')).toBeInTheDocument();
+  });
+
+  it('does not render award badge when project has no award', () => {
+    render(
+      <ExpandedView
+        project={mockProject}
+        onClose={() => {}}
+        isOpen={true}
+        onExitComplete={() => {}}
+      />
+    );
+    expect(screen.queryByText('Best in Show')).not.toBeInTheDocument();
   });
 
   it('handles keyboard scrolling', () => {

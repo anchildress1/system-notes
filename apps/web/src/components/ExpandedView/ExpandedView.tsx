@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Project } from '@/lib/api';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
 import { overlayTransition, cardFlipVariants } from '@/utils/animations';
-import { CloseIcon } from '@/components/icons';
+import { CloseIcon, TrophyIcon } from '@/components/icons';
 
 interface ExpandedViewProps {
   project: Project;
@@ -79,27 +80,71 @@ export default function ExpandedView({
           if (definition === 'exit') onExitComplete();
         }}
       >
-        <button
-          className={`close-button-global ${styles.closeButton}`}
-          onClick={onClose}
-          aria-label="Close modal"
-        >
-          <CloseIcon />
-        </button>
+        {/* Zero-height sticky wrapper keeps button visible over scroll without displacing content */}
+        <div className={styles.closeWrap}>
+          <button
+            type="button"
+            className={`close-button-global ${styles.closeButton}`}
+            onClick={onClose}
+            aria-label="Close modal"
+          >
+            <CloseIcon />
+          </button>
+        </div>
+
+        {project.image_url && (
+          <div className={styles.imageContainer} data-testid="expanded-image-container">
+            <div className={styles.imageWrapper}>
+              <div
+                className={styles.conceptBackground}
+                style={{ backgroundImage: `url(${project.image_url})` }}
+              />
+              <Image
+                src={project.image_url}
+                alt={project.image_alt || project.title}
+                className={styles.bannerImage}
+                fill
+                style={{ objectFit: 'cover' }}
+                priority={false}
+                sizes="(max-width: 1200px) 100vw, 1200px"
+              />
+            </div>
+          </div>
+        )}
 
         <div className={styles.content}>
           <div className={styles.header}>
             <div className={styles.headerContent}>
               <div className={styles.titleRow}>
-                <h2 className={styles.title} id="modal-title">
-                  {project.title}
-                </h2>
-                {project.status && <span className={styles.statusBadge}>{project.status}</span>}
+                <div className={styles.titleGroup}>
+                  <h2 className={styles.title} id="modal-title">
+                    {project.title}
+                  </h2>
+                  <div className={styles.metaRow}>
+                    <span>{project.owner}</span>
+                    {project.repo_url && (
+                      <a
+                        href={project.repo_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.repoLinkCompact}
+                        aria-label={`View ${project.title} on GitHub`}
+                      >
+                        GitHub
+                      </a>
+                    )}
+                  </div>
+                </div>
+                <div className={styles.titleActions}>
+                  {project.award && (
+                    <div className="award-badge">
+                      <TrophyIcon className="award-badge-icon" />
+                      <span>{project.award}</span>
+                    </div>
+                  )}
+                  {project.status && <span className={styles.statusBadge}>{project.status}</span>}
+                </div>
               </div>
-              <div className={styles.metaRow}>
-                <span>{project.owner}</span>
-              </div>
-              {project.description && <p className={styles.subheader}>{project.description}</p>}
             </div>
           </div>
 
@@ -107,20 +152,20 @@ export default function ExpandedView({
             <div className={styles.mainColumn}>
               {project.purpose && (
                 <div className={styles.section}>
-                  <h2 className={styles.sectionTitle}>Purpose</h2>
+                  <h3 className={styles.sectionTitle}>Purpose</h3>
                   <p className={styles.bodyText}>{project.purpose}</p>
                 </div>
               )}
               {project.long_description && (
                 <div className={styles.section}>
-                  <h2 className={styles.sectionTitle}>Project Output</h2>
+                  <h3 className={styles.sectionTitle}>Project Output</h3>
                   <p className={styles.bodyText}>{project.long_description}</p>
                 </div>
               )}
 
               {project.outcome && (
                 <div className={styles.section}>
-                  <h2 className={styles.sectionTitle}>Outcome</h2>
+                  <h3 className={styles.sectionTitle}>Outcome</h3>
                   <p className={styles.bodyText}>{project.outcome}</p>
                 </div>
               )}
@@ -128,7 +173,7 @@ export default function ExpandedView({
 
             <div className={styles.sideColumn}>
               <div className={styles.techStack}>
-                <h2 className={styles.sectionTitle}>Tech Stack</h2>
+                <h3 className={styles.sectionTitle}>Tech Stack</h3>
                 <div className={styles.tags}>
                   {project.tech.map((t) => (
                     <div key={t.name} className={styles.tagItem}>
@@ -137,39 +182,12 @@ export default function ExpandedView({
                     </div>
                   ))}
                 </div>
-
-                <div className={styles.actions}>
-                  {project.repo_url && (
-                    <a
-                      href={project.repo_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.repoLink}
-                    >
-                      GitHub Repo
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                      </svg>
-                    </a>
-                  )}
-                </div>
               </div>
             </div>
 
             {project.blog_posts && project.blog_posts.length > 0 && (
               <div className={styles.fullWidthSection}>
-                <h2 className={styles.sectionTitle}>Related Reading</h2>
+                <h3 className={styles.sectionTitle}>Related Reading</h3>
                 <ul className={styles.blogList}>
                   {project.blog_posts.map((blog) => (
                     <li key={blog.url} className={styles.blogItem}>

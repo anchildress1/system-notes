@@ -18,7 +18,7 @@ export interface AboutData {
 export const aboutData: AboutData = {
   heroTitle: "Designing for the failures \n you haven't met yet",
   heroImage: {
-    src: '/ashley-gen-2.jpg',
+    src: '/ashley-gen-2.webp',
     alt: 'Ashley Childress profile picture showing a stylized, AI-generated portrait of a woman with red hair and glasses',
     width: 600,
     height: 400,

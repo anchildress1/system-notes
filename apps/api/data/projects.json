@@ -8,16 +8,31 @@
     "why_it_exists": "Built to satisfy a required challenge deliverable and used as a controlled AI experiment with Antigravity.",
     "long_description": "System Notes exists because the challenge required a site, and I treated that requirement as another AI experiment. Instead of hand-authoring a polished portfolio, I delegated structure and content generation to Antigravity and ChatGPT while constraining scope, intent, and boundaries. The value is not the site itself, but the traceability of decisions made when AI assembles a system under human supervision.",
     "outcome": "A strictly read-only, AI-assembled site that documents decision boundaries rather than presenting a curated portfolio narrative.",
-    "status": "Active · Deployed",
+    "status": "Active \u00b7 Deployed",
     "owner": "anchildress1",
-    "image_url": "/projects/system-notes.jpg",
+    "image_url": "/projects/system-notes.webp",
     "image_alt": "System Notes project dashboard showing AI-generated portfolio entries and architecture decisions",
     "tech": [
-      { "name": "Gemini 3 Pro", "role": "The Architect" },
-      { "name": "Antigravity", "role": "Orchestration Layer" },
-      { "name": "Google Cloud Run", "role": "Runtime" },
-      { "name": "ChatGPT", "role": "The Manager" },
-      { "name": "GPT 5.2", "role": "Conversational Interface" }
+      {
+        "name": "Gemini 3 Pro",
+        "role": "The Architect"
+      },
+      {
+        "name": "Antigravity",
+        "role": "Orchestration Layer"
+      },
+      {
+        "name": "Google Cloud Run",
+        "role": "Runtime"
+      },
+      {
+        "name": "ChatGPT",
+        "role": "The Manager"
+      },
+      {
+        "name": "GPT 5.2",
+        "role": "Conversational Interface"
+      }
     ],
     "blog_posts": [
       {
@@ -41,7 +56,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/system-notes",
     "app_url": "https://unstable.anchildress1.dev",
-    "order_rank": 10,
+    "order_rank": 1,
     "updated_at": "2026-02-08",
     "related_project_ids": [
       "underfoot-underground-travel-planner",
@@ -56,26 +71,197 @@
     "aliases": ["system notes writer", "index card generator", "structured notes app"],
     "what_it_is": "A lightweight app that turns messy thoughts into structured System Notes index cards stored in Supabase.",
     "why_it_exists": "To reduce the friction between capture and clarity while enforcing a consistent note schema when working in ChatGPT.",
-    "long_description": "SupaScribe Notes exists because the gap between freeform thought and structured output is where most note-taking tools fail. It enforces schema adherence at capture time rather than cleanup time — freeform input goes in, structured System Notes cards come out, and Supabase stores them durably. The pipeline is intentionally opinionated: no flexibility, no freeform persistence, no exceptions.",
-    "outcome": "Built as an opinionated pipeline: freeform input → structured card → durable storage, with a focus on simplicity and schema adherence over flexibility.",
-    "status": "Active · Tool",
+    "long_description": "SupaScribe Notes exists because the gap between freeform thought and structured output is where most note-taking tools fail. It enforces schema adherence at capture time rather than cleanup time \u2014 freeform input goes in, structured System Notes cards come out, and Supabase stores them durably. The pipeline is intentionally opinionated: no flexibility, no freeform persistence, no exceptions.",
+    "outcome": "Built as an opinionated pipeline: freeform input \u2192 structured card \u2192 durable storage, with a focus on simplicity and schema adherence over flexibility.",
+    "status": "Active \u00b7 Tool",
     "owner": "anchildress1",
-    "image_url": "/projects/supascribe-notes.jpg",
+    "image_url": "/projects/supascribe-notes.webp",
     "image_alt": "SupaScribe Notes app interface showing structured note card generation powered by AI and Supabase",
     "tech": [
-      { "name": "Supabase", "role": "The Database" },
-      { "name": "Postgres", "role": "Storage" },
-      { "name": "Edge Functions", "role": "Logic Layer" },
-      { "name": "OpenAI API", "role": "Intelligence" },
-      { "name": "TypeScript", "role": "Language" }
+      {
+        "name": "Supabase",
+        "role": "The Database"
+      },
+      {
+        "name": "Postgres",
+        "role": "Storage"
+      },
+      {
+        "name": "Edge Functions",
+        "role": "Logic Layer"
+      },
+      {
+        "name": "OpenAI API",
+        "role": "Intelligence"
+      },
+      {
+        "name": "TypeScript",
+        "role": "Language"
+      }
     ],
     "blog_posts": [],
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/supascribe-notes-mcp",
-    "order_rank": 15,
+    "order_rank": 2,
     "updated_at": "2026-02-26",
     "related_project_ids": ["system-notes"]
+  },
+  {
+    "objectID": "unearthed",
+    "node_type": "project",
+    "name": "Unearthed",
+    "aliases": ["coal mine lookup", "energy grid tracer"],
+    "what_it_is": "An interactive tool that traces a user's electricity back to the specific coal mine feeding their grid.",
+    "why_it_exists": "To connect electricity consumers with the human and environmental costs of coal mining by naming the mine, operator, and accident history behind every light switch.",
+    "long_description": "Unearthed takes an address and walks the energy supply chain backward: from the outlet to the power plant, from the plant to the fuel contract, from the contract to the specific mine. It surfaces MSHA accident records, production tonnage, and EPA emissions data for each mine, then lets users interrogate the data through natural language queries powered by Snowflake Cortex. A real-time tonnage ticker shows current extraction rates while AI-generated narratives describe each mine's impact.",
+    "outcome": "A deployed tool that names the coal mine feeding any U.S. address, backed by federal data from MSHA, EIA, and EPA, with natural language querying via Snowflake Cortex.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/unearthed.webp",
+    "image_alt": "Unearthed application interface tracing electricity from a user's address to the coal mine feeding their grid",
+    "tech": [
+      {
+        "name": "Snowflake Cortex",
+        "role": "AI Query Engine"
+      },
+      {
+        "name": "SvelteKit 2",
+        "role": "Frontend Framework"
+      },
+      {
+        "name": "FastAPI",
+        "role": "Backend API"
+      },
+      {
+        "name": "Google Cloud Run",
+        "role": "Runtime"
+      },
+      {
+        "name": "Google Maps API",
+        "role": "Address Lookup"
+      },
+      {
+        "name": "H3 Hexbin",
+        "role": "Geospatial Density"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Unearthed—The Coal Mine Behind Every Light Switch",
+        "url": "https://dev.to/anchildress1/unearthed-the-coal-mine-behind-every-light-switch-234m"
+      }
+    ],
+    "project_type": "tool",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/unearthed",
+    "app_url": "https://unearthed.anchildress1.dev",
+    "order_rank": 3,
+    "updated_at": "2026-04-20",
+    "related_project_ids": ["carbon-trace"]
+  },
+  {
+    "objectID": "legacy-smelter",
+    "node_type": "project",
+    "name": "Legacy Smelter",
+    "aliases": ["Hotfix"],
+    "what_it_is": "A satirical incident reporting app where Hotfix the dragon roasts uploaded screenshots and thermally decommissions them.",
+    "why_it_exists": "Built for the DEV April Fools Challenge to turn legacy-code frustration into a shared, funny incident-management experience.",
+    "long_description": "Legacy Smelter is a satire project built around a simple premise: some software problems feel less fixable than condemnable. Users upload screenshots of cursed code, bad UI, bugs, or other digital offenses, and Hotfix the dragon generates a deadpan enterprise-style incident report before smelting the offending artifact into slag. The system adds each report to a global manifest where the community can escalate and share incidents, turning individual developer pain into a public leaderboard of P0 disasters.",
+    "outcome": "Delivered a live, shareable joke product that combines structured Gemini-generated incident reports, animated dragon-based remediation, and community escalation into a polished challenge submission.",
+    "status": "Active \u00b7 Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/legacy-smelter.webp",
+    "image_alt": "Hotfix the dragon smelting an uploaded legacy-code screenshot into molten slag while generating a structured incident report",
+    "tech": [
+      {
+        "name": "React 19",
+        "role": "Frontend Framework"
+      },
+      {
+        "name": "Tailwind CSS v4",
+        "role": "Styling"
+      },
+      {
+        "name": "PixiJS 8",
+        "role": "Dragon Animation"
+      },
+      {
+        "name": "Howler.js",
+        "role": "Audio"
+      },
+      {
+        "name": "Gemini Flash",
+        "role": "AI Analysis"
+      },
+      {
+        "name": "Google Cloud",
+        "role": "Deployment"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Meet Hotfix\u2014The Dragon Your Legacy Code Deserves",
+        "url": "https://dev.to/anchildress1/meet-hotfix-the-dragon-your-legacy-code-deserves-4141"
+      }
+    ],
+    "project_type": "experiment",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/legacy-smelter",
+    "app_url": "https://hotfix.anchildress1.dev",
+    "order_rank": 100,
+    "updated_at": "2026-04-13",
+    "related_project_ids": []
+  },
+  {
+    "objectID": "carbon-trace",
+    "node_type": "project",
+    "name": "Carbon Trace",
+    "aliases": ["coal and code"],
+    "what_it_is": "An immersive memoir about growing up under rigid gender expectations and fighting to become an engineer anyway.",
+    "why_it_exists": "Built to turn a personal story about gender bias, endurance, and becoming into something people can feel rather than just understand intellectually.",
+    "long_description": "Carbon Trace is a narrative art experience drawn from my own life growing up in a small Appalachian coal town where gender roles were sharply defined. It follows the emotional and symbolic path from those early expectations to the engineer I became, using the diamond as a metaphor for pressure, transformation, and persistence. The project is intentionally immersive because it is not meant to present abstract ideas about equality. It is meant to carry the feeling of living through bias, pushing back, and refusing to disappear inside a world that was not built with you in mind.",
+    "outcome": "Delivered a personal, immersive impact piece that transforms lived experience with gender bias into a narrative others can feel and recognize.",
+    "status": "Active \u00b7 Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/carbon-trace.webp",
+    "image_alt": "Carbon Trace visual experience following a diamond metaphor through pressure, bias, and transformation toward becoming",
+    "tech": [
+      {
+        "name": "Canvas 2D",
+        "role": "Primary Rendering Layer"
+      },
+      {
+        "name": "PixiJS",
+        "role": "Displacement Effects"
+      },
+      {
+        "name": "GSAP",
+        "role": "Scene Timelines"
+      },
+      {
+        "name": "Howler.js",
+        "role": "Layered Audio"
+      },
+      {
+        "name": "Vanilla JavaScript",
+        "role": "Application Architecture"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Forged Between Coal and Code",
+        "url": "https://dev.to/anchildress1/forged-between-coal-and-code-phi"
+      }
+    ],
+    "project_type": "experience",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/carbon-trace",
+    "app_url": "https://carbon-trace.anchildress1.dev",
+    "award": "WeCoded 2026 Winner",
+    "order_rank": 26,
+    "updated_at": "2026-04-13",
+    "related_project_ids": []
   },
   {
     "objectID": "dev-community-dashboard",
@@ -91,20 +277,35 @@
     "why_it_exists": "To make it easier for volunteers to see which posts may benefit from engagement when normal feeds prioritize recency and popularity.",
     "long_description": "DEV Community Dashboard explores a simple idea: communities often have plenty of people willing to help, but no easy way to see where that help is needed most. Traditional feeds surface posts by recency or engagement, which means questions, early discussions, or help-seeking posts can quietly disappear beneath higher-performing content. This project introduces a signal-based prioritization layer that surfaces posts with meaningful indicators but limited interaction. Using only public DEV data, the system evaluates engagement patterns and conversational signals to highlight opportunities where a thoughtful reply could have the greatest impact.",
     "outcome": "Created a signal-driven triage dashboard that routes attention toward posts likely to benefit from human interaction, helping volunteers respond more quickly to unanswered questions and emerging discussions.",
-    "status": "Active · Deployed",
+    "status": "Active \u00b7 Deployed",
     "owner": "ChecKMarKDevTools",
-    "image_url": "/projects/dev-community-dashboard.jpg",
+    "image_url": "/projects/dev-community-dashboard.webp",
     "image_alt": "DEV Community Dashboard interface showing prioritized posts and signal-based interaction metrics",
     "tech": [
-      { "name": "Forem API", "role": "Data Source" },
-      { "name": "Node.js", "role": "Application Runtime" },
-      { "name": "TypeScript", "role": "Language" },
-      { "name": "Cloud Run", "role": "Deployment Platform" },
-      { "name": "LLM Analysis", "role": "Conversation Signal Evaluation" }
+      {
+        "name": "Forem API",
+        "role": "Data Source"
+      },
+      {
+        "name": "Node.js",
+        "role": "Application Runtime"
+      },
+      {
+        "name": "TypeScript",
+        "role": "Language"
+      },
+      {
+        "name": "Cloud Run",
+        "role": "Deployment Platform"
+      },
+      {
+        "name": "LLM Analysis",
+        "role": "Conversation Signal Evaluation"
+      }
     ],
     "blog_posts": [
       {
-        "title": "Find the DEV Post That Needs You Now 🫶",
+        "title": "Find the DEV Post That Needs You Now \ud83e\udef6",
         "url": "https://dev.to/anchildress1/find-the-dev-post-that-needs-you-now-33ng"
       }
     ],
@@ -112,7 +313,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/ChecKMarKDevTools/dev-community-dashboard",
     "app_url": "https://dev-community-dashboard.checkmarkdevtools.dev",
-    "order_rank": 17,
+    "order_rank": 170,
     "updated_at": "2026-03-04",
     "related_project_ids": []
   },
@@ -125,21 +326,33 @@
     "why_it_exists": "Placeholder solution until Copilot coding agent supports valid user PAT tokens via CLI in GitHub Actions.",
     "long_description": "Delegate Action exists because the functionality I wanted does not yet exist in Copilot. I needed AI-generated pull requests immediately, under my own credentials, without waiting on upstream support. This Action fills that gap by generating draft PRs using my PAT, with explicit human review and ownership.",
     "outcome": "A working stopgap that enables AI-generated PRs today while waiting for native platform support.",
-    "status": "Active · POC",
+    "status": "Active \u00b7 POC",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/delegate-action.jpg",
+    "image_url": "/projects/delegate-action.webp",
     "image_alt": "Delegate Action GitHub workflow allowing secure AI-generated pull requests via personal access tokens",
     "tech": [
-      { "name": "GitHub Actions", "role": "The Runtime" },
-      { "name": "Node.js", "role": "Logic Layer" },
-      { "name": "Security", "role": "Injection Detection" },
-      { "name": "PAT", "role": "Auth Shortcut" }
+      {
+        "name": "GitHub Actions",
+        "role": "The Runtime"
+      },
+      {
+        "name": "Node.js",
+        "role": "Logic Layer"
+      },
+      {
+        "name": "Security",
+        "role": "Injection Detection"
+      },
+      {
+        "name": "PAT",
+        "role": "Auth Shortcut"
+      }
     ],
     "blog_posts": [],
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/delegate-action",
-    "order_rank": 20,
+    "order_rank": 200,
     "updated_at": "2026-02-01",
     "related_project_ids": ["rai-lint", "awesome-github-copilot"]
   },
@@ -152,21 +365,33 @@
     "why_it_exists": "A zero-stakes environment to experiment with memory and agent behavior for a personal local AI system.",
     "long_description": "Hermes is a personal playground where I am starting with memory as a first-class concern while the stakes are low. I use it to explore how an agent behaves when memory exists, evolves, and occasionally misbehaves, without production pressure or polish influencing decisions.",
     "outcome": "A functional local sandbox that informs future agent and memory design decisions.",
-    "status": "Active · In Progress",
+    "status": "Active \u00b7 In Progress",
     "owner": "anchildress1",
-    "image_url": "/projects/my-hermantic-agent.jpg",
+    "image_url": "/projects/my-hermantic-agent.webp",
     "image_alt": "Hermes Agent interface showing local AI memory experiments and conversational history",
     "tech": [
-      { "name": "Python", "role": "The Mind" },
-      { "name": "Ollama", "role": "The Engine" },
-      { "name": "PostgreSQL", "role": "Long-term Memory" },
-      { "name": "Local", "role": "The Environment" }
+      {
+        "name": "Python",
+        "role": "The Mind"
+      },
+      {
+        "name": "Ollama",
+        "role": "The Engine"
+      },
+      {
+        "name": "PostgreSQL",
+        "role": "Long-term Memory"
+      },
+      {
+        "name": "Local",
+        "role": "The Environment"
+      }
     ],
     "blog_posts": [],
     "project_type": "experiment",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/my-hermantic-agent",
-    "order_rank": 30,
+    "order_rank": 300,
     "updated_at": "2026-02-01",
     "related_project_ids": ["underfoot-underground-travel-planner"]
   },
@@ -179,16 +404,31 @@
     "why_it_exists": "To make AI usage explicit and enforceable instead of implied and ignored.",
     "long_description": "RAI Lint integrates directly into commit workflows to require explicit attribution when AI tools are used. It is intentionally strict and mechanical. The goal is traceability, not policy theater.",
     "outcome": "Live adoption that turns invisible AI assistance into explicit, auditable data.",
-    "status": "Active · Published",
+    "status": "Active \u00b7 Published",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/rai-lint.jpg",
+    "image_url": "/projects/rai-lint.webp",
     "image_alt": "RAI Lint banner enforcing explicit AI attribution in git commits and workflows",
     "tech": [
-      { "name": "TypeScript", "role": "Rule Logic" },
-      { "name": "Python", "role": "Rule Logic" },
-      { "name": "commitlint", "role": "Node Enforcement" },
-      { "name": "gitlint", "role": "Python Enforcement" },
-      { "name": "PolyForm Shield", "role": "License" }
+      {
+        "name": "TypeScript",
+        "role": "Rule Logic"
+      },
+      {
+        "name": "Python",
+        "role": "Rule Logic"
+      },
+      {
+        "name": "commitlint",
+        "role": "Node Enforcement"
+      },
+      {
+        "name": "gitlint",
+        "role": "Python Enforcement"
+      },
+      {
+        "name": "PolyForm Shield",
+        "role": "License"
+      }
     ],
     "blog_posts": [
       {
@@ -207,7 +447,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/rai-lint",
-    "order_rank": 40,
+    "order_rank": 400,
     "updated_at": "2026-02-01",
     "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"]
   },
@@ -222,13 +462,25 @@
     "outcome": "An unfinished but instructive experiment that reframed cost failure as an orchestration problem. At least, until I get back to it...",
     "status": "Archived",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/underfoot-underground-travel-planner.jpg",
+    "image_url": "/projects/underfoot-underground-travel-planner.webp",
     "image_alt": "Underfoot travel planner interface showing AI-orchestrated discovery of hidden travel destinations",
     "tech": [
-      { "name": "Python", "role": "The Orchestrator" },
-      { "name": "Supabase", "role": "The Brain" },
-      { "name": "React", "role": "The Face" },
-      { "name": "Data Ingestion", "role": "Sourcing" }
+      {
+        "name": "Python",
+        "role": "The Orchestrator"
+      },
+      {
+        "name": "Supabase",
+        "role": "The Brain"
+      },
+      {
+        "name": "React",
+        "role": "The Face"
+      },
+      {
+        "name": "Data Ingestion",
+        "role": "Sourcing"
+      }
     ],
     "blog_posts": [
       {
@@ -243,7 +495,7 @@
     "project_type": "experiment",
     "completion_state": "archived",
     "repo_url": "https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner",
-    "order_rank": 50,
+    "order_rank": 500,
     "updated_at": "2026-02-01",
     "related_project_ids": ["my-hermantic-agent"]
   },
@@ -258,13 +510,25 @@
     "outcome": "A widely adopted resource that favors practical utility over volume.",
     "status": "Active",
     "owner": "anchildress1",
-    "image_url": "/projects/awesome-github-copilot.jpg",
+    "image_url": "/projects/awesome-github-copilot.webp",
     "image_alt": "Awesome GitHub Copilot repository banner listing curated AI workflows and agent patterns",
     "tech": [
-      { "name": "Markdown", "role": "The Format" },
-      { "name": "GitHub Copilot", "role": "The Platform" },
-      { "name": "MCP", "role": "Agent Protocols" },
-      { "name": "Manual Curation", "role": "Quality Control" }
+      {
+        "name": "Markdown",
+        "role": "The Format"
+      },
+      {
+        "name": "GitHub Copilot",
+        "role": "The Platform"
+      },
+      {
+        "name": "MCP",
+        "role": "Agent Protocols"
+      },
+      {
+        "name": "Manual Curation",
+        "role": "Quality Control"
+      }
     ],
     "blog_posts": [
       {
@@ -272,7 +536,7 @@
         "url": "https://dev.to/anchildress1/troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o"
       },
       {
-        "title": "Oh I Have Big News—I'm GitHub Copilot Certified!",
+        "title": "Oh I Have Big News\u2014I'm GitHub Copilot Certified!",
         "url": "https://dev.to/anchildress1/oh-i-have-big-news-guess-what-i-got-yesterday-1jca"
       },
       {
@@ -291,7 +555,7 @@
     "project_type": "resource",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
-    "order_rank": 60,
+    "order_rank": 600,
     "updated_at": "2026-02-01",
     "related_project_ids": ["delegate-action", "checkmark-copilot-chat"]
   },
@@ -306,13 +570,25 @@
     "outcome": "Increased AI discoverability with zero ongoing maintenance.",
     "status": "Active",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/devto-mirror.jpg",
+    "image_url": "/projects/devto-mirror.webp",
     "image_alt": "Dev.to Mirror workflow diagram showing automated syncing of technical blogs for AI ingestion",
     "tech": [
-      { "name": "Python", "role": "The Script" },
-      { "name": "GitHub Actions", "role": "The Cron" },
-      { "name": "GitHub Pages", "role": "The Host" },
-      { "name": "AI Discoverability", "role": "The Goal" }
+      {
+        "name": "Python",
+        "role": "The Script"
+      },
+      {
+        "name": "GitHub Actions",
+        "role": "The Cron"
+      },
+      {
+        "name": "GitHub Pages",
+        "role": "The Host"
+      },
+      {
+        "name": "AI Discoverability",
+        "role": "The Goal"
+      }
     ],
     "blog_posts": [
       {
@@ -323,7 +599,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/devto-mirror",
-    "order_rank": 70,
+    "order_rank": 700,
     "updated_at": "2026-02-01"
   },
   {
@@ -335,21 +611,33 @@
     "why_it_exists": "To provide AI strict, reusable formatting and linting constraints across projects.",
     "long_description": "Echo exists primarily for AI, not humans. By collapsing formatting and linting rules into a single shared configuration, I can reuse the same boundaries across projects and AI agents without restating preferences.",
     "outcome": "Reduced drift and predictable AI-assisted code output.",
-    "status": "Active · Testing",
+    "status": "Active \u00b7 Testing",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/eslint-config-echo.jpg",
+    "image_url": "/projects/eslint-config-echo.webp",
     "image_alt": "Echo ESLint configuration banner representing reusable linting boundaries for AI coding agents",
     "tech": [
-      { "name": "Node.js", "role": "Ecosystem" },
-      { "name": "ESLint", "role": "The Enforcer" },
-      { "name": "Jest", "role": "Verification" },
-      { "name": "Sonar", "role": "Static Analysis" }
+      {
+        "name": "Node.js",
+        "role": "Ecosystem"
+      },
+      {
+        "name": "ESLint",
+        "role": "The Enforcer"
+      },
+      {
+        "name": "Jest",
+        "role": "Verification"
+      },
+      {
+        "name": "Sonar",
+        "role": "Static Analysis"
+      }
     ],
     "blog_posts": [],
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/eslint-config-echo",
-    "order_rank": 80,
+    "order_rank": 800,
     "updated_at": "2026-02-01"
   },
   {
@@ -363,18 +651,27 @@
     "outcome": "A falsified hypothesis that redirected focus to more viable Copilot tooling.",
     "status": "Archived",
     "owner": "CheckMarKDevTools",
-    "image_url": "/projects/checkmark-copilot-chat.jpg",
+    "image_url": "/projects/checkmark-copilot-chat.webp",
     "image_alt": "Copilot Chat Extension interface showing an experimental portable chat context for IDEs",
     "tech": [
-      { "name": "Copilot Chat", "role": "The Constraint" },
-      { "name": "JavaScript", "role": "The Glue" },
-      { "name": "Failure", "role": "The Lesson" }
+      {
+        "name": "Copilot Chat",
+        "role": "The Constraint"
+      },
+      {
+        "name": "JavaScript",
+        "role": "The Glue"
+      },
+      {
+        "name": "Failure",
+        "role": "The Lesson"
+      }
     ],
     "blog_posts": [],
     "project_type": "experiment",
     "completion_state": "failed",
     "repo_url": "https://github.com/CheckMarKDevTools/checkmark-copilot-chat",
-    "order_rank": 90,
+    "order_rank": 900,
     "updated_at": "2026-02-01",
     "related_project_ids": ["awesome-github-copilot"]
   }
