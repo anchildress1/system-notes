@@ -7,6 +7,7 @@ import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
 import { overlayTransition, cardFlipVariants } from '@/utils/animations';
 import { CloseIcon } from '@/components/icons';
+import { FiExternalLink } from 'react-icons/fi';
 
 interface ExpandedViewProps {
   project: Project;
@@ -171,22 +172,7 @@ export default function ExpandedView({
                     className={styles.repoLinkCompact}
                   >
                     GitHub Repo
-                    <svg
-                      aria-hidden="true"
-                      focusable="false"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                      <polyline points="15 3 21 3 21 9"></polyline>
-                      <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
+                    <FiExternalLink aria-hidden="true" focusable="false" size={16} />
                   </a>
                 )}
               </div>

@@ -105,21 +105,6 @@
   gap: var(--space-sm);
 }
 
-.titleGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.titleActions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-xs);
-  flex-shrink: 0;
-}
-
 .metaRow {
   display: flex;
   align-items: center;
@@ -298,10 +283,6 @@
   .titleRow {
     flex-direction: column;
     gap: var(--space-sm);
-  }
-
-  .titleActions {
-    align-items: flex-start;
   }
 
   .content {
