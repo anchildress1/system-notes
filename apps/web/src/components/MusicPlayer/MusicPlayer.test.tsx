@@ -90,6 +90,8 @@ describe('MusicPlayer', () => {
     // UI should remain in (or revert to) Play state, NOT Pause state
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
     expect(screen.queryByLabelText(/Pause/i)).not.toBeInTheDocument();
+    // play() rejection sets hasError — button must be disabled to prevent retry
+    expect(screen.getByTestId('play-button')).toBeDisabled();
 
     consoleSpy.mockRestore();
   });

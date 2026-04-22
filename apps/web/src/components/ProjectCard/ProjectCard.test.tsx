@@ -48,8 +48,9 @@ describe('ProjectCard Component', () => {
   });
 
   it('opens GitHub URL on repeated clicks without calling onSelect', () => {
+    const handleSelect = vi.fn();
     const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
-    render(<ProjectCard project={mockProject} onSelect={() => {}} />);
+    render(<ProjectCard project={mockProject} onSelect={handleSelect} />);
 
     const button = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
 
@@ -58,6 +59,7 @@ describe('ProjectCard Component', () => {
 
     fireEvent.click(button);
     expect(openSpy).toHaveBeenCalledTimes(2);
+    expect(handleSelect).not.toHaveBeenCalled();
 
     openSpy.mockRestore();
   });
