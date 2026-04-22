@@ -204,9 +204,13 @@ describe('InfiniteHits', () => {
       isLastPage: false,
     });
 
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     render(<InfiniteHits hitComponent={() => <div />} />);
     expect(screen.getByText('Show more results')).toHaveAttribute('href', '?page=2');
-
+    expect(warnSpy).toHaveBeenCalledWith('InfiniteHits: invalid page param, resetting to page 2', {
+      page: '0',
+    });
+    warnSpy.mockRestore();
     mockSearchParams.delete('page');
   });
 
@@ -218,13 +222,17 @@ describe('InfiniteHits', () => {
       isLastPage: false,
     });
 
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     render(<InfiniteHits hitComponent={() => <div />} />);
     expect(screen.getByText('Show more results')).toHaveAttribute('href', '?page=2');
-
+    expect(warnSpy).toHaveBeenCalledWith('InfiniteHits: invalid page param, resetting to page 2', {
+      page: 'abc',
+    });
+    warnSpy.mockRestore();
     mockSearchParams.delete('page');
   });
 
-  it('renders no list items when hits array is empty', () => {
+  it('renders no list items when items array is empty', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
       isLastPage: true,
