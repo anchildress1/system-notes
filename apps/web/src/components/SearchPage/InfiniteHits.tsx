@@ -22,7 +22,7 @@ export default function InfiniteHits({
   classNames = {},
   ...props
 }: Readonly<InfiniteHitsProps>) {
-  const { hits, isLastPage, showMore, sendEvent } = useInfiniteHits(props);
+  const { items, isLastPage, showMore, sendEvent } = useInfiniteHits(props);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -30,9 +30,17 @@ export default function InfiniteHits({
     const params = new URLSearchParams(searchParams?.toString() || '');
     const currentPageRaw = params.get('page');
     const currentPage = currentPageRaw ? Number(currentPageRaw) : 1;
-    const nextPage = Number.isFinite(currentPage) && currentPage > 0 ? currentPage + 1 : 2;
+    const pageIsValid = Number.isFinite(currentPage) && currentPage > 0;
+    if (currentPageRaw && !pageIsValid) {
+      console.warn('InfiniteHits: invalid page param, resetting to page 2', {
+        page: currentPageRaw,
+      });
+    }
+    const nextPage = pageIsValid ? currentPage + 1 : 2;
     params.set('page', String(nextPage));
     const queryString = params.toString();
+    // params.set() above always produces a non-empty string; false branch is structurally unreachable
+    /* v8 ignore next */
     return queryString ? `?${queryString}` : '?page=2';
   }, [searchParams]);
 
@@ -57,7 +65,7 @@ export default function InfiniteHits({
   return (
     <div className={classNames.root}>
       <ul className={classNames.list}>
-        {hits.map((hit) => (
+        {items.map((hit) => (
           <li key={hit.objectID} className={classNames.item}>
             <HitComponent hit={hit} sendEvent={sendEvent} />
           </li>

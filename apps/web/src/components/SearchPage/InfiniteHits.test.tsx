@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import InfiniteHits from './InfiniteHits';
 import { useInfiniteHits } from 'react-instantsearch';
@@ -12,9 +12,19 @@ vi.mock('next/navigation', () => ({
 
 const mockSendEvent = vi.fn();
 const mockShowMore = vi.fn();
+const mockShowPrevious = vi.fn();
+const mockBindEvent = vi.fn(() => '');
 
 vi.mock('react-instantsearch', () => ({
   useInfiniteHits: vi.fn(() => ({
+    items: [
+      {
+        objectID: 'hit-1',
+        title: 'Hit One',
+        __position: 1,
+        __queryID: 'query-1',
+      } as Hit,
+    ],
     hits: [
       {
         objectID: 'hit-1',
@@ -23,14 +33,30 @@ vi.mock('react-instantsearch', () => ({
         __queryID: 'query-1',
       } as Hit,
     ],
+    currentPageHits: [],
     isLastPage: true,
+    isFirstPage: true,
     showMore: mockShowMore,
+    showPrevious: mockShowPrevious,
     sendEvent: mockSendEvent,
+    bindEvent: mockBindEvent,
   })),
 }));
 
+// Shared base state for mockReturnValue calls — provides the required
+// InfiniteHitsRenderState fields that individual tests don't need to vary.
+const baseHitsState = {
+  items: [] as Hit[],
+  hits: [] as Hit[],
+  currentPageHits: [] as Hit[],
+  isFirstPage: true,
+  showPrevious: mockShowPrevious,
+  showMore: mockShowMore,
+  sendEvent: mockSendEvent,
+  bindEvent: mockBindEvent,
+};
+
 // Default no-op IntersectionObserver for tests that don't need custom observer behaviour.
-// vi.unstubAllGlobals() (called in afterEach) removes the setupTests stub, so we re-apply it.
 class DefaultIntersectionObserver {
   observe = vi.fn();
   disconnect = vi.fn();
@@ -56,7 +82,7 @@ class TriggeringObserver {
 describe('InfiniteHits', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Restore default mock after unstubAllGlobals() may have cleared the setupTests version
+    // vi.unstubAllGlobals() (called in afterEach) removes the setupTests stub, so we re-apply it here.
     vi.stubGlobal('IntersectionObserver', DefaultIntersectionObserver);
   });
 
@@ -82,10 +108,8 @@ describe('InfiniteHits', () => {
 
     // Must mock useInfiniteHits to return isLastPage: false
     vi.mocked(useInfiniteHits).mockReturnValue({
-      hits: [],
+      ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     const HitComponent = () => <div>Hit</div>;
@@ -98,10 +122,8 @@ describe('InfiniteHits', () => {
     vi.stubGlobal('IntersectionObserver', TriggeringObserver);
 
     vi.mocked(useInfiniteHits).mockReturnValue({
-      hits: [],
+      ...baseHitsState,
       isLastPage: true,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -121,10 +143,8 @@ describe('InfiniteHits', () => {
     vi.stubGlobal('IntersectionObserver', MockObserver);
 
     vi.mocked(useInfiniteHits).mockReturnValue({
-      hits: [],
+      ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     const { unmount } = render(<InfiniteHits hitComponent={() => <div />} />);
@@ -134,10 +154,8 @@ describe('InfiniteHits', () => {
 
   it('shows "Show more results" link when not on last page', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
-      hits: [],
+      ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -146,10 +164,8 @@ describe('InfiniteHits', () => {
 
   it('hides "Show more results" link on last page', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
-      hits: [],
+      ...baseHitsState,
       isLastPage: true,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -158,10 +174,8 @@ describe('InfiniteHits', () => {
 
   it('nextPageHref defaults to page=2 when no page param is present', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
-      hits: [],
+      ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -172,10 +186,8 @@ describe('InfiniteHits', () => {
     mockSearchParams.set('page', '3');
 
     vi.mocked(useInfiniteHits).mockReturnValue({
-      hits: [],
+      ...baseHitsState,
       isLastPage: false,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     render(<InfiniteHits hitComponent={() => <div />} />);
@@ -184,15 +196,117 @@ describe('InfiniteHits', () => {
     mockSearchParams.delete('page');
   });
 
-  it('renders no list items when hits array is empty', () => {
+  it('nextPageHref falls back to page=2 when page param is zero', () => {
+    mockSearchParams.set('page', '0');
+
     vi.mocked(useInfiniteHits).mockReturnValue({
-      hits: [],
+      ...baseHitsState,
+      isLastPage: false,
+    });
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    render(<InfiniteHits hitComponent={() => <div />} />);
+    expect(screen.getByText('Show more results')).toHaveAttribute('href', '?page=2');
+    expect(warnSpy).toHaveBeenCalledWith('InfiniteHits: invalid page param, resetting to page 2', {
+      page: '0',
+    });
+    warnSpy.mockRestore();
+    mockSearchParams.delete('page');
+  });
+
+  it('nextPageHref falls back to page=2 when page param is non-numeric', () => {
+    mockSearchParams.set('page', 'abc');
+
+    vi.mocked(useInfiniteHits).mockReturnValue({
+      ...baseHitsState,
+      isLastPage: false,
+    });
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    render(<InfiniteHits hitComponent={() => <div />} />);
+    expect(screen.getByText('Show more results')).toHaveAttribute('href', '?page=2');
+    expect(warnSpy).toHaveBeenCalledWith('InfiniteHits: invalid page param, resetting to page 2', {
+      page: 'abc',
+    });
+    warnSpy.mockRestore();
+    mockSearchParams.delete('page');
+  });
+
+  it('renders no list items when items array is empty', () => {
+    vi.mocked(useInfiniteHits).mockReturnValue({
+      ...baseHitsState,
       isLastPage: true,
-      showMore: mockShowMore,
-      sendEvent: mockSendEvent,
     });
 
     const { container } = render(<InfiniteHits hitComponent={() => <div />} />);
     expect(container.querySelectorAll('li')).toHaveLength(0);
+  });
+
+  it('renders items when they are present', () => {
+    const hit: Hit = {
+      objectID: 'hit-42',
+      title: 'Answer to everything',
+      __position: 1,
+    };
+
+    vi.mocked(useInfiniteHits).mockReturnValue({
+      ...baseHitsState,
+      items: [hit],
+      hits: [hit],
+      currentPageHits: [hit],
+      isLastPage: true,
+    });
+
+    render(<InfiniteHits hitComponent={({ hit: h }) => <div>{String(h.title)}</div>} />);
+    expect(screen.getByText('Answer to everything')).toBeInTheDocument();
+    expect(screen.queryByText('Show more results')).not.toBeInTheDocument();
+  });
+
+  it('does not call showMore when sentinel is not intersecting', () => {
+    class NonIntersectingObserver {
+      constructor(callback: IntersectionObserverCallback) {
+        callback(
+          [{ isIntersecting: false } as IntersectionObserverEntry],
+          this as unknown as IntersectionObserver
+        );
+      }
+      observe = vi.fn();
+      disconnect = vi.fn();
+      unobserve = vi.fn();
+      takeRecords = vi.fn();
+    }
+
+    vi.stubGlobal('IntersectionObserver', NonIntersectingObserver);
+
+    vi.mocked(useInfiniteHits).mockReturnValue({
+      ...baseHitsState,
+      isLastPage: false,
+    });
+
+    render(<InfiniteHits hitComponent={() => <div />} />);
+    expect(mockShowMore).not.toHaveBeenCalled();
+  });
+
+  it('applies custom classNames to root, list, and item', () => {
+    const hit: Hit = { objectID: 'h1', __position: 1 };
+
+    vi.mocked(useInfiniteHits).mockReturnValue({
+      ...baseHitsState,
+      items: [hit],
+      hits: [hit],
+      currentPageHits: [hit],
+      isLastPage: true,
+    });
+
+    const { container } = render(
+      <InfiniteHits
+        hitComponent={() => <div />}
+        classNames={{ root: 'my-root', list: 'my-list', item: 'my-item' }}
+      />
+    );
+
+    expect(container.querySelector('.my-root')).toBeInTheDocument();
+    expect(container.querySelector('.my-list')).toBeInTheDocument();
+    expect(container.querySelector('.my-item')).toBeInTheDocument();
   });
 });

@@ -2,6 +2,13 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import MusicPlayer from './MusicPlayer';
 
+/** Query the <audio> element inside the music-player test container. */
+function getAudioElement(): HTMLAudioElement {
+  const el = screen.getByTestId('music-player').querySelector('audio');
+  if (!el) throw new Error('Expected audio element');
+  return el;
+}
+
 describe('MusicPlayer', () => {
   // Store original implementations to restore them later
   const originalPlay = globalThis.HTMLMediaElement.prototype.play;
@@ -64,8 +71,8 @@ describe('MusicPlayer', () => {
     const playError = new Error('NotAllowedError');
     globalThis.HTMLMediaElement.prototype.play = vi.fn().mockRejectedValue(playError);
 
-    // Spy on console.warn to avoid treating it as a test failure and to verify it was called
-    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    // Spy on console.error to avoid treating it as a test failure and to verify it was called
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     render(<MusicPlayer />);
     const button = screen.getByTestId('play-button');
@@ -83,6 +90,8 @@ describe('MusicPlayer', () => {
     // UI should remain in (or revert to) Play state, NOT Pause state
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
     expect(screen.queryByLabelText(/Pause/i)).not.toBeInTheDocument();
+    // play() rejection sets hasError — button must be disabled to prevent retry
+    expect(screen.getByTestId('play-button')).toBeDisabled();
 
     consoleSpy.mockRestore();
   });
@@ -90,15 +99,56 @@ describe('MusicPlayer', () => {
   it('reset state when audio ends', () => {
     render(<MusicPlayer />);
 
-    // Get the audio element (it's in the DOM)
-    const audioElement = screen.getByTestId('music-player').querySelector('audio');
-    expect(audioElement).toBeInTheDocument();
+    const audioElement = getAudioElement();
 
     // Trigger onEnded event manually since we can't easily wait for real audio to end in JSDOM
-    if (!audioElement) throw new Error('Expected audio element');
     fireEvent.ended(audioElement);
 
     // Should ensure it is in paused state (showing Play button)
+    expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+  });
+
+  it('disables button and shows error state when audio fails to load', () => {
+    render(<MusicPlayer />);
+
+    // Trigger the onError handler
+    fireEvent.error(getAudioElement());
+
+    // Button should be disabled after an audio error
+    const button = screen.getByTestId('play-button');
+    expect(button).toBeDisabled();
+
+    // Should remain in Play (not Pause) state
+    expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+  });
+
+  it('transitions from playing to error state when audio error fires mid-playback', async () => {
+    render(<MusicPlayer />);
+    const button = screen.getByTestId('play-button');
+
+    // Start playback
+    fireEvent.click(button);
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Pause/i)).toBeInTheDocument();
+    });
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    // Simulate audio element error while playing
+    fireEvent.error(getAudioElement());
+
+    // isPlaying should revert to false, hasError should be true (button disabled)
+    expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+    expect(screen.getByTestId('play-button')).toBeDisabled();
+
+    consoleSpy.mockRestore();
+  });
+
+  it('does not call play on initial mount without user interaction', () => {
+    // Verify the component renders in a paused state and does not auto-play.
+    // Confirms the mount state is correct and play is never called until the user clicks.
+    render(<MusicPlayer />);
+    expect(globalThis.HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
   });
 });
