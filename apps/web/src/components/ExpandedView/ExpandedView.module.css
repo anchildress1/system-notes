@@ -49,7 +49,7 @@
 
 .imageContainer {
   width: 100%;
-  height: 160px;
+  height: 200px;
   position: relative;
   background: black;
   flex-shrink: 0;
@@ -103,21 +103,6 @@
   align-items: flex-start;
   width: 100%;
   gap: var(--space-sm);
-}
-
-.titleGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.titleActions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-xs);
-  flex-shrink: 0;
 }
 
 .metaRow {
@@ -288,7 +273,7 @@
   }
 
   .imageContainer {
-    height: 180px;
+    height: 240px;
   }
 
   .body {
@@ -298,10 +283,6 @@
   .titleRow {
     flex-direction: column;
     gap: var(--space-sm);
-  }
-
-  .titleActions {
-    align-items: flex-start;
   }
 
   .content {

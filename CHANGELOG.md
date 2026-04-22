@@ -2,17 +2,15 @@
 
 ## [2.2.0](https://github.com/anchildress1/system-notes/compare/v2.1.2...v2.2.0) (2026-04-22)
 
-
 ### Features
 
-* chat navigation ([#50](https://github.com/anchildress1/system-notes/issues/50)) ([40c61b6](https://github.com/anchildress1/system-notes/commit/40c61b6fa867465e1d1bec787e6d58ddb3cd24e1))
-
+- chat navigation ([#50](https://github.com/anchildress1/system-notes/issues/50)) ([40c61b6](https://github.com/anchildress1/system-notes/commit/40c61b6fa867465e1d1bec787e6d58ddb3cd24e1))
 
 ### Bug Fixes
 
-* comprehensive code quality audit — P0/P1 issues ([#52](https://github.com/anchildress1/system-notes/issues/52)) ([e4eb58d](https://github.com/anchildress1/system-notes/commit/e4eb58d98b68dceb2c30348fca587afa23ce17bb))
-* release prep 2026-04-21 — security patches, deprecation fixes, test coverage expansion ([#60](https://github.com/anchildress1/system-notes/issues/60)) ([12e6b71](https://github.com/anchildress1/system-notes/commit/12e6b714a1323e3196e7a425cfcf2197928d0466))
-* **ui:** refine ExpandedView layout and award badge styling ([#57](https://github.com/anchildress1/system-notes/issues/57)) ([0f03245](https://github.com/anchildress1/system-notes/commit/0f03245c33341d153083f97f03f9c690b72f01dc))
+- comprehensive code quality audit — P0/P1 issues ([#52](https://github.com/anchildress1/system-notes/issues/52)) ([e4eb58d](https://github.com/anchildress1/system-notes/commit/e4eb58d98b68dceb2c30348fca587afa23ce17bb))
+- release prep 2026-04-21 — security patches, deprecation fixes, test coverage expansion ([#60](https://github.com/anchildress1/system-notes/issues/60)) ([12e6b71](https://github.com/anchildress1/system-notes/commit/12e6b714a1323e3196e7a425cfcf2197928d0466))
+- **ui:** refine ExpandedView layout and award badge styling ([#57](https://github.com/anchildress1/system-notes/issues/57)) ([0f03245](https://github.com/anchildress1/system-notes/commit/0f03245c33341d153083f97f03f9c690b72f01dc))
 
 ## [2.1.2](https://github.com/anchildress1/system-notes/compare/v2.1.1...v2.1.2) (2026-03-22)
 

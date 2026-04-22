@@ -6,7 +6,8 @@ import { Project } from '@/lib/api';
 import styles from './ExpandedView.module.css';
 import { useEffect, useRef } from 'react';
 import { overlayTransition, cardFlipVariants } from '@/utils/animations';
-import { CloseIcon, TrophyIcon } from '@/components/icons';
+import { CloseIcon } from '@/components/icons';
+import { FiExternalLink } from 'react-icons/fi';
 
 interface ExpandedViewProps {
   project: Project;
@@ -116,35 +117,15 @@ export default function ExpandedView({
           <div className={styles.header}>
             <div className={styles.headerContent}>
               <div className={styles.titleRow}>
-                <div className={styles.titleGroup}>
-                  <h2 className={styles.title} id="modal-title">
-                    {project.title}
-                  </h2>
-                  <div className={styles.metaRow}>
-                    <span>{project.owner}</span>
-                    {project.repo_url && (
-                      <a
-                        href={project.repo_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.repoLinkCompact}
-                        aria-label={`View ${project.title} on GitHub`}
-                      >
-                        GitHub
-                      </a>
-                    )}
-                  </div>
-                </div>
-                <div className={styles.titleActions}>
-                  {project.award && (
-                    <div className="award-badge">
-                      <TrophyIcon className="award-badge-icon" />
-                      <span>{project.award}</span>
-                    </div>
-                  )}
-                  {project.status && <span className={styles.statusBadge}>{project.status}</span>}
-                </div>
+                <h2 className={styles.title} id="modal-title">
+                  {project.title}
+                </h2>
+                {project.status && <span className={styles.statusBadge}>{project.status}</span>}
               </div>
+              <div className={styles.metaRow}>
+                <span>{project.owner}</span>
+              </div>
+              {project.description && <p className={styles.bodyText}>{project.description}</p>}
             </div>
           </div>
 
@@ -182,6 +163,18 @@ export default function ExpandedView({
                     </div>
                   ))}
                 </div>
+
+                {project.repo_url && (
+                  <a
+                    href={project.repo_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.repoLinkCompact}
+                  >
+                    GitHub Repo
+                    <FiExternalLink aria-hidden="true" focusable="false" size={16} />
+                  </a>
+                )}
               </div>
             </div>
 
