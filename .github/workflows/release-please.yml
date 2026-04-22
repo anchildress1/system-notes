@@ -6,12 +6,11 @@ on:
       - main
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
   release-please:
+    concurrency:
+      group: ${{ github.workflow }}-release-please
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -32,6 +31,9 @@ jobs:
   deploy:
     needs: release-please
     if: needs.release-please.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch'
+    concurrency:
+      group: ${{ github.workflow }}-deploy
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: deploy
