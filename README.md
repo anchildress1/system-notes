@@ -1,4 +1,4 @@
-![System Notes Banner](apps/web/public/projects/system-notes.jpg)
+![System Notes Banner](https://repository-images.githubusercontent.com/1136108938/63dfb9e9-71d4-47c9-8ea8-fa58bef2bafc)
 
 <!-- Build & Status -->
 
