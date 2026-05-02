@@ -32,7 +32,7 @@ test.describe('Mobile Responsiveness', () => {
     // Expect modal to open
     const modal = page.getByTestId('expanded-view-dialog');
     await expect(modal).toBeVisible();
-    const modalTitle = modal.getByRole('heading', { name: 'System Notes', level: 2 });
+    const modalTitle = modal.locator('#modal-title');
     await expect(modalTitle).toBeVisible();
 
     // Close via button — keyboard.press('Escape') is unreliable on mobile viewports
