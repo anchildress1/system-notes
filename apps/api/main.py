@@ -28,6 +28,8 @@ else:
 
 app = FastAPI(title="System Notes API", version="0.1.0")
 
+_PROJECTS_CACHE_CONTROL = "public, max-age=300, stale-while-revalidate=60"
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -168,11 +170,11 @@ def _load_projects_from_disk() -> list[Project]:
 async def get_projects(response: Response):
     global _projects_cache
     if _projects_cache is not None:
-        response.headers["Cache-Control"] = "public, max-age=300, stale-while-revalidate=60"
+        response.headers["Cache-Control"] = _PROJECTS_CACHE_CONTROL
         return _projects_cache
     async with _projects_load_lock:
         if _projects_cache is not None:  # another request loaded it while we waited
-            response.headers["Cache-Control"] = "public, max-age=300, stale-while-revalidate=60"
+            response.headers["Cache-Control"] = _PROJECTS_CACHE_CONTROL
             return _projects_cache
         try:
             _projects_cache = await asyncio.to_thread(_load_projects_from_disk)
@@ -182,7 +184,7 @@ async def get_projects(response: Response):
         except (OSError, ValueError) as e:
             logger.error("Error loading projects: %s", e)
             return JSONResponse(status_code=500, content={"error": "Failed to load projects"})
-    response.headers["Cache-Control"] = "public, max-age=300, stale-while-revalidate=60"
+    response.headers["Cache-Control"] = _PROJECTS_CACHE_CONTROL
     return _projects_cache
 
 
