@@ -180,5 +180,6 @@ def test_get_projects_served_from_cache_on_second_call():
          patch("pathlib.Path.read_text", return_value=MOCK_PROJECTS_JSON) as mock_read:
         client.get("/projects")
         client.get("/projects")
-        # read_text called exactly once across both requests
+        client.get("/projects")
+        # read_text called exactly once across all requests
         assert mock_read.call_count == 1

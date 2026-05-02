@@ -139,7 +139,11 @@ def _parse_project_item(item: dict) -> Project:
 # projects.json is a static file baked into the container image. It only changes
 # on deployment, so loading it once per process lifetime is correct. The cache
 # is never invalidated mid-run; a new deploy brings a new process.
+# _projects_load_lock prevents concurrent cold-start requests from racing to
+# read the file simultaneously; the double-check inside the lock avoids the
+# read entirely for requests that arrive while the first is in progress.
 _projects_cache: list[Project] | None = None
+_projects_load_lock = asyncio.Lock()
 
 
 def _reset_projects_cache() -> None:
@@ -163,9 +167,15 @@ def _load_projects_from_disk() -> list[Project]:
 @app.get("/projects", response_model=List[Project])
 async def get_projects(response: Response):
     global _projects_cache
-    if _projects_cache is None:
+    if _projects_cache is not None:
+        response.headers["Cache-Control"] = "public, max-age=300, stale-while-revalidate=60"
+        return _projects_cache
+    async with _projects_load_lock:
+        if _projects_cache is not None:  # another request loaded it while we waited
+            response.headers["Cache-Control"] = "public, max-age=300, stale-while-revalidate=60"
+            return _projects_cache
         try:
-            _projects_cache = _load_projects_from_disk()
+            _projects_cache = await asyncio.to_thread(_load_projects_from_disk)
         except FileNotFoundError:
             logger.error("projects.json not found")
             return JSONResponse(status_code=500, content={"error": "Projects data unavailable"})
