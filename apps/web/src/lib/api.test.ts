@@ -107,7 +107,7 @@ describe('getProjects', () => {
     expect(result).toEqual(mockProjects);
     expect(globalThis.fetch).toHaveBeenCalledWith(
       expect.stringContaining('/projects'),
-      expect.objectContaining({ next: { revalidate: 300 } })
+      expect.objectContaining({ cache: 'no-store' })
     );
   });
 
