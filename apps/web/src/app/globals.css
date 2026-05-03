@@ -17,7 +17,7 @@
   --color-accent-purple: 270 100% 71%; /* #B56BFF — primary action / agent */
   --color-accent-pink: 338 86% 66%; /* #F16197 — human identity */
   --color-accent-teal: 178 57% 51%; /* #3EC7C2 — navigation / references */
-  --color-accent-gold: 45 90% 55%; /* #F0C020 — awards / achievements */
+  --color-accent-gold: 36 80% 62%; /* #E8A830 — awards / achievements (amber, split-comp to teal) */
 
   /* ── Borders ── */
   --color-border: 225 10% 25%;
