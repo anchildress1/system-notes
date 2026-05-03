@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Annotated, List, Optional
@@ -27,6 +27,8 @@ else:
     load_dotenv()
 
 app = FastAPI(title="System Notes API", version="0.1.0")
+
+_PROJECTS_CACHE_CONTROL = "public, max-age=300, stale-while-revalidate=60"
 
 
 # Configure logging
@@ -136,24 +138,54 @@ def _parse_project_item(item: dict) -> Project:
     )
 
 
-@app.get("/projects", response_model=List[Project])
-async def get_projects():
+# projects.json is a static file baked into the container image. It only changes
+# on deployment, so loading it once per process lifetime is correct. The cache
+# is never invalidated mid-run; a new deploy brings a new process.
+# _projects_load_lock prevents concurrent cold-start requests from racing to
+# read the file simultaneously; the double-check inside the lock avoids the
+# read entirely for requests that arrive while the first is in progress.
+_projects_cache: list[Project] | None = None
+_projects_load_lock = asyncio.Lock()
+
+
+def _reset_projects_cache() -> None:
+    """Drop the in-memory cache. Tests use this to restore isolation between cases."""
+    global _projects_cache
+    _projects_cache = None
+
+
+def _load_projects_from_disk() -> list[Project]:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, "data", "projects.json")
-
     if not os.path.exists(file_path):
-        logger.error("projects.json not found")
-        return JSONResponse(status_code=500, content={"error": "Projects data unavailable"})
+        raise FileNotFoundError("projects.json not found")
+    raw = Path(file_path).read_text(encoding="utf-8")
+    content = json.loads(raw)
+    projects = [_parse_project_item(item) for item in content]
+    projects.sort(key=lambda p: p.order_rank)
+    return projects
 
-    try:
-        raw = await asyncio.to_thread(Path(file_path).read_text, encoding="utf-8")
-        content = json.loads(raw)
-        projects = [_parse_project_item(item) for item in content]
-        projects.sort(key=lambda p: p.order_rank)
-        return projects
-    except (OSError, ValueError) as e:
-        logger.error("Error loading projects: %s", e)
-        return JSONResponse(status_code=500, content={"error": "Failed to load projects"})
+
+@app.get("/projects", response_model=List[Project])
+async def get_projects(response: Response):
+    global _projects_cache
+    if _projects_cache is not None:
+        response.headers["Cache-Control"] = _PROJECTS_CACHE_CONTROL
+        return _projects_cache
+    async with _projects_load_lock:
+        if _projects_cache is not None:  # another request loaded it while we waited
+            response.headers["Cache-Control"] = _PROJECTS_CACHE_CONTROL
+            return _projects_cache
+        try:
+            _projects_cache = await asyncio.to_thread(_load_projects_from_disk)
+        except FileNotFoundError:
+            logger.error("projects.json not found")
+            return JSONResponse(status_code=500, content={"error": "Projects data unavailable"})
+        except (OSError, ValueError) as e:
+            logger.error("Error loading projects: %s", e)
+            return JSONResponse(status_code=500, content={"error": "Failed to load projects"})
+    response.headers["Cache-Control"] = _PROJECTS_CACHE_CONTROL
+    return _projects_cache
 
 
 @app.get("/system/doc/{doc_path:path}")

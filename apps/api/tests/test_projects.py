@@ -1,8 +1,18 @@
+import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch
-from main import app
+from main import app, _reset_projects_cache
 
 client = TestClient(app)
+
+
+@pytest.fixture(autouse=True)
+def _clear_cache():
+    """Reset the projects in-memory cache before and after every test so
+    patches on os.path.exists / Path.read_text are always exercised."""
+    _reset_projects_cache()
+    yield
+    _reset_projects_cache()
 
 MOCK_PROJECTS_JSON = """
 [
@@ -140,3 +150,36 @@ def test_get_projects_json_parse_error():
         response = client.get("/projects")
         assert response.status_code == 500
         assert response.json()["error"] == "Failed to load projects"
+
+
+def test_get_projects_sets_cache_control_header():
+    """Successful response must carry Cache-Control so Next.js ISR and
+    upstream caches can reuse the payload for 5 minutes rather than
+    hitting the API on every page render."""
+    with patch("os.path.exists", return_value=True), \
+         patch("pathlib.Path.read_text", return_value=MOCK_PROJECTS_JSON):
+        response = client.get("/projects")
+    assert response.status_code == 200
+    cc = response.headers.get("cache-control", "")
+    assert "public" in cc
+    assert "max-age=300" in cc
+
+
+def test_get_projects_no_cache_control_on_error():
+    """Error responses must not carry a Cache-Control header so a transient
+    failure is not cached by the client or a CDN."""
+    with patch("os.path.exists", return_value=False):
+        response = client.get("/projects")
+    assert response.status_code == 500
+    assert "cache-control" not in response.headers
+
+
+def test_get_projects_served_from_cache_on_second_call():
+    """Second call must return from memory without touching the filesystem."""
+    with patch("os.path.exists", return_value=True), \
+         patch("pathlib.Path.read_text", return_value=MOCK_PROJECTS_JSON) as mock_read:
+        client.get("/projects")
+        client.get("/projects")
+        client.get("/projects")
+        # read_text called exactly once across all requests
+        assert mock_read.call_count == 1

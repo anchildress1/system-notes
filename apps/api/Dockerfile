@@ -24,7 +24,7 @@ COPY pyproject.toml uv.lock ./
 # Install dependencies using uv
 # --frozen ensures we stick to the lockfile
 # --no-dev excludes dev dependencies
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen --no-dev --no-build
 
 # Copy application code
 # .dockerignore excludes .env, .venv, __pycache__, and tests (S6470 reviewed SAFE)

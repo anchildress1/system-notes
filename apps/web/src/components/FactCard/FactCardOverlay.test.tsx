@@ -17,7 +17,7 @@ vi.mock('framer-motion', () => ({
     article: (props: Record<string, unknown>) => {
       const {
         children,
-        onClick: _onClick, // eslint-disable-line @typescript-eslint/no-unused-vars
+        onClick: _onClick,
         className,
         role,
         animate,

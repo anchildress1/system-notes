@@ -37,9 +37,12 @@ export interface SystemDoc {
 }
 
 // React.cache() deduplicates getProjects calls within a single server request
-// (layout.tsx + page.tsx both call it). This is request-scoped memoization, not persistent caching.
-// cache: 'no-store' ensures data is always fresh at request time, never statically pre-rendered.
-// Throws on failure — root layout catches with a fallback; route pages surface via error.tsx.
+// (layout.tsx + any page both calling it resolve to one fetch). This is request-scoped
+// memoization only — it does not persist across requests.
+// { cache: 'no-store' } is intentional: the Next.js build runs before the API is up, so ISR
+// would pre-render with an empty project list and serve that stale shell for 5 min during tests.
+// Repeat-request optimization lives in the FastAPI in-memory cache (asyncio.Lock + module-level
+// list), not here. Throws on failure — root layout catches with a fallback [].
 export const getProjects: () => Promise<Project[]> = cache(async () => {
   const res = await fetch(`${API_URL}/projects`, { cache: 'no-store' });
   if (!res.ok) {

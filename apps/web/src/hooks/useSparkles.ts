@@ -193,7 +193,8 @@ export const useSparkles = ({
       }
     };
 
-    containerRef.current?.addEventListener('mousemove', handleMouseMove);
+    const container = containerRef.current;
+    container?.addEventListener('mousemove', handleMouseMove);
 
     return () => {
       isMounted = false;
@@ -218,7 +219,7 @@ export const useSparkles = ({
         console.warn('Failed to destroy Pixi app:', err);
       }
       observer.disconnect();
-      containerRef.current?.removeEventListener('mousemove', handleMouseMove);
+      container?.removeEventListener('mousemove', handleMouseMove);
     };
   }, [containerRef, textRef, sparkleOnHover, sparkleNearText]);
 };
