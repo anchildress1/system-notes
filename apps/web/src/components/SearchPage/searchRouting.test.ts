@@ -136,7 +136,6 @@ describe('searchRouting', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let routerConfig: any;
     const qsModule = {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       stringify: (params: Record<string, unknown>, _options: unknown) => {
         return new URLSearchParams(params as Record<string, string>).toString(); // Simple mock
       },
