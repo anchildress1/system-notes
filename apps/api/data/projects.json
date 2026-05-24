@@ -104,6 +104,53 @@
     "related_project_ids": ["carbon-trace"]
   },
   {
+    "objectID": "vestige",
+    "node_type": "project",
+    "name": "Vestige",
+    "aliases": ["brain tracker", "cognition tracker", "adhd tool"],
+    "what_it_is": "A fully on-device Android brain tracker that observes behavioral traces and surfaces sourced patterns — no therapy framing, no mood scores, no wellness vocabulary.",
+    "why_it_exists": "Built for the Gemma 4 Challenge to prove a privacy-first cognition tracker can run entirely on the phone, where your voice never leaves the device and every pattern cites the entries it counted.",
+    "long_description": "Vestige started as a mental-wellness journal, then a market scan against Rosebud, Reflectly, and Stoic pushed it somewhere less crowded: a cognition tracker that runs Gemma 4 E4B locally via LiteRT-LM and refuses to blow smoke. Voice or typed capture goes in, the audio bytes are discarded after inference, and three independent extraction lenses — Literal, Inferential, and Skeptical — read every entry before a deterministic Kotlin resolver votes each field consensus, candidate, or ambiguous. The model proposes; the math decides. EmbeddingGemma embeds each entry by its tone word to surface vocab drift, ObjectBox is the source of truth, and privacy is enforced at build time: a verifyNoTelemetry task runs four independent scans and fails the build if anything reaches for the network.",
+    "outcome": "A working, fully local Android app where the whole loop runs on-device — capture to Gemma 4 to three-lens convergence to pattern detection — behind a packet-capture-verifiable privacy claim and 1,500+ tests gating every push.",
+    "status": "Active · Released",
+    "owner": "anchildress1",
+    "image_url": "/projects/vestige.webp",
+    "image_alt": "Vestige Android brain tracker surfacing sourced behavioral patterns from on-device Gemma 4 analysis",
+    "tech": [
+      {
+        "name": "Kotlin",
+        "role": "Language"
+      },
+      {
+        "name": "Jetpack Compose",
+        "role": "UI"
+      },
+      {
+        "name": "Gemma 4 E4B",
+        "role": "On-Device LLM"
+      },
+      {
+        "name": "LiteRT-LM",
+        "role": "Inference Runtime"
+      },
+      {
+        "name": "EmbeddingGemma",
+        "role": "Semantic Embeddings"
+      },
+      {
+        "name": "ObjectBox",
+        "role": "Local Storage"
+      }
+    ],
+    "blog_posts": [],
+    "project_type": "experiment",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/vestige",
+    "order_rank": 3,
+    "updated_at": "2026-05-24",
+    "related_project_ids": ["my-hermantic-agent"]
+  },
+  {
     "objectID": "legacy-smelter",
     "node_type": "project",
     "name": "Legacy Smelter",
@@ -152,7 +199,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/legacy-smelter",
     "app_url": "https://hotfix.anchildress1.dev",
-    "order_rank": 3,
+    "order_rank": 4,
     "updated_at": "2026-04-13",
     "related_project_ids": []
   },
@@ -213,7 +260,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/system-notes",
     "app_url": "https://unstable.anchildress1.dev",
-    "order_rank": 4,
+    "order_rank": 5,
     "updated_at": "2026-02-08",
     "related_project_ids": ["underfoot-underground-travel-planner", "devto-mirror"]
   },
@@ -256,7 +303,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/supascribe-notes-mcp",
-    "order_rank": 5,
+    "order_rank": 6,
     "updated_at": "2026-02-26",
     "related_project_ids": ["system-notes"]
   },
@@ -310,7 +357,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/ChecKMarKDevTools/dev-community-dashboard",
     "app_url": "https://dev-community-dashboard.checkmarkdevtools.dev",
-    "order_rank": 6,
+    "order_rank": 7,
     "updated_at": "2026-03-04",
     "related_project_ids": []
   },
@@ -370,7 +417,7 @@
     "project_type": "resource",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
-    "order_rank": 7,
+    "order_rank": 8,
     "updated_at": "2026-02-01",
     "related_project_ids": []
   },
@@ -414,7 +461,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/devto-mirror",
-    "order_rank": 8,
+    "order_rank": 9,
     "updated_at": "2026-02-01"
   },
   {
@@ -469,7 +516,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/rai-lint",
-    "order_rank": 9,
+    "order_rank": 10,
     "updated_at": "2026-02-01",
     "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"]
   },
@@ -508,7 +555,7 @@
     "project_type": "experiment",
     "completion_state": "unfinished",
     "repo_url": "https://github.com/anchildress1/my-hermantic-agent",
-    "order_rank": 10,
+    "order_rank": 11,
     "updated_at": "2026-02-01",
     "related_project_ids": ["underfoot-underground-travel-planner"]
   },
@@ -547,7 +594,7 @@
     "project_type": "tool",
     "completion_state": "unfinished",
     "repo_url": "https://github.com/CheckMarKDevTools/delegate-action",
-    "order_rank": 11,
+    "order_rank": 12,
     "updated_at": "2026-02-01",
     "related_project_ids": ["rai-lint", "awesome-github-copilot"]
   },
@@ -595,7 +642,7 @@
     "project_type": "experiment",
     "completion_state": "archived",
     "repo_url": "https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner",
-    "order_rank": 12,
+    "order_rank": 13,
     "updated_at": "2026-02-01",
     "related_project_ids": ["my-hermantic-agent"]
   },
@@ -634,7 +681,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/eslint-config-echo",
-    "order_rank": 13,
+    "order_rank": 14,
     "updated_at": "2026-02-01"
   },
   {
@@ -668,7 +715,7 @@
     "project_type": "experiment",
     "completion_state": "failed",
     "repo_url": "https://github.com/CheckMarKDevTools/checkmark-copilot-chat",
-    "order_rank": 14,
+    "order_rank": 15,
     "updated_at": "2026-02-01",
     "related_project_ids": ["awesome-github-copilot"]
   }
