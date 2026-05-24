@@ -108,44 +108,50 @@
     "node_type": "project",
     "name": "Vestige",
     "aliases": ["brain tracker", "cognition tracker", "adhd tool"],
-    "what_it_is": "A fully on-device Android brain tracker that observes behavioral traces and surfaces sourced patterns — no therapy framing, no mood scores, no wellness vocabulary.",
-    "why_it_exists": "Built for the Gemma 4 Challenge to prove a privacy-first cognition tracker can run entirely on the phone, where your voice never leaves the device and every pattern cites the entries it counted.",
-    "long_description": "Vestige started as a mental-wellness journal, then a market scan against Rosebud, Reflectly, and Stoic pushed it somewhere less crowded: a cognition tracker that runs Gemma 4 E4B locally via LiteRT-LM and refuses to blow smoke. Voice or typed capture goes in, the audio bytes are discarded after inference, and three independent extraction lenses — Literal, Inferential, and Skeptical — read every entry before a deterministic Kotlin resolver votes each field consensus, candidate, or ambiguous. The model proposes; the math decides. EmbeddingGemma embeds each entry by its tone word to surface vocab drift, ObjectBox is the source of truth, and privacy is enforced at build time: a verifyNoTelemetry task runs four independent scans and fails the build if anything reaches for the network.",
-    "outcome": "A working, fully local Android app where the whole loop runs on-device — capture to Gemma 4 to three-lens convergence to pattern detection — behind a packet-capture-verifiable privacy claim and 1,500+ tests gating every push.",
+    "what_it_is": "ADHD-friendly Android brain tracker. 30-second voice entries in, sourced behavioral patterns out. No grading, no gamification, no feelings prompts.",
+    "why_it_exists": "ADHD memory isn't a storage problem; it's a recall gap. Vestige is the receipt trail for that gap — it observes, doesn't grade, and never ships audio anywhere.",
+    "long_description": "Gemma 4 E4B handles native audio in (no SpeechRecognizer), returns transcription + persona follow-up as a single streaming foreground response, then 3 background lens passes (Literal / Inferential / Skeptical × 5 surfaces) feed a deterministic Kotlin convergence resolver. EmbeddingGemma 300M ships for tone-word Vocab Drift; a sealed NetworkGate plus a verifyNoTelemetry Gradle task enforce privacy as construction, not policy.",
+    "outcome": "Submitted to the Gemma 4 Challenge (Build with Gemma 4) on 2026-05-24. STT-D hit 73% meaningful lens divergence against a 50% bar; STT-H landed 12/12 entries, 3/3 lens parse, and a mean 21.2s on a Galaxy S24 Ultra. Winners announced 2026-06-04.",
     "status": "Active · Released",
     "owner": "anchildress1",
     "image_url": "/projects/vestige.webp",
     "image_alt": "Vestige Android brain tracker surfacing sourced behavioral patterns from on-device Gemma 4 analysis",
     "tech": [
       {
-        "name": "Kotlin",
-        "role": "Language"
-      },
-      {
-        "name": "Jetpack Compose",
-        "role": "UI"
-      },
-      {
         "name": "Gemma 4 E4B",
-        "role": "On-Device LLM"
+        "role": "LLM · Native Audio"
+      },
+      {
+        "name": "EmbeddingGemma 300M",
+        "role": "Tone-Word Clustering"
       },
       {
         "name": "LiteRT-LM",
-        "role": "Inference Runtime"
+        "role": "Runtime (pinned)"
       },
       {
-        "name": "EmbeddingGemma",
-        "role": "Semantic Embeddings"
+        "name": "Kotlin + Compose + Material 3",
+        "role": "Android 14+ UI"
       },
       {
         "name": "ObjectBox",
-        "role": "Local Storage"
+        "role": "Persistence"
+      },
+      {
+        "name": "Gradle KTS + verifyNoTelemetry",
+        "role": "Build"
+      },
+      {
+        "name": "Lefthook + GHA + CodeQL + Sonar + Kover",
+        "role": "CI / Quality"
       }
     ],
     "blog_posts": [],
     "project_type": "experiment",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/vestige",
+    "app_url": "https://github.com/anchildress1/vestige/releases",
+    "award": null,
     "order_rank": 3,
     "updated_at": "2026-05-24",
     "related_project_ids": ["my-hermantic-agent"]
