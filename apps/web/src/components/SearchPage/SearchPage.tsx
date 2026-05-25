@@ -5,6 +5,7 @@ import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
   InstantSearch,
   RefinementList,
+  HierarchicalMenu,
   Stats,
   ClearRefinements,
   Configure,
@@ -15,7 +16,6 @@ import { FiPlus, FiMinus } from 'react-icons/fi';
 import 'instantsearch.css/themes/reset.css';
 import styles from './SearchPage.module.css';
 import FactCard from '../FactCard/FactCard';
-import GroupedTagFilter from './GroupedTagFilter';
 import InfiniteHits from './InfiniteHits';
 import LoadingIndicator from './LoadingIndicator';
 import { createSearchRouting } from './searchRouting';
@@ -144,6 +144,17 @@ const refinementClassNames = {
   label: styles.refinementLabel,
   checkbox: styles.refinementCheckbox,
   labelText: styles.refinementLabelText,
+  count: styles.refinementCount,
+};
+
+const hierarchicalMenuClassNames = {
+  root: styles.refinementRoot,
+  list: styles.refinementList,
+  childList: styles.tagChildren,
+  item: styles.refinementItem,
+  selectedItem: styles.refinementItemSelected,
+  link: styles.refinementLabel,
+  label: styles.refinementLabelText,
   count: styles.refinementCount,
 };
 
@@ -354,7 +365,11 @@ export default function SearchPage() {
                 </button>
                 <div id="filter-tags">
                   {!collapsedSections.tags && (
-                    <GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />
+                    <HierarchicalMenu
+                      attributes={['tags.lvl0', 'tags.lvl1']}
+                      limit={50}
+                      classNames={hierarchicalMenuClassNames}
+                    />
                   )}
                 </div>
               </div>

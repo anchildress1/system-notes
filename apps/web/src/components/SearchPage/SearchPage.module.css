@@ -834,29 +834,7 @@
   border-color: hsl(var(--color-accent-purple)) !important;
 }
 
-/* ── GroupedTagFilter ── */
-
-.tagExpandButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  color: inherit;
-  margin-left: 4px;
-  border-radius: var(--radius-sm);
-  transition: background var(--transition-base);
-}
-
-.tagGroupLabel {
-  cursor: default;
-}
-
-.tagGroupLabelText {
-  font-weight: 600;
-  cursor: pointer;
-}
+/* ── HierarchicalMenu child list ── */
 
 .tagChildren {
   padding-left: 16px;
@@ -864,4 +842,12 @@
   flex-direction: column;
   gap: 4px;
   margin-top: 4px;
+}
+
+/* HierarchicalMenu uses <a> links — add focus-visible since focus-within doesn't apply */
+.refinementLabel:focus-visible {
+  color: hsl(var(--color-text-primary));
+  background: hsl(var(--color-accent-purple) / 0.08);
+  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
+  outline-offset: 1px;
 }
