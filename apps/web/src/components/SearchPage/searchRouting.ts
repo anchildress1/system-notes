@@ -56,7 +56,7 @@ export const toUiState = (routeState: SearchRouteState, indexName: string): UiSt
     [indexName]: {
       page: routeState.page,
       refinementList: cleanedRefinements,
-      hierarchicalMenu: routeState.tags ? { 'tags.lvl0': [routeState.tags] } : undefined,
+      ...(routeState.tags ? { hierarchicalMenu: { 'tags.lvl0': [routeState.tags] } } : {}),
     },
   };
 };

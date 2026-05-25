@@ -90,7 +90,6 @@ describe('searchRouting', () => {
       [indexName]: {
         page: undefined,
         refinementList: {},
-        hierarchicalMenu: undefined,
       },
     });
   });
@@ -145,7 +144,6 @@ describe('searchRouting', () => {
       [indexName]: {
         page: undefined,
         refinementList: {},
-        hierarchicalMenu: undefined,
       },
     });
   });
