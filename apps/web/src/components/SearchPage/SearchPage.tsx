@@ -9,6 +9,7 @@ import {
   ClearRefinements,
   Configure,
 } from 'react-instantsearch';
+import aa from 'search-insights';
 import { SiAlgolia } from 'react-icons/si';
 import { FiPlus, FiMinus } from 'react-icons/fi';
 import 'instantsearch.css/themes/reset.css';
@@ -35,14 +36,11 @@ const searchAiId = ALGOLIA_AI_ID;
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
 const hasCredentials = hasValidAlgoliaCredentials();
-const searchClient = hasCredentials
-  ? algoliasearch(appId, searchKey, {
-      headers: {
-        'X-Algolia-UserToken': getChatSessionId(),
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
-  : null;
+const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
+
+// Use the same userToken for both search requests and Insights events so that
+// queryID returned in search results can be correlated to click events.
+aa('setUserToken', getChatSessionId());
 
 declare global {
   var SiteSearchAskAI: { init: (config: unknown) => void } | undefined;
@@ -253,7 +251,12 @@ export default function SearchPage() {
 
   return (
     <div className={styles.container}>
-      <InstantSearch searchClient={searchClient} indexName={indexName} insights routing={routing}>
+      <InstantSearch
+        searchClient={searchClient}
+        indexName={indexName}
+        insights={{ insightsClient: aa }}
+        routing={routing}
+      >
         <Configure
           hitsPerPage={20}
           attributesToHighlight={['title', 'blurb', 'fact']}
