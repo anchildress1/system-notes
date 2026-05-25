@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
+import { useMemo, useEffect, useRef, useState, useCallback, Suspense } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
   InstantSearch,
@@ -159,7 +159,6 @@ export default function SearchPage() {
   }, []);
 
   useSiteSearchWithAI(appId, searchKey, indexName, searchAiId, isEnabled);
-  const { overlayHit, closeOverlay } = useFactIdRouting(indexName);
 
   // Auto-focus the Ask AI chat input when the SiteSearch modal opens
   const pendingTimeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -388,7 +387,14 @@ export default function SearchPage() {
           </section>
         </div>
       </InstantSearch>
-      {overlayHit && <FactCardOverlay hit={overlayHit} onClose={closeOverlay} />}
+      <Suspense fallback={null}>
+        <FactIdOverlay indexName={indexName} />
+      </Suspense>
     </div>
   );
+}
+
+function FactIdOverlay({ indexName }: { indexName: string }) {
+  const { overlayHit, closeOverlay } = useFactIdRouting(indexName);
+  return overlayHit ? <FactCardOverlay hit={overlayHit} onClose={closeOverlay} /> : null;
 }
