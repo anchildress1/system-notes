@@ -1,5 +1,4 @@
-import { cache } from 'react';
-import { API_URL } from '@/config';
+import rawProjects from '@/data/projects.json';
 
 export interface TechItem {
   name: string;
@@ -29,51 +28,30 @@ export interface Project {
   order_rank?: number;
 }
 
-export interface SystemDoc {
-  content: string;
-  format: string;
-  path: string;
-  error?: string;
+type RawProject = Record<string, unknown>;
+
+function parseProject(item: RawProject): Project {
+  return {
+    id: item['objectID'] as string,
+    title: item['name'] as string,
+    status: (item['status'] as string) ?? '',
+    description: (item['what_it_is'] as string) ?? '',
+    purpose: (item['why_it_exists'] as string) ?? '',
+    long_description: (item['long_description'] as string) ?? '',
+    outcome: (item['outcome'] as string) ?? '',
+    tech: (item['tech'] as TechItem[]) ?? [],
+    repo_url: item['repo_url'] as string | undefined,
+    image_url: item['image_url'] as string | undefined,
+    image_alt: item['image_alt'] as string | undefined,
+    owner: (item['owner'] as string) ?? '',
+    blog_posts: (item['blog_posts'] as BlogLink[]) ?? [],
+    award: item['award'] as string | undefined,
+    order_rank: (item['order_rank'] as number) ?? 999,
+  };
 }
 
-// React.cache() deduplicates getProjects calls within a single server request
-// (layout.tsx + any page both calling it resolve to one fetch). This is request-scoped
-// memoization only — it does not persist across requests.
-// { cache: 'no-store' } is intentional: the Next.js build runs before the API is up, so ISR
-// would pre-render with an empty project list and serve that stale shell for 5 min during tests.
-// Repeat-request optimization lives in the FastAPI in-memory cache (asyncio.Lock + module-level
-// list), not here. Throws on failure — root layout catches with a fallback [].
-export const getProjects: () => Promise<Project[]> = cache(async () => {
-  const res = await fetch(`${API_URL}/projects`, { cache: 'no-store' });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch projects: ${res.status} ${res.statusText}`);
-  }
-  return res.json();
-});
-
-export async function getSystemDoc(path: string): Promise<SystemDoc | null> {
-  try {
-    const url = `${API_URL}/system/doc/${path}`;
-
-    const res = await fetch(url, { cache: 'no-store' });
-
-    if (!res.ok) {
-      const text = await res.text().catch(() => '');
-      return {
-        content: '',
-        format: 'text',
-        path,
-        error: `Error ${res.status}: ${text || res.statusText}`,
-      };
-    }
-    return res.json();
-  } catch (error) {
-    console.error('[SystemDoc] Network/API Error:', error);
-    return {
-      content: '',
-      format: 'text',
-      path,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
+export async function getProjects(): Promise<Project[]> {
+  return (rawProjects as RawProject[])
+    .map(parseProject)
+    .sort((a, b) => (a.order_rank ?? 999) - (b.order_rank ?? 999));
 }

@@ -146,7 +146,12 @@
         "role": "CI / Quality"
       }
     ],
-    "blog_posts": [],
+    "blog_posts": [
+      {
+        "title": "Vestige: A Gemma 4 Brain Tracker That Won't Blow Smoke Up Your Ass",
+        "url": "https://dev.to/anchildress1/vestige-a-gemma-4-brain-tracker-that-wont-blow-smoke-up-your-ass-5caf"
+      }
+    ],
     "project_type": "experiment",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/vestige",

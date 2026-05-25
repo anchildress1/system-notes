@@ -36,11 +36,6 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
-        with:
-          enable-cache: true
-
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
@@ -71,14 +66,6 @@ jobs:
         with:
           name: web-unit-tests
           path: apps/web/coverage/
-          retention-days: 30
-
-      - name: Store API Unit Tests
-        uses: actions/upload-artifact@v6
-        if: always()
-        with:
-          name: api-unit-tests
-          path: apps/api/htmlcov/
           retention-days: 30
 
       - name: Run E2E Tests
