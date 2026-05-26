@@ -24,9 +24,7 @@ describe('searchRouting', () => {
         refinementList: {
           category: ['Work Style'],
           projects: ['System Notes'],
-        },
-        hierarchicalMenu: {
-          'tags.lvl0': ['Principle > Responsibility'],
+          'tags.lvl1': ['Principle > Responsibility'],
         },
       },
     };
@@ -35,15 +33,15 @@ describe('searchRouting', () => {
       page: 2,
       category: ['Work Style'],
       projects: ['System Notes'],
-      tags: 'Principle > Responsibility',
+      tags: ['Principle > Responsibility'],
     });
   });
 
-  it('maps uiState with a top-level tag selection', () => {
+  it('maps uiState with a tag selection', () => {
     const uiState = {
       [indexName]: {
-        hierarchicalMenu: {
-          'tags.lvl0': ['Principle'],
+        refinementList: {
+          'tags.lvl1': ['Principle'],
         },
       },
     };
@@ -52,7 +50,7 @@ describe('searchRouting', () => {
       page: undefined,
       category: undefined,
       projects: undefined,
-      tags: 'Principle',
+      tags: ['Principle'],
     });
   });
 
@@ -61,7 +59,7 @@ describe('searchRouting', () => {
       page: 3,
       category: ['Philosophy'],
       projects: ['Hermes Agent'],
-      tags: 'Approach > Iterative',
+      tags: ['Approach > Iterative'],
     };
 
     expect(toUiState(routeState, indexName)).toEqual({
@@ -70,15 +68,13 @@ describe('searchRouting', () => {
         refinementList: {
           category: ['Philosophy'],
           projects: ['Hermes Agent'],
-        },
-        hierarchicalMenu: {
-          'tags.lvl0': ['Approach > Iterative'],
+          'tags.lvl1': ['Approach > Iterative'],
         },
       },
     });
   });
 
-  it('omits empty refinements and hierarchicalMenu from uiState', () => {
+  it('omits empty refinements from uiState', () => {
     const routeState = {
       page: undefined,
       category: [],
@@ -100,9 +96,7 @@ describe('searchRouting', () => {
       refinementList: {
         category: ['Work Style'],
         projects: ['System Notes'],
-      },
-      hierarchicalMenu: {
-        'tags.lvl0': ['Approach > Iterative'],
+        'tags.lvl1': ['Approach > Iterative'],
       },
     };
 
@@ -209,7 +203,7 @@ describe('searchRouting', () => {
     });
 
     it('serialises tags into URL', () => {
-      const routeState = { tags: 'Approach > Iterative' };
+      const routeState = { tags: ['Approach > Iterative'] };
       const location = {
         origin: 'https://example.com',
         pathname: '/search',
@@ -222,7 +216,7 @@ describe('searchRouting', () => {
       routerConfig.createURL({ qsModule: customQsModule, routeState, location });
 
       expect(mockStringify).toHaveBeenCalledWith(
-        expect.objectContaining({ tags: 'Approach > Iterative' }),
+        expect.objectContaining({ tags: ['Approach > Iterative'] }),
         expect.any(Object)
       );
     });
@@ -276,7 +270,7 @@ describe('searchRouting', () => {
         page: 2,
         category: ['cat1'],
         projects: ['proj1'],
-        tags: undefined,
+        tags: [],
       });
     });
 
@@ -287,19 +281,17 @@ describe('searchRouting', () => {
 
       const parsed = routerConfig.parseURL({ qsModule, location });
 
-      expect(parsed.tags).toBe('Approach > Iterative');
+      expect(parsed.tags).toEqual(['Approach > Iterative']);
     });
 
-    it('ignores array tags param (invalid — tags must be a single string)', () => {
-      // If somehow duplicate tags params appear, only a string value is accepted
+    it('parses multi-value tags from URL as an array', () => {
       const location = {
         search: '?tags=Approach&tags=Events',
       } as unknown as Location;
 
       const parsed = routerConfig.parseURL({ qsModule, location });
 
-      // Array value is rejected; tags should be undefined
-      expect(parsed.tags).toBeUndefined();
+      expect(parsed.tags).toEqual(['Approach', 'Events']);
     });
 
     it('handles array parameters in parseURL for category', () => {

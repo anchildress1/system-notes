@@ -611,20 +611,3 @@
   color: hsl(var(--color-accent-teal)) !important;
 }
 
-/* ── HierarchicalMenu child list ── */
-
-.tagChildren {
-  padding-left: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
-}
-
-/* HierarchicalMenu uses <a> links — add focus-visible since focus-within doesn't apply */
-.refinementLabel:focus-visible {
-  color: hsl(var(--color-text-primary));
-  background: hsl(var(--color-accent-purple) / 0.08);
-  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
-  outline-offset: 1px;
-}
