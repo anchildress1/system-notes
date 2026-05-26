@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import InfiniteHits from './InfiniteHits';
-import { useInfiniteHits } from 'react-instantsearch';
+import { useInfiniteHits, useInstantSearch } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
 
 const mockSearchParams = new URLSearchParams();
@@ -41,15 +41,21 @@ vi.mock('react-instantsearch', () => ({
     sendEvent: mockSendEvent,
     bindEvent: mockBindEvent,
   })),
+  useInstantSearch: vi.fn(() => ({ status: 'idle' })),
 }));
+
+// Default hit used in baseHitsState so tests that don't exercise empty state
+// get past the isEmpty guard and render the list normally.
+const defaultHit: Hit = { objectID: 'hit-default', title: 'Default Hit', __position: 1 };
 
 // Shared base state for mockReturnValue calls — provides the required
 // InfiniteHitsRenderState fields that individual tests don't need to vary.
 const baseHitsState = {
-  items: [] as Hit[],
-  hits: [] as Hit[],
-  currentPageHits: [] as Hit[],
+  items: [defaultHit] as Hit[],
+  hits: [defaultHit] as Hit[],
+  currentPageHits: [defaultHit] as Hit[],
   isFirstPage: true,
+  isLastPage: true,
   showPrevious: mockShowPrevious,
   showMore: mockShowMore,
   sendEvent: mockSendEvent,
@@ -232,13 +238,31 @@ describe('InfiniteHits', () => {
     mockSearchParams.delete('page');
   });
 
-  it('renders no list items when items array is empty', () => {
+  it('renders empty state when items array is empty and status is idle', () => {
     vi.mocked(useInfiniteHits).mockReturnValue({
       ...baseHitsState,
+      items: [],
+      hits: [],
+      currentPageHits: [],
       isLastPage: true,
     });
 
+    render(<InfiniteHits hitComponent={() => <div />} />);
+    expect(screen.getByText(/no results found/i)).toBeInTheDocument();
+  });
+
+  it('does not render empty state while loading (status !== idle)', () => {
+    vi.mocked(useInfiniteHits).mockReturnValue({
+      ...baseHitsState,
+      items: [],
+      hits: [],
+      currentPageHits: [],
+      isLastPage: true,
+    });
+    vi.mocked(useInstantSearch).mockReturnValue({ status: 'loading' } as never);
+
     const { container } = render(<InfiniteHits hitComponent={() => <div />} />);
+    expect(screen.queryByText(/no results found/i)).not.toBeInTheDocument();
     expect(container.querySelectorAll('li')).toHaveLength(0);
   });
 

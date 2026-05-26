@@ -7,6 +7,7 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   preload: true,
+  fallback: ['system-ui', 'sans-serif'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -14,6 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   display: 'swap',
   preload: true,
+  fallback: ['ui-monospace', 'monospace'],
 });
 
 import ClientShell from '@/components/ClientShell/ClientShell';
