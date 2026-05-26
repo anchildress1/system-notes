@@ -611,3 +611,64 @@
   color: hsl(var(--color-accent-teal)) !important;
 }
 
+/* ── HierarchicalMenu — styled to match RefinementList rows ── */
+/* HierarchicalMenu renders <a> links; ::before provides the checkbox-like indicator */
+
+.hierarchicalLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: var(--radius-lg);
+  transition: all 0.25s var(--ease-morph);
+  color: hsl(var(--color-text-secondary));
+  text-decoration: none;
+  position: relative;
+}
+
+.hierarchicalLink::before {
+  content: '';
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border: 1.5px solid hsl(var(--color-text-secondary) / 0.5);
+  border-radius: 3px;
+  transition: all var(--transition-base);
+}
+
+.hierarchicalLink:hover {
+  color: hsl(var(--color-text-primary));
+  background: hsl(var(--color-accent-purple) / 0.08);
+  transform: translateX(2px);
+}
+
+.hierarchicalLink:hover::before {
+  border-color: hsl(var(--color-accent-purple));
+}
+
+.hierarchicalLink:focus-visible {
+  color: hsl(var(--color-text-primary));
+  background: hsl(var(--color-accent-purple) / 0.08);
+  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
+  outline-offset: 1px;
+}
+
+.refinementItemSelected .hierarchicalLink {
+  color: hsl(var(--color-accent-purple));
+}
+
+.refinementItemSelected .hierarchicalLink::before {
+  background: hsl(var(--color-accent-purple));
+  border-color: hsl(var(--color-accent-purple));
+}
+
+.tagChildren {
+  padding-left: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+

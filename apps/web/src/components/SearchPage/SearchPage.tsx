@@ -5,6 +5,7 @@ import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
   InstantSearch,
   RefinementList,
+  HierarchicalMenu,
   Stats,
   ClearRefinements,
   Configure,
@@ -105,6 +106,17 @@ const refinementClassNames = {
   label: styles.refinementLabel,
   checkbox: styles.refinementCheckbox,
   labelText: styles.refinementLabelText,
+  count: styles.refinementCount,
+};
+
+const hierarchicalMenuClassNames = {
+  root: styles.refinementRoot,
+  list: styles.refinementList,
+  childList: styles.tagChildren,
+  item: styles.refinementItem,
+  selectedItem: styles.refinementItemSelected,
+  link: styles.hierarchicalLink,
+  label: styles.refinementLabelText,
   count: styles.refinementCount,
 };
 
@@ -253,10 +265,10 @@ export default function SearchPage() {
                 </button>
                 <div id="filter-tags">
                   {!collapsedSections.tags && (
-                    <RefinementList
-                      attribute="tags.lvl1"
+                    <HierarchicalMenu
+                      attributes={['tags.lvl0', 'tags.lvl1']}
                       limit={50}
-                      classNames={refinementClassNames}
+                      classNames={hierarchicalMenuClassNames}
                     />
                   )}
                 </div>

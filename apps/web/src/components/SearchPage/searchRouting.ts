@@ -5,7 +5,7 @@ export type SearchRouteState = {
   page?: number;
   category?: string[];
   projects?: string[];
-  tags?: string[];
+  tags?: string; // selected hierarchical path, e.g. "Events > Conference"
 };
 
 const normalizeArrayParam = (value?: unknown): string[] => {
@@ -32,12 +32,13 @@ const parsePageParam = (value?: unknown): number | undefined => {
 
 export const toRouteState = (uiState: UiState, indexName: string): SearchRouteState => {
   const indexState = uiState[indexName] || {};
+  const hierarchicalSelection = indexState.hierarchicalMenu?.['tags.lvl0'];
 
   return {
     page: indexState.page,
     category: withValues(indexState.refinementList?.category),
     projects: withValues(indexState.refinementList?.projects),
-    tags: withValues(indexState.refinementList?.['tags.lvl1']),
+    tags: hierarchicalSelection?.[0],
   };
 };
 
@@ -45,7 +46,6 @@ export const toUiState = (routeState: SearchRouteState, indexName: string): UiSt
   const refinementList: Record<string, string[] | undefined> = {
     category: withValues(routeState.category),
     projects: withValues(routeState.projects),
-    'tags.lvl1': withValues(routeState.tags),
   };
 
   const cleanedRefinements = Object.fromEntries(
@@ -56,6 +56,7 @@ export const toUiState = (routeState: SearchRouteState, indexName: string): UiSt
     [indexName]: {
       page: routeState.page,
       refinementList: cleanedRefinements,
+      ...(routeState.tags ? { hierarchicalMenu: { 'tags.lvl0': [routeState.tags] } } : {}),
     },
   };
 };
@@ -72,7 +73,7 @@ export const createSearchRouting = (indexName: string) => ({
       if (routeState.page && routeState.page > 1) queryParameters.page = routeState.page;
       if (routeState.category?.length) queryParameters.category = routeState.category;
       if (routeState.projects?.length) queryParameters.project = routeState.projects;
-      if (routeState.tags?.length) queryParameters.tags = routeState.tags;
+      if (routeState.tags) queryParameters.tags = routeState.tags;
 
       // Pass factId through as an opaque param — it is owned by useFactIdRouting,
       // not by InstantSearch. Without this, InstantSearch would strip it from the
@@ -93,11 +94,14 @@ export const createSearchRouting = (indexName: string) => ({
     parseURL({ qsModule, location }) {
       const parsedParams = qsModule.parse(location.search.slice(1));
 
+      const rawTags = parsedParams.tags;
+      const tags = typeof rawTags === 'string' ? rawTags : undefined;
+
       return {
         page: parsePageParam(parsedParams.page),
         category: normalizeArrayParam(parsedParams.category),
         projects: normalizeArrayParam(parsedParams.project),
-        tags: normalizeArrayParam(parsedParams.tags),
+        tags,
       };
     },
   }),
@@ -122,7 +126,7 @@ export const getSearchPageURL = (
   if (routeState.page && routeState.page > 1) params.set('page', String(routeState.page));
   routeState.category?.forEach((value) => params.append('category', value));
   routeState.projects?.forEach((value) => params.append('project', value));
-  routeState.tags?.forEach((value) => params.append('tags', value));
+  if (routeState.tags) params.set('tags', routeState.tags);
 
   const queryString = params.toString();
   return queryString ? `${basePath}?${queryString}` : basePath;
