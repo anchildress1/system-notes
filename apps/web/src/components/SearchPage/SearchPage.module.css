@@ -638,6 +638,11 @@
   transition: all var(--transition-base);
 }
 
+/* The widget renders an SVG toggle icon inside each link — hide it; ::before is the indicator */
+.hierarchicalLink svg {
+  display: none;
+}
+
 .hierarchicalLink:hover {
   color: hsl(var(--color-text-primary));
   background: hsl(var(--color-accent-purple) / 0.08);
