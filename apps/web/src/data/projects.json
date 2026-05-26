@@ -605,7 +605,7 @@
     "project_type": "tool",
     "completion_state": "unfinished",
     "repo_url": "https://github.com/CheckMarKDevTools/delegate-action",
-    "order_rank": 12,
+    "order_rank": 120,
     "updated_at": "2026-02-01",
     "related_project_ids": ["rai-lint", "awesome-github-copilot"]
   },
@@ -653,7 +653,7 @@
     "project_type": "experiment",
     "completion_state": "archived",
     "repo_url": "https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner",
-    "order_rank": 13,
+    "order_rank": 130,
     "updated_at": "2026-02-01",
     "related_project_ids": ["my-hermantic-agent"]
   },
@@ -726,7 +726,7 @@
     "project_type": "experiment",
     "completion_state": "failed",
     "repo_url": "https://github.com/CheckMarKDevTools/checkmark-copilot-chat",
-    "order_rank": 15,
+    "order_rank": 150,
     "updated_at": "2026-02-01",
     "related_project_ids": ["awesome-github-copilot"]
   }
