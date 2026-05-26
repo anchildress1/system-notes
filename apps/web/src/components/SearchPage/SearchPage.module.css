@@ -75,6 +75,11 @@
 }
 
 .filterSection {
+  /* Shared checkbox indicator — RefinementList checkbox and HierarchicalMenu
+     ::before both consume these so the box and check render identically. */
+  --check-size: 18px;
+  --check-icon-size: 11px;
+  --check-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8L6 11.5L13.5 4' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
   background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -188,56 +193,29 @@
 }
 
 .refinementCheckbox {
-  width: 18px;
-  height: 18px;
-  accent-color: hsl(var(--color-accent-purple));
-  cursor: pointer;
-  transition: transform var(--transition-base);
+  appearance: none;
+  -webkit-appearance: none;
+  width: var(--check-size);
+  height: var(--check-size);
   flex-shrink: 0;
-  /* Force consistent appearance across all browsers */
-  appearance: auto;
-  -webkit-appearance: checkbox;
-  -moz-appearance: checkbox;
+  border: 1.5px solid hsl(var(--color-text-secondary) / 0.5);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all var(--transition-base);
 }
 
 .refinementCheckbox:hover {
-  transform: scale(1.1);
+  border-color: hsl(var(--color-accent-purple));
 }
 
-/* Ensure all checked checkboxes have solid fill */
-.refinementCheckbox:checked {
-  accent-color: hsl(var(--color-accent-purple));
-}
-
-/* Ensure indeterminate state also uses accent color */
+.refinementCheckbox:checked,
 .refinementCheckbox:indeterminate {
-  accent-color: hsl(var(--color-accent-purple));
-}
-
-/* Override InstantSearch satellite.css checkbox styles to ensure consistency */
-.refinementList input[type='checkbox'],
-.refinementItem input[type='checkbox'],
-.refinementLabel input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
-  accent-color: hsl(var(--color-accent-purple));
-  cursor: pointer;
-  flex-shrink: 0;
-  appearance: auto;
-  -webkit-appearance: checkbox;
-  -moz-appearance: checkbox;
-}
-
-.refinementList input[type='checkbox']:checked,
-.refinementItem input[type='checkbox']:checked,
-.refinementLabel input[type='checkbox']:checked {
-  accent-color: hsl(var(--color-accent-purple));
-}
-
-.refinementList input[type='checkbox']:indeterminate,
-.refinementItem input[type='checkbox']:indeterminate,
-.refinementLabel input[type='checkbox']:indeterminate {
-  accent-color: hsl(var(--color-accent-purple));
+  background-color: hsl(var(--color-accent-purple));
+  border-color: hsl(var(--color-accent-purple));
+  background-image: var(--check-svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--check-icon-size) var(--check-icon-size);
 }
 
 .refinementLabelText {
@@ -630,8 +608,8 @@
 .hierarchicalLink::before {
   content: '';
   display: block;
-  width: 18px;
-  height: 18px;
+  width: var(--check-size);
+  height: var(--check-size);
   flex-shrink: 0;
   border: 1.5px solid hsl(var(--color-text-secondary) / 0.5);
   border-radius: 3px;
@@ -667,10 +645,10 @@
 .refinementItemSelected .hierarchicalLink::before {
   background-color: hsl(var(--color-accent-purple));
   border-color: hsl(var(--color-accent-purple));
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8L6 11.5L13.5 4' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  background-image: var(--check-svg);
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 11px 11px;
+  background-size: var(--check-icon-size) var(--check-icon-size);
 }
 
 .tagChildren {
