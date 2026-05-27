@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { FiPlay, FiPause, FiX, FiMusic } from 'react-icons/fi';
+import { FiPlay, FiPause, FiMusic } from 'react-icons/fi';
 import styles from './MusicPlayer.module.css';
 
 function formatTime(seconds: number): string {
@@ -14,7 +14,6 @@ function formatTime(seconds: number): string {
 export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -29,7 +28,6 @@ export default function MusicPlayer() {
       try {
         await audioRef.current.play();
         setIsPlaying(true);
-        setIsExpanded(true);
       } catch (error) {
         console.error('Playback failed:', error);
         setIsPlaying(false);
@@ -63,60 +61,49 @@ export default function MusicPlayer() {
 
   return (
     <div className={styles.playerWrapper} data-testid="music-player">
-      {isExpanded && (
-        <div className={styles.panel} data-testid="player-panel">
-          <div className={styles.panelHeader}>
-            <div className={styles.albumArt} aria-hidden="true">
-              <FiMusic size={20} />
-            </div>
-            <div className={styles.trackInfo}>
-              <span className={styles.trackTitle}>
-                I Build Things
-                <span className={styles.trackExplicit} aria-hidden="true">
-                  E
-                </span>
+      <div className={styles.panel} data-testid="player-panel">
+        <div className={styles.panelHeader}>
+          <div className={styles.albumArt} aria-hidden="true">
+            <FiMusic size={20} />
+          </div>
+          <div className={styles.trackInfo}>
+            <span className={styles.trackTitle}>
+              I Build Things
+              <span className={styles.trackExplicit} aria-hidden="true">
+                E
               </span>
-              <span className={styles.trackMeta}>TWISTED GAME · THEME SONG</span>
-            </div>
-            <button
-              type="button"
-              className={styles.closeButton}
-              onClick={() => setIsExpanded(false)}
-              aria-label="Dismiss"
-              data-testid="close-panel"
-            >
-              <FiX size={16} />
-            </button>
-          </div>
-
-          <div className={styles.waveform} aria-hidden="true">
-            {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className={`${styles.bar} ${isPlaying ? styles.barActive : ''}`}
-                style={{ '--bar-i': i } as React.CSSProperties}
-              />
-            ))}
-          </div>
-
-          <div className={styles.progressSection}>
-            <div
-              className={styles.progressTrack}
-              role="progressbar"
-              aria-valuenow={Math.round(progress)}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label="Playback progress"
-            >
-              <div className={styles.progressFill} style={{ width: `${progress}%` }} />
-            </div>
-            <div className={styles.timestamps}>
-              <span>{formatTime(currentTime)}</span>
-              <span>{formatTime(duration)}</span>
-            </div>
+            </span>
+            <span className={styles.trackMeta}>TWISTED GAME · THEME SONG</span>
           </div>
         </div>
-      )}
+
+        <div className={styles.waveform} aria-hidden="true">
+          {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className={`${styles.bar} ${isPlaying ? styles.barActive : ''}`}
+              style={{ '--bar-i': i } as React.CSSProperties}
+            />
+          ))}
+        </div>
+
+        <div className={styles.progressSection}>
+          <div
+            className={styles.progressTrack}
+            role="progressbar"
+            aria-valuenow={Math.round(progress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Track progress"
+          >
+            <div className={styles.progressFill} style={{ width: `${progress}%` }} />
+          </div>
+          <div className={styles.timestamps}>
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
+        </div>
+      </div>
 
       <button
         type="button"
@@ -139,14 +126,6 @@ export default function MusicPlayer() {
       <span className={styles.buttonLabel} aria-hidden="true">
         THEME SONG
       </span>
-
-      {!isExpanded && (
-        <div className={styles.infoTooltip} role="tooltip">
-          <span className={styles.songTitle}>I Build Things</span>
-          <span className={styles.bandName}>Twisted Game Songs</span>
-          <span className={styles.explicitWarning}>Explicit Lyrics</span>
-        </div>
-      )}
 
       <audio
         ref={audioRef}

@@ -27,7 +27,7 @@
   bottom: var(--chat-dock-margin);
   right: calc(var(--chat-dock-margin) + 60px + 16px);
   pointer-events: auto;
-  z-index: 100;
+  z-index: 200;
 }
 
 /* ── Toggle button ── */

@@ -55,75 +55,7 @@
   z-index: 3;
 }
 
-/* ── Hover Tooltip (when panel is closed) ── */
-.infoTooltip {
-  position: absolute;
-  top: 50%;
-  right: calc(100% + 12px);
-  transform: translateY(-50%);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
-  padding: 8px 12px;
-  width: 200px;
-  text-align: center;
-  box-shadow: var(--shadow-card);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--transition-base), transform var(--transition-base);
-  z-index: 10;
-  white-space: nowrap;
-}
-
-.playButton:hover + .infoTooltip,
-.playButton:focus-visible + .infoTooltip {
-  opacity: 1;
-  transform: translateY(-50%) translateX(-8px);
-}
-
-@media (max-width: 768px) {
-  .infoTooltip {
-    top: auto;
-    right: 50%;
-    bottom: calc(100% + 12px);
-    transform: translateX(50%);
-    width: 160px;
-  }
-
-  .playButton:hover + .infoTooltip,
-  .playButton:focus-visible + .infoTooltip {
-    opacity: 1;
-    transform: translateX(50%) translateY(-8px);
-  }
-}
-
-.songTitle {
-  display: block;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-}
-
-.bandName {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
-
-.explicitWarning {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--accent-pink);
-  margin-top: 4px;
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-/* ── Expanded Panel ── */
+/* ── Expanded Panel (hover-revealed) ── */
 .panel {
   position: absolute;
   bottom: calc(100% + 12px);
@@ -138,8 +70,16 @@
   gap: 12px;
   box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.8),
     0 0 calc(40px * var(--glow)) rgba(181, 107, 255, 0.12);
-  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.playerWrapper:hover .panel {
+  opacity: 1;
   pointer-events: auto;
+  transform: translateY(0);
 }
 
 .panelHeader {
@@ -199,26 +139,6 @@
   color: var(--text-muted);
   letter-spacing: 0.8px;
   text-transform: uppercase;
-}
-
-.closeButton {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--r-pill);
-  background: var(--bg-base);
-  border: 1px solid var(--border-strong);
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: color var(--transition-base), background var(--transition-base);
-}
-
-.closeButton:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.06);
 }
 
 /* ── Waveform ── */

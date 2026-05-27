@@ -156,28 +156,8 @@ describe('MusicPlayer', () => {
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
   });
 
-  it('opens expanded panel when playback starts', async () => {
+  it('renders player panel in the DOM at all times', () => {
     render(<MusicPlayer />);
-
-    expect(screen.queryByTestId('player-panel')).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId('play-button'));
-    await waitFor(() => {
-      expect(screen.getByTestId('player-panel')).toBeInTheDocument();
-    });
-  });
-
-  it('closes panel without stopping playback', async () => {
-    render(<MusicPlayer />);
-    fireEvent.click(screen.getByTestId('play-button'));
-
-    await waitFor(() => expect(screen.getByTestId('close-panel')).toBeInTheDocument());
-
-    fireEvent.click(screen.getByTestId('close-panel'));
-    expect(screen.queryByTestId('player-panel')).not.toBeInTheDocument();
-    expect(screen.getByTestId('play-button')).toHaveAttribute(
-      'aria-label',
-      expect.stringMatching(/^Pause/i)
-    );
+    expect(screen.getByTestId('player-panel')).toBeInTheDocument();
   });
 });
