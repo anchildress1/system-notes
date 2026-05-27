@@ -25,10 +25,22 @@ interface BlogSearchResponse {
 }
 
 const CRAWLY_SITEMAP_URL = 'https://crawly.checkmarkdevtools.dev/sitemap.xml';
+const ALLOWED_HOST = new URL(CRAWLY_SITEMAP_URL).hostname;
 const CACHE_TTL_MS = 15 * 60 * 1000;
 const EMPTY_CACHE_TTL_MS = 60 * 1000;
 
 let blogCache: { data: BlogPostInternal[]; expires: number } | null = null;
+
+// Only follow same-host post URLs — the sitemap is untrusted input and an
+// attacker-controlled <loc> could otherwise induce server-side request forgery.
+function isAllowedPostUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname === ALLOWED_HOST && parsed.pathname.includes('/posts/');
+  } catch {
+    return false;
+  }
+}
 
 async function fetchSitemapUrls(): Promise<string[]> {
   try {
@@ -39,7 +51,7 @@ async function fetchSitemapUrls(): Promise<string[]> {
     const text = await response.text();
     return [...text.matchAll(/<loc>(https?:\/\/[^<]+)<\/loc>/g)]
       .map((m) => m[1])
-      .filter((url) => url.includes('/posts/'));
+      .filter(isAllowedPostUrl);
   } catch {
     return [];
   }
