@@ -8,17 +8,17 @@
 }
 
 .playButton {
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
   border-radius: 99px;
-  background: linear-gradient(135deg, var(--accent-pink) 0%, rgba(241, 97, 151, 0.7) 100%);
+  background: linear-gradient(135deg, var(--accent-pink) 0%, rgba(241, 97, 151, 0.75) 100%);
   border: none;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
   box-shadow: 0 0 calc(20px * var(--glow)) rgba(241, 97, 151, 0.4);
   position: relative;
   z-index: 2;
@@ -26,9 +26,8 @@
 }
 
 .playButton:hover {
-  background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-violet) 100%);
-  box-shadow: 0 0 calc(28px * var(--glow)) rgba(241, 97, 151, 0.55);
-  transform: scale(1.05);
+  transform: translateY(-4px);
+  box-shadow: 0 6px calc(28px * var(--glow)) rgba(241, 97, 151, 0.5);
 }
 
 .active {

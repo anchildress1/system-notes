@@ -23,17 +23,16 @@
 
 /* ── Toggle button ── */
 .chatToggle {
-  width: 52px !important;
-  height: 52px !important;
+  width: 60px !important;
+  height: 60px !important;
   border-radius: 99px !important;
   background: var(--accent-violet) !important;
   border: none !important;
   box-shadow: 0 0 calc(24px * var(--glow)) rgba(181, 107, 255, 0.4) !important;
-  transition: all var(--transition-base) !important;
+  transition: transform var(--transition-base), box-shadow var(--transition-base) !important;
 }
 
 .chatToggle:hover {
-  background: var(--accent-pink) !important;
-  box-shadow: 0 0 calc(28px * var(--glow)) rgba(241, 97, 151, 0.45) !important;
-  transform: scale(1.05) !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 6px calc(28px * var(--glow)) rgba(181, 107, 255, 0.5) !important;
 }
