@@ -39,7 +39,7 @@
 }
 
 .glitterTrigger {
-  display: none;
+  display: block;
   position: absolute;
   inset: 0;
   z-index: 15;

@@ -71,7 +71,7 @@ export const useSparkles = ({
         if (!app.renderer) return;
 
         const circleGraphics = new PIXI.Graphics();
-        circleGraphics.circle(0, 0, 8);
+        circleGraphics.circle(0, 0, 4);
         circleGraphics.fill({ color: 0xffffff });
 
         try {
