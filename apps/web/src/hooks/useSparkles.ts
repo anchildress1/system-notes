@@ -144,7 +144,7 @@ export const useSparkles = ({
 
     // Spawn a single sparkle particle at (x, y) — extracted to reduce cognitive complexity (S3776)
     const spawnParticle = (PIXI: typeof import('pixi.js'), x: number, y: number) => {
-      const colors = [0xd45a28, 0xff8c42, 0xefeae0]; // Ember, ember-light, paper
+      const colors = [0xf16197, 0xb56bff, 0x3ec7c2]; // Pink, violet, teal
       const particle = new PIXI.Sprite(circleTexture) as unknown as Particle;
       const color = colors[Math.floor(Math.random() * colors.length)]; // NOSONAR(S2245) - visual randomness, not security-sensitive
 

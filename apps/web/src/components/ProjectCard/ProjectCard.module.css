@@ -7,8 +7,9 @@
   width: 100%;
   padding: 0;
   position: relative;
-  background: var(--paper);
-  border: 1px solid rgba(26, 24, 21, 0.15);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -18,12 +19,12 @@
 }
 
 .card:hover {
-  border-color: var(--ember);
-  box-shadow: inset 3px 0 0 var(--ember);
+  border-color: var(--accent-pink);
+  box-shadow: 0 0 0 1px var(--accent-pink-soft), var(--shadow-card);
 }
 
 .card:focus-visible {
-  outline: 2px solid var(--ember);
+  outline: 2px solid var(--accent-violet);
   outline-offset: 4px;
 }
 
@@ -53,8 +54,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(26, 24, 21, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(26, 24, 21, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 20px 20px;
   z-index: 1;
 }
@@ -89,8 +90,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(26, 24, 21, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(26, 24, 21, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 

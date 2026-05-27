@@ -108,7 +108,7 @@ export default function GlitterBomb() {
           currentParticles.length = 0;
 
           // --- Optimized Explosion Config ---
-          const colors = [0xd45a28, 0xff8c42, 0xefeae0, 0xf5b08a];
+          const colors = [0xf16197, 0xb56bff, 0x3ec7c2, 0xe89a6a, 0xffffff];
 
           // Massive reduction for mobile
           const particleCount = isMobile ? 30 : 150;

@@ -1,47 +1,31 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import styles from './Masthead.module.css';
 
-const CWD_MAP: Record<string, string> = {
-  '/': '/SYS/CHOICES',
-  '/projects': '/SYS/BUILDS',
-  '/about': '/SYS/HUMAN',
-  '/search': '/SYS/SEARCH',
-};
+const TICKER_ITEMS = [
+  'I BUILD THINGS',
+  'I BREAK THINGS',
+  'I SHIP THINGS',
+  'I FIX THE THINGS I BREAK',
+  'I BUILD THINGS',
+  'BREAK EARLY · BREAK LOUD · BREAK ON PURPOSE',
+  'I BUILD THINGS',
+  'EVERY FILE EARNED ITS CHANGE',
+] as const;
 
-function useLiveDate(): string {
-  if (typeof window === 'undefined') return '';
-  return new Date()
-    .toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
-    .toUpperCase();
-}
+// Duplicate for seamless loop
+const ALL_ITEMS = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
 export default function Masthead() {
-  const pathname = usePathname();
-  const cwd = CWD_MAP[pathname] ?? `/SYS${pathname.toUpperCase()}`;
-  const date = useLiveDate();
-
   return (
-    <div className={styles.masthead} role="complementary" aria-label="Site status bar">
-      <div className={styles.left}>
-        <span className={styles.pulseDot} aria-hidden="true" />
-        <span>
-          EDITION <strong>02.028</strong>
-          {' · '}
-          <span suppressHydrationWarning>{date}</span>
-        </span>
-      </div>
-      <div className={styles.center}>
-        CWD · <strong>{cwd}</strong>
-      </div>
-      <div className={styles.right}>
-        An <strong>indexed</strong>, not imagined, portfolio.
+    <div className={styles.ticker} aria-hidden="true">
+      <div className={styles.tickerTrack}>
+        {ALL_ITEMS.map((item, i) => (
+          <span key={i} className={`${styles.tickerItem} ${i % 4 === 0 ? styles.accent : ''}`}>
+            <span>{item}</span>
+            <span className={styles.tickerSep} />
+          </span>
+        ))}
       </div>
     </div>
   );

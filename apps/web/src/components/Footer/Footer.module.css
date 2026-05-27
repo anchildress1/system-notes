@@ -1,7 +1,7 @@
 .footer {
-  background: var(--ink);
-  color: var(--paper);
-  border-top: 2px solid var(--ink);
+  background: linear-gradient(180deg, transparent 0%, rgba(8, 9, 12, 0.6) 100%);
+  color: var(--text-primary);
+  border-top: 1px solid var(--border);
   margin-top: 6rem;
 }
 
@@ -16,7 +16,7 @@
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 3rem;
   padding-bottom: 2.5rem;
-  border-bottom: 1px solid rgba(239, 234, 224, 0.12);
+  border-bottom: 1px solid var(--border);
 }
 
 .col {}
@@ -26,23 +26,22 @@
   font-size: 0.65rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--text-muted);
   margin-bottom: 1rem;
 }
 
 .blurb {
-  font-family: var(--font-serif);
-  font-size: 1.2rem;
-  font-style: italic;
-  line-height: 1.4;
-  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
   max-width: 32ch;
-  letter-spacing: -0.003em;
+  letter-spacing: 0.01em;
 }
 
 .blurb em {
   font-style: normal;
-  color: var(--ember);
+  color: var(--accent-pink);
 }
 
 .stack {
@@ -54,7 +53,7 @@
 .link {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--ink-3);
+  color: var(--text-secondary);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -64,7 +63,7 @@
 }
 
 .link:hover {
-  color: var(--ember);
+  color: var(--accent-violet);
 }
 
 .colophon {
@@ -74,7 +73,7 @@
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.06em;
-  color: var(--ink-3);
+  color: var(--text-muted);
 }
 
 .bottom {
@@ -86,10 +85,9 @@
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--text-muted);
 }
 
-/* Social links (for accessibility, used in link styles above) */
 .socialLink {
   composes: link;
   font-size: 1.125rem;

@@ -74,9 +74,10 @@
 .filterSection {
   --check-size: 18px;
   --check-icon-size: 11px;
-  --check-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8L6 11.5L13.5 4' stroke='%23efeae0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-  background: var(--paper);
-  border: 1px solid var(--ink);
+  --check-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8L6 11.5L13.5 4' stroke='%23ecedf0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
   padding: 20px;
 }
 
@@ -87,7 +88,7 @@
   color: var(--ink);
   margin: 0 0 16px 0;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 1px solid var(--border-strong);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -95,7 +96,7 @@
 .refinementGroup {
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(26, 24, 21, 0.1);
+  border-bottom: 1px solid var(--border);
 }
 
 .refinementGroup:last-of-type {
@@ -240,7 +241,7 @@
 .clearRoot {
   margin-top: 20px;
   padding-top: 16px;
-  border-top: 1px solid rgba(26, 24, 21, 0.1);
+  border-top: 1px solid var(--border);
 }
 
 .clearButton {
@@ -256,13 +257,13 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: all var(--transition-base);
-  border-radius: 0;
+  border-radius: var(--r-md);
 }
 
 .clearButton:hover {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
+  background: var(--accent-violet-soft);
+  border-color: var(--accent-violet);
+  color: var(--accent-violet);
   transform: none;
   box-shadow: none;
 }
@@ -304,7 +305,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  border-top: 1px solid var(--ink);
+  border-top: 1px solid var(--border-strong);
   counter-reset: result-number;
 }
 
@@ -315,7 +316,7 @@
   padding: 0;
   margin: 0;
   counter-increment: result-number;
-  border-bottom: 1px solid rgba(26, 24, 21, 0.12);
+  border-bottom: 1px solid var(--border);
 }
 
 .hitsItem:focus-within {
@@ -368,7 +369,8 @@
   color: var(--ink-3);
   font-family: var(--font-mono);
   font-size: 0.875rem;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
 }
 
 /* Mobile filter toggle — hidden on desktop */
@@ -393,16 +395,16 @@
     text-transform: uppercase;
     cursor: pointer;
     transition: all var(--transition-base);
-    border-radius: 0;
+    border-radius: var(--r-md);
   }
 
   .filterToggle:hover {
-    border-color: var(--ember);
-    color: var(--ember);
+    border-color: var(--accent-violet);
+    color: var(--accent-violet);
   }
 
   .filterToggle:focus-visible {
-    outline: 2px solid var(--ember);
+    outline: 2px solid var(--accent-violet);
     outline-offset: 2px;
   }
 
@@ -414,7 +416,7 @@
 /* Highlight styles */
 :global(.ais-Highlight-highlighted),
 :global(.ais-Snippet-highlighted) {
-  color: var(--ember) !important;
+  color: var(--accent-violet) !important;
   background-color: transparent !important;
   font-style: normal !important;
   font-weight: 700;
@@ -448,26 +450,26 @@
 /* Highlighted card scroll-into-view indicator */
 :global([data-highlighted='true']) {
   animation: cardHighlight 2s ease-out;
-  outline: 2px solid var(--ember);
+  outline: 2px solid var(--accent-violet);
   outline-offset: -2px;
 }
 
 @keyframes cardHighlight {
-  0% { outline-color: var(--ember); outline-width: 3px; }
+  0% { outline-color: var(--accent-violet); outline-width: 3px; }
   100% { outline-color: transparent; outline-width: 1px; }
 }
 
 /* ── Algolia SiteSearch Widget — official CSS custom properties API ── */
 :global(:root) {
-  --search-primary-color: oklch(0.58 0.20 35);
-  --search-secondary-color: oklch(0.58 0.20 35);
-  --search-background-color: #efeae0;
-  --search-neutral-color: #e0dace;
-  --search-text-color: #1a1815;
-  --search-subtle-text-color: #6a6358;
-  --search-border-color: rgba(26, 24, 21, 0.2);
-  --search-hover-color: oklch(0.58 0.20 35 / 0.08);
-  --search-border-radius: 0px;
+  --search-primary-color: #b56bff;
+  --search-secondary-color: #b56bff;
+  --search-background-color: #16181f;
+  --search-neutral-color: #1d1f28;
+  --search-text-color: #ecedf0;
+  --search-subtle-text-color: #6b6f7d;
+  --search-border-color: rgba(255, 255, 255, 0.12);
+  --search-hover-color: rgba(181, 107, 255, 0.08);
+  --search-border-radius: 8px;
 }
 
 /* ── Button layout — not covered by --search-* CSS vars ── */
@@ -478,30 +480,30 @@
 
 /* ── Chat bubble role colors ── */
 :global(.ss-chat-message--user) {
-  border-color: var(--ember) !important;
+  border-color: var(--accent-violet) !important;
 }
 :global(.ss-chat-message--assistant) {
-  border-color: var(--ink) !important;
+  border-color: var(--border-strong) !important;
 }
 :global(.ss-chat-input:focus),
 :global(.ss-chat-input:focus-visible) {
-  border-color: var(--ember) !important;
-  box-shadow: 0 0 0 2px oklch(0.58 0.20 35 / 0.2) !important;
+  border-color: var(--accent-violet) !important;
+  box-shadow: 0 0 0 2px rgba(181, 107, 255, 0.2) !important;
   outline: none !important;
 }
 :global(.ss-chat-send-button),
 :global(.ss-chat-submit) {
-  background-color: var(--ember) !important;
-  color: var(--paper) !important;
+  background-color: var(--accent-violet) !important;
+  color: white !important;
   border: none !important;
 }
 :global(.ss-chat-send-button:hover),
 :global(.ss-chat-submit:hover) {
-  background-color: var(--ink) !important;
+  background-color: var(--accent-pink) !important;
 }
 :global(.ss-chat-message a),
 :global(.ss-chat-message--assistant a) {
-  color: var(--ember) !important;
+  color: var(--accent-violet) !important;
 }
 
 /* ── HierarchicalMenu ── */

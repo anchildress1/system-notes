@@ -16,7 +16,7 @@
   color: var(--ink-3);
   margin-bottom: var(--space-md);
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 1px solid var(--border-strong);
   display: flex;
   align-items: center;
   gap: 0.5rem;

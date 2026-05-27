@@ -1,6 +1,15 @@
 import type { Metadata, Viewport } from 'next';
-import { Instrument_Serif, JetBrains_Mono } from 'next/font/google';
+import { Instrument_Serif, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import './globals.css';
+
+const spaceGrotesk = Space_Grotesk({
+  variable: '--font-display',
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'sans-serif'],
+});
 
 const instrumentSerif = Instrument_Serif({
   variable: '--font-serif',
@@ -80,7 +89,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#efeae0',
+  themeColor: '#0e0f13',
 };
 
 export default async function RootLayout({
@@ -139,7 +148,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
         suppressHydrationWarning
       >
         <ClientShell>{children}</ClientShell>

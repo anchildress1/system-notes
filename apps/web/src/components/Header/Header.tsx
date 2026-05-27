@@ -1,23 +1,31 @@
 'use client';
 
 import { useRef } from 'react';
-import { FaCode } from 'react-icons/fa';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSparkles } from '@/hooks/useSparkles';
 import styles from './Header.module.css';
 
 const NAV_ITEMS = [
-  { num: '01', label: 'Choices', href: '/' },
-  { num: '02', label: 'Builds', href: '/projects' },
-  { num: '03', label: 'Human', href: '/about' },
+  { label: 'Choices', href: '/' },
+  { label: 'Builds', href: '/projects' },
+  { label: 'Human', href: '/about' },
 ] as const;
+
+const PATH_LABEL: Record<string, string> = {
+  '/': '/sys/choices',
+  '/projects': '/sys/builds',
+  '/about': '/sys/human',
+  '/search': '/sys/search',
+};
 
 export default function Header() {
   const pathname = usePathname();
   const rowRef = useRef<HTMLDivElement | null>(null);
 
   useSparkles({ containerRef: rowRef });
+
+  const statusPath = PATH_LABEL[pathname] ?? `/sys${pathname}`;
 
   return (
     <header className={styles.header}>
@@ -26,44 +34,46 @@ export default function Header() {
       </a>
 
       <div className={styles.row} ref={rowRef}>
-        <div className={styles.brandArea}>
-          <button
-            type="button"
-            className={styles.glitterTrigger}
-            onClick={() => globalThis.dispatchEvent(new Event('trigger-glitter-bomb'))}
-            aria-label="Trigger glitter effect"
-          >
-            <span className={styles.brandMark} aria-hidden="true" />
-          </button>
-          <Link href="/" className={styles.brand}>
-            <span className={styles.brandName}>Ashley Childress · System Notes</span>
-          </Link>
-        </div>
+        <button
+          type="button"
+          className={styles.brand}
+          onClick={() => globalThis.dispatchEvent(new Event('trigger-glitter-bomb'))}
+          aria-label="Trigger glitter effect"
+        >
+          <div className={styles.brandMark} aria-hidden="true">
+            <span className={styles.brandMarkLetter}>A</span>
+          </div>
+          <div className={styles.brandText}>
+            <span className={styles.brandTitle}>Ashley Childress</span>
+            <span className={styles.brandSub}>SYS_NOTES · v2.0.26</span>
+          </div>
+        </button>
 
         <nav className={styles.nav} aria-label="Main Navigation">
-          {NAV_ITEMS.map(({ num, label, href }) => (
+          {NAV_ITEMS.map(({ label, href }) => (
             <Link
               key={href}
               href={href}
               className={`${styles.navLink} ${pathname === href ? styles.active : ''}`}
             >
-              <span className={styles.navNum}>{num}</span>
-              <span>{label}</span>
+              {label}
             </Link>
           ))}
-        </nav>
-
-        <div className={styles.actions}>
           <a
             href="https://dev.to/anchildress1"
             target="_blank"
             rel="noopener noreferrer"
             data-testid="blog-link"
-            className={styles.ctaButton}
+            className={styles.navCta}
           >
-            <FaCode size={13} aria-hidden="true" />
-            <span>Blog</span>
+            <span>$ read --blog</span>
+            <span className={styles.navCtaArrow}>↗</span>
           </a>
+        </nav>
+
+        <div className={styles.status}>
+          <span className={styles.statusDot} aria-hidden="true" />
+          <span>SYS · {statusPath}</span>
         </div>
       </div>
     </header>

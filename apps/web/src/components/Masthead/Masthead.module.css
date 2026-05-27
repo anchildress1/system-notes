@@ -1,68 +1,58 @@
-.masthead {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.4rem max(2rem, calc((100% - 1440px) / 2 + 2rem));
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--ink);
-  line-height: 1;
-  gap: 1rem;
-}
-
-.masthead strong {
-  font-weight: 700;
-}
-
-.left,
-.center,
-.right {
-  flex: 1;
+.ticker {
+  position: relative;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(
+    90deg,
+    rgba(241, 97, 151, 0.04) 0%,
+    rgba(62, 199, 194, 0.04) 50%,
+    rgba(181, 107, 255, 0.04) 100%
+  );
+  overflow: hidden;
+  height: 38px;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+}
+
+.tickerTrack {
+  display: flex;
+  gap: 0;
   white-space: nowrap;
+  animation: tick 42s linear infinite;
 }
 
-.center {
-  justify-content: center;
+.tickerItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 24px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
 }
 
-.right {
-  justify-content: flex-end;
+.tickerItem.accent {
+  color: var(--accent-violet);
 }
 
-.pulseDot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: var(--ember);
-  border-radius: 50%;
+.tickerSep {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: currentColor;
+  opacity: 0.5;
   flex-shrink: 0;
-  animation: mastheadPulse 2.4s ease-in-out infinite;
 }
 
-@keyframes mastheadPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.8); }
+@keyframes tick {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
-@media (max-width: 900px) {
-  .right {
-    display: none;
-  }
-
-  .center {
-    justify-content: flex-end;
-  }
-}
-
-@media (max-width: 600px) {
-  .center {
-    display: none;
+@media (prefers-reduced-motion: reduce) {
+  .tickerTrack {
+    animation: none;
   }
 }

@@ -6,14 +6,15 @@
 }
 
 .cardLink:focus-visible {
-  outline: 2px solid var(--ember);
+  outline: 2px solid var(--accent-violet);
   outline-offset: 4px;
 }
 
 .card {
   position: relative;
-  background: var(--paper);
-  border: 1px solid rgba(26, 24, 21, 0.15);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -24,8 +25,8 @@
 }
 
 .card:hover {
-  border-color: var(--ember);
-  box-shadow: inset 3px 0 0 var(--ember);
+  border-color: var(--accent-violet);
+  box-shadow: 0 0 0 1px var(--accent-violet-soft), var(--shadow-card);
 }
 
 .imageContainer {
@@ -54,8 +55,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(26, 24, 21, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(26, 24, 21, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 20px 20px;
   z-index: 1;
 }
@@ -96,17 +97,18 @@
   justify-content: center;
   width: 36px;
   height: 36px;
+  border-radius: var(--r-sm);
   background: transparent;
-  color: var(--ink-3);
+  color: var(--text-muted);
   transition: all var(--transition-base);
   z-index: 2;
-  border: 1px solid rgba(26, 24, 21, 0.2);
+  border: 1px solid var(--border);
 }
 
 .ghLink:hover {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
+  background: var(--accent-violet-soft);
+  border-color: var(--accent-violet);
+  color: var(--accent-violet);
 }
 
 .description {
@@ -150,7 +152,8 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-overlay);
-  background: rgba(26, 24, 21, 0.75);
+  background: rgba(8, 9, 12, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -163,9 +166,10 @@
   max-width: 650px;
   height: auto;
   max-height: 85vh;
-  background: var(--paper);
-  border: 1px solid var(--ink);
-  box-shadow: 4px 4px 0 var(--ink);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-deep);
+  border-radius: var(--r-lg);
   cursor: default;
   display: flex !important;
   flex-direction: column;
