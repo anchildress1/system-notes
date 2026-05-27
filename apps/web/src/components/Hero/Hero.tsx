@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useCallback } from 'react';
 import Image from 'next/image';
 import styles from './Hero.module.css';
-import { useSparkles } from '@/hooks/useSparkles';
 
 interface HeroProps {
   title: string;
@@ -18,16 +17,21 @@ interface HeroProps {
 }
 
 export default function Hero({ title, titleAccent, subtitle, image }: Readonly<HeroProps>) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
-  useSparkles({ containerRef, textRef, sparkleNearText: true });
+  const triggerGlow = useCallback(() => {
+    const el = titleRef.current;
+    if (!el) return;
+    el.classList.remove(styles.titleGlow);
+    void el.offsetWidth; // force reflow to restart animation
+    el.classList.add(styles.titleGlow);
+  }, []);
 
   return (
-    <div className={styles.hero} ref={containerRef}>
-      <div className={styles.titleContainer} ref={textRef}>
+    <div className={styles.hero}>
+      <div className={styles.titleContainer}>
         <div className={styles.interactiveContainer}>
-          <h1 className={styles.title}>
+          <h1 className={styles.title} ref={titleRef}>
             {title}
             {titleAccent && <span className={styles.titleAccent}>{titleAccent}</span>}
           </h1>
@@ -38,6 +42,7 @@ export default function Hero({ title, titleAccent, subtitle, image }: Readonly<H
             data-testid="hero-interactive"
             aria-label="Trigger glitter effect"
             onClick={(e) => {
+              triggerGlow();
               globalThis.dispatchEvent(
                 new CustomEvent('trigger-glitter-bomb', {
                   detail: { x: e.clientX, y: e.clientY },
@@ -47,6 +52,7 @@ export default function Hero({ title, titleAccent, subtitle, image }: Readonly<H
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
+                triggerGlow();
                 globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
               }
             }}

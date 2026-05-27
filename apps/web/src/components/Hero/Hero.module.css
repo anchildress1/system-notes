@@ -28,6 +28,24 @@
   color: var(--accent-pink);
 }
 
+.titleGlow {
+  animation: titleGlowPulse 0.75s ease-out 0.1s;
+}
+
+@keyframes titleGlowPulse {
+  0%, 100% { text-shadow: none; }
+  35% {
+    text-shadow:
+      0 0 30px rgba(241, 97, 151, 0.75),
+      0 0 70px rgba(181, 107, 255, 0.45),
+      0 0 120px rgba(62, 199, 194, 0.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .titleGlow { animation: none; }
+}
+
 .imageContainer {
   position: relative;
   width: 100%;

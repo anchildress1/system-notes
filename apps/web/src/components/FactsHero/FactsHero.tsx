@@ -2,32 +2,41 @@
 
 import { useRef } from 'react';
 import styles from '@/styles/SharedHero.module.css';
-import { useSparkles } from '@/hooks/useSparkles';
+import heroStyles from './FactsHero.module.css';
 
 export default function FactsHero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
-  useSparkles({ containerRef, textRef, sparkleNearText: true });
+  const triggerGlow = () => {
+    const el = titleRef.current;
+    if (!el) return;
+    el.classList.remove(heroStyles.titleGlow);
+    void el.offsetWidth;
+    el.classList.add(heroStyles.titleGlow);
+  };
 
   return (
-    <div className={styles.hero} ref={containerRef}>
-      <div className={styles.interactiveContainer} ref={textRef}>
-        <h1 className={styles.title}>Decisions on record</h1>
+    <div className={styles.hero}>
+      <div className={styles.interactiveContainer}>
+        <h1 className={styles.title} ref={titleRef}>
+          Decisions on record
+        </h1>
         <span className={styles.subtitle}>so you can audit me</span>
         <button
           type="button"
           className={styles.glitterTrigger}
-          onClick={(e) =>
+          onClick={(e) => {
+            triggerGlow();
             globalThis.dispatchEvent(
               new CustomEvent('trigger-glitter-bomb', {
                 detail: { x: e.clientX, y: e.clientY },
               })
-            )
-          }
+            );
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
+              triggerGlow();
               globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
             }
           }}
