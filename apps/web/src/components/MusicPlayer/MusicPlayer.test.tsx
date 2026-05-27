@@ -180,13 +180,4 @@ describe('MusicPlayer', () => {
       expect.stringMatching(/^Pause/i)
     );
   });
-
-  it('shows PLAYING state in panel when audio is playing', async () => {
-    render(<MusicPlayer />);
-    fireEvent.click(screen.getByTestId('play-button'));
-
-    await waitFor(() => {
-      expect(screen.getByText(/PLAYING · explicit/i)).toBeInTheDocument();
-    });
-  });
 });

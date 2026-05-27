@@ -99,13 +99,6 @@ export default function MusicPlayer() {
             ))}
           </div>
 
-          <div className={styles.lyricsArea}>
-            <span className={styles.lyricsLabel}>{'// explicit content'}</span>
-            <span className={styles.lyricsState}>
-              [ {isPlaying ? 'PLAYING' : 'PAUSED'} · explicit ]
-            </span>
-          </div>
-
           <div className={styles.progressSection}>
             <div
               className={styles.progressTrack}
