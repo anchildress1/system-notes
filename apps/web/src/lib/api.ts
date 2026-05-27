@@ -30,22 +30,26 @@ export interface Project {
 
 type RawProject = Record<string, unknown>;
 
+// projects.json carries JSON null for absent optional fields; coerce to undefined
+// so the Project type's `string | undefined` contract holds at runtime.
+const str = (value: unknown): string | undefined => (typeof value === 'string' ? value : undefined);
+
 function parseProject(item: RawProject): Project {
   return {
     id: item['objectID'] as string,
     title: item['name'] as string,
-    status: (item['status'] as string) ?? '',
-    description: (item['what_it_is'] as string) ?? '',
-    purpose: (item['why_it_exists'] as string) ?? '',
-    long_description: (item['long_description'] as string) ?? '',
-    outcome: (item['outcome'] as string) ?? '',
+    status: str(item['status']) ?? '',
+    description: str(item['what_it_is']) ?? '',
+    purpose: str(item['why_it_exists']) ?? '',
+    long_description: str(item['long_description']) ?? '',
+    outcome: str(item['outcome']) ?? '',
     tech: (item['tech'] as TechItem[]) ?? [],
-    repo_url: item['repo_url'] as string | undefined,
-    image_url: item['image_url'] as string | undefined,
-    image_alt: item['image_alt'] as string | undefined,
-    owner: (item['owner'] as string) ?? '',
+    repo_url: str(item['repo_url']),
+    image_url: str(item['image_url']),
+    image_alt: str(item['image_alt']),
+    owner: str(item['owner']) ?? '',
     blog_posts: (item['blog_posts'] as BlogLink[]) ?? [],
-    award: item['award'] as string | undefined,
+    award: str(item['award']),
     order_rank: (item['order_rank'] as number) ?? 999,
   };
 }

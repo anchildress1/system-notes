@@ -32,6 +32,17 @@ vi.mock('@/data/projects.json', () => ({
       blog_posts: [],
       order_rank: 1,
     },
+    {
+      objectID: 'project-gamma',
+      name: 'Project Gamma',
+      status: 'Archived',
+      owner: 'anchildress1',
+      award: null,
+      repo_url: null,
+      image_url: null,
+      image_alt: null,
+      order_rank: 3,
+    },
   ],
 }));
 
@@ -74,6 +85,15 @@ describe('getProjects', () => {
     expect(beta?.repo_url).toBeUndefined();
     expect(beta?.image_url).toBeUndefined();
     expect(beta?.image_alt).toBeUndefined();
+  });
+
+  it('coerces JSON null optional fields to undefined', async () => {
+    const projects = await getProjects();
+    const gamma = projects.find((p) => p.id === 'project-gamma');
+    expect(gamma?.award).toBeUndefined();
+    expect(gamma?.repo_url).toBeUndefined();
+    expect(gamma?.image_url).toBeUndefined();
+    expect(gamma?.image_alt).toBeUndefined();
   });
 
   it('returns a non-empty array', async () => {
