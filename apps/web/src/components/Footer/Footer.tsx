@@ -1,6 +1,8 @@
 'use client';
 
 import { memo } from 'react';
+import { FaGithub, FaLinkedin, FaDev } from 'react-icons/fa';
+import { FiTerminal, FiCode, FiUser, FiExternalLink } from 'react-icons/fi';
 import { SiAlgolia } from 'react-icons/si';
 import Link from 'next/link';
 import styles from './Footer.module.css';
@@ -28,13 +30,13 @@ export default memo(function Footer() {
             <div className={styles.colLabel}>/ surfaces</div>
             <div className={styles.stack}>
               <Link href="/" className={styles.link}>
-                → /sys/choices
+                <FiTerminal aria-hidden="true" size={12} /> /sys/choices
               </Link>
               <Link href="/projects" className={styles.link}>
-                → /sys/builds
+                <FiCode aria-hidden="true" size={12} /> /sys/builds
               </Link>
               <Link href="/about" className={styles.link}>
-                → /sys/human
+                <FiUser aria-hidden="true" size={12} /> /sys/human
               </Link>
               <a
                 href="https://dev.to/anchildress1"
@@ -42,7 +44,7 @@ export default memo(function Footer() {
                 rel="noopener noreferrer"
                 className={styles.link}
               >
-                → /sys/blog ↗
+                <FiExternalLink aria-hidden="true" size={12} /> /sys/blog
               </a>
             </div>
           </div>
@@ -57,7 +59,7 @@ export default memo(function Footer() {
                 className={styles.link}
                 aria-label="Visit my GitHub profile"
               >
-                → github
+                <FaGithub aria-hidden="true" size={13} /> github
               </a>
               <a
                 href="https://linkedin.com/in/anchildress1"
@@ -66,7 +68,7 @@ export default memo(function Footer() {
                 className={styles.link}
                 aria-label="Visit my LinkedIn profile"
               >
-                → linkedin
+                <FaLinkedin aria-hidden="true" size={13} /> linkedin
               </a>
               <a
                 href="https://dev.to/anchildress1"
@@ -75,7 +77,7 @@ export default memo(function Footer() {
                 className={styles.link}
                 aria-label="Visit my Dev.to profile"
               >
-                → dev.to
+                <FaDev aria-hidden="true" size={13} /> dev.to
               </a>
             </div>
           </div>
