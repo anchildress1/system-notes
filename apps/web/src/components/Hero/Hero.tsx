@@ -21,8 +21,7 @@ export default function Hero({ title, titleAccent, subtitle, image }: Readonly<H
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
-  // Sparkle near text if there's an image to balance the visual weight
-  useSparkles({ containerRef, textRef, sparkleNearText: !!image });
+  useSparkles({ containerRef, textRef, sparkleNearText: true });
 
   return (
     <div className={styles.hero} ref={containerRef}>

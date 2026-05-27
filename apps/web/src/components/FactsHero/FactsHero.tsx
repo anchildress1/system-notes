@@ -6,12 +6,13 @@ import { useSparkles } from '@/hooks/useSparkles';
 
 export default function FactsHero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
 
-  useSparkles({ containerRef });
+  useSparkles({ containerRef, textRef, sparkleNearText: true });
 
   return (
     <div className={styles.hero} ref={containerRef}>
-      <div className={styles.interactiveContainer}>
+      <div className={styles.interactiveContainer} ref={textRef}>
         <h1 className={styles.title}>Decisions on record</h1>
         <span className={styles.subtitle}>so you can audit me</span>
         <button

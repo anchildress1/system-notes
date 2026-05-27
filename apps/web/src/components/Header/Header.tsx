@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useSparkles } from '@/hooks/useSparkles';
 import styles from './Header.module.css';
 
 const NAV_ITEMS = [
@@ -21,9 +20,6 @@ const PATH_LABEL: Record<string, string> = {
 
 export default function Header() {
   const pathname = usePathname();
-  const rowRef = useRef<HTMLDivElement | null>(null);
-
-  useSparkles({ containerRef: rowRef });
 
   const statusPath = PATH_LABEL[pathname] ?? `/sys${pathname}`;
 
@@ -33,7 +29,7 @@ export default function Header() {
         Skip to main content
       </a>
 
-      <div className={styles.row} ref={rowRef}>
+      <div className={styles.row}>
         <button
           type="button"
           className={styles.brand}
@@ -41,7 +37,14 @@ export default function Header() {
           aria-label="Trigger glitter effect"
         >
           <div className={styles.brandMark} aria-hidden="true">
-            <span className={styles.brandMarkLetter}>A</span>
+            <Image
+              src="/favicon.png"
+              alt=""
+              width={28}
+              height={28}
+              className={styles.brandMarkImage}
+              priority
+            />
           </div>
           <div className={styles.brandText}>
             <span className={styles.brandTitle}>Ashley Childress</span>

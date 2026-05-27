@@ -35,33 +35,16 @@
   width: 36px;
   height: 36px;
   flex-shrink: 0;
-  position: relative;
-  display: grid;
-  place-items: center;
-  background: radial-gradient(circle at 30% 30%, var(--accent-violet), var(--accent-pink) 60%, var(--accent-teal) 110%);
   border-radius: var(--r-md);
-  box-shadow: 0 0 calc(20px * var(--glow)) rgba(181, 107, 255, 0.45);
   overflow: hidden;
 }
 
-.brandMark::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, white 0 1px, transparent 1.5px);
-  background-size: 6px 6px;
-  mix-blend-mode: overlay;
-  opacity: 0.35;
-}
-
-.brandMarkLetter {
-  position: relative;
-  z-index: 1;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 15px;
-  color: white;
-  letter-spacing: -0.5px;
+.brandMarkImage {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: var(--r-md);
+  display: block;
 }
 
 .brandText {
