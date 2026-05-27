@@ -36,6 +36,7 @@
   height: 36px;
   flex-shrink: 0;
   border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
   overflow: hidden;
 }
 

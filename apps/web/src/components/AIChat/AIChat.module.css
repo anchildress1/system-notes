@@ -21,6 +21,15 @@
   --ais-shadow-md: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
 }
 
+/* ── Music player dock position ── */
+.musicWrapper {
+  position: fixed;
+  bottom: var(--chat-dock-margin);
+  right: calc(var(--chat-dock-margin) + 60px + 16px);
+  pointer-events: auto;
+  z-index: 100;
+}
+
 /* ── Toggle button ── */
 .chatToggle {
   width: 60px !important;
