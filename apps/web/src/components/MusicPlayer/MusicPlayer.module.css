@@ -225,13 +225,12 @@
 .waveform {
   display: flex;
   align-items: flex-end;
-  justify-content: center;
-  gap: 3px;
+  justify-content: space-between;
   height: 32px;
 }
 
 .bar {
-  width: 3px;
+  flex: 1;
   height: 8px;
   background: linear-gradient(to top, var(--accent-pink), var(--accent-violet));
   border-radius: 2px;
