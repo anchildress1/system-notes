@@ -1,32 +1,26 @@
 .hero {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 8rem 2rem 2rem 2rem;
-  margin-bottom: 0.5rem;
+  padding: 4rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 3rem;
+  border-bottom: 1px solid var(--ink);
   overflow: hidden;
   user-select: none;
   cursor: default;
 }
 
 .title {
-  font-family: var(--font-mono);
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 800;
-  color: hsl(var(--color-text-primary));
-  text-transform: uppercase;
-  letter-spacing: -1.6px;
-  line-height: 1.35;
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 7vw, 7rem);
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
   position: relative;
   z-index: 10;
   pointer-events: auto;
   opacity: 1;
   visibility: visible;
   margin: 0;
-  margin-bottom: 0.5rem;
+  text-wrap: balance;
 }
 
 .titleInteractive {
@@ -37,21 +31,21 @@
 .interactiveContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   width: 100%;
-  padding: 0;
-  margin: 0;
+  max-width: 800px;
   position: relative;
 }
 
 .glitterTrigger {
+  display: none;
   position: absolute;
   inset: 0;
   z-index: 15;
   background: transparent;
   border: none;
-  cursor: pointer;
+  cursor: default;
   padding: 0;
   margin: 0;
 }
@@ -69,22 +63,23 @@
 }
 
 .subtitle {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(1.2rem, 3.2vw, 2.4rem);
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 4.5rem);
   font-weight: 400;
-  color: hsl(var(--color-text-primary));
-  margin-top: 0;
+  color: var(--ember);
   font-style: italic;
-  transform: rotate(-2deg);
+  margin-top: 0;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
   opacity: 1;
   visibility: visible;
   position: relative;
   z-index: 10;
+  text-wrap: balance;
 }
 
 @media (max-width: 768px) {
   .hero {
-    padding: 4rem 1rem 1.5rem 1rem;
-    margin-bottom: 0.25rem;
+    padding: 3rem 1.5rem 2rem;
   }
 }

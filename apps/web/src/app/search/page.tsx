@@ -1,3 +1,5 @@
+import Header from '@/components/Header/Header';
+import Masthead from '@/components/Masthead/Masthead';
 import SearchPageWrapper from '@/components/SearchPage/SearchPageWrapper';
 
 export const metadata = {
@@ -6,5 +8,11 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <SearchPageWrapper />;
+  return (
+    <main id="main-content">
+      <Header />
+      <Masthead />
+      <SearchPageWrapper />
+    </main>
+  );
 }

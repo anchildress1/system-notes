@@ -5,6 +5,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './Header.module.css';
 
+const NAV_ITEMS = [
+  { num: '01', label: 'Choices', href: '/' },
+  { num: '02', label: 'Builds', href: '/projects' },
+  { num: '03', label: 'Human', href: '/about' },
+] as const;
+
 export default function Header() {
   const pathname = usePathname();
 
@@ -13,39 +19,39 @@ export default function Header() {
       <a href="#main-content" className={styles.skipLink}>
         Skip to main content
       </a>
-      <div className={styles.identity}>
-        <Link href="/" className={styles.logoLink}>
-          <span className={styles.name}>Ashley&apos;s System Notes</span>
-        </Link>
-      </div>
 
-      <nav className={styles.nav} aria-label="Main Navigation">
-        <Link href="/" className={`${styles.navLink} ${pathname === '/' ? styles.active : ''}`}>
-          Choices
+      <div className={styles.row}>
+        <Link href="/" className={styles.brand}>
+          <span className={styles.brandMark} aria-hidden="true" />
+          <span className={styles.brandName}>Ashley Childress · System Notes</span>
         </Link>
-        <Link
-          href="/projects"
-          className={`${styles.navLink} ${pathname === '/projects' ? styles.active : ''}`}
-        >
-          Builds
-        </Link>
-        <Link
-          href="/about"
-          className={`${styles.navLink} ${pathname === '/about' ? styles.active : ''}`}
-        >
-          Human
-        </Link>
-        <a
-          href="https://dev.to/anchildress1"
-          target="_blank"
-          rel="noopener noreferrer"
-          data-testid="blog-link"
-          className={styles.ctaButton}
-        >
-          <FaCode size={16} />
-          Read My Blog
-        </a>
-      </nav>
+
+        <nav className={styles.nav} aria-label="Main Navigation">
+          {NAV_ITEMS.map(({ num, label, href }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`${styles.navLink} ${pathname === href ? styles.active : ''}`}
+            >
+              <span className={styles.navNum}>{num}</span>
+              <span>{label}</span>
+            </Link>
+          ))}
+        </nav>
+
+        <div className={styles.actions}>
+          <a
+            href="https://dev.to/anchildress1"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="blog-link"
+            className={styles.ctaButton}
+          >
+            <FaCode size={13} aria-hidden="true" />
+            <span>Blog</span>
+          </a>
+        </div>
+      </div>
     </header>
   );
 }

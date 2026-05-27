@@ -61,6 +61,9 @@ export default function MusicPlayer() {
           E
         </span>
       </button>
+      <span className={styles.buttonLabel} aria-hidden="true">
+        THEME SONG
+      </span>
 
       <div className={styles.infoTooltip} role="tooltip">
         <span className={styles.songTitle}>I Build Things</span>

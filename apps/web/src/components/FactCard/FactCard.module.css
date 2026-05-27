@@ -3,35 +3,29 @@
   text-decoration: none;
   color: inherit;
   height: 100%;
-  border-radius: var(--radius-xl);
 }
 
 .cardLink:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--ember);
   outline-offset: 4px;
-  border-radius: var(--radius-xl);
 }
 
 .card {
   position: relative;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
+  background: var(--paper);
+  border: 1px solid rgba(26, 24, 21, 0.15);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 200px;
   cursor: pointer;
-  box-shadow: var(--shadow-card);
-  transition: box-shadow var(--transition-slow), border-color var(--transition-slow);
+  transition: border-color var(--transition-slow), box-shadow var(--transition-slow);
 }
 
 .card:hover {
-  background: hsl(var(--color-bg-elevated));
-  box-shadow: var(--shadow-bento), 0 0 20px hsl(var(--color-accent-purple) / 0.15);
-  border-color: hsl(var(--color-accent-purple) / 0.3);
+  border-color: var(--ember);
+  box-shadow: inset 3px 0 0 var(--ember);
 }
 
 .imageContainer {
@@ -51,7 +45,7 @@
 .conceptBackground {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 10% 10%, hsl(var(--color-bg-elevated)), hsl(var(--color-bg-base)));
+  background: var(--paper-dim);
   z-index: 0;
 }
 
@@ -60,10 +54,9 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(hsl(var(--color-border)) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--color-border)) 1px, transparent 1px);
+    linear-gradient(rgba(26, 24, 21, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 24, 21, 0.08) 1px, transparent 1px);
   background-size: 20px 20px;
-  opacity: 0.2;
   z-index: 1;
 }
 
@@ -74,8 +67,6 @@
   flex-direction: column;
   gap: 0.5rem;
 }
-
-/* Tag styles moved to global stylesheet */
 
 .header {
   display: flex;
@@ -92,10 +83,10 @@
 }
 
 .title {
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   font-size: 1.2rem;
-  font-weight: 700;
-  color: hsl(var(--color-text-primary));
+  font-weight: 400;
+  color: var(--ink);
   line-height: 1.3;
 }
 
@@ -103,28 +94,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-round);
-  background: hsl(var(--color-bg-elevated));
-  color: hsl(var(--color-text-muted));
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  color: var(--ink-3);
   transition: all var(--transition-base);
   z-index: 2;
-  border: 2px solid transparent;
-  will-change: transform;
+  border: 1px solid rgba(26, 24, 21, 0.2);
 }
 
 .ghLink:hover {
-  background: hsl(var(--color-bg-surface));
-  border-color: hsl(var(--color-accent-pink));
-  color: hsl(var(--color-accent-pink));
-  transform: rotate(15deg) scale(1.1);
-  box-shadow: 0 0 15px hsl(var(--color-accent-pink) / 0.4);
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
 }
 
 .description {
-  font-size: 0.9rem;
-  color: hsl(var(--color-text-secondary));
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-3);
   margin-bottom: var(--space-md);
   line-height: 1.5;
   flex-grow: 1;
@@ -136,15 +124,15 @@
 
 .intentLabel {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: hsl(var(--color-text-primary));
+  color: var(--ink);
   margin-bottom: 0.2rem;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.1em;
 }
 
-/* ── Flip / Back Styles (FactCard Specific) ── */
+/* ── Flip / Back Styles ── */
 
 .flippedVisible {
   visibility: hidden;
@@ -162,13 +150,11 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-overlay);
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  background: rgba(26, 24, 21, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-md);
-  perspective: 1200px;
 }
 
 .card.flipped {
@@ -177,15 +163,12 @@
   max-width: 650px;
   height: auto;
   max-height: 85vh;
-  background: hsl(var(--color-bg-surface));
-  border-color: hsl(var(--color-accent-purple) / 0.3);
-  box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.8),
-    0 0 0 1px hsl(var(--color-accent-purple) / 0.2);
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
   cursor: default;
   display: flex !important;
   flex-direction: column;
-  transform-style: preserve-3d;
 }
 
 .flipped .cardInner {
@@ -197,11 +180,9 @@
   width: 100%;
   height: 100%;
   transition: none;
-  transform-style: preserve-3d;
   background: transparent;
   display: flex;
   flex-direction: column;
-  will-change: transform;
 }
 
 .cardFront,
@@ -213,7 +194,6 @@
   -webkit-backface-visibility: hidden;
   overflow: hidden;
   background: transparent;
-  border-radius: var(--radius-xl);
   width: 100%;
   height: 100%;
   text-align: left;
@@ -231,9 +211,8 @@
 }
 
 .cardFront:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--ember);
   outline-offset: 4px;
-  border-radius: var(--radius-xl);
 }
 
 .cardBack {
@@ -266,14 +245,14 @@
 }
 
 .factText {
+  font-family: var(--font-serif);
   font-size: 1.1rem;
-  color: hsl(var(--color-text-primary));
+  color: var(--ink);
   line-height: 1.8;
   white-space: pre-wrap;
   padding: 1.5rem;
-  background: linear-gradient(135deg, hsl(var(--color-accent-pink) / 0.1), transparent);
-  border-left: 3px solid hsl(var(--color-accent-pink));
-  border-radius: var(--radius-sm);
+  background: var(--paper-dim);
+  border-left: 3px solid var(--ember);
 }
 
 .metaSection {
@@ -293,10 +272,9 @@
   font-family: var(--font-mono);
   font-size: 0.65rem;
   text-transform: uppercase;
-  color: hsl(var(--color-text-muted));
-  letter-spacing: 0.5px;
+  color: var(--ink-3);
+  letter-spacing: 0.1em;
 }
-
 
 @media (max-width: 768px) {
   .overlay {

@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Header from '@/components/Header/Header';
+import Masthead from '@/components/Masthead/Masthead';
 import Hero from '@/components/Hero/Hero';
 import ProjectGrid from '@/components/ProjectGrid/ProjectGrid';
 import { getProjects } from '@/lib/api';
@@ -19,7 +20,8 @@ export default async function Projects() {
   return (
     <main className={styles.main} id="main-content">
       <Header />
-      <Hero title="Not here to play nice" subtitle="Disruption is the feature—loud by design" />
+      <Masthead />
+      <Hero title="Built it." subtitle="Shipped it." />
       <ProjectGrid projects={projects} />
     </main>
   );

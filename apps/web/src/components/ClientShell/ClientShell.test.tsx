@@ -2,11 +2,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import ClientShell from './ClientShell';
 
-// Mock components
-vi.mock('@/components/GlitterBomb/GlitterBomb', () => ({
-  default: () => <div data-testid="glitter-bomb">GlitterBomb</div>,
-}));
-
 vi.mock('@/components/AIChat/AIChat', () => ({
   default: () => <div data-testid="ai-chat">AIChat</div>,
 }));
@@ -24,13 +19,8 @@ describe('ClientShell Component', () => {
     );
 
     expect(screen.getByTestId('child-content')).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(screen.getByTestId('glitter-bomb')).toBeInTheDocument();
-    });
     expect(screen.getByTestId('footer')).toBeInTheDocument();
 
-    // AIChat is dynamically imported — verify it renders
     await waitFor(() => {
       expect(screen.getByTestId('ai-chat')).toBeInTheDocument();
     });

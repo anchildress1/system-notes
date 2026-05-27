@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Header from '@/components/Header/Header';
+import Masthead from '@/components/Masthead/Masthead';
 import Hero from '@/components/Hero/Hero';
 import SearchPageWrapper from '@/components/SearchPage/SearchPageWrapper';
 import styles from './page.module.css';
@@ -14,6 +15,7 @@ export default function Home() {
   return (
     <main className={styles.main} id="main-content">
       <Header />
+      <Masthead />
       <Hero title="This portfolio isn't browsed—" subtitle="It's retrieved." />
       <SearchPageWrapper />
     </main>

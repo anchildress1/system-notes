@@ -27,19 +27,17 @@
   position: relative;
   width: 100%;
   max-width: 450px;
-  border-radius: var(--radius-md);
   overflow: hidden;
-  margin-top: 4rem;
+  margin-top: 2rem;
   z-index: 5;
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-  transition: transform var(--transition-slow), box-shadow var(--transition-slow);
+  border: 1px solid var(--ink);
+  transition: filter var(--transition-slow);
+  filter: grayscale(100%);
 }
 
 .imageContainer:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 50px hsl(var(--color-accent-purple) / 0.2);
-  border-color: hsl(var(--color-accent-purple) / 0.3);
+  filter: grayscale(0%);
+  border-color: var(--ember);
 }
 
 .image {
@@ -50,7 +48,7 @@
 
 @media (max-width: 768px) {
   .imageContainer {
-    margin-top: 3rem;
+    margin-top: 2rem;
     max-width: 100%;
   }
 }

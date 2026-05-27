@@ -1,33 +1,47 @@
 :root {
-  /* ── Override Algolia satellite.css blue primary (#1E59FF → #B56BFF purple) ── */
-  --ais-primary-color-rgb: 181, 107, 255;
+  /* ── Primary Design Tokens ── */
+  --paper:      #efeae0;
+  --paper-dim:  #e0dace;
+  --paper-deep: #d6cfc4;
+  --ink:        #1a1815;
+  --ink-2:      #3a352e;
+  --ink-3:      #6a6358;
+  --ink-4:      #9a9388;
+  --ember:      oklch(0.58 0.20 35);
+  --ember-tint: oklch(0.58 0.20 35 / 0.10);
+  --ember-soft: oklch(0.58 0.20 35 / 0.06);
+
+  /* ── Legacy HSL Aliases — components using hsl(var(--color-*)) remain functional ── */
+  --color-bg-base:      40 25% 90%;
+  --color-bg-surface:   40 15% 84%;
+  --color-bg-elevated:  40 12% 78%;
+  --color-text-primary:    22 10% 9%;
+  --color-text-secondary:  22  8% 35%;
+  --color-text-muted:      22  6% 52%;
+  --color-border:           40 10% 74%;
+  --color-border-subtle:    40 10% 74% / 0.4;
+  --color-border-hover:     18 70% 43%;
+
+  /* All accent channels → ember */
+  --color-accent-purple:  18 70% 43%;
+  --color-accent-pink:    18 70% 43%;
+  --color-accent-teal:    18 70% 43%;
+  --color-accent-gold:    18 70% 43%;
+
+  /* ── Algolia primary color (ember ≈ #c8451c) ── */
+  --ais-primary-color-rgb: 200, 69, 28;
   --ais-primary-color-alpha: 1;
 
-  /* ── Surface Palette ── */
-  --color-bg-base: 230 9% 13%; /* #1E1F24 */
-  --color-bg-surface: 225 11% 30%; /* #444854 */
-  --color-bg-elevated: 225 9% 25%; /* #3A3D46 */
+  /* ── Typography ── */
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-mono:  'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
-  /* ── Text Palette ── */
-  --color-text-primary: 240 10% 91%; /* #E6E6EB */
-  --color-text-secondary: 229 8% 75%; /* #B9BBC4 */
-  --color-text-muted: 220 10% 60%;
-
-  /* ── Accent Palette ── */
-  --color-accent-purple: 270 100% 71%; /* #B56BFF — primary action / agent */
-  --color-accent-pink: 338 86% 66%; /* #F16197 — human identity */
-  --color-accent-teal: 178 57% 51%; /* #3EC7C2 — navigation / references */
-  --color-accent-gold: 22 75% 68%; /* #E89A6A — awards / achievements (rose-gold, bridges pink accent) */
-
-  /* ── Borders ── */
-  --color-border: 225 10% 25%;
-  --color-border-subtle: 225 10% 25% / 0.4;
-  --color-border-hover: 262 100% 71%;
-
-  /* ── Shadows ── */
-  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  --shadow-bento: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
-  --highlight-top: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  /* ── Motion ── */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-morph:  cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.1s ease;
+  --transition-base: 0.15s ease;
+  --transition-slow: 0.25s var(--ease-morph);
 
   /* ── Spacing ── */
   --space-xs: 0.75rem;
@@ -36,39 +50,33 @@
   --space-lg: 6rem;
   --space-xl: 12rem;
 
-  /* ── Border Radius ── */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-pill: 100px;
+  /* ── Border Radius — editorial: sharp ── */
+  --radius-sm:   0px;
+  --radius-md:   0px;
+  --radius-lg:   0px;
+  --radius-xl:   0px;
+  --radius-pill: 0px;
   --radius-round: 50%;
 
-  /* ── Typography ── */
-  --font-sans: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* ── Shadows — editorial: subtle ink ── */
+  --shadow-card:  0 1px 0 0 rgba(26, 24, 21, 0.18);
+  --shadow-bento: 0 2px 0 0 rgba(26, 24, 21, 0.18);
+  --highlight-top: none;
 
-  /* ── Animation ── */
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --ease-morph: cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: 0.15s ease;
-  --transition-base: 0.2s ease;
-  --transition-slow: 0.3s var(--ease-morph);
+  /* ── Glass → paper (components using --glass-* still render) ── */
+  --glass-bg:    var(--paper);
+  --glass-border: rgba(26, 24, 21, 0.14);
+  --glass-blur:  none;
 
-  /* ── Z-Index Scale ── */
-  --z-background: -1;
-  --z-base: 0;
-  --z-sticky: 100;
-  --z-modal: 1000;
-  --z-overlay: 2000;
-  --z-card-flip: 5000;
+  /* ── Z-Index ── */
+  --z-background:    -1;
+  --z-base:           0;
+  --z-sticky:       100;
+  --z-modal:       1000;
+  --z-overlay:     2000;
+  --z-card-flip:   5000;
   --z-search-widget: 9000;
-  --z-footer: 9500;
-
-  /* ── Glass surface (reusable) ── */
-  --glass-bg: rgba(30, 31, 36, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-blur: blur(12px);
+  --z-footer:      9500;
 }
 
 * {
@@ -77,50 +85,35 @@
   padding: 0;
 }
 
+html,
 body {
-  background-color: hsl(var(--color-bg-base));
-  color: hsl(var(--color-text-primary));
-  font-family: var(--font-sans);
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.6;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-background);
-  background-image:
-    radial-gradient(circle at 50% -20%, hsl(var(--color-accent-purple) / 0.3), transparent 60%),
-    radial-gradient(circle at 85% 90%, hsl(var(--color-accent-teal) / 0.1), transparent 50%);
-  pointer-events: none;
-}
-
-/* Accessibility: Visible Focus Indicators
-   :where() gives zero specificity so any component-level focus
-   style (e.g. Algolia chat's outline:none on the textarea) wins. */
+/* Focus visible — ember accent */
 :where(:focus-visible) {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--ember);
   outline-offset: 4px;
-  border-radius: 2px;
+  border-radius: 0;
 }
 
-/* Algolia chat widget manages its own focus styles;
-   scope to prompt elements where chat-overrides.css
-   provides a visible border-color replacement. */
 .ais-Chat textarea:focus-visible,
 .ais-Chat .ais-ChatPrompt-body:focus-visible {
   outline: none;
 }
 
-/* Modal Overlay Base */
+/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  background: rgba(26, 24, 21, 0.6);
+  backdrop-filter: none;
   z-index: var(--z-modal);
   display: flex;
   align-items: center;
@@ -142,43 +135,39 @@ body::before {
 }
 
 .card-glass {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
+  background: var(--paper);
+  border: 1px solid var(--ink);
   box-shadow: var(--shadow-card);
 }
 
-/* ── Global Close Button Style ── */
+/* ── Global Close Button ── */
 .close-button-global {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
-  border-radius: var(--radius-round);
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
+  background: var(--ink);
+  color: var(--paper);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-base);
-  border: 1px solid var(--glass-border);
+  transition: background var(--transition-base);
+  border: 1px solid var(--ink);
   cursor: pointer;
   outline: none;
 }
 
 .close-button-global:hover {
-  background: transparent;
-  color: hsl(var(--color-accent-purple));
-  transform: rotate(90deg);
-  border: 2px solid hsl(var(--color-accent-purple));
+  background: var(--ember);
+  border-color: var(--ember);
+  transform: none;
+  color: var(--paper);
 }
 
 .close-button-global:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--ember);
   outline-offset: 2px;
 }
 
@@ -187,22 +176,24 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  color: hsl(var(--color-text-secondary));
+  color: var(--ink-3);
   font-size: 0.75rem;
   font-weight: 500;
   text-decoration: none;
   line-height: 1;
   flex-direction: row-reverse;
   transition: color var(--transition-base);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
 }
 
 .algolia-attribution:hover .algolia-hoverable {
-  color: hsl(var(--color-accent-teal));
+  color: var(--ember);
 }
 
 .algolia-prefix {
   white-space: nowrap;
-  color: hsl(var(--color-text-secondary));
+  color: var(--ink-3);
 }
 
 .algolia-hoverable {
@@ -224,14 +215,14 @@ body::before {
 /* ── Global Card Header Badge ── */
 .card-header-badge {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  background: hsl(var(--color-accent-teal) / 0.1);
-  color: hsl(var(--color-accent-teal));
-  border: 1px solid hsl(var(--color-accent-teal) / 0.5);
+  letter-spacing: 0.08em;
+  background: transparent;
+  color: var(--ink-3);
+  border: 1px solid var(--ink-3);
   padding: 2px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   text-transform: uppercase;
 }
 
@@ -241,23 +232,20 @@ body::before {
   align-items: center;
   gap: 0.5rem;
   padding: 4px 10px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  color: hsl(var(--color-accent-gold));
-  border: 1px solid hsl(var(--color-accent-gold) / 0.4);
-  border-radius: var(--radius-sm);
+  background: var(--ember-soft);
+  color: var(--ember);
+  border: 1px solid var(--ember);
+  border-radius: 0;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.08em;
   white-space: nowrap;
-  box-shadow: 0 0 12px hsl(var(--color-accent-gold) / 0.15);
 }
 
 .award-badge-icon {
   font-size: 0.75rem;
-  filter: drop-shadow(0 0 4px hsl(var(--color-accent-gold) / 0.4));
 }
 
 /* ── Global Tag Styles ── */
@@ -272,22 +260,22 @@ body::before {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   padding: 2px 8px;
-  background: hsl(var(--color-bg-elevated));
-  border-radius: var(--radius-lg);
-  color: hsl(var(--color-text-secondary));
-  border: 1px solid hsl(var(--color-border));
+  background: var(--paper-dim);
+  border-radius: 0;
+  color: var(--ink-3);
+  border: 1px solid var(--ink-4);
 }
 
 .tag-category {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  background: hsl(var(--color-accent-teal) / 0.1);
-  color: hsl(var(--color-accent-teal));
-  border: 1px solid hsl(var(--color-accent-teal) / 0.5);
+  letter-spacing: 0.08em;
+  background: var(--ember-soft);
+  color: var(--ember);
+  border: 1px solid var(--ember);
   padding: 2px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   text-transform: uppercase;
 }
 
@@ -296,9 +284,9 @@ body::before {
   font-size: 0.65rem;
   padding: 1px 6px;
   background: transparent;
-  color: hsl(var(--color-accent-teal));
-  border-radius: var(--radius-sm);
-  border: 1px solid hsl(var(--color-accent-teal));
+  color: var(--ink-3);
+  border-radius: 0;
+  border: 1px solid var(--ink-4);
   font-weight: 500;
 }
 
@@ -320,21 +308,27 @@ button {
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--color-bg-base));
+  background: var(--paper);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--color-bg-elevated));
-  border-radius: var(--radius-sm);
+  background: var(--ink-4);
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--color-accent-purple) / 0.5);
+  background: var(--ink-3);
 }
 
-/* ── Algolia: pagination selected state needs explicit bg ── */
+/* Algolia: pagination selected state */
 .ais-Pagination-link--selected {
-  background-color: hsl(var(--color-accent-purple)) !important;
-  border-color: hsl(var(--color-accent-purple)) !important;
-  color: white !important;
+  background-color: var(--ember) !important;
+  border-color: var(--ember) !important;
+  color: var(--paper) !important;
+}
+
+/* Selection */
+::selection {
+  background: var(--ink);
+  color: var(--paper);
 }

@@ -10,46 +10,56 @@
 .playButton {
   width: 50px;
   height: 50px;
-  border-radius: var(--radius-round);
-  background: hsl(var(--color-bg-surface));
-  border: 2px solid hsl(var(--color-accent-pink));
-  color: hsl(var(--color-accent-pink));
+  border-radius: 0;
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  color: var(--paper);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s var(--ease-spring);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all var(--transition-base);
+  box-shadow: 3px 3px 0 rgba(26, 24, 21, 0.35);
   position: relative;
   z-index: 2;
   pointer-events: auto;
 }
 
 .playButton:hover {
-  transform: scale(1.1);
-  background: hsl(var(--color-bg-elevated));
-  color: hsl(var(--color-accent-pink));
-  box-shadow: 0 8px 24px hsl(var(--color-accent-pink) / 0.4);
+  background: var(--ember);
+  border-color: var(--ember);
+  box-shadow: 3px 3px 0 rgba(200, 69, 28, 0.35);
 }
 
 .active {
-  background: hsl(var(--color-bg-elevated));
-  color: hsl(var(--color-accent-pink));
-  box-shadow: 0 0 15px hsl(var(--color-accent-pink) / 0.5);
+  background: var(--ember);
+  border-color: var(--ember);
+  box-shadow: 3px 3px 0 rgba(200, 69, 28, 0.35);
   animation: pulse 2s infinite ease-in-out;
+}
+
+.buttonLabel {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: center;
+  margin-top: 2px;
 }
 
 .explicitBadge {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  background: hsl(var(--color-bg-base));
-  color: hsl(var(--color-text-primary));
+  top: -4px;
+  right: -4px;
+  background: var(--paper);
+  color: var(--ink);
   font-size: 8px;
   font-weight: bold;
   padding: 2px 4px;
-  border-radius: var(--radius-sm);
-  border: 1px solid hsl(var(--color-text-primary));
+  border: 1px solid var(--ink);
   z-index: 3;
 }
 
@@ -58,13 +68,12 @@
   top: 50%;
   right: calc(100% + 12px);
   transform: translateY(-50%);
-  background: hsl(var(--color-bg-surface));
-  border: 1px solid hsl(var(--color-border));
+  background: var(--paper);
+  border: 1px solid var(--ink);
   padding: 8px 12px;
-  border-radius: var(--radius-md);
   width: 200px;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 3px 3px 0 rgba(26, 24, 21, 0.3);
   pointer-events: none;
   opacity: 0;
   transition: opacity var(--transition-base), transform var(--transition-base);
@@ -78,7 +87,6 @@
   transform: translateY(-50%) translateX(-8px);
 }
 
-/* Mobile: tooltip above on small screens to avoid going off-screen */
 @media (max-width: 768px) {
   .infoTooltip {
     top: auto;
@@ -97,34 +105,36 @@
 
 .songTitle {
   display: block;
-  font-weight: bold;
+  font-family: var(--font-serif);
+  font-weight: 400;
   font-size: 0.9rem;
-  color: hsl(var(--color-text-primary));
+  color: var(--ink);
 }
 
 .bandName {
   display: block;
-  font-size: 0.75rem;
-  color: hsl(var(--color-text-muted));
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-3);
 }
 
 .explicitWarning {
   display: block;
-  font-size: 0.7rem;
-  color: hsl(var(--color-accent-pink));
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--ember);
   margin-top: 4px;
   text-transform: uppercase;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 @keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 hsl(var(--color-accent-pink) / 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 10px hsl(var(--color-accent-pink) / 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 hsl(var(--color-accent-pink) / 0);
-  }
+  0% { box-shadow: 3px 3px 0 rgba(200, 69, 28, 0); }
+  50% { box-shadow: 3px 3px 0 rgba(200, 69, 28, 0.5); }
+  100% { box-shadow: 3px 3px 0 rgba(200, 69, 28, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .active { animation: none; }
 }

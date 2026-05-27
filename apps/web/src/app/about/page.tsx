@@ -1,6 +1,7 @@
 'use client';
 
 import Header from '@/components/Header/Header';
+import Masthead from '@/components/Masthead/Masthead';
 import Image from 'next/image';
 import styles from './page.module.css';
 import Hero from '@/components/Hero/Hero';
@@ -20,6 +21,7 @@ export default function Human() {
   return (
     <main id="main-content">
       <Header />
+      <Masthead />
       <Hero title={heroTitle.trim()} subtitle={heroSubtitle?.trim()} />
 
       <div className={styles.profileImageWrapper}>

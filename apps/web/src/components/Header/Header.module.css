@@ -1,108 +1,153 @@
 .header {
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 80px;
-  padding-inline: max(2rem, calc((100% - 1300px) / 2));
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: hsl(var(--color-bg-base) / 0.6);
-  backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--glass-border);
   z-index: var(--z-sticky);
+  background: var(--paper);
+  border-bottom: 2px solid var(--ink);
 }
 
-.identity {
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  height: 56px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ── Brand ── */
+.brand {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-}
-
-.logoLink {
-  position: relative;
+  gap: 10px;
   text-decoration: none;
-  color: inherit;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-base);
-}
-
-.logoLink:hover .name::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, hsl(var(--color-accent-pink) / 0.7), transparent);
-  border-radius: 1px;
-  box-shadow: 0 0 8px hsl(var(--color-accent-pink) / 0.4), 0 0 16px hsl(var(--color-accent-pink) / 0.2);
-}
-
-.name {
-  position: relative;
-  font-size: 1.5rem;
+  color: var(--ink);
   font-family: var(--font-mono);
-  font-weight: 700;
-  color: hsl(var(--color-text-primary));
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 400;
 }
 
-.handle {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: hsl(var(--color-accent-pink));
-  opacity: 0.8;
+.brand:hover .brandName {
+  color: var(--ember);
 }
 
+.brandMark {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: var(--ember);
+  flex-shrink: 0;
+}
+
+.brandName {
+  color: var(--ink);
+  transition: color var(--transition-base);
+  white-space: nowrap;
+}
+
+/* ── Nav ── */
 .nav {
   display: flex;
-  gap: var(--space-sm);
-  align-items: center;
+  align-items: stretch;
+  border-left: 1px solid var(--ink);
+  border-right: 1px solid var(--ink);
 }
 
 .navLink {
   position: relative;
-  font-size: 0.9rem;
-  color: hsl(var(--color-text-secondary));
-  transition: all var(--transition-base);
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 20px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-decoration: none;
+  border-right: 1px solid rgba(26, 24, 21, 0.14);
+  transition: color var(--transition-base), background var(--transition-base);
+  white-space: nowrap;
+}
+
+.navLink:last-child {
+  border-right: none;
 }
 
 .navLink:hover {
-  color: hsl(var(--color-text-primary));
+  color: var(--ink);
 }
 
 .navLink.active {
-  color: hsl(var(--color-text-primary));
-  background: transparent;
+  color: var(--ink);
+  background: var(--ember-tint);
+  padding-left: 26px;
 }
 
-.navLink.active::after {
+.navLink.active::before {
   content: '';
   position: absolute;
-  bottom: -2px;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, hsl(338 70% 62% / 0.7), transparent);
-  border-radius: 1px;
-  box-shadow: 0 0 8px hsl(338 70% 62% / 0.4), 0 0 16px hsl(338 70% 62% / 0.2);
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  background: var(--ember);
 }
 
+.navNum {
+  font-size: 0.6rem;
+  color: var(--ink-4);
+}
+
+.navLink.active .navNum {
+  color: var(--ember);
+}
+
+/* ── Actions ── */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--ink);
+  text-decoration: none;
+  transition: background var(--transition-base);
+  border: none;
+  white-space: nowrap;
+}
+
+.ctaButton:hover {
+  background: var(--ember);
+}
+
+/* ── Skip Link ── */
 .skipLink {
   position: absolute;
   top: -200px;
   left: 50%;
   transform: translateX(-50%);
-  background: hsl(var(--color-accent-teal));
-  color: hsl(var(--color-bg-base));
+  background: var(--ember);
+  color: var(--paper);
   padding: 0.5rem 1rem;
   z-index: var(--z-modal);
-  font-weight: bold;
-  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.75rem;
   transition: top var(--transition-slow);
 }
 
@@ -110,54 +155,35 @@
   top: 1rem;
 }
 
-.ctaButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  background: hsl(var(--color-accent-pink) / 0.15);
-  color: hsl(var(--color-text-primary));
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  text-decoration: none;
-  transition: all var(--transition-base);
-  border: 1.5px solid hsl(var(--color-accent-pink));
-  white-space: nowrap;
+@media (max-width: 900px) {
+  .row {
+    grid-template-columns: 1fr auto;
+    padding: 0 1rem;
+  }
+
+  .actions {
+    display: none;
+  }
+
+  .navLink {
+    padding: 0 12px;
+  }
+
+  .navLink.active {
+    padding-left: 18px;
+  }
 }
 
-.ctaButton:hover {
-  background: hsl(var(--color-accent-pink) / 0.25);
-  color: hsl(var(--color-text-primary));
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px hsl(var(--color-accent-pink) / 0.4);
-}
-
-@media (max-width: 768px) {
-  .header {
-    height: auto;
-    padding: 1rem;
-    flex-direction: column;
-    gap: 1rem;
-    background: hsl(var(--color-bg-base) / 0.95);
-    backdrop-filter: none;
-    position: sticky;
-    top: 0;
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
   }
 
   .nav {
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: none;
   }
 
-  .identity {
-    width: 100%;
+  .brand {
     justify-content: center;
-  }
-
-  .name {
-    font-size: 1.25rem;
   }
 }

@@ -1,13 +1,15 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Instrument_Serif, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({
-  variable: '--font-sans',
+const instrumentSerif = Instrument_Serif({
+  variable: '--font-serif',
   subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
   display: 'swap',
   preload: true,
-  fallback: ['system-ui', 'sans-serif'],
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -78,7 +80,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#000000',
+  themeColor: '#efeae0',
 };
 
 export default async function RootLayout({
@@ -137,7 +139,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
         suppressHydrationWarning
       >
         <ClientShell>{children}</ClientShell>

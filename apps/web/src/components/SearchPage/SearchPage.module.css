@@ -16,8 +16,9 @@
 .errorMessage {
   text-align: center;
   padding: 40px;
-  color: hsl(var(--color-text-primary));
+  color: var(--ink-3);
   font-family: var(--font-mono);
+  font-size: 0.875rem;
 }
 
 .searchSection {
@@ -29,9 +30,7 @@
 .siteSearchContainer {
   width: 100%;
   min-height: 64px;
-  /* Reserve space for the Algolia SiteSearch widget to prevent CLS */
   contain: layout style;
-  /* Add padding to accommodate focus outline */
   padding: 4px;
   margin: -4px;
 }
@@ -46,20 +45,20 @@
 }
 
 .statsRoot {
-  font-size: 0.75rem;
-  color: hsl(var(--color-text-secondary));
-  font-weight: 500;
+  font-size: 0.7rem;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   line-height: 1;
   padding-top: 0;
   align-self: flex-start;
 }
 
-/* Algolia attribution styles moved to global stylesheet */
-
 /* Layout Grid */
 .layout {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 260px 1fr;
   gap: var(--space-lg);
   max-width: 1300px;
   margin: 0 auto;
@@ -70,44 +69,33 @@
 .sidebar {
   align-self: start;
   height: fit-content;
-  max-height: none;
-  overflow: visible;
 }
 
 .filterSection {
-  /* Shared checkbox indicator — RefinementList checkbox and HierarchicalMenu
-     ::before both consume these so the box and check render identically. */
   --check-size: 18px;
   --check-icon-size: 11px;
-  --check-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8L6 11.5L13.5 4' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid hsl(var(--color-text-secondary) / 0.1);
-  border-radius: var(--radius-xl);
+  --check-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8L6 11.5L13.5 4' stroke='%23efeae0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+  background: var(--paper);
+  border: 1px solid var(--ink);
   padding: 20px;
-  box-shadow:
-    var(--shadow-card),
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-    0 2px 12px hsl(var(--color-accent-purple) / 0.08);
-  transition: all var(--transition-slow);
 }
 
 .filterTitle {
   font-family: var(--font-mono);
-  font-size: 1.125rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: hsl(var(--color-text-primary));
+  color: var(--ink);
   margin: 0 0 16px 0;
   padding-bottom: 12px;
-  border-bottom: 1px solid hsl(var(--color-text-secondary) / 0.2);
-  letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--ink);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .refinementGroup {
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid hsl(var(--color-text-secondary) / 0.08);
+  border-bottom: 1px solid rgba(26, 24, 21, 0.1);
 }
 
 .refinementGroup:last-of-type {
@@ -116,12 +104,12 @@
 }
 
 .refinementTitle {
-  font-size: 0.8125rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: hsl(var(--color-text-secondary));
+  color: var(--ink-3);
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.1em;
   font-family: var(--font-mono);
 }
 
@@ -133,24 +121,23 @@
   background: none;
   border: none;
   padding: 4px 0;
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
   cursor: pointer;
-  color: hsl(var(--color-text-secondary));
+  color: var(--ink-3);
   transition: color var(--transition-base);
-  border-radius: var(--radius-sm);
 }
 
 .refinementTitleToggle:hover {
-  color: hsl(var(--color-text-primary));
+  color: var(--ink);
 }
 
 .refinementTitleToggle:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--ember);
   outline-offset: 2px;
 }
 
 .refinementRoot {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
 }
 
 .refinementList {
@@ -159,7 +146,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .refinementItem {
@@ -171,25 +158,23 @@
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  padding: 10px 12px;
-  border-radius: var(--radius-lg);
-  transition: all 0.25s var(--ease-morph);
-  color: hsl(var(--color-text-secondary));
+  padding: 8px 10px;
+  transition: all var(--transition-base);
+  color: var(--ink-3);
   text-decoration: none;
   position: relative;
 }
 
 .refinementLabel:hover {
-  color: hsl(var(--color-text-primary));
-  background: hsl(var(--color-accent-purple) / 0.08);
-  transform: translateX(2px);
+  color: var(--ink);
+  background: var(--ember-soft);
 }
 
 .refinementLabel:focus-within {
-  color: hsl(var(--color-text-primary));
-  background: hsl(var(--color-accent-purple) / 0.08);
-  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
-  outline-offset: 1px;
+  color: var(--ink);
+  background: var(--ember-soft);
+  outline: 2px solid var(--ember);
+  outline-offset: -2px;
 }
 
 .refinementCheckbox {
@@ -198,20 +183,20 @@
   width: var(--check-size);
   height: var(--check-size);
   flex-shrink: 0;
-  border: 1.5px solid hsl(var(--color-text-secondary) / 0.5);
-  border-radius: 3px;
+  border: 1.5px solid var(--ink-3);
   cursor: pointer;
   transition: all var(--transition-base);
+  border-radius: 0;
 }
 
 .refinementCheckbox:hover {
-  border-color: hsl(var(--color-accent-purple));
+  border-color: var(--ember);
 }
 
 .refinementCheckbox:checked,
 .refinementCheckbox:indeterminate {
-  background-color: hsl(var(--color-accent-purple));
-  border-color: hsl(var(--color-accent-purple));
+  background-color: var(--ember);
+  border-color: var(--ember);
   background-image: var(--check-svg);
   background-repeat: no-repeat;
   background-position: center;
@@ -222,106 +207,83 @@
   flex: 1;
   min-width: 0;
   color: inherit;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
   overflow: visible;
   white-space: normal;
-  text-overflow: clip;
-  transition: color var(--transition-base);
 }
 
 .refinementItemSelected .refinementLabelText {
-  color: hsl(var(--color-accent-purple));
+  color: var(--ember);
   font-weight: 600;
 }
 
 .refinementCount {
-  font-size: 0.75rem;
-  color: hsl(var(--color-text-secondary));
-  background: hsl(var(--color-text-secondary) / 0.1);
-  padding: 4px 8px;
-  border-radius: var(--radius-md);
+  font-size: 0.65rem;
+  color: var(--ink-4);
+  background: var(--paper-dim);
+  padding: 2px 6px;
+  border-radius: 0;
   font-weight: 600;
   font-family: var(--font-mono);
-  min-width: 28px;
+  min-width: 24px;
   text-align: center;
   transition: all var(--transition-base);
 }
 
 .refinementLabel:hover .refinementCount {
-  background: hsl(var(--color-accent-purple) / 0.2);
-  color: hsl(var(--color-accent-purple));
+  background: var(--ember-tint);
+  color: var(--ember);
 }
 
 /* Clear Filters */
 .clearRoot {
   margin-top: 20px;
   padding-top: 16px;
-  border-top: 1px solid hsl(var(--color-text-secondary) / 0.08);
+  border-top: 1px solid rgba(26, 24, 21, 0.1);
 }
 
 .clearButton {
   width: 100%;
-  padding: 12px 16px;
+  padding: 10px 14px;
   background: transparent;
-  border: 1.5px solid hsl(var(--color-text-secondary) / 0.2);
-  border-radius: var(--radius-lg);
-  color: hsl(var(--color-text-secondary));
+  border: 1px solid var(--ink-3);
+  color: var(--ink-3);
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all var(--transition-slow);
-  position: relative;
-  overflow: hidden;
-}
-
-.clearButton::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at center, hsl(var(--color-accent-purple) / 0.15), transparent);
-  opacity: 0;
-  transition: opacity var(--transition-slow);
+  transition: all var(--transition-base);
+  border-radius: 0;
 }
 
 .clearButton:hover {
-  background: hsl(var(--color-accent-purple) / 0.1);
-  border-color: hsl(var(--color-accent-purple));
-  color: hsl(var(--color-accent-purple));
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 20px hsl(var(--color-accent-purple) / 0.25),
-    0 0 0 1px hsl(var(--color-accent-purple) / 0.1) inset;
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+  transform: none;
+  box-shadow: none;
 }
 
-.clearButton:hover::before {
-  opacity: 1;
+.clearButton::before {
+  display: none;
 }
 
 .clearButton:active {
-  transform: translateY(0);
+  transform: none;
 }
 
 .clearButtonDisabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-  border-color: hsl(var(--color-accent-purple) / 0.2);
 }
 
 .clearButtonDisabled:hover {
   background: transparent;
-  transform: none;
-  box-shadow: none;
-}
-
-.clearButtonDisabled::before {
-  opacity: 0;
+  border-color: var(--ink-3);
+  color: var(--ink-3);
 }
 
 /* Results Section */
@@ -331,19 +293,19 @@
 
 .hitsRoot {
   margin-bottom: var(--space-lg);
-  /* Reserve minimum space for search results to prevent CLS */
   min-height: 800px;
-  /* Contain layout changes within this element */
   contain: layout style;
 }
 
 .hitsList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   list-style: none;
   padding: 0;
   margin: 0;
+  border-top: 1px solid var(--ink);
+  counter-reset: result-number;
 }
 
 .hitsItem {
@@ -352,12 +314,13 @@
   border: none;
   padding: 0;
   margin: 0;
+  counter-increment: result-number;
+  border-bottom: 1px solid rgba(26, 24, 21, 0.12);
 }
 
 .hitsItem:focus-within {
-  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
-  outline-offset: 2px;
-  border-radius: var(--radius-xl);
+  outline: 2px solid var(--ember);
+  outline-offset: -2px;
 }
 
 /* Loading Indicator */
@@ -367,30 +330,29 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 1rem;
-  color: hsl(var(--color-text-secondary));
-  font-size: 0.875rem;
+  color: var(--ink-3);
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
   width: 100%;
 }
 
 .spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid hsl(var(--color-text-secondary));
-  border-top-color: transparent;
-  border-radius: var(--radius-round);
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--ink-4);
+  border-top-color: var(--ember);
+  border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .spinner {
     animation: none;
-    border-top-color: hsl(var(--color-accent-purple));
+    border-top-color: var(--ember);
   }
 }
 
@@ -403,11 +365,13 @@
   min-height: 300px;
   padding: var(--space-xl);
   text-align: center;
-  color: hsl(var(--color-text-secondary));
-  font-size: 0.9375rem;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  border: 1px solid var(--ink);
 }
 
-/* Mobile filter toggle button — hidden on desktop */
+/* Mobile filter toggle — hidden on desktop */
 .filterToggle {
   display: none;
 }
@@ -418,25 +382,27 @@
     align-items: center;
     gap: 8px;
     margin: 0 var(--space-md) var(--space-sm);
-    padding: 10px 16px;
+    padding: 8px 14px;
     background: transparent;
-    border: 1.5px solid hsl(var(--color-text-secondary) / 0.3);
-    border-radius: var(--radius-lg);
-    color: hsl(var(--color-text-secondary));
-    font-size: 0.875rem;
+    border: 1px solid var(--ink-3);
+    color: var(--ink-3);
+    font-size: 0.7rem;
     font-weight: 600;
     font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     cursor: pointer;
     transition: all var(--transition-base);
+    border-radius: 0;
   }
 
   .filterToggle:hover {
-    border-color: hsl(var(--color-accent-purple) / 0.6);
-    color: hsl(var(--color-accent-purple));
+    border-color: var(--ember);
+    color: var(--ember);
   }
 
   .filterToggle:focus-visible {
-    outline: 2px solid hsl(var(--color-accent-purple));
+    outline: 2px solid var(--ember);
     outline-offset: 2px;
   }
 
@@ -445,10 +411,10 @@
   }
 }
 
-/* Highlight styles — override satellite.css blue (#5468ff) */
+/* Highlight styles */
 :global(.ais-Highlight-highlighted),
 :global(.ais-Snippet-highlighted) {
-  color: hsl(var(--color-accent-purple)) !important;
+  color: var(--ember) !important;
   background-color: transparent !important;
   font-style: normal !important;
   font-weight: 700;
@@ -468,139 +434,85 @@
 
   .sidebar {
     position: static;
-    max-height: none;
     max-width: 320px;
     justify-self: start;
-  }
-
-  .filterSection {
-    grid-template-columns: 1fr;
-    gap: var(--space-md);
-  }
-
-  .clearRoot {
-    grid-column: 1 / -1;
   }
 }
 
 @media (max-width: 600px) {
   .hitsList {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    max-width: 280px;
-  }
-
-  .filterSection {
-    grid-template-columns: 1fr;
-  }
-
-  .algoliaAttribution {
-    font-size: 0.625rem;
-  }
-
-  .algoliaIcon {
-    font-size: 0.75rem;
+    gap: 0;
   }
 }
 
-/* Highlight animation for cards scrolled into view */
+/* Highlighted card scroll-into-view indicator */
 :global([data-highlighted='true']) {
   animation: cardHighlight 2s ease-out;
-  outline: 2px solid hsl(var(--color-accent-purple) / 0.6);
-  outline-offset: 4px;
-  border-radius: var(--radius-xl);
+  outline: 2px solid var(--ember);
+  outline-offset: -2px;
 }
 
 @keyframes cardHighlight {
-  0% {
-    outline-color: hsl(var(--color-accent-purple) / 0.8);
-    outline-width: 3px;
-  }
-  50% {
-    outline-color: hsl(var(--color-accent-purple) / 0.6);
-    outline-width: 2px;
-  }
-  100% {
-    outline-color: hsl(var(--color-accent-purple) / 0);
-    outline-width: 1px;
-  }
+  0% { outline-color: var(--ember); outline-width: 3px; }
+  100% { outline-color: transparent; outline-width: 1px; }
 }
 
-/* ── Algolia SiteSearch Widget — theme via official CSS custom properties API ── */
-
+/* ── Algolia SiteSearch Widget — official CSS custom properties API ── */
 :global(:root) {
-  --search-primary-color: hsl(270, 100%, 71%);
-  --search-secondary-color: hsl(178, 57%, 51%);
-  --search-background-color: hsl(225, 9%, 25%);
-  --search-neutral-color: hsl(225, 9%, 25%);
-  --search-text-color: hsl(240, 10%, 91%);
-  --search-subtle-text-color: hsl(229, 8%, 75%);
-  --search-border-color: hsl(var(--color-text-secondary) / 0.2);
-  --search-hover-color: hsl(var(--color-accent-purple) / 0.15);
-  --search-border-radius: var(--radius-lg);
+  --search-primary-color: oklch(0.58 0.20 35);
+  --search-secondary-color: oklch(0.58 0.20 35);
+  --search-background-color: #efeae0;
+  --search-neutral-color: #e0dace;
+  --search-text-color: #1a1815;
+  --search-subtle-text-color: #6a6358;
+  --search-border-color: rgba(26, 24, 21, 0.2);
+  --search-hover-color: oklch(0.58 0.20 35 / 0.08);
+  --search-border-radius: 0px;
 }
 
 /* ── Button layout — not covered by --search-* CSS vars ── */
-/* width defaults to auto (shrink-wrap); justify-content defaults to center */
 :global(.sitesearch-button-aa) {
   width: 100% !important;
   justify-content: flex-start !important;
 }
 
-/* ── Chat bubble role colors — not covered by widget CSS vars ── */
-
+/* ── Chat bubble role colors ── */
 :global(.ss-chat-message--user) {
-  border-color: hsl(var(--color-accent-pink)) !important;
+  border-color: var(--ember) !important;
 }
-:global(.ss-chat-message--user .ss-avatar) {
-  background-color: hsl(var(--color-bg-surface)) !important;
-}
-
 :global(.ss-chat-message--assistant) {
-  border-color: hsl(var(--color-accent-purple)) !important;
+  border-color: var(--ink) !important;
 }
-:global(.ss-chat-message--assistant .ss-avatar) {
-  background-color: hsl(var(--color-accent-purple)) !important;
-}
-
 :global(.ss-chat-input:focus),
 :global(.ss-chat-input:focus-visible) {
-  border-color: hsl(var(--color-accent-purple)) !important;
-  box-shadow: 0 0 0 2px hsl(var(--color-accent-purple) / 0.25) !important;
+  border-color: var(--ember) !important;
+  box-shadow: 0 0 0 2px oklch(0.58 0.20 35 / 0.2) !important;
   outline: none !important;
 }
-
 :global(.ss-chat-send-button),
 :global(.ss-chat-submit) {
-  background-color: hsl(var(--color-accent-purple)) !important;
-  color: white !important;
+  background-color: var(--ember) !important;
+  color: var(--paper) !important;
   border: none !important;
 }
-
 :global(.ss-chat-send-button:hover),
 :global(.ss-chat-submit:hover) {
-  background-color: hsl(var(--color-accent-purple) / 0.8) !important;
+  background-color: var(--ink) !important;
 }
-
 :global(.ss-chat-message a),
 :global(.ss-chat-message--assistant a) {
-  color: hsl(var(--color-accent-teal)) !important;
+  color: var(--ember) !important;
 }
 
-/* ── HierarchicalMenu — styled to match RefinementList rows ── */
-/* HierarchicalMenu renders <a> links; ::before provides the checkbox-like indicator */
-
+/* ── HierarchicalMenu ── */
 .hierarchicalLink {
   display: flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  padding: 10px 12px;
-  border-radius: var(--radius-lg);
-  transition: all 0.25s var(--ease-morph);
-  color: hsl(var(--color-text-secondary));
+  padding: 8px 10px;
+  transition: all var(--transition-base);
+  color: var(--ink-3);
   text-decoration: none;
   position: relative;
 }
@@ -611,40 +523,38 @@
   width: var(--check-size);
   height: var(--check-size);
   flex-shrink: 0;
-  border: 1.5px solid hsl(var(--color-text-secondary) / 0.5);
-  border-radius: 3px;
+  border: 1.5px solid var(--ink-3);
+  border-radius: 0;
   transition: all var(--transition-base);
 }
 
-/* The widget renders an SVG toggle icon inside each link — hide it; ::before is the indicator */
 .hierarchicalLink svg {
   display: none;
 }
 
 .hierarchicalLink:hover {
-  color: hsl(var(--color-text-primary));
-  background: hsl(var(--color-accent-purple) / 0.08);
-  transform: translateX(2px);
+  color: var(--ink);
+  background: var(--ember-soft);
 }
 
 .hierarchicalLink:hover::before {
-  border-color: hsl(var(--color-accent-purple));
+  border-color: var(--ember);
 }
 
 .hierarchicalLink:focus-visible {
-  color: hsl(var(--color-text-primary));
-  background: hsl(var(--color-accent-purple) / 0.08);
-  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
-  outline-offset: 1px;
+  color: var(--ink);
+  background: var(--ember-soft);
+  outline: 2px solid var(--ember);
+  outline-offset: -2px;
 }
 
 .refinementItemSelected .hierarchicalLink {
-  color: hsl(var(--color-accent-purple));
+  color: var(--ember);
 }
 
 .refinementItemSelected .hierarchicalLink::before {
-  background-color: hsl(var(--color-accent-purple));
-  border-color: hsl(var(--color-accent-purple));
+  background-color: var(--ember);
+  border-color: var(--ember);
   background-image: var(--check-svg);
   background-repeat: no-repeat;
   background-position: center;
@@ -655,7 +565,6 @@
   padding-left: 28px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
+  gap: 2px;
+  margin-top: 2px;
 }
-
