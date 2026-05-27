@@ -16,7 +16,11 @@ export default function Home() {
     <main className={styles.main} id="main-content">
       <Header />
       <Masthead />
-      <Hero title="This portfolio isn't browsed—" subtitle="It's retrieved." />
+      <Hero
+        title="This portfolio isn't browsed."
+        titleAccent="It's retrieved."
+        subtitle="$ Twelve principles, ten builds, one human. Search by intent. The system finds the match."
+      />
       <SearchPageWrapper />
     </main>
   );

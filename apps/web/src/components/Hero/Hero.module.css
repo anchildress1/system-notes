@@ -23,6 +23,11 @@
   composes: subtitle from "@/styles/SharedHero.module.css";
 }
 
+.titleAccent {
+  display: block;
+  color: var(--accent-pink);
+}
+
 .imageContainer {
   position: relative;
   width: 100%;

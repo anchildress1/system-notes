@@ -14,16 +14,17 @@ export default function GlitterBomb() {
     // Feature detect rather than just width check for better "lite" mode
     const isMobile = globalThis.innerWidth < 768 || 'ontouchstart' in globalThis;
 
-    let pendingExplosion = false;
-    let triggerFn: (() => void) | null = null;
+    let pendingExplosion: { x?: number; y?: number } | null = null;
+    let triggerFn: ((x?: number, y?: number) => void) | null = null;
 
     // Register listener immediately — events fired during the init delay would
     // otherwise be silently lost.
-    const onGlitterBomb = () => {
+    const onGlitterBomb = (e: Event) => {
+      const { x, y } = (e as CustomEvent<{ x?: number; y?: number }>).detail ?? {};
       if (triggerFn) {
-        triggerFn();
+        triggerFn(x, y);
       } else {
-        pendingExplosion = true;
+        pendingExplosion = { x, y };
       }
     };
     globalThis.addEventListener('trigger-glitter-bomb', onGlitterBomb);
@@ -94,8 +95,8 @@ export default function GlitterBomb() {
           app.ticker.remove(tick);
         };
 
-        // Function to trigger explosion
-        const trigger = () => {
+        // Function to trigger explosion at mouse position (or screen center fallback)
+        const trigger = (mouseX?: number, mouseY?: number) => {
           if (!app.renderer) return;
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           if ((app as any)._destroyed) return; // Safety check - _destroyed is a private PIXI internal // NOSONAR(S4325)
@@ -113,8 +114,8 @@ export default function GlitterBomb() {
           // Massive reduction for mobile
           const particleCount = isMobile ? 30 : 150;
 
-          const centerX = app.screen.width / 2;
-          const centerY = app.screen.height / 3;
+          const centerX = mouseX ?? app.screen.width / 2;
+          const centerY = mouseY ?? app.screen.height / 3;
 
           for (let i = 0; i < particleCount; i++) {
             // Use Sprite instead of Graphics for immense performance boost (batching)
@@ -154,9 +155,10 @@ export default function GlitterBomb() {
 
         // Wire up trigger and fire any event that arrived during init
         triggerFn = trigger;
-        if (pendingExplosion) {
-          pendingExplosion = false;
-          trigger();
+        if (pendingExplosion !== null) {
+          const { x, y } = pendingExplosion;
+          pendingExplosion = null;
+          trigger(x, y);
         }
       } catch (err) {
         console.warn('GlitterBomb: failed to initialize Pixi:', err);

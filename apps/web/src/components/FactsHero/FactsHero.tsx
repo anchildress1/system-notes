@@ -17,11 +17,17 @@ export default function FactsHero() {
         <button
           type="button"
           className={styles.glitterTrigger}
-          onClick={() => globalThis.dispatchEvent(new Event('trigger-glitter-bomb'))}
+          onClick={(e) =>
+            globalThis.dispatchEvent(
+              new CustomEvent('trigger-glitter-bomb', {
+                detail: { x: e.clientX, y: e.clientY },
+              })
+            )
+          }
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
+              globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
             }
           }}
           aria-label="Click to trigger a glitter effect"

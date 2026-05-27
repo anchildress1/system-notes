@@ -13,13 +13,38 @@
 
 .top {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: 3rem;
   padding-bottom: 2.5rem;
   border-bottom: 1px solid var(--border);
 }
 
 .col {}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.brandDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-pink);
+  box-shadow: 0 0 8px rgba(241, 97, 151, 0.6);
+  flex-shrink: 0;
+}
+
+.brandName {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
 
 .colLabel {
   font-family: var(--font-mono);
@@ -83,20 +108,33 @@
   padding-top: 1.25rem;
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
 }
 
-.socialLink {
-  composes: link;
-  font-size: 1.125rem;
+.bottomRight {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 @media (max-width: 1024px) {
   .top {
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
+  }
+
+  .bottom {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .bottomRight {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
 

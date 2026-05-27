@@ -261,6 +261,30 @@ body {
   text-transform: uppercase;
 }
 
+.card-header-badge[data-category='principle'] {
+  color: var(--accent-violet);
+  border-color: rgba(181, 107, 255, 0.55);
+}
+
+.card-header-badge[data-category='origin'] {
+  color: var(--accent-teal);
+  border-color: rgba(62, 199, 194, 0.55);
+}
+
+.card-header-badge[data-category='theme-song'] {
+  color: var(--accent-pink);
+  border-color: rgba(241, 97, 151, 0.55);
+}
+
+.card-header-badge[data-category='workflow'],
+.card-header-badge[data-category='review'],
+.card-header-badge[data-category='philosophy'],
+.card-header-badge[data-category='pushback'],
+.card-header-badge[data-category='goal'] {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
 .award-badge {
   display: inline-flex;
   align-items: center;

@@ -142,9 +142,17 @@ export default function FactCard({ hit, sendEvent }: Readonly<FactCardProps>) {
           <div className={styles.cardInner}>
             <div className={styles.cardFront}>
               <div className={styles.content}>
-                <div className={styles.header}>
-                  <div className={styles.headerTop}>
-                    <span className="card-header-badge">{categoryLabel}</span>
+                <div className={styles.cardMetaRow}>
+                  <span className={styles.factCounter}>
+                    FACT · {String(hit.__position ?? 0).padStart(2, '0')}
+                  </span>
+                  <div className={styles.cardMetaRight}>
+                    <span
+                      className="card-header-badge"
+                      data-category={categoryLabel.toLowerCase().replace(/\s+/g, '-')}
+                    >
+                      {categoryLabel}
+                    </span>
                     {hit.url && (
                       <SourceLinkButton
                         url={hit.url}
@@ -157,10 +165,11 @@ export default function FactCard({ hit, sendEvent }: Readonly<FactCardProps>) {
                       />
                     )}
                   </div>
-                  <h2 className={styles.title}>
-                    <Highlight attribute="title" hit={hit} />
-                  </h2>
                 </div>
+
+                <h2 className={styles.title}>
+                  <Highlight attribute="title" hit={hit} />
+                </h2>
 
                 <p className={styles.description}>
                   {hit.blurb ? (
@@ -179,6 +188,8 @@ export default function FactCard({ hit, sendEvent }: Readonly<FactCardProps>) {
                     ))}
                   </div>
                 )}
+
+                <div className={styles.nodeType}>node_type · {hit.node_type ?? 'principle'}</div>
               </div>
             </div>
           </div>

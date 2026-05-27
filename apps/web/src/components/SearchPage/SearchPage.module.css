@@ -55,6 +55,38 @@
   align-self: flex-start;
 }
 
+/* Section header */
+.sectionHeader {
+  max-width: 1300px;
+  margin: 2rem auto 0;
+  padding: 0 var(--space-md) var(--space-md);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sectionHeaderTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.sectionHeaderCount {
+  color: var(--accent-violet);
+}
+
+.sectionHeaderMeta {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
 /* Layout Grid */
 .layout {
   display: grid;

@@ -9,6 +9,7 @@ import {
   Stats,
   ClearRefinements,
   Configure,
+  useInstantSearch,
 } from 'react-instantsearch';
 import aa from 'search-insights';
 import { SiAlgolia } from 'react-icons/si';
@@ -187,6 +188,8 @@ export default function SearchPage() {
           </div>
         </div>
 
+        <SectionHeader />
+
         <div className={styles.layout}>
           <button
             type="button"
@@ -309,6 +312,20 @@ export default function SearchPage() {
       <Suspense fallback={null}>
         <FactIdOverlay indexName={indexName} />
       </Suspense>
+    </div>
+  );
+}
+
+function SectionHeader() {
+  const { results } = useInstantSearch();
+  const count = results?.nbHits ?? 0;
+  return (
+    <div className={styles.sectionHeader}>
+      <h2 className={styles.sectionHeaderTitle}>
+        <span className={styles.sectionHeaderCount}>{count}</span> choices that shape every system I
+        build.
+      </h2>
+      <span className={styles.sectionHeaderMeta}>{count} records · sort = curated</span>
     </div>
   );
 }

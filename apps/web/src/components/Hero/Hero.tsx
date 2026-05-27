@@ -7,6 +7,7 @@ import { useSparkles } from '@/hooks/useSparkles';
 
 interface HeroProps {
   title: string;
+  titleAccent?: string;
   subtitle?: string;
   image?: {
     src: string;
@@ -16,7 +17,7 @@ interface HeroProps {
   };
 }
 
-export default function Hero({ title, subtitle, image }: Readonly<HeroProps>) {
+export default function Hero({ title, titleAccent, subtitle, image }: Readonly<HeroProps>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
@@ -27,20 +28,27 @@ export default function Hero({ title, subtitle, image }: Readonly<HeroProps>) {
     <div className={styles.hero} ref={containerRef}>
       <div className={styles.titleContainer} ref={textRef}>
         <div className={styles.interactiveContainer}>
-          <h1 className={styles.title}>{title}</h1>
+          <h1 className={styles.title}>
+            {title}
+            {titleAccent && <span className={styles.titleAccent}>{titleAccent}</span>}
+          </h1>
           {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
           <button
             type="button"
             className={styles.glitterTrigger}
             data-testid="hero-interactive"
             aria-label="Trigger glitter effect"
-            onClick={() => {
-              globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
+            onClick={(e) => {
+              globalThis.dispatchEvent(
+                new CustomEvent('trigger-glitter-bomb', {
+                  detail: { x: e.clientX, y: e.clientY },
+                })
+              );
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                globalThis.dispatchEvent(new Event('trigger-glitter-bomb'));
+                globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
               }
             }}
           />
