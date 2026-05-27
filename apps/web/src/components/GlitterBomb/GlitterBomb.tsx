@@ -57,7 +57,7 @@ export default function GlitterBomb() {
 
         // Generate a simple circle texture to share across particles (BATCHING!)
         const circleGraphics = new PIXI.Graphics();
-        circleGraphics.circle(0, 0, 4);
+        circleGraphics.circle(0, 0, 8);
         circleGraphics.fill({ color: 0xffffff });
         const circleTexture = app.renderer.generateTexture(circleGraphics);
 
@@ -108,7 +108,7 @@ export default function GlitterBomb() {
           currentParticles.length = 0;
 
           // --- Optimized Explosion Config ---
-          const colors = [0xffd700, 0xffec8b, 0xffffff, 0xb56bff];
+          const colors = [0xd45a28, 0xff8c42, 0xefeae0, 0xf5b08a];
 
           // Massive reduction for mobile
           const particleCount = isMobile ? 30 : 150;
@@ -136,7 +136,7 @@ export default function GlitterBomb() {
 
             // Explosion Physics
             const angle = Math.random() * Math.PI * 2; // NOSONAR(S2245) - visual randomness
-            const velocity = Math.random() * (isMobile ? 8 : 10) + 4; // NOSONAR(S2245) - visual randomness
+            const velocity = Math.random() * (isMobile ? 4 : 5) + 2; // NOSONAR(S2245) - visual randomness
 
             particle.direction = angle;
             particle.speed = velocity;

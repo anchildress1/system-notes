@@ -1,8 +1,10 @@
 'use client';
 
+import { useRef } from 'react';
 import { FaCode } from 'react-icons/fa';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSparkles } from '@/hooks/useSparkles';
 import styles from './Header.module.css';
 
 const NAV_ITEMS = [
@@ -13,6 +15,9 @@ const NAV_ITEMS = [
 
 export default function Header() {
   const pathname = usePathname();
+  const rowRef = useRef<HTMLDivElement | null>(null);
+
+  useSparkles({ containerRef: rowRef });
 
   return (
     <header className={styles.header}>
@@ -20,11 +25,20 @@ export default function Header() {
         Skip to main content
       </a>
 
-      <div className={styles.row}>
-        <Link href="/" className={styles.brand}>
-          <span className={styles.brandMark} aria-hidden="true" />
-          <span className={styles.brandName}>Ashley Childress · System Notes</span>
-        </Link>
+      <div className={styles.row} ref={rowRef}>
+        <div className={styles.brandArea}>
+          <button
+            type="button"
+            className={styles.glitterTrigger}
+            onClick={() => globalThis.dispatchEvent(new Event('trigger-glitter-bomb'))}
+            aria-label="Trigger glitter effect"
+          >
+            <span className={styles.brandMark} aria-hidden="true" />
+          </button>
+          <Link href="/" className={styles.brand}>
+            <span className={styles.brandName}>Ashley Childress · System Notes</span>
+          </Link>
+        </div>
 
         <nav className={styles.nav} aria-label="Main Navigation">
           {NAV_ITEMS.map(({ num, label, href }) => (

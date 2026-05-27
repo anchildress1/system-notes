@@ -8,6 +8,10 @@ const AIChat = dynamic(() => import('@/components/AIChat/AIChat'), {
   ssr: false,
 });
 
+const GlitterBomb = dynamic(() => import('@/components/GlitterBomb/GlitterBomb'), {
+  ssr: false,
+});
+
 export default function ClientShell({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
@@ -16,6 +20,9 @@ export default function ClientShell({ children }: Readonly<{ children: React.Rea
         <Footer />
       </div>
       <AIChat />
+      <div aria-hidden="true">
+        <GlitterBomb />
+      </div>
     </>
   );
 }

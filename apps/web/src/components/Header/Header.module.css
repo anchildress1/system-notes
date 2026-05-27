@@ -17,10 +17,37 @@
 }
 
 /* ── Brand ── */
-.brand {
+.brandArea {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.glitterTrigger {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: crosshair;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.brandMark {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: var(--ember);
+  transition: transform var(--transition-base);
+}
+
+.glitterTrigger:hover .brandMark {
+  transform: scale(1.5);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
   text-decoration: none;
   color: var(--ink);
   font-family: var(--font-mono);
@@ -30,16 +57,8 @@
   font-weight: 400;
 }
 
-.brand:hover .brandName {
+.brandArea:hover .brandName {
   color: var(--ember);
-}
-
-.brandMark {
-  display: inline-block;
-  width: 9px;
-  height: 9px;
-  background: var(--ember);
-  flex-shrink: 0;
 }
 
 .brandName {
