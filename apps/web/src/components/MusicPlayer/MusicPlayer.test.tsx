@@ -63,7 +63,10 @@ describe('MusicPlayer', () => {
     expect(globalThis.HTMLMediaElement.prototype.pause).toHaveBeenCalledTimes(1);
 
     // Should immediately switch back to Play state (pause is synchronous in the handler)
-    expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+    expect(screen.getByTestId('play-button')).toHaveAttribute(
+      'aria-label',
+      expect.stringMatching(/^Play/i)
+    );
   });
 
   it('handles playback failure gracefully', async () => {
@@ -138,17 +141,52 @@ describe('MusicPlayer', () => {
     fireEvent.error(getAudioElement());
 
     // isPlaying should revert to false, hasError should be true (button disabled)
-    expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+    expect(screen.getByTestId('play-button')).toHaveAttribute(
+      'aria-label',
+      expect.stringMatching(/^Play/i)
+    );
     expect(screen.getByTestId('play-button')).toBeDisabled();
 
     consoleSpy.mockRestore();
   });
 
   it('does not call play on initial mount without user interaction', () => {
-    // Verify the component renders in a paused state and does not auto-play.
-    // Confirms the mount state is correct and play is never called until the user clicks.
     render(<MusicPlayer />);
     expect(globalThis.HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+  });
+
+  it('opens expanded panel when playback starts', async () => {
+    render(<MusicPlayer />);
+
+    expect(screen.queryByTestId('player-panel')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('play-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('player-panel')).toBeInTheDocument();
+    });
+  });
+
+  it('closes panel without stopping playback', async () => {
+    render(<MusicPlayer />);
+    fireEvent.click(screen.getByTestId('play-button'));
+
+    await waitFor(() => expect(screen.getByTestId('close-panel')).toBeInTheDocument());
+
+    fireEvent.click(screen.getByTestId('close-panel'));
+    expect(screen.queryByTestId('player-panel')).not.toBeInTheDocument();
+    expect(screen.getByTestId('play-button')).toHaveAttribute(
+      'aria-label',
+      expect.stringMatching(/^Pause/i)
+    );
+  });
+
+  it('shows PLAYING state in panel when audio is playing', async () => {
+    render(<MusicPlayer />);
+    fireEvent.click(screen.getByTestId('play-button'));
+
+    await waitFor(() => {
+      expect(screen.getByText(/PLAYING · explicit/i)).toBeInTheDocument();
+    });
   });
 });

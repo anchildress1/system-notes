@@ -7,6 +7,7 @@
   z-index: auto;
 }
 
+/* ── FAB Play Button ── */
 .playButton {
   width: 60px;
   height: 60px;
@@ -54,6 +55,7 @@
   z-index: 3;
 }
 
+/* ── Hover Tooltip (when panel is closed) ── */
 .infoTooltip {
   position: absolute;
   top: 50%;
@@ -121,6 +123,189 @@
   letter-spacing: 0.08em;
 }
 
+/* ── Expanded Panel ── */
+.panel {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  right: 0;
+  width: 280px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.8),
+    0 0 calc(40px * var(--glow)) rgba(181, 107, 255, 0.12);
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.albumArt {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-violet) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.trackInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.trackTitle {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trackExplicit {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  background: var(--bg-base);
+  flex-shrink: 0;
+}
+
+.trackMeta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.closeButton {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-pill);
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color var(--transition-base), background var(--transition-base);
+}
+
+.closeButton:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Waveform ── */
+.waveform {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  height: 32px;
+}
+
+.bar {
+  width: 3px;
+  height: 8px;
+  background: linear-gradient(to top, var(--accent-pink), var(--accent-violet));
+  border-radius: 2px;
+  transform-origin: bottom;
+}
+
+.barActive {
+  animation: waveBar 0.7s ease-in-out infinite alternate;
+  animation-delay: calc(var(--bar-i) * 0.08s);
+}
+
+@keyframes waveBar {
+  0% { height: 6px; }
+  100% { height: 28px; }
+}
+
+/* ── Explicit / Status Area ── */
+.lyricsArea {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lyricsLabel {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.lyricsState {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-violet);
+  letter-spacing: 0.05em;
+}
+
+/* ── Progress ── */
+.progressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 3px;
+  background: var(--border-strong);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(to right, var(--accent-pink), var(--accent-teal));
+  border-radius: 2px;
+  transition: width 0.5s linear;
+  min-width: 0;
+}
+
+.timestamps {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+/* ── Animations ── */
 @keyframes pulse {
   0%, 100% { box-shadow: 0 0 calc(20px * var(--glow)) rgba(241, 97, 151, 0.4); }
   50%       { box-shadow: 0 0 calc(36px * var(--glow)) rgba(241, 97, 151, 0.65); }
@@ -128,4 +313,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .active { animation: none; }
+  .barActive { animation: none; }
 }
