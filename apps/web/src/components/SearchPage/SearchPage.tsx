@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useEffect, useRef, useState } from 'react';
+import { useMemo, useEffect, useRef, useState, useId } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
   InstantSearch,
@@ -153,11 +153,27 @@ function RetrieveBar() {
 
 function FilterBar() {
   return (
-    <div className={styles.filterBar}>
+    <nav className={styles.filterBar} aria-label="Search filters">
       <FilterDropdown attribute={PROJECT_ATTRIBUTE} label="project" />
       <FilterDropdown attribute={TAG_ATTRIBUTE} label="tag" />
       <FilterDropdown attribute={KIND_ATTRIBUTE} label="kind" />
-    </div>
+      <ClearAllFilters />
+    </nav>
+  );
+}
+
+function ClearAllFilters() {
+  const { refine, canRefine } = useClearRefinements();
+  if (!canRefine) return null;
+  return (
+    <button
+      type="button"
+      className={styles.filterClearAll}
+      onClick={() => refine()}
+      aria-label="Clear all active filters"
+    >
+      clear all ✕
+    </button>
   );
 }
 
@@ -168,71 +184,147 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
   });
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const selected = items.find((item) => item.isRefined);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const popoverId = useId();
+  const wasOpenRef = useRef(false);
 
+  const selected = items.find((item) => item.isRefined);
+  // Option layout: index 0 = "all"; items occupy 1..items.length
+  const optionCount = items.length + 1;
+
+  // Close on outside click + Escape + tab-out of dropdown
   useEffect(() => {
     if (!open) return;
     const onPointerDown = (e: MouseEvent) => {
       if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setOpen(false);
+      }
+    };
+    const onFocusOut = (e: FocusEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.relatedTarget as Node)) {
+        setOpen(false);
+      }
     };
     document.addEventListener('mousedown', onPointerDown);
     document.addEventListener('keydown', onKey);
+    const root = rootRef.current;
+    root?.addEventListener('focusout', onFocusOut);
     return () => {
       document.removeEventListener('mousedown', onPointerDown);
       document.removeEventListener('keydown', onKey);
+      root?.removeEventListener('focusout', onFocusOut);
     };
   }, [open]);
 
-  // Hide the dropdown entirely when there are no facet values to show
-  // and nothing is currently refined.
+  // Focus management: when opening, move focus to the selected option
+  // (or "all" if nothing is selected). When closing after being open,
+  // return focus to the trigger button.
+  useEffect(() => {
+    if (open) {
+      const activeIdx = items.findIndex((i) => i.isRefined);
+      const idx = activeIdx >= 0 ? activeIdx + 1 : 0;
+      requestAnimationFrame(() => optionRefs.current[idx]?.focus());
+    } else if (wasOpenRef.current) {
+      buttonRef.current?.focus();
+    }
+    wasOpenRef.current = open;
+  }, [open, items]);
+
   if (items.length === 0 && !canClear) return null;
 
   const totalCount = items.reduce((sum, item) => sum + item.count, 0);
   const buttonText = selected ? `${label}: ${selected.label.toLowerCase()}` : `${label}: all`;
+  const buttonAria = selected
+    ? `${label} filter, currently ${selected.label}, ${selected.count} results`
+    : `${label} filter, no selection`;
+
+  const onPopoverKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const focusedEl = document.activeElement;
+    const focusedIdx = optionRefs.current.findIndex((el) => el === focusedEl);
+    if (focusedIdx < 0) return;
+    const last = optionCount - 1;
+    switch (e.key) {
+      case 'ArrowDown': {
+        e.preventDefault();
+        const next = focusedIdx < last ? focusedIdx + 1 : 0;
+        optionRefs.current[next]?.focus();
+        break;
+      }
+      case 'ArrowUp': {
+        e.preventDefault();
+        const prev = focusedIdx > 0 ? focusedIdx - 1 : last;
+        optionRefs.current[prev]?.focus();
+        break;
+      }
+      case 'Home':
+        e.preventDefault();
+        optionRefs.current[0]?.focus();
+        break;
+      case 'End':
+        e.preventDefault();
+        optionRefs.current[last]?.focus();
+        break;
+    }
+  };
 
   return (
     <div ref={rootRef} className={styles.filterDropdown}>
       <button
+        ref={buttonRef}
         type="button"
         className={`${styles.filterButton} ${selected ? styles.filterButtonActive : ''}`}
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        aria-haspopup="listbox"
+        aria-haspopup="true"
+        aria-controls={popoverId}
+        aria-label={buttonAria}
       >
-        <span>{buttonText}</span>
+        <span aria-hidden="true">{buttonText}</span>
         <span aria-hidden="true" className={styles.filterCaret}>
           ▾
         </span>
       </button>
       {open && (
-        <div className={styles.filterPopover} role="listbox" aria-label={`${label} filter`}>
+        <div
+          id={popoverId}
+          className={styles.filterPopover}
+          role="group"
+          aria-label={`${label} filter options`}
+          onKeyDown={onPopoverKeyDown}
+        >
           <button
+            ref={(el) => {
+              optionRefs.current[0] = el;
+            }}
             type="button"
             className={`${styles.filterOption} ${!selected ? styles.filterOptionActive : ''}`}
             onClick={() => {
               clear();
               setOpen(false);
             }}
-            role="option"
-            aria-selected={!selected}
+            aria-pressed={!selected}
           >
             <span>all</span>
             <span className={styles.filterCount}>{String(totalCount).padStart(2, '0')}</span>
           </button>
-          {items.map((item) => (
+          {items.map((item, i) => (
             <button
               key={item.value}
+              ref={(el) => {
+                optionRefs.current[i + 1] = el;
+              }}
               type="button"
               className={`${styles.filterOption} ${item.isRefined ? styles.filterOptionActive : ''}`}
               onClick={() => {
                 refine(item.value);
                 setOpen(false);
               }}
-              role="option"
-              aria-selected={item.isRefined}
+              aria-pressed={item.isRefined}
             >
               <span>{item.label.toLowerCase()}</span>
               <span className={styles.filterCount}>{String(item.count).padStart(2, '0')}</span>
