@@ -1,12 +1,12 @@
 'use client';
 
-import { useRef, useCallback } from 'react';
 import Image from 'next/image';
 import styles from './Hero.module.css';
 
 interface HeroProps {
   title: string;
   titleAccent?: string;
+  accentWord?: string;
   subtitle?: string;
   image?: {
     src: string;
@@ -16,24 +16,30 @@ interface HeroProps {
   };
 }
 
-export default function Hero({ title, titleAccent, subtitle, image }: Readonly<HeroProps>) {
-  const titleRef = useRef<HTMLHeadingElement>(null);
-
-  const triggerGlow = useCallback(() => {
-    const el = titleRef.current;
-    if (!el) return;
-    el.classList.remove(styles.titleGlow);
-    void el.offsetWidth; // force reflow to restart animation
-    el.classList.add(styles.titleGlow);
-  }, []);
-
+export default function Hero({
+  title,
+  titleAccent,
+  accentWord,
+  subtitle,
+  image,
+}: Readonly<HeroProps>) {
   return (
     <div className={styles.hero}>
       <div className={styles.titleContainer}>
         <div className={styles.interactiveContainer}>
-          <h1 className={styles.title} ref={titleRef}>
+          <h1 className={styles.title}>
             {title}
-            {titleAccent && <span className={styles.titleAccent}>{titleAccent}</span>}
+            {titleAccent && (
+              <span className={styles.titleAccent}>
+                {titleAccent}
+                {accentWord && (
+                  <>
+                    {' '}
+                    <span className={styles.rotatingWord}>{accentWord}</span>
+                  </>
+                )}
+              </span>
+            )}
           </h1>
           {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
           <button
@@ -42,7 +48,6 @@ export default function Hero({ title, titleAccent, subtitle, image }: Readonly<H
             data-testid="hero-interactive"
             aria-label="Trigger glitter effect"
             onClick={(e) => {
-              triggerGlow();
               globalThis.dispatchEvent(
                 new CustomEvent('trigger-glitter-bomb', {
                   detail: { x: e.clientX, y: e.clientY },
@@ -52,7 +57,6 @@ export default function Hero({ title, titleAccent, subtitle, image }: Readonly<H
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                triggerGlow();
                 globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
               }
             }}

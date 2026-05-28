@@ -64,27 +64,18 @@
 
 .subtitle {
   font-family: var(--font-mono);
-  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  font-size: clamp(0.8rem, 1.2vw, 0.95rem);
   font-weight: 400;
-  background: linear-gradient(120deg, var(--accent-pink) 0%, var(--accent-violet) 50%, var(--accent-teal) 100%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: textShift 8s ease infinite;
-  margin-top: 0.75rem;
-  line-height: 1.4;
+  color: var(--text-muted);
+  margin-top: 1.5rem;
+  line-height: 1.6;
   letter-spacing: 0.02em;
+  max-width: 52ch;
   opacity: 1;
   visibility: visible;
   position: relative;
   z-index: 10;
   text-wrap: balance;
-}
-
-@keyframes textShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
 }
 
 @media (max-width: 768px) {

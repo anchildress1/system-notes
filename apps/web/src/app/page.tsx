@@ -18,8 +18,9 @@ export default function Home() {
       <Masthead />
       <Hero
         title="This portfolio isn't browsed."
-        titleAccent="It's retrieved."
-        subtitle="$ Twelve principles, ten builds, one human. Search by intent. The system finds the match."
+        titleAccent="It's"
+        accentWord="retrieved."
+        subtitle="An engineering portfolio you query, not scroll."
       />
       <SearchPageWrapper />
     </main>
