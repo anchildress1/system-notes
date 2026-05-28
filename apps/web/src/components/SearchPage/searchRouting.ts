@@ -3,12 +3,14 @@ import type { IndexUiState, UiState } from 'instantsearch.js';
 
 const KIND_ATTRIBUTE = 'category';
 const PROJECT_ATTRIBUTE = 'projects';
+const TAG_ATTRIBUTE = 'tags.lvl0';
 
 export type SearchRouteState = {
   q?: string;
   page?: number;
   kind?: string; // selected category (single-select kind chip)
   project?: string; // selected project (single-select project chip)
+  tag?: string; // selected tags.lvl0 (single-select tag chip)
 };
 
 const parsePageParam = (value?: unknown): number | undefined => {
@@ -33,6 +35,7 @@ export const toRouteState = (uiState: UiState, indexName: string): SearchRouteSt
     page: indexState.page,
     kind: indexState.menu?.[KIND_ATTRIBUTE] || undefined,
     project: indexState.menu?.[PROJECT_ATTRIBUTE] || undefined,
+    tag: indexState.menu?.[TAG_ATTRIBUTE] || undefined,
   };
 };
 
@@ -40,6 +43,7 @@ export const toUiState = (routeState: SearchRouteState, indexName: string): UiSt
   const menu: Record<string, string> = {};
   if (routeState.kind) menu[KIND_ATTRIBUTE] = routeState.kind;
   if (routeState.project) menu[PROJECT_ATTRIBUTE] = routeState.project;
+  if (routeState.tag) menu[TAG_ATTRIBUTE] = routeState.tag;
   return {
     [indexName]: {
       query: routeState.q,
@@ -62,6 +66,7 @@ export const createSearchRouting = (indexName: string) => ({
       if (routeState.page && routeState.page > 1) queryParameters.page = routeState.page;
       if (routeState.kind) queryParameters.kind = routeState.kind;
       if (routeState.project) queryParameters.project = routeState.project;
+      if (routeState.tag) queryParameters.tag = routeState.tag;
 
       // Passthrough: factId is an Algolia click-analytics correlator (objectID).
       // InstantSearch's router strips any param it doesn't own; re-inject it
@@ -85,6 +90,7 @@ export const createSearchRouting = (indexName: string) => ({
         page: parsePageParam(parsed.page),
         kind: asString(parsed.kind),
         project: asString(parsed.project),
+        tag: asString(parsed.tag),
       };
     },
   }),
@@ -110,6 +116,7 @@ export const getSearchPageURL = (
   if (routeState.page && routeState.page > 1) params.set('page', String(routeState.page));
   if (routeState.kind) params.set('kind', routeState.kind);
   if (routeState.project) params.set('project', routeState.project);
+  if (routeState.tag) params.set('tag', routeState.tag);
 
   const queryString = params.toString();
   return queryString ? `${basePath}?${queryString}` : basePath;

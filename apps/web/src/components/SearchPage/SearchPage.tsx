@@ -35,6 +35,7 @@ aa('setUserToken', getChatSessionId());
 
 const KIND_ATTRIBUTE = 'category';
 const PROJECT_ATTRIBUTE = 'projects';
+const TAG_ATTRIBUTE = 'tags.lvl0';
 
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
@@ -154,6 +155,7 @@ function FilterBar() {
   return (
     <div className={styles.filterBar}>
       <FilterDropdown attribute={PROJECT_ATTRIBUTE} label="project" />
+      <FilterDropdown attribute={TAG_ATTRIBUTE} label="tag" />
       <FilterDropdown attribute={KIND_ATTRIBUTE} label="kind" />
     </div>
   );

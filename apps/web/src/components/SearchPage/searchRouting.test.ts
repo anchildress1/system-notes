@@ -17,12 +17,12 @@ describe('searchRouting', () => {
     mockHistory.mockClear();
   });
 
-  it('maps uiState (query, page, menu kind, menu project) to route state', () => {
+  it('maps uiState (query, page, menu kind, project, tag) to route state', () => {
     const uiState = {
       [indexName]: {
         query: 'carbon',
         page: 2,
-        menu: { category: 'Decisions', projects: 'Vestige' },
+        menu: { category: 'Decisions', projects: 'Vestige', 'tags.lvl0': 'Engineering' },
       },
     };
     expect(toRouteState(uiState, indexName)).toEqual({
@@ -30,26 +30,36 @@ describe('searchRouting', () => {
       page: 2,
       kind: 'Decisions',
       project: 'Vestige',
+      tag: 'Engineering',
     });
   });
 
-  it('omits empty query, kind, and project', () => {
-    const uiState = { [indexName]: { query: '', menu: { category: '', projects: '' } } };
+  it('omits empty query, kind, project, and tag', () => {
+    const uiState = {
+      [indexName]: { query: '', menu: { category: '', projects: '', 'tags.lvl0': '' } },
+    };
     expect(toRouteState(uiState, indexName)).toEqual({
       q: undefined,
       page: undefined,
       kind: undefined,
       project: undefined,
+      tag: undefined,
     });
   });
 
-  it('maps route state back to uiState with kind + project menu refinements', () => {
-    const routeState = { q: 'agents', page: 3, kind: 'Philosophy', project: 'Vestige' };
+  it('maps route state back to uiState with kind + project + tag menu refinements', () => {
+    const routeState = {
+      q: 'agents',
+      page: 3,
+      kind: 'Philosophy',
+      project: 'Vestige',
+      tag: 'Engineering',
+    };
     expect(toUiState(routeState, indexName)).toEqual({
       [indexName]: {
         query: 'agents',
         page: 3,
-        menu: { category: 'Philosophy', projects: 'Vestige' },
+        menu: { category: 'Philosophy', projects: 'Vestige', 'tags.lvl0': 'Engineering' },
       },
     });
   });
@@ -66,7 +76,13 @@ describe('searchRouting', () => {
     });
   });
 
-  it('omits menu when no kind or project is selected', () => {
+  it('maps route state back to uiState with only tag', () => {
+    expect(toUiState({ q: 'a', tag: 'TypeScript' }, indexName)).toEqual({
+      [indexName]: { query: 'a', page: undefined, menu: { 'tags.lvl0': 'TypeScript' } },
+    });
+  });
+
+  it('omits menu when no facet refinements are selected', () => {
     expect(toUiState({ q: 'x', page: 2 }, indexName)).toEqual({
       [indexName]: { query: 'x', page: 2 },
     });
@@ -78,6 +94,7 @@ describe('searchRouting', () => {
       page: undefined,
       kind: undefined,
       project: undefined,
+      tag: undefined,
     });
   });
 
