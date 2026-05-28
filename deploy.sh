@@ -2,11 +2,14 @@
 set -e
 
 # Configuration
-UI_SERVICE="system-notes-ui"
+UI_SERVICE="system-notes"
 UI_SOURCE="apps/web"
 UI_PORT="3000"
 
 REGION="${GCP_REGION:-us-east1}"
+ARTIFACT_CLEANUP_ENABLED="${ARTIFACT_CLEANUP_ENABLED:-true}"
+ARTIFACT_CLEANUP_KEEP_COUNT="${ARTIFACT_CLEANUP_KEEP_COUNT:-5}"
+ARTIFACT_CLEANUP_DELETE_OLDER_THAN="${ARTIFACT_CLEANUP_DELETE_OLDER_THAN:-7d}"
 
 SEPARATOR="=================================================="
 
@@ -30,6 +33,7 @@ echo "$SEPARATOR"
 echo "Project: $PROJECT_ID ($PROJECT_NUMBER)"
 echo "Region:  $REGION"
 echo "UI:      $UI_SERVICE ($UI_SOURCE)"
+echo "Cleanup: ${ARTIFACT_CLEANUP_ENABLED} (keep ${ARTIFACT_CLEANUP_KEEP_COUNT}, delete untagged > ${ARTIFACT_CLEANUP_DELETE_OLDER_THAN})"
 echo "$SEPARATOR"
 
 # Enable required services
@@ -43,7 +47,7 @@ UI_SA="system-notes-ui@$PROJECT_ID.iam.gserviceaccount.com"
 # For sensitive secrets, use Secret Manager instead of env vars
 if [[ -f ".env" ]]; then
     set -a
-    # shellcheck disable=SC1090
+    # shellcheck disable=SC1091
     . ".env"
     set +a
 fi
@@ -66,6 +70,72 @@ require_env "NEXT_PUBLIC_BASE_URL"
 # Set defaults for optional vars that are required by build
 NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME:-system-notes}"
 NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME:-${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME}_query_suggestions}"
+
+# ==========================================
+# Artifact Registry Helpers
+# ==========================================
+
+truthy() {
+    case "$1" in
+        true|TRUE|1|yes|YES|y|Y) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+ensure_artifact_cleanup_policy() {
+    local repository=$1
+
+    if ! truthy "$ARTIFACT_CLEANUP_ENABLED"; then
+        echo "Artifact Registry cleanup policy disabled."
+        return 0
+    fi
+
+    if ! [[ "$ARTIFACT_CLEANUP_KEEP_COUNT" =~ ^[1-9][0-9]*$ ]]; then
+        echo "Error: ARTIFACT_CLEANUP_KEEP_COUNT must be a positive integer." >&2
+        exit 1
+    fi
+
+    if ! [[ "$ARTIFACT_CLEANUP_DELETE_OLDER_THAN" =~ ^[1-9][0-9]*[smhd]$ ]]; then
+        echo "Error: ARTIFACT_CLEANUP_DELETE_OLDER_THAN must be a duration like 12h, 7d, or 30d." >&2
+        exit 1
+    fi
+
+    local policy_file
+    policy_file=$(mktemp)
+
+    cat > "$policy_file" <<EOF
+[
+  {
+    "name": "delete-old-untagged",
+    "action": {"type": "Delete"},
+    "condition": {
+      "tagState": "untagged",
+      "olderThan": "$ARTIFACT_CLEANUP_DELETE_OLDER_THAN"
+    }
+  },
+  {
+    "name": "keep-recent-versions",
+    "action": {"type": "Keep"},
+    "mostRecentVersions": {
+      "keepCount": $ARTIFACT_CLEANUP_KEEP_COUNT
+    }
+  }
+]
+EOF
+
+    echo "Applying Artifact Registry cleanup policy to $repository..."
+    if ! gcloud artifacts repositories set-cleanup-policies "$repository" \
+        --project "$PROJECT_ID" \
+        --location "$REGION" \
+        --policy "$policy_file" \
+        --no-dry-run \
+        --quiet; then
+        rm -f "$policy_file"
+        return 1
+    fi
+
+    rm -f "$policy_file"
+}
 
 # ==========================================
 # Build Helpers
@@ -135,6 +205,7 @@ deploy_service() {
             --project "$PROJECT_ID" \
             --description="Docker repository for $service_name"
     fi
+    ensure_artifact_cleanup_policy "$service_name"
 
     # 2. Build and Push Image
     local image_uri="$REGION-docker.pkg.dev/$PROJECT_ID/$service_name/$service_name:latest"
