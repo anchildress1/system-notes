@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
 import { GitHubIcon, TrophyIcon } from '@/components/icons';
+import { FaArrowRight } from 'react-icons/fa';
 import styles from './ProjectCard.module.css';
 
 interface ProjectCardProps {
@@ -17,6 +18,7 @@ export default function ProjectCard({
   priority = false,
 }: Readonly<ProjectCardProps>) {
   const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'ChecKMarKDevTools';
+  const isRetired = /archiv|retire|scrap/i.test(project.status);
 
   return (
     <motion.div
@@ -57,43 +59,57 @@ export default function ProjectCard({
             </div>
           )}
         </div>
-      </div>
-      {/* Header / Title Area */}
-      <div className={styles.content}>
-        <div className={styles.header}>
-          <div className={styles.headerTop}>
-            <span className="card-header-badge">{ownerName}</span>
-            {project.status === 'Archived' && <span className="card-header-badge">ARCHIVED</span>}
-            {project.repo_url && (
-              <SourceLinkButton
-                url={project.repo_url}
-                label={`View ${project.title} source code on GitHub`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  globalThis.open(project.repo_url, '_blank', 'noopener,noreferrer');
-                }}
-                icon={<GitHubIcon />}
-              />
-            )}
-          </div>
-          <h2 className={styles.title}>{project.title}</h2>
+        <div className={styles.imageOverlay}>
+          <span className={styles.projId}>/proj/{project.id}</span>
           {project.award && (
-            <div className="award-badge">
+            <span className="award-badge">
               <TrophyIcon className="award-badge-icon" />
               <span>{project.award}</span>
-            </div>
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className={styles.content}>
+        <div className={styles.headerTop}>
+          <span className="card-header-badge">{ownerName}</span>
+          {project.status === 'Archived' && <span className="card-header-badge">ARCHIVED</span>}
+          {project.repo_url && (
+            <SourceLinkButton
+              url={project.repo_url}
+              label={`View ${project.title} source code on GitHub`}
+              onClick={(e) => {
+                e.stopPropagation();
+                globalThis.open(project.repo_url, '_blank', 'noopener,noreferrer');
+              }}
+              icon={<GitHubIcon />}
+            />
           )}
         </div>
 
+        <h2 className={styles.title}>{project.title}</h2>
+
         <p className={styles.description}>{project.purpose}</p>
 
-        <div className={styles.loadoutGrid}>
+        <div className={styles.techRow}>
           {project.tech.slice(0, 4).map((t) => (
-            <div key={t.name} className={styles.loadoutBadge}>
-              <span className={styles.techName}>{t.name}</span>
-              <span className={styles.techRole}>{t.role}</span>
-            </div>
+            <span key={t.name} className={styles.techChip}>
+              {t.name}
+            </span>
           ))}
+          {project.tech.length > 4 && (
+            <span className={styles.techChip}>+{project.tech.length - 4}</span>
+          )}
+        </div>
+
+        <div className={styles.foot}>
+          <span className={styles.footState}>
+            <span className={`${styles.footDot} ${isRetired ? styles.footDotRetired : ''}`} />
+            {project.status}
+          </span>
+          <span className={styles.footRead} aria-hidden="true">
+            read note <FaArrowRight focusable="false" size={10} />
+          </span>
         </div>
       </div>
     </motion.div>
