@@ -21,13 +21,15 @@
   --ais-shadow-md: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
 }
 
-/* ── Music player dock position ── */
+/* ── Music player dock position ──
+   z-index sits above Algolia chat widget so the hover panel
+   remains visible when the chat window is expanded. */
 .musicWrapper {
   position: fixed;
   bottom: var(--chat-dock-margin);
   right: calc(var(--chat-dock-margin) + 60px + 16px);
   pointer-events: auto;
-  z-index: 200;
+  z-index: 1100;
 }
 
 /* ── Toggle button ── */
@@ -35,13 +37,13 @@
   width: 60px !important;
   height: 60px !important;
   border-radius: 99px !important;
-  background: var(--accent-violet) !important;
+  background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-violet) 100%) !important;
   border: none !important;
-  box-shadow: 0 0 calc(24px * var(--glow)) rgba(181, 107, 255, 0.4) !important;
+  box-shadow: 0 0 calc(24px * var(--glow)) rgba(181, 107, 255, 0.45) !important;
   transition: transform var(--transition-base), box-shadow var(--transition-base) !important;
 }
 
 .chatToggle:hover {
   transform: translateY(-4px) !important;
-  box-shadow: 0 6px calc(28px * var(--glow)) rgba(181, 107, 255, 0.5) !important;
+  box-shadow: 0 6px calc(32px * var(--glow)) rgba(241, 97, 151, 0.55) !important;
 }
