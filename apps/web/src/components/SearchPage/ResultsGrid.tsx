@@ -4,7 +4,13 @@ import type React from 'react';
 import { useHits, useInstantSearch } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
 import type { SendEventForHits } from '@/types/algolia';
-import { getCardVariant } from '@/components/FactCard/cardVariant';
+import { getCardVariant, type CardSize } from '@/components/FactCard/cardVariant';
+
+const SPAN_BY_SIZE: Record<CardSize, number> = {
+  third: 2,
+  half: 3,
+  'two-thirds': 4,
+};
 
 interface ResultsGridProps {
   hitComponent: React.ComponentType<{
@@ -47,8 +53,18 @@ export default function ResultsGrid({
           // start mid-cycle on page 2+, which breaks visual rhythm.
           const position = index + 1;
           const variant = getCardVariant(position);
+          // Span lives in an inline CSS variable so the grid column is
+          // applied without depending on attribute-selector specificity
+          // (which can be flaky across CSS modules / build pipelines).
+          // Media queries still override for the 4-col and 1-col breakpoints.
+          const span = SPAN_BY_SIZE[variant.size];
           return (
-            <li key={hit.objectID} className={classNames.item} data-size={variant.size}>
+            <li
+              key={hit.objectID}
+              className={classNames.item}
+              data-size={variant.size}
+              style={{ '--card-span': span } as React.CSSProperties}
+            >
               <HitComponent hit={hit} sendEvent={sendEvent} position={position} />
             </li>
           );

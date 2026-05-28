@@ -198,33 +198,23 @@
   gap: 16px;
 }
 
+/* Span value comes from ResultsGrid as an inline --card-span CSS variable.
+   Fallback to 2 if the variable is unset (defensive, shouldn't fire). */
 .hitsItem {
   display: flex;
-  grid-column: span 2;
+  grid-column: span var(--card-span, 2);
 }
 
-.hitsItem[data-size="third"]      { grid-column: span 2; }
-.hitsItem[data-size="half"]       { grid-column: span 3; }
-.hitsItem[data-size="two-thirds"] { grid-column: span 4; }
-
-/* At 4-col widths the 6-col rhythm can't tile cleanly — a span-4
-   two-thirds creates a hole on a partial row and `dense` pulls a
-   later card forward to fill it, scrambling source order.
-   Normalize every span to 2 here so rows always fill in source order. */
+/* Narrower viewports normalize every card to the same span so the
+   6-col rhythm can't leave holes when it doesn't tile cleanly. */
 @media (max-width: 1199px) {
   .hitsList { grid-template-columns: repeat(4, 1fr); }
-  .hitsItem,
-  .hitsItem[data-size="third"],
-  .hitsItem[data-size="half"],
-  .hitsItem[data-size="two-thirds"] { grid-column: span 2; }
+  .hitsItem { grid-column: span 2; }
 }
 
 @media (max-width: 720px) {
   .hitsList { grid-template-columns: 1fr; }
-  .hitsItem,
-  .hitsItem[data-size="third"],
-  .hitsItem[data-size="half"],
-  .hitsItem[data-size="two-thirds"] { grid-column: span 1; }
+  .hitsItem { grid-column: span 1; }
 }
 
 .hitsEmpty {
