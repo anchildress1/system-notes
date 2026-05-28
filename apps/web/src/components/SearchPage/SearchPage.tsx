@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useRef, useState } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
   InstantSearch,
@@ -70,8 +70,7 @@ export default function SearchPage() {
         <div className={styles.retrieveAttribution}>
           <AlgoliaAttribution />
         </div>
-        <KindChips />
-        <ProjectChips />
+        <FilterBar />
         <SectionHeader />
 
         <section className={styles.results} aria-label="Search results">
@@ -151,93 +150,93 @@ function RetrieveBar() {
   );
 }
 
-function KindChips() {
-  const { items, refine } = useMenu({
-    attribute: KIND_ATTRIBUTE,
-    limit: 12,
-    sortBy: ['count:desc'],
-  });
-  const { refine: clear, canRefine: canClear } = useClearRefinements({
-    includedAttributes: [KIND_ATTRIBUTE],
-  });
-  const anyRefined = items.some((item) => item.isRefined);
-
+function FilterBar() {
   return (
-    <div className={styles.kindRow}>
-      <span className={styles.kindLabel}>kind</span>
-      <div className={styles.kindChips}>
-        <button
-          type="button"
-          className={`${styles.kindChip} ${!anyRefined ? styles.kindChipActive : ''}`}
-          onClick={() => clear()}
-          aria-pressed={!anyRefined}
-        >
-          <span>all</span>
-        </button>
-        {items.map((item) => (
-          <button
-            key={item.value}
-            type="button"
-            className={`${styles.kindChip} ${item.isRefined ? styles.kindChipActive : ''}`}
-            onClick={() => refine(item.value)}
-            aria-pressed={item.isRefined}
-          >
-            <span>{item.label.toLowerCase()}</span>
-            <span className={styles.kindChipCount}>{String(item.count).padStart(2, '0')}</span>
-          </button>
-        ))}
-      </div>
-      {(anyRefined || canClear) && (
-        <button type="button" className={styles.kindClear} onClick={() => clear()}>
-          clear ✕
-        </button>
-      )}
+    <div className={styles.filterBar}>
+      <FilterDropdown attribute={PROJECT_ATTRIBUTE} label="project" />
+      <FilterDropdown attribute={KIND_ATTRIBUTE} label="kind" />
     </div>
   );
 }
 
-function ProjectChips() {
-  const { items, refine } = useMenu({
-    attribute: PROJECT_ATTRIBUTE,
-    limit: 12,
-    sortBy: ['count:desc'],
-  });
+function FilterDropdown({ attribute, label }: { attribute: string; label: string }) {
+  const { items, refine } = useMenu({ attribute, limit: 20, sortBy: ['count:desc'] });
   const { refine: clear, canRefine: canClear } = useClearRefinements({
-    includedAttributes: [PROJECT_ATTRIBUTE],
+    includedAttributes: [attribute],
   });
-  const anyRefined = items.some((item) => item.isRefined);
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const selected = items.find((item) => item.isRefined);
 
-  if (items.length === 0) return null;
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  // Hide the dropdown entirely when there are no facet values to show
+  // and nothing is currently refined.
+  if (items.length === 0 && !canClear) return null;
+
+  const totalCount = items.reduce((sum, item) => sum + item.count, 0);
+  const buttonText = selected ? `${label}: ${selected.label.toLowerCase()}` : `${label}: all`;
 
   return (
-    <div className={styles.kindRow}>
-      <span className={styles.kindLabel}>project</span>
-      <div className={styles.kindChips}>
-        <button
-          type="button"
-          className={`${styles.kindChip} ${!anyRefined ? styles.kindChipActive : ''}`}
-          onClick={() => clear()}
-          aria-pressed={!anyRefined}
-        >
-          <span>all</span>
-        </button>
-        {items.map((item) => (
+    <div ref={rootRef} className={styles.filterDropdown}>
+      <button
+        type="button"
+        className={`${styles.filterButton} ${selected ? styles.filterButtonActive : ''}`}
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+      >
+        <span>{buttonText}</span>
+        <span aria-hidden="true" className={styles.filterCaret}>
+          ▾
+        </span>
+      </button>
+      {open && (
+        <div className={styles.filterPopover} role="listbox" aria-label={`${label} filter`}>
           <button
-            key={item.value}
             type="button"
-            className={`${styles.kindChip} ${item.isRefined ? styles.kindChipActive : ''}`}
-            onClick={() => refine(item.value)}
-            aria-pressed={item.isRefined}
+            className={`${styles.filterOption} ${!selected ? styles.filterOptionActive : ''}`}
+            onClick={() => {
+              clear();
+              setOpen(false);
+            }}
+            role="option"
+            aria-selected={!selected}
           >
-            <span>{item.label.toLowerCase()}</span>
-            <span className={styles.kindChipCount}>{String(item.count).padStart(2, '0')}</span>
+            <span>all</span>
+            <span className={styles.filterCount}>{String(totalCount).padStart(2, '0')}</span>
           </button>
-        ))}
-      </div>
-      {(anyRefined || canClear) && (
-        <button type="button" className={styles.kindClear} onClick={() => clear()}>
-          clear ✕
-        </button>
+          {items.map((item) => (
+            <button
+              key={item.value}
+              type="button"
+              className={`${styles.filterOption} ${item.isRefined ? styles.filterOptionActive : ''}`}
+              onClick={() => {
+                refine(item.value);
+                setOpen(false);
+              }}
+              role="option"
+              aria-selected={item.isRefined}
+            >
+              <span>{item.label.toLowerCase()}</span>
+              <span className={styles.filterCount}>{String(item.count).padStart(2, '0')}</span>
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );
