@@ -198,23 +198,21 @@
   gap: 16px;
 }
 
-/* Span value comes from ResultsGrid as an inline --card-span CSS variable.
-   Fallback to 2 if the variable is unset (defensive, shouldn't fire). */
+/* Span lives in inline `style.gridColumn` on each li (set in ResultsGrid).
+   Inline styles always win at default viewport. !important here overrides
+   the inline value at narrower breakpoints so the cycle normalizes. */
 .hitsItem {
   display: flex;
-  grid-column: span var(--card-span, 2);
 }
 
-/* Narrower viewports normalize every card to the same span so the
-   6-col rhythm can't leave holes when it doesn't tile cleanly. */
 @media (max-width: 1199px) {
   .hitsList { grid-template-columns: repeat(4, 1fr); }
-  .hitsItem { grid-column: span 2; }
+  .hitsItem { grid-column: span 2 !important; }
 }
 
 @media (max-width: 720px) {
   .hitsList { grid-template-columns: 1fr; }
-  .hitsItem { grid-column: span 1; }
+  .hitsItem { grid-column: span 1 !important; }
 }
 
 .hitsEmpty {

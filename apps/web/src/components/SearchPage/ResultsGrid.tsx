@@ -53,17 +53,17 @@ export default function ResultsGrid({
           // start mid-cycle on page 2+, which breaks visual rhythm.
           const position = index + 1;
           const variant = getCardVariant(position);
-          // Span lives in an inline CSS variable so the grid column is
-          // applied without depending on attribute-selector specificity
-          // (which can be flaky across CSS modules / build pipelines).
-          // Media queries still override for the 4-col and 1-col breakpoints.
+          // Apply the grid span directly as an inline style so it's
+          // unambiguous and cannot be lost to cascade/specificity issues.
+          // Narrow-viewport overrides use !important in the media query CSS.
           const span = SPAN_BY_SIZE[variant.size];
           return (
             <li
               key={hit.objectID}
               className={classNames.item}
               data-size={variant.size}
-              style={{ '--card-span': span } as React.CSSProperties}
+              data-position={position}
+              style={{ gridColumn: `span ${span}` }}
             >
               <HitComponent hit={hit} sendEvent={sendEvent} position={position} />
             </li>
