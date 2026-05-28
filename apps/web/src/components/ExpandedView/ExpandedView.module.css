@@ -2,8 +2,8 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-overlay);
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  background: rgba(8, 9, 12, 0.78);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,18 +12,16 @@
 }
 
 .expandedCard {
-  background: hsl(var(--color-bg-surface));
+  background: linear-gradient(180deg, rgba(29, 31, 40, 0.92), rgba(22, 24, 31, 0.92));
   width: 90vw;
-  max-width: 650px;
+  max-width: 720px;
   height: auto;
   max-height: 85vh;
-  border-radius: var(--radius-xl);
+  border-radius: var(--r-xl);
   overflow-y: auto;
   position: relative;
-  box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.8),
-    0 0 0 1px hsl(var(--color-accent-purple) / 0.2);
-  border: 1px solid hsl(var(--color-accent-purple) / 0.3);
+  box-shadow: var(--shadow-deep), 0 0 0 1px var(--accent-violet-soft);
+  border: 1px solid var(--border-strong);
   display: flex;
   flex-direction: column;
   isolation: isolate;
@@ -49,11 +47,11 @@
 
 .imageContainer {
   width: 100%;
-  height: 200px;
+  height: 220px;
   position: relative;
-  background: black;
+  background: var(--bg-deep);
   flex-shrink: 0;
-  border-bottom: 1px solid hsl(var(--color-border));
+  border-bottom: 1px solid var(--border);
   overflow: hidden;
 }
 
@@ -75,19 +73,19 @@
 .bannerImage {
   object-fit: cover;
   z-index: 2;
-  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
   opacity: 0.9;
 }
 
 .content {
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-sm) var(--space-md) var(--space-md);
   flex-grow: 1;
   height: auto;
 }
 
 .header {
   margin-bottom: var(--space-md);
-  border-bottom: 1px solid hsl(var(--color-border));
+  border-bottom: 1px solid var(--border);
   padding-bottom: var(--space-md);
 }
 
@@ -111,58 +109,57 @@
   gap: 0.75rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: hsl(var(--color-accent-teal));
+  color: var(--accent-teal);
   text-transform: uppercase;
   letter-spacing: 2px;
 }
 
 .title {
+  font-family: var(--font-display);
   font-size: 2rem;
-  font-weight: 600;
-  color: hsl(var(--color-text-primary));
-  line-height: 1.1;
-  letter-spacing: -1px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
   margin: 0;
 }
-
-/* Award badge styles moved to global stylesheet */
 
 .statusBadge {
   display: inline-block;
   padding: 6px 12px;
-  background: hsl(var(--color-accent-teal) / 0.1);
-  color: hsl(var(--color-accent-teal));
-  border: 1px solid hsl(var(--color-accent-teal) / 0.5);
-  border-radius: var(--radius-sm);
-  font-size: 0.8rem;
+  background: var(--accent-teal-soft);
+  color: var(--accent-teal);
+  border: 1px solid rgba(62, 199, 194, 0.5);
+  border-radius: var(--r-sm);
+  font-size: 0.7rem;
   font-weight: 700;
   font-family: var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 1px;
   white-space: nowrap;
-  box-shadow: 0 0 10px hsl(var(--color-accent-teal) / 0.1);
 }
 
 .repoLinkCompact {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.3rem 0.8rem;
-  background: hsl(var(--color-text-primary) / 0.08);
-  color: hsl(var(--color-text-primary));
+  padding: 0.4rem 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
-  border-radius: var(--radius-pill);
-  border: 1px solid hsl(var(--color-border));
-  transition: all var(--transition-base);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong);
+  transition: background var(--transition-base), border-color var(--transition-base),
+    color var(--transition-base);
   white-space: nowrap;
 }
 
 .repoLinkCompact:hover {
-  background: hsl(var(--color-accent-pink) / 0.1);
-  border-color: hsl(var(--color-accent-pink) / 0.5);
-  color: hsl(var(--color-accent-pink));
+  background: var(--accent-pink-soft);
+  border-color: var(--accent-pink);
+  color: var(--accent-pink);
 }
 
 .body {
@@ -172,24 +169,25 @@
 }
 
 .bodyText {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: hsl(var(--color-text-secondary));
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .techStack {
   padding: var(--space-md) 0;
-  border-top: 1px solid hsl(var(--color-border));
+  border-top: 1px solid var(--border);
 }
 
 .sectionTitle {
   font-family: var(--font-mono);
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   letter-spacing: 1.5px;
   margin-bottom: var(--space-sm);
-  color: hsl(var(--color-text-secondary));
+  color: var(--text-muted);
 }
 
 .tags {
@@ -202,20 +200,22 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--accent-violet);
 }
 
 .tagName {
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: hsl(var(--color-text-primary));
+  color: var(--text-primary);
 }
 
 .tagRole {
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   font-style: italic;
-  color: hsl(var(--color-text-secondary));
+  color: var(--text-muted);
 }
 
 .mainColumn {
@@ -224,9 +224,14 @@
   gap: var(--space-md);
 }
 
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
 .fullWidthSection {
   grid-column: 1 / -1;
-  border-top: 1px solid hsl(var(--color-border));
+  border-top: 1px solid var(--border);
   padding-top: var(--space-md);
 }
 
@@ -250,16 +255,18 @@
 }
 
 .blogLink {
-  color: hsl(var(--color-accent-purple));
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-violet);
   text-decoration: none;
   font-weight: 500;
-  transition: color var(--transition-base);
+  transition: color var(--transition-base), border-color var(--transition-base);
   border-bottom: 1px dotted transparent;
 }
 
 .blogLink:hover {
-  color: hsl(var(--color-accent-pink));
-  border-bottom-color: hsl(var(--color-accent-pink));
+  color: var(--accent-pink);
+  border-bottom-color: var(--accent-pink);
 }
 
 @media (max-width: 768px) {
@@ -273,7 +280,7 @@
   }
 
   .imageContainer {
-    height: 240px;
+    height: 200px;
   }
 
   .body {
