@@ -62,7 +62,6 @@ export default function SearchPage() {
         <Configure
           hitsPerPage={24}
           attributesToHighlight={['title', 'blurb', 'fact']}
-          facets={[KIND_ATTRIBUTE]}
           clickAnalytics
         />
 
