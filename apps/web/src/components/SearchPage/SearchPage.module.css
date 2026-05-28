@@ -190,6 +190,23 @@
   font-variant-numeric: tabular-nums;
 }
 
+.filterOptionLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.filterCheck {
+  display: inline-block;
+  width: 12px;
+  color: var(--accent-violet);
+  font-weight: 700;
+  font-size: 11px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
 .filterClearAll {
   /* Sits right after the last dropdown so it reads as part of the same
      group, separated only by the filterBar's gap. */

@@ -7,7 +7,7 @@ import {
   Configure,
   useSearchBox,
   useStats,
-  useMenu,
+  useRefinementList,
   useClearRefinements,
 } from 'react-instantsearch';
 import aa from 'search-insights';
@@ -178,7 +178,12 @@ function ClearAllFilters() {
 }
 
 function FilterDropdown({ attribute, label }: { attribute: string; label: string }) {
-  const { items, refine } = useMenu({ attribute, limit: 20, sortBy: ['count:desc'] });
+  const { items, refine } = useRefinementList({
+    attribute,
+    limit: 20,
+    sortBy: ['count:desc'],
+    operator: 'or',
+  });
   const { refine: clear, canRefine: canClear } = useClearRefinements({
     includedAttributes: [attribute],
   });
@@ -189,7 +194,7 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
   const popoverId = useId();
   const wasOpenRef = useRef(false);
 
-  const selected = items.find((item) => item.isRefined);
+  const selectedItems = items.filter((item) => item.isRefined);
   // Option layout: index 0 = "all"; items occupy 1..items.length
   const optionCount = items.length + 1;
 
@@ -221,13 +226,13 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
     };
   }, [open]);
 
-  // Focus management: when opening, move focus to the selected option
+  // Focus management: when opening, move focus to the first selected option
   // (or "all" if nothing is selected). When closing after being open,
   // return focus to the trigger button.
   useEffect(() => {
     if (open) {
-      const activeIdx = items.findIndex((i) => i.isRefined);
-      const idx = activeIdx >= 0 ? activeIdx + 1 : 0;
+      const firstSelectedIdx = items.findIndex((i) => i.isRefined);
+      const idx = firstSelectedIdx >= 0 ? firstSelectedIdx + 1 : 0;
       requestAnimationFrame(() => optionRefs.current[idx]?.focus());
     } else if (wasOpenRef.current) {
       buttonRef.current?.focus();
@@ -238,10 +243,15 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
   if (items.length === 0 && !canClear) return null;
 
   const totalCount = items.reduce((sum, item) => sum + item.count, 0);
-  const buttonText = selected ? `${label}: ${selected.label.toLowerCase()}` : `${label}: all`;
-  const buttonAria = selected
-    ? `${label} filter, currently ${selected.label}, ${selected.count} results`
-    : `${label} filter, no selection`;
+  const selectedCount = selectedItems.length;
+  let buttonText: string;
+  if (selectedCount === 0) buttonText = `${label}: all`;
+  else if (selectedCount === 1) buttonText = `${label}: ${selectedItems[0].label.toLowerCase()}`;
+  else buttonText = `${label}: ${selectedItems[0].label.toLowerCase()} +${selectedCount - 1}`;
+  const buttonAria =
+    selectedCount === 0
+      ? `${label} filter, no selection`
+      : `${label} filter, ${selectedCount} selected: ${selectedItems.map((i) => i.label).join(', ')}`;
 
   const onPopoverKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     const focusedEl = document.activeElement;
@@ -277,7 +287,7 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
       <button
         ref={buttonRef}
         type="button"
-        className={`${styles.filterButton} ${selected ? styles.filterButtonActive : ''}`}
+        className={`${styles.filterButton} ${selectedCount > 0 ? styles.filterButtonActive : ''}`}
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="true"
@@ -302,12 +312,14 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
               optionRefs.current[0] = el;
             }}
             type="button"
-            className={`${styles.filterOption} ${!selected ? styles.filterOptionActive : ''}`}
+            className={`${styles.filterOption} ${selectedCount === 0 ? styles.filterOptionActive : ''}`}
             onClick={() => {
+              // "all" is a one-shot reset: clear everything in this attribute
+              // and close the popover so the action feels final.
               clear();
               setOpen(false);
             }}
-            aria-pressed={!selected}
+            aria-pressed={selectedCount === 0}
           >
             <span>all</span>
             <span className={styles.filterCount}>{String(totalCount).padStart(2, '0')}</span>
@@ -320,13 +332,18 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
               }}
               type="button"
               className={`${styles.filterOption} ${item.isRefined ? styles.filterOptionActive : ''}`}
-              onClick={() => {
-                refine(item.value);
-                setOpen(false);
-              }}
+              // Multi-select: toggle this value and KEEP popover open so the
+              // user can pick more in one pass. Escape, click-outside, or
+              // re-clicking the trigger closes it.
+              onClick={() => refine(item.value)}
               aria-pressed={item.isRefined}
             >
-              <span>{item.label.toLowerCase()}</span>
+              <span className={styles.filterOptionLabel}>
+                <span aria-hidden="true" className={styles.filterCheck}>
+                  {item.isRefined ? '✓' : ''}
+                </span>
+                <span>{item.label.toLowerCase()}</span>
+              </span>
               <span className={styles.filterCount}>{String(item.count).padStart(2, '0')}</span>
             </button>
           ))}

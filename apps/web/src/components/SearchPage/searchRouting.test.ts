@@ -17,26 +17,33 @@ describe('searchRouting', () => {
     mockHistory.mockClear();
   });
 
-  it('maps uiState (query, page, menu kind, project, tag) to route state', () => {
+  it('maps uiState (query, page, refinementList kind, project, tag) to route state', () => {
     const uiState = {
       [indexName]: {
         query: 'carbon',
         page: 2,
-        menu: { category: 'Decisions', projects: 'Vestige', 'tags.lvl0': 'Engineering' },
+        refinementList: {
+          category: ['Decisions', 'Principle'],
+          projects: ['Vestige'],
+          'tags.lvl0': ['Engineering', 'Design'],
+        },
       },
     };
     expect(toRouteState(uiState, indexName)).toEqual({
       q: 'carbon',
       page: 2,
-      kind: 'Decisions',
-      project: 'Vestige',
-      tag: 'Engineering',
+      kind: ['Decisions', 'Principle'],
+      project: ['Vestige'],
+      tag: ['Engineering', 'Design'],
     });
   });
 
-  it('omits empty query, kind, project, and tag', () => {
+  it('omits empty refinement lists', () => {
     const uiState = {
-      [indexName]: { query: '', menu: { category: '', projects: '', 'tags.lvl0': '' } },
+      [indexName]: {
+        query: '',
+        refinementList: { category: [], projects: [], 'tags.lvl0': [] },
+      },
     };
     expect(toRouteState(uiState, indexName)).toEqual({
       q: undefined,
@@ -47,48 +54,62 @@ describe('searchRouting', () => {
     });
   });
 
-  it('maps route state back to uiState with kind + project + tag menu refinements', () => {
+  it('maps route state back to uiState with multi-select refinementList', () => {
     const routeState = {
       q: 'agents',
       page: 3,
-      kind: 'Philosophy',
-      project: 'Vestige',
-      tag: 'Engineering',
+      kind: ['Philosophy', 'Decisions'],
+      project: ['Vestige'],
+      tag: ['Engineering'],
     };
     expect(toUiState(routeState, indexName)).toEqual({
       [indexName]: {
         query: 'agents',
         page: 3,
-        menu: { category: 'Philosophy', projects: 'Vestige', 'tags.lvl0': 'Engineering' },
+        refinementList: {
+          category: ['Philosophy', 'Decisions'],
+          projects: ['Vestige'],
+          'tags.lvl0': ['Engineering'],
+        },
       },
     });
   });
 
   it('maps route state back to uiState with only kind', () => {
-    expect(toUiState({ q: 'a', kind: 'P' }, indexName)).toEqual({
-      [indexName]: { query: 'a', page: undefined, menu: { category: 'P' } },
+    expect(toUiState({ q: 'a', kind: ['P'] }, indexName)).toEqual({
+      [indexName]: { query: 'a', page: undefined, refinementList: { category: ['P'] } },
     });
   });
 
   it('maps route state back to uiState with only project', () => {
-    expect(toUiState({ q: 'a', project: 'V' }, indexName)).toEqual({
-      [indexName]: { query: 'a', page: undefined, menu: { projects: 'V' } },
+    expect(toUiState({ q: 'a', project: ['V'] }, indexName)).toEqual({
+      [indexName]: { query: 'a', page: undefined, refinementList: { projects: ['V'] } },
     });
   });
 
   it('maps route state back to uiState with only tag', () => {
-    expect(toUiState({ q: 'a', tag: 'TypeScript' }, indexName)).toEqual({
-      [indexName]: { query: 'a', page: undefined, menu: { 'tags.lvl0': 'TypeScript' } },
+    expect(toUiState({ q: 'a', tag: ['TypeScript'] }, indexName)).toEqual({
+      [indexName]: {
+        query: 'a',
+        page: undefined,
+        refinementList: { 'tags.lvl0': ['TypeScript'] },
+      },
     });
   });
 
-  it('omits menu when no facet refinements are selected', () => {
+  it('omits refinementList when no facet refinements are selected', () => {
     expect(toUiState({ q: 'x', page: 2 }, indexName)).toEqual({
       [indexName]: { query: 'x', page: 2 },
     });
   });
 
-  it('handles uiState without query or menu gracefully', () => {
+  it('omits refinementList when arrays are present but empty', () => {
+    expect(toUiState({ q: 'x', kind: [], project: [], tag: [] }, indexName)).toEqual({
+      [indexName]: { query: 'x', page: undefined },
+    });
+  });
+
+  it('handles uiState without query or refinementList gracefully', () => {
     expect(toRouteState({ [indexName]: {} } as never, indexName)).toEqual({
       q: undefined,
       page: undefined,
@@ -104,9 +125,15 @@ describe('searchRouting', () => {
     });
   });
 
-  it('builds a search page URL from index ui state', () => {
-    const indexUiState = { query: 'carbon', page: 2, menu: { category: 'Work Style' } };
-    expect(getSearchPageURL(indexUiState, indexName)).toBe('/?q=carbon&page=2&kind=Work+Style');
+  it('builds a search page URL with multiple facet values appended', () => {
+    const indexUiState = {
+      query: 'carbon',
+      page: 2,
+      refinementList: { category: ['Work Style', 'Decisions'] },
+    };
+    expect(getSearchPageURL(indexUiState, indexName)).toBe(
+      '/?q=carbon&page=2&kind=Work+Style&kind=Decisions'
+    );
   });
 
   it('returns base path when there is no state', () => {
@@ -121,15 +148,21 @@ describe('searchRouting', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let routerConfig: any;
     const qsModule = {
-      stringify: (params: Record<string, unknown>) =>
-        new URLSearchParams(params as Record<string, string>).toString(),
+      stringify: (params: Record<string, unknown>) => {
+        const search = new URLSearchParams();
+        for (const [key, value] of Object.entries(params)) {
+          if (Array.isArray(value)) for (const v of value) search.append(key, String(v));
+          else if (value !== undefined) search.append(key, String(value));
+        }
+        return search.toString();
+      },
       parse: (str: string) => {
         const params = new URLSearchParams(str);
         const result: Record<string, string | string[]> = {};
         params.forEach((value, key) => {
           if (result[key]) {
             if (Array.isArray(result[key])) {
-              result[key].push(value);
+              (result[key] as string[]).push(value);
             } else {
               result[key] = [result[key] as string, value];
             }
@@ -150,8 +183,8 @@ describe('searchRouting', () => {
       expect(routerConfig.windowTitle()).toBe("Choices | Ashley's System Notes");
     });
 
-    it('creates a URL with q, page, and kind', () => {
-      const routeState = { q: 'carbon', page: 2, kind: 'Decisions' };
+    it('creates a URL with q, page, and multi-value kind', () => {
+      const routeState = { q: 'carbon', page: 2, kind: ['Decisions', 'Principle'] };
       const location = { origin: 'https://example.com', pathname: '/', search: '' };
       const mockStringify = vi.fn().mockReturnValue('?mocked');
       const url = routerConfig.createURL({
@@ -160,7 +193,7 @@ describe('searchRouting', () => {
         location,
       });
       expect(mockStringify).toHaveBeenCalledWith(
-        expect.objectContaining({ q: 'carbon', page: 2, kind: 'Decisions' }),
+        expect.objectContaining({ q: 'carbon', page: 2, kind: ['Decisions', 'Principle'] }),
         expect.any(Object)
       );
       expect(url).toBe('https://example.com/?mocked');
@@ -198,18 +231,20 @@ describe('searchRouting', () => {
       );
     });
 
-    it('parses q, page, and kind from the URL', () => {
+    it('parses a single kind value into a one-element array', () => {
       const location = { search: '?q=carbon&page=2&kind=Decisions' };
       expect(routerConfig.parseURL({ qsModule, location })).toEqual({
         q: 'carbon',
         page: 2,
-        kind: 'Decisions',
+        kind: ['Decisions'],
+        project: undefined,
+        tag: undefined,
       });
     });
 
-    it('takes the first value when kind appears multiple times', () => {
-      const location = { search: '?kind=A&kind=B' };
-      expect(routerConfig.parseURL({ qsModule, location }).kind).toBe('A');
+    it('parses repeated kind params into an array', () => {
+      const location = { search: '?kind=A&kind=B&kind=C' };
+      expect(routerConfig.parseURL({ qsModule, location }).kind).toEqual(['A', 'B', 'C']);
     });
 
     it.each(['?page=invalid', '?page=0', '?page=1', '?page=-5'])(
