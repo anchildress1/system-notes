@@ -30,12 +30,7 @@ export default function Header() {
       </a>
 
       <div className={styles.row}>
-        <button
-          type="button"
-          className={styles.brand}
-          onClick={() => globalThis.dispatchEvent(new Event('trigger-glitter-bomb'))}
-          aria-label="Trigger glitter effect"
-        >
+        <Link href="/" className={styles.brand} aria-label="Ashley Childress, home">
           <div className={styles.brandMark} aria-hidden="true">
             <Image
               src="/favicon.png"
@@ -50,7 +45,7 @@ export default function Header() {
             <span className={styles.brandTitle}>Ashley Childress</span>
             <span className={styles.brandSub}>SYS_NOTES · v2.0.26</span>
           </div>
-        </button>
+        </Link>
 
         <nav className={styles.nav} aria-label="Main Navigation">
           {NAV_ITEMS.map(({ label, href }) => (
