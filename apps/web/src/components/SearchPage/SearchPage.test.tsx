@@ -3,7 +3,6 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import React from 'react';
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(() => ({
@@ -17,8 +16,9 @@ vi.mock('next/navigation', () => ({
   useSearchParams: vi.fn(() => ({
     get: vi.fn(),
     has: vi.fn(),
+    toString: vi.fn(() => ''),
   })),
-  usePathname: vi.fn(() => '/search'),
+  usePathname: vi.fn(() => '/'),
 }));
 
 vi.mock('algoliasearch/lite', () => ({
@@ -31,12 +31,13 @@ vi.mock('algoliasearch/lite', () => ({
             nbHits: 0,
             page: 0,
             nbPages: 0,
-            hitsPerPage: 20,
+            hitsPerPage: 24,
             processingTimeMS: 1,
             exhaustiveNbHits: true,
             query: '',
             params: '',
             index: 'test_index',
+            facets: {},
           },
         ],
       })
@@ -46,44 +47,7 @@ vi.mock('algoliasearch/lite', () => ({
 }));
 
 vi.mock('./SearchPage.module.css', () => ({
-  default: {
-    container: 'container',
-    errorState: 'errorState',
-    errorMessage: 'errorMessage',
-    searchSection: 'searchSection',
-    searchBoxRoot: 'searchBoxRoot',
-    searchBoxForm: 'searchBoxForm',
-    searchBoxInput: 'searchBoxInput',
-    searchBoxSubmit: 'searchBoxSubmit',
-    searchBoxReset: 'searchBoxReset',
-    searchBoxSubmitIcon: 'searchBoxSubmitIcon',
-    searchBoxResetIcon: 'searchBoxResetIcon',
-    metaRow: 'metaRow',
-    statsRoot: 'statsRoot',
-    algoliaAttribution: 'algoliaAttribution',
-    algoliaIcon: 'algoliaIcon',
-    algoliaText: 'algoliaText',
-    layout: 'layout',
-    sidebar: 'sidebar',
-    filterSection: 'filterSection',
-    refinementGroup: 'refinementGroup',
-    refinementTitle: 'refinementTitle',
-    refinementRoot: 'refinementRoot',
-    refinementList: 'refinementList',
-    refinementItem: 'refinementItem',
-    refinementItemSelected: 'refinementItemSelected',
-    refinementLabel: 'refinementLabel',
-    refinementCheckbox: 'refinementCheckbox',
-    refinementLabelText: 'refinementLabelText',
-    refinementCount: 'refinementCount',
-    clearRoot: 'clearRoot',
-    clearButton: 'clearButton',
-    clearButtonDisabled: 'clearButtonDisabled',
-    results: 'results',
-    hitsRoot: 'hitsRoot',
-    hitsList: 'hitsList',
-    hitsItem: 'hitsItem',
-  },
+  default: new Proxy({}, { get: (_target, key) => String(key) }),
 }));
 
 describe('SearchPage Component', () => {
@@ -109,13 +73,13 @@ describe('SearchPage Component', () => {
     expect(screen.getByText(/Search is currently unavailable/)).toBeInTheDocument();
   });
 
-  it('renders search box container when configuration is present', async () => {
+  it('renders the retrieve search box when configuration is present', async () => {
     vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'ABCDEF1234');
     vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', '12345678901234567890abcdef123456');
 
     await renderSearchPage();
 
-    expect(screen.getByTestId('sitesearch')).toBeInTheDocument();
+    expect(screen.getByLabelText('Search the index')).toBeInTheDocument();
   });
 
   it('renders error state when app ID is invalid format', async () => {

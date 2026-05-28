@@ -32,27 +32,24 @@ Canonical instruction source for this repository. Treat this file as authoritati
 
 ## URL State Architecture: Search Page
 
-### Core rule: InstantSearch owns the URL; FactCard owns local overlay state
+### Core rule: InstantSearch owns the URL; FactCard owns local flip state
 
-InstantSearch manages all URL serialization (query, facets, page) via its default routing. FactCard does NOT write to the URL — it toggles a local overlay and fires Algolia click events.
+InstantSearch manages all URL serialization (query, facets, page) via its default routing. FactCard does NOT write to the URL — it toggles a local 3D flip in its grid cell and fires Algolia click events.
 
-Deep-linking via `?factId=...` is handled separately by `useFactIdRouting`, which fetches the card from Algolia and renders a standalone overlay.
+There is no deep-link overlay. The card never grows, never modals, never takes over the screen. Both faces live in the same grid slot.
 
 ### Implementation contracts
 
-| Component                                            | Responsibility                                        | Writes to URL       |
-| ---------------------------------------------------- | ----------------------------------------------------- | ------------------- |
-| `FactCard.openCard`                                  | Toggle local overlay state; fire `sendEvent`          | No                  |
-| `FactCard.closeCard`                                 | Toggle local overlay state                            | No                  |
-| `FactCard.cardUrl` (href)                            | Static link for right-click / new tab                 | `factId` only       |
-| `searchRouting`                                      | Serialize InstantSearch state (query, facets, page)   | Search params       |
-| `useFactIdRouting`                                   | Deep-link overlay for direct navigation with `factId` | Removes on close    |
-| Facet widgets (`RefinementList`, `GroupedTagFilter`) | Refine via InstantSearch hooks                        | Via `searchRouting` |
+| Component                         | Responsibility                                    | Writes to URL       |
+| --------------------------------- | ------------------------------------------------- | ------------------- |
+| `FactCard.openCard` / `closeCard` | Toggle local in-place 3D flip; fire `sendEvent`   | No                  |
+| `searchRouting`                   | Serialize InstantSearch state (query, kind, page) | Search params       |
+| Facet widgets (`KindChips`, etc.) | Refine via InstantSearch hooks                    | Via `searchRouting` |
 
 ### Rules for future changes
 
 - FactCard must NOT call `window.history.pushState`. InstantSearch manages the URL.
-- `searchRouting` must NOT serialize or deserialize `factId` as search state. It may passthrough `factId` as an opaque param in `createURL` to prevent InstantSearch from stripping it during URL rewrites. Ownership of `factId` belongs to `useFactIdRouting`.
+- Do not reintroduce a fact-card overlay, modal, or expand-to-fullscreen behavior. The card flips in place inside its grid cell.
 - Algolia events (`sendEvent`) fire on card open. Never gate events on URL state.
 - Do not add custom `createURL` logic that fights InstantSearch's default routing behavior.
 
