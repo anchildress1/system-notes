@@ -2,11 +2,13 @@ import { history } from 'instantsearch.js/es/lib/routers';
 import type { IndexUiState, UiState } from 'instantsearch.js';
 
 const KIND_ATTRIBUTE = 'category';
+const PROJECT_ATTRIBUTE = 'projects';
 
 export type SearchRouteState = {
   q?: string;
   page?: number;
   kind?: string; // selected category (single-select kind chip)
+  project?: string; // selected project (single-select project chip)
 };
 
 const parsePageParam = (value?: unknown): number | undefined => {
@@ -26,21 +28,26 @@ const asString = (value?: unknown): string | undefined => {
 
 export const toRouteState = (uiState: UiState, indexName: string): SearchRouteState => {
   const indexState = uiState[indexName] || {};
-  const kind = indexState.menu?.[KIND_ATTRIBUTE];
   return {
     q: indexState.query || undefined,
     page: indexState.page,
-    kind: kind || undefined,
+    kind: indexState.menu?.[KIND_ATTRIBUTE] || undefined,
+    project: indexState.menu?.[PROJECT_ATTRIBUTE] || undefined,
   };
 };
 
-export const toUiState = (routeState: SearchRouteState, indexName: string): UiState => ({
-  [indexName]: {
-    query: routeState.q,
-    page: routeState.page,
-    ...(routeState.kind ? { menu: { [KIND_ATTRIBUTE]: routeState.kind } } : {}),
-  },
-});
+export const toUiState = (routeState: SearchRouteState, indexName: string): UiState => {
+  const menu: Record<string, string> = {};
+  if (routeState.kind) menu[KIND_ATTRIBUTE] = routeState.kind;
+  if (routeState.project) menu[PROJECT_ATTRIBUTE] = routeState.project;
+  return {
+    [indexName]: {
+      query: routeState.q,
+      page: routeState.page,
+      ...(Object.keys(menu).length > 0 ? { menu } : {}),
+    },
+  };
+};
 
 export const createSearchRouting = (indexName: string) => ({
   router: history<SearchRouteState>({
@@ -54,6 +61,7 @@ export const createSearchRouting = (indexName: string) => ({
       if (routeState.q) queryParameters.q = routeState.q;
       if (routeState.page && routeState.page > 1) queryParameters.page = routeState.page;
       if (routeState.kind) queryParameters.kind = routeState.kind;
+      if (routeState.project) queryParameters.project = routeState.project;
 
       // Passthrough: factId is an Algolia click-analytics correlator (objectID).
       // InstantSearch's router strips any param it doesn't own; re-inject it
@@ -76,6 +84,7 @@ export const createSearchRouting = (indexName: string) => ({
         q: asString(parsed.q),
         page: parsePageParam(parsed.page),
         kind: asString(parsed.kind),
+        project: asString(parsed.project),
       };
     },
   }),
@@ -100,6 +109,7 @@ export const getSearchPageURL = (
   if (routeState.q) params.set('q', routeState.q);
   if (routeState.page && routeState.page > 1) params.set('page', String(routeState.page));
   if (routeState.kind) params.set('kind', routeState.kind);
+  if (routeState.project) params.set('project', routeState.project);
 
   const queryString = params.toString();
   return queryString ? `${basePath}?${queryString}` : basePath;

@@ -34,6 +34,7 @@ const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
 aa('setUserToken', getChatSessionId());
 
 const KIND_ATTRIBUTE = 'category';
+const PROJECT_ATTRIBUTE = 'projects';
 
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
@@ -70,6 +71,7 @@ export default function SearchPage() {
           <AlgoliaAttribution />
         </div>
         <KindChips />
+        <ProjectChips />
         <SectionHeader />
 
         <section className={styles.results} aria-label="Search results">
@@ -163,6 +165,53 @@ function KindChips() {
   return (
     <div className={styles.kindRow}>
       <span className={styles.kindLabel}>kind</span>
+      <div className={styles.kindChips}>
+        <button
+          type="button"
+          className={`${styles.kindChip} ${!anyRefined ? styles.kindChipActive : ''}`}
+          onClick={() => clear()}
+          aria-pressed={!anyRefined}
+        >
+          <span>all</span>
+        </button>
+        {items.map((item) => (
+          <button
+            key={item.value}
+            type="button"
+            className={`${styles.kindChip} ${item.isRefined ? styles.kindChipActive : ''}`}
+            onClick={() => refine(item.value)}
+            aria-pressed={item.isRefined}
+          >
+            <span>{item.label.toLowerCase()}</span>
+            <span className={styles.kindChipCount}>{String(item.count).padStart(2, '0')}</span>
+          </button>
+        ))}
+      </div>
+      {(anyRefined || canClear) && (
+        <button type="button" className={styles.kindClear} onClick={() => clear()}>
+          clear ✕
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ProjectChips() {
+  const { items, refine } = useMenu({
+    attribute: PROJECT_ATTRIBUTE,
+    limit: 12,
+    sortBy: ['count:desc'],
+  });
+  const { refine: clear, canRefine: canClear } = useClearRefinements({
+    includedAttributes: [PROJECT_ATTRIBUTE],
+  });
+  const anyRefined = items.some((item) => item.isRefined);
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className={styles.kindRow}>
+      <span className={styles.kindLabel}>project</span>
       <div className={styles.kindChips}>
         <button
           type="button"
