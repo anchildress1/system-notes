@@ -124,15 +124,24 @@
   padding: 0;
 }
 
+html {
+  /* Base color lives on <html> so the fixed Nebula (z-index: -1, child of
+     <body>) is not painted over by an opaque body background. */
+  background-color: var(--bg-base);
+}
+
 html,
 body {
-  background-color: var(--bg-base);
   color: var(--text-primary);
   font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.6;
+}
+
+body {
+  background-color: transparent;
 }
 
 :where(:focus-visible) {

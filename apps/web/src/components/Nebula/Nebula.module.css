@@ -1,0 +1,93 @@
+.nebula {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-background);
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--bg-base);
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  will-change: transform;
+}
+
+.blob1 {
+  width: 52vw;
+  height: 52vw;
+  top: -12vw;
+  left: -8vw;
+  background: var(--accent-violet);
+  opacity: 0.3;
+  animation: drift1 26s ease-in-out infinite;
+}
+
+.blob2 {
+  width: 44vw;
+  height: 44vw;
+  top: 18vh;
+  right: -12vw;
+  background: var(--accent-pink);
+  opacity: 0.22;
+  animation: drift2 32s ease-in-out infinite;
+}
+
+.blob3 {
+  width: 40vw;
+  height: 40vw;
+  bottom: -14vw;
+  left: 28vw;
+  background: var(--accent-teal);
+  opacity: 0.18;
+  animation: drift3 30s ease-in-out infinite;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 28%, transparent 42%, var(--bg-deep) 100%);
+}
+
+@keyframes drift1 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(6vw, 4vh);
+  }
+}
+
+@keyframes drift2 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-5vw, 5vh);
+  }
+}
+
+@keyframes drift3 {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(4vw, -4vh);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob1,
+  .blob2,
+  .blob3 {
+    animation: none;
+  }
+}

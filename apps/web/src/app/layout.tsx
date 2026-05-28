@@ -30,6 +30,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 import ClientShell from '@/components/ClientShell/ClientShell';
+import Nebula from '@/components/Nebula/Nebula';
 import { getProjects } from '@/lib/api';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anchildress1.dev';
@@ -151,6 +152,7 @@ export default async function RootLayout({
         className={`${spaceGrotesk.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <Nebula />
         <ClientShell>{children}</ClientShell>
       </body>
     </html>
