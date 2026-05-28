@@ -1,6 +1,5 @@
 import type { NextConfig } from 'next';
 import path from 'node:path';
-import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const securityHeaders = [
   {
@@ -58,17 +57,7 @@ const nextConfig: NextConfig = {
       ...(process.env.NODE_ENV === 'production'
         ? [
             {
-              // Immutable caching only for content-hashed Next.js static assets (production only)
-              source: '/_next/static/:path*',
-              headers: [
-                {
-                  key: 'Cache-Control',
-                  value: 'public, max-age=31536000, immutable',
-                },
-              ],
-            },
-            {
-              // Standard caching for other static assets (fonts, images from public/)
+              // Standard caching for static assets from public/.
               source: String.raw`/(.*)\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif)`,
               headers: [
                 {
@@ -83,8 +72,17 @@ const nextConfig: NextConfig = {
   },
 };
 
-const bundleAnalyzer = withBundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
-});
+const config = async (): Promise<NextConfig> => {
+  if (process.env.ANALYZE !== 'true') {
+    return nextConfig;
+  }
 
-export default bundleAnalyzer(nextConfig);
+  const analyzerPackage = '@next/bundle-analyzer';
+  const { default: bundleAnalyzer } = await import(analyzerPackage);
+  const withBundleAnalyzer = bundleAnalyzer({
+    enabled: true,
+  });
+  return withBundleAnalyzer(nextConfig);
+};
+
+export default config;

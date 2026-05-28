@@ -1,22 +1,27 @@
 # Block 1: The Pruner
 FROM node:20-bookworm-slim AS pruner
 WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV TURBO_TELEMETRY_DISABLED=1
+ENV NPM_CONFIG_UPDATE_NOTIFIER=false
+ENV NPM_CONFIG_LOGLEVEL=error
 # .dockerignore excludes .env and secrets; full tree needed for turbo prune (S6470 reviewed SAFE)
 COPY . .
-RUN npm install -g turbo@2.8.1 && \
-    turbo prune --scope=web --docker
+RUN npm exec --yes --package=turbo@2.9.15 -- turbo prune web --docker
 
 # Block 2: The Installer
 FROM node:20-bookworm-slim AS installer
-RUN apt-get update && apt-get install -y git build-essential python3
 WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV TURBO_TELEMETRY_DISABLED=1
+ENV NPM_CONFIG_UPDATE_NOTIFIER=false
+ENV NPM_CONFIG_LOGLEVEL=error
 
 # First install the dependencies
 COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/package-lock.json ./package-lock.json
 
-# Set LEFTHOOK=0 to ensure it doesn't try to install hooks
-RUN LEFTHOOK=0 npm install --legacy-peer-deps
+RUN npm ci --omit=dev --ignore-scripts
 
 COPY --from=pruner /app/out/full/ .
 COPY turbo.json turbo.json
@@ -45,16 +50,17 @@ ENV NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME
 ARG NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME
 ENV NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME
 
-RUN npm run build -- --filter=web
+RUN npm run build --workspace web
 
 # Block 3: The Runner
 FROM node:20-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Don't run production as root
-RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 nextjs
+RUN groupadd --gid 1001 nodejs && \
+    useradd --uid 1001 --gid nodejs --create-home --shell /usr/sbin/nologin nextjs
 USER nextjs
 
 COPY --from=installer /app/apps/web/next.config.ts .
