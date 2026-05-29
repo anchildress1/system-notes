@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect, useRef, useState, useId } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import { createNullCache } from '@algolia/client-common';
 import {
   InstantSearch,
   Configure,
@@ -9,6 +10,7 @@ import {
   useStats,
   useRefinementList,
   useClearRefinements,
+  useDynamicWidgets,
 } from 'react-instantsearch';
 import aa from 'search-insights';
 import { SiAlgolia } from 'react-icons/si';
@@ -22,20 +24,26 @@ import { createSearchRouting } from './searchRouting';
 import { ALGOLIA_INDEX } from '@/config';
 import { getChatSessionId } from '@/utils/userToken';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
+import { humanizeAttribute } from '@/lib/humanize';
 
 const appId = ALGOLIA_APP_ID;
 const searchKey = ALGOLIA_SEARCH_KEY;
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
 const hasCredentials = hasValidAlgoliaCredentials();
-const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
+
+// Browser build defaults to in-memory response + request caches. Keep them in
+// prod for speed; disable in dev so Algolia dashboard changes (renderingContent,
+// rules, settings) show up on the next query without a hard reload.
+const isDev = process.env.NODE_ENV === 'development';
+const clientOptions = isDev
+  ? { responsesCache: createNullCache(), requestsCache: createNullCache() }
+  : undefined;
+
+const searchClient = hasCredentials ? algoliasearch(appId, searchKey, clientOptions) : null;
 
 // Same userToken for search + Insights so queryID correlates to click events.
 aa('setUserToken', getChatSessionId());
-
-const KIND_ATTRIBUTE = 'category';
-const PROJECT_ATTRIBUTE = 'projects';
-const TAG_ATTRIBUTE = 'tags.lvl0';
 
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
@@ -152,11 +160,26 @@ function RetrieveBar() {
 }
 
 function FilterBar() {
+  // Facet list, order, and pinned values are owned by the index via
+  // `renderingContent.facetOrdering` (set in the Algolia dashboard). The hook
+  // reads it from the search response, so adding/reordering filters never
+  // requires a code change here.
+  const { attributesToRender } = useDynamicWidgets({});
+  // Defensive: dedupe in case renderingContent.facetOrdering.facets.order lists
+  // the same attribute twice. Order-preserving.
+  const attributes = useMemo(() => Array.from(new Set(attributesToRender)), [attributesToRender]);
+
+  if (attributes.length === 0) return null;
+
   return (
     <nav className={styles.filterBar} aria-label="Search filters">
-      <FilterDropdown attribute={PROJECT_ATTRIBUTE} label="project" />
-      <FilterDropdown attribute={TAG_ATTRIBUTE} label="tag" />
-      <FilterDropdown attribute={KIND_ATTRIBUTE} label="kind" />
+      {attributes.map((attribute) => (
+        <FilterDropdown
+          key={attribute}
+          attribute={attribute}
+          label={humanizeAttribute(attribute)}
+        />
+      ))}
       <ClearAllFilters />
     </nav>
   );
@@ -178,12 +201,26 @@ function ClearAllFilters() {
 }
 
 function FilterDropdown({ attribute, label }: { attribute: string; label: string }) {
-  const { items, refine } = useRefinementList({
+  // No `sortBy` — let Algolia's `renderingContent.facetOrdering.values[attr].order`
+  // (pinned values from the dashboard) drive the order. Setting `sortBy` would
+  // silently override it.
+  const { items: rawItems, refine } = useRefinementList({
     attribute,
     limit: 20,
-    sortBy: ['count:desc'],
     operator: 'or',
   });
+  // Defensive: dedupe by value. Some renderingContent + hierarchical-facet
+  // combinations (e.g. a value pinned via facetOrdering that also appears in
+  // the natural results) cause the hook to return duplicates, which collide
+  // on React keys.
+  const items = useMemo(() => {
+    const seen = new Set<string>();
+    return rawItems.filter((item) => {
+      if (seen.has(item.value)) return false;
+      seen.add(item.value);
+      return true;
+    });
+  }, [rawItems]);
   const { refine: clear, canRefine: canClear } = useClearRefinements({
     includedAttributes: [attribute],
   });
