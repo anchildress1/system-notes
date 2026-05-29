@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import Image from 'next/image';
 import styles from './Hero.module.css';
 
@@ -23,8 +24,22 @@ export default function Hero({
   subtitle,
   image,
 }: Readonly<HeroProps>) {
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  // Cursor-follow spotlight: write mouse position (relative to the hero box)
+  // into CSS custom properties. The transition on `--spot-x/--spot-y`
+  // (declared in Hero.module.css via @property) creates the trailing-glow
+  // effect. Raw DOM writes keep this off React's render path.
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = heroRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty('--spot-x', `${e.clientX - rect.left}px`);
+    el.style.setProperty('--spot-y', `${e.clientY - rect.top}px`);
+  };
+
   return (
-    <div className={styles.hero}>
+    <div className={styles.hero} ref={heroRef} onMouseMove={handleMouseMove}>
       <div className={styles.titleContainer}>
         <div className={styles.interactiveContainer}>
           <h1 className={styles.title}>

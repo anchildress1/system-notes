@@ -1,5 +1,45 @@
+/* Cursor-follow spotlight: @property registers the custom properties so
+   transitions can interpolate <length> values smoothly. Without @property,
+   the browser would jump rather than tween. */
+@property --spot-x {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: -1000px;
+}
+@property --spot-y {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: -1000px;
+}
+
 .hero {
   composes: hero from "@/styles/SharedHero.module.css";
+  transition: --spot-x 0.45s var(--ease-snap), --spot-y 0.45s var(--ease-snap);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    560px circle at var(--spot-x) var(--spot-y),
+    rgba(181, 107, 255, 0.14),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hero:hover::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    transition: none;
+  }
 }
 
 .titleContainer {
