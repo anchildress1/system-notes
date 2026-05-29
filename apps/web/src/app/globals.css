@@ -386,9 +386,9 @@ button {
 }
 
 .ais-Pagination-link--selected {
-  background-color: var(--accent-violet) !important;
+  background-color: transparent !important;
   border-color: var(--accent-violet) !important;
-  color: white !important;
+  color: var(--accent-violet) !important;
 }
 
 ::selection {

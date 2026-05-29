@@ -102,23 +102,24 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* Active state: neutral text on subtle lift + a small violet indicator dot.
+   Matches the filter button pattern — color belongs to data, not chrome. */
 .navLink.active {
-  color: var(--accent-violet);
-  background: var(--accent-violet-soft);
-  padding-left: 20px;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.045);
+  padding-left: 22px;
 }
 
 .navLink.active::before {
   content: '';
   position: absolute;
-  left: 8px;
+  left: 10px;
   top: 50%;
   transform: translateY(-50%);
-  width: 3px;
-  height: 3px;
+  width: 5px;
+  height: 5px;
   background: var(--accent-violet);
   border-radius: var(--r-pill);
-  box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-violet);
 }
 
 /* ── CTA Blog link ── */

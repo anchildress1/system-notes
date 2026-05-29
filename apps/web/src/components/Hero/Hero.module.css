@@ -68,28 +68,41 @@
   color: var(--text-primary);
 }
 
+/* Shimmer: white is dominant, a narrow colored ribbon sweeps through.
+   Slow + linear so it reads as a slow drift of light, not a brightness flash.
+   Stops at 0/38 keep the word white most of the time; the 46/50/54 band
+   is the colored ribbon. */
 .rotatingWord {
   background: linear-gradient(
     110deg,
-    var(--accent-pink) 0%,
-    var(--accent-violet) 35%,
-    var(--accent-teal) 65%,
-    var(--accent-pink) 100%
+    var(--text-primary) 0%,
+    var(--text-primary) 38%,
+    var(--accent-pink) 46%,
+    var(--accent-violet) 50%,
+    var(--accent-teal) 54%,
+    var(--text-primary) 62%,
+    var(--text-primary) 100%
   );
-  background-size: 300% 100%;
+  background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
-  animation: wordGradient 8s linear infinite;
+  animation: wordShimmer 14s linear infinite;
 }
 
-@keyframes wordGradient {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 300% 50%; }
+@keyframes wordShimmer {
+  0% { background-position: 220% 50%; }
+  100% { background-position: -120% 50%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rotatingWord { animation: none; }
+  .rotatingWord {
+    animation: none;
+    background: none;
+    color: var(--text-primary);
+    -webkit-text-fill-color: var(--text-primary);
+  }
 }
 
 .imageContainer {
