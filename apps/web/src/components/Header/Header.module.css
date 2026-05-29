@@ -122,6 +122,8 @@
 }
 
 /* ── CTA Blog link ── */
+/* Ghost outline by default; hover lifts the surface and brings the pink
+   accent in via the border only. Color belongs to the data, not chrome. */
 .navCta {
   margin-left: 8px;
   display: inline-flex;
@@ -132,18 +134,19 @@
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.5px;
-  border: 1px solid var(--accent-pink);
-  color: var(--accent-pink);
-  background: rgba(241, 97, 151, 0.06);
-  transition: all 0.2s var(--ease-snap);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.025);
+  transition: color var(--transition-base), border-color var(--transition-base),
+    background var(--transition-base);
   text-decoration: none;
   white-space: nowrap;
 }
 
 .navCta:hover {
-  background: var(--accent-pink);
-  color: #1a0a12;
-  box-shadow: 0 0 calc(24px * var(--glow)) rgba(241, 97, 151, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--accent-pink);
+  color: var(--text-primary);
 }
 
 .navCtaArrow {

@@ -8,31 +8,39 @@
 }
 
 /* ── FAB Play Button ── */
+/* Dark surface, hairline border, soft accent ring only on hover/active.
+   The color goes into the icon, not the whole button. */
 .playButton {
   width: 60px;
   height: 60px;
   border-radius: 99px;
-  background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-violet) 100%);
-  border: none;
-  color: white;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  color: var(--accent-pink);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
-  box-shadow: 0 0 calc(24px * var(--glow)) rgba(181, 107, 255, 0.45);
+  transition: transform var(--transition-base), border-color var(--transition-base),
+    box-shadow var(--transition-base), color var(--transition-base);
+  box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.6);
   position: relative;
   z-index: 2;
   pointer-events: auto;
 }
 
 .playButton:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px calc(32px * var(--glow)) rgba(241, 97, 151, 0.55);
+  transform: translateY(-2px);
+  border-color: var(--accent-pink);
+  color: var(--text-primary);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.7),
+    0 0 calc(16px * var(--glow)) rgba(241, 97, 151, 0.18);
 }
 
 .active {
-  box-shadow: 0 0 calc(32px * var(--glow)) rgba(181, 107, 255, 0.6);
+  border-color: var(--accent-violet);
+  box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.6),
+    0 0 calc(14px * var(--glow)) rgba(181, 107, 255, 0.22);
 }
 
 .buttonLabel {
@@ -43,16 +51,15 @@
   position: absolute;
   top: -6px;
   right: -6px;
-  background: var(--accent-pink);
-  color: #08090c;
+  background: transparent;
+  color: var(--accent-pink);
   font-size: 10px;
   font-weight: 800;
   line-height: 1;
-  padding: 3px 5px;
-  border: 1px solid var(--bg-base);
+  padding: 2px 5px;
+  border: 1px solid var(--accent-pink);
   border-radius: var(--r-sm);
   letter-spacing: 0.04em;
-  box-shadow: 0 0 calc(10px * var(--glow)) rgba(241, 97, 151, 0.55);
   z-index: 3;
 }
 
@@ -94,11 +101,12 @@
   height: 44px;
   flex-shrink: 0;
   border-radius: var(--r-md);
-  background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-violet) 100%);
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--accent-violet);
 }
 
 .trackInfo {

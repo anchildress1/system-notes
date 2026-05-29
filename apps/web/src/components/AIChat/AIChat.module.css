@@ -33,17 +33,25 @@
 }
 
 /* ── Toggle button ── */
+/* Matches MusicPlayer .playButton — dark surface with hairline ring, accent
+   stays in the icon. !important is required because Algolia's chat widget
+   ships its own button styles that win otherwise. */
 .chatToggle {
   width: 60px !important;
   height: 60px !important;
   border-radius: 99px !important;
-  background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-violet) 100%) !important;
-  border: none !important;
-  box-shadow: 0 0 calc(24px * var(--glow)) rgba(181, 107, 255, 0.45) !important;
-  transition: transform var(--transition-base), box-shadow var(--transition-base) !important;
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--accent-violet) !important;
+  box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.6) !important;
+  transition: transform var(--transition-base), border-color var(--transition-base),
+    box-shadow var(--transition-base), color var(--transition-base) !important;
 }
 
 .chatToggle:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 6px calc(32px * var(--glow)) rgba(241, 97, 151, 0.55) !important;
+  transform: translateY(-2px) !important;
+  border-color: var(--accent-violet) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.7),
+    0 0 calc(16px * var(--glow)) rgba(181, 107, 255, 0.18) !important;
 }
