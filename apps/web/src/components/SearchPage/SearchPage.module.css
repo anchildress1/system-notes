@@ -101,8 +101,8 @@
   gap: 8px;
   padding: 7px 14px;
   border-radius: var(--r-pill);
-  border: 1px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.025);
   color: var(--text-secondary);
   font-family: var(--font-mono);
   font-size: 12px;
@@ -113,7 +113,8 @@
 
 .filterButton:hover {
   color: var(--text-primary);
-  border-color: var(--text-muted);
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.045);
 }
 
 .filterButton:focus-visible {
@@ -121,11 +122,22 @@
   outline-offset: 2px;
 }
 
+/* Active = subtle indicator dot + slightly lifted bg; text/border stay
+   neutral so the color cue belongs to the cards, not the chrome. */
 .filterButtonActive,
 .filterButtonActive:hover {
-  background: var(--accent-violet-soft);
-  border-color: var(--accent-violet);
-  color: var(--accent-violet);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.filterButtonActive::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-violet);
 }
 
 .filterCaret {
@@ -180,8 +192,8 @@
 
 .filterOptionActive,
 .filterOptionActive:hover {
-  color: var(--accent-violet);
-  background: var(--accent-violet-soft);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .filterCount {
@@ -216,17 +228,17 @@
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.04em;
-  color: var(--accent-pink);
+  color: var(--text-muted);
   cursor: pointer;
-  transition: opacity var(--transition-base);
+  transition: color var(--transition-base);
 }
 
 .filterClearAll:hover {
-  opacity: 0.7;
+  color: var(--text-primary);
 }
 
 .filterClearAll:focus-visible {
-  outline: 2px solid var(--accent-pink);
+  outline: 2px solid var(--accent-violet);
   outline-offset: 2px;
   border-radius: var(--r-sm);
 }
