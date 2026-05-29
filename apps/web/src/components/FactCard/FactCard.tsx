@@ -78,16 +78,19 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
   const variant = useMemo(() => getCardVariant(variantPosition), [variantPosition]);
 
   // Display tags: prefer lvl1 leaf parts ("Parent > Child" → "Child");
-  // fall back to lvl0 names when no lvl1 entries exist.
+  // fall back to lvl0 names when no lvl1 entries exist. Dedupe leaves —
+  // distinct hierarchical paths can share a leaf (e.g. `A > X` + `B > X`),
+  // and showing the same chip twice on one card reads as a bug.
   const displayTags = useMemo(() => {
     const lvl1 = hit['tags.lvl1'] ?? [];
-    if (lvl1.length > 0) {
-      return lvl1.map((tag) => {
-        const sep = tag.indexOf(' > ');
-        return sep > -1 ? tag.slice(sep + 3) : tag;
-      });
-    }
-    return hit['tags.lvl0'] ?? [];
+    const source =
+      lvl1.length > 0
+        ? lvl1.map((tag) => {
+            const sep = tag.indexOf(' > ');
+            return sep > -1 ? tag.slice(sep + 3) : tag;
+          })
+        : (hit['tags.lvl0'] ?? []);
+    return Array.from(new Set(source));
   }, [hit]);
 
   const backBody = hit.content || hit.fact || hit.blurb || '';
