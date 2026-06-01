@@ -4,9 +4,9 @@
   border-bottom: 1px solid var(--border);
   background: linear-gradient(
     90deg,
-    rgba(241, 97, 151, 0.04) 0%,
-    rgba(62, 199, 194, 0.04) 50%,
-    rgba(181, 107, 255, 0.04) 100%
+    color-mix(in srgb, var(--accent-pink) 4%, transparent) 0%,
+    color-mix(in srgb, var(--accent-teal) 4%, transparent) 50%,
+    color-mix(in srgb, var(--accent-violet) 4%, transparent) 100%
   );
   overflow: hidden;
   height: 38px;
@@ -33,9 +33,9 @@
   text-transform: uppercase;
 }
 
-.tickerItem.accent {
-  color: var(--accent-violet);
-}
+.accentPink   { color: var(--accent-pink); }
+.accentViolet { color: var(--accent-violet); }
+.accentTeal   { color: var(--accent-teal); }
 
 .tickerSep {
   width: 4px;
