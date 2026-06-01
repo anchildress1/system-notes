@@ -201,7 +201,7 @@ export default function SearchPage() {
 
           <aside
             id="search-sidebar"
-            className={`${styles.sidebar} ${!showFilters ? styles.sidebarCollapsed : ''}`}
+            className={`${styles.sidebar} ${showFilters ? '' : styles.sidebarCollapsed}`}
           >
             <div className={styles.filterSection}>
               <div className={styles.refinementGroup}>
