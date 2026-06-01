@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.3.0](https://github.com/anchildress1/system-notes/compare/v2.2.0...v2.3.0) (2026-05-03)
+
+### Features
+
+- **data:** add Earth Day Challenge 2026 winner badge to Unearthed ([#64](https://github.com/anchildress1/system-notes/issues/64)) ([e8d26e5](https://github.com/anchildress1/system-notes/commit/e8d26e5301611f2cf679fe5c2cdd14c39abf1f65))
+- update projects, webp migration, ExpandedView redesign, fix release-please ([#61](https://github.com/anchildress1/system-notes/issues/61)) ([52098d9](https://github.com/anchildress1/system-notes/commit/52098d9e5a6bf3449a11d35dd9ea20e0a87bd493))
+
+### Performance Improvements
+
+- cache /projects response to eliminate constant Cloud Run polling ([#63](https://github.com/anchildress1/system-notes/issues/63)) ([81375e9](https://github.com/anchildress1/system-notes/commit/81375e9c69cdb179667c61b747d3160998017ee3))
+
 ## [2.2.0](https://github.com/anchildress1/system-notes/compare/v2.1.2...v2.2.0) (2026-04-22)
 
 ### Features
