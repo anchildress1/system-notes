@@ -2,10 +2,6 @@
 set -e
 
 # Configuration
-API_SERVICE="system-notes-api"
-API_SOURCE="apps/api"
-API_PORT="8080"
-
 UI_SERVICE="system-notes-ui"
 UI_SOURCE="apps/web"
 UI_PORT="3000"
@@ -33,7 +29,6 @@ echo "DEPLOYMENT CONFIGURATIONS"
 echo "$SEPARATOR"
 echo "Project: $PROJECT_ID ($PROJECT_NUMBER)"
 echo "Region:  $REGION"
-echo "API:     $API_SERVICE ($API_SOURCE)"
 echo "UI:      $UI_SERVICE ($UI_SOURCE)"
 echo "$SEPARATOR"
 
@@ -41,8 +36,7 @@ echo "$SEPARATOR"
 echo "Enabling required Google Cloud APIs..."
 gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com run.googleapis.com --project "$PROJECT_ID" --quiet
 
-# Define Service Accounts
-API_SA="system-notes-api@$PROJECT_ID.iam.gserviceaccount.com"
+# Define Service Account
 UI_SA="system-notes-ui@$PROJECT_ID.iam.gserviceaccount.com"
 
 # Env loading (PUBLIC keys are safe for client-side)
@@ -151,7 +145,7 @@ deploy_service() {
         # Prefix sensitive vars with _ to prevent Cloud Build from logging them
         submit_build "$source_dir" \
             --config "apps/web/cloudbuild.yaml" \
-            --substitutions "_IMAGE_URI=$image_uri,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=$NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID,_NEXT_PUBLIC_API_URL=$API_URL,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME,_NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME"
+            --substitutions "_IMAGE_URI=$image_uri,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=$NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME,_NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME"
     else
         # Standard build from root of service directory
         submit_build --tag "$image_uri" "$source_dir"
@@ -190,17 +184,6 @@ deploy_service() {
 # ==========================================
 # Execution
 # ==========================================
-
-# 1. Deploy API (No Env Vars needed, relies on defaults)
-deploy_service "$API_SERVICE" "$API_SOURCE" "$API_PORT" "$API_SA"
-
-# 2. Get API URL
-API_URL=$(gcloud run services describe "$API_SERVICE" --region "$REGION" --project "$PROJECT_ID" --format 'value(status.url)')
-if [[ -z "$API_URL" ]]; then
-    echo "Error: Failed to resolve API_URL from Cloud Run service '$API_SERVICE'." >&2
-    exit 1
-fi
-echo "API URL: $API_URL"
 
 deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "" "apps/web/Dockerfile"
 

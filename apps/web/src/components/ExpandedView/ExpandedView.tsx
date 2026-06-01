@@ -52,7 +52,7 @@ export default function ExpandedView({
     document.body.style.overflow = 'hidden';
     globalThis.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
       globalThis.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);

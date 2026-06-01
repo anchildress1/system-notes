@@ -1,20 +1,21 @@
 'use client';
 
-import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect, Suspense } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import {
   InstantSearch,
   RefinementList,
+  HierarchicalMenu,
   Stats,
   ClearRefinements,
   Configure,
 } from 'react-instantsearch';
+import aa from 'search-insights';
 import { SiAlgolia } from 'react-icons/si';
-import { FiPlus, FiMinus } from 'react-icons/fi';
+import { FiPlus, FiMinus, FiSliders } from 'react-icons/fi';
 import 'instantsearch.css/themes/reset.css';
 import styles from './SearchPage.module.css';
 import FactCard from '../FactCard/FactCard';
-import GroupedTagFilter from './GroupedTagFilter';
 import InfiniteHits from './InfiniteHits';
 import LoadingIndicator from './LoadingIndicator';
 import { createSearchRouting } from './searchRouting';
@@ -35,14 +36,11 @@ const searchAiId = ALGOLIA_AI_ID;
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
 const hasCredentials = hasValidAlgoliaCredentials();
-const searchClient = hasCredentials
-  ? algoliasearch(appId, searchKey, {
-      headers: {
-        'X-Algolia-UserToken': getChatSessionId(),
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
-  : null;
+const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
+
+// Use the same userToken for both search requests and Insights events so that
+// queryID returned in search results can be correlated to click events.
+aa('setUserToken', getChatSessionId());
 
 declare global {
   var SiteSearchAskAI: { init: (config: unknown) => void } | undefined;
@@ -58,84 +56,46 @@ function useSiteSearchWithAI(
   searchAiId: string,
   enabled: boolean
 ) {
+  const initRef = useCallback(() => {
+    if (!document.querySelector('#search-askai')) return;
+
+    const candidates = [
+      'SiteSearchAskAI',
+      'SiteSearch',
+      'sitesearch',
+      'AlgoliaSiteSearch',
+    ] as const;
+    const globalName = candidates.find((c) => globalThis[c]);
+    if (!globalName) return;
+
+    try {
+      globalThis[globalName]?.init({
+        container: '#search-askai',
+        applicationId: appId,
+        apiKey,
+        indexName,
+        assistantId: searchAiId,
+        insights: true,
+        suggestedQuestionsEnabled: false,
+        attributes: {
+          primaryText: 'title',
+          secondaryText: 'blurb',
+          tertiaryText: 'tags.lvl1',
+          image: undefined,
+        },
+      });
+    } catch (e) {
+      console.error('[SiteSearch] Failed to init:', e);
+    }
+  }, [appId, apiKey, indexName, searchAiId]);
+
   useEffect(() => {
     if (!enabled) return;
-
-    // Dynamically import the widget from node_modules
     import('@algolia/sitesearch/dist/search-askai.min.css');
     import('@algolia/sitesearch/dist/search-askai.min.js')
-      .then(() => {
-        // Init immediately after load
-        initWidget();
-      })
-      .catch((err) => console.error('Failed to load SiteSearch script:', err));
-
-    const initWidget = () => {
-      // Ensure container exists
-      if (!document.querySelector('#search-askai')) {
-        // Retry logic handled by caller re-mount or simple delay if needed
-        return;
-      }
-
-      // Debug logging for credential passing
-      if (globalThis.location?.hostname === 'localhost') {
-        console.debug('[SiteSearch] Initializing with config:', {
-          appId,
-          indexName,
-          hostname: globalThis.location.hostname,
-        });
-      }
-
-      // Check for available globals
-      const candidates = [
-        'SiteSearchAskAI',
-        'SiteSearch',
-        'sitesearch',
-        'AlgoliaSiteSearch',
-      ] as const;
-      const globalName = candidates.find((c) => globalThis[c]);
-
-      if (globalName && globalThis[globalName]) {
-        try {
-          const config = {
-            container: '#search-askai',
-            applicationId: appId,
-            apiKey: apiKey,
-            indexName: indexName,
-            assistantId: searchAiId,
-            insights: true,
-            suggestedQuestionsEnabled: false,
-            attributes: {
-              primaryText: 'title',
-              secondaryText: 'blurb',
-              tertiaryText: 'tags.lvl1',
-              image: undefined,
-            },
-          };
-
-          // Ensure all required fields are present
-          if (!config.applicationId || !config.apiKey || !config.indexName) {
-            console.error('[SiteSearch] Missing required credentials:', {
-              hasAppId: Boolean(config.applicationId),
-              hasIndexName: Boolean(config.indexName),
-            });
-            return;
-          }
-
-          globalThis[globalName]?.init(config);
-        } catch (e) {
-          console.error('[SiteSearch] Failed to init:', e);
-        }
-      } else {
-        console.warn(
-          '[SiteSearch] Global not found. Available:',
-          Object.keys(globalThis).filter(
-            (k) => k.toLowerCase().includes('search') || k.toLowerCase().includes('algolia')
-          )
-        );
-      }
-    };
-  }, [appId, apiKey, indexName, searchAiId, enabled]);
+      .then(initRef)
+      .catch((err) => console.error('[SiteSearch] Failed to load:', err));
+  }, [enabled, initRef]);
 }
 
 const refinementClassNames = {
@@ -149,96 +109,30 @@ const refinementClassNames = {
   count: styles.refinementCount,
 };
 
+const hierarchicalMenuClassNames = {
+  root: styles.refinementRoot,
+  list: styles.refinementList,
+  childList: styles.tagChildren,
+  item: styles.refinementItem,
+  selectedItem: styles.refinementItemSelected,
+  link: styles.hierarchicalLink,
+  label: styles.refinementLabelText,
+  count: styles.refinementCount,
+};
+
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
   const isEnabled = Boolean(hasCredentials);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
+  const [showFilters, setShowFilters] = useState(false);
 
   const toggleSection = useCallback((section: string) => {
     setCollapsedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   }, []);
 
+  const toggleFilters = useCallback(() => setShowFilters((prev) => !prev), []);
+
   useSiteSearchWithAI(appId, searchKey, indexName, searchAiId, isEnabled);
-  const { overlayHit, closeOverlay } = useFactIdRouting(indexName);
-
-  // Auto-focus the Ask AI chat input when the SiteSearch modal opens
-  const pendingTimeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  useEffect(() => {
-    if (!isEnabled) return;
-
-    const clearPendingTimeouts = () => {
-      pendingTimeouts.current.forEach(clearTimeout);
-      pendingTimeouts.current = [];
-    };
-
-    const scheduleTimeout = (fn: () => void, ms: number) => {
-      const id = setTimeout(() => {
-        fn();
-        const idx = pendingTimeouts.current.indexOf(id);
-        if (idx !== -1) pendingTimeouts.current.splice(idx, 1);
-      }, ms);
-      pendingTimeouts.current.push(id);
-    };
-
-    const focusChatInput = () => {
-      const selectors = [
-        '.ss-chat-input',
-        '.ss-search-input',
-        'input[placeholder*="Ask"]',
-        '.ss-searchbox input',
-        '[role="dialog"] input[type="text"]',
-        '.ss-modal input',
-      ];
-
-      for (const selector of selectors) {
-        const input = document.querySelector(selector) as HTMLInputElement;
-        if (input && document.contains(input)) {
-          requestAnimationFrame(() => {
-            input.focus();
-            input.select();
-          });
-          break;
-        }
-      }
-    };
-
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        for (const node of mutation.addedNodes) {
-          if (node instanceof HTMLElement) {
-            if (
-              node.matches('[role="dialog"], .ss-modal, .modal-backdrop-askai') ||
-              node.querySelector('[role="dialog"], .ss-modal, .ss-chat-input')
-            ) {
-              focusChatInput();
-              scheduleTimeout(focusChatInput, 10);
-            }
-          }
-        }
-      }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Click listener for Ask AI button — class-based selectors only
-    const handleDocumentClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('.sitesearch-button-aa, .ss-button, [class*="ask-ai"]')) {
-        requestAnimationFrame(focusChatInput);
-        scheduleTimeout(focusChatInput, 10);
-        scheduleTimeout(focusChatInput, 50);
-      }
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-
-    return () => {
-      observer.disconnect();
-      document.removeEventListener('click', handleDocumentClick);
-      clearPendingTimeouts();
-    };
-  }, [isEnabled]);
 
   if (!isEnabled || !searchClient) {
     return (
@@ -254,7 +148,12 @@ export default function SearchPage() {
 
   return (
     <div className={styles.container}>
-      <InstantSearch searchClient={searchClient} indexName={indexName} insights routing={routing}>
+      <InstantSearch
+        searchClient={searchClient}
+        indexName={indexName}
+        insights={{ insightsClient: aa }}
+        routing={routing}
+      >
         <Configure
           hitsPerPage={20}
           attributesToHighlight={['title', 'blurb', 'fact']}
@@ -289,7 +188,21 @@ export default function SearchPage() {
         </div>
 
         <div className={styles.layout}>
-          <aside className={styles.sidebar}>
+          <button
+            type="button"
+            className={styles.filterToggle}
+            onClick={toggleFilters}
+            aria-expanded={showFilters}
+            aria-controls="search-sidebar"
+          >
+            <FiSliders size={16} aria-hidden="true" />
+            {showFilters ? 'Hide Filters' : 'Filters'}
+          </button>
+
+          <aside
+            id="search-sidebar"
+            className={`${styles.sidebar} ${showFilters ? '' : styles.sidebarCollapsed}`}
+          >
             <div className={styles.filterSection}>
               <div className={styles.refinementGroup}>
                 <button
@@ -352,7 +265,11 @@ export default function SearchPage() {
                 </button>
                 <div id="filter-tags">
                   {!collapsedSections.tags && (
-                    <GroupedTagFilter attributes={['tags.lvl0', 'tags.lvl1']} />
+                    <HierarchicalMenu
+                      attributes={['tags.lvl0', 'tags.lvl1']}
+                      limit={50}
+                      classNames={hierarchicalMenuClassNames}
+                    />
                   )}
                 </div>
               </div>
@@ -383,12 +300,20 @@ export default function SearchPage() {
                 root: styles.hitsRoot,
                 list: styles.hitsList,
                 item: styles.hitsItem,
+                empty: styles.hitsEmpty,
               }}
             />
           </section>
         </div>
       </InstantSearch>
-      {overlayHit && <FactCardOverlay hit={overlayHit} onClose={closeOverlay} />}
+      <Suspense fallback={null}>
+        <FactIdOverlay indexName={indexName} />
+      </Suspense>
     </div>
   );
+}
+
+function FactIdOverlay({ indexName }: { indexName: string }) {
+  const { overlayHit, closeOverlay } = useFactIdRouting(indexName);
+  return overlayHit ? <FactCardOverlay hit={overlayHit} onClose={closeOverlay} /> : null;
 }

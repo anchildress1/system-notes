@@ -313,4 +313,5 @@
   .card { transition: none; }
   .cardInner { transition: none; }
   .flipped .cardInner { transform: none; }
+  .overlay { transition: none; animation: none; }
 }

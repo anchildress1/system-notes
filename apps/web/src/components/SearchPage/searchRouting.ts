@@ -5,8 +5,7 @@ export type SearchRouteState = {
   page?: number;
   category?: string[];
   projects?: string[];
-  tag0?: string[];
-  tag1?: string[];
+  tags?: string; // selected hierarchical path, e.g. "Events > Conference"
 };
 
 const normalizeArrayParam = (value?: unknown): string[] => {
@@ -33,13 +32,13 @@ const parsePageParam = (value?: unknown): number | undefined => {
 
 export const toRouteState = (uiState: UiState, indexName: string): SearchRouteState => {
   const indexState = uiState[indexName] || {};
+  const hierarchicalSelection = indexState.hierarchicalMenu?.['tags.lvl0'];
 
   return {
     page: indexState.page,
     category: withValues(indexState.refinementList?.category),
     projects: withValues(indexState.refinementList?.projects),
-    tag0: withValues(indexState.refinementList?.['tags.lvl0']),
-    tag1: withValues(indexState.refinementList?.['tags.lvl1']),
+    tags: hierarchicalSelection?.[0],
   };
 };
 
@@ -47,8 +46,6 @@ export const toUiState = (routeState: SearchRouteState, indexName: string): UiSt
   const refinementList: Record<string, string[] | undefined> = {
     category: withValues(routeState.category),
     projects: withValues(routeState.projects),
-    'tags.lvl0': withValues(routeState.tag0),
-    'tags.lvl1': withValues(routeState.tag1),
   };
 
   const cleanedRefinements = Object.fromEntries(
@@ -59,6 +56,7 @@ export const toUiState = (routeState: SearchRouteState, indexName: string): UiSt
     [indexName]: {
       page: routeState.page,
       refinementList: cleanedRefinements,
+      ...(routeState.tags ? { hierarchicalMenu: { 'tags.lvl0': [routeState.tags] } } : {}),
     },
   };
 };
@@ -75,8 +73,7 @@ export const createSearchRouting = (indexName: string) => ({
       if (routeState.page && routeState.page > 1) queryParameters.page = routeState.page;
       if (routeState.category?.length) queryParameters.category = routeState.category;
       if (routeState.projects?.length) queryParameters.project = routeState.projects;
-      if (routeState.tag0?.length) queryParameters.tag0 = routeState.tag0;
-      if (routeState.tag1?.length) queryParameters.tag1 = routeState.tag1;
+      if (routeState.tags) queryParameters.tags = routeState.tags;
 
       // Pass factId through as an opaque param — it is owned by useFactIdRouting,
       // not by InstantSearch. Without this, InstantSearch would strip it from the
@@ -97,12 +94,14 @@ export const createSearchRouting = (indexName: string) => ({
     parseURL({ qsModule, location }) {
       const parsedParams = qsModule.parse(location.search.slice(1));
 
+      const rawTags = parsedParams.tags;
+      const tags = typeof rawTags === 'string' ? rawTags : undefined;
+
       return {
         page: parsePageParam(parsedParams.page),
         category: normalizeArrayParam(parsedParams.category),
         projects: normalizeArrayParam(parsedParams.project),
-        tag0: normalizeArrayParam(parsedParams.tag0),
-        tag1: normalizeArrayParam(parsedParams.tag1),
+        tags,
       };
     },
   }),
@@ -127,8 +126,7 @@ export const getSearchPageURL = (
   if (routeState.page && routeState.page > 1) params.set('page', String(routeState.page));
   routeState.category?.forEach((value) => params.append('category', value));
   routeState.projects?.forEach((value) => params.append('project', value));
-  routeState.tag0?.forEach((value) => params.append('tag0', value));
-  routeState.tag1?.forEach((value) => params.append('tag1', value));
+  if (routeState.tags) params.set('tags', routeState.tags);
 
   const queryString = params.toString();
   return queryString ? `${basePath}?${queryString}` : basePath;

@@ -75,6 +75,11 @@
 }
 
 .filterSection {
+  /* Shared checkbox indicator — RefinementList checkbox and HierarchicalMenu
+     ::before both consume these so the box and check render identically. */
+  --check-size: 18px;
+  --check-icon-size: 11px;
+  --check-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8L6 11.5L13.5 4' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
   background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -188,56 +193,29 @@
 }
 
 .refinementCheckbox {
-  width: 18px;
-  height: 18px;
-  accent-color: hsl(var(--color-accent-purple));
-  cursor: pointer;
-  transition: transform var(--transition-base);
+  appearance: none;
+  -webkit-appearance: none;
+  width: var(--check-size);
+  height: var(--check-size);
   flex-shrink: 0;
-  /* Force consistent appearance across all browsers */
-  appearance: auto;
-  -webkit-appearance: checkbox;
-  -moz-appearance: checkbox;
+  border: 1.5px solid hsl(var(--color-text-secondary) / 0.5);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all var(--transition-base);
 }
 
 .refinementCheckbox:hover {
-  transform: scale(1.1);
+  border-color: hsl(var(--color-accent-purple));
 }
 
-/* Ensure all checked checkboxes have solid fill */
-.refinementCheckbox:checked {
-  accent-color: hsl(var(--color-accent-purple));
-}
-
-/* Ensure indeterminate state also uses accent color */
+.refinementCheckbox:checked,
 .refinementCheckbox:indeterminate {
-  accent-color: hsl(var(--color-accent-purple));
-}
-
-/* Override InstantSearch satellite.css checkbox styles to ensure consistency */
-.refinementList input[type='checkbox'],
-.refinementItem input[type='checkbox'],
-.refinementLabel input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
-  accent-color: hsl(var(--color-accent-purple));
-  cursor: pointer;
-  flex-shrink: 0;
-  appearance: auto;
-  -webkit-appearance: checkbox;
-  -moz-appearance: checkbox;
-}
-
-.refinementList input[type='checkbox']:checked,
-.refinementItem input[type='checkbox']:checked,
-.refinementLabel input[type='checkbox']:checked {
-  accent-color: hsl(var(--color-accent-purple));
-}
-
-.refinementList input[type='checkbox']:indeterminate,
-.refinementItem input[type='checkbox']:indeterminate,
-.refinementLabel input[type='checkbox']:indeterminate {
-  accent-color: hsl(var(--color-accent-purple));
+  background-color: hsl(var(--color-accent-purple));
+  border-color: hsl(var(--color-accent-purple));
+  background-image: var(--check-svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--check-icon-size) var(--check-icon-size);
 }
 
 .refinementLabelText {
@@ -389,7 +367,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 1rem;
-  color: hsl(var(--color-text-muted));
+  color: hsl(var(--color-text-secondary));
   font-size: 0.875rem;
   width: 100%;
 }
@@ -397,7 +375,7 @@
 .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid hsl(var(--color-text-muted));
+  border: 2px solid hsl(var(--color-text-secondary));
   border-top-color: transparent;
   border-radius: var(--radius-round);
   animation: spin 1s linear infinite;
@@ -406,6 +384,64 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+    border-top-color: hsl(var(--color-accent-purple));
+  }
+}
+
+/* Empty State */
+.hitsEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: var(--space-xl);
+  text-align: center;
+  color: hsl(var(--color-text-secondary));
+  font-size: 0.9375rem;
+}
+
+/* Mobile filter toggle button — hidden on desktop */
+.filterToggle {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .filterToggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 var(--space-md) var(--space-sm);
+    padding: 10px 16px;
+    background: transparent;
+    border: 1.5px solid hsl(var(--color-text-secondary) / 0.3);
+    border-radius: var(--radius-lg);
+    color: hsl(var(--color-text-secondary));
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all var(--transition-base);
+  }
+
+  .filterToggle:hover {
+    border-color: hsl(var(--color-accent-purple) / 0.6);
+    color: hsl(var(--color-accent-purple));
+  }
+
+  .filterToggle:focus-visible {
+    outline: 2px solid hsl(var(--color-accent-purple));
+    outline-offset: 2px;
+  }
+
+  .sidebarCollapsed {
+    display: none;
   }
 }
 
@@ -492,260 +528,29 @@
   }
 }
 
-/* ── Algolia SiteSearch Widget Overrides ── */
+/* ── Algolia SiteSearch Widget — theme via official CSS custom properties API ── */
 
 :global(:root) {
-  --search-primary-color: hsl(270, 100%, 71%) !important;
-  --search-secondary-color: hsl(178, 57%, 51%) !important;
-  --search-background-color: hsl(225, 9%, 25%) !important;
-  --search-neutral-color: hsl(225, 9%, 25%) !important;
-  --search-text-color: hsl(240, 10%, 91%) !important;
-  --search-subtle-text-color: hsl(229, 8%, 75%) !important;
-  --search-border-color: hsl(var(--color-text-secondary) / 0.2) !important;
-  --search-hover-color: hsl(var(--color-accent-purple) / 0.15) !important;
-  --search-input-font-family: var(--font-sans) !important;
-  --search-border-radius: var(--radius-lg) !important;
+  --search-primary-color: hsl(270, 100%, 71%);
+  --search-secondary-color: hsl(178, 57%, 51%);
+  --search-background-color: hsl(225, 9%, 25%);
+  --search-neutral-color: hsl(225, 9%, 25%);
+  --search-text-color: hsl(240, 10%, 91%);
+  --search-subtle-text-color: hsl(229, 8%, 75%);
+  --search-border-color: hsl(var(--color-text-secondary) / 0.2);
+  --search-hover-color: hsl(var(--color-accent-purple) / 0.15);
+  --search-border-radius: var(--radius-lg);
 }
 
-/* Search Button */
+/* ── Button layout — not covered by --search-* CSS vars ── */
+/* width defaults to auto (shrink-wrap); justify-content defaults to center */
 :global(.sitesearch-button-aa) {
-  background: linear-gradient(135deg, hsl(var(--color-bg-elevated) / 0.7) 0%, hsl(var(--color-bg-base) / 0.8) 100%) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid hsl(var(--color-text-secondary) / 0.2) !important;
-  border-radius: var(--radius-lg) !important;
-  color: hsl(var(--color-text-secondary)) !important;
-  font-family: var(--font-sans) !important;
   width: 100% !important;
   justify-content: flex-start !important;
-  padding: 12px 20px !important;
-  height: 48px !important;
-  min-height: 48px !important;
-  max-height: 48px !important;
-  transition: all var(--transition-slow) !important;
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset !important;
 }
 
-:global(.sitesearch-button-aa:hover) {
-  background: linear-gradient(135deg, hsl(var(--color-bg-elevated) / 0.85) 0%, hsl(var(--color-bg-base) / 0.95) 100%) !important;
-  border-color: hsl(var(--color-accent-purple) / 0.5) !important;
-  color: hsl(var(--color-text-primary)) !important;
-  box-shadow:
-    0 0 0 2px hsl(var(--color-accent-purple) / 0.25),
-    0 4px 12px rgba(0, 0, 0, 0.18),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset !important;
-  transform: translateY(-1px) !important;
-}
+/* ── Chat bubble role colors — not covered by widget CSS vars ── */
 
-:global(.sitesearch-button-aa .search-icon) {
-  color: hsl(var(--color-accent-purple)) !important;
-  width: 18px !important;
-  height: 18px !important;
-  filter: drop-shadow(0 0 6px hsl(var(--color-accent-purple) / 0.4)) !important;
-}
-
-/* Sparkles icon - pink to purple gradient instead of blue */
-:global(.sitesearch-button-aa .sparkle-icon),
-:global(.sitesearch-button-aa svg[class*="sparkle"]),
-:global(.ss-button-icon),
-:global(.ss-sparkle),
-:global([class*="sparkle"]) {
-  background: linear-gradient(135deg, hsl(var(--color-accent-pink)), hsl(var(--color-accent-purple))) !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  color: transparent !important;
-  filter: drop-shadow(0 0 8px hsl(var(--color-accent-purple) / 0.5)) !important;
-}
-
-/* Override any sparkle/AI icon fills - direct color instead of gradient */
-:global(.sitesearch-button-aa svg path),
-:global(.sitesearch-button-aa svg),
-:global(.ss-button-icon svg path),
-:global(.ss-button-icon svg),
-:global(.ss-sparkle svg path),
-:global(.ss-sparkle svg) {
-  fill: hsl(var(--color-accent-purple)) !important;
-  color: hsl(var(--color-accent-purple)) !important;
-  stroke: hsl(var(--color-accent-purple)) !important;
-}
-
-:global(.sitesearch-button-aa) kbd {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: var(--radius-sm) !important;
-  color: hsl(var(--color-text-primary)) !important;
-  font-family: var(--font-mono) !important;
-  font-size: 0.75rem !important;
-  padding: 2px 6px !important;
-  box-shadow: none !important;
-}
-
-/* Algolia "Powered By" — neutral text, teal on hover for logo only */
-:global(.ss-footer-powered-by),
-:global(.ss-footer-powered-by span) {
-  color: hsl(var(--color-text-secondary)) !important;
-  transition: color var(--transition-base) !important;
-}
-
-:global(.ss-footer-powered-by svg .cls-1),
-:global(.ss-footer-powered-by svg path) {
-  fill: hsl(var(--color-text-secondary)) !important;
-  transition: fill var(--transition-base) !important;
-}
-
-:global(.ss-footer-powered-by:hover) {
-  color: hsl(var(--color-text-secondary)) !important;
-}
-
-:global(.ss-footer-powered-by:hover span) {
-  color: hsl(var(--color-text-secondary)) !important;
-}
-
-:global(.ss-footer-powered-by:hover svg .cls-1),
-:global(.ss-footer-powered-by:hover svg path) {
-  fill: hsl(var(--color-accent-teal)) !important;
-}
-
-/* Navigation Keys — Teal */
-:global(.ss-footer kbd),
-:global(.ss-footer .ss-key) {
-  color: hsl(var(--color-accent-teal)) !important;
-  border: 1px solid hsl(var(--color-accent-teal) / 0.3) !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-/* Clear/Reset Button — Outline Purple, no underline ever */
-:global(.ss-searchbox-reset),
-:global(.ss-reset-btn),
-:global(.ss-search-clear-button) {
-  background: transparent !important;
-  border: 1px solid hsl(var(--color-accent-purple) / 0.5) !important;
-  color: hsl(var(--color-accent-purple)) !important;
-  box-shadow: none !important;
-  text-decoration: none !important;
-}
-
-:global(.ss-searchbox-reset:hover),
-:global(.ss-reset-btn:hover),
-:global(.ss-search-clear-button:hover) {
-  border-color: hsl(var(--color-accent-purple)) !important;
-  background: hsl(var(--color-accent-purple) / 0.1) !important;
-  text-decoration: none !important;
-}
-
-:global(.ss-searchbox-reset:focus),
-:global(.ss-reset-btn:focus),
-:global(.ss-search-clear-button:focus),
-:global(.ss-searchbox-reset:active),
-:global(.ss-reset-btn:active),
-:global(.ss-search-clear-button:active) {
-  text-decoration: none !important;
-  outline-color: hsl(var(--color-accent-purple)) !important;
-}
-
-:global(.ss-search-clear-button svg),
-:global(.ss-searchbox-reset svg) {
-  color: hsl(var(--color-accent-purple)) !important;
-  fill: hsl(var(--color-accent-purple)) !important;
-}
-
-/* Close Button — purple outline on hover */
-:global(.ss-search-close-button) {
-  color: hsl(var(--color-text-secondary)) !important;
-  border: 1px solid transparent !important;
-  background: transparent !important;
-  transition: all var(--transition-base) !important;
-}
-
-:global(.ss-search-close-button:hover) {
-  color: hsl(var(--color-accent-purple)) !important;
-  background: transparent !important;
-  border: 2px solid hsl(var(--color-accent-purple)) !important;
-}
-
-:global(.ss-search-close-button:focus),
-:global(.ss-search-close-button:active) {
-  color: hsl(var(--color-accent-purple)) !important;
-  border-color: hsl(var(--color-accent-purple)) !important;
-  outline-color: hsl(var(--color-accent-purple)) !important;
-}
-
-/* Ask AI hit title — purple on hover, not blue */
-:global(.ss-infinite-hits-item-title) {
-  color: hsl(var(--color-text-primary)) !important;
-  transition: color var(--transition-base) !important;
-}
-
-:global(.ss-infinite-hits-item:hover .ss-infinite-hits-item-title),
-:global(.ss-infinite-hits-item-title:hover) {
-  color: hsl(var(--color-accent-purple)) !important;
-}
-
-:global(.ss-infinite-hits-item a),
-:global(.ss-infinite-hits-item a:hover),
-:global(.ss-infinite-hits-item a:focus),
-:global(.ss-infinite-hits-anchor),
-:global(.ss-infinite-hits-anchor:hover) {
-  color: inherit !important;
-  text-decoration: none !important;
-}
-
-/* Search Left Icon/Button — Purple */
-:global(.ss-search-left-button),
-:global(.ss-search-left-button svg) {
-  color: hsl(var(--color-accent-purple)) !important;
-  fill: hsl(var(--color-accent-purple)) !important;
-}
-
-/* Highlight — Purple */
-:global(mark),
-:global(.ss-highlight) {
-  color: hsl(var(--color-accent-purple)) !important;
-  background: transparent !important;
-  text-decoration-color: hsl(var(--color-accent-purple) / 0.4) !important;
-}
-
-/* Modal Container */
-:global(.ss-modal),
-:global(.ss-modal-content),
-:global(.sitesearch-modal) {
-  background-color: hsl(var(--color-bg-elevated)) !important;
-  color: hsl(var(--color-text-primary)) !important;
-}
-
-/* Card/Hit Item Styling */
-:global(.ss-infinite-hits-item) {
-  border: 1px solid hsl(var(--color-text-secondary) / 0.2) !important;
-  background: transparent !important;
-}
-
-:global(.ss-infinite-hits-item:hover) {
-  border-color: hsl(var(--color-accent-purple)) !important;
-  background: hsl(var(--color-accent-purple) / 0.05) !important;
-  box-shadow: 0 4px 12px hsl(var(--color-accent-purple) / 0.15) !important;
-}
-
-/* Links — Teal */
-:global(.ss-link),
-:global(.ss-hit-url),
-:global(a[class*="ss-"]) {
-  color: hsl(var(--color-accent-teal)) !important;
-}
-
-/* ── Unified Chat Theme (Ask AI popup + Floating Chat Widget) ──
-   Both surfaces follow identical color rules:
-   - Agent/AI signals: purple (#B56BFF)
-   - Human signals: pink (#F16197)
-   - Navigation/links: teal (#3EC7C2)
-   - Surfaces: dark elevated glass
-   - Text: primary/secondary from palette
-*/
-
-/* Ask AI Chat Bubbles (SiteSearch popup) */
 :global(.ss-chat-message--user) {
   border-color: hsl(var(--color-accent-pink)) !important;
 }
@@ -760,7 +565,6 @@
   background-color: hsl(var(--color-accent-purple)) !important;
 }
 
-/* Ask AI input field focus */
 :global(.ss-chat-input:focus),
 :global(.ss-chat-input:focus-visible) {
   border-color: hsl(var(--color-accent-purple)) !important;
@@ -768,7 +572,6 @@
   outline: none !important;
 }
 
-/* Ask AI send button */
 :global(.ss-chat-send-button),
 :global(.ss-chat-submit) {
   background-color: hsl(var(--color-accent-purple)) !important;
@@ -781,87 +584,78 @@
   background-color: hsl(var(--color-accent-purple) / 0.8) !important;
 }
 
-/* Chat links in responses — teal (navigation) */
 :global(.ss-chat-message a),
 :global(.ss-chat-message--assistant a) {
   color: hsl(var(--color-accent-teal)) !important;
 }
 
-/* Ask AI panel surface */
-:global(.ss-chat-panel),
-:global(.ss-chat-container) {
-  background-color: hsl(var(--color-bg-elevated)) !important;
-  border-color: hsl(var(--color-border)) !important;
-}
+/* ── HierarchicalMenu — styled to match RefinementList rows ── */
+/* HierarchicalMenu renders <a> links; ::before provides the checkbox-like indicator */
 
-/* Ask AI tab / toggle */
-:global(.ss-tab--active),
-:global(.ss-tab[aria-selected="true"]) {
-  color: hsl(var(--color-accent-purple)) !important;
-  border-color: hsl(var(--color-accent-purple)) !important;
-  background-color: hsl(var(--color-accent-purple) / 0.1) !important;
-}
-
-:global(.ss-tab:hover) {
-  color: hsl(var(--color-accent-purple)) !important;
-}
-
-/* Selected/active states - ensure purple not blue */
-:global(.ss-selected),
-:global(.ss-active),
-:global([aria-selected="true"]),
-:global([data-selected="true"]),
-:global(.selected) {
-  color: hsl(var(--color-accent-purple)) !important;
-  border-color: hsl(var(--color-accent-purple)) !important;
-  background-color: hsl(var(--color-accent-purple) / 0.15) !important;
-}
-
-/* Focus states */
-:global(.ss-input:focus),
-:global(.ss-searchbox:focus-within),
-:global(.ss-chat-input:focus-visible) {
-  border-color: hsl(var(--color-accent-purple)) !important;
-  box-shadow: 0 0 0 2px hsl(var(--color-accent-purple) / 0.25) !important;
-  outline: none !important;
-}
-
-/* Any remaining blue overrides */
-:global([class*="blue"]),
-:global([style*="blue"]),
-:global([style*="#5468ff"]) {
-  color: hsl(var(--color-accent-purple)) !important;
-  border-color: hsl(var(--color-accent-purple)) !important;
-}
-
-/* ── GroupedTagFilter ── */
-
-.tagExpandButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
+.hierarchicalLink {
   display: flex;
   align-items: center;
-  color: inherit;
-  margin-left: 4px;
-  border-radius: var(--radius-sm);
-  transition: background var(--transition-base);
-}
-
-.tagGroupLabel {
-  cursor: default;
-}
-
-.tagGroupLabelText {
-  font-weight: 600;
+  gap: 10px;
   cursor: pointer;
+  padding: 10px 12px;
+  border-radius: var(--radius-lg);
+  transition: all 0.25s var(--ease-morph);
+  color: hsl(var(--color-text-secondary));
+  text-decoration: none;
+  position: relative;
+}
+
+.hierarchicalLink::before {
+  content: '';
+  display: block;
+  width: var(--check-size);
+  height: var(--check-size);
+  flex-shrink: 0;
+  border: 1.5px solid hsl(var(--color-text-secondary) / 0.5);
+  border-radius: 3px;
+  transition: all var(--transition-base);
+}
+
+/* The widget renders an SVG toggle icon inside each link — hide it; ::before is the indicator */
+.hierarchicalLink svg {
+  display: none;
+}
+
+.hierarchicalLink:hover {
+  color: hsl(var(--color-text-primary));
+  background: hsl(var(--color-accent-purple) / 0.08);
+  transform: translateX(2px);
+}
+
+.hierarchicalLink:hover::before {
+  border-color: hsl(var(--color-accent-purple));
+}
+
+.hierarchicalLink:focus-visible {
+  color: hsl(var(--color-text-primary));
+  background: hsl(var(--color-accent-purple) / 0.08);
+  outline: 2px solid hsl(var(--color-accent-purple) / 0.5);
+  outline-offset: 1px;
+}
+
+.refinementItemSelected .hierarchicalLink {
+  color: hsl(var(--color-accent-purple));
+}
+
+.refinementItemSelected .hierarchicalLink::before {
+  background-color: hsl(var(--color-accent-purple));
+  border-color: hsl(var(--color-accent-purple));
+  background-image: var(--check-svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--check-icon-size) var(--check-icon-size);
 }
 
 .tagChildren {
-  padding-left: 16px;
+  padding-left: 28px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   margin-top: 4px;
 }
+

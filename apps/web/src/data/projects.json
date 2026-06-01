@@ -58,7 +58,7 @@
     "why_it_exists": "To connect electricity consumers with the human and environmental costs of coal mining by naming the mine, operator, and accident history behind every light switch.",
     "long_description": "Unearthed takes an address and walks the energy supply chain backward: from the outlet to the power plant, from the plant to the fuel contract, from the contract to the specific mine. It surfaces MSHA accident records, production tonnage, and EPA emissions data for each mine, then lets users interrogate the data through natural language queries powered by Snowflake Cortex. A real-time tonnage ticker shows current extraction rates while AI-generated narratives describe each mine's impact.",
     "outcome": "A deployed tool that names the coal mine feeding any U.S. address, backed by federal data from MSHA, EIA, and EPA, with natural language querying via Snowflake Cortex.",
-    "status": "Active · Deployed",
+    "status": "Retired",
     "owner": "anchildress1",
     "image_url": "/projects/unearthed.webp",
     "image_alt": "Unearthed application interface tracing electricity from a user's address to the coal mine feeding their grid",
@@ -96,12 +96,70 @@
     ],
     "award": "Earth Day 2026 Winner",
     "project_type": "tool",
-    "completion_state": "active",
+    "completion_state": "retired",
     "repo_url": "https://github.com/anchildress1/unearthed",
-    "app_url": "https://unearthed.anchildress1.dev",
+    "app_url": "",
     "order_rank": 2,
     "updated_at": "2026-04-20",
     "related_project_ids": ["carbon-trace"]
+  },
+  {
+    "objectID": "vestige",
+    "node_type": "project",
+    "name": "Vestige",
+    "aliases": ["brain tracker", "cognition tracker", "adhd tool"],
+    "what_it_is": "ADHD-friendly Android brain tracker. 30-second voice entries in, sourced behavioral patterns out. No grading, no gamification, no feelings prompts.",
+    "why_it_exists": "ADHD memory isn't a storage problem; it's a recall gap. Vestige is the receipt trail for that gap — it observes, doesn't grade, and never ships audio anywhere.",
+    "long_description": "Gemma 4 E4B handles native audio in (no SpeechRecognizer), returns transcription + persona follow-up as a single streaming foreground response, then 3 background lens passes (Literal / Inferential / Skeptical × 5 surfaces) feed a deterministic Kotlin convergence resolver. EmbeddingGemma 300M ships for tone-word Vocab Drift; a sealed NetworkGate plus a verifyNoTelemetry Gradle task enforce privacy as construction, not policy.",
+    "outcome": "Submitted to the Gemma 4 Challenge (Build with Gemma 4) on 2026-05-24. STT-D hit 73% meaningful lens divergence against a 50% bar; STT-H landed 12/12 entries, 3/3 lens parse, and a mean 21.2s on a Galaxy S24 Ultra. Winners announced 2026-06-04.",
+    "status": "Active · Released",
+    "owner": "anchildress1",
+    "image_url": "/projects/vestige.webp",
+    "image_alt": "Vestige Android brain tracker surfacing sourced behavioral patterns from on-device Gemma 4 analysis",
+    "tech": [
+      {
+        "name": "Gemma 4 E4B",
+        "role": "LLM · Native Audio"
+      },
+      {
+        "name": "EmbeddingGemma 300M",
+        "role": "Tone-Word Clustering"
+      },
+      {
+        "name": "LiteRT-LM",
+        "role": "Runtime (pinned)"
+      },
+      {
+        "name": "Kotlin + Compose + Material 3",
+        "role": "Android 14+ UI"
+      },
+      {
+        "name": "ObjectBox",
+        "role": "Persistence"
+      },
+      {
+        "name": "Gradle KTS + verifyNoTelemetry",
+        "role": "Build"
+      },
+      {
+        "name": "Lefthook + GHA + CodeQL + Sonar + Kover",
+        "role": "CI / Quality"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Vestige: A Gemma 4 Brain Tracker That Won't Blow Smoke Up Your Ass",
+        "url": "https://dev.to/anchildress1/vestige-a-gemma-4-brain-tracker-that-wont-blow-smoke-up-your-ass-5caf"
+      }
+    ],
+    "project_type": "experiment",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/vestige",
+    "app_url": "https://github.com/anchildress1/vestige/releases",
+    "award": null,
+    "order_rank": 3,
+    "updated_at": "2026-05-24",
+    "related_project_ids": ["my-hermantic-agent"]
   },
   {
     "objectID": "legacy-smelter",
@@ -152,7 +210,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/legacy-smelter",
     "app_url": "https://hotfix.anchildress1.dev",
-    "order_rank": 3,
+    "order_rank": 4,
     "updated_at": "2026-04-13",
     "related_project_ids": []
   },
@@ -213,7 +271,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/system-notes",
     "app_url": "https://unstable.anchildress1.dev",
-    "order_rank": 4,
+    "order_rank": 5,
     "updated_at": "2026-02-08",
     "related_project_ids": ["underfoot-underground-travel-planner", "devto-mirror"]
   },
@@ -256,7 +314,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/supascribe-notes-mcp",
-    "order_rank": 5,
+    "order_rank": 6,
     "updated_at": "2026-02-26",
     "related_project_ids": ["system-notes"]
   },
@@ -310,7 +368,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/ChecKMarKDevTools/dev-community-dashboard",
     "app_url": "https://dev-community-dashboard.checkmarkdevtools.dev",
-    "order_rank": 6,
+    "order_rank": 7,
     "updated_at": "2026-03-04",
     "related_project_ids": []
   },
@@ -370,7 +428,7 @@
     "project_type": "resource",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
-    "order_rank": 7,
+    "order_rank": 8,
     "updated_at": "2026-02-01",
     "related_project_ids": []
   },
@@ -414,7 +472,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/devto-mirror",
-    "order_rank": 8,
+    "order_rank": 9,
     "updated_at": "2026-02-01"
   },
   {
@@ -469,7 +527,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/rai-lint",
-    "order_rank": 9,
+    "order_rank": 10,
     "updated_at": "2026-02-01",
     "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"]
   },
@@ -482,7 +540,7 @@
     "why_it_exists": "A zero-stakes environment to experiment with memory and agent behavior for a personal local AI system.",
     "long_description": "Hermes is a personal playground where I am starting with memory as a first-class concern while the stakes are low. I use it to explore how an agent behaves when memory exists, evolves, and occasionally misbehaves, without production pressure or polish influencing decisions.",
     "outcome": "A functional local sandbox that informs future agent and memory design decisions.",
-    "status": "Active · In Progress",
+    "status": "Scrapped",
     "owner": "anchildress1",
     "image_url": "/projects/my-hermantic-agent.webp",
     "image_alt": "Hermes Agent interface showing local AI memory experiments and conversational history",
@@ -506,9 +564,9 @@
     ],
     "blog_posts": [],
     "project_type": "experiment",
-    "completion_state": "active",
+    "completion_state": "unfinished",
     "repo_url": "https://github.com/anchildress1/my-hermantic-agent",
-    "order_rank": 10,
+    "order_rank": 11,
     "updated_at": "2026-02-01",
     "related_project_ids": ["underfoot-underground-travel-planner"]
   },
@@ -521,7 +579,7 @@
     "why_it_exists": "Placeholder solution until Copilot coding agent supports valid user PAT tokens via CLI in GitHub Actions.",
     "long_description": "Delegate Action exists because the functionality I wanted does not yet exist in Copilot. I needed AI-generated pull requests immediately, under my own credentials, without waiting on upstream support. This Action fills that gap by generating draft PRs using my PAT, with explicit human review and ownership.",
     "outcome": "A working stopgap that enables AI-generated PRs today while waiting for native platform support.",
-    "status": "Active · POC",
+    "status": "Scrapped",
     "owner": "CheckMarKDevTools",
     "image_url": "/projects/delegate-action.webp",
     "image_alt": "Delegate Action GitHub workflow allowing secure AI-generated pull requests via personal access tokens",
@@ -545,9 +603,9 @@
     ],
     "blog_posts": [],
     "project_type": "tool",
-    "completion_state": "active",
+    "completion_state": "unfinished",
     "repo_url": "https://github.com/CheckMarKDevTools/delegate-action",
-    "order_rank": 11,
+    "order_rank": 120,
     "updated_at": "2026-02-01",
     "related_project_ids": ["rai-lint", "awesome-github-copilot"]
   },
@@ -595,7 +653,7 @@
     "project_type": "experiment",
     "completion_state": "archived",
     "repo_url": "https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner",
-    "order_rank": 12,
+    "order_rank": 130,
     "updated_at": "2026-02-01",
     "related_project_ids": ["my-hermantic-agent"]
   },
@@ -634,7 +692,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/eslint-config-echo",
-    "order_rank": 13,
+    "order_rank": 14,
     "updated_at": "2026-02-01"
   },
   {
@@ -668,7 +726,7 @@
     "project_type": "experiment",
     "completion_state": "failed",
     "repo_url": "https://github.com/CheckMarKDevTools/checkmark-copilot-chat",
-    "order_rank": 14,
+    "order_rank": 150,
     "updated_at": "2026-02-01",
     "related_project_ids": ["awesome-github-copilot"]
   }

@@ -24,8 +24,9 @@ describe('searchRouting', () => {
         refinementList: {
           category: ['Work Style'],
           projects: ['System Notes'],
-          'tags.lvl0': ['Principle'],
-          'tags.lvl1': ['Principle > Responsibility'],
+        },
+        hierarchicalMenu: {
+          'tags.lvl0': ['Principle > Responsibility'],
         },
       },
     };
@@ -34,8 +35,24 @@ describe('searchRouting', () => {
       page: 2,
       category: ['Work Style'],
       projects: ['System Notes'],
-      tag0: ['Principle'],
-      tag1: ['Principle > Responsibility'],
+      tags: 'Principle > Responsibility',
+    });
+  });
+
+  it('maps uiState with a top-level tag selection', () => {
+    const uiState = {
+      [indexName]: {
+        hierarchicalMenu: {
+          'tags.lvl0': ['Principle'],
+        },
+      },
+    };
+
+    expect(toRouteState(uiState, indexName)).toEqual({
+      page: undefined,
+      category: undefined,
+      projects: undefined,
+      tags: 'Principle',
     });
   });
 
@@ -44,8 +61,7 @@ describe('searchRouting', () => {
       page: 3,
       category: ['Philosophy'],
       projects: ['Hermes Agent'],
-      tag0: ['Approach'],
-      tag1: ['Approach > Iterative'],
+      tags: 'Approach > Iterative',
     };
 
     expect(toUiState(routeState, indexName)).toEqual({
@@ -54,20 +70,20 @@ describe('searchRouting', () => {
         refinementList: {
           category: ['Philosophy'],
           projects: ['Hermes Agent'],
-          'tags.lvl0': ['Approach'],
-          'tags.lvl1': ['Approach > Iterative'],
+        },
+        hierarchicalMenu: {
+          'tags.lvl0': ['Approach > Iterative'],
         },
       },
     });
   });
 
-  it('omits empty refinements from uiState', () => {
+  it('omits empty refinements and hierarchicalMenu from uiState', () => {
     const routeState = {
       page: undefined,
       category: [],
       projects: [],
-      tag0: [],
-      tag1: [],
+      tags: undefined,
     };
 
     expect(toUiState(routeState, indexName)).toEqual({
@@ -84,15 +100,16 @@ describe('searchRouting', () => {
       refinementList: {
         category: ['Work Style'],
         projects: ['System Notes'],
-        'tags.lvl0': ['Approach'],
-        'tags.lvl1': ['Approach > Iterative'],
+      },
+      hierarchicalMenu: {
+        'tags.lvl0': ['Approach > Iterative'],
       },
     };
 
     const url = getSearchPageURL(indexUiState, indexName);
 
     expect(url).toBe(
-      '/?page=2&category=Work+Style&project=System+Notes&tag0=Approach&tag1=Approach+%3E+Iterative'
+      '/?page=2&category=Work+Style&project=System+Notes&tags=Approach+%3E+Iterative'
     );
   });
 
@@ -112,14 +129,13 @@ describe('searchRouting', () => {
     expect(url).toBe('/search');
   });
 
-  it('handles uiState without refinementList gracefully', () => {
+  it('handles uiState without refinementList or hierarchicalMenu gracefully', () => {
     const uiState = { [indexName]: {} };
     expect(toRouteState(uiState as never, indexName)).toEqual({
       page: undefined,
       category: undefined,
       projects: undefined,
-      tag0: undefined,
-      tag1: undefined,
+      tags: undefined,
     });
   });
 
@@ -137,7 +153,7 @@ describe('searchRouting', () => {
     let routerConfig: any;
     const qsModule = {
       stringify: (params: Record<string, unknown>, _options: unknown) => {
-        return new URLSearchParams(params as Record<string, string>).toString(); // Simple mock
+        return new URLSearchParams(params as Record<string, string>).toString();
       },
       parse: (str: string) => {
         const params = new URLSearchParams(str);
@@ -192,6 +208,25 @@ describe('searchRouting', () => {
       expect(url).toBe('https://example.com/searchmocked-query-string');
     });
 
+    it('serialises tags into URL', () => {
+      const routeState = { tags: 'Approach > Iterative' };
+      const location = {
+        origin: 'https://example.com',
+        pathname: '/search',
+        search: '',
+      } as unknown as Location;
+
+      const mockStringify = vi.fn().mockReturnValue('mocked');
+      const customQsModule = { ...qsModule, stringify: mockStringify };
+
+      routerConfig.createURL({ qsModule: customQsModule, routeState, location });
+
+      expect(mockStringify).toHaveBeenCalledWith(
+        expect.objectContaining({ tags: 'Approach > Iterative' }),
+        expect.any(Object)
+      );
+    });
+
     it('preserves factId in createURL when present in the current URL', () => {
       const routeState = {};
       const location = {
@@ -241,13 +276,33 @@ describe('searchRouting', () => {
         page: 2,
         category: ['cat1'],
         projects: ['proj1'],
-        tag0: [],
-        tag1: [],
+        tags: undefined,
       });
     });
 
-    it('handles array parameters in parseURL', () => {
-      // Our simple mock implementation of qs.parse handles multiple params by creating arrays
+    it('parses tags from URL', () => {
+      const location = {
+        search: '?tags=Approach+%3E+Iterative',
+      } as unknown as Location;
+
+      const parsed = routerConfig.parseURL({ qsModule, location });
+
+      expect(parsed.tags).toBe('Approach > Iterative');
+    });
+
+    it('ignores array tags param (invalid — tags must be a single string)', () => {
+      // If somehow duplicate tags params appear, only a string value is accepted
+      const location = {
+        search: '?tags=Approach&tags=Events',
+      } as unknown as Location;
+
+      const parsed = routerConfig.parseURL({ qsModule, location });
+
+      // Array value is rejected; tags should be undefined
+      expect(parsed.tags).toBeUndefined();
+    });
+
+    it('handles array parameters in parseURL for category', () => {
       const location = { search: '?category=cat1&category=cat2' } as unknown as Location;
       const parsed = routerConfig.parseURL({ qsModule, location });
 

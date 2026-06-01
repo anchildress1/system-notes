@@ -11,7 +11,7 @@ import 'instantsearch.css/components/chat.css';
 import './chat-overrides.css';
 import styles from './AIChat.module.css';
 import dynamic from 'next/dynamic';
-import { API_URL, ALGOLIA_INDEX } from '@/config';
+import { ALGOLIA_INDEX } from '@/config';
 import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
 import { getChatSessionId } from '@/utils/userToken';
 import {
@@ -158,7 +158,7 @@ export default function AIChat() {
             if (typedInput?.limit) urlParams.set('limit', String(typedInput.limit));
             urlParams.set('indexName', ALGOLIA_INDEX.CHAT_SOURCE);
 
-            const response = await fetch(`${API_URL}/blog/search?${urlParams.toString()}`);
+            const response = await fetch(`/api/blog/search?${urlParams.toString()}`);
             if (!response.ok) {
               addToolResult({
                 output: { error: 'Failed to fetch blog posts', results: [] },

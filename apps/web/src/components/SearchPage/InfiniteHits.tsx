@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useInfiniteHits } from 'react-instantsearch';
+import { useInfiniteHits, useInstantSearch } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
 import type { SendEventForHits } from '@/types/algolia';
 
@@ -13,6 +13,7 @@ interface InfiniteHitsProps {
     list?: string;
     item?: string;
     loadMore?: string;
+    empty?: string;
   };
   [key: string]: unknown;
 }
@@ -23,6 +24,7 @@ export default function InfiniteHits({
   ...props
 }: Readonly<InfiniteHitsProps>) {
   const { items, isLastPage, showMore, sendEvent } = useInfiniteHits(props);
+  const { status } = useInstantSearch();
   const sentinelRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -61,6 +63,17 @@ export default function InfiniteHits({
       };
     }
   }, [isLastPage, showMore]);
+
+  const isIdle = status === 'idle';
+  const isEmpty = items.length === 0 && isIdle;
+
+  if (isEmpty) {
+    return (
+      <div className={classNames.empty}>
+        <p>No results found. Try adjusting your filters or search terms.</p>
+      </div>
+    );
+  }
 
   return (
     <div className={classNames.root}>
