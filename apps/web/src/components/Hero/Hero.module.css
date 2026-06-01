@@ -68,32 +68,23 @@
   color: var(--text-primary);
 }
 
-/* Shimmer: white is dominant, a narrow colored ribbon sweeps through.
-   Slow + linear so it reads as a slow drift of light, not a brightness flash.
-   Stops at 0/38 keep the word white most of the time; the 46/50/54 band
-   is the colored ribbon. */
+/* Full neon gradient that flows across the word — pink → violet → teal,
+   looping seamlessly (the trailing pink matches the leading pink so the
+   200% position wrap has no visible seam). Drift, not flash. */
 .rotatingWord {
   background: linear-gradient(
     110deg,
-    var(--text-primary) 0%,
-    var(--text-primary) 38%,
-    var(--accent-pink) 46%,
-    var(--accent-violet) 50%,
-    var(--accent-teal) 54%,
-    var(--text-primary) 62%,
-    var(--text-primary) 100%
+    var(--accent-pink) 0%,
+    var(--accent-violet) 35%,
+    var(--accent-teal) 65%,
+    var(--accent-pink) 100%
   );
-  background-size: 220% 100%;
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  animation: wordShimmer 14s linear infinite;
-}
-
-@keyframes wordShimmer {
-  0% { background-position: 220% 50%; }
-  100% { background-position: -120% 50%; }
+  animation: gradientShimmer 9s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -120,7 +111,7 @@
 
 .imageContainer:hover {
   filter: grayscale(0%);
-  border-color: var(--accent-pink);
+  border-color: var(--text-muted);
 }
 
 .image {

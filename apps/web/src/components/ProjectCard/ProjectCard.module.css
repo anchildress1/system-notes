@@ -20,13 +20,13 @@
 }
 
 .card:hover {
-  border-color: var(--accent-violet);
+  border-color: var(--text-muted);
   transform: translateY(-3px);
-  box-shadow: 0 0 calc(50px * var(--glow)) var(--accent-violet-soft), var(--shadow-card);
+  box-shadow: 0 0 calc(50px * var(--glow)) rgba(255, 255, 255, 0.06), var(--shadow-card);
 }
 
 .card:focus-visible {
-  outline: 2px solid var(--accent-violet);
+  outline: 2px solid var(--chrome-line);
   outline-offset: 4px;
 }
 
@@ -70,10 +70,12 @@
   transition: transform var(--transition-slow), filter var(--transition-slow);
   position: relative;
   z-index: 2;
+  filter: grayscale(100%);
 }
 
 .card:hover .image {
   transform: scale(1.04);
+  filter: grayscale(0%);
 }
 
 .imageContainer::before {
@@ -81,8 +83,7 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(135deg, rgba(8, 9, 12, 0.5), rgba(8, 9, 12, 0)),
-    radial-gradient(at 70% 80%, var(--accent-violet-soft), transparent 60%);
+    linear-gradient(135deg, rgba(8, 9, 12, 0.5), rgba(8, 9, 12, 0));
   z-index: 3;
   pointer-events: none;
 }
@@ -140,7 +141,7 @@
   font-family: var(--font-mono);
   font-size: 2rem;
   font-weight: 700;
-  color: var(--accent-violet);
+  color: var(--text-secondary);
   opacity: 0.6;
 }
 

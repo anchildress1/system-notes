@@ -33,25 +33,25 @@
 }
 
 /* ── Toggle button ── */
-/* Matches MusicPlayer .playButton — filled circle in dusty lavender,
-   white icon. !important is required because Algolia's chat widget
-   ships its own button styles that win otherwise. */
+/* Matches MusicPlayer .playButton — filled neon-violet circle, white icon.
+   A deliberate action-color burst. !important is required because Algolia's
+   chat widget ships its own button styles that win otherwise. */
 .chatToggle {
   width: 60px !important;
   height: 60px !important;
   border-radius: 99px !important;
-  background: #9c7bd4 !important;
+  background: var(--accent-violet) !important;
   border: none !important;
   color: white !important;
   box-shadow: 0 6px 22px -8px rgba(0, 0, 0, 0.7),
-    0 0 calc(18px * var(--glow)) rgba(156, 123, 212, 0.28) !important;
+    0 0 calc(18px * var(--glow)) var(--accent-violet-soft) !important;
   transition: transform var(--transition-base), background var(--transition-base),
     box-shadow var(--transition-base) !important;
 }
 
 .chatToggle:hover {
   transform: translateY(-2px) !important;
-  background: #ad8de1 !important;
+  background: color-mix(in srgb, var(--accent-violet) 85%, white) !important;
   box-shadow: 0 8px 26px -8px rgba(0, 0, 0, 0.75),
-    0 0 calc(24px * var(--glow)) rgba(156, 123, 212, 0.4) !important;
+    0 0 calc(24px * var(--glow)) var(--accent-violet-soft) !important;
 }

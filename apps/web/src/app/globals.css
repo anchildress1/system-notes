@@ -24,6 +24,13 @@
   --accent:      var(--accent-violet);
   --accent-soft: var(--accent-violet-soft);
 
+  /* ── Neutral interactive tier ──
+     ALL chrome (focus, hover, active, pagination, nav, links, FABs,
+     badges, tags) is monochrome. Neon --accent-* is reserved for the
+     ONLY two color moments: card top-stripes and the hero shimmer word.
+     Nothing else gets color. */
+  --chrome-line:  var(--text-primary);
+
   /* ── Semantic aliases (keep old names, new dark values) ── */
   --paper:      var(--bg-base);
   --paper-dim:  var(--bg-surface);
@@ -145,7 +152,7 @@ body {
 }
 
 :where(:focus-visible) {
-  outline: 2px solid var(--accent-violet);
+  outline: 2px solid var(--chrome-line);
   outline-offset: 4px;
   border-radius: var(--r-sm);
 }
@@ -207,13 +214,13 @@ body {
 }
 
 .close-button-global:hover {
-  background: var(--accent-violet-soft);
-  border-color: var(--accent-violet);
-  color: var(--accent-violet);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
 }
 
 .close-button-global:focus-visible {
-  outline: 2px solid var(--accent-violet);
+  outline: 2px solid var(--chrome-line);
   outline-offset: 2px;
 }
 
@@ -233,7 +240,7 @@ body {
 }
 
 .algolia-attribution:hover .algolia-hoverable {
-  color: var(--accent-violet);
+  color: var(--text-primary);
 }
 
 .algolia-prefix {
@@ -270,49 +277,61 @@ body {
   text-transform: uppercase;
 }
 
-.card-header-badge[data-category='principle'] {
-  color: var(--accent-violet);
-  border-color: rgba(181, 107, 255, 0.55);
+/* Badge inherits its card's accent hue (set on .cardLink) — color-codes
+   every category and distributes pink/teal/violet/gold across the grid. */
+.card-header-badge[data-category] {
+  color: var(--card-accent, var(--text-primary));
+  border-color: color-mix(in srgb, var(--card-accent, var(--border-strong)) 45%, transparent);
 }
 
-.card-header-badge[data-category='origin'] {
-  color: var(--accent-teal);
-  border-color: rgba(62, 199, 194, 0.55);
-}
-
-.card-header-badge[data-category='theme-song'] {
-  color: var(--accent-pink);
-  border-color: rgba(241, 97, 151, 0.55);
-}
-
-.card-header-badge[data-category='workflow'],
-.card-header-badge[data-category='review'],
-.card-header-badge[data-category='philosophy'],
-.card-header-badge[data-category='pushback'],
-.card-header-badge[data-category='goal'] {
-  color: var(--text-primary);
-  border-color: var(--border-strong);
-}
-
+/* Flowing multi-neon gradient FILL (same motion as the hero word, but on
+   the pill background) with white text on top. text-shadow keeps the label
+   legible across the lighter teal stretch of the gradient. */
 .award-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 4px 10px;
-  background: var(--accent-pink-soft);
-  color: var(--accent-pink);
-  border: 1px solid rgba(241, 97, 151, 0.4);
+  padding: 5px 12px;
+  background: linear-gradient(
+    110deg,
+    var(--accent-pink) 0%,
+    var(--accent-violet) 35%,
+    var(--accent-teal) 65%,
+    var(--accent-pink) 100%
+  );
+  background-size: 200% 100%;
+  animation: gradientShimmer 9s linear infinite;
+  color: white;
+  border: none;
   border-radius: var(--r-pill);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 2px 14px -2px color-mix(in srgb, var(--accent-violet) 50%, transparent),
+    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--accent-pink) 30%, transparent);
+}
+
+/* Shared keyframe for all flowing multi-neon gradient animations
+   (award badge, hero shimmer word). Lives here as a global so CSS
+   modules can reference it by name without re-declaring. */
+@keyframes gradientShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
 
 .award-badge-icon {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
+  color: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .award-badge {
+    animation: none;
+  }
 }
 
 .simple-tags {
@@ -339,7 +358,7 @@ body {
   letter-spacing: 0.08em;
   background: var(--accent-violet-soft);
   color: var(--accent-violet);
-  border: 1px solid rgba(181, 107, 255, 0.4);
+  border: 1px solid color-mix(in srgb, var(--accent-violet) 40%, transparent);
   padding: 2px 8px;
   border-radius: var(--r-pill);
   text-transform: uppercase;
@@ -382,9 +401,11 @@ button {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(181, 107, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
 }
 
+/* Algolia injects its own stylesheet with !important on these properties,
+   so equal-specificity rules lose — we must escalate to win. */
 .ais-Pagination-link--selected {
   background-color: transparent !important;
   border-color: var(--accent-violet) !important;
@@ -392,6 +413,6 @@ button {
 }
 
 ::selection {
-  background: var(--accent-violet);
-  color: white;
+  background: var(--text-primary);
+  color: var(--bg-deep);
 }

@@ -1,6 +1,6 @@
 /* Human-written content source link button
-   Used for GitHub, DEV.to, and other external sources
-   Per style guide: Pink (#F16197) = Human Identity */
+   Used for GitHub, DEV.to, and other external sources.
+   Neutral chrome — color lives only on card stripes + the hero word. */
 
 .sourceLink {
   display: flex;
@@ -22,13 +22,13 @@
 
 .sourceLink:hover {
   background: hsl(var(--color-bg-surface));
-  border-color: hsl(var(--color-accent-pink));
-  color: hsl(var(--color-accent-pink));
+  border-color: var(--text-muted);
+  color: var(--text-primary);
   transform: rotate(15deg) scale(1.1);
-  box-shadow: 0 0 15px hsl(var(--color-accent-pink) / 0.4);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.12);
 }
 
 .sourceLink:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-pink));
+  outline: 2px solid var(--chrome-line);
   outline-offset: 2px;
 }

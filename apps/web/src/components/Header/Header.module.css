@@ -38,7 +38,6 @@
   flex-shrink: 0;
   border-radius: var(--r-md);
   border: 1px solid rgba(255, 255, 255, 0.24);
-  box-shadow: 0 0 calc(10px * var(--glow)) var(--accent-violet-soft);
   overflow: hidden;
 }
 
@@ -146,12 +145,19 @@
 
 .navCta:hover {
   background: rgba(255, 255, 255, 0.06);
-  border-color: var(--accent-pink);
+  border-color: var(--accent-violet);
   color: var(--text-primary);
 }
 
 .navCtaArrow {
   opacity: 0.6;
+  transition: color var(--transition-base), opacity var(--transition-base);
+}
+
+/* Hover brings color in through the icon only — chrome stays neutral. */
+.navCta:hover .navCtaArrow {
+  color: var(--accent-violet);
+  opacity: 1;
 }
 
 /* ── Status pill ── */
@@ -191,8 +197,9 @@
   top: -200px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--accent-violet);
-  color: white;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
   padding: 0.5rem 1rem;
   z-index: var(--z-modal);
   font-family: var(--font-mono);

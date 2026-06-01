@@ -58,18 +58,16 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--card-accent), transparent 80%);
-  opacity: 0.7;
+  height: 2px;
+  background: linear-gradient(90deg, var(--card-accent), transparent 75%);
+  opacity: 1;
   z-index: 3;
   pointer-events: none;
 }
 
 .card:hover {
-  border-color: var(--card-accent);
-  box-shadow: 0 0 0 1px var(--card-accent-soft),
-    0 0 calc(28px * var(--glow)) var(--card-accent-soft),
-    var(--shadow-card);
+  border-color: color-mix(in srgb, var(--card-accent) 45%, var(--border-strong));
+  box-shadow: 0 0 calc(12px * var(--glow)) var(--card-accent-soft), var(--shadow-card);
   transform: translateY(-2px);
 }
 
@@ -88,7 +86,7 @@
 }
 
 .cardLink[data-size="two-thirds"] .card::before {
-  height: 5px;
+  height: 2px;
   background: linear-gradient(90deg, var(--card-accent), var(--accent-violet), var(--accent-teal));
   opacity: 1;
 }
@@ -192,9 +190,9 @@
 }
 
 .ghLink:hover {
-  background: var(--accent-violet-soft);
-  border-color: var(--accent-violet);
-  color: var(--accent-violet);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
 }
 
 .description {

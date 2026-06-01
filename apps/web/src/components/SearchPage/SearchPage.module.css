@@ -18,8 +18,8 @@
 }
 
 .retrieve:focus-within {
-  border-color: var(--accent-violet);
-  box-shadow: 0 0 calc(22px * var(--glow)) var(--accent-violet-soft);
+  border-color: var(--text-muted);
+  box-shadow: 0 0 calc(22px * var(--glow)) rgba(255, 255, 255, 0.06);
 }
 
 .retrievePrompt {
@@ -118,7 +118,7 @@
 }
 
 .filterButton:focus-visible {
-  outline: 2px solid var(--accent-violet);
+  outline: 2px solid var(--chrome-line);
   outline-offset: 2px;
 }
 
@@ -186,7 +186,7 @@
 }
 
 .filterOption:focus-visible {
-  outline: 2px solid var(--accent-violet);
+  outline: 2px solid var(--chrome-line);
   outline-offset: -2px;
 }
 
@@ -238,7 +238,7 @@
 }
 
 .filterClearAll:focus-visible {
-  outline: 2px solid var(--accent-violet);
+  outline: 2px solid var(--chrome-line);
   outline-offset: 2px;
   border-radius: var(--r-sm);
 }
@@ -367,11 +367,25 @@
   border-color: var(--text-muted);
 }
 
+/* Active = neutral lift + a small violet dot beneath the number — same
+   language as the filter chips (.filterButtonActive). */
 .paginationItemActive .paginationButton {
-  background: var(--accent-violet-soft);
-  border-color: var(--accent-violet);
-  color: var(--accent-violet);
-  box-shadow: 0 0 calc(14px * var(--glow)) var(--accent-violet-soft);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  position: relative;
+}
+
+.paginationItemActive .paginationButton::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-violet);
 }
 
 .paginationItemDisabled .paginationButton {
@@ -395,7 +409,7 @@
   width: 16px;
   height: 16px;
   border: 2px solid var(--border-strong);
-  border-top-color: var(--accent-violet);
+  border-top-color: var(--text-primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }

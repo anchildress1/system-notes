@@ -14,15 +14,15 @@
   will-change: transform;
 }
 
-/* One soft ambient wash, far behind everything. Color reserved for data —
-   chrome stays luminance-only so card accents read against a calm field. */
+/* One soft ambient wash, far behind everything. Neutral — no hue. The
+   only color on the page is card stripes + the hero word. */
 .blob1 {
   width: 70vw;
   height: 70vw;
   top: -20vw;
   left: 15vw;
-  background: var(--accent-violet);
-  opacity: 0.08;
+  background: var(--text-secondary);
+  opacity: 0.05;
   animation: drift1 40s ease-in-out infinite;
 }
 
