@@ -26,20 +26,11 @@ export default defineConfig({
       use: { ...devices['iPhone 12'] },
     },
   ],
-  webServer: [
-    {
-      command: 'npm run start',
-      url: 'http://localhost:8000/health',
-      cwd: './apps/api',
-      reuseExistingServer: !process.env.CI,
-      timeout: 60000,
-    },
-    {
-      command: 'PORT=3002 npm run start:standalone',
-      url: 'http://localhost:3002',
-      cwd: './apps/web',
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
-    },
-  ],
+  webServer: {
+    command: 'PORT=3002 npm run start:standalone',
+    url: 'http://localhost:3002',
+    cwd: './apps/web',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120000,
+  },
 });
