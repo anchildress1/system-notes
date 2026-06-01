@@ -21,7 +21,12 @@ export default async function Projects() {
     <main className={styles.main} id="main-content">
       <Header />
       <Masthead />
-      <Hero title="Built it." subtitle="Shipped it." />
+      <Hero
+        title="Things I built and broke."
+        titleAccent="Things I"
+        accentWord="shipped."
+        subtitle={`${projects.length} artifacts — tools, experiments, and systems. Each earned its place; the ones that didn't aren't listed.`}
+      />
       <ProjectGrid projects={projects} />
     </main>
   );

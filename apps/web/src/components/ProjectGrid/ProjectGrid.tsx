@@ -79,21 +79,6 @@ export default function ProjectGrid({ projects }: Readonly<ProjectGridProps>) {
   return (
     <>
       <section className={styles.gridSection}>
-        <header className={styles.head}>
-          <p className={styles.path}>
-            CWD · <b>/sys/builds</b> · index = projects[{projects.length}]
-          </p>
-          <p className={styles.headTitle}>
-            Things I <b>built</b> /<br />
-            broke / shipped.
-          </p>
-          <p className={styles.headSub}>
-            $ {projects.length} artifacts spanning experiences, tools, and experiments. Every entry
-            has a reason it was built and a reason it survived. The ones that didn&apos;t are not
-            listed here.
-          </p>
-        </header>
-
         <div className={styles.grid}>
           {projects.map((p, index) => (
             <div key={p.id} className={styles.cardWrapper}>

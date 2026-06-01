@@ -7,59 +7,6 @@
   padding: 0 36px;
 }
 
-.head {
-  margin-bottom: 40px;
-  max-width: 60ch;
-}
-
-.path {
-  display: block;
-  margin-bottom: 14px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.path b {
-  color: var(--accent-teal);
-  font-weight: 600;
-}
-
-.headTitle {
-  font-family: var(--font-display);
-  font-size: clamp(40px, 5vw, 72px);
-  font-weight: 500;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
-  color: var(--text-primary);
-  margin-bottom: 16px;
-}
-
-.headTitle b {
-  background: linear-gradient(120deg, var(--accent-pink), var(--accent-violet), var(--accent-teal));
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: 500;
-  animation: textShift 8s ease infinite;
-}
-
-@keyframes textShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-.headSub {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-secondary);
-  letter-spacing: 0.4px;
-  line-height: 1.6;
-}
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -84,7 +31,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .headTitle b { animation: none; }
   .cardWrapper { animation: none; }
 }
 
