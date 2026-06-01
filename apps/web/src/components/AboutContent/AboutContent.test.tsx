@@ -70,4 +70,46 @@ describe('AboutContent', () => {
     expect(screen.getByText(/^01 ·/)).toBeInTheDocument();
     expect(screen.getByText(/^02 ·/)).toBeInTheDocument();
   });
+
+  it('wraps *text* in <em> and leaves surrounding text plain', () => {
+    const emphasisData: AboutData = {
+      ...baseData,
+      sections: [{ title: 'Test', content: 'Before *highlighted* after.' }],
+    };
+    render(<AboutContent data={emphasisData} />);
+    const em = screen.getByText('highlighted');
+    expect(em.tagName).toBe('EM');
+    expect(em.closest('p')).toHaveTextContent('Before highlighted after.');
+  });
+
+  it('renders a lone asterisk as plain text (no accidental wrapping)', () => {
+    const loneData: AboutData = {
+      ...baseData,
+      sections: [{ title: 'Test', content: '*only one' }],
+    };
+    render(<AboutContent data={loneData} />);
+    expect(screen.queryByRole('emphasis')).not.toBeInTheDocument();
+    expect(screen.getByText('*only one')).toBeInTheDocument();
+  });
+
+  it('wraps multiple emphasis spans in a single paragraph independently', () => {
+    const multiData: AboutData = {
+      ...baseData,
+      sections: [{ title: 'Test', content: '*first* and *second*' }],
+    };
+    render(<AboutContent data={multiData} />);
+    expect(screen.getByText('first').tagName).toBe('EM');
+    expect(screen.getByText('second').tagName).toBe('EM');
+    expect(screen.getByText('first').closest('p')).toHaveTextContent('first and second');
+  });
+
+  it('wraps a full paragraph in <em> when the entire text is marked', () => {
+    const fullData: AboutData = {
+      ...baseData,
+      sections: [{ title: 'Test', content: '*The whole line.*' }],
+    };
+    render(<AboutContent data={fullData} />);
+    const em = screen.getByText('The whole line.');
+    expect(em.tagName).toBe('EM');
+  });
 });

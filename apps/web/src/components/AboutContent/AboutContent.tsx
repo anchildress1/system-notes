@@ -2,10 +2,19 @@ import Image from 'next/image';
 import type { AboutData } from '@/data/about';
 import styles from './AboutContent.module.css';
 
+// Splits on *text* markers, alternating between plain strings and <em> nodes.
+// Requires non-whitespace at both boundaries (\S) so *foo bar* works but
+// a lone * or a trailing space before * doesn't create unintended wrapping.
+function parseEmphasis(text: string) {
+  return text
+    .split(/\*(\S[^*]*\S|\S)\*/)
+    .map((part, i) => (i % 2 === 1 ? <em key={i}>{part}</em> : part));
+}
+
 const TextContent = ({ text }: { text: string }) => (
   <>
-    {text.split('\n\n').map((paragraph) => (
-      <p key={paragraph.slice(0, 40)}>{paragraph.trim()}</p>
+    {text.split('\n\n').map((paragraph, i) => (
+      <p key={i}>{parseEmphasis(paragraph.trim())}</p>
     ))}
   </>
 );
