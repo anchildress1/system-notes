@@ -84,14 +84,6 @@ export const createSearchRouting = (indexName: string) => ({
       if (routeState.project?.length) queryParameters.project = routeState.project;
       if (routeState.tag?.length) queryParameters.tag = routeState.tag;
 
-      // Passthrough: factId is an Algolia click-analytics correlator (objectID).
-      // InstantSearch's router strips any param it doesn't own; re-inject it
-      // from the current URL so click→conversion tracking survives state updates.
-      const existingParams = qsModule.parse(location.search.slice(1));
-      if (existingParams.factId) {
-        queryParameters.factId = existingParams.factId as string;
-      }
-
       // arrayFormat: 'repeat' produces ?kind=A&kind=B instead of indexed keys.
       const queryString = qsModule.stringify(queryParameters, {
         addQueryPrefix: true,

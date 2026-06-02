@@ -121,7 +121,7 @@ function RetrieveBar() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
-      if ((e.metaKey || e.ctrlKey) && (key === 'k' || key === 'f') && !e.shiftKey) {
+      if ((e.metaKey || e.ctrlKey) && key === 'k' && !e.shiftKey) {
         e.preventDefault();
         inputRef.current?.focus();
       }

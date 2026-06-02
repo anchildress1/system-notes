@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(() => ({
@@ -80,6 +80,22 @@ describe('SearchPage Component', () => {
     await renderSearchPage();
 
     expect(screen.getByLabelText('Search the index')).toBeInTheDocument();
+  });
+
+  it('focuses retrieve on Cmd/Ctrl+K but leaves browser find alone', async () => {
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'ABCDEF1234');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', '12345678901234567890abcdef123456');
+
+    await renderSearchPage();
+
+    const input = screen.getByLabelText('Search the index');
+    expect(input).not.toHaveFocus();
+
+    fireEvent.keyDown(window, { key: 'f', metaKey: true });
+    expect(input).not.toHaveFocus();
+
+    fireEvent.keyDown(window, { key: 'k', metaKey: true });
+    expect(input).toHaveFocus();
   });
 
   it('renders error state when app ID is invalid format', async () => {

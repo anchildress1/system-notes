@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Highlight } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
 import type { SendEventForHits, FactHitRecord } from '@/types/algolia';
@@ -21,7 +21,6 @@ interface FactCardProps {
 
 export default function FactCard({ hit, sendEvent, position }: Readonly<FactCardProps>) {
   const hasTrackedFlip = useRef(false);
-  const cardLinkRef = useRef<HTMLAnchorElement>(null);
   const categoryLabel = hit.category || 'System';
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -48,31 +47,7 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
     return () => globalThis.removeEventListener('keydown', handler);
   }, [isFlipped]);
 
-  const handleCardClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      toggleFlip();
-    },
-    [toggleFlip]
-  );
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleFlip();
-      }
-    },
-    [toggleFlip]
-  );
-
   const isDevPost = useMemo(() => hit.url?.includes('dev.to') ?? false, [hit.url]);
-
-  const cardUrl = useMemo(() => {
-    const params = new URLSearchParams();
-    params.set('factId', hit.objectID);
-    return `/search?${params.toString()}`;
-  }, [hit.objectID]);
 
   const variantPosition = position ?? hit.__position ?? 1;
   const variant = useMemo(() => getCardVariant(variantPosition), [variantPosition]);
@@ -100,21 +75,22 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
   const topLabel = hit.projects?.[0] ?? `FACT · ${String(hit.__position ?? 0).padStart(2, '0')}`;
 
   return (
-    <a
-      ref={cardLinkRef}
-      href={cardUrl}
-      onClick={handleCardClick}
-      onKeyDown={handleKeyDown}
+    <article
       className={`${styles.cardLink} ${isFlipped ? styles.cardLinkFlipped : ''}`}
       data-accent={variant.accent}
       data-size={variant.size}
-      aria-expanded={isFlipped}
-      aria-label={`${hit.title}. Click to ${isFlipped ? 'collapse' : 'expand'}.`}
     >
-      <article
+      <div
         className={`${styles.card} ${isFlipped ? styles.flipped : ''}`}
         data-state={isFlipped ? 'expanded' : 'collapsed'}
       >
+        <button
+          type="button"
+          className={styles.flipButton}
+          onClick={toggleFlip}
+          aria-expanded={isFlipped}
+          aria-label={`${hit.title}. Click to ${isFlipped ? 'collapse' : 'expand'}.`}
+        />
         <div className={styles.flipper}>
           <div className={styles.cardFront} aria-hidden={isFlipped}>
             <div className={styles.content}>
@@ -180,7 +156,7 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
             </div>
           </div>
         </div>
-      </article>
-    </a>
+      </div>
+    </article>
   );
 }

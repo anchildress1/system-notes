@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
 import { createMockHit } from '@/test-utils/fixtures';
@@ -51,11 +51,11 @@ describe('FactCard Component', () => {
     const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} />);
 
-    const cardLink = screen.getByRole('link', { name: /Click to expand/i });
-    expect(cardLink).toHaveAttribute('aria-expanded', 'false');
+    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
+    expect(cardButton).toHaveAttribute('aria-expanded', 'false');
 
-    await user.click(cardLink);
-    expect(cardLink).toHaveAttribute('aria-expanded', 'true');
+    await user.click(cardButton);
+    expect(cardButton).toHaveAttribute('aria-expanded', 'true');
   });
 
   it('renders without project label when projects is empty', () => {
@@ -84,10 +84,10 @@ describe('FactCard Component', () => {
   it('has correct structure for accessibility', () => {
     render(<FactCard hit={createMockHit()} />);
 
-    const card = screen.getByRole('link', { name: /Click to expand/i });
+    const card = screen.getByRole('button', { name: /Click to expand/i });
     expect(card).toBeInTheDocument();
     expect(card).toHaveAttribute('aria-expanded', 'false');
-    expect(card).toHaveAttribute('href', '/search?factId=card%3Atest%3Atest%3A0001');
+    expect(screen.queryByRole('link', { name: /Click to expand/i })).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: 'Test Fact Title' })).toBeInTheDocument();
   });
 
@@ -98,7 +98,7 @@ describe('FactCard Component', () => {
     const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} />);
 
-    const card = screen.getByRole('link', { name: /Click to expand/i });
+    const card = screen.getByRole('button', { name: /Click to expand/i });
     card.focus();
     await user.keyboard(key);
 
@@ -110,8 +110,8 @@ describe('FactCard Component', () => {
     const hit = createMockHit();
     render(<FactCard hit={hit} sendEvent={mockSendEvent} />);
 
-    const cardLink = screen.getByRole('link', { name: /Click to expand/i });
-    await user.click(cardLink);
+    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
+    await user.click(cardButton);
 
     expect(mockSendEvent).toHaveBeenCalledWith('click', hit, 'Fact Card Viewed');
   });
@@ -120,10 +120,10 @@ describe('FactCard Component', () => {
     const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} sendEvent={mockSendEvent} />);
 
-    const cardLink = screen.getByRole('link', { name: /Click to expand/i });
+    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
 
-    await user.click(cardLink);
-    await user.click(cardLink);
+    await user.click(cardButton);
+    await user.click(cardButton);
 
     expect(mockSendEvent).toHaveBeenCalledTimes(1);
   });
@@ -132,8 +132,8 @@ describe('FactCard Component', () => {
     const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} />);
 
-    const cardLink = screen.getByRole('link', { name: /Click to expand/i });
-    await user.click(cardLink);
+    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
+    await user.click(cardButton);
 
     expect(mockSendEvent).not.toHaveBeenCalled();
   });
@@ -194,23 +194,24 @@ describe('FactCard Component', () => {
     const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} />);
 
-    const cardLink = screen.getByRole('link', { name: /Click to expand/i });
-    await user.click(cardLink);
-    expect(cardLink).toHaveAttribute('aria-expanded', 'true');
+    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
+    await user.click(cardButton);
+    expect(cardButton).toHaveAttribute('aria-expanded', 'true');
 
-    fireEvent.keyDown(cardLink, { key: ' ' });
-    expect(cardLink).toHaveAttribute('aria-expanded', 'false');
+    cardButton.focus();
+    await user.keyboard(' ');
+    expect(cardButton).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('closes flipped card via Escape key', async () => {
     const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} />);
 
-    const cardLink = screen.getByRole('link', { name: /Click to expand/i });
-    await user.click(cardLink);
-    expect(cardLink).toHaveAttribute('aria-expanded', 'true');
+    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
+    await user.click(cardButton);
+    expect(cardButton).toHaveAttribute('aria-expanded', 'true');
 
     await user.keyboard('{Escape}');
-    expect(cardLink).toHaveAttribute('aria-expanded', 'false');
+    expect(cardButton).toHaveAttribute('aria-expanded', 'false');
   });
 });

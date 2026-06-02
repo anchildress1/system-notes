@@ -199,7 +199,7 @@ describe('searchRouting', () => {
       expect(url).toBe('https://example.com/?mocked');
     });
 
-    it('preserves factId in createURL when present in the current URL', () => {
+    it('does not preserve stale factId params from the current URL', () => {
       const location = {
         origin: 'https://example.com',
         pathname: '/',
@@ -212,7 +212,7 @@ describe('searchRouting', () => {
         location,
       });
       expect(mockStringify).toHaveBeenCalledWith(
-        expect.objectContaining({ factId: 'card:test:001' }),
+        expect.not.objectContaining({ factId: expect.anything() }),
         expect.any(Object)
       );
     });

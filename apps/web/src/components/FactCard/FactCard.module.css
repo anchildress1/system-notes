@@ -32,11 +32,6 @@
   --card-accent-soft: rgba(232, 154, 106, 0.15);
 }
 
-.cardLink:focus-visible {
-  outline: 2px solid var(--card-accent);
-  outline-offset: 4px;
-}
-
 .card {
   position: relative;
   background: var(--bg-surface);
@@ -69,6 +64,24 @@
   border-color: color-mix(in srgb, var(--card-accent) 45%, var(--border-strong));
   box-shadow: 0 0 calc(12px * var(--glow)) var(--card-accent-soft), var(--shadow-card);
   transform: translateY(-2px);
+}
+
+.flipButton {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.flipButton:focus-visible {
+  outline: 2px solid var(--card-accent);
+  outline-offset: 4px;
 }
 
 .cardLink[data-size="half"] .title,
@@ -146,6 +159,8 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  position: relative;
+  z-index: 5;
 }
 
 .factCounter {
@@ -220,7 +235,7 @@
 
 /* ── 3D Flip (in-place) ── */
 
-/* Perspective lives on the link so the card flips around itself. */
+/* Perspective lives on the root so the card flips around itself. */
 .cardLink {
   perspective: 1400px;
 }
