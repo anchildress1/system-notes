@@ -30,6 +30,11 @@
   outline-offset: 4px;
 }
 
+.card:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 4px;
+}
+
 .imageContainer {
   width: 100%;
   aspect-ratio: 16 / 10;

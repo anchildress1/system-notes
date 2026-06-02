@@ -88,7 +88,7 @@ async function fetchPostContent(url: string): Promise<BlogPostInternal | null> {
     const slug = url.split('/').at(-1)?.replace('.html', '') ?? '';
     let keywords = jsonLd['keywords'] ?? [];
     if (typeof keywords === 'string') {
-      keywords = (keywords as string).split(',').map((k: string) => k.trim());
+      keywords = keywords.split(',').map((k: string) => k.trim());
     }
 
     const description = (jsonLd['description'] as string) ?? '';
@@ -136,7 +136,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<BlogSearch
   const { searchParams } = request.nextUrl;
   const q = searchParams.get('q');
   const tag = searchParams.get('tag');
-  const rawLimit = parseInt(searchParams.get('limit') ?? '3', 10);
+  const rawLimit = Number.parseInt(searchParams.get('limit') ?? '3', 10);
   const limit = Number.isFinite(rawLimit) ? Math.min(Math.max(rawLimit, 1), 50) : 3;
 
   let posts = await getAllBlogPosts();

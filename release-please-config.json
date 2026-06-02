@@ -7,7 +7,7 @@
     ".": {
       "release-type": "node",
       "component": "",
-      "extra-files": ["apps/web/package.json", "apps/api/package.json", "apps/api/pyproject.toml"]
+      "extra-files": ["apps/web/package.json"]
     }
   }
 }
