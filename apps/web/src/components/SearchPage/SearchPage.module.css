@@ -288,15 +288,10 @@
 }
 
 /* Span lives in inline `style.gridColumn` on each li (set in ResultsGrid).
-   Inline styles always win at default viewport. !important here overrides
-   the inline value at narrower breakpoints so the cycle normalizes. */
+   The 6-col cycle holds down to tablet width so the size variation
+   survives; only mobile flattens to a single column. */
 .hitsItem {
   display: flex;
-}
-
-@media (max-width: 1199px) {
-  .hitsList { grid-template-columns: repeat(4, 1fr); }
-  .hitsItem { grid-column: span 2 !important; }
 }
 
 @media (max-width: 720px) {
@@ -367,25 +362,12 @@
   border-color: var(--text-muted);
 }
 
-/* Active = neutral lift + a small violet dot beneath the number — same
-   language as the filter chips (.filterButtonActive). */
+/* Active = neutral lift + a soft accent outline (clean violet hue, ~half
+   strength) so the current page reads as active without a loud fill. */
 .paginationItemActive .paginationButton {
   background: rgba(255, 255, 255, 0.06);
-  border-color: var(--border-strong);
+  border-color: color-mix(in srgb, var(--accent-violet) 50%, transparent);
   color: var(--text-primary);
-  position: relative;
-}
-
-.paginationItemActive .paginationButton::after {
-  content: '';
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent-violet);
 }
 
 .paginationItemDisabled .paginationButton {
