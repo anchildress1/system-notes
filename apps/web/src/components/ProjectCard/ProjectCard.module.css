@@ -1,38 +1,105 @@
-.card {
-  appearance: none;
-  -webkit-appearance: none;
-  font: inherit;
-  color: inherit;
-  text-align: left;
+@keyframes cardFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Perspective lives on the grid-cell root so the card flips around itself. */
+.cardLink {
+  display: block;
   width: 100%;
-  padding: 0;
+  height: 100%;
+  perspective: 1400px;
+  animation: cardFadeInUp 0.4s ease backwards;
+}
+
+/* Lift the flipped card so its back doesn't clip behind neighbors. */
+.cardLinkFlipped {
   position: relative;
+  z-index: 10;
+}
+
+.card {
+  position: relative;
+  height: 100%;
+  min-height: 360px;
   background: linear-gradient(180deg, rgba(29, 31, 40, 0.55), rgba(22, 24, 31, 0.55));
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  cursor: pointer;
-  transition: border-color var(--transition-base), transform var(--transition-base),
+  transition:
+    border-color var(--transition-base),
     box-shadow var(--transition-base);
 }
 
 .card:hover {
   border-color: var(--text-muted);
-  transform: translateY(-3px);
-  box-shadow: 0 0 calc(50px * var(--glow)) rgba(255, 255, 255, 0.06), var(--shadow-card);
+  box-shadow:
+    0 0 calc(50px * var(--glow)) rgba(255, 255, 255, 0.06),
+    var(--shadow-card);
 }
 
-.card:focus-visible {
-  outline: 2px solid var(--chrome-line);
-  outline-offset: 4px;
+.flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.card:focus-visible {
+.flipped .flipper {
+  transform: rotateY(180deg);
+}
+
+/* Front is the height dictator — in flow it drives the card's intrinsic size. */
+.cardFront {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.cardBack {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: linear-gradient(180deg, rgba(33, 35, 46, 0.96), rgba(20, 22, 29, 0.96));
+}
+
+/* Front-only toggle: covers the face, rotates away with it when flipped. */
+.flipButton {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.flipButton:focus-visible {
   outline: 2px solid hsl(var(--color-accent-purple));
-  outline-offset: 4px;
+  outline-offset: -2px;
 }
 
 .imageContainer {
@@ -41,6 +108,7 @@
   position: relative;
   overflow: hidden;
   background: var(--bg-deep);
+  flex-shrink: 0;
 }
 
 .imageWrapper {
@@ -72,7 +140,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--transition-slow), filter var(--transition-slow);
+  transition:
+    transform var(--transition-slow),
+    filter var(--transition-slow);
   position: relative;
   z-index: 2;
   filter: grayscale(100%);
@@ -87,8 +157,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(135deg, rgba(8, 9, 12, 0.5), rgba(8, 9, 12, 0));
+  background: linear-gradient(135deg, rgba(8, 9, 12, 0.5), rgba(8, 9, 12, 0));
   z-index: 3;
   pointer-events: none;
 }
@@ -170,6 +239,13 @@
   margin-left: auto;
 }
 
+/* Keep the GitHub link clickable above the full-bleed flip toggle. */
+.sourceLinkRaise {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+}
+
 .title {
   font-family: var(--font-display);
   font-size: 22px;
@@ -248,4 +324,201 @@
   gap: 5px;
   color: var(--text-secondary);
   white-space: nowrap;
+}
+
+/* ── Back face (the flipped project note) ── */
+.backHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.backTitleRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.backTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.backStatus {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.backClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background var(--transition-base),
+    color var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.backClose:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
+}
+
+.backClose:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 2px;
+}
+
+.backContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.backLede {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.backBody {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.backSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.backLabel {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+}
+
+.backTech {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.backTechItem {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.backTechName {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.backTechRole {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-style: italic;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.backLinks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.backLinks a {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+  transition: color var(--transition-base);
+}
+
+.backLinks a:hover {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-muted);
+}
+
+.backRepo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0 18px 16px;
+  padding: 0.6rem 0.85rem;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.backRepo:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardLink {
+    animation: none;
+  }
+
+  .flipper {
+    transition: none;
+  }
 }

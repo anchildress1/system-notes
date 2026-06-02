@@ -40,41 +40,25 @@ test.describe('System Notes Integration', () => {
     await expect(techName).toBeVisible();
   });
 
-  test('should open expanded view and verify content', async ({ page }) => {
+  test('flips a project card in place to reveal the note', async ({ page }) => {
     await page.goto('/projects');
-    await page
-      .getByTestId(/^project-card-/)
-      .first()
-      .click();
+    const toggle = page.getByRole('button', { name: /flip to read the project note/i }).first();
+    await toggle.click();
 
-    // Section titles use h3 elements
-    const expandedContent = page
-      .locator('h3[class*="sectionTitle"]')
-      .filter({ hasText: /Project Output|Outcome|Purpose/ })
-      .first();
-    await expect(expandedContent).toBeVisible();
-
-    // Verify tech stack in the expanded view
-    const modal = page.getByTestId('expanded-view-dialog');
-    const techStack = modal.locator('div[class*="tags"]');
-    await expect(techStack).toBeVisible();
-
-    const tagItems = modal.locator('div[class*="tagItem"]');
-    await expect(tagItems.first()).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    // The back face is now showing — its close affordance and source link are reachable.
+    await expect(page.getByRole('button', { name: /back to summary/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /view source/i }).first()).toBeVisible();
   });
 
-  test('expanded view closes on Escape', async ({ page }) => {
+  test('flips a card back on Escape', async ({ page }) => {
     await page.goto('/projects');
-    await page
-      .getByTestId(/^project-card-/)
-      .first()
-      .click();
-
-    const modal = page.getByTestId('expanded-view-dialog');
-    await expect(modal).toBeVisible();
+    const toggle = page.getByRole('button', { name: /flip to read the project note/i }).first();
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
 
     await page.keyboard.press('Escape');
-    await expect(modal).not.toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 
   test('Human page smoke test', async ({ page }) => {
@@ -109,30 +93,14 @@ test.describe('System Notes Integration', () => {
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 
-  test('clicking project link in builds page navigates with hash', async ({ page }) => {
+  test('flipping a project card does not change the URL', async ({ page }) => {
     await page.goto('/projects');
+    const url = page.url();
 
-    // Click first project card
-    const firstCard = page.getByTestId(/^project-card-/).first();
-    await firstCard.click();
+    const toggle = page.getByRole('button', { name: /flip to read the project note/i }).first();
+    await toggle.click();
 
-    // Verify hash is written
-    await expect(page).toHaveURL(/#project=.+/);
-
-    // Verify modal opens
-    const modal = page.getByTestId('expanded-view-dialog');
-    await expect(modal).toBeVisible();
-  });
-
-  test('navigating to app_url from external source opens modal', async ({ page }) => {
-    // Simulate arriving at the site with a hash
-    await page.goto('/projects#project=system-notes');
-
-    // Verify modal opens
-    const modal = page.getByTestId('expanded-view-dialog');
-    await expect(modal).toBeVisible();
-
-    // Verify correct project loaded (use modal-scoped heading)
-    await expect(modal.getByRole('heading', { name: 'System Notes' })).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(page.url()).toBe(url);
   });
 });
