@@ -79,7 +79,36 @@
   transform: rotateY(180deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  background: linear-gradient(180deg, rgba(33, 35, 46, 0.96), rgba(20, 22, 29, 0.96));
+  background:
+    radial-gradient(120% 80% at 0% 0%, rgba(127, 90, 240, 0.14), transparent 55%),
+    linear-gradient(180deg, rgba(34, 36, 48, 0.97), rgba(18, 20, 27, 0.98));
+}
+
+/* Brand accent bar across the top of the note. */
+.cardBack::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 3;
+  background: linear-gradient(90deg, var(--accent-violet), var(--accent-teal) 65%, transparent);
+}
+
+/* Faint blueprint grid, fading toward the bottom — ties to the front art. */
+.cardBack::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(180deg, black, transparent 45%);
+  mask-image: linear-gradient(180deg, black, transparent 45%);
 }
 
 /* Front-only toggle: covers the face, rotates away with it when flipped. */
@@ -328,11 +357,13 @@
 
 /* ── Back face (the flipped project note) ── */
 .backHeader {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
-  padding: 16px 18px 12px;
+  padding: 20px 20px 14px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -340,51 +371,68 @@
 .backTitleRow {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   min-width: 0;
+}
+
+.backProjId {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--accent-teal);
 }
 
 .backTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   font-weight: 500;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
 }
 
 .backStatus {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 3px 9px;
+  border: 1px solid var(--accent-violet-soft);
+  border-radius: var(--r-pill);
+  background: rgba(127, 90, 240, 0.1);
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-muted);
+  letter-spacing: 1.2px;
+  color: var(--text-secondary);
 }
 
 .backClose {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
   border: 1px solid var(--border-strong);
   border-radius: var(--r-sm);
   background: rgba(255, 255, 255, 0.04);
   color: var(--text-secondary);
-  font-size: 1rem;
+  font-size: 1.05rem;
   cursor: pointer;
   transition:
     background var(--transition-base),
     color var(--transition-base),
-    border-color var(--transition-base);
+    border-color var(--transition-base),
+    transform var(--transition-base);
 }
 
 .backClose:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--text-muted);
+  background: rgba(127, 90, 240, 0.16);
+  border-color: var(--accent-violet);
   color: var(--text-primary);
+  transform: rotate(90deg);
 }
 
 .backClose:focus-visible {
@@ -393,20 +441,24 @@
 }
 
 .backContent {
+  position: relative;
+  z-index: 1;
   flex: 1;
   overflow-y: auto;
-  padding: 14px 18px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .backLede {
   margin: 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--accent-violet);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-style: italic;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--text-primary);
 }
 
@@ -414,23 +466,34 @@
   margin: 0;
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--text-secondary);
 }
 
 .backSection {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .backLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-mono);
   font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--text-muted);
+  letter-spacing: 2px;
+  color: var(--accent-teal);
+}
+
+/* Hairline rule trailing each section label. */
+.backLabel::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-strong), transparent);
 }
 
 .backTech {
@@ -439,7 +502,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .backTechItem {
@@ -447,11 +510,18 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 0.75rem;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.backTechItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .backTechName {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.76rem;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -470,10 +540,13 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 
 .backLinks a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--text-secondary);
@@ -482,35 +555,45 @@
   transition: color var(--transition-base);
 }
 
+.backLinks a::before {
+  content: '↳';
+  color: var(--accent-teal);
+}
+
 .backLinks a:hover {
   color: var(--text-primary);
   border-bottom-color: var(--text-muted);
 }
 
 .backRepo {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin: 0 18px 16px;
-  padding: 0.6rem 0.85rem;
+  margin: 0 20px 18px;
+  padding: 0.65rem 0.85rem;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-strong);
+  background: rgba(127, 90, 240, 0.1);
+  border: 1px solid var(--accent-violet-soft);
   border-radius: var(--r-pill);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.3px;
   color: var(--text-primary);
   text-decoration: none;
   transition:
     background var(--transition-base),
-    border-color var(--transition-base);
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .backRepo:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: var(--text-muted);
+  background: rgba(127, 90, 240, 0.18);
+  border-color: var(--accent-violet);
+  box-shadow: 0 0 calc(24px * var(--glow)) rgba(127, 90, 240, 0.25);
 }
 
 @media (prefers-reduced-motion: reduce) {
