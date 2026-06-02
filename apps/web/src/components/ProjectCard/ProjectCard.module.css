@@ -147,7 +147,8 @@
 
 .imageContainer {
   width: 100%;
-  aspect-ratio: 16 / 10;
+  /* Match the source art (350×175) so it fills edge-to-edge without cropping. */
+  aspect-ratio: 2 / 1;
   position: relative;
   overflow: hidden;
   background: var(--bg-deep);
@@ -192,7 +193,7 @@
 }
 
 .card:hover .image {
-  transform: scale(1.04);
+  transform: scale(1.06);
   filter: grayscale(0%);
 }
 
