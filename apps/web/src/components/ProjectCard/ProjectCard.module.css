@@ -40,9 +40,9 @@
 }
 
 .card:hover {
-  border-color: var(--text-muted);
+  border-color: color-mix(in srgb, var(--accent-violet) 40%, var(--border-strong));
   box-shadow:
-    0 0 calc(50px * var(--glow)) rgba(255, 255, 255, 0.06),
+    0 0 calc(44px * var(--glow)) rgba(127, 90, 240, 0.18),
     var(--shadow-card);
 }
 
@@ -68,6 +68,20 @@
   height: 100%;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+/* Brand accent bar — the same violet→teal seam that crowns the back face,
+   so both sides read as one designed object. */
+.cardFront::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 5;
+  background: linear-gradient(90deg, var(--accent-violet), var(--accent-teal) 65%, transparent);
+  pointer-events: none;
 }
 
 .cardBack {
@@ -212,12 +226,12 @@
   font-size: 9px;
   letter-spacing: 1.8px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(0, 0, 0, 0.5);
+  color: var(--accent-teal);
+  background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(8px);
   padding: 4px 9px;
   border-radius: var(--r-sm);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--accent-teal-soft);
 }
 
 .placeholderArt {
@@ -312,6 +326,14 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border);
   white-space: nowrap;
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.card:hover .techChip {
+  color: var(--text-secondary);
+  border-color: var(--border-strong);
 }
 
 .foot {
@@ -353,6 +375,21 @@
   gap: 5px;
   color: var(--text-secondary);
   white-space: nowrap;
+  transition: color var(--transition-base);
+}
+
+/* Teal arrow marks the flip affordance and slides on hover. */
+.footRead svg {
+  color: var(--accent-teal);
+  transition: transform var(--transition-base);
+}
+
+.card:hover .footRead {
+  color: var(--text-primary);
+}
+
+.card:hover .footRead svg {
+  transform: translateX(3px);
 }
 
 /* ── Back face (the flipped project note) ── */
@@ -603,5 +640,10 @@
 
   .flipper {
     transition: none;
+  }
+
+  .card:hover .image,
+  .card:hover .footRead svg {
+    transform: none;
   }
 }
