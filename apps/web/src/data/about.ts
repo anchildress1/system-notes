@@ -99,12 +99,12 @@ export const aboutData: AboutData = {
   ],
   stats: [
     { label: 'focus', value: 'Systems & Architecture' },
-    { label: 'applied', value: 'AI Orchestration & SDKs' },
+    { label: 'applied', value: 'AI Orchestration' },
     { label: 'role', value: 'The Home Depot · 8 yrs' },
     { label: 'based', value: 'Waco, GA · Remote' },
   ],
   lyric: {
-    meta: 'THEME SONG · I Build Things',
+    meta: 'I BUILD THINGS · TWISTED GAME SONGS',
     metaRight: '2026 · LOUD',
     rows: [
       { time: '00:00.4', text: 'I BUILD THINGS', tag: 'INTENT', tone: 'pink' },
