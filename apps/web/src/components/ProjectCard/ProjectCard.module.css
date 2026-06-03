@@ -209,23 +209,29 @@
   pointer-events: none;
 }
 
+/* Corner overlay: award stays prominent top-right (it fits there alone),
+   the /proj tag moves to the bottom-left so the two never collide and
+   clip the badge. */
 .imageOverlay {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 14px;
   z-index: 4;
   pointer-events: none;
 }
 
-.imageOverlay :global(.award-badge) {
-  pointer-events: auto;
+.awardSlot {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  max-width: calc(100% - 28px);
+  display: flex;
+  justify-content: flex-end;
 }
 
 .projId {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 1.8px;

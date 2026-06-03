@@ -89,9 +89,11 @@ export default function ProjectCard({ project, priority = false }: Readonly<Proj
               <div className={styles.imageOverlay}>
                 <span className={styles.projId}>/proj/{project.id}</span>
                 {project.award && (
-                  <span className="award-badge">
-                    <TrophyIcon className="award-badge-icon" />
-                    <span>{project.award}</span>
+                  <span className={styles.awardSlot}>
+                    <span className="award-badge">
+                      <TrophyIcon className="award-badge-icon" />
+                      <span>{project.award}</span>
+                    </span>
                   </span>
                 )}
               </div>
