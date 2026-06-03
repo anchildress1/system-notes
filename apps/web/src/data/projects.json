@@ -119,31 +119,23 @@
     "tech": [
       {
         "name": "Gemma 4 E4B",
-        "role": "LLM · Native Audio"
+        "role": "On-Device LLM · Native Audio"
       },
       {
         "name": "EmbeddingGemma 300M",
         "role": "Tone-Word Clustering"
       },
       {
-        "name": "LiteRT-LM",
-        "role": "Runtime (pinned)"
-      },
-      {
-        "name": "Kotlin + Compose + Material 3",
+        "name": "Kotlin + Compose",
         "role": "Android 14+ UI"
       },
       {
         "name": "ObjectBox",
-        "role": "Persistence"
+        "role": "On-Device Persistence"
       },
       {
-        "name": "Gradle KTS + verifyNoTelemetry",
-        "role": "Build"
-      },
-      {
-        "name": "Lefthook + GHA + CodeQL + Sonar + Kover",
-        "role": "CI / Quality"
+        "name": "Gradle · verifyNoTelemetry",
+        "role": "Privacy as a Build Gate"
       }
     ],
     "blog_posts": [
@@ -229,24 +221,28 @@
     "image_alt": "System Notes project dashboard showing AI-generated portfolio entries and architecture decisions",
     "tech": [
       {
-        "name": "Gemini 3 Pro",
-        "role": "The Architect"
+        "name": "Next.js",
+        "role": "App Router Frontend"
       },
       {
-        "name": "Antigravity",
-        "role": "Orchestration Layer"
+        "name": "TypeScript",
+        "role": "Language"
+      },
+      {
+        "name": "Algolia",
+        "role": "Search & Retrieval"
+      },
+      {
+        "name": "FastAPI",
+        "role": "Python API"
+      },
+      {
+        "name": "Turborepo",
+        "role": "Monorepo Build"
       },
       {
         "name": "Google Cloud Run",
         "role": "Runtime"
-      },
-      {
-        "name": "ChatGPT",
-        "role": "The Manager"
-      },
-      {
-        "name": "GPT 5.2",
-        "role": "Conversational Interface"
       }
     ],
     "blog_posts": [
@@ -282,7 +278,7 @@
     "aliases": ["system notes writer", "index card generator", "structured notes app"],
     "what_it_is": "A lightweight pipeline that turns messy thoughts into structured System Notes index cards, stored durably in Supabase.",
     "why_it_exists": "Freeform thoughts in, schema-perfect index cards out — no cleanup step.",
-    "long_description": "Supabase Edge Functions and the OpenAI API enforce schema at capture time, not cleanup time: freeform input goes in, structured System Notes cards come out, and Postgres keeps them. Opinionated by design — no freeform persistence, no exceptions.",
+    "long_description": "Exposed as an MCP server so any AI client can write directly: Supabase Edge Functions enforce schema at capture time, not cleanup time. Freeform input goes in, structured System Notes cards come out, and Postgres keeps them. Opinionated by design — no freeform persistence, no exceptions.",
     "outcome": "An opinionated capture-to-storage pipeline that trades flexibility for guaranteed schema adherence.",
     "status": "Active · Tool",
     "owner": "anchildress1",
@@ -290,20 +286,20 @@
     "image_alt": "SupaScribe Notes app interface showing structured note card generation powered by AI and Supabase",
     "tech": [
       {
+        "name": "MCP Server",
+        "role": "The AI-Facing Interface"
+      },
+      {
         "name": "Supabase",
-        "role": "The Database"
+        "role": "Durable Storage"
       },
       {
         "name": "Postgres",
-        "role": "Storage"
+        "role": "Structured Cards"
       },
       {
         "name": "Edge Functions",
-        "role": "Logic Layer"
-      },
-      {
-        "name": "OpenAI API",
-        "role": "Intelligence"
+        "role": "Schema Enforcement"
       },
       {
         "name": "TypeScript",
@@ -392,12 +388,8 @@
     "image_alt": "Awesome GitHub Copilot repository banner listing curated AI workflows and agent patterns",
     "tech": [
       {
-        "name": "Markdown",
-        "role": "The Format"
-      },
-      {
         "name": "GitHub Copilot",
-        "role": "The Platform"
+        "role": "The Subject"
       },
       {
         "name": "MCP",
@@ -405,7 +397,7 @@
       },
       {
         "name": "Manual Curation",
-        "role": "Quality Control"
+        "role": "The Real Method"
       }
     ],
     "blog_posts": [
@@ -462,10 +454,6 @@
       {
         "name": "GitHub Pages",
         "role": "The Host"
-      },
-      {
-        "name": "AI Discoverability",
-        "role": "The Goal"
       }
     ],
     "blog_posts": [
@@ -509,10 +497,6 @@
       {
         "name": "gitlint",
         "role": "Python Enforcement"
-      },
-      {
-        "name": "PolyForm Shield",
-        "role": "License"
       }
     ],
     "blog_posts": [
@@ -556,15 +540,11 @@
       },
       {
         "name": "Ollama",
-        "role": "The Engine"
+        "role": "Local LLM Runtime"
       },
       {
         "name": "PostgreSQL",
         "role": "Long-term Memory"
-      },
-      {
-        "name": "Local",
-        "role": "The Environment"
       }
     ],
     "blog_posts": [],
@@ -583,7 +563,7 @@
     "what_it_is": "A temporary AI coding agent shipped as a GitHub Action.",
     "why_it_exists": "AI-generated PRs under my own credentials, while the platform caught up.",
     "long_description": "Built to generate draft PRs under my own PAT — with explicit human review and ownership — until Copilot's coding agent supported user PAT tokens via CLI in Actions. A deliberate stopgap with injection detection baked in.",
-    "outcome": "A working stopgap that delivered AI-generated PRs ahead of native platform support.",
+    "outcome": "Outpaced by Copilot's native coding agent before it proved out — a deliberate stopgap that mapped the auth and injection patterns it was built to test.",
     "status": "Scrapped",
     "owner": "CheckMarKDevTools",
     "image_url": "/projects/delegate-action.webp",
@@ -598,12 +578,12 @@
         "role": "Logic Layer"
       },
       {
-        "name": "Security",
-        "role": "Injection Detection"
+        "name": "Prompt-Injection Guards",
+        "role": "Security"
       },
       {
-        "name": "PAT",
-        "role": "Auth Shortcut"
+        "name": "Scoped PAT",
+        "role": "Auth"
       }
     ],
     "blog_posts": [],
@@ -621,7 +601,7 @@
     "aliases": ["travel planner", "narrative discovery"],
     "what_it_is": "Narrative travel discovery turned into an experiment in AI orchestration and parallel workflows.",
     "why_it_exists": "A hackathon travel app repurposed into an AI-orchestration testbed.",
-    "long_description": "Python, Supabase, and React power a discovery surface I reused — rather than rebuilt — to test orchestration patterns once real-world cost constraints reshaped the project. The focus shifted to generating discovery paths and context from incomplete systems.",
+    "long_description": "Originally orchestrated in n8n, then rewritten in Python to test parallel AI workflows — a rewrite that broke as much as it taught. Supabase and React back a discovery surface I reused rather than rebuilt once cost constraints reshaped the project, shifting focus to generating discovery paths from incomplete systems.",
     "outcome": "An instructive, unfinished experiment that reframed cost failure as an orchestration problem. At least, until I get back to it...",
     "status": "Archived",
     "owner": "CheckMarKDevTools",
@@ -629,20 +609,20 @@
     "image_alt": "Underfoot travel planner interface showing AI-orchestrated discovery of hidden travel destinations",
     "tech": [
       {
+        "name": "n8n",
+        "role": "Original Orchestration"
+      },
+      {
         "name": "Python",
-        "role": "The Orchestrator"
+        "role": "The Rewrite"
       },
       {
         "name": "Supabase",
-        "role": "The Brain"
+        "role": "Storage"
       },
       {
         "name": "React",
         "role": "The Face"
-      },
-      {
-        "name": "Data Ingestion",
-        "role": "Sourcing"
       }
     ],
     "blog_posts": [
@@ -715,7 +695,7 @@
     "image_alt": "Copilot Chat Extension interface showing an experimental portable chat context for IDEs",
     "tech": [
       {
-        "name": "Copilot Chat",
+        "name": "Copilot Chat API",
         "role": "The Constraint"
       },
       {
@@ -723,8 +703,8 @@
         "role": "The Glue"
       },
       {
-        "name": "Failure",
-        "role": "The Lesson"
+        "name": "IntelliJ Platform",
+        "role": "The Target"
       }
     ],
     "blog_posts": [],
