@@ -81,6 +81,135 @@
   color: var(--text-primary);
 }
 
+/* Role + value-proposition line under the name. */
+.role {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.8vw, 24px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.specialty {
+  color: var(--accent-violet);
+}
+
+/* CTA links — the recruiter's next step. */
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.link:hover {
+  background: rgba(127, 90, 240, 0.14);
+  border-color: var(--accent-violet);
+  box-shadow: 0 0 calc(20px * var(--glow)) rgba(127, 90, 240, 0.2);
+}
+
+.link:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 2px;
+}
+
+/* ── Expertise + recognition strip (recruiter scan band) ── */
+.expertise {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+  margin: 0 0 24px;
+  padding: 36px 40px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xl);
+  background: linear-gradient(180deg, rgba(29, 31, 40, 0.5), rgba(8, 9, 12, 0.4));
+}
+
+.expertiseCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.expertiseLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-teal);
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill {
+  padding: 7px 13px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.3px;
+  color: var(--text-secondary);
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.skill:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.recognition {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.recognitionItem {
+  position: relative;
+  padding-left: 22px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.recognitionItem::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  color: var(--accent-gold);
+}
+
 /* ── Portrait ── */
 .portrait {
   position: relative;
@@ -320,6 +449,12 @@
 
   .stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .expertise {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 28px 22px;
   }
 
   .section {

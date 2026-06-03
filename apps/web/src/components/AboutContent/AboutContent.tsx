@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
 import Image from 'next/image';
+import { FiExternalLink } from 'react-icons/fi';
+import { FaArrowRight } from 'react-icons/fa';
 import type { AboutData, AboutLyric } from '@/data/about';
 import styles from './AboutContent.module.css';
 
@@ -52,7 +54,20 @@ interface AboutContentProps {
 }
 
 export default function AboutContent({ data }: Readonly<AboutContentProps>) {
-  const { heroImage, sections, name, namePath, pronounce, stats, lyric } = data;
+  const {
+    heroImage,
+    sections,
+    name,
+    namePath,
+    role,
+    specialty,
+    pronounce,
+    recognition,
+    skills,
+    links,
+    stats,
+    lyric,
+  } = data;
 
   return (
     <div className={styles.human}>
@@ -77,7 +92,12 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
         <div className={styles.identity}>
           <span className={styles.namePath}>{namePath}</span>
           <p className={styles.name}>{name}</p>
+          <p className={styles.role}>
+            {role}
+            <span className={styles.specialty}> · {specialty}</span>
+          </p>
           <span className={styles.pronounce}>{pronounce}</span>
+
           <dl className={styles.stats}>
             {stats.map((stat) => (
               <div key={stat.label} className={styles.stat}>
@@ -86,8 +106,49 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
               </div>
             ))}
           </dl>
+
+          <div className={styles.links}>
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className={styles.link}
+                {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >
+                {link.label}
+                {link.external ? (
+                  <FiExternalLink aria-hidden="true" focusable="false" size={13} />
+                ) : (
+                  <FaArrowRight aria-hidden="true" focusable="false" size={11} />
+                )}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
+
+      <section className={styles.expertise} aria-label="Expertise and recognition">
+        <div className={styles.expertiseCol}>
+          <span className={styles.expertiseLabel}>Expertise</span>
+          <div className={styles.skills}>
+            {skills.map((skill) => (
+              <span key={skill} className={styles.skill}>
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className={styles.expertiseCol}>
+          <span className={styles.expertiseLabel}>Recognition</span>
+          <ul className={styles.recognition}>
+            {recognition.map((item) => (
+              <li key={item} className={styles.recognitionItem}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       {sections.map((section, index) => (
         <Fragment key={section.title}>

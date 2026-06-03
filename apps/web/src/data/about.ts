@@ -22,13 +22,24 @@ export interface AboutLyric {
   rows: AboutLyricRow[];
 }
 
+export interface AboutLink {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
 export interface AboutData {
   heroTitle: string;
   heroAccentLead?: string;
   heroSubtitle?: string;
   name: string;
   namePath: string;
+  role: string;
+  specialty: string;
   pronounce: string;
+  recognition: string[];
+  skills: string[];
+  links: AboutLink[];
   stats: AboutStat[];
   lyric: AboutLyric;
   heroImage: {
@@ -45,12 +56,30 @@ export const aboutData: AboutData = {
   heroTitle: "for the failures you haven't met yet",
   name: 'Ashley Childress',
   namePath: 'CWD · /sys/human · subject = ashley.childress',
-  pronounce: '/ ASH-lee CHIL-dres / · she/her · senior software engineer',
+  role: 'Senior Software Engineer',
+  specialty: 'AI-augmented systems & orchestration',
+  pronounce: '/ ASH-lee CHIL-dres / · she/her',
+  recognition: ['WeCoded 2026 winner', 'Earth Day 2026 winner', 'GitHub Copilot certified'],
+  skills: [
+    'AI Orchestration',
+    'System Architecture',
+    'Responsible AI',
+    'TypeScript',
+    'Python',
+    'React / Next.js',
+    'CI/CD & Guardrails',
+    'Testing & Quality',
+  ],
+  links: [
+    { label: 'GitHub', href: 'https://github.com/anchildress1', external: true },
+    { label: 'dev.to', href: 'https://dev.to/anchildress1', external: true },
+    { label: 'See the builds', href: '/projects' },
+  ],
   stats: [
+    { label: 'role', value: 'Senior SWE' },
+    { label: 'focus', value: 'AI Orchestration' },
+    { label: 'based', value: 'Atlanta, GA' },
     { label: 'origin', value: 'Appalachia' },
-    { label: 'role', value: 'Sr SWE' },
-    { label: 'stack', value: 'AI-augmented' },
-    { label: 'mode', value: 'System-first' },
   ],
   lyric: {
     meta: 'THEME SONG · I Build Things',

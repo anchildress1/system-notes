@@ -14,7 +14,15 @@ const baseData: AboutData = {
   heroTitle: 'Designing for failures\nyou have not met yet',
   name: 'Ashley Childress',
   namePath: 'CWD · /sys/human',
+  role: 'Senior Software Engineer',
+  specialty: 'AI-augmented systems',
   pronounce: 'she/her · senior software engineer',
+  recognition: ['WeCoded 2026 winner', 'GitHub Copilot certified'],
+  skills: ['AI Orchestration', 'TypeScript', 'Python'],
+  links: [
+    { label: 'GitHub', href: 'https://github.com/anchildress1', external: true },
+    { label: 'See the builds', href: '/projects' },
+  ],
   stats: [
     { label: 'origin', value: 'Appalachia' },
     { label: 'role', value: 'Sr SWE' },
@@ -71,6 +79,23 @@ describe('AboutContent', () => {
     render(<AboutContent data={baseData} />);
     expect(screen.getByText('I BUILD THINGS')).toBeInTheDocument();
     expect(screen.getByText('I SHIP THINGS')).toBeInTheDocument();
+  });
+
+  it('renders the recruiter strip: role, skills, recognition', () => {
+    render(<AboutContent data={baseData} />);
+    expect(screen.getByText('Senior Software Engineer')).toBeInTheDocument();
+    expect(screen.getByText('TypeScript')).toBeInTheDocument();
+    expect(screen.getByText('GitHub Copilot certified')).toBeInTheDocument();
+  });
+
+  it('renders CTA links with the correct targets', () => {
+    render(<AboutContent data={baseData} />);
+    const github = screen.getByRole('link', { name: /GitHub/ });
+    expect(github).toHaveAttribute('href', 'https://github.com/anchildress1');
+    expect(github).toHaveAttribute('target', '_blank');
+    const builds = screen.getByRole('link', { name: /See the builds/ });
+    expect(builds).toHaveAttribute('href', '/projects');
+    expect(builds).not.toHaveAttribute('target');
   });
 
   it('splits double-newline content into separate paragraphs', () => {
