@@ -155,7 +155,6 @@ export default function ProjectCard({ project, priority = false }: Readonly<Proj
           >
             <div className={styles.backHeader}>
               <div className={styles.backTitleRow}>
-                <span className={styles.backProjId}>/proj/{project.id}</span>
                 <h3 className={styles.backTitle}>{project.title}</h3>
                 {project.status && <span className={styles.backStatus}>{project.status}</span>}
               </div>

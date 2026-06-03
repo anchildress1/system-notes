@@ -423,14 +423,6 @@
   min-width: 0;
 }
 
-.backProjId {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  color: var(--accent-teal);
-}
-
 .backTitle {
   margin: 0;
   font-family: var(--font-display);
