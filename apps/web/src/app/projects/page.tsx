@@ -23,7 +23,7 @@ export default async function Projects() {
       <Masthead />
       <Hero
         title="Things I built and broke."
-        titleAccent="Things I"
+        titleAccent="I"
         accentWord="shipped."
         subtitle={`${projects.length} artifacts — tools, experiments, and systems. Each earned its place; the ones that didn't aren't listed.`}
       />

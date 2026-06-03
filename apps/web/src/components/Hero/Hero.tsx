@@ -6,6 +6,7 @@ import styles from './Hero.module.css';
 
 interface HeroProps {
   title: string;
+  accentLead?: string;
   titleAccent?: string;
   accentWord?: string;
   subtitle?: string;
@@ -19,6 +20,7 @@ interface HeroProps {
 
 export default function Hero({
   title,
+  accentLead,
   titleAccent,
   accentWord,
   subtitle,
@@ -43,13 +45,20 @@ export default function Hero({
       <div className={styles.titleContainer}>
         <div className={styles.interactiveContainer}>
           <h1 className={styles.title}>
+            {accentLead && (
+              <>
+                <span className={styles.rotatingWord}>{accentLead}</span>{' '}
+              </>
+            )}
             {title}
             {titleAccent && (
               <span className={styles.titleAccent}>
                 {titleAccent}
                 {accentWord && (
                   <>
-                    {' '}
+                    {/* Non-breaking space keeps the colored word from wrapping
+                        onto a line by itself. */}
+                    {'\u00A0'}
                     <span className={styles.rotatingWord}>{accentWord}</span>
                   </>
                 )}

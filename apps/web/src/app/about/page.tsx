@@ -9,7 +9,11 @@ export default function Human() {
     <main id="main-content">
       <Header />
       <Masthead />
-      <Hero title={aboutData.heroTitle} subtitle={aboutData.heroSubtitle} />
+      <Hero
+        accentLead={aboutData.heroAccentLead}
+        title={aboutData.heroTitle}
+        subtitle={aboutData.heroSubtitle}
+      />
       <AboutContent data={aboutData} />
     </main>
   );

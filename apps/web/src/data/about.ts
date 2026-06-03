@@ -6,6 +6,7 @@ export interface AboutSection {
 
 export interface AboutData {
   heroTitle: string;
+  heroAccentLead?: string;
   heroSubtitle?: string;
   heroImage: {
     src: string;
@@ -17,8 +18,8 @@ export interface AboutData {
 }
 
 export const aboutData: AboutData = {
-  heroTitle: 'Designing for the failures',
-  heroSubtitle: "you haven't met yet",
+  heroAccentLead: 'Designing',
+  heroTitle: "for the failures you haven't met yet",
   heroImage: {
     src: '/ashley-gen-2.webp',
     alt: 'Ashley Childress profile picture showing a stylized, AI-generated portrait of a woman with red hair and glasses',
