@@ -8,7 +8,7 @@ const SPARKLE_COLORS = ['#f16197', '#3ec7c2', '#b56bff', '#e89a6a'];
 // Glittery burst at the click point: a ring of small glowing dots that fly
 // outward and fade. Driven by the Web Animations API, so the duration is
 // wall-clock based — the burst plays at the same speed on any display.
-function spawnSparkles(x: number, y: number, count = 18) {
+function spawnSparkles(x: number, y: number, count = 24) {
   for (let i = 0; i < count; i++) {
     const el = document.createElement('div');
     el.className = 'sparkle';

@@ -29,7 +29,7 @@ describe('GlitterBomb', () => {
         new CustomEvent('trigger-glitter-bomb', { detail: { x: 120, y: 240 } })
       );
     });
-    expect(sparkleCount()).toBe(18);
+    expect(sparkleCount()).toBe(24);
 
     // Each sparkle removes itself after 1400ms.
     act(() => {
@@ -44,7 +44,7 @@ describe('GlitterBomb', () => {
     act(() => {
       globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
     });
-    expect(sparkleCount()).toBe(18);
+    expect(sparkleCount()).toBe(24);
   });
 
   it('spawns nothing when the user prefers reduced motion', () => {
