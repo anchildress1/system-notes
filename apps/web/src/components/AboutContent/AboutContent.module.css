@@ -80,7 +80,7 @@
 .skill {
   padding: 7px 13px;
   border: 1px solid var(--border-strong);
-  border-radius: var(--r-pill);
+  border-radius: var(--r-sm);
   background: rgba(255, 255, 255, 0.03);
   font-family: var(--font-mono);
   font-size: 0.8rem;
@@ -135,7 +135,7 @@
   gap: 7px;
   padding: 8px 15px;
   border: 1px solid var(--border-strong);
-  border-radius: var(--r-pill);
+  border-radius: var(--r-md);
   background: rgba(255, 255, 255, 0.03);
   font-family: var(--font-mono);
   font-size: 0.8rem;

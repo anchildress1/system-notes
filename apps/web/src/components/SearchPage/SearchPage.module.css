@@ -14,7 +14,9 @@
   border-radius: var(--r-md);
   background: rgba(0, 0, 0, 0.25);
   cursor: text;
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .retrieve:focus-within {
@@ -100,14 +102,16 @@
   align-items: center;
   gap: 8px;
   padding: 7px 14px;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-md);
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.025);
   color: var(--text-secondary);
   font-family: var(--font-mono);
   font-size: 12px;
   cursor: pointer;
-  transition: color var(--transition-base), border-color var(--transition-base),
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base),
     background var(--transition-base);
 }
 
@@ -177,7 +181,9 @@
   font-size: 12px;
   cursor: pointer;
   text-align: left;
-  transition: color var(--transition-base), background var(--transition-base);
+  transition:
+    color var(--transition-base),
+    background var(--transition-base);
 }
 
 .filterOption:hover {
@@ -253,15 +259,6 @@
   margin-top: 40px;
 }
 
-.sectionHeaderTitle {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-
 .sectionHeaderMeta {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -295,8 +292,12 @@
 }
 
 @media (max-width: 720px) {
-  .hitsList { grid-template-columns: 1fr; }
-  .hitsItem { grid-column: span 1 !important; }
+  .hitsList {
+    grid-template-columns: 1fr;
+  }
+  .hitsItem {
+    grid-column: span 1 !important;
+  }
 }
 
 .hitsEmpty {
@@ -353,8 +354,11 @@
   font-family: var(--font-mono);
   font-size: 12px;
   cursor: pointer;
-  transition: color var(--transition-base), border-color var(--transition-base),
-    background var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base),
+    background var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .paginationButton:hover:not(:disabled) {

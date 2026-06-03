@@ -438,7 +438,7 @@
   margin-top: 2px;
   padding: 3px 9px;
   border: 1px solid var(--accent-violet-soft);
-  border-radius: var(--r-pill);
+  border-radius: var(--r-sm);
   background: rgba(127, 90, 240, 0.1);
   font-family: var(--font-mono);
   font-size: 0.58rem;
@@ -617,7 +617,7 @@
   flex-shrink: 0;
   background: rgba(127, 90, 240, 0.1);
   border: 1px solid var(--accent-violet-soft);
-  border-radius: var(--r-pill);
+  border-radius: var(--r-md);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;

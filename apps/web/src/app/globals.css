@@ -305,7 +305,7 @@ body {
   animation: gradientShimmer 9s linear infinite;
   color: white;
   border: none;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-sm);
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;
@@ -370,7 +370,7 @@ body {
   color: var(--accent-violet);
   border: 1px solid color-mix(in srgb, var(--accent-violet) 40%, transparent);
   padding: 2px 8px;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-sm);
   text-transform: uppercase;
 }
 
