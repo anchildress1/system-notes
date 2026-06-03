@@ -45,7 +45,7 @@
     "repo_url": "https://github.com/anchildress1/carbon-trace",
     "app_url": "https://carbon-trace.anchildress1.dev",
     "award": "WeCoded 2026 Winner",
-    "order_rank": 1,
+    "order_rank": 10,
     "updated_at": "2026-04-13",
     "related_project_ids": []
   },
@@ -99,7 +99,7 @@
     "completion_state": "retired",
     "repo_url": "https://github.com/anchildress1/unearthed",
     "app_url": "",
-    "order_rank": 2,
+    "order_rank": 30,
     "updated_at": "2026-04-20",
     "related_project_ids": ["carbon-trace"]
   },
@@ -157,7 +157,7 @@
     "repo_url": "https://github.com/anchildress1/vestige",
     "app_url": "https://github.com/anchildress1/vestige/releases",
     "award": null,
-    "order_rank": 3,
+    "order_rank": 20,
     "updated_at": "2026-05-24",
     "related_project_ids": ["my-hermantic-agent"]
   },
@@ -210,7 +210,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/legacy-smelter",
     "app_url": "https://hotfix.anchildress1.dev",
-    "order_rank": 4,
+    "order_rank": 60,
     "updated_at": "2026-04-13",
     "related_project_ids": []
   },
@@ -271,7 +271,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/system-notes",
     "app_url": "https://unstable.anchildress1.dev",
-    "order_rank": 5,
+    "order_rank": 50,
     "updated_at": "2026-02-08",
     "related_project_ids": ["underfoot-underground-travel-planner", "devto-mirror"]
   },
@@ -319,7 +319,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/supascribe-notes-mcp",
-    "order_rank": 6,
+    "order_rank": 70,
     "updated_at": "2026-02-26",
     "related_project_ids": ["system-notes"]
   },
@@ -373,7 +373,7 @@
     "completion_state": "active",
     "repo_url": "https://github.com/ChecKMarKDevTools/dev-community-dashboard",
     "app_url": "https://dev-community-dashboard.checkmarkdevtools.dev",
-    "order_rank": 7,
+    "order_rank": 40,
     "updated_at": "2026-03-04",
     "related_project_ids": []
   },
@@ -433,7 +433,7 @@
     "project_type": "resource",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
-    "order_rank": 8,
+    "order_rank": 80,
     "updated_at": "2026-02-01",
     "related_project_ids": []
   },
@@ -477,7 +477,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/devto-mirror",
-    "order_rank": 9,
+    "order_rank": 110,
     "updated_at": "2026-02-01"
   },
   {
@@ -532,7 +532,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/rai-lint",
-    "order_rank": 10,
+    "order_rank": 90,
     "updated_at": "2026-02-01",
     "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"]
   },
@@ -571,7 +571,7 @@
     "project_type": "experiment",
     "completion_state": "unfinished",
     "repo_url": "https://github.com/anchildress1/my-hermantic-agent",
-    "order_rank": 11,
+    "order_rank": 120,
     "updated_at": "2026-02-01",
     "related_project_ids": ["underfoot-underground-travel-planner"]
   },
@@ -610,7 +610,7 @@
     "project_type": "tool",
     "completion_state": "unfinished",
     "repo_url": "https://github.com/CheckMarKDevTools/delegate-action",
-    "order_rank": 120,
+    "order_rank": 130,
     "updated_at": "2026-02-01",
     "related_project_ids": ["rai-lint", "awesome-github-copilot"]
   },
@@ -658,7 +658,7 @@
     "project_type": "experiment",
     "completion_state": "archived",
     "repo_url": "https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner",
-    "order_rank": 130,
+    "order_rank": 140,
     "updated_at": "2026-02-01",
     "related_project_ids": ["my-hermantic-agent"]
   },
@@ -697,7 +697,7 @@
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/CheckMarKDevTools/eslint-config-echo",
-    "order_rank": 14,
+    "order_rank": 100,
     "updated_at": "2026-02-01"
   },
   {
