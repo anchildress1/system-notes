@@ -52,12 +52,6 @@ const baseData: AboutData = {
 };
 
 describe('AboutContent', () => {
-  it('renders the profile image with the fixed src and alt', () => {
-    render(<AboutContent data={baseData} />);
-    const img = screen.getByAltText('Ashley Childress profile picture');
-    expect(img).toHaveAttribute('src', '/ashley-gen-2.webp');
-  });
-
   it('renders all section titles as h2 (the hero owns the page h1)', () => {
     render(<AboutContent data={baseData} />);
     expect(screen.queryByRole('heading', { level: 1 })).not.toBeInTheDocument();
@@ -77,9 +71,8 @@ describe('AboutContent', () => {
     expect(screen.getByText('I SHIP THINGS')).toBeInTheDocument();
   });
 
-  it('renders the recruiter strip: role, skills, recognition', () => {
+  it('renders the highlights box: skills and recognition', () => {
     render(<AboutContent data={baseData} />);
-    expect(screen.getByText(/Senior Software Engineer/)).toBeInTheDocument();
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
     expect(screen.getByText('GitHub Copilot certified')).toBeInTheDocument();
   });

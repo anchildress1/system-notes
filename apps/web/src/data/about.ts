@@ -53,7 +53,12 @@ export const aboutData: AboutData = {
   heroTitle: "for the failures you haven't met yet",
   role: 'Senior Software Engineer',
   specialty: 'AI-augmented systems & orchestration',
-  recognition: ['WeCoded 2026 winner', 'Earth Day 2026 winner', 'GitHub Copilot certified'],
+  recognition: [
+    'WeCoded 2026 winner',
+    'Earth Day 2026 winner',
+    'GitHub Copilot certified',
+    'Google Cloud Generative AI Leader',
+  ],
   skills: [
     'AI Orchestration',
     'System Architecture',

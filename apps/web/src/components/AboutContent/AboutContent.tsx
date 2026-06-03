@@ -1,5 +1,4 @@
 import { Fragment } from 'react';
-import Image from 'next/image';
 import { FiExternalLink } from 'react-icons/fi';
 import { FaArrowRight } from 'react-icons/fa';
 import type { AboutData, AboutLyric } from '@/data/about';
@@ -54,83 +53,59 @@ interface AboutContentProps {
 }
 
 export default function AboutContent({ data }: Readonly<AboutContentProps>) {
-  const { heroImage, sections, role, specialty, recognition, skills, links, stats, lyric } = data;
+  const { sections, skills, recognition, links, stats, lyric } = data;
 
   return (
     <div className={styles.human}>
-      <div className={styles.heroRow}>
-        <div className={styles.portrait}>
-          <span className={styles.portraitGrid} aria-hidden="true" />
-          <Image
-            src={heroImage.src}
-            alt={heroImage.alt}
-            width={heroImage.width}
-            height={heroImage.height}
-            className={styles.portraitImage}
-            priority
-            sizes="(max-width: 768px) 100vw, 460px"
-          />
-          <span className={styles.portraitMeta} aria-hidden="true">
-            <span>SUBJECT · 026</span>
-            <span>YEAR · 2026</span>
-          </span>
-        </div>
+      <section className={styles.highlights} aria-label="Highlights">
+        <dl className={styles.stats}>
+          {stats.map((stat) => (
+            <div key={stat.label} className={styles.stat}>
+              <dt className={styles.statLabel}>{stat.label}</dt>
+              <dd className={styles.statValue}>{stat.value}</dd>
+            </div>
+          ))}
+        </dl>
 
-        <div className={styles.identity}>
-          <p className={styles.role}>
-            {role}
-            <span className={styles.specialty}> · {specialty}</span>
-          </p>
-
-          <dl className={styles.stats}>
-            {stats.map((stat) => (
-              <div key={stat.label} className={styles.stat}>
-                <dt className={styles.statLabel}>{stat.label}</dt>
-                <dd className={styles.statValue}>{stat.value}</dd>
-              </div>
-            ))}
-          </dl>
-
-          <div className={styles.links}>
-            {links.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className={styles.link}
-                {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              >
-                {link.label}
-                {link.external ? (
-                  <FiExternalLink aria-hidden="true" focusable="false" size={13} />
-                ) : (
-                  <FaArrowRight aria-hidden="true" focusable="false" size={11} />
-                )}
-              </a>
-            ))}
+        <div className={styles.hlCols}>
+          <div className={styles.hlCol}>
+            <span className={styles.hlLabel}>Expertise</span>
+            <div className={styles.skills}>
+              {skills.map((skill) => (
+                <span key={skill} className={styles.skill}>
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className={styles.hlCol}>
+            <span className={styles.hlLabel}>Recognition</span>
+            <ul className={styles.recognition}>
+              {recognition.map((item) => (
+                <li key={item} className={styles.recognitionItem}>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-      </div>
 
-      <section className={styles.expertise} aria-label="Expertise and recognition">
-        <div className={styles.expertiseCol}>
-          <span className={styles.expertiseLabel}>Expertise</span>
-          <div className={styles.skills}>
-            {skills.map((skill) => (
-              <span key={skill} className={styles.skill}>
-                {skill}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className={styles.expertiseCol}>
-          <span className={styles.expertiseLabel}>Recognition</span>
-          <ul className={styles.recognition}>
-            {recognition.map((item) => (
-              <li key={item} className={styles.recognitionItem}>
-                {item}
-              </li>
-            ))}
-          </ul>
+        <div className={styles.links}>
+          {links.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className={styles.link}
+              {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
+              {link.label}
+              {link.external ? (
+                <FiExternalLink aria-hidden="true" focusable="false" size={13} />
+              ) : (
+                <FaArrowRight aria-hidden="true" focusable="false" size={11} />
+              )}
+            </a>
+          ))}
         </div>
       </section>
 
