@@ -65,18 +65,34 @@ export default function GlitterBomb() {
         // Shared mutable particle list — replaced on each explosion trigger
         const currentParticles: Particle[] = [];
 
+        // The ticker is added once and self-removes when idle; this flag stops
+        // duplicate listeners from stacking (which would multiply the per-frame
+        // updates and make the explosion progressively faster).
+        let tickRunning = false;
+
+        // Glow that flashes at the click point and fades out. Reuses the
+        // particle circle texture scaled up large and tinted; it grows and
+        // fades over its short life (see the glow block in tick).
+        const glow = new PIXI.Sprite(circleTexture);
+        glow.anchor.set(0.5);
+        glow.tint = 0xb56bff; // brand violet
+        glow.visible = false;
+        app.stage.addChild(glow);
+        let glowLife = 0;
+        const GLOW_DECAY = 0.02; // ~0.8s lifespan at 60fps
+
         // Particle update extracted to avoid exceeding 4 function-nesting levels (S2004)
-        const updateParticle = (p: Particle): boolean => {
+        const updateParticle = (p: Particle, dt: number): boolean => {
           if (p.life > 0) {
-            p.x += Math.cos(p.direction) * p.speed;
-            p.y += Math.sin(p.direction) * p.speed;
+            p.x += Math.cos(p.direction) * p.speed * dt;
+            p.y += Math.sin(p.direction) * p.speed * dt;
             if (isMobile) {
-              p.speed *= 0.95;
+              p.speed *= Math.pow(0.95, dt);
             } else {
-              p.speed *= 0.98;
-              p.y += 0.5;
+              p.speed *= Math.pow(0.98, dt);
+              p.y += 0.5 * dt;
             }
-            p.life -= p.decay;
+            p.life -= p.decay * dt;
             p.alpha = p.life;
             p.scale.set(p.life * 0.5);
             return true;
@@ -87,12 +103,29 @@ export default function GlitterBomb() {
         };
 
         const tick = () => {
+          // deltaTime is ~1 at the target frame rate; scaling every step by it
+          // keeps the explosion playing at the same speed on any display and
+          // under load, instead of tracking the current FPS.
+          const dt = app.ticker.deltaTime;
+
           let hasActive = false;
           for (const p of currentParticles) {
-            if (updateParticle(p)) hasActive = true;
+            if (updateParticle(p, dt)) hasActive = true;
           }
-          if (hasActive) return;
+
+          if (glowLife > 0) {
+            glowLife -= GLOW_DECAY * dt;
+            if (glowLife <= 0) {
+              glow.visible = false;
+            } else {
+              glow.alpha = glowLife;
+              glow.scale.set(7 + (1 - glowLife) * 14);
+            }
+          }
+
+          if (hasActive || glowLife > 0) return;
           app.ticker.remove(tick);
+          tickRunning = false;
         };
 
         // Function to trigger explosion at mouse position (or screen center fallback)
@@ -116,6 +149,15 @@ export default function GlitterBomb() {
 
           const centerX = mouseX ?? app.screen.width / 2;
           const centerY = mouseY ?? app.screen.height / 3;
+
+          // Flash a brief glow at the click point — it lights up, then fades.
+          glow.x = centerX;
+          glow.y = centerY;
+          glow.tint = 0xb56bff; // brand violet
+          glow.alpha = 1;
+          glow.scale.set(7);
+          glow.visible = true;
+          glowLife = 1;
 
           for (let i = 0; i < particleCount; i++) {
             // Use Sprite instead of Graphics for immense performance boost (batching)
@@ -150,7 +192,10 @@ export default function GlitterBomb() {
             currentParticles.push(particle);
           }
 
-          app.ticker.add(tick);
+          if (!tickRunning) {
+            app.ticker.add(tick);
+            tickRunning = true;
+          }
         };
 
         // Wire up trigger and fire any event that arrived during init
