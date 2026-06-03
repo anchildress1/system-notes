@@ -52,7 +52,7 @@ export const aboutData: AboutData = {
   heroAccentLead: 'Designing',
   heroTitle: "for the failures you haven't met yet.",
   role: 'Senior Software Engineer',
-  specialty: 'AI-augmented systems & orchestration',
+  specialty: 'Systems & architecture design',
   recognition: [
     'WeCoded 2026 winner',
     'Earth Day 2026 winner',
@@ -60,8 +60,9 @@ export const aboutData: AboutData = {
     'Google Cloud Generative AI Leader',
   ],
   skills: [
+    'Systems & Architecture',
     'AI Orchestration',
-    'System Architecture',
+    'SDKs & Implementation',
     'Responsible AI',
     'TypeScript',
     'Python',
@@ -76,10 +77,10 @@ export const aboutData: AboutData = {
     { label: 'See the builds', href: '/projects' },
   ],
   stats: [
-    { label: 'focus', value: 'AI Orchestration' },
-    { label: 'based', value: 'Waco, GA' },
-    { label: 'origin', value: 'Appalachia' },
-    { label: 'mode', value: 'System-first' },
+    { label: 'focus', value: 'Systems & Architecture' },
+    { label: 'also', value: 'AI Orchestration & SDKs' },
+    { label: 'role', value: 'The Home Depot · 8 yrs' },
+    { label: 'based', value: 'Waco, GA · Remote' },
   ],
   lyric: {
     meta: 'THEME SONG · I Build Things',
