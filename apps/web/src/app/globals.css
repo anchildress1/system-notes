@@ -313,13 +313,11 @@ body {
   letter-spacing: 0.08em;
   white-space: nowrap;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  /* Depth without a 2015 bevel: a bright 1px top edge + soft inner bottom
-     shadow give it a raised, glassy lip, and a crisp drop shadow lifts it
-     off the art — then the brand glow. */
+  /* Flat, same as the FABs: a soft drop shadow to lift it off the art plus
+     the brand glow — no inset lip, so the badge and buttons read as one
+     system. */
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -2px 5px -2px rgba(0, 0, 0, 0.4),
-    0 6px 16px -5px rgba(0, 0, 0, 0.6),
+    0 6px 22px -8px rgba(0, 0, 0, 0.7),
     0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--accent-pink) 28%, transparent);
 }
 
