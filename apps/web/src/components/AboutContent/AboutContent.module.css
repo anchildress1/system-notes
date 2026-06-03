@@ -249,8 +249,8 @@
 /* ── Loud lyric block (theme song) ── */
 .lyricLoud {
   position: relative;
-  margin: 80px 0 24px;
-  padding: 64px 48px;
+  margin: 56px 0 24px;
+  padding: 38px 44px;
   overflow: hidden;
   border: 1px solid var(--border-strong);
   border-radius: var(--r-xl);
@@ -265,7 +265,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 36px;
+  margin-bottom: 22px;
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-muted);
@@ -281,10 +281,10 @@
 
 .lyricRow {
   display: grid;
-  grid-template-columns: 100px 1fr 120px;
+  grid-template-columns: 84px 1fr 110px;
   gap: 24px;
   align-items: baseline;
-  padding: 6px 0;
+  padding: 2px 0;
 }
 
 .lyricTime {
@@ -296,7 +296,7 @@
 
 .lyricText {
   font-family: var(--font-display);
-  font-size: clamp(32px, 5vw, 72px);
+  font-size: clamp(22px, 3.4vw, 46px);
   font-weight: 600;
   line-height: 1;
   letter-spacing: -0.03em;
