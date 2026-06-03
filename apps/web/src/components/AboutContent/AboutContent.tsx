@@ -23,6 +23,10 @@ const TextContent = ({ text }: { text: string }) => (
 
 const sectionNumber = (index: number) => String(index + 1).padStart(2, '0');
 
+// Each section's meta takes a different neon accent so the sticky sidebar
+// carries color down the page, not just the lyric block.
+const SECTION_ACCENTS = [styles.accentTeal, styles.accentPink, styles.accentViolet];
+
 const TONE_CLASS: Record<AboutLyric['rows'][number]['tone'], string> = {
   pink: styles.isPink,
   teal: styles.isTeal,
@@ -118,7 +122,9 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
       {sections.map((section, index) => (
         <Fragment key={section.title}>
           <section className={styles.section}>
-            <div className={styles.sectionMeta}>
+            <div
+              className={`${styles.sectionMeta} ${SECTION_ACCENTS[index % SECTION_ACCENTS.length]}`}
+            >
               <span className={styles.sectionNum}>{sectionNumber(index)} · NODE</span>
               <h2 className={styles.sectionTitle}>{section.title}</h2>
               {section.subtitle && <span className={styles.sectionTag}>{section.subtitle}</span>}

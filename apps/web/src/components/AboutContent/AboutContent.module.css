@@ -198,12 +198,27 @@
   position: sticky;
   top: 100px;
   height: fit-content;
+  /* Accent marker bar down the left of the sticky meta. */
+  padding-left: 18px;
+  border-left: 2px solid var(--section-accent, var(--border-strong));
+}
+
+/* Per-section neon accent (set on .sectionMeta, consumed by the number + bar). */
+.accentTeal {
+  --section-accent: var(--accent-teal);
+}
+.accentPink {
+  --section-accent: var(--accent-pink);
+}
+.accentViolet {
+  --section-accent: var(--accent-violet);
 }
 
 .sectionNum {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--section-accent, var(--text-muted));
   letter-spacing: 1.5px;
 }
 
