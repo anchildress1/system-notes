@@ -184,6 +184,18 @@
   animation: gradientShimmer 9s linear infinite;
 }
 
+/* Declared locally: CSS Modules scope the animation-name reference above, so a
+   global @keyframes (used by .award-badge) won't match here. Same motion as the
+   badge — the gradient flows across the word instead of sitting still. */
+@keyframes gradientShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rotatingWord {
     animation: none;
