@@ -394,7 +394,7 @@ function SectionHeader() {
   const { nbHits } = useStats();
   return (
     <div className={styles.sectionHeader}>
-      <h2 className={styles.sectionHeaderTitle}>Every choice, on the record.</h2>
+      <h2 className={styles.sectionHeaderTitle}>Every decision, indexed.</h2>
       <span className={styles.sectionHeaderMeta}>
         {nbHits.toLocaleString()} entries · sorted by signal
       </span>
