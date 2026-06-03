@@ -26,7 +26,7 @@ export default async function Projects() {
         title="Things I built and broke."
         titleAccent="I"
         accentWord="shipped."
-        subtitle={`${projects.length} artifacts — tools, experiments, and systems. Each earned its place; the ones that didn't aren't listed.`}
+        subtitle="Shipped tools, award-winning builds, and the experiments I scrapped on purpose — wins and write-offs, all on the record."
       />
       <ProjectGrid projects={projects} />
     </main>
