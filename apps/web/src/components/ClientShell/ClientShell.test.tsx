@@ -10,6 +10,10 @@ vi.mock('@/components/AIChat/AIChat', () => ({
   default: () => <div data-testid="ai-chat">AIChat</div>,
 }));
 
+vi.mock('@/components/MusicPlayer/MusicPlayer', () => ({
+  default: () => <div data-testid="music-player">MusicPlayer</div>,
+}));
+
 vi.mock('@/components/Footer/Footer', () => ({
   default: () => <div data-testid="footer">Footer</div>,
 }));
@@ -31,6 +35,10 @@ describe('ClientShell Component', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('ai-chat')).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('music-player')).toBeInTheDocument();
     });
   });
 });

@@ -10,7 +10,6 @@ import 'instantsearch.css/themes/satellite.css';
 import 'instantsearch.css/components/chat.css';
 import './chat-overrides.css';
 import styles from './AIChat.module.css';
-import dynamic from 'next/dynamic';
 import { ALGOLIA_INDEX } from '@/config';
 import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
 import { getChatSessionId } from '@/utils/userToken';
@@ -49,10 +48,6 @@ const searchClient = hasValidCredentials
   : null;
 
 const AGENT_ID = ALGOLIA_AGENT_ID;
-
-const MusicPlayer = dynamic(() => import('../MusicPlayer/MusicPlayer'), {
-  ssr: false,
-});
 
 // Item component for rendering search results in the chat carousel
 interface ChatHitItem {
@@ -226,9 +221,6 @@ export default function AIChat() {
 
   const chatContent = (
     <div className={styles.chatDock}>
-      <div className={styles.musicWrapper}>
-        <MusicPlayer />
-      </div>
       {searchClient && AGENT_ID ? (
         <InstantSearchNext
           searchClient={searchClient}

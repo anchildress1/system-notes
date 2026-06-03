@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import React from 'react';
 
@@ -121,10 +121,6 @@ vi.mock('algoliasearch/lite', () => ({
   })),
 }));
 
-vi.mock('@/components/MusicPlayer/MusicPlayer', () => ({
-  default: () => <div data-testid="music-player-mock">Music Player</div>,
-}));
-
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -147,13 +143,6 @@ describe('AIChat Widget Integration', () => {
       render(<AIChat />);
       expect(screen.getByTestId('instant-search-next-mock')).toBeInTheDocument();
       expect(screen.getByTestId('algolia-chat-mock')).toBeInTheDocument();
-    });
-
-    it('renders MusicPlayer alongside the Chat widget', async () => {
-      render(<AIChat />);
-      await waitFor(() => {
-        expect(screen.getByTestId('music-player-mock')).toBeInTheDocument();
-      });
     });
 
     it('passes the correct agentId to Chat', () => {

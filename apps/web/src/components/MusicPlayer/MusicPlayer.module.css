@@ -1,10 +1,17 @@
+/* Own body-level dock, sibling to the chat FAB — not nested inside the chat
+   container (whose stacking/transform context trapped this fixed position and
+   floated it over the grid). Offset sits just left of the chat toggle:
+   chat margin + toggle width (60px) + gap (16px). z-index clears the chat so
+   the hover panel stays visible while the chat window is open. */
 .playerWrapper {
-  position: relative;
+  position: fixed;
+  bottom: 5rem;
+  right: calc(5rem + 60px + 16px);
+  z-index: 1100;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  z-index: auto;
 }
 
 /* ── FAB Play Button ── */
@@ -21,9 +28,12 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform var(--transition-base), background var(--transition-base),
+  transition:
+    transform var(--transition-base),
+    background var(--transition-base),
     box-shadow var(--transition-base);
-  box-shadow: 0 6px 22px -8px rgba(0, 0, 0, 0.7),
+  box-shadow:
+    0 6px 22px -8px rgba(0, 0, 0, 0.7),
     0 0 calc(18px * var(--glow)) var(--accent-pink-soft);
   position: relative;
   z-index: 2;
@@ -33,12 +43,14 @@
 .playButton:hover {
   transform: translateY(-2px);
   background: color-mix(in srgb, var(--accent-pink) 85%, white);
-  box-shadow: 0 8px 26px -8px rgba(0, 0, 0, 0.75),
+  box-shadow:
+    0 8px 26px -8px rgba(0, 0, 0, 0.75),
     0 0 calc(24px * var(--glow)) var(--accent-pink-soft);
 }
 
 .active {
-  box-shadow: 0 6px 22px -8px rgba(0, 0, 0, 0.7),
+  box-shadow:
+    0 6px 22px -8px rgba(0, 0, 0, 0.7),
     0 0 calc(22px * var(--glow)) var(--accent-pink-soft);
 }
 
@@ -75,12 +87,15 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.8),
+  box-shadow:
+    0 20px 60px -20px rgba(0, 0, 0, 0.8),
     0 0 calc(40px * var(--glow)) rgba(181, 107, 255, 0.12);
   pointer-events: none;
   opacity: 0;
   transform: translateY(6px);
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
 .playerWrapper:hover .panel {
@@ -166,13 +181,27 @@
 }
 
 /* Cycle through pink → violet → teal across 7 bars */
-.bar:nth-child(1) { background: var(--accent-pink); }
-.bar:nth-child(2) { background: color-mix(in srgb, var(--accent-pink) 60%, var(--accent-violet)); }
-.bar:nth-child(3) { background: var(--accent-violet); }
-.bar:nth-child(4) { background: color-mix(in srgb, var(--accent-violet) 50%, var(--accent-teal)); }
-.bar:nth-child(5) { background: var(--accent-teal); }
-.bar:nth-child(6) { background: color-mix(in srgb, var(--accent-teal) 60%, var(--accent-violet)); }
-.bar:nth-child(7) { background: var(--accent-violet); }
+.bar:nth-child(1) {
+  background: var(--accent-pink);
+}
+.bar:nth-child(2) {
+  background: color-mix(in srgb, var(--accent-pink) 60%, var(--accent-violet));
+}
+.bar:nth-child(3) {
+  background: var(--accent-violet);
+}
+.bar:nth-child(4) {
+  background: color-mix(in srgb, var(--accent-violet) 50%, var(--accent-teal));
+}
+.bar:nth-child(5) {
+  background: var(--accent-teal);
+}
+.bar:nth-child(6) {
+  background: color-mix(in srgb, var(--accent-teal) 60%, var(--accent-violet));
+}
+.bar:nth-child(7) {
+  background: var(--accent-violet);
+}
 
 /* Each bar gets a distinct random-feeling height pattern */
 .barActive {
@@ -182,21 +211,105 @@
   animation-direction: alternate;
   animation-delay: calc(var(--bar-i) * 0.07s);
 }
-.bar:nth-child(7n + 1).barActive { animation-name: wave1; }
-.bar:nth-child(7n + 2).barActive { animation-name: wave2; }
-.bar:nth-child(7n + 3).barActive { animation-name: wave3; }
-.bar:nth-child(7n + 4).barActive { animation-name: wave4; }
-.bar:nth-child(7n + 5).barActive { animation-name: wave5; }
-.bar:nth-child(7n + 6).barActive { animation-name: wave6; }
-.bar:nth-child(7n).barActive     { animation-name: wave7; }
+.bar:nth-child(7n + 1).barActive {
+  animation-name: wave1;
+}
+.bar:nth-child(7n + 2).barActive {
+  animation-name: wave2;
+}
+.bar:nth-child(7n + 3).barActive {
+  animation-name: wave3;
+}
+.bar:nth-child(7n + 4).barActive {
+  animation-name: wave4;
+}
+.bar:nth-child(7n + 5).barActive {
+  animation-name: wave5;
+}
+.bar:nth-child(7n + 6).barActive {
+  animation-name: wave6;
+}
+.bar:nth-child(7n).barActive {
+  animation-name: wave7;
+}
 
-@keyframes wave1 { 0% { height: 8px; } 50% { height: 22px; } 100% { height: 12px; } }
-@keyframes wave2 { 0% { height: 24px; } 50% { height: 6px; } 100% { height: 18px; } }
-@keyframes wave3 { 0% { height: 14px; } 50% { height: 30px; } 100% { height: 10px; } }
-@keyframes wave4 { 0% { height: 28px; } 50% { height: 8px; } 100% { height: 22px; } }
-@keyframes wave5 { 0% { height: 10px; } 50% { height: 26px; } 100% { height: 6px; } }
-@keyframes wave6 { 0% { height: 18px; } 50% { height: 12px; } 100% { height: 28px; } }
-@keyframes wave7 { 0% { height: 6px; } 50% { height: 20px; } 100% { height: 14px; } }
+@keyframes wave1 {
+  0% {
+    height: 8px;
+  }
+  50% {
+    height: 22px;
+  }
+  100% {
+    height: 12px;
+  }
+}
+@keyframes wave2 {
+  0% {
+    height: 24px;
+  }
+  50% {
+    height: 6px;
+  }
+  100% {
+    height: 18px;
+  }
+}
+@keyframes wave3 {
+  0% {
+    height: 14px;
+  }
+  50% {
+    height: 30px;
+  }
+  100% {
+    height: 10px;
+  }
+}
+@keyframes wave4 {
+  0% {
+    height: 28px;
+  }
+  50% {
+    height: 8px;
+  }
+  100% {
+    height: 22px;
+  }
+}
+@keyframes wave5 {
+  0% {
+    height: 10px;
+  }
+  50% {
+    height: 26px;
+  }
+  100% {
+    height: 6px;
+  }
+}
+@keyframes wave6 {
+  0% {
+    height: 18px;
+  }
+  50% {
+    height: 12px;
+  }
+  100% {
+    height: 28px;
+  }
+}
+@keyframes wave7 {
+  0% {
+    height: 6px;
+  }
+  50% {
+    height: 20px;
+  }
+  100% {
+    height: 14px;
+  }
+}
 
 /* ── Progress ── */
 .progressSection {
@@ -230,5 +343,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .barActive { animation: none; }
+  .barActive {
+    animation: none;
+  }
 }

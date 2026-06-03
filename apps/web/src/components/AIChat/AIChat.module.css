@@ -21,17 +21,6 @@
   --ais-shadow-md: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
 }
 
-/* ── Music player dock position ──
-   z-index sits above Algolia chat widget so the hover panel
-   remains visible when the chat window is expanded. */
-.musicWrapper {
-  position: fixed;
-  bottom: var(--chat-dock-margin);
-  right: calc(var(--chat-dock-margin) + 60px + 16px);
-  pointer-events: auto;
-  z-index: 1100;
-}
-
 /* ── Toggle button ── */
 /* Matches MusicPlayer .playButton — filled neon-violet circle, white icon.
    A deliberate action-color burst. !important is required because Algolia's
@@ -43,15 +32,19 @@
   background: var(--accent-violet) !important;
   border: none !important;
   color: white !important;
-  box-shadow: 0 6px 22px -8px rgba(0, 0, 0, 0.7),
+  box-shadow:
+    0 6px 22px -8px rgba(0, 0, 0, 0.7),
     0 0 calc(18px * var(--glow)) var(--accent-violet-soft) !important;
-  transition: transform var(--transition-base), background var(--transition-base),
+  transition:
+    transform var(--transition-base),
+    background var(--transition-base),
     box-shadow var(--transition-base) !important;
 }
 
 .chatToggle:hover {
   transform: translateY(-2px) !important;
   background: color-mix(in srgb, var(--accent-violet) 85%, white) !important;
-  box-shadow: 0 8px 26px -8px rgba(0, 0, 0, 0.75),
+  box-shadow:
+    0 8px 26px -8px rgba(0, 0, 0, 0.75),
     0 0 calc(24px * var(--glow)) var(--accent-violet-soft) !important;
 }
