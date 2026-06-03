@@ -1,6 +1,4 @@
 import { Metadata } from 'next';
-import Header from '@/components/Header/Header';
-import Masthead from '@/components/Masthead/Masthead';
 import Hero from '@/components/Hero/Hero';
 import ProjectGrid from '@/components/ProjectGrid/ProjectGrid';
 import { getProjects } from '@/lib/api';
@@ -19,8 +17,6 @@ export default async function Projects() {
 
   return (
     <main className={styles.main} id="main-content">
-      <Header />
-      <Masthead />
       <Hero
         kicker="CWD · /sys/builds"
         title="Things I built and broke."

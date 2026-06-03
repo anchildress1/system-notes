@@ -2,6 +2,14 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import ClientShell from './ClientShell';
 
+vi.mock('@/components/Header/Header', () => ({
+  default: () => <div data-testid="header">Header</div>,
+}));
+
+vi.mock('@/components/Masthead/Masthead', () => ({
+  default: () => <div data-testid="masthead">Masthead</div>,
+}));
+
 vi.mock('@/components/GlitterBomb/GlitterBomb', () => ({
   default: () => <div data-testid="glitter-bomb">GlitterBomb</div>,
 }));
@@ -27,6 +35,8 @@ describe('ClientShell Component', () => {
     );
 
     expect(screen.getByTestId('child-content')).toBeInTheDocument();
+    expect(screen.getByTestId('header')).toBeInTheDocument();
+    expect(screen.getByTestId('masthead')).toBeInTheDocument();
     expect(screen.getByTestId('footer')).toBeInTheDocument();
 
     await waitFor(() => {
