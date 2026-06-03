@@ -209,9 +209,8 @@
   pointer-events: none;
 }
 
-/* Corner overlay: award stays prominent top-right (it fits there alone),
-   the /proj tag moves to the bottom-left so the two never collide and
-   clip the badge. */
+/* Corner overlay: award anchors bottom-left where it has the full row to
+   itself (it never collides or clips), the small /proj tag sits top-right. */
 .imageOverlay {
   position: absolute;
   inset: 0;
@@ -221,17 +220,17 @@
 
 .awardSlot {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  bottom: 14px;
+  left: 14px;
   max-width: calc(100% - 28px);
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .projId {
   position: absolute;
-  left: 14px;
-  bottom: 14px;
+  right: 14px;
+  top: 14px;
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 1.8px;
