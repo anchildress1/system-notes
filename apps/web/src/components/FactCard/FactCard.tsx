@@ -18,7 +18,14 @@ function formatMonthYear(iso?: string): string | null {
   if (!iso) return null;
   const [year, month] = iso.slice(0, 10).split('-');
   const monthIndex = Number(month) - 1;
-  if (!year || monthIndex < 0 || monthIndex > 11) return null;
+  if (
+    !/^\d{4}$/.test(year ?? '') ||
+    Number.isNaN(monthIndex) ||
+    monthIndex < 0 ||
+    monthIndex > 11
+  ) {
+    return null;
+  }
   return `${MONTHS[monthIndex]} ${year}`;
 }
 

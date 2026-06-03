@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
@@ -19,6 +19,10 @@ vi.mock('react-instantsearch', () => ({
 describe('FactCard Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('renders fact card with front-side fields and project label', () => {
@@ -47,6 +51,15 @@ describe('FactCard Component', () => {
     render(<FactCard hit={createMockHit({ created_at: undefined })} />);
     expect(screen.queryByText('May 2026')).not.toBeInTheDocument();
   });
+
+  it.each(['not-a-date', '2026-13-01T00:00:00Z', '2026-00-01T00:00:00Z'])(
+    'omits unparseable created date %s',
+    (createdAt) => {
+      render(<FactCard hit={createMockHit({ created_at: createdAt })} />);
+
+      expect(screen.queryByText(/\b2026\b/)).not.toBeInTheDocument();
+    }
+  );
 
   it('renders category label', () => {
     render(<FactCard hit={createMockHit({ category: 'Philosophy' })} />);
@@ -155,6 +168,24 @@ describe('FactCard Component', () => {
     expect(screen.getByLabelText('View source for Test Fact Title')).toBeInTheDocument();
   });
 
+  it('opens GitHub source without flipping the card', async () => {
+    const user = userEvent.setup();
+    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
+    render(<FactCard hit={createMockHit({ url: 'https://github.com/user/repo' })} />);
+
+    await user.click(screen.getByLabelText('View source for Test Fact Title'));
+
+    expect(openSpy).toHaveBeenCalledWith(
+      'https://github.com/user/repo',
+      '_blank',
+      'noopener,noreferrer'
+    );
+    expect(screen.getByRole('button', { name: /Click to expand/i })).toHaveAttribute(
+      'aria-expanded',
+      'false'
+    );
+  });
+
   it('does not render GitHub link for DEV.to URLs', () => {
     render(<FactCard hit={createMockHit({ url: 'https://dev.to/user/post-title' })} />);
 
@@ -165,6 +196,26 @@ describe('FactCard Component', () => {
     render(<FactCard hit={createMockHit({ url: 'https://dev.to/user/post-title' })} />);
 
     expect(screen.getByLabelText(/Read .* on DEV Community/i)).toBeInTheDocument();
+  });
+
+  it('opens DEV source without tracking a fact-card view', async () => {
+    const user = userEvent.setup();
+    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
+    render(
+      <FactCard
+        hit={createMockHit({ url: 'https://dev.to/user/post-title' })}
+        sendEvent={mockSendEvent}
+      />
+    );
+
+    await user.click(screen.getByLabelText(/Read .* on DEV Community/i));
+
+    expect(openSpy).toHaveBeenCalledWith(
+      'https://dev.to/user/post-title',
+      '_blank',
+      'noopener,noreferrer'
+    );
+    expect(mockSendEvent).not.toHaveBeenCalled();
   });
 
   it('does not render DEV icon for GitHub URLs', () => {
