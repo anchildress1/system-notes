@@ -7,8 +7,9 @@ test.describe('System Notes Integration', () => {
     await page.goto('/');
     await expect(page).toHaveTitle('Choices');
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
-      "This portfolio isn't browsed—"
+      "This portfolio isn't browsed."
     );
+    await expect(page.getByText('An engineering portfolio you query, not scroll.')).toBeVisible();
   });
 
   test('should display the footer', async ({ page }) => {
@@ -20,29 +21,36 @@ test.describe('System Notes Integration', () => {
     );
   });
 
-  test('should display blog CTA in header', async ({ page }) => {
+  test('should expose the blog CTA contract in the header', async ({ page, isMobile }) => {
     await page.goto('/');
-    const cta = page.getByRole('link', { name: 'Read My Blog' });
-    await expect(cta).toBeVisible();
+    const cta = page.getByTestId('blog-link');
+    if (isMobile) {
+      await expect(cta).toBeHidden();
+    } else {
+      await expect(cta).toBeVisible();
+    }
     await expect(cta).toHaveAttribute('href', 'https://dev.to/anchildress1');
+    await expect(cta).toContainText('$ read --blog');
   });
 
-  test('should load projects with loadout grid', async ({ page }) => {
+  test('should load projects with current summary card metadata', async ({ page }) => {
     await page.goto('/projects');
-    const projectCard = page.locator('div[class*="card"]').first();
+    const projectCard = page.getByTestId(/^project-card-/).first();
     await expect(projectCard).toBeVisible();
 
-    // Loadout badges show tech name + role
-    const loadoutBadge = page.locator('div[class*="loadoutBadge"]').first();
-    await expect(loadoutBadge).toBeVisible();
-
-    const techName = page.locator('span[class*="techName"]').first();
-    await expect(techName).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
+      'Things I built and broke.'
+    );
+    await expect(
+      projectCard.getByRole('button', { name: /flip to read the project note/i })
+    ).toBeVisible();
+    await expect(projectCard.locator('[class*="techChip"]').first()).toBeVisible();
   });
 
   test('flips a project card in place to reveal the note', async ({ page }) => {
     await page.goto('/projects');
-    const toggle = page.getByRole('button', { name: /flip to read the project note/i }).first();
+    const card = page.getByTestId(/^project-card-/).first();
+    const toggle = card.locator('button[aria-label*="Flip to read the project note"]').first();
     await toggle.click();
 
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
@@ -53,7 +61,8 @@ test.describe('System Notes Integration', () => {
 
   test('flips a card back on Escape', async ({ page }) => {
     await page.goto('/projects');
-    const toggle = page.getByRole('button', { name: /flip to read the project note/i }).first();
+    const card = page.getByTestId(/^project-card-/).first();
+    const toggle = card.locator('button[aria-label*="Flip to read the project note"]').first();
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
 
@@ -64,12 +73,12 @@ test.describe('System Notes Integration', () => {
   test('Human page smoke test', async ({ page }) => {
     await page.goto('/about');
 
-    // Check Hero Image
-    const heroImage = page.getByAltText('Ashley Childress');
+    const heroImage = page.getByAltText(/Ashley Childress profile picture/i);
     await expect(heroImage).toBeVisible();
 
-    // Check Hero Text
-    await expect(page.getByRole('heading', { name: 'Designing for the failures' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /Designing for the failures you haven't met yet/i })
+    ).toBeVisible();
 
     // Check API Content Loading (wait for it)
     await expect(page.locator('text=Initializing identity protocol')).not.toBeVisible({
@@ -97,7 +106,8 @@ test.describe('System Notes Integration', () => {
     await page.goto('/projects');
     const url = page.url();
 
-    const toggle = page.getByRole('button', { name: /flip to read the project note/i }).first();
+    const card = page.getByTestId(/^project-card-/).first();
+    const toggle = card.locator('button[aria-label*="Flip to read the project note"]').first();
     await toggle.click();
 
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');

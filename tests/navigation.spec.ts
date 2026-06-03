@@ -6,26 +6,38 @@ test.describe('Primary Navigation Flows', () => {
     await page.goto('/');
     await expect(page).toHaveURL('/');
 
-    await page.getByRole('link', { name: 'Human' }).click();
+    await page
+      .getByRole('navigation', { name: 'Main Navigation' })
+      .getByRole('link', { name: 'Human' })
+      .click();
     await expect(page).toHaveURL('/about');
 
     await expect(page.locator('body')).toContainText('Ashley Childress', { timeout: 10000 });
     await expect(page.locator('body')).toContainText('Appalachia');
 
-    await page.getByRole('link', { name: 'Choices' }).first().click();
+    await page
+      .getByRole('navigation', { name: 'Main Navigation' })
+      .getByRole('link', { name: 'Choices' })
+      .click();
     await expect(page).toHaveURL('/');
   });
 
   test('should navigate to Builds and back', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-    await page.getByRole('link', { name: 'Builds' }).click();
+    await page
+      .getByRole('navigation', { name: 'Main Navigation' })
+      .getByRole('link', { name: 'Builds' })
+      .click();
     await expect(page).toHaveURL('/projects');
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
-      'Not here to play nice'
+      'Things I built and broke.'
     );
 
-    await page.getByRole('link', { name: 'Choices' }).click();
+    await page
+      .getByRole('navigation', { name: 'Main Navigation' })
+      .getByRole('link', { name: 'Choices' })
+      .click();
     await expect(page).toHaveURL('/');
   });
 
@@ -33,11 +45,11 @@ test.describe('Primary Navigation Flows', () => {
     await page.goto('/');
 
     const footer = page.locator('footer');
-    const githubLink = footer.getByRole('link', { name: 'GitHub' });
+    const githubLink = footer.getByRole('link', { name: /github/i });
     await githubLink.scrollIntoViewIfNeeded();
     await expect(githubLink).toBeVisible();
 
-    const linkedinLink = footer.getByRole('link', { name: 'LinkedIn' });
+    const linkedinLink = footer.getByRole('link', { name: /linkedin/i });
     await expect(linkedinLink).toBeVisible();
   });
 });
