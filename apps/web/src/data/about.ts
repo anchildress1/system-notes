@@ -50,7 +50,7 @@ export interface AboutData {
 
 export const aboutData: AboutData = {
   heroAccentLead: 'Designing',
-  heroTitle: "for the failures you haven't met yet",
+  heroTitle: "for the failures you haven't met yet.",
   role: 'Senior Software Engineer',
   specialty: 'AI-augmented systems & orchestration',
   recognition: [
@@ -65,6 +65,7 @@ export const aboutData: AboutData = {
     'Responsible AI',
     'TypeScript',
     'Python',
+    'Java',
     'React / Next.js',
     'CI/CD & Guardrails',
     'Testing & Quality',
