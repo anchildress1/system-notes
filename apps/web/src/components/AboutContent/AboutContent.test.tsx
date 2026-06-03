@@ -12,6 +12,21 @@ vi.mock('next/image', () => ({
 
 const baseData: AboutData = {
   heroTitle: 'Designing for failures\nyou have not met yet',
+  name: 'Ashley Childress',
+  namePath: 'CWD · /sys/human',
+  pronounce: 'she/her · senior software engineer',
+  stats: [
+    { label: 'origin', value: 'Appalachia' },
+    { label: 'role', value: 'Sr SWE' },
+  ],
+  lyric: {
+    meta: 'THEME SONG',
+    metaRight: '2026 · LOUD',
+    rows: [
+      { time: '00:00.4', text: 'I BUILD THINGS', tag: 'INTENT', tone: 'pink' },
+      { time: '00:08.0', text: 'I SHIP THINGS', tag: 'DEPLOY', tone: 'violet' },
+    ],
+  },
   heroImage: {
     src: '/ashley-gen-2.webp',
     alt: 'Ashley Childress profile picture',
@@ -38,10 +53,24 @@ describe('AboutContent', () => {
     expect(img).toHaveAttribute('src', '/ashley-gen-2.webp');
   });
 
-  it('renders the first section title as h1 and subsequent as h2', () => {
+  it('renders all section titles as h2 (the hero owns the page h1)', () => {
     render(<AboutContent data={baseData} />);
-    expect(screen.getByRole('heading', { level: 1, name: 'Ashley Childress' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 1 })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Ashley Childress' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: 'Theme Song' })).toBeInTheDocument();
+  });
+
+  it('renders the identity block: name, pronounce, and stats', () => {
+    render(<AboutContent data={baseData} />);
+    expect(screen.getByText('CWD · /sys/human')).toBeInTheDocument();
+    expect(screen.getByText('Appalachia')).toBeInTheDocument();
+    expect(screen.getByText('Sr SWE')).toBeInTheDocument();
+  });
+
+  it('renders the loud lyric rows', () => {
+    render(<AboutContent data={baseData} />);
+    expect(screen.getByText('I BUILD THINGS')).toBeInTheDocument();
+    expect(screen.getByText('I SHIP THINGS')).toBeInTheDocument();
   });
 
   it('splits double-newline content into separate paragraphs', () => {

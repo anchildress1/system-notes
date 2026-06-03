@@ -4,10 +4,33 @@ export interface AboutSection {
   content: string;
 }
 
+export interface AboutStat {
+  label: string;
+  value: string;
+}
+
+export interface AboutLyricRow {
+  time: string;
+  text: string;
+  tag: string;
+  tone: 'pink' | 'teal' | 'violet' | 'mute';
+}
+
+export interface AboutLyric {
+  meta: string;
+  metaRight: string;
+  rows: AboutLyricRow[];
+}
+
 export interface AboutData {
   heroTitle: string;
   heroAccentLead?: string;
   heroSubtitle?: string;
+  name: string;
+  namePath: string;
+  pronounce: string;
+  stats: AboutStat[];
+  lyric: AboutLyric;
   heroImage: {
     src: string;
     alt: string;
@@ -20,6 +43,25 @@ export interface AboutData {
 export const aboutData: AboutData = {
   heroAccentLead: 'Designing',
   heroTitle: "for the failures you haven't met yet",
+  name: 'Ashley Childress',
+  namePath: 'CWD · /sys/human · subject = ashley.childress',
+  pronounce: '/ ASH-lee CHIL-dres / · she/her · senior software engineer',
+  stats: [
+    { label: 'origin', value: 'Appalachia' },
+    { label: 'role', value: 'Sr SWE' },
+    { label: 'stack', value: 'AI-augmented' },
+    { label: 'mode', value: 'System-first' },
+  ],
+  lyric: {
+    meta: 'THEME SONG · I Build Things',
+    metaRight: '2026 · LOUD',
+    rows: [
+      { time: '00:00.4', text: 'I BUILD THINGS', tag: 'INTENT', tone: 'pink' },
+      { time: '00:04.1', text: 'I BREAK THINGS', tag: 'HUNT', tone: 'teal' },
+      { time: '00:08.0', text: 'I SHIP THINGS', tag: 'DEPLOY', tone: 'violet' },
+      { time: '00:12.7', text: 'i fix the things i break', tag: 'AGAIN', tone: 'mute' },
+    ],
+  },
   heroImage: {
     src: '/ashley-gen-2.webp',
     alt: 'Ashley Childress profile picture showing a stylized, AI-generated portrait of a woman with red hair and glasses',
