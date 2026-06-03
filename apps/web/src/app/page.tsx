@@ -17,6 +17,7 @@ export default function Home() {
       <Header />
       <Masthead />
       <Hero
+        kicker="CWD · /sys/choices"
         title="This portfolio isn't browsed."
         titleAccent="It's"
         accentWord="retrieved."

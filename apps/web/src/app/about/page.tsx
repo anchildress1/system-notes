@@ -10,6 +10,7 @@ export default function Human() {
       <Header />
       <Masthead />
       <Hero
+        kicker="CWD · /sys/human"
         accentLead={aboutData.heroAccentLead}
         title={aboutData.heroTitle}
         subtitle={aboutData.heroSubtitle}

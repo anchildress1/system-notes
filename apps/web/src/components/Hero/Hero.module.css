@@ -13,8 +13,65 @@
 }
 
 .hero {
-  composes: hero from "@/styles/SharedHero.module.css";
-  transition: --spot-x 0.45s var(--ease-snap), --spot-y 0.45s var(--ease-snap);
+  composes: hero from '@/styles/SharedHero.module.css';
+  transition:
+    --spot-x 0.45s var(--ease-snap),
+    --spot-y 0.45s var(--ease-snap);
+}
+
+/* Brand seam across the top of every hero — frames the band as a deliberate
+   page header rather than a floating block, and ties it to the cards. */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 2;
+  background: linear-gradient(90deg, var(--accent-violet), var(--accent-teal) 60%, transparent);
+  pointer-events: none;
+}
+
+/* Terminal-style page label — announces which page you're on. */
+.kicker {
+  position: relative;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent-teal);
+}
+
+.kickerDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-teal);
+  box-shadow: 0 0 8px var(--accent-teal);
+  animation: kickerPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes kickerPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kickerDot {
+    animation: none;
+  }
 }
 
 .hero::after {
@@ -48,19 +105,19 @@
 }
 
 .interactiveContainer {
-  composes: interactiveContainer from "@/styles/SharedHero.module.css";
+  composes: interactiveContainer from '@/styles/SharedHero.module.css';
 }
 
 .glitterTrigger {
-  composes: glitterTrigger from "@/styles/SharedHero.module.css";
+  composes: glitterTrigger from '@/styles/SharedHero.module.css';
 }
 
 .title {
-  composes: title from "@/styles/SharedHero.module.css";
+  composes: title from '@/styles/SharedHero.module.css';
 }
 
 .subtitle {
-  composes: subtitle from "@/styles/SharedHero.module.css";
+  composes: subtitle from '@/styles/SharedHero.module.css';
 }
 
 .titleAccent {
@@ -105,7 +162,9 @@
   z-index: 5;
   border: 1px solid var(--border-strong);
   border-radius: var(--r-md);
-  transition: filter var(--transition-slow), border-color var(--transition-slow);
+  transition:
+    filter var(--transition-slow),
+    border-color var(--transition-slow);
   filter: grayscale(100%);
 }
 

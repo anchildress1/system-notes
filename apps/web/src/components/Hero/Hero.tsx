@@ -6,6 +6,7 @@ import styles from './Hero.module.css';
 
 interface HeroProps {
   title: string;
+  kicker?: string;
   accentLead?: string;
   titleAccent?: string;
   accentWord?: string;
@@ -20,6 +21,7 @@ interface HeroProps {
 
 export default function Hero({
   title,
+  kicker,
   accentLead,
   titleAccent,
   accentWord,
@@ -44,6 +46,12 @@ export default function Hero({
     <div className={styles.hero} ref={heroRef} onMouseMove={handleMouseMove}>
       <div className={styles.titleContainer}>
         <div className={styles.interactiveContainer}>
+          {kicker && (
+            <span className={styles.kicker}>
+              <span className={styles.kickerDot} aria-hidden="true" />
+              {kicker}
+            </span>
+          )}
           <h1 className={styles.title}>
             {accentLead && (
               <>

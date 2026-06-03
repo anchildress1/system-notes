@@ -22,6 +22,7 @@ export default async function Projects() {
       <Header />
       <Masthead />
       <Hero
+        kicker="CWD · /sys/builds"
         title="Things I built and broke."
         titleAccent="I"
         accentWord="shipped."
