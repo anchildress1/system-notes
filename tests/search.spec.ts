@@ -102,6 +102,24 @@ test.describe('Search Page', () => {
     await expect(page.getByText('1 entries · sorted by signal')).toBeVisible();
   });
 
+  test('flips a mocked hit from a real card-area click', async ({ page }) => {
+    await mockAlgoliaSearch(page, [buildHit()]);
+    await page.goto('/search');
+
+    const resultCard = page
+      .getByRole('region', { name: 'Search results' })
+      .locator('article')
+      .first();
+    const state = resultCard.locator('[data-state]');
+    await expect(state).toHaveAttribute('data-state', 'collapsed');
+
+    const box = await resultCard.boundingBox();
+    expect(box).not.toBeNull();
+    await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
+
+    await expect(state).toHaveAttribute('data-state', 'expanded');
+  });
+
   test('updates the q route state when typing', async ({ page }) => {
     await mockAlgoliaSearch(page, [buildHit({ title: 'Carbon Trace Test' })]);
     await page.goto('/search');
