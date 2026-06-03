@@ -17,20 +17,25 @@
   background: linear-gradient(180deg, rgba(29, 31, 40, 0.5), rgba(8, 9, 12, 0.4));
 }
 
-/* Stats as a light meta row (not a second bordered grid). */
+/* Stats as one evenly-split, hairline-divided panel: equal cells separated
+   by 1px gaps over a border-colored backing, wrapped in a rounded box. */
 .stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
   margin: 0;
-  padding-bottom: 28px;
-  border-bottom: 1px solid var(--border);
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 5px;
+  padding: 16px 18px;
+  background: var(--bg-base);
 }
 
 .statLabel {
@@ -44,10 +49,12 @@
 .statValue {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
+  line-height: 1.15;
   letter-spacing: -0.01em;
   color: var(--text-primary);
+  text-wrap: balance;
 }
 
 .hlCols {
@@ -320,6 +327,10 @@
 
   .highlights {
     padding: 26px 22px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .hlCols {
