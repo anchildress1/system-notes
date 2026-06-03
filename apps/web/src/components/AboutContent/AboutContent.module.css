@@ -1,9 +1,8 @@
 .human {
   position: relative;
   z-index: 5;
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 3.5rem max(2rem, calc((100% - 1320px) / 2 + 2rem)) 4rem;
+  /* Match the hero's gutter so the content lines up under the hero text. */
+  padding: 3.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 4rem;
 }
 
 /* ── Portrait ── */
@@ -145,6 +144,12 @@
 }
 
 @media (max-width: 768px) {
+  .human {
+    /* Hero drops to 1.5rem side padding here — match it. */
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
   .portrait {
     max-width: 100%;
     margin-bottom: 3rem;
