@@ -28,6 +28,11 @@ export interface AboutLink {
   external?: boolean;
 }
 
+export interface AboutSkillGroup {
+  label: string;
+  items: string[];
+}
+
 export interface AboutData {
   heroTitle: string;
   heroAccentLead?: string;
@@ -35,7 +40,7 @@ export interface AboutData {
   role: string;
   specialty: string;
   recognition: string[];
-  skills: string[];
+  skillGroups: AboutSkillGroup[];
   links: AboutLink[];
   stats: AboutStat[];
   lyric: AboutLyric;
@@ -59,17 +64,27 @@ export const aboutData: AboutData = {
     'GitHub Copilot certified',
     'Google Cloud Generative AI Leader',
   ],
-  skills: [
-    'Systems & Architecture',
-    'AI Orchestration',
-    'SDKs & Implementation',
-    'Responsible AI',
-    'TypeScript',
-    'Python',
-    'Java',
-    'React / Next.js',
-    'CI/CD & Guardrails',
-    'Testing & Quality',
+  skillGroups: [
+    {
+      label: 'Practice',
+      items: [
+        'Systems & Architecture',
+        'AI Orchestration',
+        'SDKs & Implementation',
+        'Responsible AI',
+      ],
+    },
+    {
+      label: 'Stack',
+      items: [
+        'TypeScript',
+        'Python',
+        'Java',
+        'React / Next.js',
+        'CI/CD & Guardrails',
+        'Testing & Quality',
+      ],
+    },
   ],
   links: [
     { label: 'GitHub', href: 'https://github.com/anchildress1', external: true },
@@ -78,7 +93,7 @@ export const aboutData: AboutData = {
   ],
   stats: [
     { label: 'focus', value: 'Systems & Architecture' },
-    { label: 'also', value: 'AI Orchestration & SDKs' },
+    { label: 'applied', value: 'AI Orchestration & SDKs' },
     { label: 'role', value: 'The Home Depot · 8 yrs' },
     { label: 'based', value: 'Waco, GA · Remote' },
   ],

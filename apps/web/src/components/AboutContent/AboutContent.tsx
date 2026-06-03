@@ -53,7 +53,7 @@ interface AboutContentProps {
 }
 
 export default function AboutContent({ data }: Readonly<AboutContentProps>) {
-  const { sections, skills, recognition, links, stats, lyric } = data;
+  const { sections, skillGroups, recognition, links, stats, lyric } = data;
 
   return (
     <div className={styles.human}>
@@ -69,43 +69,49 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
 
         <div className={styles.hlCols}>
           <div className={styles.hlCol}>
-            <span className={styles.hlLabel}>Expertise</span>
-            <div className={styles.skills}>
-              {skills.map((skill) => (
-                <span key={skill} className={styles.skill}>
-                  {skill}
-                </span>
+            {skillGroups.map((group) => (
+              <div key={group.label} className={styles.hlGroup}>
+                <span className={styles.hlLabel}>{group.label}</span>
+                <div className={styles.skills}>
+                  {group.items.map((skill) => (
+                    <span key={skill} className={styles.skill}>
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className={styles.hlCol}>
+            <div className={styles.hlGroup}>
+              <span className={styles.hlLabel}>Recognition</span>
+              <ul className={styles.recognition}>
+                {recognition.map((item) => (
+                  <li key={item} className={styles.recognitionItem}>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className={styles.links}>
+              {links.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className={styles.link}
+                  {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  {link.label}
+                  {link.external ? (
+                    <FiExternalLink aria-hidden="true" focusable="false" size={13} />
+                  ) : (
+                    <FaArrowRight aria-hidden="true" focusable="false" size={11} />
+                  )}
+                </a>
               ))}
             </div>
           </div>
-          <div className={styles.hlCol}>
-            <span className={styles.hlLabel}>Recognition</span>
-            <ul className={styles.recognition}>
-              {recognition.map((item) => (
-                <li key={item} className={styles.recognitionItem}>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className={styles.links}>
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className={styles.link}
-              {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-            >
-              {link.label}
-              {link.external ? (
-                <FiExternalLink aria-hidden="true" focusable="false" size={13} />
-              ) : (
-                <FaArrowRight aria-hidden="true" focusable="false" size={11} />
-              )}
-            </a>
-          ))}
         </div>
       </section>
 

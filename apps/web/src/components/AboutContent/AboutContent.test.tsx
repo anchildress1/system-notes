@@ -15,7 +15,10 @@ const baseData: AboutData = {
   role: 'Senior Software Engineer',
   specialty: 'AI-augmented systems',
   recognition: ['WeCoded 2026 winner', 'GitHub Copilot certified'],
-  skills: ['AI Orchestration', 'TypeScript', 'Python'],
+  skillGroups: [
+    { label: 'Practice', items: ['AI Orchestration', 'Responsible AI'] },
+    { label: 'Stack', items: ['TypeScript', 'Python'] },
+  ],
   links: [
     { label: 'GitHub', href: 'https://github.com/anchildress1', external: true },
     { label: 'See the builds', href: '/projects' },

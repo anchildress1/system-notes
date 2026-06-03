@@ -66,6 +66,14 @@
 .hlCol {
   display: flex;
   flex-direction: column;
+  gap: 26px;
+  min-width: 0;
+}
+
+/* A labelled sub-group within a column (Practice, Stack, Recognition). */
+.hlGroup {
+  display: flex;
+  flex-direction: column;
   gap: 14px;
   min-width: 0;
 }
@@ -127,13 +135,15 @@
   color: var(--accent-gold);
 }
 
-/* CTA links — the recruiter's next step. */
+/* CTA links — the recruiter's next step. Pinned to the bottom of the right
+   column so it lands in the bottom-right exit corner and fills the space
+   under Recognition. */
 .links {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  padding-top: 28px;
-  border-top: 1px solid var(--border);
+  margin-top: auto;
+  padding-top: 8px;
 }
 
 .link {
