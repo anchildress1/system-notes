@@ -209,8 +209,10 @@
   pointer-events: none;
 }
 
-/* Corner overlay: award anchors bottom-left where it has the full row to
-   itself (it never collides or clips), the small /proj tag sits top-right. */
+/* Corner overlay: the /proj path tag heads the card top-left (aligned with
+   the left-aligned content below), the award stamps bottom-right with the
+   full row to itself — a top-left-to-bottom-right read that lands on the
+   win. Neither collides or clips. */
 .imageOverlay {
   position: absolute;
   inset: 0;
@@ -221,15 +223,15 @@
 .awardSlot {
   position: absolute;
   bottom: 14px;
-  left: 14px;
+  right: 14px;
   max-width: calc(100% - 28px);
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 .projId {
   position: absolute;
-  right: 14px;
+  left: 14px;
   top: 14px;
   font-family: var(--font-mono);
   font-size: 9px;
