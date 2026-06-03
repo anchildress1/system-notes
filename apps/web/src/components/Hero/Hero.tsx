@@ -1,7 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
-import Image from 'next/image';
+import { useRef, type ReactNode } from 'react';
 import styles from './Hero.module.css';
 
 interface HeroProps {
@@ -11,12 +10,8 @@ interface HeroProps {
   titleAccent?: string;
   accentWord?: string;
   subtitle?: string;
-  image?: {
-    src: string;
-    alt: string;
-    width: number;
-    height: number;
-  };
+  /** Optional media (e.g. a portrait) rendered beside the text as a split hero. */
+  aside?: ReactNode;
 }
 
 export default function Hero({
@@ -26,7 +21,7 @@ export default function Hero({
   titleAccent,
   accentWord,
   subtitle,
-  image,
+  aside,
 }: Readonly<HeroProps>) {
   const heroRef = useRef<HTMLDivElement>(null);
 
@@ -44,71 +39,61 @@ export default function Hero({
 
   return (
     <div className={styles.hero} ref={heroRef} onMouseMove={handleMouseMove}>
-      <div className={styles.titleContainer}>
-        <div className={styles.interactiveContainer}>
-          {kicker && (
-            <span className={styles.kicker}>
-              <span className={styles.kickerDot} aria-hidden="true" />
-              {kicker}
-            </span>
-          )}
-          <h1 className={styles.title}>
-            {accentLead && (
-              <>
-                <span className={styles.rotatingWord}>{accentLead}</span>{' '}
-              </>
-            )}
-            {title}
-            {titleAccent && (
-              <span className={styles.titleAccent}>
-                {titleAccent}
-                {accentWord && (
-                  <>
-                    {/* Non-breaking space keeps the colored word from wrapping
-                        onto a line by itself. */}
-                    {'\u00A0'}
-                    <span className={styles.rotatingWord}>{accentWord}</span>
-                  </>
-                )}
+      <div className={`${styles.inner} ${aside ? styles.hasAside : ''}`}>
+        <div className={styles.textCol}>
+          <div className={styles.interactiveContainer}>
+            {kicker && (
+              <span className={styles.kicker}>
+                <span className={styles.kickerDot} aria-hidden="true" />
+                {kicker}
               </span>
             )}
-          </h1>
-          {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
-          <button
-            type="button"
-            className={styles.glitterTrigger}
-            data-testid="hero-interactive"
-            aria-label="Trigger glitter effect"
-            onClick={(e) => {
-              globalThis.dispatchEvent(
-                new CustomEvent('trigger-glitter-bomb', {
-                  detail: { x: e.clientX, y: e.clientY },
-                })
-              );
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
-              }
-            }}
-          />
+            <h1 className={styles.title}>
+              {accentLead && (
+                <>
+                  <span className={styles.rotatingWord}>{accentLead}</span>{' '}
+                </>
+              )}
+              {title}
+              {titleAccent && (
+                <span className={styles.titleAccent}>
+                  {titleAccent}
+                  {accentWord && (
+                    <>
+                      {/* Non-breaking space keeps the colored word from wrapping
+                          onto a line by itself. */}
+                      {' '}
+                      <span className={styles.rotatingWord}>{accentWord}</span>
+                    </>
+                  )}
+                </span>
+              )}
+            </h1>
+            <button
+              type="button"
+              className={styles.glitterTrigger}
+              data-testid="hero-interactive"
+              aria-label="Trigger glitter effect"
+              onClick={(e) => {
+                globalThis.dispatchEvent(
+                  new CustomEvent('trigger-glitter-bomb', {
+                    detail: { x: e.clientX, y: e.clientY },
+                  })
+                );
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
+                }
+              }}
+            />
+          </div>
+          {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
         </div>
-      </div>
 
-      {image && (
-        <div className={styles.imageContainer}>
-          <Image
-            src={image.src}
-            alt={image.alt}
-            width={image.width}
-            height={image.height}
-            className={styles.image}
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-        </div>
-      )}
+        {aside && <div className={styles.aside}>{aside}</div>}
+      </div>
     </div>
   );
 }

@@ -99,9 +99,40 @@
   }
 }
 
-.titleContainer {
+.inner {
   position: relative;
   z-index: 10;
+}
+
+/* Split hero: text on the left, media (portrait) on the right, centered —
+   so the right half of the band isn't dead space. */
+.inner.hasAside {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 56px;
+  align-items: center;
+}
+
+.textCol {
+  min-width: 0;
+}
+
+.aside {
+  width: 100%;
+  max-width: 420px;
+  justify-self: end;
+}
+
+@media (max-width: 768px) {
+  .inner.hasAside {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .aside {
+    justify-self: stretch;
+    max-width: 100%;
+  }
 }
 
 .interactiveContainer {
@@ -118,6 +149,15 @@
 
 .subtitle {
   composes: subtitle from '@/styles/SharedHero.module.css';
+}
+
+/* Let the deck breathe wider than the title's column — a wide standfirst,
+   not a cramped third-of-the-page block. Override text-wrap:balance (which
+   shrinks the line to even it out) so the text actually fills the width. */
+.textCol .subtitle {
+  max-width: 58rem;
+  margin-top: 1.75rem;
+  text-wrap: pretty;
 }
 
 .titleAccent {
@@ -150,38 +190,5 @@
     background: none;
     color: var(--text-primary);
     -webkit-text-fill-color: var(--text-primary);
-  }
-}
-
-.imageContainer {
-  position: relative;
-  width: 100%;
-  max-width: 450px;
-  overflow: hidden;
-  margin-top: 2rem;
-  z-index: 5;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
-  transition:
-    filter var(--transition-slow),
-    border-color var(--transition-slow);
-  filter: grayscale(100%);
-}
-
-.imageContainer:hover {
-  filter: grayscale(0%);
-  border-color: var(--text-muted);
-}
-
-.image {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-@media (max-width: 768px) {
-  .imageContainer {
-    margin-top: 2rem;
-    max-width: 100%;
   }
 }

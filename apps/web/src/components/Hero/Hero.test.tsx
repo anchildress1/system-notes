@@ -29,17 +29,14 @@ describe('Hero Component', () => {
     expect(screen.queryByText('Test Subtitle')).not.toBeInTheDocument();
   });
 
-  it('renders an image when provided', () => {
-    const imageProps = {
-      src: '/test-image.jpg',
-      alt: 'Test Image Alt',
-      width: 100,
-      height: 100,
-    };
-    render(<Hero {...defaultProps} image={imageProps} />);
-    const img = screen.getByAltText('Test Image Alt');
-    expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute('src');
+  it('renders the aside (split layout) when provided', () => {
+    render(<Hero {...defaultProps} aside={<div data-testid="hero-aside">portrait</div>} />);
+    expect(screen.getByTestId('hero-aside')).toBeInTheDocument();
+  });
+
+  it('renders the kicker when provided', () => {
+    render(<Hero {...defaultProps} kicker="CWD · /sys/test" />);
+    expect(screen.getByText('CWD · /sys/test')).toBeInTheDocument();
   });
 
   it('dispatches trigger-glitter-bomb event on click', () => {
