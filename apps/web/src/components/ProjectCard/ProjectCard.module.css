@@ -153,6 +153,9 @@
   overflow: hidden;
   background: var(--bg-deep);
   flex-shrink: 0;
+  /* Trap the image's internal z-index so the flip-button overlay stays on
+     top — clicking the art flips the card like the rest of the front. */
+  isolation: isolate;
 }
 
 .imageWrapper {
