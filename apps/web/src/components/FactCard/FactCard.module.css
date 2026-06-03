@@ -12,22 +12,22 @@
   height: 100%;
 }
 
-.cardLink[data-accent="pink"] {
+.cardLink[data-accent='pink'] {
   --card-accent: var(--accent-pink);
   --card-accent-soft: var(--accent-pink-soft);
 }
 
-.cardLink[data-accent="teal"] {
+.cardLink[data-accent='teal'] {
   --card-accent: var(--accent-teal);
   --card-accent-soft: var(--accent-teal-soft);
 }
 
-.cardLink[data-accent="violet"] {
+.cardLink[data-accent='violet'] {
   --card-accent: var(--accent-violet);
   --card-accent-soft: var(--accent-violet-soft);
 }
 
-.cardLink[data-accent="gold"] {
+.cardLink[data-accent='gold'] {
   --card-accent: var(--accent-gold);
   --card-accent-soft: rgba(232, 154, 106, 0.15);
 }
@@ -43,12 +43,14 @@
   height: 100%;
   min-height: 200px;
   cursor: pointer;
-  transition: border-color var(--transition-slow), box-shadow var(--transition-slow),
+  transition:
+    border-color var(--transition-slow),
+    box-shadow var(--transition-slow),
     transform var(--transition-base);
 }
 
 .card::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -62,14 +64,16 @@
 
 .card:hover {
   border-color: color-mix(in srgb, var(--card-accent) 45%, var(--border-strong));
-  box-shadow: 0 0 calc(12px * var(--glow)) var(--card-accent-soft), var(--shadow-card);
+  box-shadow:
+    0 0 calc(12px * var(--glow)) var(--card-accent-soft),
+    var(--shadow-card);
   transform: translateY(-2px);
 }
 
 .flipButton {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  z-index: 1;
   width: 100%;
   height: 100%;
   padding: 0;
@@ -84,27 +88,27 @@
   outline-offset: 4px;
 }
 
-.cardLink[data-size="half"] .title,
-.cardLink[data-size="two-thirds"] .title {
+.cardLink[data-size='half'] .title,
+.cardLink[data-size='two-thirds'] .title {
   font-size: 1.55rem;
 }
 
-.cardLink[data-size="half"] .description {
+.cardLink[data-size='half'] .description {
   -webkit-line-clamp: 5;
 }
 
-.cardLink[data-size="two-thirds"] .card {
+.cardLink[data-size='two-thirds'] .card {
   background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(8, 9, 12, 0.6) 100%);
   border-color: var(--card-accent-soft);
 }
 
-.cardLink[data-size="two-thirds"] .card::before {
+.cardLink[data-size='two-thirds'] .card::before {
   height: 2px;
   background: linear-gradient(90deg, var(--card-accent), var(--accent-violet), var(--accent-teal));
   opacity: 1;
 }
 
-.cardLink[data-size="two-thirds"] .description {
+.cardLink[data-size='two-thirds'] .description {
   -webkit-line-clamp: 6;
 }
 
@@ -130,7 +134,7 @@
 }
 
 .conceptBackground::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background-image:
@@ -152,7 +156,30 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.6rem;
+}
+
+.metaLeft {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+/* Creation date — dim, with a leading dot separating it from the label. */
+.cardDate {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.cardDate::before {
+  content: '·';
+  margin-right: 0.45rem;
+  opacity: 0.6;
 }
 
 .cardMetaRight {
@@ -273,6 +300,11 @@
   height: 100%;
 }
 
+.cardFront .content {
+  position: relative;
+  z-index: 2;
+}
+
 .cardBack {
   position: absolute;
   inset: 0;
@@ -331,5 +363,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .flipper { transition: none; }
+  .flipper {
+    transition: none;
+  }
 }

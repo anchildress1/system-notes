@@ -18,4 +18,5 @@ export interface FactHitRecord extends BaseHit {
   node_type?: string;
   signal: number;
   url?: string;
+  created_at?: string;
 }

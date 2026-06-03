@@ -37,6 +37,17 @@ describe('FactCard Component', () => {
     expect(screen.getByText('FACT · 07')).toBeInTheDocument();
   });
 
+  it('shows the created date as month + year when present, omits it otherwise', () => {
+    const { unmount } = render(
+      <FactCard hit={createMockHit({ created_at: '2026-05-24T21:42:51Z' })} />
+    );
+    expect(screen.getByText('May 2026')).toBeInTheDocument();
+    unmount();
+
+    render(<FactCard hit={createMockHit({ created_at: undefined })} />);
+    expect(screen.queryByText('May 2026')).not.toBeInTheDocument();
+  });
+
   it('renders category label', () => {
     render(<FactCard hit={createMockHit({ category: 'Philosophy' })} />);
     expect(screen.getByText('Philosophy')).toBeInTheDocument();

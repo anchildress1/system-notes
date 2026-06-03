@@ -11,6 +11,17 @@ import styles from './FactCard.module.css';
 
 export type { FactHitRecord } from '@/types/algolia';
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// ISO timestamp ("2026-05-24T21:42:51Z") -> "May 2026"; null if unparseable.
+function formatMonthYear(iso?: string): string | null {
+  if (!iso) return null;
+  const [year, month] = iso.slice(0, 10).split('-');
+  const monthIndex = Number(month) - 1;
+  if (!year || monthIndex < 0 || monthIndex > 11) return null;
+  return `${MONTHS[monthIndex]} ${year}`;
+}
+
 interface FactCardProps {
   hit: Hit<FactHitRecord>;
   sendEvent?: SendEventForHits;
@@ -73,6 +84,7 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
   // Top-of-card label: project name, falling back to the fact position
   // when a card has no project association.
   const topLabel = hit.projects?.[0] ?? `FACT · ${String(hit.__position ?? 0).padStart(2, '0')}`;
+  const createdLabel = formatMonthYear(hit.created_at);
 
   return (
     <article
@@ -84,18 +96,22 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
         className={`${styles.card} ${isFlipped ? styles.flipped : ''}`}
         data-state={isFlipped ? 'expanded' : 'collapsed'}
       >
-        <button
-          type="button"
-          className={styles.flipButton}
-          onClick={toggleFlip}
-          aria-expanded={isFlipped}
-          aria-label={`${hit.title}. Click to ${isFlipped ? 'collapse' : 'expand'}.`}
-        />
         <div className={styles.flipper}>
           <div className={styles.cardFront} aria-hidden={isFlipped}>
+            <button
+              type="button"
+              className={styles.flipButton}
+              onClick={toggleFlip}
+              aria-expanded={isFlipped}
+              aria-label={`${hit.title}. Click to ${isFlipped ? 'collapse' : 'expand'}.`}
+              tabIndex={isFlipped ? -1 : 0}
+            />
             <div className={styles.content}>
               <div className={styles.cardMetaRow}>
-                <span className={styles.factCounter}>{topLabel}</span>
+                <span className={styles.metaLeft}>
+                  <span className={styles.factCounter}>{topLabel}</span>
+                  {createdLabel && <span className={styles.cardDate}>{createdLabel}</span>}
+                </span>
                 <div className={styles.cardMetaRight}>
                   <span
                     className="card-header-badge"
