@@ -310,7 +310,12 @@
         "role": "Language"
       }
     ],
-    "blog_posts": [],
+    "blog_posts": [
+      {
+        "title": "I Let AI Write to My Database (With Guardrails)🔬",
+        "url": "https://dev.to/anchildress1/i-let-ai-write-to-my-database-with-guardrails-473o"
+      }
+    ],
     "project_type": "tool",
     "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/supascribe-notes-mcp",
