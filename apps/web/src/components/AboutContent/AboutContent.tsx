@@ -54,20 +54,7 @@ interface AboutContentProps {
 }
 
 export default function AboutContent({ data }: Readonly<AboutContentProps>) {
-  const {
-    heroImage,
-    sections,
-    name,
-    namePath,
-    role,
-    specialty,
-    pronounce,
-    recognition,
-    skills,
-    links,
-    stats,
-    lyric,
-  } = data;
+  const { heroImage, sections, role, specialty, recognition, skills, links, stats, lyric } = data;
 
   return (
     <div className={styles.human}>
@@ -90,13 +77,10 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
         </div>
 
         <div className={styles.identity}>
-          <span className={styles.namePath}>{namePath}</span>
-          <p className={styles.name}>{name}</p>
           <p className={styles.role}>
             {role}
             <span className={styles.specialty}> · {specialty}</span>
           </p>
-          <span className={styles.pronounce}>{pronounce}</span>
 
           <dl className={styles.stats}>
             {stats.map((stat) => (

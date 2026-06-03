@@ -12,11 +12,8 @@ vi.mock('next/image', () => ({
 
 const baseData: AboutData = {
   heroTitle: 'Designing for failures\nyou have not met yet',
-  name: 'Ashley Childress',
-  namePath: 'CWD · /sys/human',
   role: 'Senior Software Engineer',
   specialty: 'AI-augmented systems',
-  pronounce: 'she/her · senior software engineer',
   recognition: ['WeCoded 2026 winner', 'GitHub Copilot certified'],
   skills: ['AI Orchestration', 'TypeScript', 'Python'],
   links: [
@@ -68,9 +65,8 @@ describe('AboutContent', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'Theme Song' })).toBeInTheDocument();
   });
 
-  it('renders the identity block: name, pronounce, and stats', () => {
+  it('renders the identity stats', () => {
     render(<AboutContent data={baseData} />);
-    expect(screen.getByText('CWD · /sys/human')).toBeInTheDocument();
     expect(screen.getByText('Appalachia')).toBeInTheDocument();
     expect(screen.getByText('Sr SWE')).toBeInTheDocument();
   });
@@ -83,7 +79,7 @@ describe('AboutContent', () => {
 
   it('renders the recruiter strip: role, skills, recognition', () => {
     render(<AboutContent data={baseData} />);
-    expect(screen.getByText('Senior Software Engineer')).toBeInTheDocument();
+    expect(screen.getByText(/Senior Software Engineer/)).toBeInTheDocument();
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
     expect(screen.getByText('GitHub Copilot certified')).toBeInTheDocument();
   });

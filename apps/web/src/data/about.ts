@@ -32,11 +32,8 @@ export interface AboutData {
   heroTitle: string;
   heroAccentLead?: string;
   heroSubtitle?: string;
-  name: string;
-  namePath: string;
   role: string;
   specialty: string;
-  pronounce: string;
   recognition: string[];
   skills: string[];
   links: AboutLink[];
@@ -54,11 +51,8 @@ export interface AboutData {
 export const aboutData: AboutData = {
   heroAccentLead: 'Designing',
   heroTitle: "for the failures you haven't met yet",
-  name: 'Ashley Childress',
-  namePath: 'CWD · /sys/human · subject = ashley.childress',
   role: 'Senior Software Engineer',
   specialty: 'AI-augmented systems & orchestration',
-  pronounce: '/ ASH-lee CHIL-dres / · she/her',
   recognition: ['WeCoded 2026 winner', 'Earth Day 2026 winner', 'GitHub Copilot certified'],
   skills: [
     'AI Orchestration',
@@ -76,10 +70,10 @@ export const aboutData: AboutData = {
     { label: 'See the builds', href: '/projects' },
   ],
   stats: [
-    { label: 'role', value: 'Senior SWE' },
     { label: 'focus', value: 'AI Orchestration' },
-    { label: 'based', value: 'Atlanta, GA' },
+    { label: 'based', value: 'Waco, GA' },
     { label: 'origin', value: 'Appalachia' },
+    { label: 'mode', value: 'System-first' },
   ],
   lyric: {
     meta: 'THEME SONG · I Build Things',
