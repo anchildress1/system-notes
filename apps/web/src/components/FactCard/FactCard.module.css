@@ -37,7 +37,8 @@
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  overflow: hidden;
+  /* No overflow:hidden — it would flatten the preserve-3d flip in Firefox.
+     Faces clip themselves (see .cardFront / .cardBack). */
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -293,6 +294,8 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
+  border-radius: inherit;
+  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   text-align: left;
@@ -307,6 +310,7 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   z-index: 1;
+  border-radius: inherit;
   overflow: hidden;
   display: flex;
   flex-direction: column;

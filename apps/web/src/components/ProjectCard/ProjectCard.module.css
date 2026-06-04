@@ -31,7 +31,9 @@
   background: linear-gradient(180deg, rgba(29, 31, 40, 0.55), rgba(22, 24, 31, 0.55));
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  overflow: hidden;
+  /* No overflow:hidden here — it sits in the preserve-3d ancestry and
+     Firefox (per spec) flattens the 3D flip when an ancestor clips.
+     Each face clips itself instead (see .cardFront / .cardBack). */
   display: flex;
   flex-direction: column;
   transition:
@@ -66,6 +68,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -90,6 +94,8 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
+  border-radius: inherit;
+  overflow: hidden;
   transform: rotateY(180deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
