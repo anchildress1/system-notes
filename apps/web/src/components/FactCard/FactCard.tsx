@@ -1,6 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from 'react';
 import { Highlight } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
 import type { SendEventForHits, FactHitRecord } from '@/types/algolia';
@@ -52,6 +59,16 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
       return next;
     });
   }, [sendEvent, hit]);
+
+  const closeFromBackKeyboard = useCallback(
+    (e: ReactKeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleFlip();
+      }
+    },
+    [toggleFlip]
+  );
 
   useEffect(() => {
     if (!isFlipped) return;
@@ -164,7 +181,15 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
             </div>
           </div>
 
-          <div className={styles.cardBack} aria-hidden={!isFlipped}>
+          <div
+            className={styles.cardBack}
+            aria-hidden={!isFlipped}
+            role={isFlipped ? 'button' : undefined}
+            tabIndex={isFlipped ? 0 : -1}
+            aria-label={isFlipped ? `${hit.title}. Click to collapse.` : undefined}
+            onClick={isFlipped ? toggleFlip : undefined}
+            onKeyDown={isFlipped ? closeFromBackKeyboard : undefined}
+          >
             <div className={styles.backContent}>
               <h3 className={styles.backTitle}>{hit.title}</h3>
               <p className={styles.backBody}>{backBody}</p>

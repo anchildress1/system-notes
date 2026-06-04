@@ -118,6 +118,10 @@ test.describe('Search Page', () => {
     await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
 
     await expect(state).toHaveAttribute('data-state', 'expanded');
+
+    await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
+
+    await expect(state).toHaveAttribute('data-state', 'collapsed');
   });
 
   test('updates the q route state when typing', async ({ page }) => {

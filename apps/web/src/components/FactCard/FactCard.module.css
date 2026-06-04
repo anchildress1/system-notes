@@ -312,6 +312,11 @@
   flex-direction: column;
 }
 
+.cardBack:focus-visible {
+  outline: 2px solid var(--card-accent);
+  outline-offset: -2px;
+}
+
 .backContent {
   flex: 1;
   overflow-y: auto;

@@ -265,6 +265,36 @@ describe('FactCard Component', () => {
     expect(cardButton).toHaveAttribute('aria-expanded', 'false');
   });
 
+  it('closes card from a back-face click', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} />);
+
+    const frontButton = screen.getByRole('button', { name: /Click to expand/i });
+    await user.click(frontButton);
+    expect(frontButton).toHaveAttribute('aria-expanded', 'true');
+
+    await user.click(screen.getByRole('button', { name: /Click to collapse/i }));
+
+    expect(frontButton).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it.each([
+    { key: '{Enter}', label: 'Enter' },
+    { key: ' ', label: 'Space' },
+  ])('closes card from the back face with $label', async ({ key }) => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} />);
+
+    const frontButton = screen.getByRole('button', { name: /Click to expand/i });
+    await user.click(frontButton);
+    const backButton = screen.getByRole('button', { name: /Click to collapse/i });
+    backButton.focus();
+
+    await user.keyboard(key);
+
+    expect(frontButton).toHaveAttribute('aria-expanded', 'false');
+  });
+
   it('closes flipped card via Escape key', async () => {
     const user = userEvent.setup();
     render(<FactCard hit={createMockHit()} />);
