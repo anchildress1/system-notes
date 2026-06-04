@@ -32,25 +32,38 @@
   --card-accent-soft: rgba(232, 154, 106, 0.15);
 }
 
+/* Transparent flip wrapper — the frame (surface, border, rounding, clip,
+   accent seam) lives on each face so the 3D flip survives Firefox and there's
+   a single rounded edge, not the card's border fighting a second face clip.
+   radius stays here only so the hover box-shadow is rounded. */
 .card {
   position: relative;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  /* No overflow:hidden — it would flatten the preserve-3d flip in Firefox.
-     Faces clip themselves (see .cardFront / .cardBack). */
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 200px;
   cursor: pointer;
   transition:
-    border-color var(--transition-slow),
     box-shadow var(--transition-slow),
     transform var(--transition-base);
 }
 
-.card::before {
+.card:hover {
+  box-shadow:
+    0 0 calc(12px * var(--glow)) var(--card-accent-soft),
+    var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+.card:hover .cardFront,
+.card:hover .cardBack {
+  border-color: color-mix(in srgb, var(--card-accent) 45%, var(--border-strong));
+}
+
+/* Accent seam across the top of each face, clipped to the rounded corners. */
+.cardFront::before,
+.cardBack::before {
   content: '';
   position: absolute;
   top: 0;
@@ -58,17 +71,8 @@
   right: 0;
   height: 2px;
   background: linear-gradient(90deg, var(--card-accent), transparent 75%);
-  opacity: 1;
   z-index: 3;
   pointer-events: none;
-}
-
-.card:hover {
-  border-color: color-mix(in srgb, var(--card-accent) 45%, var(--border-strong));
-  box-shadow:
-    0 0 calc(12px * var(--glow)) var(--card-accent-soft),
-    var(--shadow-card);
-  transform: translateY(-2px);
 }
 
 .flipButton {
@@ -98,15 +102,15 @@
   -webkit-line-clamp: 5;
 }
 
-.cardLink[data-size='two-thirds'] .card {
+.cardLink[data-size='two-thirds'] .cardFront,
+.cardLink[data-size='two-thirds'] .cardBack {
   background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(8, 9, 12, 0.6) 100%);
   border-color: var(--card-accent-soft);
 }
 
-.cardLink[data-size='two-thirds'] .card::before {
-  height: 2px;
+.cardLink[data-size='two-thirds'] .cardFront::before,
+.cardLink[data-size='two-thirds'] .cardBack::before {
   background: linear-gradient(90deg, var(--card-accent), var(--accent-violet), var(--accent-teal));
-  opacity: 1;
 }
 
 .cardLink[data-size='two-thirds'] .description {
@@ -294,6 +298,8 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
   border-radius: inherit;
   overflow: hidden;
   backface-visibility: hidden;
@@ -301,6 +307,7 @@
   text-align: left;
   width: 100%;
   height: 100%;
+  transition: border-color var(--transition-slow);
 }
 
 .cardBack {
@@ -310,10 +317,13 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   z-index: 1;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
   border-radius: inherit;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: border-color var(--transition-slow);
 }
 
 .cardBack:focus-visible {

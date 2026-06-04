@@ -24,28 +24,30 @@
   z-index: 10;
 }
 
+/* Transparent flip wrapper. The visible frame (border, surface, rounding,
+   clip) lives on each face so the 3D flip survives Firefox (no overflow in
+   the preserve-3d ancestry) and there's a single set of rounded corners —
+   not the card's border fighting a second clip on the faces. radius stays
+   here only so the hover box-shadow is rounded. */
 .card {
   position: relative;
   height: 100%;
   min-height: 360px;
-  background: linear-gradient(180deg, rgba(29, 31, 40, 0.55), rgba(22, 24, 31, 0.55));
-  border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  /* No overflow:hidden here — it sits in the preserve-3d ancestry and
-     Firefox (per spec) flattens the 3D flip when an ancestor clips.
-     Each face clips itself instead (see .cardFront / .cardBack). */
   display: flex;
   flex-direction: column;
-  transition:
-    border-color var(--transition-base),
-    box-shadow var(--transition-base);
+  transition: box-shadow var(--transition-base);
 }
 
 .card:hover {
-  border-color: color-mix(in srgb, var(--accent-violet) 40%, var(--border-strong));
   box-shadow:
     0 0 calc(44px * var(--glow)) rgba(127, 90, 240, 0.18),
     var(--shadow-card);
+}
+
+.card:hover .cardFront,
+.card:hover .cardBack {
+  border-color: color-mix(in srgb, var(--accent-violet) 40%, var(--border-strong));
 }
 
 .flipper {
@@ -68,10 +70,13 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: linear-gradient(180deg, rgba(29, 31, 40, 0.55), rgba(22, 24, 31, 0.55));
+  border: 1px solid var(--border);
   border-radius: inherit;
   overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transition: border-color var(--transition-base);
 }
 
 /* Brand accent bar — the same violet→teal seam that crowns the back face,
@@ -94,11 +99,13 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--border);
   border-radius: inherit;
   overflow: hidden;
   transform: rotateY(180deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transition: border-color var(--transition-base);
   background:
     radial-gradient(120% 80% at 0% 0%, rgba(127, 90, 240, 0.14), transparent 55%),
     linear-gradient(180deg, rgba(34, 36, 48, 0.97), rgba(18, 20, 27, 0.98));
