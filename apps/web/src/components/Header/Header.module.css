@@ -88,19 +88,25 @@
   text-transform: uppercase;
   padding: 8px 14px;
   border-radius: var(--r-md);
+  /* Resting affordance: a visible chip (faint fill + border) so the items
+     read as tappable nav, not plain label text. */
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.025);
   color: var(--text-secondary);
   text-decoration: none;
   display: flex;
   align-items: center;
   transition:
     color var(--transition-base),
+    border-color var(--transition-base),
     background var(--transition-base);
   white-space: nowrap;
 }
 
 .navLink:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--accent-violet);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* Active state: neutral text on subtle lift + a small violet indicator dot.
