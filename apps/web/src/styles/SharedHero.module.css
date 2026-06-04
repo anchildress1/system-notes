@@ -34,7 +34,10 @@
   align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
-  max-width: 800px;
+  /* Wider title column so longer titles (e.g. Choices) span the band like
+     the shorter ones do, instead of wrapping into a narrow stack. Stays
+     under the subtitle's 58rem so the subtitle still reads wider. */
+  max-width: 56rem;
   position: relative;
 }
 
