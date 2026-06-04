@@ -33,11 +33,12 @@ export default function Header() {
         <Link href="/" className={styles.brand} aria-label="Ashley Childress, home">
           <div className={styles.brandMark} aria-hidden="true">
             <Image
-              src="/favicon.png"
+              src="/system-notes-icon-v2.svg"
               alt=""
               width={28}
               height={28}
               className={styles.brandMarkImage}
+              unoptimized
               priority
             />
           </div>

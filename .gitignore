@@ -48,6 +48,10 @@ playwright-report/
 .playwright-mcp/
 *.png
 !apps/web/public/icon-*.png
+!apps/web/public/favicon.png
+!apps/web/public/apple-touch-icon.png
+!apps/web/src/app/icon.png
+!apps/web/src/app/apple-icon.png
 network-requests.txt
 # Python
 __pycache__/
