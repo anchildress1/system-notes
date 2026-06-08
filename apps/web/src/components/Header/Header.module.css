@@ -242,7 +242,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .row {
     padding: 10px 16px;
   }
@@ -255,9 +255,7 @@
     padding: 8px 10px;
     font-size: 11px;
   }
-}
 
-@media (max-width: 520px) {
   .brandSub {
     display: none;
   }

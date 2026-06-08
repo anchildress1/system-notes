@@ -10,6 +10,6 @@
 
 .loadingContent {
   text-align: center;
-  color: hsl(var(--color-text-secondary));
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }

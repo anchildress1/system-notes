@@ -14,8 +14,6 @@
   will-change: transform;
 }
 
-/* One soft ambient wash, far behind everything. Neutral — no hue. The
-   only color on the page is card stripes + the hero word. */
 .blob1 {
   width: 70vw;
   height: 70vw;
@@ -26,7 +24,16 @@
   animation: drift1 40s ease-in-out infinite;
 }
 
-.blob2,
+.blob2 {
+  width: 52vw;
+  height: 52vw;
+  right: -18vw;
+  bottom: -20vw;
+  background: var(--accent-violet);
+  opacity: 0.03;
+  animation: drift2 52s ease-in-out infinite;
+}
+
 .blob3 {
   display: none;
 }
@@ -45,7 +52,8 @@
 }
 
 @keyframes drift1 {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0);
   }
   50% {
@@ -54,7 +62,8 @@
 }
 
 @keyframes drift2 {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0);
   }
   50% {
@@ -63,7 +72,8 @@
 }
 
 @keyframes drift3 {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0);
   }
   50% {

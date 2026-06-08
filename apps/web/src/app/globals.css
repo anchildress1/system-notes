@@ -9,7 +9,7 @@
   /* ── v2.0.26 Text Scale ── */
   --text-primary: #ecedf0;
   --text-secondary: #b0b3bf;
-  --text-muted: #6b6f7d;
+  --text-muted: #7c8190;
   --text-dim: #44485a;
 
   /* ── v2.0.26 Accents ── */
@@ -20,6 +20,7 @@
   --accent-violet: #b56bff;
   --accent-violet-soft: rgba(181, 107, 255, 0.15);
   --accent-gold: #e89a6a;
+  --accent-gold-soft: rgba(232, 154, 106, 0.15);
 
   --accent: var(--accent-violet);
   --accent-soft: var(--accent-violet-soft);
@@ -49,25 +50,11 @@
   --border: rgba(255, 255, 255, 0.06);
   --border-strong: rgba(255, 255, 255, 0.12);
   --glass-bg: rgba(22, 24, 31, 0.6);
+  --surface-glass: linear-gradient(180deg, rgba(29, 31, 40, 0.62), rgba(22, 24, 31, 0.58));
   --glass-blur: blur(14px);
 
   /* Glow multiplier (1 = full) */
   --glow: 1;
-
-  /* ── Legacy HSL aliases — pages using hsl(var(--color-*)) ── */
-  --color-bg-base: 232 16% 7%;
-  --color-bg-surface: 232 16% 11%;
-  --color-bg-elevated: 232 14% 14%;
-  --color-text-primary: 225 8% 92%;
-  --color-text-secondary: 225 8% 72%;
-  --color-text-muted: 228 7% 45%;
-  --color-border: 0 0% 100% / 0.06;
-  --color-border-subtle: 0 0% 100% / 0.04;
-  --color-border-hover: 273 100% 71%;
-  --color-accent-purple: 273 100% 71%;
-  --color-accent-pink: 336 83% 60%;
-  --color-accent-teal: 177 68% 51%;
-  --color-accent-gold: 23 70% 66%;
 
   /* ── Algolia primary color → violet ── */
   --ais-primary-color-rgb: 181, 107, 255;
@@ -75,8 +62,8 @@
 
   /* ── Typography ── */
   --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  --font-body: var(--font-mono);
 
   /* ── Motion ── */
   --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1);
@@ -92,6 +79,7 @@
   --space-md: 3rem;
   --space-lg: 6rem;
   --space-xl: 12rem;
+  --page-gutter: max(2rem, calc((100% - 1440px) / 2 + 2rem));
 
   /* ── Border Radius ── */
   --r-sm: 4px;
@@ -235,7 +223,6 @@ body {
   font-weight: 500;
   text-decoration: none;
   line-height: 1;
-  flex-direction: row-reverse;
   transition: color var(--transition-base);
   font-family: var(--font-mono);
   letter-spacing: 0.04em;

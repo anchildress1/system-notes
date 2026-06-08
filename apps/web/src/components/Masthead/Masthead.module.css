@@ -12,6 +12,8 @@
   height: 38px;
   display: flex;
   align-items: center;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
 }
 
 .tickerTrack {
@@ -27,15 +29,21 @@
   gap: 18px;
   padding: 0 24px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 2.5px;
   color: var(--text-secondary);
   text-transform: uppercase;
 }
 
-.accentPink   { color: var(--accent-pink); }
-.accentViolet { color: var(--accent-violet); }
-.accentTeal   { color: var(--accent-teal); }
+.accentPink {
+  color: var(--accent-pink);
+}
+.accentViolet {
+  color: var(--accent-violet);
+}
+.accentTeal {
+  color: var(--accent-teal);
+}
 
 .tickerSep {
   width: 4px;
@@ -47,8 +55,12 @@
 }
 
 @keyframes tick {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

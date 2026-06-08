@@ -1,7 +1,7 @@
 .container {
   position: relative;
   z-index: 5;
-  padding: 2.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 4rem;
+  padding: 2.5rem var(--page-gutter) 4rem;
 }
 
 /* ── Retrieve bar ── */
@@ -284,18 +284,36 @@
   gap: 16px;
 }
 
-/* Span lives in inline `style.gridColumn` on each li (set in ResultsGrid).
-   The 6-col cycle holds down to tablet width so the size variation
-   survives; only mobile flattens to a single column. */
 .hitsItem {
   display: flex;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 1024px) {
+  .hitsList {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .hitsItem {
+    grid-column: span 1 !important;
+  }
+
+  .hitsItem[data-size='half'] {
+    grid-column: span 2 !important;
+  }
+
+  .hitsItem[data-size='two-thirds'] {
+    grid-column: span 3 !important;
+  }
+}
+
+@media (max-width: 640px) {
   .hitsList {
     grid-template-columns: 1fr;
   }
-  .hitsItem {
+
+  .hitsItem,
+  .hitsItem[data-size='half'],
+  .hitsItem[data-size='two-thirds'] {
     grid-column: span 1 !important;
   }
 }
@@ -424,6 +442,10 @@
 }
 
 @media (max-width: 640px) {
+  .container {
+    padding: 2rem 1.5rem 3rem;
+  }
+
   .retrieveMeta {
     display: none;
   }

@@ -10,9 +10,14 @@
   height: 44px;
   padding: 0;
   border-radius: var(--radius-round);
-  background: hsl(var(--color-bg-elevated));
-  color: hsl(var(--color-text-muted));
-  transition: all var(--transition-base);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    color var(--transition-base),
+    transform var(--transition-base);
   z-index: 2;
   border: 2px solid transparent;
   will-change: transform;
@@ -21,11 +26,11 @@
 }
 
 .sourceLink:hover {
-  background: hsl(var(--color-bg-surface));
+  background: var(--bg-surface);
   border-color: var(--text-muted);
   color: var(--text-primary);
-  transform: rotate(15deg) scale(1.1);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px var(--accent-violet-soft);
 }
 
 .sourceLink:focus-visible {

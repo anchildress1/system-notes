@@ -36,12 +36,16 @@
   border-radius: var(--r-lg);
   display: flex;
   flex-direction: column;
+  /* Propagate the 3D context from .cardLink's perspective down to .flipper.
+     A flat intermediate wrapper would flatten the faces and defeat
+     backface-visibility, leaking the mirrored back through the glass front. */
+  transform-style: preserve-3d;
   transition: box-shadow var(--transition-base);
 }
 
 .card:hover {
   box-shadow:
-    0 0 calc(44px * var(--glow)) rgba(127, 90, 240, 0.18),
+    0 0 calc(44px * var(--glow)) color-mix(in srgb, var(--accent-violet) 18%, transparent),
     var(--shadow-card);
 }
 
@@ -56,11 +60,27 @@
   height: 100%;
   flex: 1;
   transform-style: preserve-3d;
+  /* Perspective must sit on the faces' direct parent: WebKit only culls a
+     backface that was projected with perspective, and `perspective` does not
+     inherit from .cardLink down to the faces. */
+  perspective: 1400px;
   transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .flipped .flipper {
   transform: rotateY(180deg);
+}
+
+/* WebKit ignores backface-visibility for these translucent faces, so the back
+   bleeds through the glass front. Swap visibility at the flip midpoint
+   (half of .flipper's 0.55s) so only the forward-facing side ever paints.
+   backface-visibility stays as progressive enhancement for engines that honor it. */
+.flipped .cardFront {
+  visibility: hidden;
+}
+
+.flipped .cardBack {
+  visibility: visible;
 }
 
 /* Front is the height dictator — in flow it drives the card's intrinsic size. */
@@ -70,13 +90,14 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: linear-gradient(180deg, rgba(29, 31, 40, 0.55), rgba(22, 24, 31, 0.55));
+  background: var(--surface-glass);
   border: 1px solid var(--border);
   border-radius: inherit;
-  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transition: border-color var(--transition-base);
+  transition:
+    border-color var(--transition-base),
+    visibility 0s linear 0.275s;
 }
 
 /* Brand accent bar — the same violet→teal seam that crowns the back face,
@@ -89,6 +110,8 @@
   right: 0;
   height: 2px;
   z-index: 5;
+  border-top-left-radius: var(--r-lg);
+  border-top-right-radius: var(--r-lg);
   background: linear-gradient(90deg, var(--accent-violet), var(--accent-teal) 65%, transparent);
   pointer-events: none;
 }
@@ -101,13 +124,15 @@
   flex-direction: column;
   border: 1px solid var(--border);
   border-radius: inherit;
-  overflow: hidden;
   transform: rotateY(180deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transition: border-color var(--transition-base);
+  visibility: hidden;
+  transition:
+    border-color var(--transition-base),
+    visibility 0s linear 0.275s;
   background:
-    radial-gradient(120% 80% at 0% 0%, rgba(127, 90, 240, 0.14), transparent 55%),
+    radial-gradient(120% 80% at 0% 0%, var(--accent-violet-soft), transparent 55%),
     linear-gradient(180deg, rgba(34, 36, 48, 0.97), rgba(18, 20, 27, 0.98));
 }
 
@@ -120,6 +145,8 @@
   right: 0;
   height: 2px;
   z-index: 3;
+  border-top-left-radius: var(--r-lg);
+  border-top-right-radius: var(--r-lg);
   background: linear-gradient(90deg, var(--accent-violet), var(--accent-teal) 65%, transparent);
 }
 
@@ -130,6 +157,7 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  border-radius: inherit;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
@@ -154,7 +182,7 @@
 }
 
 .flipButton:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--accent-violet);
   outline-offset: -2px;
 }
 
@@ -164,6 +192,8 @@
   aspect-ratio: 2 / 1;
   position: relative;
   overflow: hidden;
+  border-top-left-radius: var(--r-lg);
+  border-top-right-radius: var(--r-lg);
   background: var(--bg-deep);
   flex-shrink: 0;
   /* Trap the image's internal z-index so the flip-button overlay stays on
@@ -452,7 +482,7 @@
   padding: 3px 9px;
   border: 1px solid var(--accent-violet-soft);
   border-radius: var(--r-sm);
-  background: rgba(127, 90, 240, 0.1);
+  background: color-mix(in srgb, var(--accent-violet) 10%, transparent);
   font-family: var(--font-mono);
   font-size: 0.58rem;
   font-weight: 600;
@@ -482,14 +512,14 @@
 }
 
 .backClose:hover {
-  background: rgba(127, 90, 240, 0.16);
+  background: color-mix(in srgb, var(--accent-violet) 16%, transparent);
   border-color: var(--accent-violet);
   color: var(--text-primary);
   transform: rotate(90deg);
 }
 
 .backClose:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--accent-violet);
   outline-offset: 2px;
 }
 
@@ -628,7 +658,7 @@
   margin: 0 20px 18px;
   padding: 0.65rem 0.85rem;
   flex-shrink: 0;
-  background: rgba(127, 90, 240, 0.1);
+  background: color-mix(in srgb, var(--accent-violet) 10%, transparent);
   border: 1px solid var(--accent-violet-soft);
   border-radius: var(--r-md);
   font-family: var(--font-mono);
@@ -644,9 +674,9 @@
 }
 
 .backRepo:hover {
-  background: rgba(127, 90, 240, 0.18);
+  background: color-mix(in srgb, var(--accent-violet) 18%, transparent);
   border-color: var(--accent-violet);
-  box-shadow: 0 0 calc(24px * var(--glow)) rgba(127, 90, 240, 0.25);
+  box-shadow: 0 0 calc(24px * var(--glow)) color-mix(in srgb, var(--accent-violet) 25%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

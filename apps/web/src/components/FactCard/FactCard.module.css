@@ -29,7 +29,7 @@
 
 .cardLink[data-accent='gold'] {
   --card-accent: var(--accent-gold);
-  --card-accent-soft: rgba(232, 154, 106, 0.15);
+  --card-accent-soft: var(--accent-gold-soft);
 }
 
 /* Transparent flip wrapper — the frame (surface, border, rounding, clip,
@@ -44,6 +44,10 @@
   height: 100%;
   min-height: 200px;
   cursor: pointer;
+  /* Propagate the 3D context from .cardLink's perspective down to .flipper.
+     A flat intermediate wrapper would flatten the faces and defeat
+     backface-visibility, leaking the mirrored back through the glass front. */
+  transform-style: preserve-3d;
   transition:
     box-shadow var(--transition-slow),
     transform var(--transition-base);
@@ -70,6 +74,8 @@
   left: 0;
   right: 0;
   height: 2px;
+  border-top-left-radius: var(--r-lg);
+  border-top-right-radius: var(--r-lg);
   background: linear-gradient(90deg, var(--card-accent), transparent 75%);
   z-index: 3;
   pointer-events: none;
@@ -104,7 +110,6 @@
 
 .cardLink[data-size='two-thirds'] .cardFront,
 .cardLink[data-size='two-thirds'] .cardBack {
-  background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(8, 9, 12, 0.6) 100%);
   border-color: var(--card-accent-soft);
 }
 
@@ -122,6 +127,8 @@
   aspect-ratio: 2 / 1;
   position: relative;
   overflow: hidden;
+  border-top-left-radius: var(--r-lg);
+  border-top-right-radius: var(--r-lg);
 }
 
 .imageWrapper {
@@ -284,11 +291,27 @@
   height: 100%;
   flex: 1;
   transform-style: preserve-3d;
+  /* Perspective must sit on the faces' direct parent: WebKit only culls a
+     backface that was projected with perspective, and `perspective` does not
+     inherit from .cardLink down to the faces. */
+  perspective: 1400px;
   transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .flipped .flipper {
   transform: rotateY(180deg);
+}
+
+/* WebKit ignores backface-visibility for these translucent faces, so the back
+   bleeds through the glass front. Swap visibility at the flip midpoint
+   (half of .flipper's 0.55s) so only the forward-facing side ever paints.
+   backface-visibility stays as progressive enhancement for engines that honor it. */
+.flipped .cardFront {
+  visibility: hidden;
+}
+
+.flipped .cardBack {
+  visibility: visible;
 }
 
 /* Front is the height dictator — in flow, drives the card's intrinsic size.
@@ -298,16 +321,17 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  background: var(--bg-surface);
+  background: var(--surface-glass);
   border: 1px solid var(--border);
   border-radius: inherit;
-  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   text-align: left;
   width: 100%;
   height: 100%;
-  transition: border-color var(--transition-slow);
+  transition:
+    border-color var(--transition-slow),
+    visibility 0s linear 0.275s;
 }
 
 .cardBack {
@@ -316,14 +340,16 @@
   transform: rotateY(180deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  visibility: hidden;
   z-index: 1;
-  background: var(--bg-surface);
+  background: var(--surface-glass);
   border: 1px solid var(--border);
   border-radius: inherit;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: border-color var(--transition-slow);
+  transition:
+    border-color var(--transition-slow),
+    visibility 0s linear 0.275s;
 }
 
 .cardBack:focus-visible {

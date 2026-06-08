@@ -6,9 +6,7 @@
 }
 
 .inner {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 3rem 2rem 1.5rem;
+  padding: 3rem var(--page-gutter) 1.5rem;
 }
 
 .top {
@@ -19,7 +17,8 @@
   border-bottom: 1px solid var(--border);
 }
 
-.col {}
+.col {
+}
 
 .brand {
   display: flex;
@@ -108,7 +107,7 @@
   justify-content: space-between;
   padding-top: 1.25rem;
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   color: var(--text-muted);
 }
@@ -139,7 +138,11 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
+  .inner {
+    padding: 2rem 1.5rem 1.5rem;
+  }
+
   .top {
     grid-template-columns: 1fr;
     gap: 2rem;

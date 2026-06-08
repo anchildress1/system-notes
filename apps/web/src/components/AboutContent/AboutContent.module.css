@@ -1,8 +1,7 @@
 .human {
   position: relative;
   z-index: 5;
-  /* Match the hero's gutter so the content lines up under the hero text. */
-  padding: 3.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 4rem;
+  padding: 3.5rem var(--page-gutter) 4rem;
 }
 
 /* ── Highlights: one cohesive box — stats, expertise, recognition, links ── */
@@ -167,13 +166,13 @@
 }
 
 .link:hover {
-  background: rgba(127, 90, 240, 0.14);
+  background: var(--accent-violet-soft);
   border-color: var(--accent-violet);
-  box-shadow: 0 0 calc(20px * var(--glow)) rgba(127, 90, 240, 0.2);
+  box-shadow: 0 0 calc(20px * var(--glow)) color-mix(in srgb, var(--accent-violet) 20%, transparent);
 }
 
 .link:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--accent-violet);
   outline-offset: 2px;
 }
 

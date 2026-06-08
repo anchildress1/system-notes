@@ -1,6 +1,6 @@
 .hero {
   position: relative;
-  padding: 2.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 2.25rem;
+  padding: 2.5rem var(--page-gutter) 2.25rem;
   border-bottom: 1px solid var(--border);
   overflow: hidden;
   user-select: none;
@@ -81,7 +81,7 @@
   text-wrap: balance;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .hero {
     padding: 3rem 1.5rem 2rem;
   }

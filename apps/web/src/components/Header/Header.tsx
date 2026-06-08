@@ -44,7 +44,9 @@ export default function Header() {
           </div>
           <div className={styles.brandText}>
             <span className={styles.brandTitle}>Ashley Childress</span>
-            <span className={styles.brandSub}>SYS_NOTES · v2.0.26</span>
+            <span className={styles.brandSub} aria-hidden="true">
+              SYS_NOTES · v2.0.26
+            </span>
           </div>
         </Link>
 
