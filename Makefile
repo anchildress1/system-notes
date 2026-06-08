@@ -93,12 +93,11 @@ test-e2e:
 	CI=true npm exec playwright test
 
 # Run Performance tests
+# No Algolia credentials: the home page renders its real credential-less state
+# (search unavailable) so Lighthouse audits a deterministic page with zero
+# network calls and no console errors. Real search is verified via E2E.
 test-perf:
 	@echo "🚀 Running Performance tests..."
-	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
-	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
-	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
-	NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=test_ai_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
 	npm run test:perf -w apps/web
 

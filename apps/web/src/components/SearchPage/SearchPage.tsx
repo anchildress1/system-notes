@@ -42,13 +42,28 @@ const clientOptions = isDev
 
 const searchClient = hasCredentials ? algoliasearch(appId, searchKey, clientOptions) : null;
 
-// Same userToken for search + Insights so queryID correlates to click events.
-aa('setUserToken', getChatSessionId());
+// search-insights throws if any method runs before `init`. The InstantSearch
+// middleware owns that init (deriving appId/apiKey from the search client), so
+// the userToken rides along via insightsInitParams instead of a pre-init
+// aa('setUserToken') call. With no client there is nothing to init against, so
+// Insights stays disabled.
+const insightsEnabled = hasCredentials;
 
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
 
-  if (!hasCredentials || !searchClient) {
+  const insights = useMemo(
+    () =>
+      insightsEnabled
+        ? {
+            insightsClient: aa,
+            insightsInitParams: { userToken: getChatSessionId() },
+          }
+        : false,
+    []
+  );
+
+  if (!searchClient) {
     return (
       <div className={styles.container}>
         <div className={styles.errorState}>
@@ -65,7 +80,7 @@ export default function SearchPage() {
       <InstantSearch
         searchClient={searchClient}
         indexName={indexName}
-        insights={{ insightsClient: aa }}
+        insights={insights}
         routing={routing}
         future={{ preserveSharedStateOnUnmount: true }}
       >
@@ -410,11 +425,11 @@ function AlgoliaAttribution() {
       className="algolia-attribution"
       aria-label="Powered by Algolia"
     >
+      <span className="algolia-prefix">Powered by</span>
       <span className="algolia-hoverable">
         <SiAlgolia aria-hidden="true" className="algolia-icon" />
         <span className="algolia-name">Algolia</span>
       </span>
-      <span className="algolia-prefix">Powered by</span>
     </a>
   );
 }
