@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Instrument_Serif, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
+import { JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 
 const spaceGrotesk = Space_Grotesk({
@@ -9,16 +9,6 @@ const spaceGrotesk = Space_Grotesk({
   display: 'swap',
   preload: true,
   fallback: ['system-ui', 'sans-serif'],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: '--font-serif',
-  subsets: ['latin'],
-  weight: '400',
-  style: ['normal', 'italic'],
-  display: 'swap',
-  preload: true,
-  fallback: ['Georgia', 'Times New Roman', 'serif'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -149,7 +139,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${spaceGrotesk.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
         suppressHydrationWarning
       >
         <Nebula />
