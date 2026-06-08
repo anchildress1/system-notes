@@ -1,6 +1,7 @@
 'use client';
 
 import { Component, ErrorInfo, ReactNode } from 'react';
+import styles from './ErrorBoundary.module.css';
 
 interface Props {
   children?: ReactNode;
@@ -28,27 +29,9 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div
-            role="alert"
-            aria-live="assertive"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minHeight: '200px',
-              padding: '2rem',
-              textAlign: 'center',
-              color: 'hsl(var(--color-text-primary))',
-              fontFamily: 'var(--font-sans)',
-            }}
-          >
-            <p style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-              Something went wrong
-            </p>
-            <p style={{ fontSize: '0.875rem', color: 'hsl(var(--color-text-secondary))' }}>
-              Please try refreshing the page
-            </p>
+          <div role="alert" aria-live="assertive" className={styles.fallback}>
+            <p className={styles.title}>Something went wrong</p>
+            <p className={styles.message}>Please try refreshing the page</p>
           </div>
         )
       );
