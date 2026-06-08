@@ -96,7 +96,9 @@ test.describe('Search Page', () => {
 
     await expect(page.getByRole('searchbox', { name: 'Search the index' })).toBeVisible();
     await expect(
-      page.getByRole('region', { name: 'Search results' }).getByText('Test Hit Title').first()
+      page
+        .getByRole('region', { name: 'Search results' })
+        .getByRole('button', { name: 'Test Hit Title. Click to expand.' })
     ).toBeVisible();
     await expect(page.getByLabel('View source for Test Hit Title')).toBeVisible();
     await expect(page.getByText('1 entries · sorted by signal')).toBeVisible();
