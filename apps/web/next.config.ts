@@ -57,12 +57,14 @@ const nextConfig: NextConfig = {
       ...(process.env.NODE_ENV === 'production'
         ? [
             {
-              // public/ assets — no content hash, so no immutable.
+              // public/ assets have no content hash, so they can go stale after a
+              // deploy that reuses a filename. Cache briefly and force revalidation
+              // instead of pinning a year; only /_next/static (hashed) gets immutable.
               source: String.raw`/(.*)\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif)`,
               headers: [
                 {
                   key: 'Cache-Control',
-                  value: 'public, max-age=31536000',
+                  value: 'public, max-age=3600, must-revalidate',
                 },
               ],
             },
