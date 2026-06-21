@@ -127,7 +127,7 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
         <div className={styles.flipper}>
           <div
             className={`${styles.cardFront} ${cardStyles.face} ${
-              variant.size === 'two-thirds' ? cardStyles.winnerSeam : cardStyles.seam
+              variant.size === 'two-thirds' ? cardStyles.winnerBanner : cardStyles.seam
             }`}
             aria-hidden={isFlipped}
           >

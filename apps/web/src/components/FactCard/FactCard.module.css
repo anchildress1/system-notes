@@ -81,25 +81,12 @@
   -webkit-line-clamp: 5;
 }
 
-/* Featured (two-thirds) back face wears the flowing perimeter seam-border too
-   (the front gets it via the shared .winnerSeam class). Border steps aside so
-   the gradient ring is the visible edge. */
-.cardLink[data-size='two-thirds'] .cardBack {
-  border-color: transparent;
-}
-
+/* Featured (two-thirds) back face wears the same multicolor top banner as the
+   front (the front gets it via the shared .winnerBanner class). */
 .cardLink[data-size='two-thirds'] .cardBack::before {
-  inset: 0;
-  height: auto;
-  border-radius: inherit;
-  padding: 1.5px;
+  height: 3px;
   background: var(--gradient-winner);
   background-size: 200% 100%;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
   animation: gradientShimmer 9s linear infinite;
 }
 
@@ -279,7 +266,7 @@
 /* Front is the height dictator — in flow, drives the card's intrinsic size.
    The .card itself owns the bg/border; faces are transparent content layers. */
 /* Surface + accent/winner seam come from the shared card.module.css (.face +
-   .seam/.winnerSeam) applied in JSX. */
+   .seam/.winnerBanner) applied in JSX. */
 .cardFront {
   position: relative;
   z-index: 2;

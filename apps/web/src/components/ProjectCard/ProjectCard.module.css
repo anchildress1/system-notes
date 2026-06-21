@@ -65,7 +65,7 @@
 
 /* Front is the height dictator — in flow it drives the card's intrinsic size.
    Surface + accent/winner seam come from the shared card.module.css (.face +
-   .seam/.winnerSeam) applied in JSX. */
+   .seam/.winnerBanner) applied in JSX. */
 .cardFront {
   position: relative;
   z-index: 2;

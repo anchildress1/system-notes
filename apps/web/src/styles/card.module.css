@@ -43,28 +43,8 @@
   pointer-events: none;
 }
 
-/* Featured perimeter seam-border: a flowing 5-stop chromatic ring drawn only in
-   a 1.5px border via a mask, animated with the shared gradientShimmer. */
-.winnerSeam::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  border-radius: inherit;
-  padding: 1.5px;
-  background: var(--gradient-winner);
-  background-size: 200% 100%;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: gradientShimmer 9s linear infinite;
-  pointer-events: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .winnerSeam::before {
+  .winnerBanner::before {
     animation: none;
   }
 }
