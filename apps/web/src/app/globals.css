@@ -1,39 +1,40 @@
 :root {
-  /* ── v2.0.26 Base Surfaces ── */
-  --bg-base: #0e0f13;
-  --bg-deep: #08090c;
-  --bg-surface: #16181f;
-  --bg-elevated: #1d1f28;
-  --bg-input: #11131a;
+  /* ── v2.1.26 Aurora · Base Surfaces (darkest → lifted, violet-inked) ── */
+  --bg-deep: #08070e;
+  --bg-base: #0b0a12;
+  --bg-surface: #15131f;
+  --bg-elevated: #211d31;
+  --bg-input: #120f1c;
 
-  /* ── v2.0.26 Text Scale ── */
-  --text-primary: #ecedf0;
-  --text-secondary: #b0b3bf;
-  /* Lifted from #6b6f7d so muted text clears WCAG AA (4.5:1) on the dark bg. */
-  --text-muted: #7e8290;
-  --text-dim: #44485a;
+  /* ── v2.1.26 Aurora · Text Scale (cool violet cast) ── */
+  --text-primary: #f3f0fb;
+  --text-secondary: #bcb6cf;
+  /* #867f9b clears WCAG AA (≈5:1) on the dark bg. */
+  --text-muted: #867f9b;
+  --text-dim: #4b4660;
 
-  /* ── v2.0.26 Accents ── */
-  --accent-pink: #f16197;
-  --accent-pink-soft: rgba(241, 97, 151, 0.15);
-  --accent-teal: #3ec7c2;
-  --accent-teal-soft: rgba(62, 199, 194, 0.15);
-  --accent-violet: #b56bff;
-  --accent-violet-soft: rgba(181, 107, 255, 0.15);
-  --accent-gold: #e89a6a;
-  /* Electric indigo lifted from the brand mark (icon.svg coreFacet). The one
-     genuinely "blue" hue on the site. */
-  --accent-blue: #7f5af0;
-  --accent-blue-soft: rgba(127, 90, 240, 0.15);
+  /* ── v2.1.26 Aurora · Vivid neon accents + soft (18%) washes ── */
+  --accent-pink: #ff5fa2;
+  --accent-pink-soft: rgba(255, 95, 162, 0.18);
+  --accent-teal: #2fd6d0;
+  --accent-teal-soft: rgba(47, 214, 208, 0.18);
+  --accent-violet: #b96bff;
+  --accent-violet-soft: rgba(185, 107, 255, 0.18);
+  --accent-gold: #ffb070;
+  --accent-gold-soft: rgba(255, 176, 112, 0.18);
+  /* Electric indigo lifted from the brand mark (icon.svg coreFacet). In Aurora
+     it joins the flowing gradient band as a fifth voice. */
+  --accent-blue: #7d5cff;
+  --accent-blue-soft: rgba(125, 92, 255, 0.18);
 
   --accent: var(--accent-violet);
   --accent-soft: var(--accent-violet-soft);
 
   /* ── Neutral interactive tier ──
-     ALL chrome (focus, hover, active, pagination, nav, links, FABs,
-     badges, tags) is monochrome. Neon --accent-* is reserved for the
-     ONLY two color moments: card top-stripes and the hero shimmer word.
-     Nothing else gets color. */
+     Chrome (focus, hover, active, pagination, nav, links, FABs, badges, tags)
+     stays monochrome. Color belongs to data and to a handful of deliberate
+     Aurora moments: the nebula, card seams, the featured seam-border, the
+     spectral primary fill, and the hero shimmer word. */
   --chrome-line: var(--text-primary);
 
   /* ── Semantic aliases (keep old names, new dark values) ── */
@@ -48,16 +49,21 @@
   /* Primary accent = violet (replaces ember) */
   --ember: var(--accent-violet);
   --ember-tint: var(--accent-violet-soft);
-  --ember-soft: rgba(181, 107, 255, 0.06);
+  --ember-soft: rgba(185, 107, 255, 0.06);
 
-  /* ── Borders + Glass ── */
-  --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.12);
-  --glass-bg: rgba(22, 24, 31, 0.6);
-  --glass-blur: blur(14px);
+  /* ── Borders + Glass ── (border-strong carries a faint violet bloom) */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(180, 140, 255, 0.3);
+  --glass-bg: rgba(24, 20, 36, 0.6);
+  --glass-blur: blur(22px);
 
-  /* Glow multiplier (1 = full) */
-  --glow: 1;
+  /* ── Aurora nebula · three blurred hue-washes drift behind the page ── */
+  --nebula-1: rgba(255, 95, 162, 0.13); /* pink, upper-left */
+  --nebula-2: rgba(47, 214, 208, 0.11); /* teal, upper-right */
+  --nebula-3: rgba(125, 92, 255, 0.16); /* indigo, lower-center */
+
+  /* Glow multiplier (1 = full). Aurora runs hot; dial down for calm. */
+  --glow: 1.6;
 
   /* ── Card system (shared by Project + Fact cards) ──
      One surface/seam definition for both grids so Choices and Builds stay
@@ -65,7 +71,7 @@
      violet and overridden per card via [data-accent] below. */
   --card-accent: var(--accent-violet);
   --card-accent-soft: var(--accent-violet-soft);
-  --card-surface: linear-gradient(180deg, rgba(29, 31, 40, 0.55), rgba(22, 24, 31, 0.55));
+  --card-surface: linear-gradient(160deg, rgba(42, 32, 64, 0.55), rgba(18, 16, 28, 0.7));
   --card-surface-back: radial-gradient(
       120% 80% at 0% 0%,
       color-mix(in srgb, var(--card-accent) 16%, transparent),
@@ -74,16 +80,31 @@
     linear-gradient(180deg, rgba(34, 36, 48, 0.97), rgba(18, 20, 27, 0.98));
   --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 
-  /* Shared "winner" gradient — the award badge fill and the gradient (two-thirds)
-     card seams both draw from this so they read as one system. Teal-led at both
-     ends with a clear violet→pink band through the middle; loops teal→teal so the
-     badge shimmer is seamless. */
+  /* ── The signature gradient ──
+     Award badges, the featured card's seam-border, and the hero shimmer word
+     all draw from these. Five stops with indigo woven through; loop seamlessly
+     (the trailing hue matches the leading hue so the 200% wrap has no seam). */
   --gradient-winner: linear-gradient(
     110deg,
     var(--accent-teal) 0%,
-    var(--accent-violet) 38%,
-    var(--accent-pink) 55%,
+    var(--accent-blue) 28%,
+    var(--accent-violet) 48%,
+    var(--accent-pink) 66%,
     var(--accent-teal) 100%
+  );
+  --gradient-hero: linear-gradient(
+    110deg,
+    var(--accent-pink) 0%,
+    var(--accent-violet) 30%,
+    var(--accent-blue) 50%,
+    var(--accent-teal) 72%,
+    var(--accent-pink) 100%
+  );
+  --gradient-seam-brand: linear-gradient(
+    90deg,
+    var(--accent-violet),
+    var(--accent-teal) 60%,
+    transparent
   );
 
   /* ── Legacy HSL aliases — pages using hsl(var(--color-*)) ── */
@@ -102,7 +123,7 @@
   --color-accent-gold: 23 70% 66%;
 
   /* ── Algolia primary color → violet ── */
-  --ais-primary-color-rgb: 181, 107, 255;
+  --ais-primary-color-rgb: 185, 107, 255;
   --ais-primary-color-alpha: 1;
 
   /* ── Typography ── */
@@ -125,11 +146,11 @@
   --space-lg: 6rem;
   --space-xl: 12rem;
 
-  /* ── Border Radius ── */
-  --r-sm: 4px;
-  --r-md: 8px;
-  --r-lg: 14px;
-  --r-xl: 22px;
+  /* ── Border Radius · Aurora softens everything a step ── */
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
   --r-pill: 999px;
 
   /* Legacy radius aliases */
@@ -140,11 +161,13 @@
   --radius-pill: var(--r-pill);
   --radius-round: 50%;
 
-  /* ── Shadows ── */
-  --shadow-card: 0 16px 40px -16px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
-  --shadow-bento: 0 2px 0 rgba(255, 255, 255, 0.04);
-  --shadow-deep: 0 36px 80px -28px rgba(0, 0, 0, 0.85);
-  --highlight-top: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  /* ── Shadows · deeper drops with a soft indigo ambient bloom ── */
+  --shadow-card: 0 30px 70px -26px rgba(0, 0, 0, 0.8), 0 0 50px -20px rgba(125, 92, 255, 0.32),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  --shadow-bento: 0 2px 0 rgba(255, 255, 255, 0.05);
+  --shadow-deep: 0 44px 96px -30px rgba(0, 0, 0, 0.88), 0 0 70px -24px rgba(125, 92, 255, 0.3);
+  --shadow-fab: 0 8px 26px -8px rgba(0, 0, 0, 0.72);
+  --highlight-top: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
 
   /* ── Z-Index ── */
   --z-background: -1;
@@ -419,6 +442,36 @@ body {
   }
   100% {
     background-position: 200% 50%;
+  }
+}
+
+/* Aurora nebula drift — slow, flash-free wander for the background hue-washes.
+   Consumers pause it under prefers-reduced-motion. */
+@keyframes auroraDrift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(3%, -2%, 0) scale(1.06);
+  }
+  66% {
+    transform: translate3d(-2%, 3%, 0) scale(0.97);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Status-dot pulse — shared by the header dot and card foot dots. */
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
   }
 }
 
