@@ -8,52 +8,73 @@
   pointer-events: none;
 }
 
-/* ── Root: Algolia CSS custom properties ── */
+/* The widget renders the overlay always-open; WE own visibility. Hide it until
+   the toggle FAB opens the chat. */
+.chatDock:not(.chatOpen) .chatRoot {
+  display: none;
+}
+
+/* ── Root: Algolia CSS custom properties (Aurora values) ── */
 .chatRoot {
   --ais-chat-margin: var(--chat-dock-margin);
-  --ais-primary-color-rgb: 181, 107, 255;
-  --ais-background-color-rgb: 22, 24, 31;
-  --ais-text-color-rgb: 236, 237, 240;
-  --ais-muted-color-rgb: 107, 111, 125;
+  --ais-primary-color-rgb: 185, 107, 255;
+  --ais-background-color-rgb: 21, 19, 31;
+  --ais-text-color-rgb: 243, 240, 251;
+  --ais-muted-color-rgb: 134, 127, 155;
   --ais-border-color-rgb: 255, 255, 255;
   --ais-shadow-color-rgb: 0, 0, 0;
   --ais-border-radius-lg: var(--r-lg);
   --ais-shadow-md: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
 }
 
-/* ── Toggle button ── */
-/* Matches the MusicPlayer FAB — circular violet FAB with the Aurora spectral
-   sheen (violet core leaning teal), white icon. !important is required because
-   Algolia's chat widget ships its own button styles that win otherwise. */
+/* ── Toggle FAB (we render it; matches the MusicPlayer FAB exactly) ── */
 .chatToggle {
-  width: 60px !important;
-  height: 60px !important;
-  border-radius: var(--r-pill) !important;
+  position: fixed;
+  bottom: 5rem;
+  right: 5rem;
+  z-index: 1100;
+  width: 60px;
+  height: 60px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  border: none;
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--accent-pink) 22%, var(--accent-violet)),
     var(--accent-violet) 55%,
     color-mix(in srgb, var(--accent-teal) 20%, var(--accent-violet))
-  ) !important;
-  border: none !important;
-  color: white !important;
+  );
+  color: white;
+  cursor: pointer;
+  pointer-events: auto;
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(18px * var(--glow)) var(--accent-violet-soft) !important;
+    0 0 calc(18px * var(--glow)) var(--accent-violet-soft);
   transition:
     transform var(--transition-base),
-    box-shadow var(--transition-base) !important;
+    box-shadow var(--transition-base);
 }
 
 .chatToggle:hover {
-  transform: translateY(-2px) !important;
+  transform: translateY(-2px);
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(26px * var(--glow)) var(--accent-violet-soft) !important;
+    0 0 calc(26px * var(--glow)) var(--accent-violet-soft);
+}
+
+.chatToggle:focus-visible {
+  outline: 2px solid var(--chrome-line);
+  outline-offset: 4px;
+}
+
+.toggleIcon {
+  flex-shrink: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .chatToggle:hover {
-    transform: none !important;
+    transform: none;
   }
 }

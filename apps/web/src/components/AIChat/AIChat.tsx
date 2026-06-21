@@ -1,6 +1,14 @@
 'use client';
 
-import { useEffect, useMemo, useCallback, useContext, createContext, useRef } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+  useContext,
+  createContext,
+  useRef,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
@@ -111,36 +119,37 @@ const UserAvatar = () => (
 const PromptFooter = () => (
   <div className={styles.disclaimer}>Powered by Algolia | Indexed. Not Imagined.</div>
 );
-const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
-  isOpen ? (
-    <IoClose size={24} className={styles.toggleIcon} />
-  ) : (
-    <FaBrain size={24} className={styles.toggleIcon} />
-  );
-
 // Suppress the built-in result carousel: the agent still searches, we just don't
 // render the raw hit cards (or their "View all" link) until that data gets a
 // proper formatted view. Overriding the tool's layout wins over createDefaultTools.
 // Returns an empty fragment (not null) to satisfy the layoutComponent signature.
 const HiddenToolLayout = () => <></>;
 
-// The installed Chat widget consumes `toggleButtonIconComponent` and
-// `classNames.toggleButton` at runtime (both destructured in its source), but its
-// shipped prop types omit them. Pass them via a spread: JSX spread attributes
-// aren't excess-property-checked, so the keys reach the widget without a cast
-// while every explicit prop below keeps its real Chat types.
-const chatTypeLagProps = {
-  classNames: {
-    root: styles.chatRoot,
-    container: styles.chatWindow,
-    toggleButton: { root: styles.chatToggle },
-  },
-  toggleButtonIconComponent: ToggleIcon,
+// The upgraded Chat widget renders only the open overlay (no built-in toggle
+// FAB), so we own open/close: a custom toggle button drives a `chatOpen` class
+// that shows/hides the dock, and the overlay's own close button is synced back.
+const chatClassNames = {
+  root: styles.chatRoot,
+  container: styles.chatWindow,
 };
 
 export default function AIChat() {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+  // The Chat widget owns its open state internally and only exposes it through
+  // the imperative ChatHandle ref (no controlled `open` prop). Its handle type
+  // isn't re-exported, so the ref is loosely typed.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const chatRef = useRef<any>(null);
   const lastChatQuery = useRef<string | null>(null);
+
+  const toggleChat = useCallback(() => {
+    setOpen((prev) => {
+      const next = !prev;
+      chatRef.current?.setOpen(next);
+      return next;
+    });
+  }, []);
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
@@ -198,29 +207,16 @@ export default function AIChat() {
     []
   );
 
+  // The overlay's own close button (rendered by the widget) syncs back to our
+  // open state so the toggle FAB and the in-panel close stay in lockstep.
   useEffect(() => {
-    const fixAccessibility = () => {
-      if (typeof document === 'undefined') return;
-
-      const toggleBtn = document.querySelector(
-        '.ais-ChatToggleButton, .ais-Chat-toggleButton, [class*="ChatToggleButton"]'
-      );
-      if (toggleBtn) {
-        if (!(toggleBtn as HTMLElement).ariaLabel) {
-          (toggleBtn as HTMLElement).ariaLabel = 'Open AI Chat';
-        }
-        if (!(toggleBtn as HTMLElement).dataset.testid) {
-          (toggleBtn as HTMLElement).dataset.testid = 'ai-chat-toggle';
-        }
-      }
+    if (typeof document === 'undefined') return;
+    const onDocClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('.ais-ChatHeader-close')) setOpen(false);
     };
-
-    fixAccessibility();
-
-    const observer = new MutationObserver(fixAccessibility);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    return () => observer.disconnect();
+    document.addEventListener('click', onDocClick);
+    return () => document.removeEventListener('click', onDocClick);
   }, []);
 
   const getItemUrl = useCallback((item: ChatHitItem): string => {
@@ -241,33 +237,50 @@ export default function AIChat() {
     [handleChatItemNavigate, getItemUrl]
   );
 
-  const chatContent = (
-    <div className={styles.chatDock}>
-      {searchClient && AGENT_ID ? (
-        <InstantSearchNext
-          searchClient={searchClient}
-          insights
-          future={{ preserveSharedStateOnUnmount: true }}
-        >
-          <Chat
-            agentId={AGENT_ID}
-            translations={translations}
-            tools={tools}
-            itemComponent={ChatItemComponent}
-            getSearchPageURL={resolveSearchPageURL}
-            headerTitleIconComponent={HeaderIcon}
-            assistantMessageLeadingComponent={AssistantAvatar}
-            userMessageLeadingComponent={UserAvatar}
-            promptFooterComponent={PromptFooter}
-            {...chatTypeLagProps}
-          />
-        </InstantSearchNext>
-      ) : null}
-    </div>
-  );
+  const chatAvailable = Boolean(searchClient && AGENT_ID);
 
   return createPortal(
-    <ChatNavContext.Provider value={chatNavContext}>{chatContent}</ChatNavContext.Provider>,
+    <ChatNavContext.Provider value={chatNavContext}>
+      <div className={`${styles.chatDock} ${open ? styles.chatOpen : ''}`}>
+        {searchClient && AGENT_ID ? (
+          <InstantSearchNext
+            searchClient={searchClient}
+            insights
+            future={{ preserveSharedStateOnUnmount: true }}
+          >
+            <Chat
+              ref={chatRef}
+              agentId={AGENT_ID}
+              translations={translations}
+              tools={tools}
+              itemComponent={ChatItemComponent}
+              getSearchPageURL={resolveSearchPageURL}
+              headerTitleIconComponent={HeaderIcon}
+              assistantMessageLeadingComponent={AssistantAvatar}
+              userMessageLeadingComponent={UserAvatar}
+              promptFooterComponent={PromptFooter}
+              classNames={chatClassNames}
+            />
+          </InstantSearchNext>
+        ) : null}
+      </div>
+      {chatAvailable && (
+        <button
+          type="button"
+          className={styles.chatToggle}
+          onClick={toggleChat}
+          aria-label={open ? 'Close AI chat' : 'Open AI chat'}
+          aria-expanded={open}
+          data-testid="ai-chat-toggle"
+        >
+          {open ? (
+            <IoClose size={24} className={styles.toggleIcon} />
+          ) : (
+            <FaBrain size={24} className={styles.toggleIcon} />
+          )}
+        </button>
+      )}
+    </ChatNavContext.Provider>,
     document.body
   );
 }
