@@ -162,7 +162,8 @@
 }
 
 /* Three on one line in a narrow column: equal thirds, with tighter padding/font
-   than the shared .cta-external so the labels fit (these overrides outrank it). */
+   than the Button (secondary) default so the labels fit (these overrides win
+   via the descendant selector). */
 .links a {
   flex: 1;
   min-width: 0;

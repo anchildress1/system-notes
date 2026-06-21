@@ -592,9 +592,9 @@
   border-bottom-color: var(--text-muted);
 }
 
-/* Visual treatment is the shared global `.cta-external`. Scoped under .cardBack
-   so the full-width footer layout outranks the global single-class rule no
-   matter the stylesheet order. */
+/* Visual treatment is the Button (secondary) primitive; this only carries the
+   full-width footer layout. Scoped under .cardBack so the layout outranks the
+   primitive's own rules no matter the stylesheet order. */
 .cardBack .backRepo {
   position: relative;
   z-index: 1;

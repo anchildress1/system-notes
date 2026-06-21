@@ -130,7 +130,7 @@
 }
 
 /* ── CTA Blog link ── */
-/* Visual treatment comes from the shared global `.cta-external`; this class
+/* Visual treatment comes from the Button (secondary) primitive; this class
    only carries the header-specific layout so the look can't drift. */
 .navCta {
   margin-left: 8px;
