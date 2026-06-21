@@ -1,0 +1,141 @@
+/* The action primitive. Hue flows from [data-accent] (shared with the card
+   system, which maps it to --card-accent / --card-accent-soft). The spectral
+   fills lean pink at one end and teal at the other through the accent hue. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.5px;
+  line-height: 1;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base),
+    background var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--chrome-line);
+  outline-offset: 3px;
+}
+
+/* ── Sizes ── */
+.btn[data-size='sm'] {
+  padding: 6px 14px;
+  font-size: 11px;
+}
+.btn[data-size='md'] {
+  padding: 8px 20px;
+  font-size: 12px;
+}
+.btn[data-size='lg'] {
+  padding: 11px 26px;
+  font-size: 13px;
+}
+
+/* ── Primary · spectral fill ── */
+.btn[data-variant='primary'] {
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--accent-pink) 26%, var(--card-accent)),
+    var(--card-accent) 50%,
+    color-mix(in srgb, var(--accent-teal) 22%, var(--card-accent))
+  );
+  color: #fff;
+  box-shadow:
+    var(--shadow-fab),
+    0 0 calc(14px * var(--glow)) var(--card-accent-soft);
+}
+.btn[data-variant='primary']:hover:not(:disabled) {
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--accent-pink) 34%, var(--card-accent)),
+    color-mix(in srgb, #fff 12%, var(--card-accent)) 50%,
+    color-mix(in srgb, var(--accent-teal) 30%, var(--card-accent))
+  );
+  box-shadow:
+    var(--shadow-fab),
+    0 0 calc(24px * var(--glow)) var(--card-accent-soft);
+  transform: translateY(-1px);
+}
+
+/* ── Secondary · neon-tinted outline (the .cta-external pattern) ── */
+.btn[data-variant='secondary'] {
+  background: color-mix(in srgb, var(--card-accent) 10%, transparent);
+  border-color: var(--card-accent-soft);
+  color: var(--text-primary);
+}
+.btn[data-variant='secondary']:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--card-accent) 18%, transparent);
+  border-color: var(--card-accent);
+  box-shadow: 0 0 calc(24px * var(--glow)) var(--card-accent-soft);
+}
+
+/* ── Ghost · monochrome chip ── */
+.btn[data-variant='ghost'] {
+  background: rgba(255, 255, 255, 0.025);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+.btn[data-variant='ghost']:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--card-accent);
+  color: var(--text-primary);
+}
+
+/* ── FAB · circular spectral ── */
+.btn[data-variant='fab'] {
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border: none;
+  border-radius: var(--r-pill);
+  text-transform: none;
+  font-size: 20px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent-pink) 24%, var(--card-accent)),
+    var(--card-accent) 55%,
+    color-mix(in srgb, var(--accent-teal) 20%, var(--card-accent))
+  );
+  color: #fff;
+  box-shadow:
+    var(--shadow-fab),
+    0 0 calc(18px * var(--glow)) var(--card-accent-soft);
+}
+.btn[data-variant='fab']:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    var(--shadow-fab),
+    0 0 calc(24px * var(--glow)) var(--card-accent-soft);
+}
+
+.iconLeft {
+  display: inline-flex;
+  font-size: 1.1em;
+}
+.iconRight {
+  display: inline-flex;
+  opacity: 0.6;
+  font-size: 1.05em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn[data-variant='primary']:hover:not(:disabled),
+  .btn[data-variant='fab']:hover:not(:disabled) {
+    transform: none;
+  }
+}

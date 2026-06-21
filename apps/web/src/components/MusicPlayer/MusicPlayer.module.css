@@ -15,13 +15,19 @@
 }
 
 /* ── FAB Play Button ── */
-/* Filled neon-pink circle, white icon. A deliberate action-color burst —
-   one of the few colored elements on an otherwise monochrome surface. */
+/* Circular pink FAB with the Aurora spectral sheen (pink core leaning teal),
+   white icon — the fab variant of the shared button system. A deliberate
+   action-color burst on an otherwise monochrome surface. */
 .playButton {
   width: 60px;
   height: 60px;
-  border-radius: 99px;
-  background: var(--accent-pink);
+  border-radius: var(--r-pill);
+  background: linear-gradient(
+    135deg,
+    var(--accent-pink),
+    var(--accent-pink) 55%,
+    color-mix(in srgb, var(--accent-teal) 22%, var(--accent-pink))
+  );
   border: none;
   color: white;
   display: flex;
@@ -30,10 +36,9 @@
   cursor: pointer;
   transition:
     transform var(--transition-base),
-    background var(--transition-base),
     box-shadow var(--transition-base);
   box-shadow:
-    0 6px 22px -8px rgba(0, 0, 0, 0.7),
+    var(--shadow-fab),
     0 0 calc(18px * var(--glow)) var(--accent-pink-soft);
   position: relative;
   z-index: 2;
@@ -42,16 +47,21 @@
 
 .playButton:hover {
   transform: translateY(-2px);
-  background: color-mix(in srgb, var(--accent-pink) 85%, white);
   box-shadow:
-    0 8px 26px -8px rgba(0, 0, 0, 0.75),
-    0 0 calc(24px * var(--glow)) var(--accent-pink-soft);
+    var(--shadow-fab),
+    0 0 calc(26px * var(--glow)) var(--accent-pink-soft);
 }
 
 .active {
   box-shadow:
-    0 6px 22px -8px rgba(0, 0, 0, 0.7),
+    var(--shadow-fab),
     0 0 calc(22px * var(--glow)) var(--accent-pink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playButton:hover {
+    transform: none;
+  }
 }
 
 .buttonLabel {
