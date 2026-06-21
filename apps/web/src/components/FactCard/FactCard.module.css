@@ -85,13 +85,28 @@
 .cardLink[data-size='two-thirds'] .cardFront,
 .cardLink[data-size='two-thirds'] .cardBack {
   background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(8, 9, 12, 0.6) 100%);
-  border-color: var(--card-accent-soft);
+  /* The flowing seam-border becomes the visible edge, so the static border
+     steps aside (kept transparent to preserve layout box). */
+  border-color: transparent;
 }
 
-/* The big cards wear the same gradient as the build-page winner badges. */
+/* Featured (two-thirds) cards swap the single top accent seam for a flowing
+   5-stop chromatic seam-border that traces the whole perimeter. The mask trick
+   paints --gradient-winner only in the 1.5px ring; gradientShimmer drifts it. */
 .cardLink[data-size='two-thirds'] .cardFront::before,
 .cardLink[data-size='two-thirds'] .cardBack::before {
+  inset: 0;
+  height: auto;
+  border-radius: inherit;
+  padding: 1.5px;
   background: var(--gradient-winner);
+  background-size: 200% 100%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: gradientShimmer 9s linear infinite;
 }
 
 .cardLink[data-size='two-thirds'] .description {
@@ -367,5 +382,10 @@
 @media (prefers-reduced-motion: reduce) {
   .flipper {
     transition: none;
+  }
+
+  .cardLink[data-size='two-thirds'] .cardFront::before,
+  .cardLink[data-size='two-thirds'] .cardBack::before {
+    animation: none;
   }
 }
