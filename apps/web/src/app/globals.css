@@ -52,9 +52,9 @@
   --ember-tint: var(--accent-violet-soft);
   --ember-soft: rgba(185, 107, 255, 0.06);
 
-  /* ── Borders + Glass ── (border-strong carries a faint violet bloom) */
+  /* ── Borders + Glass ── (monochrome; chrome never wears a hue) */
   --border: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(180, 140, 255, 0.3);
+  --border-strong: rgba(255, 255, 255, 0.16);
   --glass-bg: rgba(24, 20, 36, 0.6);
   --glass-blur: blur(22px);
 

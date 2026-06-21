@@ -89,8 +89,8 @@
   padding: 8px 20px;
   border-radius: var(--r-md);
   /* Resting affordance: a visible chip (faint fill + border) so the items
-     read as tappable nav, not plain label text. */
-  border: 1px solid var(--border);
+     read as tappable nav, not plain label text. Matches the button family. */
+  border: 1px solid var(--border-strong);
   background: rgba(255, 255, 255, 0.025);
   color: var(--text-secondary);
   text-decoration: none;
@@ -105,7 +105,7 @@
 
 .navLink:hover {
   color: var(--text-primary);
-  border-color: var(--accent-violet);
+  border-color: var(--text-muted);
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -144,9 +144,9 @@
     opacity var(--transition-base);
 }
 
-/* Hover brings color in through the icon only — chrome stays neutral. */
+/* Chrome stays monochrome — the arrow just brightens on hover. */
 .navCta:hover .navCtaArrow {
-  color: var(--accent-violet);
+  color: var(--text-primary);
   opacity: 1;
 }
 

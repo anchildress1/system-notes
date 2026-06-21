@@ -87,12 +87,12 @@
 /* ── Ghost · monochrome chip ── */
 .btn[data-variant='ghost'] {
   background: rgba(255, 255, 255, 0.025);
-  border-color: var(--border);
+  border-color: var(--border-strong);
   color: var(--text-secondary);
 }
 .btn[data-variant='ghost']:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.06);
-  border-color: var(--card-accent);
+  border-color: var(--text-muted);
   color: var(--text-primary);
 }
 
