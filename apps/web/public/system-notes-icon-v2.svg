@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="350" height="350" viewBox="0 0 350 350" role="img" aria-labelledby="title desc">
+  <title id="title">System Notes icon v2</title>
+  <desc id="desc">A faceted three-petal mark in pink, violet, and cyan for Ashley's System Notes.</desc>
+  <defs>
+    <linearGradient id="leftFacet" x1="42" y1="58" x2="178" y2="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd7ea"/>
+      <stop offset=".48" stop-color="#f16197"/>
+      <stop offset="1" stop-color="#b56bff"/>
+    </linearGradient>
+    <linearGradient id="coreFacet" x1="205" y1="16" x2="166" y2="331" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd6e8"/>
+      <stop offset=".43" stop-color="#f16197"/>
+      <stop offset="1" stop-color="#7f5af0"/>
+    </linearGradient>
+    <linearGradient id="rightFacet" x1="319" y1="66" x2="175" y2="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3ec7c2"/>
+      <stop offset=".18" stop-color="#7f5af0"/>
+      <stop offset=".66" stop-color="#d66bff"/>
+      <stop offset="1" stop-color="#f16197"/>
+    </linearGradient>
+    <linearGradient id="cutGlow" x1="135" y1="278" x2="236" y2="84" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#08090c" stop-opacity=".58"/>
+      <stop offset=".58" stop-color="#16181f" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity=".18"/>
+    </linearGradient>
+  </defs>
+
+  <g opacity=".24">
+    <path d="M175 335C129 247 75 193 37 75c64 11 129 54 147 154 8 44 1 79-9 106Z" fill="#000000"/>
+    <path d="M175 335C160 236 162 123 202 24c55 71 76 170-27 311Z" fill="#000000"/>
+    <path d="M175 335C204 226 250 126 321 71c13 95-34 194-146 264Z" fill="#000000"/>
+  </g>
+  <g>
+    <path d="M175 329C129 241 75 187 37 69c64 11 129 54 147 154 8 44 1 79-9 106Z" fill="url(#leftFacet)"/>
+    <path d="M175 329C160 230 162 117 202 18c55 71 76 170-27 311Z" fill="url(#coreFacet)"/>
+    <path d="M175 329C204 220 250 120 321 65c13 95-34 194-146 264Z" fill="url(#rightFacet)"/>
+  </g>
+
+  <path d="M175 329C129 241 75 187 37 69c64 11 129 54 147 154" fill="#ffffff" opacity=".16"/>
+  <path d="M175 329C160 230 162 117 202 18c19 25 34 55 40 90" fill="#ffffff" opacity=".18"/>
+  <path d="M175 329C204 220 250 120 321 65c3 23 3 47-1 70" fill="#ffffff" opacity=".14"/>
+
+  <path d="M176 330C188 238 207 159 236 80c-8 98-23 180-45 250h-15Z" fill="url(#cutGlow)"/>
+  <path d="M177 329C161 244 143 181 103 124c44 37 69 96 82 205h-8Z" fill="#08090c" opacity=".2"/>
+
+  <path d="M318 69C327 151 285 249 177 329" fill="none" stroke="#3ec7c2" stroke-width="9" stroke-linecap="round" opacity=".9"/>
+  <path d="M175 329C204 220 250 120 321 65" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".16"/>
+  <path d="M39 69C106 83 164 132 184 223" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".2"/>
+  <path d="M202 19C238 74 246 137 224 204" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".18"/>
+</svg>

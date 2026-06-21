@@ -4,13 +4,12 @@ import { useEffect, useMemo, useCallback, useContext, createContext, useRef } fr
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { Chat } from 'react-instantsearch';
+import { Chat, SearchIndexToolType, RecommendToolType } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import 'instantsearch.css/themes/satellite.css';
 import 'instantsearch.css/components/chat.css';
 import './chat-overrides.css';
 import styles from './AIChat.module.css';
-import dynamic from 'next/dynamic';
 import { ALGOLIA_INDEX } from '@/config';
 import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
 import { getChatSessionId } from '@/utils/userToken';
@@ -50,10 +49,6 @@ const searchClient = hasValidCredentials
 
 const AGENT_ID = ALGOLIA_AGENT_ID;
 
-const MusicPlayer = dynamic(() => import('../MusicPlayer/MusicPlayer'), {
-  ssr: false,
-});
-
 // Item component for rendering search results in the chat carousel
 interface ChatHitItem {
   objectID: string;
@@ -78,7 +73,8 @@ const ChatItemComponent = ({
 }) => {
   const ctx = useContext(ChatNavContext);
   const href =
-    ctx?.getItemUrl(item) ?? `/search?${new URLSearchParams({ factId: item.objectID }).toString()}`;
+    ctx?.getItemUrl(item) ??
+    `/search?${new URLSearchParams({ q: item.title ?? item.objectID }).toString()}`;
   return (
     <a
       href={href}
@@ -122,6 +118,26 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
     <FaBrain size={24} className={styles.toggleIcon} />
   );
 
+// Suppress the built-in result carousel: the agent still searches, we just don't
+// render the raw hit cards (or their "View all" link) until that data gets a
+// proper formatted view. Overriding the tool's layout wins over createDefaultTools.
+// Returns an empty fragment (not null) to satisfy the layoutComponent signature.
+const HiddenToolLayout = () => <></>;
+
+// The installed Chat widget consumes `toggleButtonIconComponent` and
+// `classNames.toggleButton` at runtime (both destructured in its source), but its
+// shipped prop types omit them. Pass them via a spread: JSX spread attributes
+// aren't excess-property-checked, so the keys reach the widget without a cast
+// while every explicit prop below keeps its real Chat types.
+const chatTypeLagProps = {
+  classNames: {
+    root: styles.chatRoot,
+    container: styles.chatWindow,
+    toggleButton: { root: styles.chatToggle },
+  },
+  toggleButtonIconComponent: ToggleIcon,
+};
+
 export default function AIChat() {
   const router = useRouter();
   const lastChatQuery = useRef<string | null>(null);
@@ -143,6 +159,8 @@ export default function AIChat() {
 
   const tools = useMemo(
     () => ({
+      [SearchIndexToolType]: { layoutComponent: HiddenToolLayout },
+      [RecommendToolType]: { layoutComponent: HiddenToolLayout },
       searchBlogPosts: {
         onToolCall: async (params: {
           input: unknown;
@@ -207,8 +225,7 @@ export default function AIChat() {
 
   const getItemUrl = useCallback((item: ChatHitItem): string => {
     const params = new URLSearchParams();
-    params.set('factId', item.objectID);
-    if (lastChatQuery.current) params.set('query', lastChatQuery.current);
+    params.set('q', lastChatQuery.current?.trim() || item.title || item.objectID);
     return `/search?${params.toString()}`;
   }, []);
 
@@ -226,9 +243,6 @@ export default function AIChat() {
 
   const chatContent = (
     <div className={styles.chatDock}>
-      <div className={styles.musicWrapper}>
-        <MusicPlayer />
-      </div>
       {searchClient && AGENT_ID ? (
         <InstantSearchNext
           searchClient={searchClient}
@@ -237,11 +251,6 @@ export default function AIChat() {
         >
           <Chat
             agentId={AGENT_ID}
-            classNames={{
-              root: styles.chatRoot,
-              container: styles.chatWindow,
-              toggleButton: { root: styles.chatToggle },
-            }}
             translations={translations}
             tools={tools}
             itemComponent={ChatItemComponent}
@@ -250,7 +259,7 @@ export default function AIChat() {
             assistantMessageLeadingComponent={AssistantAvatar}
             userMessageLeadingComponent={UserAvatar}
             promptFooterComponent={PromptFooter}
-            toggleButtonIconComponent={ToggleIcon}
+            {...chatTypeLagProps}
           />
         </InstantSearchNext>
       ) : null}

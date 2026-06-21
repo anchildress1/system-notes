@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import ProjectGrid from './ProjectGrid';
 import { mockProject } from '@/test-utils/fixtures';
 
@@ -7,13 +7,12 @@ import { mockProject } from '@/test-utils/fixtures';
 
 const mockProjects = [mockProject, { ...mockProject, id: 'other-project', title: 'Other Project' }];
 
+const flipToggle = (id: string) =>
+  within(screen.getByTestId(`project-card-${id}`)).getByRole('button', { name: /flip to read/i });
+
 describe('ProjectGrid', () => {
   beforeEach(() => {
     globalThis.location.hash = '';
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   it('renders all projects from the projects prop', () => {
@@ -21,40 +20,25 @@ describe('ProjectGrid', () => {
     expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(mockProjects.length);
   });
 
-  it('selects a project on click and writes hash', () => {
+  it('flips a card in place on click without writing to the URL', () => {
     render(<ProjectGrid projects={mockProjects} />);
 
-    const firstProjectTitle = screen.getAllByRole('heading', { level: 2 })[0];
-    fireEvent.click(firstProjectTitle);
+    // Capture before clicking — the flipped front goes aria-hidden.
+    const toggle = flipToggle('test-project');
+    fireEvent.click(toggle);
 
-    expect(globalThis.location.hash).toMatch(/^#project=/);
-  });
-
-  it('opens modal when hash matches a project id', async () => {
-    render(<ProjectGrid projects={mockProjects} />);
-
-    const firstProjectTitle = screen.getAllByRole('heading', { level: 2 })[0];
-    fireEvent.click(firstProjectTitle);
-
-    const selectedId = decodeURIComponent(globalThis.location.hash.replace(/^#project=/, ''));
-
-    globalThis.location.hash = `project=${encodeURIComponent(selectedId)}`;
-    globalThis.dispatchEvent(new HashChangeEvent('hashchange'));
-
-    expect(await screen.findByLabelText('Close modal')).toBeInTheDocument();
-  });
-
-  it('clears hash when closing modal', async () => {
-    render(<ProjectGrid projects={mockProjects} />);
-
-    const firstProjectTitle = screen.getAllByRole('heading', { level: 2 })[0];
-    fireEvent.click(firstProjectTitle);
-
-    expect(globalThis.location.hash).toMatch(/^#project=/);
-
-    fireEvent.click(await screen.findByLabelText('Close modal'));
-
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
     expect(globalThis.location.hash).toBe('');
+  });
+
+  it('flips cards independently of one another', () => {
+    render(<ProjectGrid projects={mockProjects} />);
+
+    const first = flipToggle('test-project');
+    fireEvent.click(first);
+
+    expect(first).toHaveAttribute('aria-expanded', 'true');
+    expect(flipToggle('other-project')).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('renders empty grid when no projects provided', () => {

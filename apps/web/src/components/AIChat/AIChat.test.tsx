@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import React from 'react';
 
@@ -8,7 +8,8 @@ const mockRouterPush = vi.hoisted(() => vi.fn());
 
 vi.hoisted(() => {
   process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
-  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
+  // nosemgrep: generic.secrets.security.detected-generic-api-key.detected-generic-api-key -- fake fixture value, not a real key
+  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test_search_key_length_20';
   process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID = 'test_agent_id';
 });
 
@@ -121,10 +122,6 @@ vi.mock('algoliasearch/lite', () => ({
   })),
 }));
 
-vi.mock('@/components/MusicPlayer/MusicPlayer', () => ({
-  default: () => <div data-testid="music-player-mock">Music Player</div>,
-}));
-
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -147,13 +144,6 @@ describe('AIChat Widget Integration', () => {
       render(<AIChat />);
       expect(screen.getByTestId('instant-search-next-mock')).toBeInTheDocument();
       expect(screen.getByTestId('algolia-chat-mock')).toBeInTheDocument();
-    });
-
-    it('renders MusicPlayer alongside the Chat widget', async () => {
-      render(<AIChat />);
-      await waitFor(() => {
-        expect(screen.getByTestId('music-player-mock')).toBeInTheDocument();
-      });
     });
 
     it('passes the correct agentId to Chat', () => {
@@ -209,9 +199,9 @@ describe('AIChat Widget Integration', () => {
   // ChatItemComponent — href construction
   // -------------------------------------------------------------------------
   describe('ChatItemComponent href construction', () => {
-    it('sets href to /search?factId=<objectID>', () => {
+    it('sets href to /search?q=<title>', () => {
       render(<AIChat />);
-      const expected = `/search?${new URLSearchParams({ factId: BASE_HIT.objectID }).toString()}`;
+      const expected = `/search?${new URLSearchParams({ q: BASE_HIT.title! }).toString()}`;
       expect(screen.getByRole('link')).toHaveAttribute('href', expected);
     });
 
@@ -224,10 +214,10 @@ describe('AIChat Widget Integration', () => {
       { objectID: 'simple-id', desc: 'plain alphanumeric id' },
       { objectID: 'id with spaces', desc: 'objectID with spaces' },
       { objectID: 'id/with/slashes', desc: 'objectID with slashes' },
-    ])('href correctly encodes $desc', ({ objectID }) => {
-      mockChatItemOverride = { ...BASE_HIT, objectID };
+    ])('href correctly encodes $desc when title is absent', ({ objectID }) => {
+      mockChatItemOverride = { ...BASE_HIT, objectID, title: undefined };
       render(<AIChat />);
-      const expected = `/search?${new URLSearchParams({ factId: objectID }).toString()}`;
+      const expected = `/search?${new URLSearchParams({ q: objectID }).toString()}`;
       expect(screen.getByRole('link')).toHaveAttribute('href', expected);
     });
   });
@@ -236,12 +226,12 @@ describe('AIChat Widget Integration', () => {
   // ChatItemComponent — click / navigation
   // -------------------------------------------------------------------------
   describe('ChatItemComponent click navigation', () => {
-    it('calls router.push with /search?factId on click', () => {
+    it('calls router.push with /search?q on click', () => {
       render(<AIChat />);
       fireEvent.click(screen.getByRole('link'));
       expect(mockRouterPush).toHaveBeenCalledOnce();
       expect(mockRouterPush).toHaveBeenCalledWith(
-        `/search?${new URLSearchParams({ factId: BASE_HIT.objectID }).toString()}`
+        `/search?${new URLSearchParams({ q: BASE_HIT.title! }).toString()}`
       );
     });
 
@@ -262,11 +252,12 @@ describe('AIChat Widget Integration', () => {
       expect(mockRouterPush).not.toHaveBeenCalled();
     });
 
-    it('does not include ?query param when no prior tool call was made', () => {
+    it('uses the item title when no prior tool call was made', () => {
       render(<AIChat />);
       fireEvent.click(screen.getByRole('link'));
       const pushedUrl = mockRouterPush.mock.calls[0][0] as string;
-      expect(pushedUrl).not.toContain('query=');
+      const params = new URLSearchParams(pushedUrl.split('?')[1]);
+      expect(params.get('q')).toBe(BASE_HIT.title);
     });
   });
 
@@ -391,7 +382,7 @@ describe('AIChat Widget Integration', () => {
       mockFetch.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
     });
 
-    it('appends ?query param after searchBlogPosts captures a query', async () => {
+    it('uses the captured query after searchBlogPosts captures a query', async () => {
       render(<AIChat />);
 
       await chatCapture.tools!.searchBlogPosts.onToolCall({
@@ -403,11 +394,10 @@ describe('AIChat Widget Integration', () => {
 
       expect(mockRouterPush).toHaveBeenCalledOnce();
       const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('factId')).toBe(BASE_HIT.objectID);
-      expect(params.get('query')).toBe('hexagonal architecture');
+      expect(params.get('q')).toBe('hexagonal architecture');
     });
 
-    it('omits ?query param when tool was called without a query', async () => {
+    it('uses the item title when tool was called without a query', async () => {
       render(<AIChat />);
 
       await chatCapture.tools!.searchBlogPosts.onToolCall({
@@ -418,7 +408,8 @@ describe('AIChat Widget Integration', () => {
       fireEvent.click(screen.getByRole('link'));
 
       expect(mockRouterPush).toHaveBeenCalledOnce();
-      expect(mockRouterPush.mock.calls[0][0]).not.toContain('query=');
+      const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
+      expect(params.get('q')).toBe(BASE_HIT.title);
     });
 
     it('correctly round-trips a query with special characters', async () => {
@@ -432,7 +423,7 @@ describe('AIChat Widget Integration', () => {
       fireEvent.click(screen.getByRole('link'));
 
       const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('query')).toBe('C++ & memory management');
+      expect(params.get('q')).toBe('C++ & memory management');
     });
 
     it('last tool call wins — overrides the prior query', async () => {
@@ -450,7 +441,7 @@ describe('AIChat Widget Integration', () => {
       fireEvent.click(screen.getByRole('link'));
 
       const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('query')).toBe('second query');
+      expect(params.get('q')).toBe('second query');
     });
   });
 });

@@ -1,32 +1,28 @@
 .hero {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 8rem 2rem 2rem 2rem;
-  margin-bottom: 0.5rem;
+  padding: 2.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 2.25rem;
+  border-bottom: 1px solid var(--border);
   overflow: hidden;
   user-select: none;
   cursor: default;
 }
 
 .title {
-  font-family: var(--font-mono);
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 800;
-  color: hsl(var(--color-text-primary));
-  text-transform: uppercase;
-  letter-spacing: -1.6px;
-  line-height: 1.35;
+  font-family: var(--font-display);
+  /* Display cap. The full-band title column keeps the longest headline's first
+     phrase on one line, so this just bounds the size on very wide screens. */
+  font-size: clamp(2.75rem, 5.2vw, 4.6rem);
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
   position: relative;
   z-index: 10;
   pointer-events: auto;
   opacity: 1;
   visibility: visible;
   margin: 0;
-  margin-bottom: 0.5rem;
+  text-wrap: balance;
 }
 
 .titleInteractive {
@@ -37,21 +33,22 @@
 .interactiveContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  /* Fills the title column (full band on non-aside pages) so the headline has
+     room to keep its first phrase on one line. */
   width: 100%;
-  padding: 0;
-  margin: 0;
   position: relative;
 }
 
 .glitterTrigger {
+  display: block;
   position: absolute;
   inset: 0;
   z-index: 15;
   background: transparent;
   border: none;
-  cursor: pointer;
+  cursor: default;
   padding: 0;
   margin: 0;
 }
@@ -69,22 +66,23 @@
 }
 
 .subtitle {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(1.2rem, 3.2vw, 2.4rem);
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 1.2vw, 0.95rem);
   font-weight: 400;
-  color: hsl(var(--color-text-primary));
-  margin-top: 0;
-  font-style: italic;
-  transform: rotate(-2deg);
+  color: var(--text-muted);
+  margin-top: 1.5rem;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  max-width: 52ch;
   opacity: 1;
   visibility: visible;
   position: relative;
   z-index: 10;
+  text-wrap: balance;
 }
 
 @media (max-width: 768px) {
   .hero {
-    padding: 4rem 1rem 1.5rem 1rem;
-    margin-bottom: 0.25rem;
+    padding: 3rem 1.5rem 2rem;
   }
 }

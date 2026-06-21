@@ -1,51 +1,82 @@
 'use client';
 
-import { FaCode } from 'react-icons/fa';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import styles from './Header.module.css';
 
+const NAV_ITEMS = [
+  { label: 'Choices', href: '/' },
+  { label: 'Builds', href: '/projects' },
+  { label: 'Human', href: '/about' },
+] as const;
+
+const PATH_LABEL: Record<string, string> = {
+  '/': '/sys/choices',
+  '/projects': '/sys/builds',
+  '/about': '/sys/human',
+  '/search': '/sys/search',
+};
+
 export default function Header() {
   const pathname = usePathname();
+
+  const statusPath = PATH_LABEL[pathname] ?? `/sys${pathname}`;
 
   return (
     <header className={styles.header}>
       <a href="#main-content" className={styles.skipLink}>
         Skip to main content
       </a>
-      <div className={styles.identity}>
-        <Link href="/" className={styles.logoLink}>
-          <span className={styles.name}>Ashley&apos;s System Notes</span>
-        </Link>
-      </div>
 
-      <nav className={styles.nav} aria-label="Main Navigation">
-        <Link href="/" className={`${styles.navLink} ${pathname === '/' ? styles.active : ''}`}>
-          Choices
+      <div className={styles.row}>
+        <Link href="/" className={styles.brand} aria-label="Ashley Childress, home">
+          <div className={styles.brandMark} aria-hidden="true">
+            <Image
+              src="/system-notes-icon-v2.svg"
+              alt=""
+              width={28}
+              height={28}
+              className={styles.brandMarkImage}
+              unoptimized
+              priority
+            />
+          </div>
+          <div className={styles.brandText}>
+            <span className={styles.brandTitle}>Ashley Childress</span>
+            <span className={styles.brandSub} aria-hidden="true">
+              SYS_NOTES · v2.0.26
+            </span>
+          </div>
         </Link>
-        <Link
-          href="/projects"
-          className={`${styles.navLink} ${pathname === '/projects' ? styles.active : ''}`}
-        >
-          Builds
-        </Link>
-        <Link
-          href="/about"
-          className={`${styles.navLink} ${pathname === '/about' ? styles.active : ''}`}
-        >
-          Human
-        </Link>
-        <a
-          href="https://dev.to/anchildress1"
-          target="_blank"
-          rel="noopener noreferrer"
-          data-testid="blog-link"
-          className={styles.ctaButton}
-        >
-          <FaCode size={16} />
-          Read My Blog
-        </a>
-      </nav>
+
+        <nav className={styles.nav} aria-label="Main Navigation">
+          {NAV_ITEMS.map(({ label, href }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`${styles.navLink} ${pathname === href ? styles.active : ''}`}
+            >
+              {label}
+            </Link>
+          ))}
+          <a
+            href="https://dev.to/anchildress1"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="blog-link"
+            className={`cta-external ${styles.navCta}`}
+          >
+            <span>$ read --blog</span>
+            <span className={styles.navCtaArrow}>↗</span>
+          </a>
+        </nav>
+
+        <div className={styles.status}>
+          <span className={styles.statusDot} aria-hidden="true" />
+          <span>SYS · {statusPath}</span>
+        </div>
+      </div>
     </header>
   );
 }

@@ -1,33 +1,122 @@
 :root {
-  /* ── Override Algolia satellite.css blue primary (#1E59FF → #B56BFF purple) ── */
+  /* ── v2.0.26 Base Surfaces ── */
+  --bg-base: #0e0f13;
+  --bg-deep: #08090c;
+  --bg-surface: #16181f;
+  --bg-elevated: #1d1f28;
+  --bg-input: #11131a;
+
+  /* ── v2.0.26 Text Scale ── */
+  --text-primary: #ecedf0;
+  --text-secondary: #b0b3bf;
+  /* Lifted from #6b6f7d so muted text clears WCAG AA (4.5:1) on the dark bg. */
+  --text-muted: #7e8290;
+  --text-dim: #44485a;
+
+  /* ── v2.0.26 Accents ── */
+  --accent-pink: #f16197;
+  --accent-pink-soft: rgba(241, 97, 151, 0.15);
+  --accent-teal: #3ec7c2;
+  --accent-teal-soft: rgba(62, 199, 194, 0.15);
+  --accent-violet: #b56bff;
+  --accent-violet-soft: rgba(181, 107, 255, 0.15);
+  --accent-gold: #e89a6a;
+  /* Electric indigo lifted from the brand mark (icon.svg coreFacet). The one
+     genuinely "blue" hue on the site. */
+  --accent-blue: #7f5af0;
+  --accent-blue-soft: rgba(127, 90, 240, 0.15);
+
+  --accent: var(--accent-violet);
+  --accent-soft: var(--accent-violet-soft);
+
+  /* ── Neutral interactive tier ──
+     ALL chrome (focus, hover, active, pagination, nav, links, FABs,
+     badges, tags) is monochrome. Neon --accent-* is reserved for the
+     ONLY two color moments: card top-stripes and the hero shimmer word.
+     Nothing else gets color. */
+  --chrome-line: var(--text-primary);
+
+  /* ── Semantic aliases (keep old names, new dark values) ── */
+  --paper: var(--bg-base);
+  --paper-dim: var(--bg-surface);
+  --paper-deep: var(--bg-deep);
+  --ink: var(--text-primary);
+  --ink-2: var(--text-secondary);
+  --ink-3: var(--text-muted);
+  --ink-4: var(--text-dim);
+
+  /* Primary accent = violet (replaces ember) */
+  --ember: var(--accent-violet);
+  --ember-tint: var(--accent-violet-soft);
+  --ember-soft: rgba(181, 107, 255, 0.06);
+
+  /* ── Borders + Glass ── */
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --glass-bg: rgba(22, 24, 31, 0.6);
+  --glass-blur: blur(14px);
+
+  /* Glow multiplier (1 = full) */
+  --glow: 1;
+
+  /* ── Card system (shared by Project + Fact cards) ──
+     One surface/seam definition for both grids so Choices and Builds stay
+     visually identical. --card-accent is the per-card hue, defaulting to
+     violet and overridden per card via [data-accent] below. */
+  --card-accent: var(--accent-violet);
+  --card-accent-soft: var(--accent-violet-soft);
+  --card-surface: linear-gradient(180deg, rgba(29, 31, 40, 0.55), rgba(22, 24, 31, 0.55));
+  --card-surface-back: radial-gradient(
+      120% 80% at 0% 0%,
+      color-mix(in srgb, var(--card-accent) 16%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(180deg, rgba(34, 36, 48, 0.97), rgba(18, 20, 27, 0.98));
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
+
+  /* Shared "winner" gradient — the award badge fill and the gradient (two-thirds)
+     card seams both draw from this so they read as one system. Teal-led at both
+     ends with a clear violet→pink band through the middle; loops teal→teal so the
+     badge shimmer is seamless. */
+  --gradient-winner: linear-gradient(
+    110deg,
+    var(--accent-teal) 0%,
+    var(--accent-violet) 38%,
+    var(--accent-pink) 55%,
+    var(--accent-teal) 100%
+  );
+
+  /* ── Legacy HSL aliases — pages using hsl(var(--color-*)) ── */
+  --color-bg-base: 232 16% 7%;
+  --color-bg-surface: 232 16% 11%;
+  --color-bg-elevated: 232 14% 14%;
+  --color-text-primary: 225 8% 92%;
+  --color-text-secondary: 225 8% 72%;
+  --color-text-muted: 228 7% 45%;
+  --color-border: 0 0% 100% / 0.06;
+  --color-border-subtle: 0 0% 100% / 0.04;
+  --color-border-hover: 273 100% 71%;
+  --color-accent-purple: 273 100% 71%;
+  --color-accent-pink: 336 83% 60%;
+  --color-accent-teal: 177 68% 51%;
+  --color-accent-gold: 23 70% 66%;
+
+  /* ── Algolia primary color → violet ── */
   --ais-primary-color-rgb: 181, 107, 255;
   --ais-primary-color-alpha: 1;
 
-  /* ── Surface Palette ── */
-  --color-bg-base: 230 9% 13%; /* #1E1F24 */
-  --color-bg-surface: 225 11% 30%; /* #444854 */
-  --color-bg-elevated: 225 9% 25%; /* #3A3D46 */
+  /* ── Typography ── */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
-  /* ── Text Palette ── */
-  --color-text-primary: 240 10% 91%; /* #E6E6EB */
-  --color-text-secondary: 229 8% 75%; /* #B9BBC4 */
-  --color-text-muted: 220 10% 60%;
-
-  /* ── Accent Palette ── */
-  --color-accent-purple: 270 100% 71%; /* #B56BFF — primary action / agent */
-  --color-accent-pink: 338 86% 66%; /* #F16197 — human identity */
-  --color-accent-teal: 178 57% 51%; /* #3EC7C2 — navigation / references */
-  --color-accent-gold: 22 75% 68%; /* #E89A6A — awards / achievements (rose-gold, bridges pink accent) */
-
-  /* ── Borders ── */
-  --color-border: 225 10% 25%;
-  --color-border-subtle: 225 10% 25% / 0.4;
-  --color-border-hover: 262 100% 71%;
-
-  /* ── Shadows ── */
-  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  --shadow-bento: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
-  --highlight-top: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  /* ── Motion ── */
+  --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-morph: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.1s ease;
+  --transition-base: 0.15s ease;
+  --transition-slow: 0.25s var(--ease-morph);
 
   /* ── Spacing ── */
   --space-xs: 0.75rem;
@@ -37,25 +126,27 @@
   --space-xl: 12rem;
 
   /* ── Border Radius ── */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-pill: 100px;
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 14px;
+  --r-xl: 22px;
+  --r-pill: 999px;
+
+  /* Legacy radius aliases */
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --radius-pill: var(--r-pill);
   --radius-round: 50%;
 
-  /* ── Typography ── */
-  --font-sans: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* ── Shadows ── */
+  --shadow-card: 0 16px 40px -16px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --shadow-bento: 0 2px 0 rgba(255, 255, 255, 0.04);
+  --shadow-deep: 0 36px 80px -28px rgba(0, 0, 0, 0.85);
+  --highlight-top: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
 
-  /* ── Animation ── */
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --ease-morph: cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: 0.15s ease;
-  --transition-base: 0.2s ease;
-  --transition-slow: 0.3s var(--ease-morph);
-
-  /* ── Z-Index Scale ── */
+  /* ── Z-Index ── */
   --z-background: -1;
   --z-base: 0;
   --z-sticky: 100;
@@ -64,11 +155,34 @@
   --z-card-flip: 5000;
   --z-search-widget: 9000;
   --z-footer: 9500;
+}
 
-  /* ── Glass surface (reusable) ── */
-  --glass-bg: rgba(30, 31, 36, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-blur: blur(12px);
+/* Per-card accent hue — set on the card root, consumed by seams, glows,
+   badges, and back surfaces across both card grids. */
+/* --card-seam is re-declared in each scope on purpose: a custom property that
+   references another custom property resolves var() at its DECLARATION site, not
+   where it's used. Declared only on :root it would bake in the root (violet)
+   --card-accent and inherit that to every card. Re-declaring it here re-resolves
+   var(--card-accent) against the per-card hue so the seam tracks the accent. */
+[data-accent='pink'] {
+  --card-accent: var(--accent-pink);
+  --card-accent-soft: var(--accent-pink-soft);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
+}
+[data-accent='violet'] {
+  --card-accent: var(--accent-violet);
+  --card-accent-soft: var(--accent-violet-soft);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
+}
+[data-accent='teal'] {
+  --card-accent: var(--accent-teal);
+  --card-accent-soft: var(--accent-teal-soft);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
+}
+[data-accent='gold'] {
+  --card-accent: var(--accent-gold);
+  --card-accent-soft: color-mix(in srgb, var(--accent-gold) 22%, transparent);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 }
 
 * {
@@ -77,49 +191,41 @@
   padding: 0;
 }
 
+html {
+  /* Base color lives on <html> so the fixed Nebula (z-index: -1, child of
+     <body>) is not painted over by an opaque body background. */
+  background-color: var(--bg-base);
+}
+
+html,
 body {
-  background-color: hsl(var(--color-bg-base));
-  color: hsl(var(--color-text-primary));
-  font-family: var(--font-sans);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.6;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-background);
-  background-image:
-    radial-gradient(circle at 50% -20%, hsl(var(--color-accent-purple) / 0.3), transparent 60%),
-    radial-gradient(circle at 85% 90%, hsl(var(--color-accent-teal) / 0.1), transparent 50%);
-  pointer-events: none;
+body {
+  background-color: transparent;
 }
 
-/* Accessibility: Visible Focus Indicators
-   :where() gives zero specificity so any component-level focus
-   style (e.g. Algolia chat's outline:none on the textarea) wins. */
 :where(:focus-visible) {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--chrome-line);
   outline-offset: 4px;
-  border-radius: 2px;
+  border-radius: var(--r-sm);
 }
 
-/* Algolia chat widget manages its own focus styles;
-   scope to prompt elements where chat-overrides.css
-   provides a visible border-color replacement. */
 .ais-Chat textarea:focus-visible,
 .ais-Chat .ais-ChatPrompt-body:focus-visible {
   outline: none;
 }
 
-/* Modal Overlay Base */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(8, 9, 12, 0.75);
   backdrop-filter: blur(8px);
   z-index: var(--z-modal);
   display: flex;
@@ -128,7 +234,6 @@ body::before {
   padding: var(--space-md);
 }
 
-/* Utilities */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -144,65 +249,64 @@ body::before {
 .card-glass {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
+  border-radius: var(--r-lg);
 }
 
-/* ── Global Close Button Style ── */
 .close-button-global {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
-  border-radius: var(--radius-round);
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-base);
-  border: 1px solid var(--glass-border);
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
   cursor: pointer;
   outline: none;
 }
 
 .close-button-global:hover {
-  background: transparent;
-  color: hsl(var(--color-accent-purple));
-  transform: rotate(90deg);
-  border: 2px solid hsl(var(--color-accent-purple));
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
 }
 
 .close-button-global:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--chrome-line);
   outline-offset: 2px;
 }
 
-/* ── Global Algolia Attribution ── */
 .algolia-attribution {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  color: hsl(var(--color-text-secondary));
+  color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 500;
   text-decoration: none;
   line-height: 1;
-  flex-direction: row-reverse;
   transition: color var(--transition-base);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
 }
 
 .algolia-attribution:hover .algolia-hoverable {
-  color: hsl(var(--color-accent-teal));
+  color: var(--text-primary);
 }
 
 .algolia-prefix {
   white-space: nowrap;
-  color: hsl(var(--color-text-secondary));
+  color: var(--text-muted);
 }
 
 .algolia-hoverable {
@@ -221,46 +325,114 @@ body::before {
   flex-shrink: 0;
 }
 
-/* ── Global Card Header Badge ── */
+/* Single source of truth for every "leaves the site" button (header blog CTA,
+   about-page links, project "View source"). One class so the violet treatment
+   can't drift across copies. Layout deltas (margin, sizing) stay on the local
+   class that's composed alongside this one. */
+.cta-external {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 20px;
+  border-radius: var(--r-md);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--accent-violet-soft);
+  background: color-mix(in srgb, var(--accent-violet) 10%, transparent);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base),
+    background var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.cta-external:hover {
+  background: color-mix(in srgb, var(--accent-violet) 18%, transparent);
+  border-color: var(--accent-violet);
+  color: var(--text-primary);
+  box-shadow: 0 0 calc(24px * var(--glow)) var(--accent-violet-soft);
+}
+
+.cta-external:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 2px;
+}
+
 .card-header-badge {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  background: hsl(var(--color-accent-teal) / 0.1);
-  color: hsl(var(--color-accent-teal));
-  border: 1px solid hsl(var(--color-accent-teal) / 0.5);
+  letter-spacing: 0.08em;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-strong);
   padding: 2px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--r-sm);
   text-transform: uppercase;
 }
 
-/* ── Global Award Badge ── */
+/* Badge inherits its card's accent hue (set on .cardLink) — color-codes
+   every category and distributes pink/teal/violet/gold across the grid. */
+.card-header-badge[data-category] {
+  color: var(--card-accent, var(--text-primary));
+  border-color: color-mix(in srgb, var(--card-accent, var(--border-strong)) 45%, transparent);
+}
+
+/* Flowing multi-neon gradient FILL (same motion as the hero word, but on
+   the pill background) with white text on top. text-shadow keeps the label
+   legible across the lighter teal stretch of the gradient. */
 .award-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 4px 10px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  color: hsl(var(--color-accent-gold));
-  border: 1px solid hsl(var(--color-accent-gold) / 0.4);
-  border-radius: var(--radius-sm);
+  padding: 5px 12px;
+  background: var(--gradient-winner);
+  background-size: 200% 100%;
+  animation: gradientShimmer 9s linear infinite;
+  color: white;
+  border: none;
+  border-radius: var(--r-sm);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.08em;
   white-space: nowrap;
-  box-shadow: 0 0 12px hsl(var(--color-accent-gold) / 0.15);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  /* Flat, same as the FABs: a soft drop shadow to lift it off the art plus
+     the brand glow — no inset lip, so the badge and buttons read as one
+     system. */
+  box-shadow:
+    0 6px 22px -8px rgba(0, 0, 0, 0.7),
+    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--accent-teal) 30%, transparent);
+}
+
+/* Shared keyframe for all flowing multi-neon gradient animations
+   (award badge, hero shimmer word). Lives here as a global so CSS
+   modules can reference it by name without re-declaring. */
+@keyframes gradientShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
 }
 
 .award-badge-icon {
-  font-size: 0.75rem;
-  filter: drop-shadow(0 0 4px hsl(var(--color-accent-gold) / 0.4));
+  font-size: 0.8rem;
+  color: white;
 }
 
-/* ── Global Tag Styles ── */
+@media (prefers-reduced-motion: reduce) {
+  .award-badge {
+    animation: none;
+  }
+}
+
 .simple-tags {
   display: flex;
   flex-wrap: wrap;
@@ -272,22 +444,22 @@ body::before {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   padding: 2px 8px;
-  background: hsl(var(--color-bg-elevated));
-  border-radius: var(--radius-lg);
-  color: hsl(var(--color-text-secondary));
-  border: 1px solid hsl(var(--color-border));
+  background: var(--bg-elevated);
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
 }
 
 .tag-category {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  background: hsl(var(--color-accent-teal) / 0.1);
-  color: hsl(var(--color-accent-teal));
-  border: 1px solid hsl(var(--color-accent-teal) / 0.5);
+  letter-spacing: 0.08em;
+  background: var(--accent-violet-soft);
+  color: var(--accent-violet);
+  border: 1px solid color-mix(in srgb, var(--accent-violet) 40%, transparent);
   padding: 2px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--r-sm);
   text-transform: uppercase;
 }
 
@@ -296,9 +468,9 @@ body::before {
   font-size: 0.65rem;
   padding: 1px 6px;
   background: transparent;
-  color: hsl(var(--color-accent-teal));
-  border-radius: var(--radius-sm);
-  border: 1px solid hsl(var(--color-accent-teal));
+  color: var(--text-muted);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
   font-weight: 500;
 }
 
@@ -314,27 +486,32 @@ button {
   cursor: pointer;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--color-bg-base));
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--color-bg-elevated));
-  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--r-pill);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--color-accent-purple) / 0.5);
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* ── Algolia: pagination selected state needs explicit bg ── */
+/* Algolia injects its own stylesheet with !important on these properties,
+   so equal-specificity rules lose — we must escalate to win. */
 .ais-Pagination-link--selected {
-  background-color: hsl(var(--color-accent-purple)) !important;
-  border-color: hsl(var(--color-accent-purple)) !important;
-  color: white !important;
+  background-color: transparent !important;
+  border-color: var(--accent-violet) !important;
+  color: var(--accent-violet) !important;
+}
+
+::selection {
+  background: var(--text-primary);
+  color: var(--bg-deep);
 }

@@ -1,130 +1,360 @@
+/* Own body-level dock, sibling to the chat FAB — not nested inside the chat
+   container (whose stacking/transform context trapped this fixed position and
+   floated it over the grid). Offset sits just left of the chat toggle:
+   chat margin + toggle width (60px) + gap (16px). z-index clears the chat so
+   the hover panel stays visible while the chat window is open. */
 .playerWrapper {
-  position: relative;
+  position: fixed;
+  bottom: 5rem;
+  right: calc(5rem + 60px + 16px);
+  z-index: 1100;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  z-index: auto;
 }
 
+/* ── FAB Play Button ── */
+/* Filled neon-pink circle, white icon. A deliberate action-color burst —
+   one of the few colored elements on an otherwise monochrome surface. */
 .playButton {
-  width: 50px;
-  height: 50px;
-  border-radius: var(--radius-round);
-  background: hsl(var(--color-bg-surface));
-  border: 2px solid hsl(var(--color-accent-pink));
-  color: hsl(var(--color-accent-pink));
+  width: 60px;
+  height: 60px;
+  border-radius: 99px;
+  background: var(--accent-pink);
+  border: none;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s var(--ease-spring);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition:
+    transform var(--transition-base),
+    background var(--transition-base),
+    box-shadow var(--transition-base);
+  box-shadow:
+    0 6px 22px -8px rgba(0, 0, 0, 0.7),
+    0 0 calc(18px * var(--glow)) var(--accent-pink-soft);
   position: relative;
   z-index: 2;
   pointer-events: auto;
 }
 
 .playButton:hover {
-  transform: scale(1.1);
-  background: hsl(var(--color-bg-elevated));
-  color: hsl(var(--color-accent-pink));
-  box-shadow: 0 8px 24px hsl(var(--color-accent-pink) / 0.4);
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--accent-pink) 85%, white);
+  box-shadow:
+    0 8px 26px -8px rgba(0, 0, 0, 0.75),
+    0 0 calc(24px * var(--glow)) var(--accent-pink-soft);
 }
 
 .active {
-  background: hsl(var(--color-bg-elevated));
-  color: hsl(var(--color-accent-pink));
-  box-shadow: 0 0 15px hsl(var(--color-accent-pink) / 0.5);
-  animation: pulse 2s infinite ease-in-out;
+  box-shadow:
+    0 6px 22px -8px rgba(0, 0, 0, 0.7),
+    0 0 calc(22px * var(--glow)) var(--accent-pink-soft);
+}
+
+.buttonLabel {
+  display: none;
 }
 
 .explicitBadge {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  background: hsl(var(--color-bg-base));
-  color: hsl(var(--color-text-primary));
-  font-size: 8px;
-  font-weight: bold;
-  padding: 2px 4px;
-  border-radius: var(--radius-sm);
-  border: 1px solid hsl(var(--color-text-primary));
+  top: -6px;
+  right: -6px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 3px 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  letter-spacing: 0.04em;
   z-index: 3;
 }
 
-.infoTooltip {
+/* ── Expanded Panel (hover-revealed) ── */
+.panel {
   position: absolute;
-  top: 50%;
-  right: calc(100% + 12px);
-  transform: translateY(-50%);
-  background: hsl(var(--color-bg-surface));
-  border: 1px solid hsl(var(--color-border));
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  width: 200px;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  bottom: calc(100% + 12px);
+  right: 0;
+  width: 280px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow:
+    0 20px 60px -20px rgba(0, 0, 0, 0.8),
+    0 0 calc(40px * var(--glow)) rgba(181, 107, 255, 0.12);
   pointer-events: none;
   opacity: 0;
-  transition: opacity var(--transition-base), transform var(--transition-base);
-  z-index: 10;
-  white-space: nowrap;
+  transform: translateY(6px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
-.playButton:hover + .infoTooltip,
-.playButton:focus-visible + .infoTooltip {
+.playerWrapper:hover .panel {
   opacity: 1;
-  transform: translateY(-50%) translateX(-8px);
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
-/* Mobile: tooltip above on small screens to avoid going off-screen */
-@media (max-width: 768px) {
-  .infoTooltip {
-    top: auto;
-    right: 50%;
-    bottom: calc(100% + 12px);
-    transform: translateX(50%);
-    width: 160px;
-  }
-
-  .playButton:hover + .infoTooltip,
-  .playButton:focus-visible + .infoTooltip {
-    opacity: 1;
-    transform: translateX(50%) translateY(-8px);
-  }
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.songTitle {
-  display: block;
-  font-weight: bold;
+.albumArt {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--r-md);
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-violet);
+}
+
+.trackInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.trackTitle {
+  font-family: var(--font-display);
   font-size: 0.9rem;
-  color: hsl(var(--color-text-primary));
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.bandName {
-  display: block;
-  font-size: 0.75rem;
-  color: hsl(var(--color-text-muted));
+.trackExplicit {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  background: var(--bg-base);
+  flex-shrink: 0;
 }
 
-.explicitWarning {
-  display: block;
-  font-size: 0.7rem;
-  color: hsl(var(--color-accent-pink));
-  margin-top: 4px;
+.trackMeta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  font-weight: 800;
 }
 
-@keyframes pulse {
+/* ── Waveform ── */
+.waveform {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  height: 32px;
+}
+
+.bar {
+  width: 3px;
+  height: 6px;
+  border-radius: 2px;
+  transform-origin: bottom;
+}
+
+/* Cycle through pink → violet → teal across 7 bars */
+.bar:nth-child(1) {
+  background: var(--accent-pink);
+}
+.bar:nth-child(2) {
+  background: color-mix(in srgb, var(--accent-pink) 60%, var(--accent-violet));
+}
+.bar:nth-child(3) {
+  background: var(--accent-violet);
+}
+.bar:nth-child(4) {
+  background: color-mix(in srgb, var(--accent-violet) 50%, var(--accent-teal));
+}
+.bar:nth-child(5) {
+  background: var(--accent-teal);
+}
+.bar:nth-child(6) {
+  background: color-mix(in srgb, var(--accent-teal) 60%, var(--accent-violet));
+}
+.bar:nth-child(7) {
+  background: var(--accent-violet);
+}
+
+/* Each bar gets a distinct random-feeling height pattern */
+.barActive {
+  animation-duration: 0.9s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+  animation-delay: calc(var(--bar-i) * 0.07s);
+}
+.bar:nth-child(7n + 1).barActive {
+  animation-name: wave1;
+}
+.bar:nth-child(7n + 2).barActive {
+  animation-name: wave2;
+}
+.bar:nth-child(7n + 3).barActive {
+  animation-name: wave3;
+}
+.bar:nth-child(7n + 4).barActive {
+  animation-name: wave4;
+}
+.bar:nth-child(7n + 5).barActive {
+  animation-name: wave5;
+}
+.bar:nth-child(7n + 6).barActive {
+  animation-name: wave6;
+}
+.bar:nth-child(7n).barActive {
+  animation-name: wave7;
+}
+
+@keyframes wave1 {
   0% {
-    box-shadow: 0 0 0 0 hsl(var(--color-accent-pink) / 0.4);
+    height: 8px;
   }
-  70% {
-    box-shadow: 0 0 0 10px hsl(var(--color-accent-pink) / 0);
+  50% {
+    height: 22px;
   }
   100% {
-    box-shadow: 0 0 0 0 hsl(var(--color-accent-pink) / 0);
+    height: 12px;
+  }
+}
+@keyframes wave2 {
+  0% {
+    height: 24px;
+  }
+  50% {
+    height: 6px;
+  }
+  100% {
+    height: 18px;
+  }
+}
+@keyframes wave3 {
+  0% {
+    height: 14px;
+  }
+  50% {
+    height: 30px;
+  }
+  100% {
+    height: 10px;
+  }
+}
+@keyframes wave4 {
+  0% {
+    height: 28px;
+  }
+  50% {
+    height: 8px;
+  }
+  100% {
+    height: 22px;
+  }
+}
+@keyframes wave5 {
+  0% {
+    height: 10px;
+  }
+  50% {
+    height: 26px;
+  }
+  100% {
+    height: 6px;
+  }
+}
+@keyframes wave6 {
+  0% {
+    height: 18px;
+  }
+  50% {
+    height: 12px;
+  }
+  100% {
+    height: 28px;
+  }
+}
+@keyframes wave7 {
+  0% {
+    height: 6px;
+  }
+  50% {
+    height: 20px;
+  }
+  100% {
+    height: 14px;
+  }
+}
+
+/* ── Progress ── */
+.progressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 3px;
+  border: none;
+  border-radius: 2px;
+  background: var(--border-strong);
+  overflow: hidden;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.progressTrack::-webkit-progress-bar {
+  background: var(--border-strong);
+  border-radius: 2px;
+}
+
+.progressTrack::-webkit-progress-value {
+  background: linear-gradient(to right, var(--accent-pink), var(--accent-teal));
+  border-radius: 2px;
+  transition: width 0.5s linear;
+}
+
+.progressTrack::-moz-progress-bar {
+  background: linear-gradient(to right, var(--accent-pink), var(--accent-teal));
+  border-radius: 2px;
+}
+
+.timestamps {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barActive {
+    animation: none;
   }
 }

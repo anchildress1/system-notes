@@ -63,7 +63,10 @@ describe('MusicPlayer', () => {
     expect(globalThis.HTMLMediaElement.prototype.pause).toHaveBeenCalledTimes(1);
 
     // Should immediately switch back to Play state (pause is synchronous in the handler)
-    expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+    expect(screen.getByTestId('play-button')).toHaveAttribute(
+      'aria-label',
+      expect.stringMatching(/^Play/i)
+    );
   });
 
   it('handles playback failure gracefully', async () => {
@@ -138,17 +141,23 @@ describe('MusicPlayer', () => {
     fireEvent.error(getAudioElement());
 
     // isPlaying should revert to false, hasError should be true (button disabled)
-    expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+    expect(screen.getByTestId('play-button')).toHaveAttribute(
+      'aria-label',
+      expect.stringMatching(/^Play/i)
+    );
     expect(screen.getByTestId('play-button')).toBeDisabled();
 
     consoleSpy.mockRestore();
   });
 
   it('does not call play on initial mount without user interaction', () => {
-    // Verify the component renders in a paused state and does not auto-play.
-    // Confirms the mount state is correct and play is never called until the user clicks.
     render(<MusicPlayer />);
     expect(globalThis.HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+  });
+
+  it('renders player panel in the DOM at all times', () => {
+    render(<MusicPlayer />);
+    expect(screen.getByTestId('player-panel')).toBeInTheDocument();
   });
 });

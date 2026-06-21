@@ -1,108 +1,208 @@
 .header {
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 80px;
-  padding-inline: max(2rem, calc((100% - 1300px) / 2));
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: hsl(var(--color-bg-base) / 0.6);
-  backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--glass-border);
   z-index: var(--z-sticky);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  background: linear-gradient(180deg, rgba(8, 9, 12, 0.82) 0%, rgba(8, 9, 12, 0.55) 100%);
+  border-bottom: 1px solid var(--border);
 }
 
-.identity {
+.row {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 36px;
+  width: 100%;
+  position: relative;
 }
 
-.logoLink {
-  position: relative;
-  text-decoration: none;
+/* ── Brand ── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
   color: inherit;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-base);
+  text-decoration: none;
 }
 
-.logoLink:hover .name::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, hsl(var(--color-accent-pink) / 0.7), transparent);
-  border-radius: 1px;
-  box-shadow: 0 0 8px hsl(var(--color-accent-pink) / 0.4), 0 0 16px hsl(var(--color-accent-pink) / 0.2);
+.brandMark {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  overflow: hidden;
 }
 
-.name {
-  position: relative;
-  font-size: 1.5rem;
+.brandMarkImage {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: var(--r-md);
+  display: block;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brandTitle {
   font-family: var(--font-mono);
-  font-weight: 700;
-  color: hsl(var(--color-text-primary));
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: var(--text-primary);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.handle {
+.brandSub {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: hsl(var(--color-accent-pink));
-  opacity: 0.8;
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
 }
 
+/* ── Nav ── */
 .nav {
   display: flex;
-  gap: var(--space-sm);
   align-items: center;
+  gap: 4px;
 }
 
 .navLink {
   position: relative;
-  font-size: 0.9rem;
-  color: hsl(var(--color-text-secondary));
-  transition: all var(--transition-base);
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: var(--r-md);
+  /* Resting affordance: a visible chip (faint fill + border) so the items
+     read as tappable nav, not plain label text. */
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base),
+    background var(--transition-base);
+  white-space: nowrap;
 }
 
 .navLink:hover {
-  color: hsl(var(--color-text-primary));
+  color: var(--text-primary);
+  border-color: var(--accent-violet);
+  background: rgba(255, 255, 255, 0.06);
 }
 
+/* Active state: neutral text on subtle lift + a small violet indicator dot.
+   Matches the filter button pattern — color belongs to data, not chrome. */
 .navLink.active {
-  color: hsl(var(--color-text-primary));
-  background: transparent;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.045);
+  padding-left: 22px;
 }
 
-.navLink.active::after {
+.navLink.active::before {
   content: '';
   position: absolute;
-  bottom: -2px;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, hsl(338 70% 62% / 0.7), transparent);
-  border-radius: 1px;
-  box-shadow: 0 0 8px hsl(338 70% 62% / 0.4), 0 0 16px hsl(338 70% 62% / 0.2);
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  background: var(--accent-violet);
+  border-radius: var(--r-pill);
 }
 
+/* ── CTA Blog link ── */
+/* Visual treatment comes from the shared global `.cta-external`; this class
+   only carries the header-specific layout so the look can't drift. */
+.navCta {
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.navCtaArrow {
+  opacity: 0.6;
+  transition:
+    color var(--transition-base),
+    opacity var(--transition-base);
+}
+
+/* Hover brings color in through the icon only — chrome stays neutral. */
+.navCta:hover .navCtaArrow {
+  color: var(--accent-violet);
+  opacity: 1;
+}
+
+/* ── Status pill ── */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  padding: 6px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--accent-teal);
+  box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
+  animation: pulseDot 2.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+
+/* ── Skip Link ── */
 .skipLink {
   position: absolute;
   top: -200px;
   left: 50%;
   transform: translateX(-50%);
-  background: hsl(var(--color-accent-teal));
-  color: hsl(var(--color-bg-base));
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
   padding: 0.5rem 1rem;
   z-index: var(--z-modal);
-  font-weight: bold;
-  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.75rem;
+  border-radius: var(--r-md);
   transition: top var(--transition-slow);
 }
 
@@ -110,54 +210,37 @@
   top: 1rem;
 }
 
-.ctaButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  background: hsl(var(--color-accent-pink) / 0.15);
-  color: hsl(var(--color-text-primary));
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  text-decoration: none;
-  transition: all var(--transition-base);
-  border: 1.5px solid hsl(var(--color-accent-pink));
-  white-space: nowrap;
-}
+@media (max-width: 1024px) {
+  .row {
+    padding: 12px 24px;
+  }
 
-.ctaButton:hover {
-  background: hsl(var(--color-accent-pink) / 0.25);
-  color: hsl(var(--color-text-primary));
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px hsl(var(--color-accent-pink) / 0.4);
+  .status {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
-  .header {
-    height: auto;
-    padding: 1rem;
-    flex-direction: column;
-    gap: 1rem;
-    background: hsl(var(--color-bg-base) / 0.95);
-    backdrop-filter: none;
-    position: sticky;
-    top: 0;
+  .row {
+    padding: 10px 16px;
+  }
+
+  .navCta {
+    display: none;
+  }
+
+  .navLink {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 520px) {
+  .brandSub {
+    display: none;
   }
 
   .nav {
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .identity {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .name {
-    font-size: 1.25rem;
+    gap: 2px;
   }
 }

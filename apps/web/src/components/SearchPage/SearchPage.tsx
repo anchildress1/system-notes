@@ -1,140 +1,54 @@
 'use client';
 
-import { useMemo, useState, useCallback, useEffect, Suspense } from 'react';
+import { useMemo, useEffect, useRef, useState, useId } from 'react';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import { createNullCache } from '@algolia/client-common';
 import {
   InstantSearch,
-  RefinementList,
-  HierarchicalMenu,
-  Stats,
-  ClearRefinements,
   Configure,
+  useSearchBox,
+  useStats,
+  useRefinementList,
+  useClearRefinements,
+  useDynamicWidgets,
 } from 'react-instantsearch';
 import aa from 'search-insights';
 import { SiAlgolia } from 'react-icons/si';
-import { FiPlus, FiMinus, FiSliders } from 'react-icons/fi';
 import 'instantsearch.css/themes/reset.css';
 import styles from './SearchPage.module.css';
 import FactCard from '../FactCard/FactCard';
-import InfiniteHits from './InfiniteHits';
+import ResultsGrid from './ResultsGrid';
+import Pagination from './Pagination';
 import LoadingIndicator from './LoadingIndicator';
 import { createSearchRouting } from './searchRouting';
 import { ALGOLIA_INDEX } from '@/config';
-import { useFactIdRouting } from '@/hooks/useFactIdRouting';
-import FactCardOverlay from '../FactCard/FactCardOverlay';
 import { getChatSessionId } from '@/utils/userToken';
-import {
-  ALGOLIA_APP_ID,
-  ALGOLIA_SEARCH_KEY,
-  ALGOLIA_AI_ID,
-  hasValidAlgoliaCredentials,
-} from '@/lib/algolia';
+import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
+import { humanizeAttribute } from '@/lib/humanize';
 
 const appId = ALGOLIA_APP_ID;
 const searchKey = ALGOLIA_SEARCH_KEY;
-const searchAiId = ALGOLIA_AI_ID;
 const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
 
 const hasCredentials = hasValidAlgoliaCredentials();
-const searchClient = hasCredentials ? algoliasearch(appId, searchKey) : null;
 
-// Use the same userToken for both search requests and Insights events so that
-// queryID returned in search results can be correlated to click events.
+// Browser build defaults to in-memory response + request caches. Keep them in
+// prod for speed; disable in dev so Algolia dashboard changes (renderingContent,
+// rules, settings) show up on the next query without a hard reload.
+const isDev = process.env.NODE_ENV === 'development';
+const clientOptions = isDev
+  ? { responsesCache: createNullCache(), requestsCache: createNullCache() }
+  : undefined;
+
+const searchClient = hasCredentials ? algoliasearch(appId, searchKey, clientOptions) : null;
+
+// Same userToken for search + Insights so queryID correlates to click events.
 aa('setUserToken', getChatSessionId());
-
-declare global {
-  var SiteSearchAskAI: { init: (config: unknown) => void } | undefined;
-  var SiteSearch: { init: (config: unknown) => void } | undefined;
-  var sitesearch: { init: (config: unknown) => void } | undefined;
-  var AlgoliaSiteSearch: { init: (config: unknown) => void } | undefined;
-}
-
-function useSiteSearchWithAI(
-  appId: string,
-  apiKey: string,
-  indexName: string,
-  searchAiId: string,
-  enabled: boolean
-) {
-  const initRef = useCallback(() => {
-    if (!document.querySelector('#search-askai')) return;
-
-    const candidates = [
-      'SiteSearchAskAI',
-      'SiteSearch',
-      'sitesearch',
-      'AlgoliaSiteSearch',
-    ] as const;
-    const globalName = candidates.find((c) => globalThis[c]);
-    if (!globalName) return;
-
-    try {
-      globalThis[globalName]?.init({
-        container: '#search-askai',
-        applicationId: appId,
-        apiKey,
-        indexName,
-        assistantId: searchAiId,
-        insights: true,
-        suggestedQuestionsEnabled: false,
-        attributes: {
-          primaryText: 'title',
-          secondaryText: 'blurb',
-          tertiaryText: 'tags.lvl1',
-          image: undefined,
-        },
-      });
-    } catch (e) {
-      console.error('[SiteSearch] Failed to init:', e);
-    }
-  }, [appId, apiKey, indexName, searchAiId]);
-
-  useEffect(() => {
-    if (!enabled) return;
-    import('@algolia/sitesearch/dist/search-askai.min.css');
-    import('@algolia/sitesearch/dist/search-askai.min.js')
-      .then(initRef)
-      .catch((err) => console.error('[SiteSearch] Failed to load:', err));
-  }, [enabled, initRef]);
-}
-
-const refinementClassNames = {
-  root: styles.refinementRoot,
-  list: styles.refinementList,
-  item: styles.refinementItem,
-  selectedItem: styles.refinementItemSelected,
-  label: styles.refinementLabel,
-  checkbox: styles.refinementCheckbox,
-  labelText: styles.refinementLabelText,
-  count: styles.refinementCount,
-};
-
-const hierarchicalMenuClassNames = {
-  root: styles.refinementRoot,
-  list: styles.refinementList,
-  childList: styles.tagChildren,
-  item: styles.refinementItem,
-  selectedItem: styles.refinementItemSelected,
-  link: styles.hierarchicalLink,
-  label: styles.refinementLabelText,
-  count: styles.refinementCount,
-};
 
 export default function SearchPage() {
   const routing = useMemo(() => createSearchRouting(indexName), []);
-  const isEnabled = Boolean(hasCredentials);
-  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
-  const [showFilters, setShowFilters] = useState(false);
 
-  const toggleSection = useCallback((section: string) => {
-    setCollapsedSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  }, []);
-
-  const toggleFilters = useCallback(() => setShowFilters((prev) => !prev), []);
-
-  useSiteSearchWithAI(appId, searchKey, indexName, searchAiId, isEnabled);
-
-  if (!isEnabled || !searchClient) {
+  if (!hasCredentials || !searchClient) {
     return (
       <div className={styles.container}>
         <div className={styles.errorState}>
@@ -153,167 +67,358 @@ export default function SearchPage() {
         indexName={indexName}
         insights={{ insightsClient: aa }}
         routing={routing}
+        future={{ preserveSharedStateOnUnmount: true }}
       >
         <Configure
-          hitsPerPage={20}
+          hitsPerPage={24}
           attributesToHighlight={['title', 'blurb', 'fact']}
           clickAnalytics
         />
 
-        <div className={styles.searchSection}>
-          <div id="search-askai" className={styles.siteSearchContainer} data-testid="sitesearch" />
-          <div className={styles.metaRow}>
-            <Stats
-              classNames={{ root: styles.statsRoot }}
-              translations={{
-                rootElementText({ nbHits, processingTimeMS }) {
-                  return `${nbHits.toLocaleString()} results in ${processingTimeMS}ms`;
-                },
-              }}
-            />
-            <a
-              href="https://www.algolia.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="algolia-attribution"
-              aria-label="Powered by Algolia"
-            >
-              <span className="algolia-hoverable">
-                <SiAlgolia aria-hidden="true" className="algolia-icon" />
-                <span className="algolia-name">Algolia</span>
-              </span>
-              <span className="algolia-prefix">Powered by</span>
-            </a>
-          </div>
+        <RetrieveBar />
+        <div className={styles.retrieveAttribution}>
+          <AlgoliaAttribution />
         </div>
+        <FilterBar />
+        <SectionHeader />
 
-        <div className={styles.layout}>
-          <button
-            type="button"
-            className={styles.filterToggle}
-            onClick={toggleFilters}
-            aria-expanded={showFilters}
-            aria-controls="search-sidebar"
-          >
-            <FiSliders size={16} aria-hidden="true" />
-            {showFilters ? 'Hide Filters' : 'Filters'}
-          </button>
-
-          <aside
-            id="search-sidebar"
-            className={`${styles.sidebar} ${showFilters ? '' : styles.sidebarCollapsed}`}
-          >
-            <div className={styles.filterSection}>
-              <div className={styles.refinementGroup}>
-                <button
-                  type="button"
-                  className={styles.refinementTitleToggle}
-                  onClick={() => toggleSection('category')}
-                  aria-expanded={!collapsedSections.category}
-                  aria-controls="filter-category"
-                >
-                  <h2 className={styles.refinementTitle}>Category</h2>
-                  {collapsedSections.category ? (
-                    <FiPlus size={14} aria-hidden="true" />
-                  ) : (
-                    <FiMinus size={14} aria-hidden="true" />
-                  )}
-                </button>
-                <div id="filter-category">
-                  {!collapsedSections.category && (
-                    <RefinementList attribute="category" classNames={refinementClassNames} />
-                  )}
-                </div>
-              </div>
-
-              <div className={styles.refinementGroup}>
-                <button
-                  type="button"
-                  className={styles.refinementTitleToggle}
-                  onClick={() => toggleSection('builds')}
-                  aria-expanded={!collapsedSections.builds}
-                  aria-controls="filter-builds"
-                >
-                  <h2 className={styles.refinementTitle}>Builds</h2>
-                  {collapsedSections.builds ? (
-                    <FiPlus size={14} aria-hidden="true" />
-                  ) : (
-                    <FiMinus size={14} aria-hidden="true" />
-                  )}
-                </button>
-                <div id="filter-builds">
-                  {!collapsedSections.builds && (
-                    <RefinementList attribute="projects" classNames={refinementClassNames} />
-                  )}
-                </div>
-              </div>
-
-              <div className={styles.refinementGroup}>
-                <button
-                  type="button"
-                  className={styles.refinementTitleToggle}
-                  onClick={() => toggleSection('tags')}
-                  aria-expanded={!collapsedSections.tags}
-                  aria-controls="filter-tags"
-                >
-                  <h2 className={styles.refinementTitle}>Tags</h2>
-                  {collapsedSections.tags ? (
-                    <FiPlus size={14} aria-hidden="true" />
-                  ) : (
-                    <FiMinus size={14} aria-hidden="true" />
-                  )}
-                </button>
-                <div id="filter-tags">
-                  {!collapsedSections.tags && (
-                    <HierarchicalMenu
-                      attributes={['tags.lvl0', 'tags.lvl1']}
-                      limit={50}
-                      classNames={hierarchicalMenuClassNames}
-                    />
-                  )}
-                </div>
-              </div>
-
-              <ClearRefinements
-                classNames={{
-                  root: styles.clearRoot,
-                  button: styles.clearButton,
-                  disabledButton: styles.clearButtonDisabled,
-                }}
-                translations={{
-                  resetButtonText: 'Clear Filters',
-                }}
-              />
-            </div>
-          </aside>
-
-          <section className={styles.results} aria-label="Search results">
-            <LoadingIndicator />
-            <InfiniteHits
-              hitComponent={
-                FactCard as React.ComponentType<{
-                  hit: import('instantsearch.js').Hit;
-                  sendEvent?: import('@/types/algolia').SendEventForHits;
-                }>
-              }
-              classNames={{
-                root: styles.hitsRoot,
-                list: styles.hitsList,
-                item: styles.hitsItem,
-                empty: styles.hitsEmpty,
-              }}
-            />
-          </section>
-        </div>
+        <section className={styles.results} aria-label="Search results">
+          <LoadingIndicator />
+          <ResultsGrid
+            hitComponent={
+              FactCard as React.ComponentType<{
+                hit: import('instantsearch.js').Hit;
+                sendEvent?: import('@/types/algolia').SendEventForHits;
+              }>
+            }
+            classNames={{
+              list: styles.hitsList,
+              item: styles.hitsItem,
+              empty: styles.hitsEmpty,
+            }}
+          />
+          <Pagination
+            classNames={{
+              root: styles.pagination,
+              list: styles.paginationList,
+              item: styles.paginationItem,
+              itemActive: styles.paginationItemActive,
+              itemDisabled: styles.paginationItemDisabled,
+              button: styles.paginationButton,
+            }}
+          />
+        </section>
       </InstantSearch>
-      <Suspense fallback={null}>
-        <FactIdOverlay indexName={indexName} />
-      </Suspense>
     </div>
   );
 }
 
-function FactIdOverlay({ indexName }: { indexName: string }) {
-  const { overlayHit, closeOverlay } = useFactIdRouting(indexName);
-  return overlayHit ? <FactCardOverlay hit={overlayHit} onClose={closeOverlay} /> : null;
+function RetrieveBar() {
+  const { query, refine } = useSearchBox();
+  const { nbHits } = useStats();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      if ((e.metaKey || e.ctrlKey) && key === 'k' && !e.shiftKey) {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    globalThis.addEventListener('keydown', onKey);
+    return () => globalThis.removeEventListener('keydown', onKey);
+  }, []);
+
+  return (
+    // A <label> focuses its input on click natively, so the whole bar stays
+    // clickable without a handler on a non-interactive element. The input keeps
+    // its own aria-label, so the surrounding text doesn't pollute its name.
+    <label className={styles.retrieve}>
+      <span className={styles.retrievePrompt} aria-hidden="true">
+        retrieve&gt;
+      </span>
+      <input
+        ref={inputRef}
+        type="search"
+        className={styles.retrieveInput}
+        value={query}
+        onChange={(e) => refine(e.target.value)}
+        placeholder="search by keyword · 'code review', 'adhd', 'carbon trace'"
+        aria-label="Search the index"
+        autoComplete="off"
+        spellCheck={false}
+      />
+      <span className={styles.retrieveMeta}>
+        <span>
+          <b>{nbHits.toLocaleString()}</b> match{nbHits === 1 ? '' : 'es'}
+        </span>
+        <span className={styles.retrieveSep}>·</span>
+        <span>press</span>
+        <kbd className={styles.kbd}>⌘</kbd>
+        <kbd className={styles.kbd}>K</kbd>
+      </span>
+    </label>
+  );
+}
+
+function FilterBar() {
+  // Facet list, order, and pinned values are owned by the index via
+  // `renderingContent.facetOrdering` (set in the Algolia dashboard). The hook
+  // reads it from the search response, so adding/reordering filters never
+  // requires a code change here.
+  const { attributesToRender } = useDynamicWidgets({});
+  // Defensive: dedupe in case renderingContent.facetOrdering.facets.order lists
+  // the same attribute twice. Order-preserving.
+  const attributes = useMemo(() => Array.from(new Set(attributesToRender)), [attributesToRender]);
+
+  if (attributes.length === 0) return null;
+
+  return (
+    <nav className={styles.filterBar} aria-label="Search filters">
+      {attributes.map((attribute) => (
+        <FilterDropdown
+          key={attribute}
+          attribute={attribute}
+          label={humanizeAttribute(attribute)}
+        />
+      ))}
+      <ClearAllFilters />
+    </nav>
+  );
+}
+
+function ClearAllFilters() {
+  const { refine, canRefine } = useClearRefinements();
+  if (!canRefine) return null;
+  return (
+    <button
+      type="button"
+      className={styles.filterClearAll}
+      onClick={() => refine()}
+      aria-label="Clear all active filters"
+    >
+      clear all ✕
+    </button>
+  );
+}
+
+function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; label: string }>) {
+  // No `sortBy` — let Algolia's `renderingContent.facetOrdering.values[attr].order`
+  // (pinned values from the dashboard) drive the order. Setting `sortBy` would
+  // silently override it.
+  const { items: rawItems, refine } = useRefinementList({
+    attribute,
+    limit: 20,
+    operator: 'or',
+  });
+  // Defensive: dedupe by value. Some renderingContent + hierarchical-facet
+  // combinations (e.g. a value pinned via facetOrdering that also appears in
+  // the natural results) cause the hook to return duplicates, which collide
+  // on React keys.
+  const items = useMemo(() => {
+    const seen = new Set<string>();
+    return rawItems.filter((item) => {
+      if (seen.has(item.value)) return false;
+      seen.add(item.value);
+      return true;
+    });
+  }, [rawItems]);
+  const { refine: clear, canRefine: canClear } = useClearRefinements({
+    includedAttributes: [attribute],
+  });
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const popoverId = useId();
+  const wasOpenRef = useRef(false);
+
+  const selectedItems = items.filter((item) => item.isRefined);
+  // Option layout: index 0 = "all"; items occupy 1..items.length
+  const optionCount = items.length + 1;
+
+  // Close on outside click + Escape + tab-out of dropdown
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setOpen(false);
+      }
+    };
+    const onFocusOut = (e: FocusEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.relatedTarget as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('keydown', onKey);
+    const root = rootRef.current;
+    root?.addEventListener('focusout', onFocusOut);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('keydown', onKey);
+      root?.removeEventListener('focusout', onFocusOut);
+    };
+  }, [open]);
+
+  // Focus management: when opening, move focus to the first selected option
+  // (or "all" if nothing is selected). When closing after being open,
+  // return focus to the trigger button.
+  useEffect(() => {
+    if (open) {
+      const firstSelectedIdx = items.findIndex((i) => i.isRefined);
+      const idx = firstSelectedIdx >= 0 ? firstSelectedIdx + 1 : 0;
+      requestAnimationFrame(() => optionRefs.current[idx]?.focus());
+    } else if (wasOpenRef.current) {
+      buttonRef.current?.focus();
+    }
+    wasOpenRef.current = open;
+  }, [open, items]);
+
+  if (items.length === 0 && !canClear) return null;
+
+  const totalCount = items.reduce((sum, item) => sum + item.count, 0);
+  const selectedCount = selectedItems.length;
+  let buttonText: string;
+  if (selectedCount === 0) buttonText = `${label}: all`;
+  else if (selectedCount === 1) buttonText = `${label}: ${selectedItems[0].label.toLowerCase()}`;
+  else buttonText = `${label}: ${selectedItems[0].label.toLowerCase()} +${selectedCount - 1}`;
+  const buttonAria =
+    selectedCount === 0
+      ? `${label} filter, no selection`
+      : `${label} filter, ${selectedCount} selected: ${selectedItems.map((i) => i.label).join(', ')}`;
+
+  const onPopoverKeyDown = (e: React.KeyboardEvent) => {
+    const focusedEl = document.activeElement;
+    const focusedIdx = optionRefs.current.indexOf(focusedEl as HTMLButtonElement | null);
+    if (focusedIdx < 0) return;
+    const last = optionCount - 1;
+    switch (e.key) {
+      case 'ArrowDown': {
+        e.preventDefault();
+        const next = focusedIdx < last ? focusedIdx + 1 : 0;
+        optionRefs.current[next]?.focus();
+        break;
+      }
+      case 'ArrowUp': {
+        e.preventDefault();
+        const prev = focusedIdx > 0 ? focusedIdx - 1 : last;
+        optionRefs.current[prev]?.focus();
+        break;
+      }
+      case 'Home':
+        e.preventDefault();
+        optionRefs.current[0]?.focus();
+        break;
+      case 'End':
+        e.preventDefault();
+        optionRefs.current[last]?.focus();
+        break;
+    }
+  };
+
+  return (
+    <div ref={rootRef} className={styles.filterDropdown}>
+      <button
+        ref={buttonRef}
+        type="button"
+        className={`${styles.filterButton} ${selectedCount > 0 ? styles.filterButtonActive : ''}`}
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-haspopup="true"
+        aria-controls={popoverId}
+        aria-label={buttonAria}
+      >
+        <span aria-hidden="true">{buttonText}</span>
+        <span aria-hidden="true" className={styles.filterCaret}>
+          ▾
+        </span>
+      </button>
+      {open && (
+        <fieldset
+          id={popoverId}
+          className={styles.filterPopover}
+          aria-label={`${label} filter options`}
+        >
+          <button
+            ref={(el) => {
+              optionRefs.current[0] = el;
+            }}
+            type="button"
+            className={`${styles.filterOption} ${selectedCount === 0 ? styles.filterOptionActive : ''}`}
+            onClick={() => {
+              // "all" is a one-shot reset: clear everything in this attribute
+              // and close the popover so the action feels final.
+              clear();
+              setOpen(false);
+            }}
+            onKeyDown={onPopoverKeyDown}
+            aria-pressed={selectedCount === 0}
+          >
+            <span>all</span>
+            <span className={styles.filterCount}>{String(totalCount).padStart(2, '0')}</span>
+          </button>
+          {items.map((item, i) => (
+            <button
+              key={item.value}
+              ref={(el) => {
+                optionRefs.current[i + 1] = el;
+              }}
+              type="button"
+              className={`${styles.filterOption} ${item.isRefined ? styles.filterOptionActive : ''}`}
+              // Multi-select: toggle this value and KEEP popover open so the
+              // user can pick more in one pass. Escape, click-outside, or
+              // re-clicking the trigger closes it.
+              onClick={() => refine(item.value)}
+              onKeyDown={onPopoverKeyDown}
+              aria-pressed={item.isRefined}
+            >
+              <span className={styles.filterOptionLabel}>
+                <span aria-hidden="true" className={styles.filterCheck}>
+                  {item.isRefined ? '✓' : ''}
+                </span>
+                <span>{item.label.toLowerCase()}</span>
+              </span>
+              <span className={styles.filterCount}>{String(item.count).padStart(2, '0')}</span>
+            </button>
+          ))}
+        </fieldset>
+      )}
+    </div>
+  );
+}
+
+function SectionHeader() {
+  // processingTimeMS is Algolia's server-side query time, straight off the
+  // search response — no extra plumbing, no client timing math.
+  const { nbHits, processingTimeMS } = useStats();
+  return (
+    <div className={styles.sectionHeader}>
+      <span className={styles.sectionHeaderMeta}>
+        {nbHits.toLocaleString()} entries · {processingTimeMS}ms
+      </span>
+    </div>
+  );
+}
+
+function AlgoliaAttribution() {
+  return (
+    <a
+      href="https://www.algolia.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="algolia-attribution"
+    >
+      <span className="algolia-prefix">Powered by</span>
+      <span className="algolia-hoverable">
+        <SiAlgolia aria-hidden="true" className="algolia-icon" />
+        <span className="algolia-name">Algolia</span>
+      </span>
+    </a>
+  );
 }

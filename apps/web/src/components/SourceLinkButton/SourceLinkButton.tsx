@@ -8,10 +8,17 @@ interface SourceLinkButtonProps {
   label: string;
   icon: ReactNode;
   onClick?: (e: React.MouseEvent) => void;
+  tabIndex?: number;
 }
 
 export default memo(
-  function SourceLinkButton({ url, label, icon, onClick }: Readonly<SourceLinkButtonProps>) {
+  function SourceLinkButton({
+    url,
+    label,
+    icon,
+    onClick,
+    tabIndex,
+  }: Readonly<SourceLinkButtonProps>) {
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
@@ -24,11 +31,20 @@ export default memo(
     };
 
     return (
-      <button type="button" className={styles.sourceLink} onClick={handleClick} aria-label={label}>
+      <button
+        type="button"
+        className={styles.sourceLink}
+        onClick={handleClick}
+        aria-label={label}
+        tabIndex={tabIndex}
+      >
         {icon}
       </button>
     );
   },
   (prev, next) =>
-    prev.url === next.url && prev.label === next.label && prev.onClick === next.onClick
+    prev.url === next.url &&
+    prev.label === next.label &&
+    prev.onClick === next.onClick &&
+    prev.tabIndex === next.tabIndex
 );

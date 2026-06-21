@@ -26,17 +26,22 @@ describe('Footer Component', () => {
     );
   });
 
-  it('renders build info', () => {
+  it('renders nav surface links', () => {
     render(<Footer />);
-    expect(
-      screen.getByText(/Built with GitHub Copilot, ChatGPT, Verdent, Claude \+ Gemini/i)
-    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Choices/i })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: /Builds/i })).toHaveAttribute('href', '/projects');
+    expect(screen.getByRole('link', { name: /Human/i })).toHaveAttribute('href', '/about');
   });
 
   it('renders Algolia attribution', () => {
     render(<Footer />);
-    const algoliaLink = screen.getByRole('link', { name: /Powered by Algolia/i });
+    const algoliaLink = screen.getByText('Algolia').closest('a');
     expect(algoliaLink).toHaveAttribute('href', 'https://www.algolia.com');
-    expect(screen.getByText(/Algolia/i)).toBeInTheDocument();
+    expect(screen.getByText('Powered by')).toBeInTheDocument();
+  });
+
+  it('renders build version tagline', () => {
+    render(<Footer />);
+    expect(screen.getByText(/build \/ break \/ ship/i)).toBeInTheDocument();
   });
 });

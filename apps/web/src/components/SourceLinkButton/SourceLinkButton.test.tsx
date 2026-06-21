@@ -44,15 +44,21 @@ describe('SourceLinkButton', () => {
     openSpy.mockRestore();
   });
 
+  it('applies caller-provided tab index', () => {
+    render(<SourceLinkButton {...defaultProps} tabIndex={-1} />);
+
+    expect(screen.getByLabelText('View source')).toHaveAttribute('tabindex', '-1');
+  });
+
   it('stops event propagation', async () => {
     const user = userEvent.setup();
     const parentClick = vi.fn();
     const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
 
     render(
-      <button type="button" onClick={parentClick}>
+      <div onClick={parentClick}>
         <SourceLinkButton {...defaultProps} />
-      </button>
+      </div>
     );
 
     await user.click(screen.getByLabelText('View source'));

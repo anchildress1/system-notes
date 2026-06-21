@@ -1,13 +1,24 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Instrument_Serif, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({
-  variable: '--font-sans',
+const spaceGrotesk = Space_Grotesk({
+  variable: '--font-display',
   subsets: ['latin'],
+  weight: ['400', '500', '700'],
   display: 'swap',
   preload: true,
   fallback: ['system-ui', 'sans-serif'],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: '--font-serif',
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  display: 'swap',
+  preload: true,
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -19,6 +30,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 import ClientShell from '@/components/ClientShell/ClientShell';
+import Nebula from '@/components/Nebula/Nebula';
 import { getProjects } from '@/lib/api';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anchildress1.dev';
@@ -78,7 +90,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#000000',
+  themeColor: '#0e0f13',
 };
 
 export default async function RootLayout({
@@ -137,9 +149,10 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <Nebula />
         <ClientShell>{children}</ClientShell>
       </body>
     </html>

@@ -1,116 +1,174 @@
-import { expect } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { test } from './utils';
 
-/** Override the default empty-response Algolia mock with specific hits. */
-async function mockAlgoliaWithHits(page: any, hits: any[]) {
-  // Mock external scripts (unpkg) to stay offline
-  await page.route('**/*unpkg.com/**', (route: any) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'text/javascript',
-      body: ';console.log("Mock Sitesearch loaded");',
-    })
-  );
+type MockHit = {
+  objectID: string;
+  title: string;
+  blurb?: string;
+  fact?: string;
+  content?: string;
+  category?: string;
+  projects?: string[];
+  'tags.lvl0'?: string[];
+  'tags.lvl1'?: string[];
+  signal?: number;
+  url?: string;
+  __position?: number;
+  __queryID?: string;
+};
 
-  // Unroute existing mock from the fixture, then apply custom one
+const buildHit = (overrides: Partial<MockHit> = {}): MockHit => ({
+  objectID: 'test-hit-id',
+  title: 'Test Hit Title',
+  blurb: 'Test hit blurb',
+  fact: 'Test fact content',
+  content: 'Test content',
+  category: 'Engineering',
+  projects: ['Test Project'],
+  'tags.lvl0': ['Testing'],
+  'tags.lvl1': ['Testing > Browser'],
+  signal: 3,
+  url: 'https://github.com/anchildress1/system-notes',
+  __position: 1,
+  __queryID: 'test-query-id',
+  ...overrides,
+});
+
+async function mockAlgoliaSearch(page: Page, hits: MockHit[]) {
   await page.unroute('**/*algolia*/**');
-  await page.route('**/*algolia*/**', async (route: any) => {
+  await page.route('**/*algolia*/**', async (route) => {
+    let requestCount = 1;
+    try {
+      const payload = route.request().postDataJSON() as { requests?: unknown[] };
+      requestCount = Array.isArray(payload.requests) ? payload.requests.length : 1;
+    } catch {
+      requestCount = 1;
+    }
+
+    const result = {
+      hits,
+      nbHits: hits.length,
+      page: 0,
+      nbPages: hits.length > 0 ? 1 : 0,
+      hitsPerPage: 24,
+      processingTimeMS: 1,
+      exhaustiveNbHits: true,
+      query: '',
+      params: '',
+      index: 'system-notes',
+      facets: {
+        projects: hits.reduce<Record<string, number>>((acc, hit) => {
+          for (const project of hit.projects ?? []) acc[project] = (acc[project] ?? 0) + 1;
+          return acc;
+        }, {}),
+        category: hits.reduce<Record<string, number>>((acc, hit) => {
+          if (hit.category) acc[hit.category] = (acc[hit.category] ?? 0) + 1;
+          return acc;
+        }, {}),
+        'tags.lvl0': hits.reduce<Record<string, number>>((acc, hit) => {
+          for (const tag of hit['tags.lvl0'] ?? []) acc[tag] = (acc[tag] ?? 0) + 1;
+          return acc;
+        }, {}),
+      },
+      renderingContent: {
+        facetOrdering: {
+          facets: { order: ['projects', 'category', 'tags.lvl0'] },
+          values: {},
+        },
+      },
+    };
+
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        results: [
-          {
-            hits: hits,
-            nbHits: hits.length,
-            page: 0,
-            nbPages: 1,
-            hitsPerPage: 20,
-            processingTimeMS: 1,
-            exhaustiveNbHits: true,
-            query: '',
-            params: '',
-            index: 'test_index',
-          },
-        ],
+        results: Array.from({ length: requestCount }, () => result),
       }),
     });
   });
 }
 
-/**
- * Detect whether Algolia credentials are baked into the build.
- * SearchPage renders #search-askai when credentialed, error state otherwise.
- * Must be called after navigating to a /search URL.
- */
-async function hasAlgoliaCredentials(page: any): Promise<boolean> {
-  const siteSearch = page.locator('#search-askai');
-  const errorState = page.locator('div[class*="errorState"]');
-  await expect(siteSearch.or(errorState).first()).toBeVisible({ timeout: 15000 });
-  return siteSearch.isVisible().catch(() => false);
-}
+test.describe('Search Page', () => {
+  test('renders the retrieve UI and mocked hit', async ({ page }) => {
+    await mockAlgoliaSearch(page, [buildHit()]);
 
-test.describe('Search Page — credentialed environment', () => {
-  test('renders search UI with SiteSearch widget', async ({ page }) => {
-    await mockAlgoliaWithHits(page, [{ objectID: '1', title: 'Test Hit' }]);
     await page.goto('/search');
 
-    const credentialed = await hasAlgoliaCredentials(page);
-    test.skip(!credentialed, 'Algolia credentials not baked into build');
-
-    await expect(page.locator('#search-askai')).toBeVisible();
-    const results = page.locator('section[aria-label="Search results"]');
-    await expect(results).toBeVisible();
+    await expect(page.getByRole('searchbox', { name: 'Search the index' })).toBeVisible();
+    await expect(
+      page.getByRole('region', { name: 'Search results' }).getByText('Test Hit Title').first()
+    ).toBeVisible();
+    await expect(page.getByLabel('View source for Test Hit Title')).toBeVisible();
+    await expect(page.getByText('1 entries · 1ms')).toBeVisible();
   });
 
-  test('factId deep-link opens overlay', async ({ page }) => {
-    const testId = 'test-hit-id';
-    await mockAlgoliaWithHits(page, [
-      {
-        objectID: testId,
-        title: 'Test Hit Title',
-        description: 'Test description',
-        content: 'Test content',
-        fact: 'Test fact content',
-        category: 'Engineering',
-        projects: ['test-project'],
-      },
-    ]);
-
-    await page.goto(`/search?factId=${testId}`);
-
-    const credentialed = await hasAlgoliaCredentials(page);
-    test.skip(!credentialed, 'Algolia credentials not baked into build');
-
-    const cardLink = page.locator(`[href*="factId=${testId}"]`).first();
-    await expect(cardLink).toBeVisible({ timeout: 10000 });
-
-    // FactCardOverlay renders article[role="dialog"] once useFactIdRouting fetches the card.
-    const expandedView = page.locator('article[role="dialog"]').first();
-    await expect(expandedView).toBeVisible({ timeout: 10000 });
-  });
-});
-
-test.describe('Search Page — no-credential environment', () => {
-  test('renders error state with user-friendly message', async ({ page }) => {
+  test('flips a mocked hit from a real card-area click', async ({ page }) => {
+    await mockAlgoliaSearch(page, [buildHit()]);
     await page.goto('/search');
 
-    const credentialed = await hasAlgoliaCredentials(page);
-    test.skip(credentialed, 'Algolia credentials are configured — error state will not render');
+    const resultCard = page
+      .getByRole('region', { name: 'Search results' })
+      .locator('article')
+      .first();
+    const state = resultCard.locator('[data-state]');
+    await expect(state).toHaveAttribute('data-state', 'collapsed');
 
-    const errorState = page.locator('div[class*="errorState"]');
-    await expect(errorState).toBeVisible();
-    await expect(page.locator('text=Search is currently unavailable')).toBeVisible();
+    const box = await resultCard.boundingBox();
+    expect(box).not.toBeNull();
+    await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
+
+    await expect(state).toHaveAttribute('data-state', 'expanded');
+
+    await resultCard.getByRole('button', { name: /Click to collapse/i }).click();
+
+    await expect(state).toHaveAttribute('data-state', 'collapsed');
   });
 
-  test('factId deep-link shows error state', async ({ page }) => {
+  test('updates the q route state when typing', async ({ page }) => {
+    await mockAlgoliaSearch(page, [buildHit({ title: 'Carbon Trace Test' })]);
+    await page.goto('/search');
+
+    await page.getByRole('searchbox', { name: 'Search the index' }).fill('carbon');
+
+    await expect(page).toHaveURL(/\/search\?q=carbon$/);
+  });
+
+  test('renders empty state when Algolia returns no hits', async ({ page }) => {
+    await mockAlgoliaSearch(page, []);
+
+    await page.goto('/search?q=nope');
+
+    await expect(page.getByText(/No results/i)).toBeVisible();
+    await expect(page.getByText('0 entries · 1ms')).toBeVisible();
+  });
+
+  test('keeps factId as inert legacy state', async ({ page }) => {
+    await mockAlgoliaSearch(page, [buildHit()]);
+
     await page.goto('/search?factId=test-hit-id');
 
-    const credentialed = await hasAlgoliaCredentials(page);
-    test.skip(credentialed, 'Algolia credentials are configured — error state will not render');
+    await expect(page.getByRole('searchbox', { name: 'Search the index' })).toBeVisible();
+    await expect(page.locator('article[role="dialog"]')).toHaveCount(0);
+    await expect(page.locator('[href*="factId="]')).toHaveCount(0);
+  });
 
-    const errorState = page.locator('div[class*="errorState"]');
-    await expect(errorState).toBeVisible();
-    await expect(page.locator('text=Search is currently unavailable')).toBeVisible();
+  test('opens and clears dynamic filters from mocked facet data', async ({ page }) => {
+    await mockAlgoliaSearch(page, [buildHit()]);
+    await page.goto('/search');
+
+    await page.getByRole('button', { name: /project filter, no selection/i }).click();
+    const projectOptions = page.getByRole('group', { name: /project filter options/i });
+    await expect(projectOptions).toBeVisible();
+    await expect(projectOptions.getByRole('button', { name: /all/i })).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(projectOptions.getByRole('button', { name: /test project/i })).toBeFocused();
+    await page.keyboard.press('Enter');
+
+    await expect(page.getByRole('button', { name: /project filter, 1 selected/i })).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await page.getByRole('button', { name: /Clear all active filters/i }).click();
+
+    await expect(page.getByRole('button', { name: /project filter, no selection/i })).toBeVisible();
   });
 });

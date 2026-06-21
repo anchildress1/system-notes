@@ -1,6 +1,5 @@
 import type { NextConfig } from 'next';
 import path from 'node:path';
-import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const securityHeaders = [
   {
@@ -58,22 +57,24 @@ const nextConfig: NextConfig = {
       ...(process.env.NODE_ENV === 'production'
         ? [
             {
-              // Immutable caching only for content-hashed Next.js static assets (production only)
-              source: '/_next/static/:path*',
-              headers: [
-                {
-                  key: 'Cache-Control',
-                  value: 'public, max-age=31536000, immutable',
-                },
-              ],
-            },
-            {
-              // Standard caching for other static assets (fonts, images from public/)
+              // public/ assets have no content hash, so they can go stale after a
+              // deploy that reuses a filename. Cache briefly and force revalidation
+              // instead of pinning a year; only /_next/static (hashed) gets immutable.
               source: String.raw`/(.*)\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif)`,
               headers: [
                 {
                   key: 'Cache-Control',
-                  value: 'public, max-age=31536000',
+                  value: 'public, max-age=3600, must-revalidate',
+                },
+              ],
+            },
+            {
+              // /_next/static/ assets are content-hashed — safe to cache forever.
+              source: '/_next/static/(.*)',
+              headers: [
+                {
+                  key: 'Cache-Control',
+                  value: 'public, max-age=31536000, immutable',
                 },
               ],
             },
@@ -83,8 +84,17 @@ const nextConfig: NextConfig = {
   },
 };
 
-const bundleAnalyzer = withBundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
-});
+const config = async (): Promise<NextConfig> => {
+  if (process.env.ANALYZE !== 'true') {
+    return nextConfig;
+  }
 
-export default bundleAnalyzer(nextConfig);
+  const analyzerPackage = '@next/bundle-analyzer';
+  const { default: bundleAnalyzer } = await import(analyzerPackage);
+  const withBundleAnalyzer = bundleAnalyzer({
+    enabled: true,
+  });
+  return withBundleAnalyzer(nextConfig);
+};
+
+export default config;

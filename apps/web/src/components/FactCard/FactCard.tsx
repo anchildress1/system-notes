@@ -1,228 +1,215 @@
 'use client';
 
-import { useCallback, useRef, useEffect, useMemo, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Highlight } from 'react-instantsearch';
-import { motion } from 'framer-motion';
 import type { Hit } from 'instantsearch.js';
 import type { SendEventForHits, FactHitRecord } from '@/types/algolia';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
 import { GitHubIcon, DevIcon } from '@/components/icons';
-import { overlayTransition, cardFlipVariants } from '@/utils/animations';
-import FactCardBack from './FactCardBack';
+import { getCardVariant } from './cardVariant';
 import styles from './FactCard.module.css';
 
 export type { FactHitRecord } from '@/types/algolia';
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// ISO timestamp ("2026-05-24T21:42:51Z") -> "May 2026"; null if unparseable.
+function formatMonthYear(iso?: string): string | null {
+  if (!iso) return null;
+  const [year, month] = iso.slice(0, 10).split('-');
+  const monthIndex = Number(month) - 1;
+  if (
+    !/^\d{4}$/.test(year ?? '') ||
+    Number.isNaN(monthIndex) ||
+    monthIndex < 0 ||
+    monthIndex > 11
+  ) {
+    return null;
+  }
+  return `${MONTHS[monthIndex]} ${year}`;
+}
+
 interface FactCardProps {
   hit: Hit<FactHitRecord>;
   sendEvent?: SendEventForHits;
+  // 1-indexed position in the current rendered page; drives the size/accent cycle.
+  // Falls back to hit.__position for direct rendering (e.g. tests, deep-links).
+  position?: number;
 }
 
-export default function FactCard({ hit, sendEvent }: Readonly<FactCardProps>) {
-  const portalTarget = useMemo(() => {
-    /* v8 ignore next */
-    if (typeof document === 'undefined') return null;
-    return document.body;
-  }, []);
+export default function FactCard({ hit, sendEvent, position }: Readonly<FactCardProps>) {
   const hasTrackedFlip = useRef(false);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const cardLinkRef = useRef<HTMLAnchorElement>(null);
+  const frontButtonRef = useRef<HTMLButtonElement>(null);
+  const backButtonRef = useRef<HTMLButtonElement>(null);
+  const shouldRestoreFocusRef = useRef(false);
   const categoryLabel = hit.category || 'System';
-  const dialogTitleId = `fact-card-title-${hit.objectID}`;
-  const dialogDescriptionId = `fact-card-description-${hit.objectID}`;
   const [isFlipped, setIsFlipped] = useState(false);
-  const [portalVisible, setPortalVisible] = useState(false);
 
-  const openCard = useCallback(() => {
-    if (!hasTrackedFlip.current && sendEvent) {
-      hasTrackedFlip.current = true;
-      sendEvent('click', hit, 'Fact Card Viewed');
-    }
-    setPortalVisible(true);
-    setIsFlipped(true);
+  const toggleFlip = useCallback(() => {
+    setIsFlipped((prev) => {
+      const next = !prev;
+      if (next && !hasTrackedFlip.current && sendEvent) {
+        hasTrackedFlip.current = true;
+        sendEvent('click', hit, 'Fact Card Viewed');
+      }
+      return next;
+    });
   }, [sendEvent, hit]);
 
-  const closeCard = useCallback(() => {
-    setIsFlipped(false);
-  }, []);
-
-  // Unmount portal after exit animation completes
-  const handleExitComplete = useCallback(() => {
-    if (!isFlipped) {
-      setPortalVisible(false);
-    }
-  }, [isFlipped]);
-
   useEffect(() => {
-    const handleWindowKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isFlipped) {
+    if (!isFlipped) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
         e.preventDefault();
-        closeCard();
+        setIsFlipped(false);
       }
     };
+    globalThis.addEventListener('keydown', handler);
+    return () => globalThis.removeEventListener('keydown', handler);
+  }, [isFlipped]);
 
-    if (isFlipped) {
-      globalThis.addEventListener('keydown', handleWindowKeyDown);
-    }
-    return () => globalThis.removeEventListener('keydown', handleWindowKeyDown);
-  }, [isFlipped, closeCard]);
-
-  const shouldRestoreFocusRef = useRef(false);
-
-  // Focus management: move focus to close button when dialog opens, return on close
   useEffect(() => {
     if (isFlipped) {
-      // Wait for portal to render, then focus close button
-      requestAnimationFrame(() => {
-        closeButtonRef.current?.focus();
-        // Mark that focus was moved into the dialog so we can restore it on close
+      const frame = requestAnimationFrame(() => {
+        backButtonRef.current?.focus();
         shouldRestoreFocusRef.current = true;
       });
-    } else if (cardLinkRef.current && shouldRestoreFocusRef.current) {
-      // Return focus to card link when closing if focus was previously moved into the dialog
+      return () => cancelAnimationFrame(frame);
+    }
+
+    if (shouldRestoreFocusRef.current) {
       shouldRestoreFocusRef.current = false;
-      cardLinkRef.current.focus();
+      frontButtonRef.current?.focus();
     }
   }, [isFlipped]);
 
-  const handleCardClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      if (isFlipped) {
-        closeCard();
-      } else {
-        openCard();
-      }
-    },
-    [isFlipped, openCard, closeCard]
-  );
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        if (isFlipped) {
-          closeCard();
-        } else {
-          openCard();
-        }
-      }
-    },
-    [isFlipped, openCard, closeCard]
-  );
-
-  // Detect if this is a DEV.to blog post vs GitHub source
   const isDevPost = useMemo(() => hit.url?.includes('dev.to') ?? false, [hit.url]);
 
-  const cardUrl = useMemo(() => {
-    const params = new URLSearchParams();
-    params.set('factId', hit.objectID);
-    return `/search?${params.toString()}`;
-  }, [hit.objectID]);
+  const variantPosition = position ?? hit.__position ?? 1;
+  const variant = useMemo(() => getCardVariant(variantPosition), [variantPosition]);
+
+  // Display tags: prefer lvl1 leaf parts ("Parent > Child" → "Child");
+  // fall back to lvl0 names when no lvl1 entries exist. Dedupe leaves —
+  // distinct hierarchical paths can share a leaf (e.g. `A > X` + `B > X`),
+  // and showing the same chip twice on one card reads as a bug.
+  const displayTags = useMemo(() => {
+    const lvl1 = hit['tags.lvl1'] ?? [];
+    const source =
+      lvl1.length > 0
+        ? lvl1.map((tag) => {
+            const sep = tag.indexOf(' > ');
+            return sep > -1 ? tag.slice(sep + 3) : tag;
+          })
+        : (hit['tags.lvl0'] ?? []);
+    return Array.from(new Set(source));
+  }, [hit]);
+
+  const backBody = hit.content || hit.fact || hit.blurb || '';
+
+  // Top-of-card label: project name, falling back to the fact position
+  // when a card has no project association.
+  const topLabel = hit.projects?.[0] ?? `FACT · ${String(hit.__position ?? 0).padStart(2, '0')}`;
+  const createdLabel = formatMonthYear(hit.created_at);
 
   return (
-    <>
-      <a
-        ref={cardLinkRef}
-        href={cardUrl}
-        onClick={handleCardClick}
-        onKeyDown={handleKeyDown}
-        className={styles.cardLink}
-        aria-expanded={isFlipped}
-        aria-label={`${hit.title}. Press to expand.`}
-        tabIndex={isFlipped ? -1 : 0}
-        aria-hidden={isFlipped}
+    <article
+      className={`${styles.cardLink} ${isFlipped ? styles.cardLinkFlipped : ''}`}
+      data-accent={variant.accent}
+      data-size={variant.size}
+    >
+      <div
+        className={`${styles.card} ${isFlipped ? styles.flipped : ''}`}
+        data-state={isFlipped ? 'expanded' : 'collapsed'}
       >
-        <motion.article
-          className={`${styles.card} ${isFlipped ? styles.flippedVisible : ''}`}
-          data-state={isFlipped ? 'expanded' : 'collapsed'}
-          aria-hidden={isFlipped}
-        >
-          <div className={styles.cardInner}>
-            <div className={styles.cardFront}>
-              <div className={styles.content}>
-                <div className={styles.header}>
-                  <div className={styles.headerTop}>
-                    <span className="card-header-badge">{categoryLabel}</span>
-                    {hit.url && (
-                      <SourceLinkButton
-                        url={hit.url}
-                        label={
-                          isDevPost
-                            ? `Read ${hit.title} on DEV Community`
-                            : `View source for ${hit.title}`
-                        }
-                        icon={isDevPost ? <DevIcon /> : <GitHubIcon />}
-                      />
-                    )}
-                  </div>
-                  <h2 className={styles.title}>
-                    <Highlight attribute="title" hit={hit} />
-                  </h2>
-                </div>
-
-                <p className={styles.description}>
-                  {hit.blurb ? (
-                    <Highlight attribute="blurb" hit={hit} />
-                  ) : (
-                    (hit.content || hit.fact || '').substring(0, 100) + '...'
+        <div className={styles.flipper}>
+          <div className={styles.cardFront} aria-hidden={isFlipped}>
+            <button
+              ref={frontButtonRef}
+              type="button"
+              className={styles.flipButton}
+              onClick={toggleFlip}
+              aria-expanded={isFlipped}
+              aria-label={`${hit.title}. Click to ${isFlipped ? 'collapse' : 'expand'}.`}
+              tabIndex={isFlipped ? -1 : 0}
+            />
+            <div className={styles.content}>
+              <div className={styles.cardMetaRow}>
+                <span className={styles.metaLeft}>
+                  <span className={styles.factCounter}>{topLabel}</span>
+                  {createdLabel && <span className={styles.cardDate}>{createdLabel}</span>}
+                </span>
+                <div className={styles.cardMetaRight}>
+                  <span
+                    className="card-header-badge"
+                    data-category={categoryLabel.toLowerCase().replace(/\s+/g, '-')}
+                  >
+                    {categoryLabel}
+                  </span>
+                  {hit.url && (
+                    <SourceLinkButton
+                      url={hit.url}
+                      label={
+                        isDevPost
+                          ? `Read ${hit.title} on DEV Community`
+                          : `View source for ${hit.title}`
+                      }
+                      icon={isDevPost ? <DevIcon /> : <GitHubIcon />}
+                      tabIndex={isFlipped ? -1 : 0}
+                    />
                   )}
-                </p>
+                </div>
+              </div>
 
+              <h2 className={styles.title}>
+                <Highlight attribute="title" hit={hit} />
+              </h2>
+
+              <p className={styles.description}>
+                {hit.blurb ? (
+                  <Highlight attribute="blurb" hit={hit} />
+                ) : (
+                  (hit.content || hit.fact || '').substring(0, 100) + '...'
+                )}
+              </p>
+
+              {displayTags.length > 0 && (
+                <div className="simple-tags">
+                  {displayTags.map((tag) => (
+                    <span key={tag} className="simple-tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.cardBack} aria-hidden={!isFlipped}>
+            {/* Native button overlay closes the card — mirrors the front's
+                flip trigger so the back isn't a div-as-button (a11y/Sonar). */}
+            <button
+              ref={backButtonRef}
+              type="button"
+              className={styles.flipButton}
+              onClick={toggleFlip}
+              aria-label={`${hit.title}. Click to collapse.`}
+              tabIndex={isFlipped ? 0 : -1}
+            />
+            <div className={styles.backContent}>
+              <h3 className={styles.backTitle}>{hit.title}</h3>
+              <p className={styles.backBody}>{backBody}</p>
+              <div className={styles.backMeta}>
+                <span className={styles.backMetaItem}>
+                  node_type · {hit.node_type ?? 'principle'}
+                </span>
                 {hit.projects && hit.projects.length > 0 && (
-                  <div className="simple-tags">
-                    {hit.projects.map((p) => (
-                      <span key={p} className="simple-tag">
-                        {p}
-                      </span>
-                    ))}
-                  </div>
+                  <span className={styles.backMetaItem}>projects · {hit.projects.join(', ')}</span>
                 )}
               </div>
             </div>
           </div>
-        </motion.article>
-      </a>
-
-      {portalVisible &&
-        portalTarget &&
-        createPortal(
-          <motion.div
-            className={styles.overlay}
-            onClick={closeCard}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isFlipped ? 1 : 0 }}
-            transition={overlayTransition}
-          >
-            <motion.article
-              className={`${styles.card} ${styles.flipped}`}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby={dialogTitleId}
-              aria-describedby={dialogDescriptionId}
-              onClick={(e) => e.stopPropagation()}
-              variants={cardFlipVariants}
-              initial="hidden"
-              animate={isFlipped ? 'visible' : 'exit'}
-              onAnimationComplete={(definition) => {
-                if (definition === 'exit') handleExitComplete();
-              }}
-            >
-              <div className={styles.cardInner}>
-                <FactCardBack
-                  hit={hit}
-                  onClose={closeCard}
-                  closeButtonRef={closeButtonRef}
-                  dialogTitleId={dialogTitleId}
-                  dialogDescriptionId={dialogDescriptionId}
-                  ariaHidden={!isFlipped}
-                />
-              </div>
-            </motion.article>
-          </motion.div>,
-          portalTarget
-        )}
-    </>
+        </div>
+      </div>
+    </article>
   );
 }

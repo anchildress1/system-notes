@@ -23,6 +23,6 @@ const mockProject: Project = {
 
 describe('ProjectCard Performance', () => {
   bench('render ProjectCard', () => {
-    render(<ProjectCard project={mockProject} onSelect={() => {}} />);
+    render(<ProjectCard project={mockProject} />);
   });
 });

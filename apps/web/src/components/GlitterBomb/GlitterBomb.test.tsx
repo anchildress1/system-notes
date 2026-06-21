@@ -1,84 +1,75 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, act, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { render, act } from '@testing-library/react';
 import GlitterBomb from './GlitterBomb';
 
-const mockDestroy = vi.fn();
-const mockInit = vi.fn();
-const mockGenerateTexture = vi.fn(() => 'MOCKED_TEXTURE');
-const mockTickerAdd = vi.fn();
-const mockTickerStart = vi.fn();
-const mockTickerStop = vi.fn();
-
-vi.mock('pixi.js', () => {
-  return {
-    Application: class {
-      init = mockInit;
-      canvas = document.createElement('canvas');
-      stage = { addChild: vi.fn(), removeChild: vi.fn() };
-      ticker = {
-        add: mockTickerAdd,
-        remove: vi.fn(),
-        start: mockTickerStart,
-        stop: mockTickerStop,
-        started: false,
-      };
-      renderer = { generateTexture: mockGenerateTexture };
-      destroy = mockDestroy;
-      screen = { width: 800, height: 600 };
-      start = vi.fn();
-    },
-    Graphics: class {
-      circle = vi.fn();
-      fill = vi.fn();
-      destroy = vi.fn();
-    },
-    Sprite: class {
-      anchor = { set: vi.fn() };
-      scale = { set: vi.fn() };
-      tint = 0;
-      x = 0;
-      y = 0;
-      alpha = 1;
-    },
-  };
-});
+const sparkleCount = () => document.querySelectorAll('.sparkle').length;
 
 describe('GlitterBomb', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useFakeTimers();
-    Object.defineProperty(globalThis, 'innerWidth', {
-      writable: true,
-      configurable: true,
-      value: 1024,
-    });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    delete (globalThis as any).ontouchstart;
+    // jsdom has no Web Animations API — stub animate so spawnSparkles can run.
+    Element.prototype.animate = vi.fn() as unknown as typeof Element.prototype.animate;
+    // Motion allowed by default.
+    globalThis.matchMedia = vi
+      .fn()
+      .mockReturnValue({ matches: false }) as unknown as typeof matchMedia;
   });
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.restoreAllMocks();
+    document.querySelectorAll('.sparkle').forEach((el) => el.remove());
   });
 
-  it('renders and initializes pixi app', async () => {
-    const { unmount } = render(<GlitterBomb />);
+  it('spawns a sparkle burst on trigger and clears it after the animation', () => {
+    render(<GlitterBomb />);
 
-    // Fire the 3s setTimeout that triggers initPixi
     act(() => {
-      vi.advanceTimersByTime(3100);
+      globalThis.dispatchEvent(
+        new CustomEvent('trigger-glitter-bomb', { detail: { x: 120, y: 240 } })
+      );
     });
+    expect(sparkleCount()).toBe(24);
 
-    // Switch to real timers so the async initPixi chain
-    // (dynamic import + app.init) can resolve naturally
-    vi.useRealTimers();
-
-    await waitFor(() => {
-      expect(mockInit).toHaveBeenCalled();
+    // Each sparkle removes itself after 1400ms.
+    act(() => {
+      vi.advanceTimersByTime(1400);
     });
-    expect(mockGenerateTexture).toHaveBeenCalled();
+    expect(sparkleCount()).toBe(0);
+  });
 
+  it('falls back to screen center when the event carries no coordinates', () => {
+    render(<GlitterBomb />);
+
+    act(() => {
+      globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
+    });
+    expect(sparkleCount()).toBe(24);
+  });
+
+  it('spawns nothing when the user prefers reduced motion', () => {
+    globalThis.matchMedia = vi
+      .fn()
+      .mockReturnValue({ matches: true }) as unknown as typeof matchMedia;
+    render(<GlitterBomb />);
+
+    act(() => {
+      globalThis.dispatchEvent(
+        new CustomEvent('trigger-glitter-bomb', { detail: { x: 10, y: 10 } })
+      );
+    });
+    expect(sparkleCount()).toBe(0);
+  });
+
+  it('removes its listener on unmount', () => {
+    const { unmount } = render(<GlitterBomb />);
     unmount();
 
-    expect(mockDestroy).toHaveBeenCalled();
+    act(() => {
+      globalThis.dispatchEvent(
+        new CustomEvent('trigger-glitter-bomb', { detail: { x: 50, y: 50 } })
+      );
+    });
+    expect(sparkleCount()).toBe(0);
   });
 });

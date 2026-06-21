@@ -1,56 +1,216 @@
-.hero {
-  composes: hero from "@/styles/SharedHero.module.css";
+/* Cursor-follow spotlight: @property registers the custom properties so
+   transitions can interpolate <length> values smoothly. Without @property,
+   the browser would jump rather than tween. */
+@property --spot-x {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: -1000px;
+}
+@property --spot-y {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: -1000px;
 }
 
-.titleContainer {
+.hero {
+  composes: hero from '@/styles/SharedHero.module.css';
+  transition:
+    --spot-x 0.45s var(--ease-snap),
+    --spot-y 0.45s var(--ease-snap);
+}
+
+/* Brand seam across the top of every hero — frames the band as a deliberate
+   page header rather than a floating block, and ties it to the cards. */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 2;
+  background: linear-gradient(90deg, var(--accent-violet), var(--accent-teal) 60%, transparent);
+  pointer-events: none;
+}
+
+/* Terminal-style page label — announces which page you're on. */
+.kicker {
+  position: relative;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent-teal);
+}
+
+.kickerDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-teal);
+  box-shadow: 0 0 8px var(--accent-teal);
+  animation: kickerPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes kickerPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kickerDot {
+    animation: none;
+  }
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    560px circle at var(--spot-x) var(--spot-y),
+    rgba(181, 107, 255, 0.14),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hero:hover::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    transition: none;
+  }
+}
+
+.inner {
   position: relative;
   z-index: 10;
 }
 
-.interactiveContainer {
-  composes: interactiveContainer from "@/styles/SharedHero.module.css";
+/* Split hero: text on the left, media (portrait) on the right, centered —
+   so the right half of the band isn't dead space. */
+.inner.hasAside {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 56px;
+  align-items: center;
 }
 
-.glitterTrigger {
-  composes: glitterTrigger from "@/styles/SharedHero.module.css";
+/* Full-width: the title spans the whole band so the longest headline (home)
+   keeps its first phrase on one line like the shorter pages, instead of
+   wrapping into a narrow stack below ~1440px. The subtitle re-narrows itself
+   (see below); the split (hasAside) layout is governed by the grid above. */
+.textCol {
+  min-width: 0;
 }
 
-.title {
-  composes: title from "@/styles/SharedHero.module.css";
-}
-
-.subtitle {
-  composes: subtitle from "@/styles/SharedHero.module.css";
-}
-
-.imageContainer {
-  position: relative;
+.aside {
   width: 100%;
-  max-width: 450px;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  margin-top: 4rem;
-  z-index: 5;
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-  transition: transform var(--transition-slow), box-shadow var(--transition-slow);
-}
-
-.imageContainer:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 50px hsl(var(--color-accent-purple) / 0.2);
-  border-color: hsl(var(--color-accent-purple) / 0.3);
-}
-
-.image {
-  width: 100%;
-  height: auto;
-  display: block;
+  max-width: 420px;
+  justify-self: end;
 }
 
 @media (max-width: 768px) {
-  .imageContainer {
-    margin-top: 3rem;
+  .inner.hasAside {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .aside {
+    justify-self: stretch;
     max-width: 100%;
+  }
+}
+
+.interactiveContainer {
+  composes: interactiveContainer from '@/styles/SharedHero.module.css';
+}
+
+.glitterTrigger {
+  composes: glitterTrigger from '@/styles/SharedHero.module.css';
+}
+
+.title {
+  composes: title from '@/styles/SharedHero.module.css';
+}
+
+.subtitle {
+  composes: subtitle from '@/styles/SharedHero.module.css';
+}
+
+/* Looser wrap + a touch more breathing room under the title. max-width:none
+   lets the aside (about) subtitle fill its grid column. */
+.textCol .subtitle {
+  max-width: none;
+  margin-top: 1.75rem;
+  text-wrap: pretty;
+}
+
+/* Non-aside pages: the title now owns the full band, so cap the subtitle at the
+   two-thirds measure itself (percentage resolves against the full-width column).
+   Keeps the one-proportion read without constraining the headline. */
+.inner:not(.hasAside) .textCol .subtitle {
+  max-width: calc(200% / 3);
+}
+
+.titleAccent {
+  display: block;
+  color: var(--text-primary);
+}
+
+/* Full neon gradient that flows across the word — pink → violet → teal,
+   looping seamlessly (the trailing pink matches the leading pink so the
+   200% position wrap has no visible seam). Drift, not flash. */
+.rotatingWord {
+  background: linear-gradient(
+    110deg,
+    var(--accent-pink) 0%,
+    var(--accent-violet) 35%,
+    var(--accent-teal) 65%,
+    var(--accent-pink) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradientShimmer 9s linear infinite;
+}
+
+/* Declared locally: CSS Modules scope the animation-name reference above, so a
+   global @keyframes (used by .award-badge) won't match here. Same motion as the
+   badge — the gradient flows across the word instead of sitting still. */
+@keyframes gradientShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotatingWord {
+    animation: none;
+    background: none;
+    color: var(--text-primary);
+    -webkit-text-fill-color: var(--text-primary);
   }
 }

@@ -1,6 +1,6 @@
 /**
  * Shared Algolia configuration and credential validation.
- * Centralizes credential checks used by SearchPage, useFactIdRouting, and AIChat.
+ * Centralizes credential checks used by SearchPage and AIChat.
  */
 
 export const ALGOLIA_APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '';

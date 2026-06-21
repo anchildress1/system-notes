@@ -12,40 +12,37 @@ test.describe('Mobile Responsiveness', () => {
     await expect(nav).toBeVisible();
   });
 
-  test('should render project grid in single column on small screens', async ({
-    page,
-    isMobile,
-  }) => {
-    if (!isMobile) test.skip();
-
+  test('should render project grid responsively', async ({ page }) => {
     await page.goto('/projects');
     const projects = page.getByTestId(/^project-card-/);
     await expect(projects.first()).toBeVisible();
   });
 
-  test('should open expanded view on click', async ({ page }) => {
+  test('should flip project detail in place on click', async ({ page }) => {
     await page.goto('/projects');
     const card = page.getByTestId(/^project-card-/).first();
+    const toggle = card.locator('button[aria-label*="Flip to read the project note"]').first();
 
-    await card.click();
+    await toggle.click();
 
-    // Expect modal to open
-    const modal = page.getByTestId('expanded-view-dialog');
-    await expect(modal).toBeVisible();
-    const modalTitle = modal.locator('#modal-title');
-    await expect(modalTitle).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(card.getByRole('button', { name: /back to summary/i })).toBeVisible();
 
-    // Close via button — keyboard.press('Escape') is unreliable on mobile viewports
-    const closeBtn = modal.getByRole('button', { name: /close modal/i });
+    const closeBtn = card.getByRole('button', { name: /back to summary/i });
     await closeBtn.click();
-    await expect(modal).not.toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 
-  test('should verify blog link visibility', async ({ page }) => {
+  test('should verify responsive blog link visibility', async ({ page, isMobile }) => {
     await page.goto('/');
     await expect(page.locator('header')).toBeVisible();
 
-    const blogLink = page.locator('header a[href*="dev.to"]');
-    await expect(blogLink).toBeVisible();
+    const blogLink = page.getByTestId('blog-link');
+    if (isMobile) {
+      await expect(blogLink).toBeHidden();
+    } else {
+      await expect(blogLink).toBeVisible();
+    }
+    await expect(blogLink).toHaveAttribute('href', 'https://dev.to/anchildress1');
   });
 });

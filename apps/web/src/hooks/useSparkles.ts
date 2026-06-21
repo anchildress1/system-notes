@@ -144,7 +144,7 @@ export const useSparkles = ({
 
     // Spawn a single sparkle particle at (x, y) — extracted to reduce cognitive complexity (S3776)
     const spawnParticle = (PIXI: typeof import('pixi.js'), x: number, y: number) => {
-      const colors = [0xff00ff, 0x00ffff, 0xffffff]; // Pink, Cyan, White
+      const colors = [0xf16197, 0xb56bff, 0x3ec7c2]; // Pink, violet, teal
       const particle = new PIXI.Sprite(circleTexture) as unknown as Particle;
       const color = colors[Math.floor(Math.random() * colors.length)]; // NOSONAR(S2245) - visual randomness, not security-sensitive
 
@@ -154,11 +154,11 @@ export const useSparkles = ({
       const baseScale = isMobile ? 0.2 : 0.4;
       particle.scale.set(Math.random() * baseScale + 0.1); // NOSONAR(S2245) - visual randomness
 
-      particle.x = x + (Math.random() - 0.5) * 20; // NOSONAR(S2245) - visual randomness (jitter)
-      particle.y = y + (Math.random() - 0.5) * 20; // NOSONAR(S2245) - visual randomness (jitter)
+      particle.x = x + (Math.random() - 0.5) * 10; // NOSONAR(S2245) - visual randomness (jitter)
+      particle.y = y + (Math.random() - 0.5) * 10; // NOSONAR(S2245) - visual randomness (jitter)
       particle.alpha = 1;
       particle.direction = Math.random() * Math.PI * 2; // NOSONAR(S2245) - visual randomness
-      particle.speed = Math.random() * 5 + 2; // NOSONAR(S2245) - visual randomness
+      particle.speed = Math.random() * 3 + 1; // NOSONAR(S2245) - visual randomness
       particle.life = 1;
       particle.decay = Math.random() * (isMobile ? 0.05 : 0.03) + 0.01; // NOSONAR(S2245) - visual randomness
 

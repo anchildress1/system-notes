@@ -6,5 +6,9 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <SearchPageWrapper />;
+  return (
+    <main id="main-content">
+      <SearchPageWrapper />
+    </main>
+  );
 }

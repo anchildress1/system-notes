@@ -1,0 +1,127 @@
+import Portrait from '@/components/Portrait/Portrait';
+import { GitHubIcon, DevIcon } from '@/components/icons';
+import { FaLinkedin } from 'react-icons/fa';
+import type { AboutData } from '@/data/about';
+import styles from './AboutContent.module.css';
+
+const LINK_ICONS = { github: GitHubIcon, dev: DevIcon, linkedin: FaLinkedin };
+
+// Splits on *text* markers, alternating between plain strings and <em> nodes.
+// Requires non-whitespace at both boundaries (\S) so *foo bar* works but
+// a lone * or a trailing space before * doesn't create unintended wrapping.
+function parseEmphasis(text: string) {
+  return text
+    .split(/\*(\S[^*]*\S|\S)\*/)
+    .map((part, i) => (i % 2 === 1 ? <em key={`em-${part}`}>{part}</em> : part));
+}
+
+const TextContent = ({ text }: { text: string }) => (
+  <>
+    {text.split('\n\n').map((paragraph) => (
+      <p key={paragraph}>{parseEmphasis(paragraph.trim())}</p>
+    ))}
+  </>
+);
+
+const sectionNumber = (index: number) => String(index + 1).padStart(2, '0');
+
+// Spread the site's hues across the page's accented spots so it reads as a mix,
+// not a wall of teal. Keyed by position, like the card grids.
+const SKILL_ACCENTS = [styles.accentTeal, styles.accentPink];
+const SECTION_ACCENTS = [styles.accentViolet, styles.accentBlue];
+
+interface AboutContentProps {
+  data: AboutData;
+}
+
+export default function AboutContent({ data }: Readonly<AboutContentProps>) {
+  const { sections, skillGroups, recognition, links, stats, heroImage } = data;
+
+  return (
+    <div className={styles.human}>
+      <div className={styles.intro}>
+        <Portrait
+          src={heroImage.src}
+          alt={heroImage.alt}
+          width={heroImage.width}
+          height={heroImage.height}
+        />
+
+        <section className={styles.highlights} aria-label="Highlights">
+          <dl className={styles.stats}>
+            {stats.map((stat) => (
+              <div key={stat.label} className={styles.stat}>
+                <dt className={styles.statLabel}>{stat.label}</dt>
+                <dd className={styles.statValue}>{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div className={styles.hlCols}>
+            <div className={styles.hlCol}>
+              {skillGroups.map((group, i) => (
+                <div
+                  key={group.label}
+                  className={`${styles.hlGroup} ${SKILL_ACCENTS[i % SKILL_ACCENTS.length]}`}
+                >
+                  <span className={styles.hlLabel}>{group.label}</span>
+                  <div className={styles.skills}>
+                    {group.items.map((skill) => (
+                      <span key={skill} className={styles.skill}>
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className={styles.hlCol}>
+              <div className={`${styles.hlGroup} ${styles.accentGold}`}>
+                <span className={styles.hlLabel}>Recognition</span>
+                <ul className={styles.recognition}>
+                  {recognition.map((item) => (
+                    <li key={item} className={styles.recognitionItem}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className={styles.links}>
+                {links.map((link) => {
+                  const Icon = link.icon ? LINK_ICONS[link.icon] : null;
+                  return (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      className="cta-external"
+                      {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      {Icon && <Icon />}
+                      {link.label}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {sections.map((section, index) => (
+        <section className={styles.section} key={section.title}>
+          <div
+            className={`${styles.sectionMeta} ${SECTION_ACCENTS[index % SECTION_ACCENTS.length]}`}
+          >
+            <span className={styles.sectionNum}>{sectionNumber(index)} · NODE</span>
+            <h2 className={styles.sectionTitle}>{section.title}</h2>
+            {section.subtitle && <span className={styles.sectionTag}>{section.subtitle}</span>}
+          </div>
+          <div className={styles.sectionBody}>
+            <TextContent text={section.content} />
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}

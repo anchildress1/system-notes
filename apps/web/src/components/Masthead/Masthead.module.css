@@ -1,0 +1,58 @@
+.ticker {
+  position: relative;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent-pink) 4%, transparent) 0%,
+    color-mix(in srgb, var(--accent-teal) 4%, transparent) 50%,
+    color-mix(in srgb, var(--accent-violet) 4%, transparent) 100%
+  );
+  overflow: hidden;
+  height: 38px;
+  display: flex;
+  align-items: center;
+}
+
+.tickerTrack {
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  animation: tick 42s linear infinite;
+}
+
+.tickerItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 24px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.accentPink   { color: var(--accent-pink); }
+.accentViolet { color: var(--accent-violet); }
+.accentTeal   { color: var(--accent-teal); }
+
+.tickerSep {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: currentColor;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+@keyframes tick {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tickerTrack {
+    animation: none;
+  }
+}

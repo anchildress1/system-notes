@@ -1,104 +1,19 @@
-'use client';
-
-import { useCallback, useEffect, useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
 import { Project } from '@/lib/api';
 import ProjectCard from '@/components/ProjectCard/ProjectCard';
-import dynamic from 'next/dynamic';
 import styles from './ProjectGrid.module.css';
-
-const ExpandedView = dynamic(() => import('@/components/ExpandedView/ExpandedView'), {
-  ssr: false,
-});
-
-function parseProjectIdFromHash(hash: string): string | null {
-  const cleaned = hash.startsWith('#') ? hash.slice(1) : hash;
-  if (!cleaned) return null;
-
-  const params = new URLSearchParams(cleaned);
-  const projectId = params.get('project');
-  if (!projectId) return null;
-
-  return projectId;
-}
 
 interface ProjectGridProps {
   projects: Project[];
 }
 
 export default function ProjectGrid({ projects }: Readonly<ProjectGridProps>) {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [dialogVisible, setDialogVisible] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const applyHash = () => {
-      const projectId = parseProjectIdFromHash(globalThis.location.hash);
-      if (!projectId) {
-        setSelectedProject(null);
-        setIsOpen(false);
-        return;
-      }
-
-      const match = projects.find((p) => p.id === projectId);
-      setSelectedProject(match ?? null);
-      if (match) {
-        setDialogVisible(true);
-        setIsOpen(true);
-      }
-    };
-
-    applyHash();
-    globalThis.addEventListener('hashchange', applyHash);
-    return () => globalThis.removeEventListener('hashchange', applyHash);
-  }, [projects]);
-
-  const handleSelect = (project: Project) => {
-    globalThis.location.hash = `project=${encodeURIComponent(project.id)}`;
-    setSelectedProject(project);
-    setDialogVisible(true);
-    setIsOpen(true);
-  };
-
-  const handleClose = useCallback(() => {
-    setIsOpen(false);
-    globalThis.history.replaceState(
-      null,
-      '',
-      globalThis.location.pathname + globalThis.location.search
-    );
-  }, []);
-
-  const handleExitComplete = useCallback(() => {
-    if (!isOpen) {
-      setDialogVisible(false);
-      setSelectedProject(null);
-    }
-  }, [isOpen]);
-
   return (
-    <>
-      <section className={styles.gridSection}>
-        <div className={styles.grid}>
-          {projects.map((p, index) => (
-            <div key={p.id} className={styles.cardWrapper}>
-              <ProjectCard project={p} onSelect={handleSelect} priority={index < 2} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <AnimatePresence>
-        {dialogVisible && selectedProject && (
-          <ExpandedView
-            key={selectedProject.id}
-            project={selectedProject}
-            onClose={handleClose}
-            isOpen={isOpen}
-            onExitComplete={handleExitComplete}
-          />
-        )}
-      </AnimatePresence>
-    </>
+    <section className={styles.gridSection}>
+      <div className={styles.grid}>
+        {projects.map((p, index) => (
+          <ProjectCard key={p.id} project={p} priority={index < 2} position={index + 1} />
+        ))}
+      </div>
+    </section>
   );
 }

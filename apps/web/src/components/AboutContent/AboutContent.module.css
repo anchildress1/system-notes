@@ -1,0 +1,308 @@
+.human {
+  position: relative;
+  z-index: 5;
+  /* Match the hero's gutter so the content lines up under the hero text. */
+  padding: 3.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 4rem;
+}
+
+/* Portrait leads on the left so it's the first thing read, with the highlights
+   box taking the remaining room to its right. */
+.intro {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 32px;
+  align-items: stretch;
+  margin-bottom: 8px;
+}
+
+/* ── Highlights: one cohesive box — stats, expertise, recognition, links ── */
+.highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin: 0;
+  padding: 32px 40px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xl);
+  background: linear-gradient(180deg, rgba(29, 31, 40, 0.5), rgba(8, 9, 12, 0.4));
+}
+
+/* Stats as one evenly-split, hairline-divided panel: equal cells separated
+   by 1px gaps over a border-colored backing, wrapped in a rounded box. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin: 0;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 16px 18px;
+  background: var(--bg-base);
+}
+
+.statLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.statValue {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.hlCols {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+}
+
+.hlCol {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  min-width: 0;
+}
+
+/* A labelled sub-group within a column (Practice, Stack, Recognition). */
+.hlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* Per-spot accent. Set --about-accent on a labelled group (or a section's meta)
+   and its label, stars, number, and rule bar all pick it up — so the page reads
+   as a mix of the site's hues instead of a wall of teal. */
+.accentPink {
+  --about-accent: var(--accent-pink);
+}
+.accentViolet {
+  --about-accent: var(--accent-violet);
+}
+.accentTeal {
+  --about-accent: var(--accent-teal);
+}
+.accentGold {
+  --about-accent: var(--accent-gold);
+}
+.accentBlue {
+  --about-accent: var(--accent-blue);
+}
+
+.hlLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  /* White label; the accent shows as a fading 2px rule under it — the same
+     seam line the cards use. Stretches full-width via the group's flex. */
+  color: var(--text-primary);
+  padding-bottom: 6px;
+  background: linear-gradient(90deg, var(--about-accent, var(--accent-teal)), transparent 75%)
+    bottom left / 100% 2px no-repeat;
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill {
+  padding: 7px 13px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.3px;
+  color: var(--text-secondary);
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.skill:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.recognition {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.recognitionItem {
+  position: relative;
+  padding-left: 22px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.recognitionItem::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  /* Inherits the Recognition group's accent. */
+  color: var(--about-accent, var(--accent-teal));
+}
+
+/* CTA links — the recruiter's next step. Pinned to the bottom of the right
+   column so it lands in the bottom-right exit corner and fills the space
+   under Recognition. */
+.links {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/* Three on one line in a narrow column: equal thirds, with tighter padding/font
+   than the shared .cta-external so the labels fit (these overrides outrank it). */
+.links a {
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 6px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* External links use the shared global `.cta-external` (see globals.css). */
+
+/* ── Sections ── */
+.section {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 56px;
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+}
+
+.section:first-of-type {
+  border-top: none;
+  padding-top: 56px;
+}
+
+.sectionMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+  /* Accent marker bar down the left of the sticky meta. */
+  padding-left: 18px;
+  border-left: 2px solid var(--about-accent, var(--border-strong));
+}
+
+.sectionNum {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--about-accent, var(--text-muted)) 72%, white);
+  letter-spacing: 1.5px;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4vw, 38px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--text-primary);
+}
+
+.sectionTag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+}
+
+.sectionBody {
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  max-width: 64ch;
+  text-wrap: pretty;
+}
+
+.sectionBody p {
+  margin-bottom: 1em;
+}
+
+.sectionBody p:last-child {
+  margin-bottom: 0;
+}
+
+/* Emphasis is a brightness lift, not bold — the body is full of *marked*
+   phrases, so a heavier weight on every one turns the prose into noise. */
+.sectionBody em {
+  color: var(--text-primary);
+  font-style: normal;
+  font-weight: inherit;
+}
+
+@media (max-width: 900px) {
+  .intro {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .human {
+    /* Hero drops to 1.5rem side padding here — match it. */
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .highlights {
+    padding: 26px 22px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hlCols {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .section {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 36px 0;
+  }
+
+  .sectionMeta {
+    position: static;
+  }
+}

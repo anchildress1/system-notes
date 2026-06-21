@@ -23,18 +23,17 @@ export const mockProject: Project = {
 
 export type { FactHitRecord } from '@/types/algolia';
 
-export const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecord> =>
-  ({
-    objectID: 'card:test:test:0001',
-    title: 'Test Fact Title',
-    blurb: 'This is a test blurb.',
-    fact: 'This is the detailed fact content.',
-    'tags.lvl0': ['Engineering'],
-    'tags.lvl1': ['Engineering > Frontend', 'Engineering > TypeScript'],
-    projects: ['Project Alpha', 'Project Beta'],
-    category: 'Work Style',
-    signal: 3,
-    __position: 1,
-    __queryID: 'test-query',
-    ...overrides,
-  }) as Hit<FactHitRecord>;
+export const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactHitRecord> => ({
+  objectID: 'card:test:test:0001',
+  title: 'Test Fact Title',
+  blurb: 'This is a test blurb.',
+  fact: 'This is the detailed fact content.',
+  'tags.lvl0': ['Engineering'],
+  'tags.lvl1': ['Engineering > Frontend', 'Engineering > TypeScript'],
+  projects: ['Project Alpha', 'Project Beta'],
+  category: 'Work Style',
+  signal: 3,
+  __position: 1,
+  __queryID: 'test-query',
+  ...overrides,
+});
