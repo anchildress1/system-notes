@@ -1,7 +1,7 @@
 import { ReactNode, MouseEvent } from 'react';
 import styles from './Button.module.css';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'fab';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'fab' | 'icon';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export type ButtonAccent = 'violet' | 'pink' | 'teal' | 'gold';
 

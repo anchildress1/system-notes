@@ -198,26 +198,6 @@
   margin-bottom: 0.25rem;
 }
 
-.ghLink {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--r-sm);
-  background: transparent;
-  color: var(--text-muted);
-  transition: all var(--transition-base);
-  z-index: 2;
-  border: 1px solid var(--border);
-}
-
-.ghLink:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--text-muted);
-  color: var(--text-primary);
-}
-
 .description {
   font-family: var(--font-mono);
   font-size: 0.8rem;

@@ -123,6 +123,25 @@
     0 0 calc(24px * var(--glow)) var(--card-accent-soft);
 }
 
+/* ── Icon · square neutral icon button (source links, close, etc.) ──
+   Same neutral language as `secondary`, sized for a single glyph. ── */
+.btn[data-variant='icon'] {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+  text-transform: none;
+  font-size: 1rem;
+}
+.btn[data-variant='icon']:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
+}
+
 .iconLeft {
   display: inline-flex;
   font-size: 1.1em;

@@ -435,31 +435,31 @@
   color: var(--text-secondary);
 }
 
+/* Matches the Button `icon` variant (square neutral icon button) — kept native
+   here because it needs the focus ref. Values mirror Button.module.css .icon. */
 .backClose {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
   border: 1px solid var(--border-strong);
-  border-radius: var(--r-sm);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-secondary);
-  font-size: 1.05rem;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-muted);
+  font-size: 1rem;
   cursor: pointer;
   transition:
     background var(--transition-base),
     color var(--transition-base),
-    border-color var(--transition-base),
-    transform var(--transition-base);
+    border-color var(--transition-base);
 }
 
 .backClose:hover {
-  background: color-mix(in srgb, var(--card-accent) 16%, transparent);
-  border-color: var(--card-accent);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-muted);
   color: var(--text-primary);
-  transform: rotate(90deg);
 }
 
 .backClose:focus-visible {

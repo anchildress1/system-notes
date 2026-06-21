@@ -280,38 +280,6 @@ body {
   border-radius: var(--r-lg);
 }
 
-.close-button-global {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background var(--transition-base),
-    border-color var(--transition-base);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
-  cursor: pointer;
-  outline: none;
-}
-
-.close-button-global:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--text-muted);
-  color: var(--text-primary);
-}
-
-.close-button-global:focus-visible {
-  outline: 2px solid var(--chrome-line);
-  outline-offset: 2px;
-}
-
 .algolia-attribution {
   display: inline-flex;
   align-items: center;
