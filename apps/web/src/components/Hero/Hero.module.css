@@ -33,45 +33,12 @@
   pointer-events: none;
 }
 
-/* Terminal-style page label — announces which page you're on. */
+/* Terminal-style page label — type + pulse dot come from the Kicker primitive;
+   this only carries the hero-specific layout (stacking + spacing). */
 .kicker {
   position: relative;
   z-index: 10;
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
   margin-bottom: 1.25rem;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--accent-teal);
-}
-
-.kickerDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-teal);
-  box-shadow: 0 0 8px var(--accent-teal);
-  animation: kickerPulse 2.4s ease-in-out infinite;
-}
-
-@keyframes kickerPulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.35;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .kickerDot {
-    animation: none;
-  }
 }
 
 .hero::after {

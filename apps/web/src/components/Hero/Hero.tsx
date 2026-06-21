@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
+import Kicker from '@/components/Kicker/Kicker';
 import styles from './Hero.module.css';
 
 interface HeroProps {
@@ -51,12 +52,7 @@ export default function Hero({
       <div className={`${styles.inner} ${aside ? styles.hasAside : ''}`}>
         <div className={styles.textCol}>
           <div className={styles.interactiveContainer}>
-            {kicker && (
-              <span className={styles.kicker}>
-                <span className={styles.kickerDot} aria-hidden="true" />
-                {kicker}
-              </span>
-            )}
+            {kicker && <Kicker className={styles.kicker}>{kicker}</Kicker>}
             <h1 className={styles.title}>
               {accentLead && (
                 <>
