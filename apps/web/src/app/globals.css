@@ -58,10 +58,12 @@
   --glass-bg: rgba(24, 20, 36, 0.6);
   --glass-blur: blur(22px);
 
-  /* ── Aurora nebula · three blurred hue-washes drift behind the page ── */
-  --nebula-1: rgba(255, 95, 162, 0.13); /* pink, upper-left */
-  --nebula-2: rgba(47, 214, 208, 0.11); /* teal, upper-right */
-  --nebula-3: rgba(125, 92, 255, 0.16); /* indigo, lower-center */
+  /* ── Aurora nebula · three blurred hue-washes drift behind the page ──
+     Ambient only: the canvas reads near-flat black at a glance; color belongs
+     to components, not the background. Kept faint on purpose. */
+  --nebula-1: rgba(255, 95, 162, 0.05); /* pink, upper-left */
+  --nebula-2: rgba(47, 214, 208, 0.04); /* teal, upper-right */
+  --nebula-3: rgba(125, 92, 255, 0.06); /* indigo, lower-center */
 
   /* Glow multiplier (1 = full). Aurora runs hot; dial down for calm. */
   --glow: 1.6;
