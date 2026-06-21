@@ -8,6 +8,7 @@ const mockRouterPush = vi.hoisted(() => vi.fn());
 
 vi.hoisted(() => {
   process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = 'AB12CD34EF';
+  // nosemgrep: generic.secrets.security.detected-generic-api-key.detected-generic-api-key -- fake fixture value, not a real key
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test_search_key_length_20';
   process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID = 'test_agent_id';
 });
