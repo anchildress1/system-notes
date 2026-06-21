@@ -7,94 +7,59 @@
   background: var(--bg-base);
 }
 
-/* Aurora nebula: three soft hue-washes drift behind the page — pink upper-left,
-   teal upper-right, indigo lower-center — blurred heavily so only the color
-   reads, never an edge. Chrome stays monochrome; the nebula is where the page
-   gets to be colorful. */
+/* Per the brand-background spec: ONE soft NEUTRAL wash (no hue) in the upper
+   section, drifting slowly, over film grain + a vignette. Color belongs to
+   seams and the hero word — never the canvas. */
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(150px);
+  filter: blur(160px);
   will-change: transform;
 }
 
 .blob1 {
-  width: 62vw;
-  height: 62vw;
-  top: -18vw;
-  left: -10vw;
-  background: var(--nebula-1);
-  animation: drift1 44s ease-in-out infinite;
+  width: 70vw;
+  height: 80vh;
+  top: -32vh;
+  left: 12%;
+  background: var(--text-secondary);
+  opacity: 0.06;
+  animation: drift1 52s ease-in-out infinite;
 }
 
-.blob2 {
-  width: 54vw;
-  height: 54vw;
-  top: -14vw;
-  right: -8vw;
-  background: var(--nebula-2);
-  animation: drift2 52s ease-in-out infinite;
-}
-
+/* Kept in the DOM (one wash by design) but unused — the brand background is a
+   single neutral blob. */
+.blob2,
 .blob3 {
-  width: 72vw;
-  height: 72vw;
-  bottom: -28vw;
-  left: 50%;
-  margin-left: -36vw;
-  background: var(--nebula-3);
-  animation: drift3 40s ease-in-out infinite;
+  display: none;
 }
 
 .grain {
   position: absolute;
   inset: 0;
-  opacity: 0.04;
+  opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Strong vignette to --bg-deep keeps the canvas reading near-flat black —
-   the faint hue-washes only hint at the edges. */
 .vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 28%, transparent 18%, var(--bg-deep) 78%);
+  background: radial-gradient(ellipse at 50% 32%, transparent 35%, var(--bg-deep) 95%);
 }
 
+/* Slow, barely-there wander — the wash breathes, it doesn't travel. */
 @keyframes drift1 {
   0%,
   100% {
     transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate3d(4vw, 3vh, 0) scale(1.06);
-  }
-}
-
-@keyframes drift2 {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(-5vw, 4vh, 0) scale(0.96);
-  }
-}
-
-@keyframes drift3 {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(2vw, -4vh, 0) scale(1.05);
+    transform: translate3d(3vw, 4vh, 0) scale(1.05);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .blob1,
-  .blob2,
-  .blob3 {
+  .blob1 {
     animation: none;
   }
 }
