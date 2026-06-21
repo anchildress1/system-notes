@@ -26,6 +26,23 @@
   pointer-events: none;
 }
 
+/* Featured top banner: the flowing 5-stop chromatic seam as a top bar only
+   (matches the spectral button), with NO permanent perimeter outline — the
+   card still lifts/glows on hover like every other card. */
+.winnerBanner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 3;
+  background: var(--gradient-winner);
+  background-size: 200% 100%;
+  animation: gradientShimmer 9s linear infinite;
+  pointer-events: none;
+}
+
 /* Featured perimeter seam-border: a flowing 5-stop chromatic ring drawn only in
    a 1.5px border via a mask, animated with the shared gradientShimmer. */
 .winnerSeam::before {

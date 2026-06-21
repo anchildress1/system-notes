@@ -75,7 +75,7 @@ export default function ProjectCard({
         <div className={styles.flipper}>
           <div
             className={`${styles.cardFront} ${cardStyles.face} ${
-              project.award ? cardStyles.winnerSeam : cardStyles.seam
+              project.award ? cardStyles.winnerBanner : cardStyles.seam
             }`}
             aria-hidden={isFlipped}
           >
