@@ -68,16 +68,6 @@ const nextConfig: NextConfig = {
                 },
               ],
             },
-            {
-              // /_next/static/ assets are content-hashed — safe to cache forever.
-              source: '/_next/static/(.*)',
-              headers: [
-                {
-                  key: 'Cache-Control',
-                  value: 'public, max-age=31536000, immutable',
-                },
-              ],
-            },
           ]
         : []),
     ];
