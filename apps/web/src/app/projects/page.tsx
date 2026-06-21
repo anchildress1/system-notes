@@ -4,9 +4,6 @@ import ProjectGrid from '@/components/ProjectGrid/ProjectGrid';
 import { getProjects } from '@/lib/api';
 import styles from './page.module.css';
 
-// Opt out of static pre-rendering — projects data must be fetched at request time.
-export const dynamic = 'force-dynamic';
-
 export const metadata: Metadata = {
   title: 'Builds',
   description: 'Explore my portfolio of software systems, tools, and experiments.',
