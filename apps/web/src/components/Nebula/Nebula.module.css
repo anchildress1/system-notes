@@ -7,28 +7,43 @@
   background: var(--bg-base);
 }
 
+/* Aurora nebula: three soft hue-washes drift behind the page — pink upper-left,
+   teal upper-right, indigo lower-center — blurred heavily so only the color
+   reads, never an edge. Chrome stays monochrome; the nebula is where the page
+   gets to be colorful. */
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(160px);
+  filter: blur(150px);
   will-change: transform;
 }
 
-/* One soft ambient wash, far behind everything. Neutral — no hue. The
-   only color on the page is card stripes + the hero word. */
 .blob1 {
-  width: 70vw;
-  height: 70vw;
-  top: -20vw;
-  left: 15vw;
-  background: var(--text-secondary);
-  opacity: 0.05;
-  animation: drift1 40s ease-in-out infinite;
+  width: 62vw;
+  height: 62vw;
+  top: -18vw;
+  left: -10vw;
+  background: var(--nebula-1);
+  animation: drift1 44s ease-in-out infinite;
 }
 
-.blob2,
+.blob2 {
+  width: 54vw;
+  height: 54vw;
+  top: -14vw;
+  right: -8vw;
+  background: var(--nebula-2);
+  animation: drift2 52s ease-in-out infinite;
+}
+
 .blob3 {
-  display: none;
+  width: 72vw;
+  height: 72vw;
+  bottom: -28vw;
+  left: 50%;
+  margin-left: -36vw;
+  background: var(--nebula-3);
+  animation: drift3 40s ease-in-out infinite;
 }
 
 .grain {
@@ -45,29 +60,32 @@
 }
 
 @keyframes drift1 {
-  0%, 100% {
-    transform: translate(0, 0);
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate(6vw, 4vh);
+    transform: translate3d(4vw, 3vh, 0) scale(1.06);
   }
 }
 
 @keyframes drift2 {
-  0%, 100% {
-    transform: translate(0, 0);
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate(-5vw, 5vh);
+    transform: translate3d(-5vw, 4vh, 0) scale(0.96);
   }
 }
 
 @keyframes drift3 {
-  0%, 100% {
-    transform: translate(0, 0);
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate(4vw, -4vh);
+    transform: translate3d(2vw, -4vh, 0) scale(1.05);
   }
 }
 
