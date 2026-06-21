@@ -5,6 +5,7 @@ import { Project } from '@/lib/api';
 import Image from 'next/image';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
 import { GitHubIcon, TrophyIcon } from '@/components/icons';
+import { accentForPosition } from '@/lib/cardAccent';
 import { FaArrowRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
@@ -13,9 +14,16 @@ import styles from './ProjectCard.module.css';
 interface ProjectCardProps {
   project: Project;
   priority?: boolean;
+  // 1-indexed grid position; drives the accent cycle shared with the fact cards.
+  position?: number;
 }
 
-export default function ProjectCard({ project, priority = false }: Readonly<ProjectCardProps>) {
+export default function ProjectCard({
+  project,
+  priority = false,
+  position = 1,
+}: Readonly<ProjectCardProps>) {
+  const accent = accentForPosition(position);
   const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'ChecKMarKDevTools';
   const isRetired = /archiv|retire|scrap/i.test(project.status);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -38,6 +46,7 @@ export default function ProjectCard({ project, priority = false }: Readonly<Proj
   return (
     <article
       className={`${styles.cardLink} ${isFlipped ? styles.cardLinkFlipped : ''}`}
+      data-accent={accent}
       data-testid={`project-card-${project.id}`}
     >
       <div
@@ -221,7 +230,7 @@ export default function ProjectCard({ project, priority = false }: Readonly<Proj
                 href={project.repo_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={styles.backRepo}
+                className={`cta-external ${styles.backRepo}`}
                 tabIndex={isFlipped ? 0 : -1}
               >
                 <GitHubIcon />

@@ -11,7 +11,7 @@ export default function ProjectGrid({ projects }: Readonly<ProjectGridProps>) {
     <section className={styles.gridSection}>
       <div className={styles.grid}>
         {projects.map((p, index) => (
-          <ProjectCard key={p.id} project={p} priority={index < 2} />
+          <ProjectCard key={p.id} project={p} priority={index < 2} position={index + 1} />
         ))}
       </div>
     </section>

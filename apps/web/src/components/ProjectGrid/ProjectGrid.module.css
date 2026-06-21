@@ -7,7 +7,9 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  /* Three across to match the thirds in the Choices results grid, rather than
+     letting auto-fill pack a tighter fourth column in. */
+  grid-template-columns: repeat(3, 1fr);
   gap: 18px;
   width: 100%;
 }
