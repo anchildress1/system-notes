@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type KeyboardEvent as ReactKeyboardEvent,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Highlight } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
 import type { SendEventForHits, FactHitRecord } from '@/types/algolia';
@@ -47,7 +40,7 @@ interface FactCardProps {
 export default function FactCard({ hit, sendEvent, position }: Readonly<FactCardProps>) {
   const hasTrackedFlip = useRef(false);
   const frontButtonRef = useRef<HTMLButtonElement>(null);
-  const backButtonRef = useRef<HTMLDivElement>(null);
+  const backButtonRef = useRef<HTMLButtonElement>(null);
   const shouldRestoreFocusRef = useRef(false);
   const categoryLabel = hit.category || 'System';
   const [isFlipped, setIsFlipped] = useState(false);
@@ -62,16 +55,6 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
       return next;
     });
   }, [sendEvent, hit]);
-
-  const closeFromBackKeyboard = useCallback(
-    (e: ReactKeyboardEvent<HTMLDivElement>) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleFlip();
-      }
-    },
-    [toggleFlip]
-  );
 
   useEffect(() => {
     if (!isFlipped) return;
@@ -201,16 +184,17 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
             </div>
           </div>
 
-          <div
-            ref={backButtonRef}
-            className={styles.cardBack}
-            aria-hidden={!isFlipped}
-            role={isFlipped ? 'button' : undefined}
-            tabIndex={isFlipped ? 0 : -1}
-            aria-label={isFlipped ? `${hit.title}. Click to collapse.` : undefined}
-            onClick={isFlipped ? toggleFlip : undefined}
-            onKeyDown={isFlipped ? closeFromBackKeyboard : undefined}
-          >
+          <div className={styles.cardBack} aria-hidden={!isFlipped}>
+            {/* Native button overlay closes the card — mirrors the front's
+                flip trigger so the back isn't a div-as-button (a11y/Sonar). */}
+            <button
+              ref={backButtonRef}
+              type="button"
+              className={styles.flipButton}
+              onClick={toggleFlip}
+              aria-label={`${hit.title}. Click to collapse.`}
+              tabIndex={isFlipped ? 0 : -1}
+            />
             <div className={styles.backContent}>
               <h3 className={styles.backTitle}>{hit.title}</h3>
               <p className={styles.backBody}>{backBody}</p>
