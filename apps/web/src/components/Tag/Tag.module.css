@@ -1,0 +1,24 @@
+/* Shared tag chip — tech stacks, search facets, skill tags, metadata. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+  line-height: 1.4;
+  border: 1px solid var(--border);
+}
+
+.tag[data-variant='solid'] {
+  background: var(--bg-elevated);
+}
+
+.tag[data-variant='outline'] {
+  background: transparent;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+}

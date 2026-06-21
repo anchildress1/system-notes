@@ -1,0 +1,53 @@
+/* Shared badge primitive. Hue for `accent` flows from [data-accent] (the global
+   card-accent token system). `award` is the flowing multi-neon winner pill. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+  line-height: 1.4;
+  border: 1px solid transparent;
+}
+
+.badge[data-variant='neutral'] {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border-strong);
+}
+
+.badge[data-variant='accent'] {
+  background: transparent;
+  color: var(--card-accent);
+  border-color: color-mix(in srgb, var(--card-accent) 45%, transparent);
+}
+
+.badge[data-variant='award'] {
+  padding: 5px 12px;
+  background: var(--gradient-winner);
+  background-size: 200% 100%;
+  animation: gradientShimmer 9s linear infinite;
+  color: #fff;
+  border: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 6px 22px -8px rgba(0, 0, 0, 0.7),
+    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--accent-teal) 30%, transparent);
+}
+
+.icon {
+  display: inline-flex;
+  font-size: 0.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge[data-variant='award'] {
+    animation: none;
+  }
+}
