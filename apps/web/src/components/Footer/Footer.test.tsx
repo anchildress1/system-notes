@@ -35,9 +35,9 @@ describe('Footer Component', () => {
 
   it('renders Algolia attribution', () => {
     render(<Footer />);
-    const algoliaLink = screen.getByRole('link', { name: /Powered by Algolia/i });
+    const algoliaLink = screen.getByText('Algolia').closest('a');
     expect(algoliaLink).toHaveAttribute('href', 'https://www.algolia.com');
-    expect(screen.getByText(/Algolia/i)).toBeInTheDocument();
+    expect(screen.getByText('Powered by')).toBeInTheDocument();
   });
 
   it('renders build version tagline', () => {

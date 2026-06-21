@@ -37,18 +37,18 @@ describe('Pagination', () => {
     render(<Pagination />);
     expect(screen.getByLabelText('Previous page')).toBeInTheDocument();
     expect(screen.getByLabelText('Next page')).toBeInTheDocument();
-    expect(screen.getByLabelText('Page 1')).toBeInTheDocument();
-    expect(screen.getByLabelText('Page 5')).toBeInTheDocument();
+    expect(screen.getByLabelText('Page 01')).toBeInTheDocument();
+    expect(screen.getByLabelText('Page 05')).toBeInTheDocument();
   });
 
   it('marks the current page with aria-current', () => {
     render(<Pagination />);
-    expect(screen.getByLabelText('Page 3')).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByLabelText('Page 03')).toHaveAttribute('aria-current', 'page');
   });
 
   it('calls refine with the target page on click', () => {
     render(<Pagination />);
-    fireEvent.click(screen.getByLabelText('Page 5'));
+    fireEvent.click(screen.getByLabelText('Page 05'));
     expect(mockRefine).toHaveBeenCalledWith(4);
   });
 

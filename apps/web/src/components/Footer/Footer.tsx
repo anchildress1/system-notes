@@ -93,13 +93,12 @@ export default memo(function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="algolia-attribution"
-              aria-label="Powered by Algolia"
             >
+              <span className="algolia-prefix">Powered by</span>
               <span className="algolia-hoverable">
                 <SiAlgolia aria-hidden="true" className="algolia-icon" />
                 <span className="algolia-name">Algolia</span>
               </span>
-              <span className="algolia-prefix">Powered by</span>
             </a>{' '}
             · SYS_NOTES v2.0.26 · build / break / ship
           </span>

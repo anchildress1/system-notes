@@ -50,7 +50,7 @@ export default function Pagination({ classNames = {} }: Readonly<PaginationProps
                 className={classNames.button}
                 onClick={go(page)}
                 aria-current={isActive ? 'page' : undefined}
-                aria-label={`Page ${page + 1}`}
+                aria-label={`Page ${String(page + 1).padStart(2, '0')}`}
               >
                 {String(page + 1).padStart(2, '0')}
               </button>
