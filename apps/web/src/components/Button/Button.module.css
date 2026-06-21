@@ -72,16 +72,16 @@
   transform: translateY(-1px);
 }
 
-/* ── Secondary · neon-tinted outline (the .cta-external pattern) ── */
+/* ── Secondary · neutral dark (chrome stays monochrome; only primary gets
+   color). A near-black fill with a hairline border + white label. ── */
 .btn[data-variant='secondary'] {
-  background: color-mix(in srgb, var(--card-accent) 10%, transparent);
-  border-color: var(--card-accent-soft);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border-strong);
   color: var(--text-primary);
 }
 .btn[data-variant='secondary']:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--card-accent) 18%, transparent);
-  border-color: var(--card-accent);
-  box-shadow: 0 0 calc(24px * var(--glow)) var(--card-accent-soft);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-muted);
 }
 
 /* ── Ghost · monochrome chip ── */
