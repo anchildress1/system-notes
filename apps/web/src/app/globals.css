@@ -20,6 +20,10 @@
   --accent-violet: #b56bff;
   --accent-violet-soft: rgba(181, 107, 255, 0.15);
   --accent-gold: #e89a6a;
+  /* Electric indigo lifted from the brand mark (icon.svg coreFacet). The one
+     genuinely "blue" hue on the site. */
+  --accent-blue: #7f5af0;
+  --accent-blue-soft: rgba(127, 90, 240, 0.15);
 
   --accent: var(--accent-violet);
   --accent-soft: var(--accent-violet-soft);
@@ -53,6 +57,33 @@
 
   /* Glow multiplier (1 = full) */
   --glow: 1;
+
+  /* ── Card system (shared by Project + Fact cards) ──
+     One surface/seam definition for both grids so Choices and Builds stay
+     visually identical. --card-accent is the per-card hue, defaulting to
+     violet and overridden per card via [data-accent] below. */
+  --card-accent: var(--accent-violet);
+  --card-accent-soft: var(--accent-violet-soft);
+  --card-surface: linear-gradient(180deg, rgba(29, 31, 40, 0.55), rgba(22, 24, 31, 0.55));
+  --card-surface-back: radial-gradient(
+      120% 80% at 0% 0%,
+      color-mix(in srgb, var(--card-accent) 16%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(180deg, rgba(34, 36, 48, 0.97), rgba(18, 20, 27, 0.98));
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
+
+  /* Shared "winner" gradient — the award badge fill and the gradient (two-thirds)
+     card seams both draw from this so they read as one system. Teal-led at both
+     ends with a clear violet→pink band through the middle; loops teal→teal so the
+     badge shimmer is seamless. */
+  --gradient-winner: linear-gradient(
+    110deg,
+    var(--accent-teal) 0%,
+    var(--accent-violet) 38%,
+    var(--accent-pink) 55%,
+    var(--accent-teal) 100%
+  );
 
   /* ── Legacy HSL aliases — pages using hsl(var(--color-*)) ── */
   --color-bg-base: 232 16% 7%;
@@ -123,6 +154,34 @@
   --z-card-flip: 5000;
   --z-search-widget: 9000;
   --z-footer: 9500;
+}
+
+/* Per-card accent hue — set on the card root, consumed by seams, glows,
+   badges, and back surfaces across both card grids. */
+/* --card-seam is re-declared in each scope on purpose: a custom property that
+   references another custom property resolves var() at its DECLARATION site, not
+   where it's used. Declared only on :root it would bake in the root (violet)
+   --card-accent and inherit that to every card. Re-declaring it here re-resolves
+   var(--card-accent) against the per-card hue so the seam tracks the accent. */
+[data-accent='pink'] {
+  --card-accent: var(--accent-pink);
+  --card-accent-soft: var(--accent-pink-soft);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
+}
+[data-accent='violet'] {
+  --card-accent: var(--accent-violet);
+  --card-accent-soft: var(--accent-violet-soft);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
+}
+[data-accent='teal'] {
+  --card-accent: var(--accent-teal);
+  --card-accent-soft: var(--accent-teal-soft);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
+}
+[data-accent='gold'] {
+  --card-accent: var(--accent-gold);
+  --card-accent-soft: color-mix(in srgb, var(--accent-gold) 22%, transparent);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 }
 
 * {
@@ -266,6 +325,42 @@ body {
   flex-shrink: 0;
 }
 
+/* Single source of truth for every "leaves the site" button (header blog CTA,
+   about-page links, project "View source"). One class so the violet treatment
+   can't drift across copies. Layout deltas (margin, sizing) stay on the local
+   class that's composed alongside this one. */
+.cta-external {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 20px;
+  border-radius: var(--r-md);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--accent-violet-soft);
+  background: color-mix(in srgb, var(--accent-violet) 10%, transparent);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base),
+    background var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.cta-external:hover {
+  background: color-mix(in srgb, var(--accent-violet) 18%, transparent);
+  border-color: var(--accent-violet);
+  color: var(--text-primary);
+  box-shadow: 0 0 calc(24px * var(--glow)) var(--accent-violet-soft);
+}
+
+.cta-external:focus-visible {
+  outline: 2px solid hsl(var(--color-accent-purple));
+  outline-offset: 2px;
+}
+
 .card-header-badge {
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -294,13 +389,7 @@ body {
   align-items: center;
   gap: 0.5rem;
   padding: 5px 12px;
-  background: linear-gradient(
-    110deg,
-    var(--accent-pink) 0%,
-    var(--accent-violet) 35%,
-    var(--accent-teal) 65%,
-    var(--accent-pink) 100%
-  );
+  background: var(--gradient-winner);
   background-size: 200% 100%;
   animation: gradientShimmer 9s linear infinite;
   color: white;
@@ -318,7 +407,7 @@ body {
      system. */
   box-shadow:
     0 6px 22px -8px rgba(0, 0, 0, 0.7),
-    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--accent-pink) 28%, transparent);
+    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--accent-teal) 30%, transparent);
 }
 
 /* Shared keyframe for all flowing multi-neon gradient animations
