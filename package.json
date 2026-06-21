@@ -47,6 +47,8 @@
     "next": "16.2.6",
     "uuid": "^14.0.0",
     "postcss": ">=8.5.10 <9",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "instantsearch.js": {
       "qs": "^6.14.2"
     }
