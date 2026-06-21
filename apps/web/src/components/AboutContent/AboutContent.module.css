@@ -126,25 +126,6 @@
   gap: 8px;
 }
 
-.skill {
-  padding: 7px 13px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-sm);
-  background: rgba(255, 255, 255, 0.03);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.3px;
-  color: var(--text-secondary);
-  transition:
-    color var(--transition-base),
-    border-color var(--transition-base);
-}
-
-.skill:hover {
-  color: var(--text-primary);
-  border-color: var(--text-muted);
-}
-
 .recognition {
   list-style: none;
   margin: 0;

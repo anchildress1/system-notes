@@ -1,4 +1,6 @@
 import Portrait from '@/components/Portrait/Portrait';
+import Tag from '@/components/Tag/Tag';
+import Button from '@/components/Button/Button';
 import { GitHubIcon, DevIcon } from '@/components/icons';
 import { FaLinkedin } from 'react-icons/fa';
 import type { AboutData } from '@/data/about';
@@ -67,9 +69,7 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
                   <span className={styles.hlLabel}>{group.label}</span>
                   <div className={styles.skills}>
                     {group.items.map((skill) => (
-                      <span key={skill} className={styles.skill}>
-                        {skill}
-                      </span>
+                      <Tag key={skill}>{skill}</Tag>
                     ))}
                   </div>
                 </div>
@@ -91,15 +91,15 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
                 {links.map((link) => {
                   const Icon = link.icon ? LINK_ICONS[link.icon] : null;
                   return (
-                    <a
+                    <Button
                       key={link.href}
+                      variant="secondary"
                       href={link.href}
-                      className="cta-external"
-                      {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      target={link.external ? '_blank' : undefined}
+                      icon={Icon ? <Icon /> : undefined}
                     >
-                      {Icon && <Icon />}
                       {link.label}
-                    </a>
+                    </Button>
                   );
                 })}
               </div>
