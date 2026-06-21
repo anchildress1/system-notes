@@ -1,6 +1,8 @@
 import { history } from 'instantsearch.js/es/lib/routers';
 import type { IndexUiState, UiState } from 'instantsearch.js';
 
+// Only these three facets are intentionally URL-addressable. Dynamic facets rendered
+// via useDynamicWidgets are ephemeral — see AGENTS.md § URL State Architecture.
 const KIND_ATTRIBUTE = 'category';
 const PROJECT_ATTRIBUTE = 'projects';
 const TAG_ATTRIBUTE = 'tags.lvl0';

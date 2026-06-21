@@ -141,7 +141,7 @@ function RetrieveBar() {
         className={styles.retrieveInput}
         value={query}
         onChange={(e) => refine(e.target.value)}
-        placeholder="ask a question · 'how do you review code', 'why ADHD', 'what is Carbon Trace'"
+        placeholder="search by keyword · 'code review', 'adhd', 'carbon trace'"
         aria-label="Search the index"
         autoComplete="off"
         spellCheck={false}
@@ -391,11 +391,13 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
 }
 
 function SectionHeader() {
-  const { nbHits } = useStats();
+  // processingTimeMS is Algolia's server-side query time, straight off the
+  // search response — no extra plumbing, no client timing math.
+  const { nbHits, processingTimeMS } = useStats();
   return (
     <div className={styles.sectionHeader}>
       <span className={styles.sectionHeaderMeta}>
-        {nbHits.toLocaleString()} entries · sorted by signal
+        {nbHits.toLocaleString()} entries · {processingTimeMS}ms
       </span>
     </div>
   );
