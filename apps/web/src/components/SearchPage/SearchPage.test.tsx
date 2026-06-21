@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(() => ({
@@ -79,7 +79,7 @@ describe('SearchPage Component', () => {
 
     await renderSearchPage();
 
-    expect(screen.getByLabelText('Search the index')).toBeInTheDocument();
+    expect(await screen.findByLabelText('Search the index')).toBeInTheDocument();
   });
 
   it('focuses retrieve on Cmd/Ctrl+K but leaves browser find alone', async () => {
@@ -88,14 +88,14 @@ describe('SearchPage Component', () => {
 
     await renderSearchPage();
 
-    const input = screen.getByLabelText('Search the index');
+    const input = await screen.findByLabelText('Search the index');
     expect(input).not.toHaveFocus();
 
     fireEvent.keyDown(window, { key: 'f', metaKey: true });
     expect(input).not.toHaveFocus();
 
     fireEvent.keyDown(window, { key: 'k', metaKey: true });
-    expect(input).toHaveFocus();
+    await waitFor(() => expect(input).toHaveFocus());
   });
 
   it('renders error state when app ID is invalid format', async () => {

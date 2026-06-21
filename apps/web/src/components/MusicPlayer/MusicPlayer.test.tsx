@@ -112,6 +112,7 @@ describe('MusicPlayer', () => {
   });
 
   it('disables button and shows error state when audio fails to load', () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     render(<MusicPlayer />);
 
     // Trigger the onError handler
@@ -123,6 +124,11 @@ describe('MusicPlayer', () => {
 
     // Should remain in Play (not Pause) state
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+    expect(consoleSpy).toHaveBeenCalledWith('Audio element error:', {
+      code: undefined,
+      message: undefined,
+      src: 'http://localhost:3000/audio/twisted-game-songs-i-build-things.mp3',
+    });
   });
 
   it('transitions from playing to error state when audio error fires mid-playback', async () => {

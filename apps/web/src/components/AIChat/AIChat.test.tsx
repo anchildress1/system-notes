@@ -354,6 +354,7 @@ describe('AIChat Widget Integration', () => {
       });
 
       it('returns error output when fetch throws a network error', async () => {
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
         mockFetch.mockRejectedValue(new Error('Network failure'));
         const addToolResult = vi.fn();
 
@@ -362,13 +363,18 @@ describe('AIChat Widget Integration', () => {
         expect(addToolResult).toHaveBeenCalledWith({
           output: expect.objectContaining({ error: expect.any(String), results: [] }),
         });
+        expect(consoleSpy).toHaveBeenCalledWith('AIChat tool error:', expect.any(Error));
+        consoleSpy.mockRestore();
       });
 
       it('resolves cleanly on network error — does not re-throw', async () => {
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
         mockFetch.mockRejectedValue(new Error('Timeout'));
         await expect(
           getToolCall()({ input: { query: 'fail' }, addToolResult: vi.fn() })
         ).resolves.toBeUndefined();
+        expect(consoleSpy).toHaveBeenCalledWith('AIChat tool error:', expect.any(Error));
+        consoleSpy.mockRestore();
       });
     });
   });

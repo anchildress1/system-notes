@@ -44,7 +44,9 @@ test.describe('System Notes Integration', () => {
     await expect(
       projectCard.getByRole('button', { name: /flip to read the project note/i })
     ).toBeVisible();
-    await expect(projectCard.locator('[class*="techChip"]').first()).toBeVisible();
+    const summaryTags = projectCard.locator('span[data-variant="solid"]');
+    await expect(summaryTags.filter({ hasText: /^Canvas 2D$/ })).toBeVisible();
+    await expect(summaryTags.filter({ hasText: /^PixiJS$/ })).toBeVisible();
   });
 
   test('flips a project card in place to reveal the note', async ({ page }) => {
