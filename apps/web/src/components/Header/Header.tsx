@@ -63,7 +63,7 @@ export default function Header() {
             target="_blank"
             rel="noopener noreferrer"
             data-testid="blog-link"
-            className={styles.navCta}
+            className={`cta-external ${styles.navCta}`}
           >
             <span>$ read --blog</span>
             <span className={styles.navCtaArrow}>↗</span>
