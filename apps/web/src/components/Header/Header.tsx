@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import Button from '@/components/Button/Button';
+import StatusPill from '@/components/StatusPill/StatusPill';
 import styles from './Header.module.css';
 
 const NAV_ITEMS = [
@@ -78,10 +79,7 @@ export default function Header() {
           </Button>
         </nav>
 
-        <div className={styles.status}>
-          <span className={styles.statusDot} aria-hidden="true" />
-          <span>SYS · {statusPath}</span>
-        </div>
+        <StatusPill className={styles.status}>SYS · {statusPath}</StatusPill>
       </div>
     </header>
   );

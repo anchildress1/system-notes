@@ -150,43 +150,8 @@
   opacity: 1;
 }
 
-/* ── Status pill ── */
-.status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 0.8px;
-  padding: 6px 12px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border-strong);
-  background: rgba(0, 0, 0, 0.3);
-  white-space: nowrap;
-}
-
-.statusDot {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--r-pill);
-  background: var(--accent-teal);
-  box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
-  animation: pulseDot 2.4s ease-in-out infinite;
-  flex-shrink: 0;
-}
-
-@keyframes pulseDot {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(0.85);
-  }
-}
+/* ── Status pill ── (visual styling lives in the StatusPill primitive; this
+   class only carries the responsive hide below) */
 
 /* ── Skip Link ── */
 .skipLink {

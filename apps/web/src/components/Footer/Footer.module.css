@@ -49,12 +49,8 @@
   text-transform: uppercase;
 }
 
+/* Type/color come from the Kicker primitive; this only carries layout. */
 .colLabel {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
   margin-bottom: 1rem;
 }
 

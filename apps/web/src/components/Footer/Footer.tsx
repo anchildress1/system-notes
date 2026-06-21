@@ -5,6 +5,7 @@ import { FaGithub, FaLinkedin, FaDev } from 'react-icons/fa';
 import { FiTerminal, FiCode, FiUser, FiExternalLink } from 'react-icons/fi';
 import { SiAlgolia } from 'react-icons/si';
 import Link from 'next/link';
+import Kicker from '@/components/Kicker/Kicker';
 import styles from './Footer.module.css';
 
 const currentYear = new Date().getFullYear();
@@ -15,7 +16,9 @@ export default memo(function Footer() {
       <div className={styles.inner}>
         <div className={styles.top}>
           <div className={styles.col}>
-            <div className={styles.colLabel}>/ index</div>
+            <Kicker tone="dim" dot={false} className={styles.colLabel}>
+              / index
+            </Kicker>
             <div className={styles.brand}>
               <span className={styles.brandDot} aria-hidden="true" />
               <span className={styles.brandName}>ASHLEY&apos;S SYSTEM NOTES</span>
@@ -27,7 +30,9 @@ export default memo(function Footer() {
           </div>
 
           <div className={styles.col}>
-            <div className={styles.colLabel}>/ surfaces</div>
+            <Kicker tone="dim" dot={false} className={styles.colLabel}>
+              / surfaces
+            </Kicker>
             <div className={styles.stack}>
               <Link href="/" className={styles.link}>
                 <FiTerminal aria-hidden="true" size={12} /> /sys/choices
@@ -50,7 +55,9 @@ export default memo(function Footer() {
           </div>
 
           <div className={styles.col}>
-            <div className={styles.colLabel}>/ contact</div>
+            <Kicker tone="dim" dot={false} className={styles.colLabel}>
+              / contact
+            </Kicker>
             <div className={styles.stack}>
               <a
                 href="https://github.com/anchildress1"
@@ -100,7 +107,7 @@ export default memo(function Footer() {
                 <span className="algolia-name">Algolia</span>
               </span>
             </a>{' '}
-            · SYS_NOTES v2.0.26 · build / break / ship
+            · SYS_NOTES v2.1.26 · build / break / ship
           </span>
         </div>
       </div>
