@@ -131,7 +131,10 @@ function RetrieveBar() {
   }, []);
 
   return (
-    <div className={styles.retrieve} onClick={() => inputRef.current?.focus()}>
+    // A <label> focuses its input on click natively, so the whole bar stays
+    // clickable without a handler on a non-interactive element. The input keeps
+    // its own aria-label, so the surrounding text doesn't pollute its name.
+    <label className={styles.retrieve}>
       <span className={styles.retrievePrompt} aria-hidden="true">
         retrieve&gt;
       </span>
@@ -155,7 +158,7 @@ function RetrieveBar() {
         <kbd className={styles.kbd}>⌘</kbd>
         <kbd className={styles.kbd}>K</kbd>
       </span>
-    </div>
+    </label>
   );
 }
 
@@ -290,7 +293,7 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
       ? `${label} filter, no selection`
       : `${label} filter, ${selectedCount} selected: ${selectedItems.map((i) => i.label).join(', ')}`;
 
-  const onPopoverKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const onPopoverKeyDown = (e: React.KeyboardEvent) => {
     const focusedEl = document.activeElement;
     const focusedIdx = optionRefs.current.findIndex((el) => el === focusedEl);
     if (focusedIdx < 0) return;
@@ -342,7 +345,6 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
           className={styles.filterPopover}
           role="group"
           aria-label={`${label} filter options`}
-          onKeyDown={onPopoverKeyDown}
         >
           <button
             ref={(el) => {
@@ -356,6 +358,7 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
               clear();
               setOpen(false);
             }}
+            onKeyDown={onPopoverKeyDown}
             aria-pressed={selectedCount === 0}
           >
             <span>all</span>
@@ -373,6 +376,7 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
               // user can pick more in one pass. Escape, click-outside, or
               // re-clicking the trigger closes it.
               onClick={() => refine(item.value)}
+              onKeyDown={onPopoverKeyDown}
               aria-pressed={item.isRefined}
             >
               <span className={styles.filterOptionLabel}>
