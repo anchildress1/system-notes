@@ -124,6 +124,20 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
 // Returns an empty fragment (not null) to satisfy the layoutComponent signature.
 const HiddenToolLayout = () => <></>;
 
+// The installed Chat widget consumes `toggleButtonIconComponent` and
+// `classNames.toggleButton` at runtime (both destructured in its source), but its
+// shipped prop types omit them. Pass them via a spread: JSX spread attributes
+// aren't excess-property-checked, so the keys reach the widget without a cast
+// while every explicit prop below keeps its real Chat types.
+const chatTypeLagProps = {
+  classNames: {
+    root: styles.chatRoot,
+    container: styles.chatWindow,
+    toggleButton: { root: styles.chatToggle },
+  },
+  toggleButtonIconComponent: ToggleIcon,
+};
+
 export default function AIChat() {
   const router = useRouter();
   const lastChatQuery = useRef<string | null>(null);
@@ -237,11 +251,6 @@ export default function AIChat() {
         >
           <Chat
             agentId={AGENT_ID}
-            classNames={{
-              root: styles.chatRoot,
-              container: styles.chatWindow,
-              toggleButton: { root: styles.chatToggle },
-            }}
             translations={translations}
             tools={tools}
             itemComponent={ChatItemComponent}
@@ -250,7 +259,7 @@ export default function AIChat() {
             assistantMessageLeadingComponent={AssistantAvatar}
             userMessageLeadingComponent={UserAvatar}
             promptFooterComponent={PromptFooter}
-            toggleButtonIconComponent={ToggleIcon}
+            {...chatTypeLagProps}
           />
         </InstantSearchNext>
       ) : null}
