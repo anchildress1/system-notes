@@ -203,7 +203,7 @@ function ClearAllFilters() {
   );
 }
 
-function FilterDropdown({ attribute, label }: { attribute: string; label: string }) {
+function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; label: string }>) {
   // No `sortBy` — let Algolia's `renderingContent.facetOrdering.values[attr].order`
   // (pinned values from the dashboard) drive the order. Setting `sortBy` would
   // silently override it.
@@ -295,7 +295,7 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
 
   const onPopoverKeyDown = (e: React.KeyboardEvent) => {
     const focusedEl = document.activeElement;
-    const focusedIdx = optionRefs.current.findIndex((el) => el === focusedEl);
+    const focusedIdx = optionRefs.current.indexOf(focusedEl as HTMLButtonElement | null);
     if (focusedIdx < 0) return;
     const last = optionCount - 1;
     switch (e.key) {
@@ -340,12 +340,7 @@ function FilterDropdown({ attribute, label }: { attribute: string; label: string
         </span>
       </button>
       {open && (
-        <div
-          id={popoverId}
-          className={styles.filterPopover}
-          role="group"
-          aria-label={`${label} filter options`}
-        >
+        <div id={popoverId} className={styles.filterPopover}>
           <button
             ref={(el) => {
               optionRefs.current[0] = el;

@@ -11,7 +11,7 @@ export default function FactsHero() {
     const el = titleRef.current;
     if (!el) return;
     el.classList.remove(heroStyles.titleGlow);
-    void el.offsetWidth;
+    el.getBoundingClientRect(); // force reflow so the glow animation restarts
     el.classList.add(heroStyles.titleGlow);
   };
 

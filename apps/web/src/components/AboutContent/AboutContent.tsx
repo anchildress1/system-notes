@@ -12,13 +12,13 @@ const LINK_ICONS = { github: GitHubIcon, dev: DevIcon, linkedin: FaLinkedin };
 function parseEmphasis(text: string) {
   return text
     .split(/\*(\S[^*]*\S|\S)\*/)
-    .map((part, i) => (i % 2 === 1 ? <em key={i}>{part}</em> : part));
+    .map((part, i) => (i % 2 === 1 ? <em key={`em-${part}`}>{part}</em> : part));
 }
 
 const TextContent = ({ text }: { text: string }) => (
   <>
-    {text.split('\n\n').map((paragraph, i) => (
-      <p key={i}>{parseEmphasis(paragraph.trim())}</p>
+    {text.split('\n\n').map((paragraph) => (
+      <p key={paragraph}>{parseEmphasis(paragraph.trim())}</p>
     ))}
   </>
 );

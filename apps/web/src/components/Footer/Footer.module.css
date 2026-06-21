@@ -19,7 +19,10 @@
   border-bottom: 1px solid var(--border);
 }
 
-.col {}
+/* Grid child; min-width:0 lets long content shrink instead of overflowing. */
+.col {
+  min-width: 0;
+}
 
 .brand {
   display: flex;

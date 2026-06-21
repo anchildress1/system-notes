@@ -2,6 +2,8 @@
   display: block;
   text-decoration: none;
   color: inherit;
+  /* Perspective lives on the root so the card flips around itself. */
+  perspective: 1400px;
   /* Fill the grid cell — the parent <li> is display:flex, so without
      explicit width the anchor would size to its content and leave a
      visible gap when the cell is wider than the card's text. */
@@ -245,11 +247,6 @@
 }
 
 /* ── 3D Flip (in-place) ── */
-
-/* Perspective lives on the root so the card flips around itself. */
-.cardLink {
-  perspective: 1400px;
-}
 
 .cardLinkFlipped {
   /* Lift the flipped card so its back doesn't clip behind neighbors. */
