@@ -1,8 +1,9 @@
-/* Shared card SURFACE — the single source of truth for both flip-card grids
-   (ProjectCard + FactCard) so they read as one system. Faces compose `face`;
-   the gradient sits over an opaque --bg-surface base (matching the design
-   system Card) so cards look identical regardless of the nebula behind them.
-   Per-card hue flows from [data-accent] → --card-accent / --card-seam. */
+/* Shared card SURFACE — the single source of truth for the front face of both
+   flip-card grids (ProjectCard + FactCard) so they read as one system. Applied
+   as classNames on the face element. The gradient sits over an opaque
+   --bg-surface base (matching the design system Card) so cards look identical
+   regardless of the nebula behind them. Per-card hue flows from [data-accent]
+   → --card-accent / --card-seam. The face must be position:relative. */
 
 .face {
   background: var(--card-surface);
@@ -12,8 +13,7 @@
   overflow: hidden;
 }
 
-/* Accent seam across the top of a face. Apply to the face element; it draws a
-   ::before bar in the per-card hue (or the winner gradient on featured cards). */
+/* Accent seam bar across the top of the face. */
 .seam::before {
   content: '';
   position: absolute;
@@ -29,8 +29,10 @@
 /* Featured perimeter seam-border: a flowing 5-stop chromatic ring drawn only in
    a 1.5px border via a mask, animated with the shared gradientShimmer. */
 .winnerSeam::before {
+  content: '';
+  position: absolute;
   inset: 0;
-  height: auto;
+  z-index: 3;
   border-radius: inherit;
   padding: 1.5px;
   background: var(--gradient-winner);
@@ -41,6 +43,7 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   animation: gradientShimmer 9s linear infinite;
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

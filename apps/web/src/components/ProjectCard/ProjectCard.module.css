@@ -63,17 +63,15 @@
   transform: rotateY(180deg);
 }
 
-/* Front is the height dictator — in flow it drives the card's intrinsic size. */
+/* Front is the height dictator — in flow it drives the card's intrinsic size.
+   Surface + accent/winner seam come from the shared card.module.css (.face +
+   .seam/.winnerSeam) applied in JSX. */
 .cardFront {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--card-surface);
-  border: 1px solid var(--border);
-  border-radius: inherit;
-  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transition: border-color var(--transition-base);
@@ -83,19 +81,6 @@
    face visually but does NOT remove it from pointer/wheel hit-testing, so the
    flipped-away front would otherwise swallow scroll over the note. Gate it. */
 .flipped .cardFront {
-  pointer-events: none;
-}
-
-/* Per-card accent seam — matches the fact cards so both grids read alike. */
-.cardFront::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  z-index: 5;
-  background: var(--card-seam);
   pointer-events: none;
 }
 
@@ -347,26 +332,6 @@
   flex-wrap: wrap;
   gap: 4px;
   margin-top: auto;
-}
-
-.techChip {
-  padding: 3px 8px;
-  border-radius: var(--r-sm);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 0.6px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
-  white-space: nowrap;
-  transition:
-    color var(--transition-base),
-    border-color var(--transition-base);
-}
-
-.card:hover .techChip {
-  color: var(--text-secondary);
-  border-color: var(--border-strong);
 }
 
 .foot {

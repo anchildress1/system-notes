@@ -5,8 +5,11 @@ import { Highlight } from 'react-instantsearch';
 import type { Hit } from 'instantsearch.js';
 import type { SendEventForHits, FactHitRecord } from '@/types/algolia';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
+import Badge from '@/components/Badge/Badge';
+import Tag from '@/components/Tag/Tag';
 import { GitHubIcon, DevIcon } from '@/components/icons';
 import { getCardVariant } from './cardVariant';
+import cardStyles from '@/styles/card.module.css';
 import styles from './FactCard.module.css';
 
 export type { FactHitRecord } from '@/types/algolia';
@@ -122,7 +125,12 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
         data-state={isFlipped ? 'expanded' : 'collapsed'}
       >
         <div className={styles.flipper}>
-          <div className={styles.cardFront} aria-hidden={isFlipped}>
+          <div
+            className={`${styles.cardFront} ${cardStyles.face} ${
+              variant.size === 'two-thirds' ? cardStyles.winnerSeam : cardStyles.seam
+            }`}
+            aria-hidden={isFlipped}
+          >
             <button
               ref={frontButtonRef}
               type="button"
@@ -139,12 +147,9 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
                   {createdLabel && <span className={styles.cardDate}>{createdLabel}</span>}
                 </span>
                 <div className={styles.cardMetaRight}>
-                  <span
-                    className="card-header-badge"
-                    data-category={categoryLabel.toLowerCase().replace(/\s+/g, '-')}
-                  >
+                  <Badge variant="accent" accent={variant.accent}>
                     {categoryLabel}
-                  </span>
+                  </Badge>
                   {hit.url && (
                     <SourceLinkButton
                       url={hit.url}
@@ -173,11 +178,9 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
               </p>
 
               {displayTags.length > 0 && (
-                <div className="simple-tags">
+                <div className={styles.tagRow}>
                   {displayTags.map((tag) => (
-                    <span key={tag} className="simple-tag">
-                      {tag}
-                    </span>
+                    <Tag key={tag}>{tag}</Tag>
                   ))}
                 </div>
               )}

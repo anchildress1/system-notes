@@ -41,8 +41,7 @@
   border-color: color-mix(in srgb, var(--card-accent) 45%, var(--border-strong));
 }
 
-/* Accent seam across the top of each face, clipped to the rounded corners. */
-.cardFront::before,
+/* Back-face accent seam (front seam comes from the shared card.module.css). */
 .cardBack::before {
   content: '';
   position: absolute;
@@ -82,18 +81,13 @@
   -webkit-line-clamp: 5;
 }
 
-.cardLink[data-size='two-thirds'] .cardFront,
+/* Featured (two-thirds) back face wears the flowing perimeter seam-border too
+   (the front gets it via the shared .winnerSeam class). Border steps aside so
+   the gradient ring is the visible edge. */
 .cardLink[data-size='two-thirds'] .cardBack {
-  background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(8, 9, 12, 0.6) 100%);
-  /* The flowing seam-border becomes the visible edge, so the static border
-     steps aside (kept transparent to preserve layout box). */
   border-color: transparent;
 }
 
-/* Featured (two-thirds) cards swap the single top accent seam for a flowing
-   5-stop chromatic seam-border that traces the whole perimeter. The mask trick
-   paints --gradient-winner only in the 1.5px ring; gradientShimmer drifts it. */
-.cardLink[data-size='two-thirds'] .cardFront::before,
 .cardLink[data-size='two-thirds'] .cardBack::before {
   inset: 0;
   height: auto;
@@ -284,15 +278,13 @@
 
 /* Front is the height dictator — in flow, drives the card's intrinsic size.
    The .card itself owns the bg/border; faces are transparent content layers. */
+/* Surface + accent/winner seam come from the shared card.module.css (.face +
+   .seam/.winnerSeam) applied in JSX. */
 .cardFront {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  background: var(--card-surface);
-  border: 1px solid var(--border);
-  border-radius: inherit;
-  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   text-align: left;
@@ -379,12 +371,19 @@
   text-transform: lowercase;
 }
 
+/* Tag row — pushed to the card bottom; chips come from the Tag primitive. */
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .flipper {
     transition: none;
   }
 
-  .cardLink[data-size='two-thirds'] .cardFront::before,
   .cardLink[data-size='two-thirds'] .cardBack::before {
     animation: none;
   }

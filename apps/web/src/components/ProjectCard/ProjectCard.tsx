@@ -4,11 +4,15 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { Project } from '@/lib/api';
 import Image from 'next/image';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
+import Badge from '@/components/Badge/Badge';
+import Tag from '@/components/Tag/Tag';
+import Button from '@/components/Button/Button';
 import { GitHubIcon, TrophyIcon } from '@/components/icons';
 import { accentForPosition } from '@/lib/cardAccent';
 import { FaArrowRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
+import cardStyles from '@/styles/card.module.css';
 import styles from './ProjectCard.module.css';
 
 interface ProjectCardProps {
@@ -69,7 +73,12 @@ export default function ProjectCard({
         data-state={isFlipped ? 'expanded' : 'collapsed'}
       >
         <div className={styles.flipper}>
-          <div className={styles.cardFront} aria-hidden={isFlipped}>
+          <div
+            className={`${styles.cardFront} ${cardStyles.face} ${
+              project.award ? cardStyles.winnerSeam : cardStyles.seam
+            }`}
+            aria-hidden={isFlipped}
+          >
             {/* Front-only overlay: clicking the face flips to the detail side.
                 It lives inside the front so it rotates away (and stops
                 intercepting) once the back is showing. */}
@@ -115,10 +124,9 @@ export default function ProjectCard({
                 <span className={styles.projId}>/proj/{project.id}</span>
                 {project.award && (
                   <span className={styles.awardSlot}>
-                    <span className="award-badge">
-                      <TrophyIcon className="award-badge-icon" />
-                      <span>{project.award}</span>
-                    </span>
+                    <Badge variant="award" icon={<TrophyIcon />}>
+                      {project.award}
+                    </Badge>
                   </span>
                 )}
               </div>
@@ -126,10 +134,8 @@ export default function ProjectCard({
 
             <div className={styles.content}>
               <div className={styles.headerTop}>
-                <span className="card-header-badge">{ownerName}</span>
-                {project.status === 'Archived' && (
-                  <span className="card-header-badge">ARCHIVED</span>
-                )}
+                <Badge variant="neutral">{ownerName}</Badge>
+                {project.status === 'Archived' && <Badge variant="neutral">ARCHIVED</Badge>}
                 {project.repo_url && (
                   <span className={styles.sourceLinkRaise}>
                     <SourceLinkButton
@@ -152,13 +158,9 @@ export default function ProjectCard({
 
               <div className={styles.techRow}>
                 {project.tech.slice(0, 4).map((t) => (
-                  <span key={t.name} className={styles.techChip}>
-                    {t.name}
-                  </span>
+                  <Tag key={t.name}>{t.name}</Tag>
                 ))}
-                {project.tech.length > 4 && (
-                  <span className={styles.techChip}>+{project.tech.length - 4}</span>
-                )}
+                {project.tech.length > 4 && <Tag>+{project.tech.length - 4}</Tag>}
               </div>
 
               <div className={styles.foot}>
@@ -244,17 +246,17 @@ export default function ProjectCard({
             </div>
 
             {project.repo_url && (
-              <a
+              <Button
+                variant="secondary"
                 href={project.repo_url}
                 target="_blank"
-                rel="noopener noreferrer"
-                className={`cta-external ${styles.backRepo}`}
+                className={styles.backRepo}
+                icon={<GitHubIcon />}
+                iconRight={<FiExternalLink aria-hidden="true" focusable="false" size={14} />}
                 tabIndex={isFlipped ? 0 : -1}
               >
-                <GitHubIcon />
                 View source
-                <FiExternalLink aria-hidden="true" focusable="false" size={14} />
-              </a>
+              </Button>
             )}
           </div>
         </div>
