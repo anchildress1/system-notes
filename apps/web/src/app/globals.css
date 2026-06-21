@@ -9,9 +9,10 @@
   /* ── v2.1.26 Aurora · Text Scale (cool violet cast) ── */
   --text-primary: #f3f0fb;
   --text-secondary: #bcb6cf;
-  /* #867f9b clears WCAG AA (≈5:1) on the dark bg. */
+  /* Both bottom tiers clear WCAG AA (4.5:1) on the dark bg: muted ≈5.2:1,
+     dim ≈4.6:1 — the quietest readable tier, used for dates and micro-meta. */
   --text-muted: #867f9b;
-  --text-dim: #4b4660;
+  --text-dim: #7c7791;
 
   /* ── v2.1.26 Aurora · Vivid neon accents + soft (18%) washes ── */
   --accent-pink: #ff5fa2;
