@@ -29,7 +29,7 @@
   right: 0;
   height: 2px;
   z-index: 2;
-  background: linear-gradient(90deg, var(--accent-violet), var(--accent-teal) 60%, transparent);
+  background: var(--gradient-seam-brand);
   pointer-events: none;
 }
 
@@ -82,7 +82,7 @@
   z-index: 1;
   background: radial-gradient(
     560px circle at var(--spot-x) var(--spot-y),
-    rgba(181, 107, 255, 0.14),
+    color-mix(in srgb, var(--accent-violet) 16%, transparent),
     transparent 60%
   );
   opacity: 0;
@@ -175,17 +175,12 @@
   color: var(--text-primary);
 }
 
-/* Full neon gradient that flows across the word — pink → violet → teal,
-   looping seamlessly (the trailing pink matches the leading pink so the
-   200% position wrap has no visible seam). Drift, not flash. */
+/* Full neon gradient that flows across the word — the shared Aurora hero band
+   (pink → violet → indigo → teal → pink), looping seamlessly (the trailing
+   pink matches the leading pink so the 200% wrap has no visible seam). Drift,
+   not flash. */
 .rotatingWord {
-  background: linear-gradient(
-    110deg,
-    var(--accent-pink) 0%,
-    var(--accent-violet) 35%,
-    var(--accent-teal) 65%,
-    var(--accent-pink) 100%
-  );
+  background: var(--gradient-hero);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
