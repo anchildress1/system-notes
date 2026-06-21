@@ -7,3 +7,8 @@
   outline: none;
   border-color: rgba(var(--ais-border-color-rgb), 0.6);
 }
+
+.ais-ChatPrompt-disclaimer {
+  font-size: 0.65rem;
+  line-height: 1.35;
+}
