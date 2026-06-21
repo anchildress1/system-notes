@@ -39,6 +39,11 @@ describe('Hero Component', () => {
     expect(screen.getByText('CWD · /sys/test')).toBeInTheDocument();
   });
 
+  it('renders the actions slot when provided', () => {
+    render(<Hero {...defaultProps} actions={<button data-testid="hero-cta">go</button>} />);
+    expect(screen.getByTestId('hero-cta')).toBeInTheDocument();
+  });
+
   it('dispatches trigger-glitter-bomb event on click', () => {
     const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     render(<Hero {...defaultProps} />);

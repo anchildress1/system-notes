@@ -10,6 +10,8 @@ interface HeroProps {
   titleAccent?: string;
   accentWord?: string;
   subtitle?: string;
+  /** Optional primary/secondary CTAs rendered under the subtitle. */
+  actions?: ReactNode;
   /** Optional media (e.g. a portrait) rendered beside the text as a split hero. */
   aside?: ReactNode;
 }
@@ -21,6 +23,7 @@ export default function Hero({
   titleAccent,
   accentWord,
   subtitle,
+  actions,
   aside,
 }: Readonly<HeroProps>) {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -96,6 +99,7 @@ export default function Hero({
             />
           </div>
           {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+          {actions && <div className={styles.actions}>{actions}</div>}
         </div>
 
         {aside && <div className={styles.aside}>{aside}</div>}

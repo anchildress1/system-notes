@@ -170,6 +170,13 @@
   max-width: calc(200% / 3);
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 2rem;
+}
+
 .titleAccent {
   display: block;
   color: var(--text-primary);
