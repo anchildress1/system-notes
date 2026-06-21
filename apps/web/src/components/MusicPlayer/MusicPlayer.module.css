@@ -4,9 +4,12 @@
    chat margin + toggle width (60px) + gap (16px). z-index clears the chat so
    the hover panel stays visible while the chat window is open. */
 .playerWrapper {
+  --dock-margin: clamp(1rem, 3vw, 2rem);
+  --dock-size: clamp(52px, 4vw, 60px);
+  --dock-gap: 12px;
   position: fixed;
-  top: calc(96px + clamp(1.25rem, 4vw, 3rem));
-  right: calc(clamp(1.25rem, 4vw, 3rem) + 60px + 14px);
+  bottom: calc(env(safe-area-inset-bottom) + var(--dock-margin));
+  right: calc(var(--dock-margin) + var(--dock-size) + var(--dock-gap));
   z-index: 1100;
   display: flex;
   flex-direction: column;
@@ -15,11 +18,16 @@
 }
 
 .playButton {
-  width: 60px;
-  height: 60px;
+  width: var(--dock-size);
+  height: var(--dock-size);
   border-radius: var(--r-pill);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-strong);
+  background: linear-gradient(
+    135deg,
+    var(--accent-pink),
+    var(--accent-pink) 55%,
+    color-mix(in srgb, var(--accent-teal) 22%, var(--accent-pink))
+  );
+  border: none;
   color: white;
   display: flex;
   align-items: center;
@@ -30,7 +38,7 @@
     box-shadow var(--transition-base);
   box-shadow:
     var(--shadow-fab),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    0 0 calc(18px * var(--glow)) var(--accent-pink-soft);
   position: relative;
   z-index: 2;
   pointer-events: auto;
@@ -40,13 +48,13 @@
   transform: translateY(-2px);
   box-shadow:
     var(--shadow-fab),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+    0 0 calc(26px * var(--glow)) var(--accent-pink-soft);
 }
 
 .active {
   box-shadow:
     var(--shadow-fab),
-    0 0 0 1px color-mix(in srgb, var(--accent-pink) 40%, transparent) inset;
+    0 0 calc(22px * var(--glow)) var(--accent-pink-soft);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -63,7 +71,7 @@
   position: absolute;
   top: -6px;
   right: -6px;
-  background: var(--bg-base);
+  background: var(--bg-elevated);
   color: var(--text-primary);
   font-size: 10px;
   font-weight: 800;
@@ -77,9 +85,9 @@
 
 .panel {
   position: absolute;
-  top: calc(100% + 12px);
+  bottom: calc(100% + 12px);
   right: 0;
-  width: 280px;
+  width: min(280px, calc(100vw - 2rem));
   background: var(--bg-elevated);
   border: 1px solid var(--border-strong);
   border-radius: var(--r-md);
@@ -357,6 +365,8 @@
 
 @media (max-width: 640px) {
   .playerWrapper {
-    display: none;
+    --dock-margin: 1rem;
+    --dock-size: 52px;
+    --dock-gap: 10px;
   }
 }

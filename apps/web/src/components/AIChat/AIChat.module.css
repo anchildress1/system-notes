@@ -3,7 +3,8 @@
    Algolia's chat.css reads these internally — no internal selectors targeted. */
 
 .chatDock {
-  --chat-dock-margin: clamp(1.25rem, 4vw, 3rem);
+  --chat-dock-margin: clamp(1rem, 3vw, 2rem);
+  --chat-dock-size: clamp(52px, 4vw, 60px);
   isolation: isolate;
   pointer-events: none;
 }
@@ -29,25 +30,31 @@
 
 /* ── Toggle FAB (we render it; matches the MusicPlayer FAB exactly) ── */
 .chatToggle {
+  --chat-dock-margin: clamp(1rem, 3vw, 2rem);
+  --chat-dock-size: clamp(52px, 4vw, 60px);
   position: fixed;
-  top: calc(96px + var(--chat-dock-margin));
+  bottom: calc(env(safe-area-inset-bottom) + var(--chat-dock-margin));
   right: var(--chat-dock-margin);
   z-index: 1100;
-  width: 60px;
-  height: 60px;
+  width: var(--chat-dock-size);
+  height: var(--chat-dock-size);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--r-pill);
   border: none;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-strong);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent-pink) 22%, var(--accent-violet)),
+    var(--accent-violet) 55%,
+    color-mix(in srgb, var(--accent-teal) 20%, var(--accent-violet))
+  );
   color: white;
   cursor: pointer;
   pointer-events: auto;
   box-shadow:
     var(--shadow-fab),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    0 0 calc(18px * var(--glow)) var(--accent-violet-soft);
   transition:
     transform var(--transition-base),
     box-shadow var(--transition-base);
@@ -57,7 +64,7 @@
   transform: translateY(-2px);
   box-shadow:
     var(--shadow-fab),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+    0 0 calc(26px * var(--glow)) var(--accent-violet-soft);
 }
 
 .chatToggle:focus-visible {
@@ -76,7 +83,9 @@
 }
 
 @media (max-width: 640px) {
+  .chatDock,
   .chatToggle {
-    display: none;
+    --chat-dock-margin: 1rem;
+    --chat-dock-size: 52px;
   }
 }
