@@ -258,17 +258,23 @@ deploy_service() {
     active_revision=$(gcloud run services describe "$service_name" \
         --region "$REGION" --project "$PROJECT_ID" \
         --format='value(status.latestReadyRevisionName)')
-    gcloud run revisions list \
-        --service "$service_name" \
-        --region "$REGION" \
-        --project "$PROJECT_ID" \
-        --format='value(metadata.name)' \
-        | grep -v "^${active_revision}$" \
-        | while read -r rev; do
-            echo "  Deleting $rev..."
-            gcloud run revisions delete "$rev" \
-                --region "$REGION" --project "$PROJECT_ID" --quiet 2>&1 || true
-        done
+    # Guard: without a known active revision the grep -v below would match every
+    # name and delete the live revision too. Skip cleanup rather than risk that.
+    if [ -z "$active_revision" ]; then
+        echo "  Skipping cleanup: could not determine the active revision."
+    else
+        gcloud run revisions list \
+            --service "$service_name" \
+            --region "$REGION" \
+            --project "$PROJECT_ID" \
+            --format='value(metadata.name)' \
+            | grep -v "^${active_revision}$" \
+            | while read -r rev; do
+                echo "  Deleting $rev..."
+                gcloud run revisions delete "$rev" \
+                    --region "$REGION" --project "$PROJECT_ID" --quiet 2>&1 || true
+            done
+    fi
 
     return 0
 }
