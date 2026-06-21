@@ -340,7 +340,12 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
         </span>
       </button>
       {open && (
-        <div id={popoverId} className={styles.filterPopover}>
+        <div
+          id={popoverId}
+          className={styles.filterPopover}
+          role="group"
+          aria-label={`${label} filter options`}
+        >
           <button
             ref={(el) => {
               optionRefs.current[0] = el;
