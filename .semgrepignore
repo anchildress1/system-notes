@@ -1,0 +1,9 @@
+# Test code uses fake fixture credentials (Algolia app ids, search keys, agent
+# ids) that trip Semgrep's generic-api-key rule. None ship to production, so
+# exclude test/bench/e2e files from SAST scanning.
+*.test.ts
+*.test.tsx
+*.bench.tsx
+**/test-utils/
+**/setupTests.ts
+tests/
