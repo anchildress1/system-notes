@@ -57,12 +57,22 @@ const nextConfig: NextConfig = {
       ...(process.env.NODE_ENV === 'production'
         ? [
             {
-              // Standard caching for static assets from public/.
+              // public/ assets — no content hash, so no immutable.
               source: String.raw`/(.*)\.(js|css|woff|woff2|eot|ttf|otf|svg|png|jpg|jpeg|gif|webp|avif)`,
               headers: [
                 {
                   key: 'Cache-Control',
                   value: 'public, max-age=31536000',
+                },
+              ],
+            },
+            {
+              // /_next/static/ assets are content-hashed — safe to cache forever.
+              source: '/_next/static/(.*)',
+              headers: [
+                {
+                  key: 'Cache-Control',
+                  value: 'public, max-age=31536000, immutable',
                 },
               ],
             },
