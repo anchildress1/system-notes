@@ -148,7 +148,7 @@
 }
 
 .flipButton:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--chrome-line);
   outline-offset: -2px;
 }
 
@@ -463,7 +463,7 @@
 }
 
 .backClose:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
+  outline: 2px solid var(--chrome-line);
   outline-offset: 2px;
 }
 
