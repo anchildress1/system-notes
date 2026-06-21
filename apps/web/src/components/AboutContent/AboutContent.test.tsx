@@ -27,14 +27,6 @@ const baseData: AboutData = {
     { label: 'origin', value: 'Appalachia' },
     { label: 'role', value: 'Sr SWE' },
   ],
-  lyric: {
-    meta: 'THEME SONG',
-    metaRight: '2026 · LOUD',
-    rows: [
-      { time: '00:00.4', text: 'I BUILD THINGS', tag: 'INTENT', tone: 'pink' },
-      { time: '00:08.0', text: 'I SHIP THINGS', tag: 'DEPLOY', tone: 'violet' },
-    ],
-  },
   heroImage: {
     src: '/ashley-gen-2.webp',
     alt: 'Ashley Childress profile picture',
@@ -66,12 +58,6 @@ describe('AboutContent', () => {
     render(<AboutContent data={baseData} />);
     expect(screen.getByText('Appalachia')).toBeInTheDocument();
     expect(screen.getByText('Sr SWE')).toBeInTheDocument();
-  });
-
-  it('renders the loud lyric rows', () => {
-    render(<AboutContent data={baseData} />);
-    expect(screen.getByText('I BUILD THINGS')).toBeInTheDocument();
-    expect(screen.getByText('I SHIP THINGS')).toBeInTheDocument();
   });
 
   it('renders the highlights box: skills and recognition', () => {

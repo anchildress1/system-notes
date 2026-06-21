@@ -5,12 +5,22 @@
   padding: 3.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 4rem;
 }
 
+/* Portrait leads on the left so it's the first thing read, with the highlights
+   box taking the remaining room to its right. */
+.intro {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 32px;
+  align-items: stretch;
+  margin-bottom: 8px;
+}
+
 /* ── Highlights: one cohesive box — stats, expertise, recognition, links ── */
 .highlights {
   display: flex;
   flex-direction: column;
   gap: 28px;
-  margin: 0 0 8px;
+  margin: 0;
   padding: 32px 40px;
   border: 1px solid var(--border-strong);
   border-radius: var(--r-xl);
@@ -78,12 +88,36 @@
   min-width: 0;
 }
 
+/* Per-spot accent. Set --about-accent on a labelled group (or a section's meta)
+   and its label, stars, number, and rule bar all pick it up — so the page reads
+   as a mix of the site's hues instead of a wall of teal. */
+.accentPink {
+  --about-accent: var(--accent-pink);
+}
+.accentViolet {
+  --about-accent: var(--accent-violet);
+}
+.accentTeal {
+  --about-accent: var(--accent-teal);
+}
+.accentGold {
+  --about-accent: var(--accent-gold);
+}
+.accentBlue {
+  --about-accent: var(--accent-blue);
+}
+
 .hlLabel {
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--accent-teal);
+  /* White label; the accent shows as a fading 2px rule under it — the same
+     seam line the cards use. Stretches full-width via the group's flex. */
+  color: var(--text-primary);
+  padding-bottom: 6px;
+  background: linear-gradient(90deg, var(--about-accent, var(--accent-teal)), transparent 75%) bottom
+    left / 100% 2px no-repeat;
 }
 
 .skills {
@@ -132,7 +166,8 @@
   content: '★';
   position: absolute;
   left: 0;
-  color: var(--accent-gold);
+  /* Inherits the Recognition group's accent. */
+  color: var(--about-accent, var(--accent-teal));
 }
 
 /* CTA links — the recruiter's next step. Pinned to the bottom of the right
@@ -140,42 +175,24 @@
    under Recognition. */
 .links {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 6px;
   margin-top: auto;
   padding-top: 8px;
 }
 
-.link {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 15px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
-  background: rgba(255, 255, 255, 0.03);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  color: var(--text-primary);
-  text-decoration: none;
-  transition:
-    background var(--transition-base),
-    border-color var(--transition-base),
-    box-shadow var(--transition-base);
+/* Three on one line in a narrow column: equal thirds, with tighter padding/font
+   than the shared .cta-external so the labels fit (these overrides outrank it). */
+.links a {
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 6px;
+  font-size: 10px;
+  white-space: nowrap;
 }
 
-.link:hover {
-  background: rgba(127, 90, 240, 0.14);
-  border-color: var(--accent-violet);
-  box-shadow: 0 0 calc(20px * var(--glow)) rgba(127, 90, 240, 0.2);
-}
-
-.link:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
-  outline-offset: 2px;
-}
+/* External links use the shared global `.cta-external` (see globals.css). */
 
 /* ── Sections ── */
 .section {
@@ -200,25 +217,14 @@
   height: fit-content;
   /* Accent marker bar down the left of the sticky meta. */
   padding-left: 18px;
-  border-left: 2px solid var(--section-accent, var(--border-strong));
-}
-
-/* Per-section neon accent (set on .sectionMeta, consumed by the number + bar). */
-.accentTeal {
-  --section-accent: var(--accent-teal);
-}
-.accentPink {
-  --section-accent: var(--accent-pink);
-}
-.accentViolet {
-  --section-accent: var(--accent-violet);
+  border-left: 2px solid var(--about-accent, var(--border-strong));
 }
 
 .sectionNum {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-  color: var(--section-accent, var(--text-muted));
+  color: var(--about-accent, var(--text-muted));
   letter-spacing: 1.5px;
 }
 
@@ -255,92 +261,19 @@
   margin-bottom: 0;
 }
 
+/* Emphasis is a brightness lift, not bold — the body is full of *marked*
+   phrases, so a heavier weight on every one turns the prose into noise. */
 .sectionBody em {
   color: var(--text-primary);
   font-style: normal;
-  font-weight: 500;
+  font-weight: inherit;
 }
 
-/* ── Loud lyric block (theme song) ── */
-.lyricLoud {
-  position: relative;
-  margin: 56px 0 24px;
-  padding: 38px 44px;
-  overflow: hidden;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-xl);
-  background:
-    radial-gradient(at 20% 30%, rgba(181, 107, 255, 0.18), transparent 60%),
-    radial-gradient(at 80% 70%, rgba(241, 97, 151, 0.18), transparent 60%),
-    linear-gradient(180deg, rgba(29, 31, 40, 0.5), rgba(8, 9, 12, 0.6));
-}
-
-.lyricMeta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 22px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-.lyricRows {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.lyricRow {
-  display: grid;
-  grid-template-columns: 84px 1fr 110px;
-  gap: 24px;
-  align-items: baseline;
-  padding: 2px 0;
-}
-
-.lyricTime {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-dim);
-  letter-spacing: 1px;
-}
-
-.lyricText {
-  font-family: var(--font-display);
-  font-size: clamp(22px, 3.4vw, 46px);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  text-wrap: balance;
-}
-
-.isPink .lyricText {
-  color: var(--accent-pink);
-}
-
-.isTeal .lyricText {
-  color: var(--accent-teal);
-}
-
-.isViolet .lyricText {
-  color: var(--accent-violet);
-}
-
-.isMute .lyricText {
-  color: var(--text-dim);
-}
-
-.lyricTag {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 1.3px;
-  text-transform: uppercase;
-  text-align: right;
+@media (max-width: 900px) {
+  .intro {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -371,18 +304,5 @@
 
   .sectionMeta {
     position: static;
-  }
-
-  .lyricLoud {
-    padding: 40px 24px;
-  }
-
-  .lyricRow {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
-
-  .lyricTag {
-    text-align: left;
   }
 }

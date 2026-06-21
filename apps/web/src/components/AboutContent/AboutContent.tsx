@@ -1,8 +1,10 @@
-import { Fragment } from 'react';
-import { FiExternalLink } from 'react-icons/fi';
-import { FaArrowRight } from 'react-icons/fa';
-import type { AboutData, AboutLyric } from '@/data/about';
+import Portrait from '@/components/Portrait/Portrait';
+import { GitHubIcon, DevIcon } from '@/components/icons';
+import { FaLinkedin } from 'react-icons/fa';
+import type { AboutData } from '@/data/about';
 import styles from './AboutContent.module.css';
+
+const LINK_ICONS = { github: GitHubIcon, dev: DevIcon, linkedin: FaLinkedin };
 
 // Splits on *text* markers, alternating between plain strings and <em> nodes.
 // Requires non-whitespace at both boundaries (\S) so *foo bar* works but
@@ -23,118 +25,102 @@ const TextContent = ({ text }: { text: string }) => (
 
 const sectionNumber = (index: number) => String(index + 1).padStart(2, '0');
 
-// Each section's meta takes a different neon accent so the sticky sidebar
-// carries color down the page, not just the lyric block.
-const SECTION_ACCENTS = [styles.accentTeal, styles.accentPink, styles.accentViolet];
-
-const TONE_CLASS: Record<AboutLyric['rows'][number]['tone'], string> = {
-  pink: styles.isPink,
-  teal: styles.isTeal,
-  violet: styles.isViolet,
-  mute: styles.isMute,
-};
-
-const LyricLoud = ({ lyric }: { lyric: AboutLyric }) => (
-  <div className={styles.lyricLoud}>
-    <div className={styles.lyricMeta}>
-      <span>{lyric.meta}</span>
-      <span>{lyric.metaRight}</span>
-    </div>
-    <div className={styles.lyricRows}>
-      {lyric.rows.map((row) => (
-        <div key={row.text} className={`${styles.lyricRow} ${TONE_CLASS[row.tone]}`}>
-          <span className={styles.lyricTime}>{row.time}</span>
-          <span className={styles.lyricText}>{row.text}</span>
-          <span className={styles.lyricTag}>[ {row.tag} ]</span>
-        </div>
-      ))}
-    </div>
-  </div>
-);
+// Spread the site's hues across the page's accented spots so it reads as a mix,
+// not a wall of teal. Keyed by position, like the card grids.
+const SKILL_ACCENTS = [styles.accentTeal, styles.accentPink];
+const SECTION_ACCENTS = [styles.accentViolet, styles.accentBlue];
 
 interface AboutContentProps {
   data: AboutData;
 }
 
 export default function AboutContent({ data }: Readonly<AboutContentProps>) {
-  const { sections, skillGroups, recognition, links, stats, lyric } = data;
+  const { sections, skillGroups, recognition, links, stats, heroImage } = data;
 
   return (
     <div className={styles.human}>
-      <section className={styles.highlights} aria-label="Highlights">
-        <dl className={styles.stats}>
-          {stats.map((stat) => (
-            <div key={stat.label} className={styles.stat}>
-              <dt className={styles.statLabel}>{stat.label}</dt>
-              <dd className={styles.statValue}>{stat.value}</dd>
-            </div>
-          ))}
-        </dl>
+      <div className={styles.intro}>
+        <Portrait
+          src={heroImage.src}
+          alt={heroImage.alt}
+          width={heroImage.width}
+          height={heroImage.height}
+        />
 
-        <div className={styles.hlCols}>
-          <div className={styles.hlCol}>
-            {skillGroups.map((group) => (
-              <div key={group.label} className={styles.hlGroup}>
-                <span className={styles.hlLabel}>{group.label}</span>
-                <div className={styles.skills}>
-                  {group.items.map((skill) => (
-                    <span key={skill} className={styles.skill}>
-                      {skill}
-                    </span>
-                  ))}
-                </div>
+        <section className={styles.highlights} aria-label="Highlights">
+          <dl className={styles.stats}>
+            {stats.map((stat) => (
+              <div key={stat.label} className={styles.stat}>
+                <dt className={styles.statLabel}>{stat.label}</dt>
+                <dd className={styles.statValue}>{stat.value}</dd>
               </div>
             ))}
-          </div>
-          <div className={styles.hlCol}>
-            <div className={styles.hlGroup}>
-              <span className={styles.hlLabel}>Recognition</span>
-              <ul className={styles.recognition}>
-                {recognition.map((item) => (
-                  <li key={item} className={styles.recognitionItem}>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          </dl>
 
-            <div className={styles.links}>
-              {links.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className={styles.link}
-                  {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          <div className={styles.hlCols}>
+            <div className={styles.hlCol}>
+              {skillGroups.map((group, i) => (
+                <div
+                  key={group.label}
+                  className={`${styles.hlGroup} ${SKILL_ACCENTS[i % SKILL_ACCENTS.length]}`}
                 >
-                  {link.label}
-                  {link.external ? (
-                    <FiExternalLink aria-hidden="true" focusable="false" size={13} />
-                  ) : (
-                    <FaArrowRight aria-hidden="true" focusable="false" size={11} />
-                  )}
-                </a>
+                  <span className={styles.hlLabel}>{group.label}</span>
+                  <div className={styles.skills}>
+                    {group.items.map((skill) => (
+                      <span key={skill} className={styles.skill}>
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
+            <div className={styles.hlCol}>
+              <div className={`${styles.hlGroup} ${styles.accentGold}`}>
+                <span className={styles.hlLabel}>Recognition</span>
+                <ul className={styles.recognition}>
+                  {recognition.map((item) => (
+                    <li key={item} className={styles.recognitionItem}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className={styles.links}>
+                {links.map((link) => {
+                  const Icon = link.icon ? LINK_ICONS[link.icon] : null;
+                  return (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      className="cta-external"
+                      {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      {Icon && <Icon />}
+                      {link.label}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       {sections.map((section, index) => (
-        <Fragment key={section.title}>
-          <section className={styles.section}>
-            <div
-              className={`${styles.sectionMeta} ${SECTION_ACCENTS[index % SECTION_ACCENTS.length]}`}
-            >
-              <span className={styles.sectionNum}>{sectionNumber(index)} · NODE</span>
-              <h2 className={styles.sectionTitle}>{section.title}</h2>
-              {section.subtitle && <span className={styles.sectionTag}>{section.subtitle}</span>}
-            </div>
-            <div className={styles.sectionBody}>
-              <TextContent text={section.content} />
-            </div>
-          </section>
-          {index === 0 && <LyricLoud lyric={lyric} />}
-        </Fragment>
+        <section className={styles.section} key={section.title}>
+          <div
+            className={`${styles.sectionMeta} ${SECTION_ACCENTS[index % SECTION_ACCENTS.length]}`}
+          >
+            <span className={styles.sectionNum}>{sectionNumber(index)} · NODE</span>
+            <h2 className={styles.sectionTitle}>{section.title}</h2>
+            {section.subtitle && <span className={styles.sectionTag}>{section.subtitle}</span>}
+          </div>
+          <div className={styles.sectionBody}>
+            <TextContent text={section.content} />
+          </div>
+        </section>
       ))}
     </div>
   );
