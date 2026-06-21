@@ -31,7 +31,7 @@
 
 .card:hover {
   box-shadow:
-    0 0 calc(12px * var(--glow)) var(--card-accent-soft),
+    0 0 calc(10px * var(--glow)) var(--card-accent-soft),
     var(--shadow-card);
   transform: translateY(-2px);
 }
@@ -307,7 +307,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .backBody {

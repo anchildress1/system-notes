@@ -1,15 +1,11 @@
 .gridSection {
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--section-gap);
   width: 100%;
-  /* Match the hero's gutter so the cards line up under the hero text. */
-  padding: 0 max(2rem, calc((100% - 1440px) / 2 + 2rem));
+  padding: 0 var(--page-gutter);
 }
 
 .grid {
   display: grid;
-  /* Three across to match the thirds in the Choices results grid. minmax(0,1fr)
-     (not bare 1fr) forces truly equal tracks — otherwise a card with wide,
-     non-wrapping content stretches its column wider than the others. */
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   width: 100%;
@@ -23,8 +19,7 @@
 
 @media (max-width: 768px) {
   .gridSection {
-    /* Hero drops to 1.5rem side padding here — match it. */
-    padding: 0 1.5rem;
+    padding: 0 var(--page-gutter);
   }
 }
 

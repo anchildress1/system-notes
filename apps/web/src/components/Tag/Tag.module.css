@@ -7,7 +7,7 @@
   font-weight: 500;
   padding: 2px 8px;
   border-radius: var(--r-sm);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   white-space: nowrap;
   line-height: 1.4;
   border: 1px solid var(--border);

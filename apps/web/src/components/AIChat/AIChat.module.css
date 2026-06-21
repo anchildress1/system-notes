@@ -3,7 +3,7 @@
    Algolia's chat.css reads these internally — no internal selectors targeted. */
 
 .chatDock {
-  --chat-dock-margin: 5rem;
+  --chat-dock-margin: clamp(1.25rem, 4vw, 3rem);
   isolation: isolate;
   pointer-events: none;
 }
@@ -14,7 +14,7 @@
   display: none;
 }
 
-/* ── Root: Algolia CSS custom properties (Aurora values) ── */
+/* ── Root: Algolia CSS custom properties ── */
 .chatRoot {
   --ais-chat-margin: var(--chat-dock-margin);
   --ais-primary-color-rgb: 185, 107, 255;
@@ -30,8 +30,8 @@
 /* ── Toggle FAB (we render it; matches the MusicPlayer FAB exactly) ── */
 .chatToggle {
   position: fixed;
-  bottom: 5rem;
-  right: 5rem;
+  top: calc(96px + var(--chat-dock-margin));
+  right: var(--chat-dock-margin);
   z-index: 1100;
   width: 60px;
   height: 60px;
@@ -40,18 +40,14 @@
   justify-content: center;
   border-radius: var(--r-pill);
   border: none;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--accent-pink) 22%, var(--accent-violet)),
-    var(--accent-violet) 55%,
-    color-mix(in srgb, var(--accent-teal) 20%, var(--accent-violet))
-  );
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
   color: white;
   cursor: pointer;
   pointer-events: auto;
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(18px * var(--glow)) var(--accent-violet-soft);
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   transition:
     transform var(--transition-base),
     box-shadow var(--transition-base);
@@ -61,7 +57,7 @@
   transform: translateY(-2px);
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(26px * var(--glow)) var(--accent-violet-soft);
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
 }
 
 .chatToggle:focus-visible {
@@ -76,5 +72,11 @@
 @media (prefers-reduced-motion: reduce) {
   .chatToggle:hover {
     transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .chatToggle {
+    display: none;
   }
 }

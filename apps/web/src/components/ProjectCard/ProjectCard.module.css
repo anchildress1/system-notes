@@ -9,7 +9,6 @@
   }
 }
 
-/* Perspective lives on the grid-cell root so the card flips around itself. */
 .cardLink {
   display: block;
   width: 100%;
@@ -18,17 +17,11 @@
   animation: cardFadeInUp 0.4s ease backwards;
 }
 
-/* Lift the flipped card so its back doesn't clip behind neighbors. */
 .cardLinkFlipped {
   position: relative;
   z-index: 10;
 }
 
-/* Transparent flip wrapper. The visible frame (border, surface, rounding,
-   clip) lives on each face so the 3D flip survives Firefox (no overflow in
-   the preserve-3d ancestry) and there's a single set of rounded corners —
-   not the card's border fighting a second clip on the faces. radius stays
-   here only so the hover box-shadow is rounded. */
 .card {
   position: relative;
   height: 100%;
@@ -41,7 +34,7 @@
 
 .card:hover {
   box-shadow:
-    0 0 calc(44px * var(--glow)) var(--card-accent-soft),
+    0 0 calc(24px * var(--glow)) var(--card-accent-soft),
     var(--shadow-card);
 }
 
@@ -63,9 +56,6 @@
   transform: rotateY(180deg);
 }
 
-/* Front is the height dictator — in flow it drives the card's intrinsic size.
-   Surface + accent/winner seam come from the shared card.module.css (.face +
-   .seam/.winnerBanner) applied in JSX. */
 .cardFront {
   position: relative;
   z-index: 2;
@@ -77,9 +67,6 @@
   transition: border-color var(--transition-base);
 }
 
-/* Interaction follows the visible face. backface-visibility hides the back
-   face visually but does NOT remove it from pointer/wheel hit-testing, so the
-   flipped-away front would otherwise swallow scroll over the note. Gate it. */
 .flipped .cardFront {
   pointer-events: none;
 }
@@ -105,7 +92,6 @@
   pointer-events: auto;
 }
 
-/* Per-card accent seam across the top of the note. */
 .cardBack::before {
   content: '';
   position: absolute;
@@ -117,7 +103,6 @@
   background: var(--card-seam);
 }
 
-/* Faint blueprint grid, fading toward the bottom — ties to the front art. */
 .cardBack::after {
   content: '';
   position: absolute;
@@ -132,7 +117,6 @@
   mask-image: linear-gradient(180deg, black, transparent 45%);
 }
 
-/* Front-only toggle: covers the face, rotates away with it when flipped. */
 .flipButton {
   position: absolute;
   inset: 0;
@@ -154,14 +138,11 @@
 
 .imageContainer {
   width: 100%;
-  /* Match the source art (350×175) so it fills edge-to-edge without cropping. */
   aspect-ratio: 2 / 1;
   position: relative;
   overflow: hidden;
   background: var(--bg-deep);
   flex-shrink: 0;
-  /* Trap the image's internal z-index so the flip-button overlay stays on
-     top — clicking the art flips the card like the rest of the front. */
   isolation: isolate;
 }
 
@@ -216,10 +197,6 @@
   pointer-events: none;
 }
 
-/* Corner overlay: the /proj path tag heads the card top-left (aligned with
-   the left-aligned content below), the award stamps bottom-right with the
-   full row to itself — a top-left-to-bottom-right read that lands on the
-   win. Neither collides or clips. */
 .imageOverlay {
   position: absolute;
   inset: 0;
@@ -300,7 +277,6 @@
   margin-left: auto;
 }
 
-/* Keep the GitHub link clickable above the full-bleed flip toggle. */
 .sourceLinkRaise {
   position: relative;
   z-index: 2;
@@ -311,7 +287,7 @@
   font-family: var(--font-display);
   font-size: 22px;
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   line-height: 1.1;
   color: var(--text-primary);
 }
@@ -376,7 +352,6 @@
   transition: color var(--transition-base);
 }
 
-/* Accent arrow marks the flip affordance and slides on hover. */
 .footRead svg {
   color: var(--card-accent);
   transition: transform var(--transition-base);
@@ -416,7 +391,7 @@
   font-size: 1.35rem;
   font-weight: 500;
   line-height: 1.05;
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
   color: var(--text-primary);
 }
 

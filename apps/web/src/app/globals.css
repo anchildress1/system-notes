@@ -1,44 +1,36 @@
 :root {
-  /* ── v2.1.26 Aurora · Base Surfaces (darkest → lifted, violet-inked) ── */
+  /* Base surfaces */
   --bg-deep: #08070e;
   --bg-base: #0b0a12;
   --bg-surface: #15131f;
   --bg-elevated: #211d31;
   --bg-input: #120f1c;
 
-  /* ── v2.1.26 Aurora · Text Scale (cool violet cast) ── */
+  /* Text scale */
   --text-primary: #f3f0fb;
   --text-secondary: #bcb6cf;
-  /* Both bottom tiers clear WCAG AA (4.5:1) on the dark bg: muted ≈5.2:1,
-     dim ≈4.6:1 — the quietest readable tier, used for dates and micro-meta. */
   --text-muted: #867f9b;
   --text-dim: #7c7791;
 
-  /* ── v2.1.26 Aurora · Vivid neon accents + soft (18%) washes ── */
+  /* Accents */
   --accent-pink: #ff5fa2;
-  --accent-pink-soft: rgba(255, 95, 162, 0.18);
+  --accent-pink-soft: rgba(255, 95, 162, 0.12);
   --accent-teal: #2fd6d0;
-  --accent-teal-soft: rgba(47, 214, 208, 0.18);
+  --accent-teal-soft: rgba(47, 214, 208, 0.12);
   --accent-violet: #b96bff;
-  --accent-violet-soft: rgba(185, 107, 255, 0.18);
+  --accent-violet-soft: rgba(185, 107, 255, 0.12);
   --accent-gold: #ffb070;
-  --accent-gold-soft: rgba(255, 176, 112, 0.18);
-  /* Electric indigo lifted from the brand mark (icon.svg coreFacet). In Aurora
-     it joins the flowing gradient band as a fifth voice. */
+  --accent-gold-soft: rgba(255, 176, 112, 0.12);
   --accent-blue: #7d5cff;
-  --accent-blue-soft: rgba(125, 92, 255, 0.18);
+  --accent-blue-soft: rgba(125, 92, 255, 0.12);
 
   --accent: var(--accent-violet);
   --accent-soft: var(--accent-violet-soft);
 
-  /* ── Neutral interactive tier ──
-     Chrome (focus, hover, active, pagination, nav, links, FABs, badges, tags)
-     stays monochrome. Color belongs to data and to a handful of deliberate
-     Aurora moments: the nebula, card seams, the featured seam-border, the
-     spectral primary fill, and the hero shimmer word. */
+  /* Neutral interactive tier */
   --chrome-line: var(--text-primary);
 
-  /* ── Semantic aliases (keep old names, new dark values) ── */
+  /* Semantic aliases */
   --paper: var(--bg-base);
   --paper-dim: var(--bg-surface);
   --paper-deep: var(--bg-deep);
@@ -47,46 +39,35 @@
   --ink-3: var(--text-muted);
   --ink-4: var(--text-dim);
 
-  /* Primary accent = violet (replaces ember) */
   --ember: var(--accent-violet);
   --ember-tint: var(--accent-violet-soft);
   --ember-soft: rgba(185, 107, 255, 0.06);
 
-  /* ── Borders + Glass ── (monochrome; chrome never wears a hue) */
-  --border: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --glass-bg: rgba(24, 20, 36, 0.6);
-  --glass-blur: blur(22px);
+  /* Borders and glass */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --glass-bg: rgba(16, 14, 24, 0.66);
+  --glass-blur: blur(18px);
 
-  /* ── Aurora nebula · three blurred hue-washes drift behind the page ──
-     Ambient only: the canvas reads near-flat black at a glance; color belongs
-     to components, not the background. Kept faint on purpose. */
-  --nebula-1: rgba(255, 95, 162, 0.05); /* pink, upper-left */
-  --nebula-2: rgba(47, 214, 208, 0.04); /* teal, upper-right */
-  --nebula-3: rgba(125, 92, 255, 0.06); /* indigo, lower-center */
+  --nebula-1: rgba(255, 95, 162, 0.035);
+  --nebula-2: rgba(47, 214, 208, 0.032);
+  --nebula-3: rgba(125, 92, 255, 0.04);
 
-  /* Glow multiplier (1 = full). Aurora runs hot; dial down for calm. */
-  --glow: 1.6;
+  --glow: 1;
 
-  /* ── Card system (shared by Project + Fact cards) ──
-     One surface/seam definition for both grids so Choices and Builds stay
-     visually identical. --card-accent is the per-card hue, defaulting to
-     violet and overridden per card via [data-accent] below. */
+  /* Card system */
   --card-accent: var(--accent-violet);
   --card-accent-soft: var(--accent-violet-soft);
-  --card-surface: linear-gradient(160deg, rgba(42, 32, 64, 0.55), rgba(18, 16, 28, 0.7));
-  --card-surface-back: radial-gradient(
+  --card-surface: linear-gradient(160deg, rgba(34, 30, 46, 0.72), rgba(14, 13, 20, 0.9));
+  --card-surface-back:
+    radial-gradient(
       120% 80% at 0% 0%,
-      color-mix(in srgb, var(--card-accent) 16%, transparent),
+      color-mix(in srgb, var(--card-accent) 11%, transparent),
       transparent 55%
     ),
-    linear-gradient(180deg, rgba(34, 36, 48, 0.97), rgba(18, 20, 27, 0.98));
+    linear-gradient(180deg, rgba(28, 27, 38, 0.98), rgba(14, 14, 20, 0.99));
   --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 
-  /* ── The signature gradient ──
-     Award badges, the featured card's seam-border, and the hero shimmer word
-     all draw from these. Five stops with indigo woven through; loop seamlessly
-     (the trailing hue matches the leading hue so the 200% wrap has no seam). */
   --gradient-winner: linear-gradient(
     110deg,
     var(--accent-teal) 0%,
@@ -110,7 +91,7 @@
     transparent
   );
 
-  /* ── Legacy HSL aliases — pages using hsl(var(--color-*)) ── */
+  /* Legacy HSL aliases */
   --color-bg-base: 232 16% 7%;
   --color-bg-surface: 232 16% 11%;
   --color-bg-elevated: 232 14% 14%;
@@ -125,16 +106,15 @@
   --color-accent-teal: 177 68% 51%;
   --color-accent-gold: 23 70% 66%;
 
-  /* ── Algolia primary color → violet ── */
   --ais-primary-color-rgb: 185, 107, 255;
   --ais-primary-color-alpha: 1;
 
-  /* ── Typography ── */
+  /* Typography */
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
-  /* ── Motion ── */
+  /* Motion */
   --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --ease-morph: cubic-bezier(0.4, 0, 0.2, 1);
@@ -142,18 +122,20 @@
   --transition-base: 0.15s ease;
   --transition-slow: 0.25s var(--ease-morph);
 
-  /* ── Spacing ── */
+  /* Spacing */
   --space-xs: 0.75rem;
   --space-sm: 1.5rem;
   --space-md: 3rem;
   --space-lg: 6rem;
   --space-xl: 12rem;
+  --page-gutter: max(1.5rem, calc((100% - 1440px) / 2 + 2rem));
+  --section-gap: clamp(2.5rem, 5vw, 4.5rem);
 
-  /* ── Border Radius · Aurora softens everything a step ── */
+  /* Radius */
   --r-sm: 6px;
-  --r-md: 12px;
-  --r-lg: 18px;
-  --r-xl: 26px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
   --r-pill: 999px;
 
   /* Legacy radius aliases */
@@ -164,15 +146,16 @@
   --radius-pill: var(--r-pill);
   --radius-round: 50%;
 
-  /* ── Shadows · deeper drops with a soft indigo ambient bloom ── */
-  --shadow-card: 0 30px 70px -26px rgba(0, 0, 0, 0.8), 0 0 50px -20px rgba(125, 92, 255, 0.32),
+  /* Shadows */
+  --shadow-card:
+    0 26px 64px -30px rgba(0, 0, 0, 0.84), 0 0 34px -26px rgba(125, 92, 255, 0.22),
     0 1px 0 rgba(255, 255, 255, 0.06) inset;
   --shadow-bento: 0 2px 0 rgba(255, 255, 255, 0.05);
-  --shadow-deep: 0 44px 96px -30px rgba(0, 0, 0, 0.88), 0 0 70px -24px rgba(125, 92, 255, 0.3);
-  --shadow-fab: 0 8px 26px -8px rgba(0, 0, 0, 0.72);
+  --shadow-deep: 0 38px 90px -34px rgba(0, 0, 0, 0.9), 0 0 48px -34px rgba(125, 92, 255, 0.22);
+  --shadow-fab: 0 14px 38px -18px rgba(0, 0, 0, 0.78);
   --highlight-top: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
 
-  /* ── Z-Index ── */
+  /* Z-index */
   --z-background: -1;
   --z-base: 0;
   --z-sticky: 100;
@@ -183,13 +166,7 @@
   --z-footer: 9500;
 }
 
-/* Per-card accent hue — set on the card root, consumed by seams, glows,
-   badges, and back surfaces across both card grids. */
-/* --card-seam is re-declared in each scope on purpose: a custom property that
-   references another custom property resolves var() at its DECLARATION site, not
-   where it's used. Declared only on :root it would bake in the root (violet)
-   --card-accent and inherit that to every card. Re-declaring it here re-resolves
-   var(--card-accent) against the per-card hue so the seam tracks the accent. */
+/* Re-declare --card-seam per accent so it resolves against the local card hue. */
 [data-accent='pink'] {
   --card-accent: var(--accent-pink);
   --card-accent-soft: var(--accent-pink-soft);
@@ -218,8 +195,6 @@
 }
 
 html {
-  /* Base color lives on <html> so the fixed Nebula (z-index: -1, child of
-     <body>) is not painted over by an opaque body background. */
   background-color: var(--bg-base);
 }
 
@@ -331,8 +306,7 @@ body {
   }
 }
 
-/* Aurora nebula drift — slow, flash-free wander for the background hue-washes.
-   Consumers pause it under prefers-reduced-motion. */
+/* Slow, flash-free drift for the background hue-washes. */
 @keyframes auroraDrift {
   0% {
     transform: translate3d(0, 0, 0) scale(1);

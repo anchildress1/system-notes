@@ -1,13 +1,10 @@
-/* The action primitive. Hue flows from [data-accent] (shared with the card
-   system, which maps it to --card-accent / --card-accent-soft). The spectral
-   fills lean pink at one end and teal at the other through the accent hue. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
   font-family: var(--font-mono);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
   line-height: 1;
   border-radius: var(--r-md);
   border: 1px solid transparent;
@@ -32,7 +29,6 @@
   outline-offset: 3px;
 }
 
-/* ── Sizes ── */
 .btn[data-size='sm'] {
   padding: 6px 14px;
   font-size: 11px;
@@ -46,34 +42,21 @@
   font-size: 13px;
 }
 
-/* ── Primary · spectral fill ── */
 .btn[data-variant='primary'] {
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--accent-pink) 26%, var(--card-accent)),
-    var(--card-accent) 50%,
-    color-mix(in srgb, var(--accent-teal) 22%, var(--card-accent))
-  );
+  background: var(--accent-violet);
   color: #fff;
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(14px * var(--glow)) var(--card-accent-soft);
+    0 0 0 1px color-mix(in srgb, white 18%, transparent) inset;
 }
 .btn[data-variant='primary']:hover:not(:disabled) {
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--accent-pink) 34%, var(--card-accent)),
-    color-mix(in srgb, #fff 12%, var(--card-accent)) 50%,
-    color-mix(in srgb, var(--accent-teal) 30%, var(--card-accent))
-  );
+  background: color-mix(in srgb, var(--accent-violet) 88%, white);
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(24px * var(--glow)) var(--card-accent-soft);
+    0 0 0 1px color-mix(in srgb, white 22%, transparent) inset;
   transform: translateY(-1px);
 }
 
-/* ── Secondary · neutral dark (chrome stays monochrome; only primary gets
-   color). A near-black fill with a hairline border + white label. ── */
 .btn[data-variant='secondary'] {
   background: rgba(255, 255, 255, 0.03);
   border-color: var(--border-strong);
@@ -84,7 +67,6 @@
   border-color: var(--text-muted);
 }
 
-/* ── Ghost · monochrome chip ── */
 .btn[data-variant='ghost'] {
   background: rgba(255, 255, 255, 0.025);
   border-color: var(--border-strong);
@@ -96,7 +78,6 @@
   color: var(--text-primary);
 }
 
-/* ── FAB · circular spectral ── */
 .btn[data-variant='fab'] {
   width: 60px;
   height: 60px;
@@ -105,16 +86,12 @@
   border-radius: var(--r-pill);
   text-transform: none;
   font-size: 20px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--accent-pink) 24%, var(--card-accent)),
-    var(--card-accent) 55%,
-    color-mix(in srgb, var(--accent-teal) 20%, var(--card-accent))
-  );
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
   color: #fff;
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(18px * var(--glow)) var(--card-accent-soft);
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
 .btn[data-variant='fab']:hover:not(:disabled) {
   transform: translateY(-2px);
@@ -123,8 +100,6 @@
     0 0 calc(24px * var(--glow)) var(--card-accent-soft);
 }
 
-/* ── Icon · square neutral icon button (source links, close, etc.) ──
-   Same neutral language as `secondary`, sized for a single glyph. ── */
 .btn[data-variant='icon'] {
   width: 36px;
   height: 36px;

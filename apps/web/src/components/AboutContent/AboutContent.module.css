@@ -1,12 +1,9 @@
 .human {
   position: relative;
   z-index: 5;
-  /* Match the hero's gutter so the content lines up under the hero text. */
-  padding: 3.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 4rem;
+  padding: var(--section-gap) var(--page-gutter) 4rem;
 }
 
-/* Portrait leads on the left so it's the first thing read, with the highlights
-   box taking the remaining room to its right. */
 .intro {
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
@@ -15,7 +12,6 @@
   margin-bottom: 8px;
 }
 
-/* ── Highlights: one cohesive box — stats, expertise, recognition, links ── */
 .highlights {
   display: flex;
   flex-direction: column;
@@ -23,12 +19,10 @@
   margin: 0;
   padding: 32px 40px;
   border: 1px solid var(--border-strong);
-  border-radius: var(--r-xl);
-  background: linear-gradient(180deg, rgba(29, 31, 40, 0.5), rgba(8, 9, 12, 0.4));
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(24, 22, 34, 0.56), rgba(8, 7, 14, 0.42));
 }
 
-/* Stats as one evenly-split, hairline-divided panel: equal cells separated
-   by 1px gaps over a border-colored backing, wrapped in a rounded box. */
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -62,7 +56,7 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 1.15;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   color: var(--text-primary);
   text-wrap: balance;
 }
@@ -80,7 +74,6 @@
   min-width: 0;
 }
 
-/* A labelled sub-group within a column (Practice, Stack, Recognition). */
 .hlGroup {
   display: flex;
   flex-direction: column;
@@ -88,9 +81,6 @@
   min-width: 0;
 }
 
-/* Per-spot accent. Set --about-accent on a labelled group (or a section's meta)
-   and its label, stars, number, and rule bar all pick it up — so the page reads
-   as a mix of the site's hues instead of a wall of teal. */
 .accentPink {
   --about-accent: var(--accent-pink);
 }
@@ -112,8 +102,6 @@
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  /* White label; the accent shows as a fading 2px rule under it — the same
-     seam line the cards use. Stretches full-width via the group's flex. */
   color: var(--text-primary);
   padding-bottom: 6px;
   background: linear-gradient(90deg, var(--about-accent, var(--accent-teal)), transparent 75%)
@@ -151,9 +139,6 @@
   color: var(--about-accent, var(--accent-teal));
 }
 
-/* CTA links — the recruiter's next step. Pinned to the bottom of the right
-   column so it lands in the bottom-right exit corner and fills the space
-   under Recognition. */
 .links {
   display: flex;
   gap: 6px;
@@ -161,9 +146,6 @@
   padding-top: 8px;
 }
 
-/* Three on one line in a narrow column: equal thirds, with tighter padding/font
-   than the Button (secondary) default so the labels fit (these overrides win
-   via the descendant selector). */
 .links a {
   flex: 1;
   min-width: 0;
@@ -174,9 +156,6 @@
   white-space: nowrap;
 }
 
-/* External links use the shared global `.cta-external` (see globals.css). */
-
-/* ── Sections ── */
 .section {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -197,7 +176,6 @@
   position: sticky;
   top: 100px;
   height: fit-content;
-  /* Accent marker bar down the left of the sticky meta. */
   padding-left: 18px;
   border-left: 2px solid var(--about-accent, var(--border-strong));
 }
@@ -212,9 +190,9 @@
 
 .sectionTitle {
   font-family: var(--font-display);
-  font-size: clamp(30px, 4vw, 38px);
+  font-size: 38px;
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   line-height: 1.05;
   color: var(--text-primary);
 }
@@ -243,8 +221,6 @@
   margin-bottom: 0;
 }
 
-/* Emphasis is a brightness lift, not bold — the body is full of *marked*
-   phrases, so a heavier weight on every one turns the prose into noise. */
 .sectionBody em {
   color: var(--text-primary);
   font-style: normal;
@@ -260,9 +236,8 @@
 
 @media (max-width: 768px) {
   .human {
-    /* Hero drops to 1.5rem side padding here — match it. */
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
   }
 
   .highlights {
@@ -286,5 +261,9 @@
 
   .sectionMeta {
     position: static;
+  }
+
+  .sectionTitle {
+    font-size: 30px;
   }
 }

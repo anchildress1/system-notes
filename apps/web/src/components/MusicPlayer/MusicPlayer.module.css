@@ -5,8 +5,8 @@
    the hover panel stays visible while the chat window is open. */
 .playerWrapper {
   position: fixed;
-  bottom: 5rem;
-  right: calc(5rem + 60px + 16px);
+  top: calc(96px + clamp(1.25rem, 4vw, 3rem));
+  right: calc(clamp(1.25rem, 4vw, 3rem) + 60px + 14px);
   z-index: 1100;
   display: flex;
   flex-direction: column;
@@ -14,21 +14,12 @@
   gap: 4px;
 }
 
-/* ── FAB Play Button ── */
-/* Circular pink FAB with the Aurora spectral sheen (pink core leaning teal),
-   white icon — the fab variant of the shared button system. A deliberate
-   action-color burst on an otherwise monochrome surface. */
 .playButton {
   width: 60px;
   height: 60px;
   border-radius: var(--r-pill);
-  background: linear-gradient(
-    135deg,
-    var(--accent-pink),
-    var(--accent-pink) 55%,
-    color-mix(in srgb, var(--accent-teal) 22%, var(--accent-pink))
-  );
-  border: none;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
   color: white;
   display: flex;
   align-items: center;
@@ -39,7 +30,7 @@
     box-shadow var(--transition-base);
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(18px * var(--glow)) var(--accent-pink-soft);
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   position: relative;
   z-index: 2;
   pointer-events: auto;
@@ -49,13 +40,13 @@
   transform: translateY(-2px);
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(26px * var(--glow)) var(--accent-pink-soft);
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
 }
 
 .active {
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(22px * var(--glow)) var(--accent-pink-soft);
+    0 0 0 1px color-mix(in srgb, var(--accent-pink) 40%, transparent) inset;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -72,7 +63,7 @@
   position: absolute;
   top: -6px;
   right: -6px;
-  background: var(--bg-elevated);
+  background: var(--bg-base);
   color: var(--text-primary);
   font-size: 10px;
   font-weight: 800;
@@ -84,22 +75,21 @@
   z-index: 3;
 }
 
-/* ── Expanded Panel (hover-revealed) ── */
 .panel {
   position: absolute;
-  bottom: calc(100% + 12px);
+  top: calc(100% + 12px);
   right: 0;
   width: 280px;
   background: var(--bg-elevated);
   border: 1px solid var(--border-strong);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-md);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   box-shadow:
-    0 20px 60px -20px rgba(0, 0, 0, 0.8),
-    0 0 calc(40px * var(--glow)) rgba(181, 107, 255, 0.12);
+    0 20px 60px -22px rgba(0, 0, 0, 0.82),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
   pointer-events: none;
   opacity: 0;
   transform: translateY(6px);
@@ -174,7 +164,6 @@
   text-transform: uppercase;
 }
 
-/* ── Waveform ── */
 .waveform {
   display: flex;
   align-items: flex-end;
@@ -190,7 +179,6 @@
   transform-origin: bottom;
 }
 
-/* Cycle through pink → violet → teal across 7 bars */
 .bar:nth-child(1) {
   background: var(--accent-pink);
 }
@@ -213,7 +201,6 @@
   background: var(--accent-violet);
 }
 
-/* Each bar gets a distinct random-feeling height pattern */
 .barActive {
   animation-duration: 0.9s;
   animation-iteration-count: infinite;
@@ -321,7 +308,6 @@
   }
 }
 
-/* ── Progress ── */
 .progressSection {
   display: flex;
   flex-direction: column;
@@ -366,5 +352,11 @@
 @media (prefers-reduced-motion: reduce) {
   .barActive {
     animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .playerWrapper {
+    display: none;
   }
 }

@@ -1,18 +1,17 @@
 .container {
   position: relative;
   z-index: 5;
-  padding: 2.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 4rem;
+  padding: var(--section-gap) var(--page-gutter) 4rem;
 }
 
-/* ── Retrieve bar ── */
 .retrieve {
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 16px 20px;
   border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
-  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--r-lg);
+  background: rgba(0, 0, 0, 0.18);
   cursor: text;
   transition:
     border-color var(--transition-base),
@@ -84,12 +83,11 @@
   color: var(--text-secondary);
 }
 
-/* ── Filter bar (popover dropdowns) ── */
 .filterBar {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 18px;
   flex-wrap: wrap;
 }
 
@@ -102,7 +100,7 @@
   align-items: center;
   gap: 8px;
   padding: 7px 14px;
-  border-radius: var(--r-md);
+  border-radius: var(--r-sm);
   border: 1px solid var(--border-strong);
   background: rgba(255, 255, 255, 0.025);
   color: var(--text-secondary);
@@ -126,8 +124,6 @@
   outline-offset: 2px;
 }
 
-/* Active = subtle indicator dot + slightly lifted bg; text/border stay
-   neutral so the color cue belongs to the cards, not the chrome. */
 .filterButtonActive,
 .filterButtonActive:hover {
   background: rgba(255, 255, 255, 0.06);
@@ -136,12 +132,7 @@
 }
 
 .filterButtonActive::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-violet);
+  content: none;
 }
 
 .filterCaret {
@@ -252,7 +243,6 @@
   border-radius: var(--r-sm);
 }
 
-/* ── Section header ── */
 .sectionHeader {
   display: flex;
   align-items: baseline;
@@ -269,14 +259,10 @@
   white-space: nowrap;
 }
 
-/* ── Results grid ── */
 .results {
   margin-top: 24px;
 }
 
-/* 6-column dense grid lets cards take thirds (span 2),
-   halves (span 3), or two-thirds (span 4); `dense` packs any
-   holes that span variation would otherwise leave behind. */
 .hitsList {
   list-style: none;
   margin: 0;
@@ -287,9 +273,6 @@
   gap: 16px;
 }
 
-/* Span lives in inline `style.gridColumn` on each li (set in ResultsGrid).
-   The 6-col cycle holds down to tablet width so the size variation
-   survives; only mobile flattens to a single column. */
 .hitsItem {
   display: flex;
 }
@@ -311,17 +294,15 @@
   color: var(--text-muted);
 }
 
-/* ── Algolia attribution row (under retrieve bar) ── */
 .retrieveAttribution {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
+  justify-content: flex-start;
+  margin-top: 10px;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-muted);
 }
 
-/* ── Pagination ── */
 .pagination {
   margin-top: 32px;
   padding-top: 20px;
@@ -369,8 +350,6 @@
   border-color: var(--text-muted);
 }
 
-/* Active = neutral lift + a soft accent outline (clean violet hue, ~half
-   strength) so the current page reads as active without a loud fill. */
 .paginationItemActive .paginationButton {
   background: rgba(255, 255, 255, 0.06);
   border-color: color-mix(in srgb, var(--accent-violet) 50%, transparent);
@@ -382,7 +361,6 @@
   cursor: not-allowed;
 }
 
-/* ── Loading + error ── */
 .loadingIndicator {
   display: flex;
   align-items: center;
