@@ -4,7 +4,7 @@ import { useEffect, useMemo, useCallback, useContext, createContext, useRef } fr
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { Chat } from 'react-instantsearch';
+import { Chat, SearchIndexToolType, RecommendToolType } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import 'instantsearch.css/themes/satellite.css';
 import 'instantsearch.css/components/chat.css';
@@ -118,6 +118,12 @@ const ToggleIcon = ({ isOpen }: { isOpen: boolean }) =>
     <FaBrain size={24} className={styles.toggleIcon} />
   );
 
+// Suppress the built-in result carousel: the agent still searches, we just don't
+// render the raw hit cards (or their "View all" link) until that data gets a
+// proper formatted view. Overriding the tool's layout wins over createDefaultTools.
+// Returns an empty fragment (not null) to satisfy the layoutComponent signature.
+const HiddenToolLayout = () => <></>;
+
 export default function AIChat() {
   const router = useRouter();
   const lastChatQuery = useRef<string | null>(null);
@@ -139,6 +145,8 @@ export default function AIChat() {
 
   const tools = useMemo(
     () => ({
+      [SearchIndexToolType]: { layoutComponent: HiddenToolLayout },
+      [RecommendToolType]: { layoutComponent: HiddenToolLayout },
       searchBlogPosts: {
         onToolCall: async (params: {
           input: unknown;
@@ -203,7 +211,7 @@ export default function AIChat() {
 
   const getItemUrl = useCallback((item: ChatHitItem): string => {
     const params = new URLSearchParams();
-    params.set('q', lastChatQuery.current ?? item.title ?? item.objectID);
+    params.set('q', lastChatQuery.current?.trim() || item.title || item.objectID);
     return `/search?${params.toString()}`;
   }, []);
 
