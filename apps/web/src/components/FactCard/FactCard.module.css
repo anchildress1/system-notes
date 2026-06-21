@@ -81,10 +81,9 @@
   -webkit-line-clamp: 5;
 }
 
-/* Featured (two-thirds) back face wears the same multicolor top banner as the
-   front (the front gets it via the shared .winnerBanner class). */
+/* Featured (two-thirds) back face: same 2px seam as every card, gradient color
+   only (the front gets it via the shared .winnerBanner class). */
 .cardLink[data-size='two-thirds'] .cardBack::before {
-  height: 3px;
   background: var(--gradient-winner);
   background-size: 200% 100%;
   animation: gradientShimmer 9s linear infinite;
