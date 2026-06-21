@@ -46,6 +46,9 @@ interface FactCardProps {
 
 export default function FactCard({ hit, sendEvent, position }: Readonly<FactCardProps>) {
   const hasTrackedFlip = useRef(false);
+  const frontButtonRef = useRef<HTMLButtonElement>(null);
+  const backButtonRef = useRef<HTMLDivElement>(null);
+  const shouldRestoreFocusRef = useRef(false);
   const categoryLabel = hit.category || 'System';
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -80,6 +83,21 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
     };
     globalThis.addEventListener('keydown', handler);
     return () => globalThis.removeEventListener('keydown', handler);
+  }, [isFlipped]);
+
+  useEffect(() => {
+    if (isFlipped) {
+      const frame = requestAnimationFrame(() => {
+        backButtonRef.current?.focus();
+        shouldRestoreFocusRef.current = true;
+      });
+      return () => cancelAnimationFrame(frame);
+    }
+
+    if (shouldRestoreFocusRef.current) {
+      shouldRestoreFocusRef.current = false;
+      frontButtonRef.current?.focus();
+    }
   }, [isFlipped]);
 
   const isDevPost = useMemo(() => hit.url?.includes('dev.to') ?? false, [hit.url]);
@@ -123,6 +141,7 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
         <div className={styles.flipper}>
           <div className={styles.cardFront} aria-hidden={isFlipped}>
             <button
+              ref={frontButtonRef}
               type="button"
               className={styles.flipButton}
               onClick={toggleFlip}
@@ -152,6 +171,7 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
                           : `View source for ${hit.title}`
                       }
                       icon={isDevPost ? <DevIcon /> : <GitHubIcon />}
+                      tabIndex={isFlipped ? -1 : 0}
                     />
                   )}
                 </div>
@@ -182,6 +202,7 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
           </div>
 
           <div
+            ref={backButtonRef}
             className={styles.cardBack}
             aria-hidden={!isFlipped}
             role={isFlipped ? 'button' : undefined}

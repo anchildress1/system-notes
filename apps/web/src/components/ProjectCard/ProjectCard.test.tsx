@@ -79,6 +79,15 @@ describe('ProjectCard Component', () => {
     openSpy.mockRestore();
   });
 
+  it('removes the front source button from tab order while flipped', () => {
+    render(<ProjectCard project={mockProject} />);
+
+    const sourceButton = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
+    fireEvent.click(flipToggle());
+
+    expect(sourceButton).toHaveAttribute('tabindex', '-1');
+  });
+
   it('shows ARCHIVED badge for archived projects', () => {
     render(<ProjectCard project={{ ...mockProject, status: 'Archived' }} />);
     expect(screen.getByText('ARCHIVED')).toBeInTheDocument();

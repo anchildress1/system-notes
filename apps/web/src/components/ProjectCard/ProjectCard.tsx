@@ -124,6 +124,7 @@ export default function ProjectCard({
                         globalThis.open(project.repo_url, '_blank', 'noopener,noreferrer');
                       }}
                       icon={<GitHubIcon />}
+                      tabIndex={isFlipped ? -1 : 0}
                     />
                   </span>
                 )}

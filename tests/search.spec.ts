@@ -99,7 +99,7 @@ test.describe('Search Page', () => {
       page.getByRole('region', { name: 'Search results' }).getByText('Test Hit Title').first()
     ).toBeVisible();
     await expect(page.getByLabel('View source for Test Hit Title')).toBeVisible();
-    await expect(page.getByText('1 entries · sorted by signal')).toBeVisible();
+    await expect(page.getByText('1 entries · 1ms')).toBeVisible();
   });
 
   test('flips a mocked hit from a real card-area click', async ({ page }) => {
@@ -119,7 +119,7 @@ test.describe('Search Page', () => {
 
     await expect(state).toHaveAttribute('data-state', 'expanded');
 
-    await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
+    await resultCard.getByRole('button', { name: /Click to collapse/i }).click();
 
     await expect(state).toHaveAttribute('data-state', 'collapsed');
   });
@@ -139,7 +139,7 @@ test.describe('Search Page', () => {
     await page.goto('/search?q=nope');
 
     await expect(page.getByText(/No results/i)).toBeVisible();
-    await expect(page.getByText('0 entries · sorted by signal')).toBeVisible();
+    await expect(page.getByText('0 entries · 1ms')).toBeVisible();
   });
 
   test('keeps factId as inert legacy state', async ({ page }) => {

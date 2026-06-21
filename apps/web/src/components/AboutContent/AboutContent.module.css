@@ -116,8 +116,8 @@
      seam line the cards use. Stretches full-width via the group's flex. */
   color: var(--text-primary);
   padding-bottom: 6px;
-  background: linear-gradient(90deg, var(--about-accent, var(--accent-teal)), transparent 75%) bottom
-    left / 100% 2px no-repeat;
+  background: linear-gradient(90deg, var(--about-accent, var(--accent-teal)), transparent 75%)
+    bottom left / 100% 2px no-repeat;
 }
 
 .skills {
@@ -224,7 +224,7 @@
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-  color: var(--about-accent, var(--text-muted));
+  color: color-mix(in srgb, var(--about-accent, var(--text-muted)) 72%, white);
   letter-spacing: 1.5px;
 }
 

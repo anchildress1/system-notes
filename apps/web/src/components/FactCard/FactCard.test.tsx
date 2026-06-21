@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FactCard from './FactCard';
 import { createMockHit } from '@/test-utils/fixtures';
@@ -80,6 +80,22 @@ describe('FactCard Component', () => {
 
     await user.click(cardButton);
     expect(cardButton).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('moves focus to the visible back face when opened by keyboard', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit({ url: 'https://github.com/user/repo' })} />);
+
+    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
+    cardButton.focus();
+    await user.keyboard('{Enter}');
+
+    const backButton = screen.getByRole('button', { name: /Click to collapse/i });
+    await waitFor(() => expect(backButton).toHaveFocus());
+    expect(screen.getByLabelText('View source for Test Fact Title')).toHaveAttribute(
+      'tabindex',
+      '-1'
+    );
   });
 
   it('renders without project label when projects is empty', () => {
@@ -305,5 +321,6 @@ describe('FactCard Component', () => {
 
     await user.keyboard('{Escape}');
     expect(cardButton).toHaveAttribute('aria-expanded', 'false');
+    expect(cardButton).toHaveFocus();
   });
 });
