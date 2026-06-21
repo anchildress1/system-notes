@@ -13,8 +13,12 @@ const TICKER_ITEMS = [
   'EVERY FILE EARNED ITS CHANGE',
 ] as const;
 
-// Duplicate for seamless loop
-const ALL_ITEMS = [...TICKER_ITEMS, ...TICKER_ITEMS];
+// Duplicate for a seamless loop; each copy carries a stable, unique key so the
+// non-reordering marquee never falls back to bare array-index keys.
+const ALL_ITEMS = [
+  ...TICKER_ITEMS.map((item, i) => ({ item, key: `a-${i}` })),
+  ...TICKER_ITEMS.map((item, i) => ({ item, key: `b-${i}` })),
+];
 
 // Accent phrases cycle through the three neon accents.
 const ACCENT_CLASSES = [styles.accentPink, styles.accentViolet, styles.accentTeal];
@@ -23,7 +27,7 @@ export default function Masthead() {
   return (
     <div className={styles.ticker} aria-hidden="true">
       <div className={styles.tickerTrack}>
-        {ALL_ITEMS.map((item, i) => {
+        {ALL_ITEMS.map(({ item, key }, i) => {
           // Use position within one copy so both halves of the duplicated
           // list have identical coloring — keeps the loop seam invisible.
           // Spacing of 3 ensures all three accent colors cycle within 8 items.
@@ -33,7 +37,7 @@ export default function Masthead() {
               ? (ACCENT_CLASSES[Math.floor(baseIndex / 3) % ACCENT_CLASSES.length] ?? '')
               : '';
           return (
-            <span key={i} className={`${styles.tickerItem} ${accentClass}`}>
+            <span key={key} className={`${styles.tickerItem} ${accentClass}`}>
               <span>{item}</span>
               <span className={styles.tickerSep} />
             </span>

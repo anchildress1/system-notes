@@ -321,17 +321,28 @@
 .progressTrack {
   width: 100%;
   height: 3px;
-  background: var(--border-strong);
+  border: none;
   border-radius: 2px;
+  background: var(--border-strong);
   overflow: hidden;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.progressFill {
-  height: 100%;
+.progressTrack::-webkit-progress-bar {
+  background: var(--border-strong);
+  border-radius: 2px;
+}
+
+.progressTrack::-webkit-progress-value {
   background: linear-gradient(to right, var(--accent-pink), var(--accent-teal));
   border-radius: 2px;
   transition: width 0.5s linear;
-  min-width: 0;
+}
+
+.progressTrack::-moz-progress-bar {
+  background: linear-gradient(to right, var(--accent-pink), var(--accent-teal));
+  border-radius: 2px;
 }
 
 .timestamps {

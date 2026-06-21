@@ -340,10 +340,9 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
         </span>
       </button>
       {open && (
-        <div
+        <fieldset
           id={popoverId}
           className={styles.filterPopover}
-          role="group"
           aria-label={`${label} filter options`}
         >
           <button
@@ -388,7 +387,7 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
               <span className={styles.filterCount}>{String(item.count).padStart(2, '0')}</span>
             </button>
           ))}
-        </div>
+        </fieldset>
       )}
     </div>
   );

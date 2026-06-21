@@ -88,16 +88,12 @@ export default function MusicPlayer() {
         </div>
 
         <div className={styles.progressSection}>
-          <div
+          <progress
             className={styles.progressTrack}
-            role="progressbar"
-            aria-valuenow={Math.round(progress)}
-            aria-valuemin={0}
-            aria-valuemax={100}
+            value={Math.round(progress)}
+            max={100}
             aria-label="Track progress"
-          >
-            <div className={styles.progressFill} style={{ width: `${progress}%` }} />
-          </div>
+          />
           <div className={styles.timestamps}>
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
