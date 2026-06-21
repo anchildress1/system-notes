@@ -113,6 +113,10 @@
   align-items: center;
 }
 
+/* Full-width: the title spans the whole band so the longest headline (home)
+   keeps its first phrase on one line like the shorter pages, instead of
+   wrapping into a narrow stack below ~1440px. The subtitle re-narrows itself
+   (see below); the split (hasAside) layout is governed by the grid above. */
 .textCol {
   min-width: 0;
 }
@@ -151,13 +155,19 @@
   composes: subtitle from '@/styles/SharedHero.module.css';
 }
 
-/* Let the deck breathe wider than the title's column — a wide standfirst,
-   not a cramped third-of-the-page block. Override text-wrap:balance (which
-   shrinks the line to even it out) so the text actually fills the width. */
+/* Looser wrap + a touch more breathing room under the title. max-width:none
+   lets the aside (about) subtitle fill its grid column. */
 .textCol .subtitle {
-  max-width: 58rem;
+  max-width: none;
   margin-top: 1.75rem;
   text-wrap: pretty;
+}
+
+/* Non-aside pages: the title now owns the full band, so cap the subtitle at the
+   two-thirds measure itself (percentage resolves against the full-width column).
+   Keeps the one-proportion read without constraining the headline. */
+.inner:not(.hasAside) .textCol .subtitle {
+  max-width: calc(200% / 3);
 }
 
 .titleAccent {

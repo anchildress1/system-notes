@@ -9,7 +9,9 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: clamp(2.75rem, 5.2vw, 4.75rem);
+  /* Display cap. The full-band title column keeps the longest headline's first
+     phrase on one line, so this just bounds the size on very wide screens. */
+  font-size: clamp(2.75rem, 5.2vw, 4.6rem);
   font-weight: 500;
   color: var(--text-primary);
   letter-spacing: -0.04em;
@@ -33,11 +35,9 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  /* Fills the title column (full band on non-aside pages) so the headline has
+     room to keep its first phrase on one line. */
   width: 100%;
-  /* Wider title column so longer titles (e.g. Choices) span the band like
-     the shorter ones do, instead of wrapping into a narrow stack. Stays
-     under the subtitle's 58rem so the subtitle still reads wider. */
-  max-width: 56rem;
   position: relative;
 }
 
