@@ -248,7 +248,28 @@ deploy_service() {
         deploy_args+=("--cpu-boost")
     fi
 
+    deploy_args+=("--max-instances" "1")
+
     gcloud run "${deploy_args[@]}"
+
+    # Delete all revisions not currently serving traffic
+    echo "Cleaning up old revisions for $service_name..."
+    local active_revision
+    active_revision=$(gcloud run services describe "$service_name" \
+        --region "$REGION" --project "$PROJECT_ID" \
+        --format='value(status.latestReadyRevisionName)')
+    gcloud run revisions list \
+        --service "$service_name" \
+        --region "$REGION" \
+        --project "$PROJECT_ID" \
+        --format='value(metadata.name)' \
+        | grep -v "^${active_revision}$" \
+        | while read -r rev; do
+            echo "  Deleting $rev..."
+            gcloud run revisions delete "$rev" \
+                --region "$REGION" --project "$PROJECT_ID" --quiet 2>&1 || true
+        done
+
     return 0
 }
 
