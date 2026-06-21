@@ -121,7 +121,7 @@ export const getSearchPageURL = (
   indexName: string,
   basePath = '/'
 ): string => {
-  const routeState = toRouteState({ [indexName]: indexUiState } as UiState, indexName);
+  const routeState = toRouteState({ [indexName]: indexUiState }, indexName);
   const params = new URLSearchParams();
 
   if (routeState.q) params.set('q', routeState.q);
