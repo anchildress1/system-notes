@@ -5,7 +5,7 @@ import { FiPlay, FiPause, FiMusic } from 'react-icons/fi';
 import styles from './MusicPlayer.module.css';
 
 function formatTime(seconds: number): string {
-  if (!isFinite(seconds) || seconds < 0) return '0:00';
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   return `${m}:${s.toString().padStart(2, '0')}`;
@@ -68,7 +68,7 @@ export default function MusicPlayer() {
           </div>
           <div className={styles.trackInfo}>
             <span className={styles.trackTitle}>
-              I Build Things
+              I Build Things{' '}
               <span className={styles.trackExplicit} aria-hidden="true">
                 E
               </span>
