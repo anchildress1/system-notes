@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { Project } from '@/lib/api';
 import Image from 'next/image';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
@@ -28,6 +28,9 @@ export default function ProjectCard({
   const isRetired = /archiv|retire|scrap/i.test(project.status);
   const [isFlipped, setIsFlipped] = useState(false);
   const backId = useId();
+  const flipButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const wasFlipped = useRef(false);
 
   const flip = useCallback(() => setIsFlipped((prev) => !prev), []);
 
@@ -41,6 +44,18 @@ export default function ProjectCard({
     };
     globalThis.addEventListener('keydown', handler);
     return () => globalThis.removeEventListener('keydown', handler);
+  }, [isFlipped]);
+
+  // Keyboard focus follows the visible face: on open move to the close button,
+  // on close return to the flip trigger. Without this, focus is stranded on the
+  // control that just became aria-hidden/tabIndex=-1. Skip the initial mount.
+  useEffect(() => {
+    if (isFlipped) {
+      closeButtonRef.current?.focus();
+    } else if (wasFlipped.current) {
+      flipButtonRef.current?.focus();
+    }
+    wasFlipped.current = isFlipped;
   }, [isFlipped]);
 
   return (
@@ -59,6 +74,7 @@ export default function ProjectCard({
                 It lives inside the front so it rotates away (and stops
                 intercepting) once the back is showing. */}
             <button
+              ref={flipButtonRef}
               type="button"
               className={styles.flipButton}
               onClick={flip}
@@ -169,6 +185,7 @@ export default function ProjectCard({
                 {project.status && <span className={styles.backStatus}>{project.status}</span>}
               </div>
               <button
+                ref={closeButtonRef}
                 type="button"
                 className={styles.backClose}
                 onClick={flip}
