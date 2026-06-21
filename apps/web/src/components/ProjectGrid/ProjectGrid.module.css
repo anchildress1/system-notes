@@ -7,16 +7,17 @@
 
 .grid {
   display: grid;
-  /* Three across to match the thirds in the Choices results grid, rather than
-     letting auto-fill pack a tighter fourth column in. */
-  grid-template-columns: repeat(3, 1fr);
+  /* Three across to match the thirds in the Choices results grid. minmax(0,1fr)
+     (not bare 1fr) forces truly equal tracks — otherwise a card with wide,
+     non-wrapping content stretches its column wider than the others. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   width: 100%;
 }
 
 @media (max-width: 1024px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
