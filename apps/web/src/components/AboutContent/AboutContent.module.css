@@ -132,7 +132,7 @@
   content: '★';
   position: absolute;
   left: 8px;
-  color: var(--text-muted);
+  color: var(--accent-gold);
 }
 
 .links {
