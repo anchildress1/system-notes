@@ -86,5 +86,12 @@ test.describe('AIChat Visual Layout', () => {
     expect(panelBox.x + panelBox.width).toBeLessThanOrEqual(viewport.width + 1);
     expect(panelBox.y + panelBox.height).toBeLessThanOrEqual(toggleBox.y - 8);
     expect(panelBox.height).toBeLessThan(viewport.height - toggleBox.height);
+
+    if (viewport.width >= 900) {
+      const heroTitleBox = await page.getByRole('heading', { level: 1 }).first().boundingBox();
+      expect(heroTitleBox).not.toBeNull();
+      if (!heroTitleBox) return;
+      expect(heroTitleBox.x + heroTitleBox.width).toBeLessThanOrEqual(panelBox.x - 24);
+    }
   });
 });
