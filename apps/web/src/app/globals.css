@@ -1,28 +1,28 @@
 :root {
-  /* Base surfaces */
-  --bg-deep: #08070d;
-  --bg-base: #0b0911;
-  --bg-surface: #171321;
-  --bg-elevated: #272239;
-  --bg-input: #100d17;
+  /* Base surfaces — Aurora (Modernization Study, Direction B) */
+  --bg-deep: #08070e;
+  --bg-base: #0b0a12;
+  --bg-surface: #15131f;
+  --bg-elevated: #211d31;
+  --bg-input: #120f1c;
 
-  /* Text scale */
-  --text-primary: #f6f1ff;
-  --text-secondary: #b7afc8;
-  --text-muted: #817891;
-  --text-dim: #665e77;
+  /* Text scale — Aurora. dim kept AA-safe (#7c7791 ≈4.6:1) vs spec #4b4660. */
+  --text-primary: #f3f0fb;
+  --text-secondary: #bcb6cf;
+  --text-muted: #867f9b;
+  --text-dim: #7c7791;
 
-  /* Accents */
-  --accent-pink: #f6539b;
-  --accent-pink-soft: rgba(246, 83, 155, 0.12);
-  --accent-teal: #35ccc7;
-  --accent-teal-soft: rgba(53, 204, 199, 0.12);
-  --accent-violet: #b565f5;
-  --accent-violet-soft: rgba(181, 101, 245, 0.13);
-  --accent-gold: #ffb16d;
-  --accent-gold-soft: rgba(255, 177, 109, 0.13);
-  --accent-blue: #7557f4;
-  --accent-blue-soft: rgba(117, 87, 244, 0.13);
+  /* Accents — Aurora neon (Direction B), softs at 18% */
+  --accent-pink: #ff5fa2;
+  --accent-pink-soft: rgba(255, 95, 162, 0.18);
+  --accent-teal: #2fd6d0;
+  --accent-teal-soft: rgba(47, 214, 208, 0.18);
+  --accent-violet: #b96bff;
+  --accent-violet-soft: rgba(185, 107, 255, 0.18);
+  --accent-gold: #ffb070;
+  --accent-gold-soft: rgba(255, 176, 112, 0.18);
+  --accent-blue: #7d5cff;
+  --accent-blue-soft: rgba(125, 92, 255, 0.18);
 
   --accent: var(--accent-violet);
   --accent-soft: var(--accent-violet-soft);
@@ -52,30 +52,31 @@
   --ember-tint: var(--accent-violet-soft);
   --ember-soft: rgba(185, 107, 255, 0.06);
 
-  /* Borders and glass */
-  --border: rgba(143, 121, 188, 0.18);
-  --border-strong: rgba(154, 130, 212, 0.3);
-  --glass-bg: rgba(22, 18, 32, 0.76);
-  --glass-blur: blur(18px);
+  /* Borders and glass — Aurora (Direction B) */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(180, 140, 255, 0.3);
+  --glass-bg: rgba(24, 20, 36, 0.6);
+  --glass-blur: blur(22px);
 
   --nebula-1: rgba(255, 95, 162, 0.035);
   --nebula-2: rgba(47, 214, 208, 0.032);
   --nebula-3: rgba(125, 92, 255, 0.04);
 
-  --glow: 1;
+  --glow: 1.6;
 
-  /* Card system */
+  /* Card system — Aurora (Direction B): translucent violet glass so the
+     accent + ambient read through; back face stays readable. */
   --card-accent: var(--accent-violet);
   --card-accent-soft: var(--accent-violet-soft);
-  --card-surface: linear-gradient(160deg, rgba(26, 21, 38, 0.94), rgba(13, 11, 20, 0.98));
+  --card-surface: linear-gradient(160deg, rgba(40, 30, 62, 0.55), rgba(18, 16, 28, 0.7));
   --card-surface-back:
     radial-gradient(
       120% 80% at 0% 0%,
-      color-mix(in srgb, var(--card-accent) 11%, transparent),
+      color-mix(in srgb, var(--card-accent) 16%, transparent),
       transparent 55%
     ),
-    linear-gradient(180deg, rgba(26, 21, 38, 0.98), rgba(13, 11, 20, 0.99));
-  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 82%);
+    linear-gradient(180deg, var(--bg-elevated), var(--bg-surface));
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 
   --gradient-winner: linear-gradient(
     110deg,
@@ -87,11 +88,11 @@
   );
   --gradient-hero: linear-gradient(
     110deg,
-    color-mix(in srgb, var(--accent-pink) 38%, var(--text-primary)),
-    color-mix(in srgb, var(--accent-violet) 36%, var(--text-primary)),
-    color-mix(in srgb, var(--accent-blue) 34%, var(--text-primary)),
-    color-mix(in srgb, var(--accent-teal) 28%, var(--text-primary)),
-    color-mix(in srgb, var(--accent-pink) 32%, var(--text-primary))
+    var(--accent-pink) 0%,
+    var(--accent-violet) 30%,
+    var(--accent-blue) 50%,
+    var(--accent-teal) 72%,
+    var(--accent-pink) 100%
   );
   --gradient-seam-brand: linear-gradient(
     90deg,
@@ -157,8 +158,8 @@
 
   /* Shadows */
   --shadow-card:
-    0 34px 90px -45px rgba(0, 0, 0, 0.9), 0 0 70px -55px rgba(181, 101, 245, 0.65),
-    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+    0 30px 70px -26px rgba(0, 0, 0, 0.8), 0 0 50px -20px rgba(150, 90, 255, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
   --shadow-bento: 0 2px 0 rgba(255, 255, 255, 0.05);
   --shadow-deep: 0 38px 90px -34px rgba(0, 0, 0, 0.92), 0 0 54px -36px rgba(181, 101, 245, 0.32);
   --shadow-fab: 0 18px 42px -22px rgba(0, 0, 0, 0.85);
@@ -179,22 +180,22 @@
 [data-accent='pink'] {
   --card-accent: var(--accent-pink);
   --card-accent-soft: var(--accent-pink-soft);
-  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 82%);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 }
 [data-accent='violet'] {
   --card-accent: var(--accent-violet);
   --card-accent-soft: var(--accent-violet-soft);
-  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 82%);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 }
 [data-accent='teal'] {
   --card-accent: var(--accent-teal);
   --card-accent-soft: var(--accent-teal-soft);
-  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 82%);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 }
 [data-accent='gold'] {
   --card-accent: var(--accent-gold);
   --card-accent-soft: color-mix(in srgb, var(--accent-gold) 22%, transparent);
-  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 82%);
+  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 }
 
 * {

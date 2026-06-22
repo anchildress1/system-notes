@@ -43,12 +43,25 @@
 }
 
 .btn[data-variant='primary'] {
+  position: relative;
+  overflow: hidden;
   background: var(--action-primary-bg);
   border-color: color-mix(in srgb, white 86%, transparent);
   color: var(--action-primary-text);
   box-shadow:
     var(--action-shadow),
     0 1px 0 rgba(255, 255, 255, 0.72) inset;
+}
+
+/* Aurora spectral sheen on the white primary (Direction B). */
+.btn[data-variant='primary']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-hero);
+  opacity: 0.16;
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 .btn[data-variant='primary']:hover:not(:disabled) {
   background: var(--action-primary-bg-hover);
