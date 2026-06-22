@@ -69,11 +69,7 @@ export default function Header() {
             target="_blank"
             dataTestId="blog-link"
             className={styles.navCta}
-            iconRight={
-              <span className={styles.navCtaArrow} aria-hidden="true">
-                ↗
-              </span>
-            }
+            iconRight={<span aria-hidden="true">↗</span>}
           >
             $ read --blog
           </Button>

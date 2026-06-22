@@ -121,18 +121,6 @@
   white-space: nowrap;
 }
 
-.navCtaArrow {
-  opacity: 0.6;
-  transition:
-    color var(--transition-base),
-    opacity var(--transition-base);
-}
-
-.navCta:hover .navCtaArrow {
-  color: var(--text-primary);
-  opacity: 1;
-}
-
 .skipLink {
   position: absolute;
   top: -200px;
