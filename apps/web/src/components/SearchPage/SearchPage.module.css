@@ -249,6 +249,7 @@
   display: inline-flex;
 }
 
+/* Equal-width cells so the active (primary) chip doesn't jump the row. */
 .paginationButton {
   min-width: 34px;
 }
