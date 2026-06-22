@@ -21,7 +21,7 @@
   width: var(--dock-size);
   height: var(--dock-size);
   border-radius: var(--r-pill);
-  background: var(--action-surface);
+  background: var(--surface-raised);
   border: 1px solid var(--action-border);
   color: var(--text-primary);
   display: flex;
@@ -43,7 +43,7 @@
 
 .playButton:hover {
   transform: translateY(-2px);
-  background: var(--action-surface-hover);
+  background: var(--surface-raised-hover);
   border-color: var(--action-border-hover);
   box-shadow:
     var(--action-shadow-hover),
@@ -51,7 +51,7 @@
 }
 
 .active {
-  background: color-mix(in srgb, var(--action-surface-hover) 78%, var(--accent-teal) 10%);
+  background: color-mix(in srgb, var(--surface-raised-hover) 78%, var(--accent-teal) 10%);
   border-color: color-mix(in srgb, var(--accent-teal) 52%, var(--action-border));
   color: var(--text-primary);
   box-shadow:
@@ -90,11 +90,7 @@
   bottom: calc(100% + 12px);
   right: 0;
   width: min(280px, calc(100vw - 2rem));
-  /* Same raised surface as the active nav item: the shared overlay token over
-     an opaque deep base so the floating popover matches it exactly. */
-  background:
-    linear-gradient(var(--surface-active), var(--surface-active)),
-    var(--bg-deep);
+  background: var(--surface-raised);
   border: 1px solid var(--border-strong);
   border-radius: var(--r-md);
   padding: 16px;

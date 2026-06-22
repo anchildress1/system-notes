@@ -63,6 +63,13 @@
      Change here once — never per component. */
   --surface-active: rgba(255, 255, 255, 0.055);
 
+  /* Opaque equivalent of --surface-active for floating panels and controls
+     (filter dropdowns, the music popover, the corner FABs) so they all read as
+     one raised-surface family. Solid because these float over arbitrary
+     content. Change here once. */
+  --surface-raised: color-mix(in srgb, #ffffff 5.5%, var(--bg-deep));
+  --surface-raised-hover: color-mix(in srgb, #ffffff 9%, var(--bg-deep));
+
   /* One width for every accent seam / divider line (card seams, hero seam,
      about bars). Change here once — never per component. */
   --seam-width: 1px;

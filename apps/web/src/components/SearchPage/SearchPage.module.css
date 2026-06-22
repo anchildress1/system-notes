@@ -123,7 +123,7 @@
   padding: 6px;
   border-radius: var(--r-lg);
   border: 1px solid var(--border);
-  background: var(--bg-elevated);
+  background: var(--surface-raised);
   box-shadow: var(--shadow-deep);
   display: flex;
   flex-direction: column;
