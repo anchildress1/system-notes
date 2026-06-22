@@ -1,4 +1,13 @@
 .human {
+  /* The only color on the page: a vertical rainbow bar down the section
+     dividers. Everything else stays mono. */
+  --about-bar: linear-gradient(
+    180deg,
+    var(--accent-pink),
+    var(--accent-violet),
+    var(--accent-blue),
+    var(--accent-teal)
+  );
   position: relative;
   z-index: 5;
   padding: var(--section-gap) var(--page-gutter) 4rem;
@@ -15,13 +24,12 @@
 }
 
 .highlights {
-  --about-accent: color-mix(in srgb, var(--accent-teal) 40%, var(--border));
   display: flex;
   flex-direction: column;
   gap: 26px;
   margin: 0;
   padding: 0 0 0 18px;
-  border-left: 1px solid var(--about-accent);
+  background: var(--about-bar) left top / 2px 100% no-repeat;
 }
 
 .stats {
@@ -96,20 +104,6 @@
   color: var(--text-muted);
 }
 
-/* Strategic color: each skill group's label wears a different Aurora accent;
-   Recognition reads gold to match its star rows. */
-.hlCol:first-of-type .hlGroup:nth-child(1) .hlLabel {
-  color: var(--accent-teal);
-}
-.hlCol:first-of-type .hlGroup:nth-child(2) .hlLabel {
-  color: var(--accent-pink);
-}
-.hlCol:first-of-type .hlGroup:nth-child(3) .hlLabel {
-  color: var(--accent-violet);
-}
-.hlCol:last-of-type .hlLabel {
-  color: var(--accent-gold);
-}
 
 .skills {
   display: flex;
@@ -131,22 +125,14 @@
   padding: 5px 8px 5px 24px;
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  color: color-mix(in srgb, var(--text-primary) 88%, var(--accent-gold));
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--accent-gold) 13%, transparent),
-    transparent 76%
-  );
-  border-left: 1px solid color-mix(in srgb, var(--accent-gold) 44%, transparent);
-  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  color: var(--text-secondary);
 }
 
 .recognitionItem::before {
   content: '★';
   position: absolute;
   left: 8px;
-  color: var(--accent-gold);
-  text-shadow: 0 0 12px color-mix(in srgb, var(--accent-gold) 48%, transparent);
+  color: var(--text-muted);
 }
 
 .links {
@@ -179,7 +165,6 @@
 }
 
 .sectionMeta {
-  --about-accent: var(--border);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -187,7 +172,7 @@
   top: 100px;
   height: fit-content;
   padding-left: 18px;
-  border-left: 1px solid var(--about-accent);
+  background: var(--about-bar) left top / 2px 100% no-repeat;
 }
 
 .nodeLabel,
@@ -202,21 +187,6 @@
 .nodeLabel {
   display: block;
   line-height: 1;
-  color: var(--accent-teal);
-}
-
-/* Strategic color: section NODE labels + their divider rule cycle violet/teal. */
-.section:nth-of-type(odd) .sectionNum {
-  color: var(--accent-violet);
-}
-.section:nth-of-type(even) .sectionNum {
-  color: var(--accent-teal);
-}
-.section:nth-of-type(odd) .sectionMeta {
-  --about-accent: color-mix(in srgb, var(--accent-violet) 45%, var(--border));
-}
-.section:nth-of-type(even) .sectionMeta {
-  --about-accent: color-mix(in srgb, var(--accent-teal) 45%, var(--border));
 }
 
 .sectionTitle {
@@ -252,13 +222,10 @@
   margin-bottom: 0;
 }
 
-/* Thesis emphasis (*text*) pops as violet serif italic — the one loud color
-   moment in the body copy. */
 .sectionBody em {
-  color: var(--accent-violet);
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
+  color: var(--text-primary);
+  font-style: normal;
+  font-weight: inherit;
 }
 
 @media (max-width: 900px) {
