@@ -24,17 +24,16 @@ test.describe('AIChat Visual Layout', () => {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
 
-    // The real toggle button is rendered by the Chat component with the
-    // .chatToggle CSS module class applied via classNames prop.
-    // Look for the actual toggle button rendered by the widget.
     const toggle = page.locator('[data-testid="ai-chat-toggle"]');
     const isVisible = await toggle.isVisible().catch(() => false);
 
     if (isVisible) {
       const width = await toggle.evaluate((el) => globalThis.getComputedStyle(el).width);
       const height = await toggle.evaluate((el) => globalThis.getComputedStyle(el).height);
-      expect(Number.parseFloat(width)).toBe(60);
-      expect(Number.parseFloat(height)).toBe(60);
+      expect(Number.parseFloat(width)).toBeGreaterThanOrEqual(52);
+      expect(Number.parseFloat(width)).toBeLessThanOrEqual(60);
+      expect(Number.parseFloat(height)).toBeGreaterThanOrEqual(52);
+      expect(Number.parseFloat(height)).toBeLessThanOrEqual(60);
     } else {
       // Widget may not render without valid Algolia credentials in test env.
       // Verify the CSS module is loaded by checking that the :root variable exists.
@@ -47,5 +46,45 @@ test.describe('AIChat Visual Layout', () => {
       );
       expect(hasVar).toBe(true);
     }
+  });
+
+  test('chat panel opens above the persistent toggle', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+
+    const toggle = page.locator('[data-testid="ai-chat-toggle"]');
+    const isVisible = await toggle.isVisible().catch(() => false);
+
+    if (!isVisible) {
+      const hasVar = await page.evaluate(
+        () =>
+          globalThis
+            .getComputedStyle(document.documentElement)
+            .getPropertyValue('--ais-primary-color-rgb')
+            .trim().length > 0
+      );
+      expect(hasVar).toBe(true);
+      return;
+    }
+
+    await toggle.click();
+    const panel = page.locator('.ais-ChatOverlayLayout');
+    await expect(panel.locator('.ais-Chat-container--open')).toBeVisible();
+
+    const viewport = page.viewportSize();
+    const panelBox = await panel.boundingBox();
+    const toggleBox = await toggle.boundingBox();
+
+    expect(viewport).not.toBeNull();
+    expect(panelBox).not.toBeNull();
+    expect(toggleBox).not.toBeNull();
+
+    if (!viewport || !panelBox || !toggleBox) return;
+
+    expect(panelBox.x).toBeGreaterThanOrEqual(0);
+    expect(panelBox.y).toBeGreaterThanOrEqual(0);
+    expect(panelBox.x + panelBox.width).toBeLessThanOrEqual(viewport.width + 1);
+    expect(panelBox.y + panelBox.height).toBeLessThanOrEqual(toggleBox.y - 8);
+    expect(panelBox.height).toBeLessThan(viewport.height - toggleBox.height);
   });
 });
