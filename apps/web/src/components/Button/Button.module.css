@@ -96,13 +96,16 @@
     var(--action-shadow),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
+/* Design spec: the fab flips to the bright surface on hover (white fill,
+   deep icon, slight pop). */
 .btn[data-variant='fab']:hover:not(:disabled) {
-  transform: translateY(-2px);
-  background: var(--surface-raised-hover);
-  border-color: var(--action-border-hover);
+  transform: translateY(-2px) scale(1.03);
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg-deep);
   box-shadow:
     var(--action-shadow-hover),
-    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
+    0 0 calc(20px * var(--glow)) rgba(255, 255, 255, 0.16);
 }
 
 .btn[data-variant='icon'] {
