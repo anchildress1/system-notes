@@ -4,8 +4,8 @@ import Kicker from './Kicker';
 
 describe('Kicker', () => {
   it('renders teal tone with a dot by default', () => {
-    const { container } = render(<Kicker>CWD · /sys/choices</Kicker>);
-    const el = screen.getByText(/CWD/);
+    const { container } = render(<Kicker>{'// SURFACE STACK'}</Kicker>);
+    const el = screen.getByText('// SURFACE STACK');
     expect(el).toHaveAttribute('data-tone', 'teal');
     expect(container.querySelector('span[aria-hidden="true"]')).toBeInTheDocument();
   });

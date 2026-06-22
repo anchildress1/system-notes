@@ -5,6 +5,7 @@
 .chatDock {
   --chat-dock-margin: clamp(1rem, 3vw, 2rem);
   --chat-dock-size: clamp(52px, 4vw, 60px);
+  --chat-dock-gap: 16px;
   isolation: isolate;
   pointer-events: none;
 }
@@ -26,6 +27,11 @@
   --ais-shadow-color-rgb: 0, 0, 0;
   --ais-border-radius-lg: var(--r-lg);
   --ais-shadow-md: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
+  bottom: calc(var(--chat-dock-margin) + var(--chat-dock-size) + var(--chat-dock-gap)) !important;
+  max-height: calc(
+    100% - var(--chat-dock-margin) - var(--chat-dock-margin) - var(--chat-dock-size) -
+      var(--chat-dock-gap)
+  ) !important;
 }
 
 /* ── Toggle FAB (we render it; matches the MusicPlayer FAB exactly) ── */

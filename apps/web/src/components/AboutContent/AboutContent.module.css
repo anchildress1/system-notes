@@ -7,39 +7,46 @@
 .intro {
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
-  gap: 32px;
-  align-items: stretch;
-  margin-bottom: 8px;
+  gap: 56px;
+  align-items: start;
+  margin-bottom: 0;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border);
 }
 
 .highlights {
+  --about-accent: var(--border);
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 26px;
   margin: 0;
-  padding: 32px 40px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-lg);
-  background: linear-gradient(180deg, rgba(24, 22, 34, 0.56), rgba(8, 7, 14, 0.42));
+  padding: 0 0 0 18px;
+  border-left: 1px solid var(--about-accent);
 }
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
   margin: 0;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  overflow: hidden;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding: 16px 18px;
-  background: var(--bg-base);
+  min-width: 0;
+  padding: 0 18px 0 0;
+  border-right: 1px solid var(--border);
+}
+
+.stat + .stat {
+  padding-left: 18px;
+}
+
+.stat:last-child {
+  padding-right: 0;
+  border-right: 0;
 }
 
 .statLabel {
@@ -64,7 +71,7 @@
 .hlCols {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
-  gap: 40px;
+  gap: 56px;
 }
 
 .hlCol {
@@ -81,31 +88,12 @@
   min-width: 0;
 }
 
-.accentPink {
-  --about-accent: var(--accent-pink);
-}
-.accentViolet {
-  --about-accent: var(--accent-violet);
-}
-.accentTeal {
-  --about-accent: var(--accent-teal);
-}
-.accentGold {
-  --about-accent: var(--accent-gold);
-}
-.accentBlue {
-  --about-accent: var(--accent-blue);
-}
-
 .hlLabel {
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 2px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-primary);
-  padding-bottom: 6px;
-  background: linear-gradient(90deg, var(--about-accent, var(--accent-teal)), transparent 75%)
-    bottom left / 100% 2px no-repeat;
+  color: var(--text-muted);
 }
 
 .skills {
@@ -128,31 +116,29 @@
   padding-left: 22px;
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  color: var(--text-primary);
+  color: var(--text-secondary);
 }
 
 .recognitionItem::before {
   content: '★';
   position: absolute;
   left: 0;
-  /* Inherits the Recognition group's accent. */
-  color: var(--about-accent, var(--accent-teal));
+  color: var(--text-secondary);
 }
 
 .links {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  margin-top: auto;
-  padding-top: 8px;
+  margin-top: 0;
+  padding-top: 0;
 }
 
-.links a {
-  flex: 1;
-  min-width: 0;
+.linksButton {
+  flex: 0 1 auto;
+  min-width: 112px;
   justify-content: center;
   gap: 5px;
-  padding: 8px 6px;
-  font-size: 10px;
   white-space: nowrap;
 }
 
@@ -166,10 +152,11 @@
 
 .section:first-of-type {
   border-top: none;
-  padding-top: 56px;
+  padding-top: 48px;
 }
 
 .sectionMeta {
+  --about-accent: var(--border);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -177,20 +164,26 @@
   top: 100px;
   height: fit-content;
   padding-left: 18px;
-  border-left: 2px solid var(--about-accent, var(--border-strong));
+  border-left: 1px solid var(--about-accent);
 }
 
+.nodeLabel,
 .sectionNum {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  color: color-mix(in srgb, var(--about-accent, var(--text-muted)) 72%, white);
-  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.16em;
+}
+
+.nodeLabel {
+  display: block;
+  line-height: 1;
 }
 
 .sectionTitle {
   font-family: var(--font-display);
-  font-size: 38px;
+  font-size: clamp(2rem, 3vw, 2.25rem);
   font-weight: 500;
   letter-spacing: 0;
   line-height: 1.05;
@@ -230,7 +223,7 @@
 @media (max-width: 900px) {
   .intro {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 32px;
   }
 }
 
@@ -240,12 +233,31 @@
     padding-right: var(--page-gutter);
   }
 
+  .intro {
+    padding-bottom: 36px;
+  }
+
   .highlights {
-    padding: 26px 22px;
+    padding-left: 14px;
   }
 
   .stats {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 18px;
+  }
+
+  .stat:nth-child(2n) {
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  .stat:nth-child(2n + 1) {
+    padding-left: 0;
+  }
+
+  .stat:nth-child(n + 3) {
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
   }
 
   .hlCols {
@@ -265,5 +277,9 @@
 
   .sectionTitle {
     font-size: 30px;
+  }
+
+  .linksButton {
+    flex: 1 1 120px;
   }
 }

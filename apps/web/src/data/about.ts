@@ -23,7 +23,8 @@ export interface AboutSkillGroup {
 
 export interface AboutData {
   heroTitle: string;
-  heroAccentLead?: string;
+  heroTitleAccent?: string;
+  heroAccentWord?: string;
   heroSubtitle?: string;
   role: string;
   specialty: string;
@@ -41,8 +42,9 @@ export interface AboutData {
 }
 
 export const aboutData: AboutData = {
-  heroAccentLead: 'Designing',
-  heroTitle: "for the failures you haven't met yet.",
+  heroTitle: 'Designing for the failures',
+  heroTitleAccent: "you haven't met",
+  heroAccentWord: 'yet.',
   role: 'Senior Software Engineer',
   specialty: 'Systems & architecture design',
   recognition: [

@@ -35,13 +35,35 @@ describe('Hero Component', () => {
   });
 
   it('renders the kicker when provided', () => {
-    render(<Hero {...defaultProps} kicker="CWD · /sys/test" />);
-    expect(screen.getByText('CWD · /sys/test')).toBeInTheDocument();
+    render(<Hero {...defaultProps} kicker="// SURFACE STACK" />);
+    expect(screen.getByText('// SURFACE STACK')).toBeInTheDocument();
   });
 
   it('renders the actions slot when provided', () => {
     render(<Hero {...defaultProps} actions={<button data-testid="hero-cta">go</button>} />);
     expect(screen.getByTestId('hero-cta')).toBeInTheDocument();
+  });
+
+  it('keeps split hero title text as one accessible heading', () => {
+    render(
+      <Hero title="Designing for the failures" titleAccent="you have not met" accentWord="yet" />
+    );
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: /Designing for the failures you have not met\s+yet/i,
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('can scope the accent tone for page-specific hero art direction', () => {
+    render(
+      <Hero {...defaultProps} titleAccent="Retrieve" accentWord="evidence" accentTone="teal" />
+    );
+    expect(screen.getByText('evidence').closest('[data-accent-tone]')).toHaveAttribute(
+      'data-accent-tone',
+      'teal'
+    );
   });
 
   it('dispatches trigger-glitter-bomb event on click', () => {

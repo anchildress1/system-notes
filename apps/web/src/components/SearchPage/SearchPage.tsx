@@ -20,6 +20,8 @@ import FactCard from '../FactCard/FactCard';
 import ResultsGrid from './ResultsGrid';
 import Pagination from './Pagination';
 import LoadingIndicator from './LoadingIndicator';
+import Button from '@/components/Button/Button';
+import type { ButtonElement } from '@/components/Button/Button';
 import { createSearchRouting } from './searchRouting';
 import { ALGOLIA_INDEX } from '@/config';
 import { getChatSessionId } from '@/utils/userToken';
@@ -102,8 +104,6 @@ export default function SearchPage() {
               root: styles.pagination,
               list: styles.paginationList,
               item: styles.paginationItem,
-              itemActive: styles.paginationItemActive,
-              itemDisabled: styles.paginationItemDisabled,
               button: styles.paginationButton,
             }}
           />
@@ -192,14 +192,15 @@ function ClearAllFilters() {
   const { refine, canRefine } = useClearRefinements();
   if (!canRefine) return null;
   return (
-    <button
-      type="button"
+    <Button
+      variant="secondary"
+      size="sm"
       className={styles.filterClearAll}
       onClick={() => refine()}
-      aria-label="Clear all active filters"
+      ariaLabel="Clear all active filters"
     >
       clear all ✕
-    </button>
+    </Button>
   );
 }
 
@@ -229,8 +230,8 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
   });
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const buttonRef = useRef<ButtonElement | null>(null);
+  const optionRefs = useRef<(ButtonElement | null)[]>([]);
   const popoverId = useId();
   const wasOpenRef = useRef(false);
 
@@ -324,10 +325,12 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
 
   return (
     <div ref={rootRef} className={styles.filterDropdown}>
-      <button
+      <Button
         ref={buttonRef}
-        type="button"
-        className={`${styles.filterButton} ${selectedCount > 0 ? styles.filterButtonActive : ''}`}
+        className={styles.filterButton}
+        variant="secondary"
+        size="sm"
+        data-state={open ? 'open' : selectedCount > 0 ? 'active' : undefined}
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="true"
@@ -338,19 +341,21 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
         <span aria-hidden="true" className={styles.filterCaret}>
           ▾
         </span>
-      </button>
+      </Button>
       {open && (
         <fieldset
           id={popoverId}
           className={styles.filterPopover}
           aria-label={`${label} filter options`}
         >
-          <button
+          <Button
             ref={(el) => {
               optionRefs.current[0] = el;
             }}
-            type="button"
-            className={`${styles.filterOption} ${selectedCount === 0 ? styles.filterOptionActive : ''}`}
+            className={styles.filterOption}
+            variant="secondary"
+            size="sm"
+            data-state={selectedCount === 0 ? 'active' : undefined}
             onClick={() => {
               // "all" is a one-shot reset: clear everything in this attribute
               // and close the popover so the action feels final.
@@ -362,15 +367,17 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
           >
             <span>all</span>
             <span className={styles.filterCount}>{String(totalCount).padStart(2, '0')}</span>
-          </button>
+          </Button>
           {items.map((item, i) => (
-            <button
+            <Button
               key={item.value}
               ref={(el) => {
                 optionRefs.current[i + 1] = el;
               }}
-              type="button"
-              className={`${styles.filterOption} ${item.isRefined ? styles.filterOptionActive : ''}`}
+              className={styles.filterOption}
+              variant="secondary"
+              size="sm"
+              data-state={item.isRefined ? 'active' : undefined}
               // Multi-select: toggle this value and KEEP popover open so the
               // user can pick more in one pass. Escape, click-outside, or
               // re-clicking the trigger closes it.
@@ -385,7 +392,7 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
                 <span>{item.label.toLowerCase()}</span>
               </span>
               <span className={styles.filterCount}>{String(item.count).padStart(2, '0')}</span>
-            </button>
+            </Button>
           ))}
         </fieldset>
       )}

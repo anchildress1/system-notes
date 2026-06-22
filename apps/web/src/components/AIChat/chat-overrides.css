@@ -9,7 +9,7 @@
 }
 
 .ais-ChatPrompt-disclaimer {
-  font-size: clamp(0.5rem, 2vw, 0.65rem);
+  font-size: clamp(0.34rem, 1.3vw, 0.52rem);
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
@@ -20,7 +20,7 @@
 }
 
 .ais-ChatPrompt-footer > div {
-  font-size: clamp(0.5rem, 2vw, 0.65rem);
+  font-size: clamp(0.34rem, 1.3vw, 0.52rem);
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;

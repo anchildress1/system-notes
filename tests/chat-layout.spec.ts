@@ -80,4 +80,26 @@ test.describe('AIChat Visual Layout', () => {
     expect(musicStyles.backgroundColor).not.toContain('185, 107, 255');
     expect(musicStyles.backgroundColor).not.toContain('255, 95, 162');
   });
+
+  test('open chat panel clears the fixed utility dock', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+
+    const chatToggle = page.getByTestId('ai-chat-toggle');
+    const chatVisible = await chatToggle.isVisible().catch(() => false);
+    if (!chatVisible) return;
+
+    await chatToggle.click();
+    const chatPanel = page.locator('.ais-Chat').first();
+    await expect(chatPanel).toBeVisible();
+
+    const [panelBox, toggleBox] = await Promise.all([
+      chatPanel.boundingBox(),
+      chatToggle.boundingBox(),
+    ]);
+
+    expect(panelBox).not.toBeNull();
+    expect(toggleBox).not.toBeNull();
+    expect(panelBox!.y + panelBox!.height).toBeLessThanOrEqual(toggleBox!.y - 8);
+  });
 });

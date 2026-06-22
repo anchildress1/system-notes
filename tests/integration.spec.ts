@@ -10,26 +10,30 @@ test.describe('System Notes Integration', () => {
       "This portfolio isn't browsed."
     );
     await expect(page.getByText('An engineering portfolio you query, not scroll.')).toBeVisible();
-    const buildsCta = page.locator('main').getByRole('link', { name: /cd \/sys\/builds/i });
-    await expect(buildsCta).toHaveAttribute('data-variant', 'primary');
+    const buildsCta = page.locator('main').getByRole('link', { name: /view builds/i });
+    await expect(buildsCta).toHaveAttribute('href', '/projects');
+    await expect(buildsCta).toHaveAttribute('data-variant', 'secondary');
     const ctaStyles = await buildsCta.evaluate((node) => {
       const styles = getComputedStyle(node);
       return {
         background: styles.backgroundImage,
+        backgroundColor: styles.backgroundColor,
         color: styles.color,
       };
     });
     expect(ctaStyles.background).not.toContain('185, 107, 255');
-    expect(ctaStyles.color).toBe('rgb(23, 19, 33)');
+    expect(ctaStyles.backgroundColor).not.toContain('185, 107, 255');
+    expect(ctaStyles.color).toBe('rgb(246, 241, 255)');
   });
 
   test('should display the footer', async ({ page }) => {
     await page.goto('/');
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
-    await expect(footer).toContainText(
-      'Built with GitHub Copilot, ChatGPT, Verdent, Claude + Gemini'
-    );
+    await expect(footer).toContainText("ASHLEY'S SYSTEM NOTES");
+    await expect(footer).toContainText('/sys/choices');
+    await expect(footer).toContainText('Powered by');
+    await expect(footer).not.toContainText('Built with');
   });
 
   test('should expose the blog CTA contract in the header', async ({ page, isMobile }) => {

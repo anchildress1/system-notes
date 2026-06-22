@@ -83,8 +83,8 @@ export default function ProjectCard({
                 It lives inside the front so it rotates away (and stops
                 intercepting) once the back is showing. */}
             <button
-              ref={flipButtonRef}
               type="button"
+              ref={flipButtonRef}
               className={styles.flipButton}
               onClick={flip}
               aria-expanded={isFlipped}
@@ -186,16 +186,16 @@ export default function ProjectCard({
                 <h3 className={styles.backTitle}>{project.title}</h3>
                 {project.status && <span className={styles.backStatus}>{project.status}</span>}
               </div>
-              <button
+              <Button
                 ref={closeButtonRef}
-                type="button"
                 className={styles.backClose}
+                variant="icon"
                 onClick={flip}
                 aria-label={`Flip ${project.title} back to summary`}
                 tabIndex={isFlipped ? 0 : -1}
               >
                 <IoClose focusable="false" />
-              </button>
+              </Button>
             </div>
 
             <div className={styles.backContent}>

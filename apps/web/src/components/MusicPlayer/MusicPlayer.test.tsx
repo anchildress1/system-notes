@@ -33,6 +33,7 @@ describe('MusicPlayer', () => {
     expect(screen.getByTestId('music-player')).toBeInTheDocument();
     // Should show Play button initially
     expect(screen.getByTestId('play-button')).toBeInTheDocument();
+    expect(screen.getByTestId('play-button')).toHaveAttribute('data-state', 'idle');
     // Check for aria-label indicating play state
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
   });
@@ -55,6 +56,7 @@ describe('MusicPlayer', () => {
       // Should switch to Pause button
       expect(screen.getByLabelText(/Pause/i)).toBeInTheDocument();
     });
+    expect(button).toHaveAttribute('data-state', 'active');
 
     // 2. Click Pause
     fireEvent.click(button);
@@ -67,6 +69,7 @@ describe('MusicPlayer', () => {
       'aria-label',
       expect.stringMatching(/^Play/i)
     );
+    expect(button).toHaveAttribute('data-state', 'idle');
   });
 
   it('handles playback failure gracefully', async () => {

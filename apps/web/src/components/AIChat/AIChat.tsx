@@ -21,6 +21,7 @@ import styles from './AIChat.module.css';
 import { ALGOLIA_INDEX } from '@/config';
 import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
 import { getChatSessionId } from '@/utils/userToken';
+import Button from '@/components/Button/Button';
 import {
   ALGOLIA_APP_ID,
   ALGOLIA_SEARCH_KEY,
@@ -265,20 +266,21 @@ export default function AIChat() {
         ) : null}
       </div>
       {chatAvailable && (
-        <button
-          type="button"
+        <Button
+          variant="fab"
           className={styles.chatToggle}
+          ariaLabel={open ? 'Close AI chat' : 'Open AI chat'}
+          ariaExpanded={open}
           onClick={toggleChat}
-          aria-label={open ? 'Close AI chat' : 'Open AI chat'}
-          aria-expanded={open}
-          data-testid="ai-chat-toggle"
+          dataState={open ? 'open' : 'closed'}
+          dataTestId="ai-chat-toggle"
         >
           {open ? (
             <IoClose size={24} className={styles.toggleIcon} />
           ) : (
             <FaBrain size={24} className={styles.toggleIcon} />
           )}
-        </button>
+        </Button>
       )}
     </ChatNavContext.Provider>,
     document.body
