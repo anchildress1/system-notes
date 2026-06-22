@@ -65,11 +65,11 @@ describe('AboutContent', () => {
     const github = screen.getByRole('link', { name: /GitHub/ });
     expect(github).toHaveAttribute('href', 'https://github.com/anchildress1');
     expect(github).toHaveAttribute('target', '_blank');
-    expect(github).toHaveAttribute('data-variant', 'secondary');
+    expect(github).toHaveAttribute('data-variant', 'primary');
     const builds = screen.getByRole('link', { name: /See the builds/ });
     expect(builds).toHaveAttribute('href', '/projects');
     expect(builds).not.toHaveAttribute('target');
-    expect(builds).toHaveAttribute('data-variant', 'secondary');
+    expect(builds).toHaveAttribute('data-variant', 'primary');
   });
 
   it('splits double-newline content into separate paragraphs', () => {
