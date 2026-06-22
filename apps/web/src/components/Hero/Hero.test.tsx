@@ -56,6 +56,17 @@ describe('Hero Component', () => {
     ).toBeInTheDocument();
   });
 
+  it('supports accent lead text without rewriting the title copy', () => {
+    render(<Hero accentLead="Designing" title="for the failures you have not met yet." />);
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Designing for the failures you have not met yet.',
+      })
+    ).toBeInTheDocument();
+    expect(screen.getByText('Designing').className).toContain('rotatingWord');
+  });
+
   it('can scope the accent tone for page-specific hero art direction', () => {
     render(
       <Hero {...defaultProps} titleAccent="Retrieve" accentWord="evidence" accentTone="teal" />

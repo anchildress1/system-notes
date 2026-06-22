@@ -8,6 +8,7 @@ import styles from './Hero.module.css';
 interface HeroProps {
   title: string;
   kicker?: string;
+  accentLead?: string;
   titleAccent?: string;
   accentWord?: string;
   accentTone?: 'brand' | 'teal';
@@ -21,6 +22,7 @@ interface HeroProps {
 export default function Hero({
   title,
   kicker,
+  accentLead,
   titleAccent,
   accentWord,
   accentTone = 'brand',
@@ -55,6 +57,11 @@ export default function Hero({
           <div className={styles.interactiveContainer}>
             {kicker && <Kicker className={styles.kicker}>{kicker}</Kicker>}
             <h1 className={styles.title}>
+              {accentLead && (
+                <>
+                  <span className={styles.rotatingWord}>{accentLead}</span>{' '}
+                </>
+              )}
               {title}
               {titleAccent && (
                 <>
