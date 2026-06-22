@@ -15,7 +15,7 @@
 }
 
 .highlights {
-  --about-accent: var(--border);
+  --about-accent: color-mix(in srgb, var(--accent-teal) 40%, var(--border));
   display: flex;
   flex-direction: column;
   gap: 26px;
@@ -94,6 +94,21 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
+}
+
+/* Strategic color: each skill group's label wears a different Aurora accent;
+   Recognition reads gold to match its star rows. */
+.hlCol:first-of-type .hlGroup:nth-child(1) .hlLabel {
+  color: var(--accent-teal);
+}
+.hlCol:first-of-type .hlGroup:nth-child(2) .hlLabel {
+  color: var(--accent-pink);
+}
+.hlCol:first-of-type .hlGroup:nth-child(3) .hlLabel {
+  color: var(--accent-violet);
+}
+.hlCol:last-of-type .hlLabel {
+  color: var(--accent-gold);
 }
 
 .skills {
@@ -187,6 +202,21 @@
 .nodeLabel {
   display: block;
   line-height: 1;
+  color: var(--accent-teal);
+}
+
+/* Strategic color: section NODE labels + their divider rule cycle violet/teal. */
+.section:nth-of-type(odd) .sectionNum {
+  color: var(--accent-violet);
+}
+.section:nth-of-type(even) .sectionNum {
+  color: var(--accent-teal);
+}
+.section:nth-of-type(odd) .sectionMeta {
+  --about-accent: color-mix(in srgb, var(--accent-violet) 45%, var(--border));
+}
+.section:nth-of-type(even) .sectionMeta {
+  --about-accent: color-mix(in srgb, var(--accent-teal) 45%, var(--border));
 }
 
 .sectionTitle {
@@ -222,10 +252,13 @@
   margin-bottom: 0;
 }
 
+/* Thesis emphasis (*text*) pops as violet serif italic — the one loud color
+   moment in the body copy. */
 .sectionBody em {
-  color: var(--text-primary);
-  font-style: normal;
-  font-weight: inherit;
+  color: var(--accent-violet);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
 }
 
 @media (max-width: 900px) {
