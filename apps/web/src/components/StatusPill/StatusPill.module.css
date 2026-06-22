@@ -23,12 +23,5 @@
   border-radius: var(--r-pill);
   background: var(--accent-teal);
   box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
-  animation: pulseDot 2.4s ease-in-out infinite;
   flex-shrink: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dot {
-    animation: none;
-  }
 }

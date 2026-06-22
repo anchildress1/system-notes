@@ -20,7 +20,7 @@ export default memo(function Footer() {
               / index
             </Kicker>
             <div className={styles.brand}>
-              <span className={styles.brandDot} aria-hidden="true" />
+              <span className={`${styles.brandDot} pulse-dot`} aria-hidden="true" />
               <span className={styles.brandName}>ASHLEY&apos;S SYSTEM NOTES</span>
             </div>
             <p className={styles.blurb}>

@@ -12,7 +12,7 @@ interface StatusPillProps {
 export default function StatusPill({ dot = true, children, className }: Readonly<StatusPillProps>) {
   return (
     <span className={[styles.pill, className].filter(Boolean).join(' ')}>
-      {dot && <span className={styles.dot} aria-hidden="true" />}
+      {dot && <span className={`${styles.dot} pulse-dot`} aria-hidden="true" />}
       {children}
     </span>
   );

@@ -27,12 +27,5 @@
   border-radius: 50%;
   background: currentColor;
   box-shadow: 0 0 8px currentColor;
-  animation: pulseDot 2.4s ease-in-out infinite;
   flex-shrink: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dot {
-    animation: none;
-  }
 }

@@ -349,6 +349,19 @@ body {
   }
 }
 
+/* Global pulse utility. CSS Modules scope animation-name, so a module that
+   references this keyframe never resolves it — every blinking dot uses this
+   one global class instead. Tune the pulse here, once. */
+.pulse-dot {
+  animation: pulseDot 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot {
+    animation: none;
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;

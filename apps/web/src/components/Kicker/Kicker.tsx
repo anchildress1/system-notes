@@ -29,7 +29,7 @@ export default function Kicker({
       data-tone={tone}
       data-accent={accent}
     >
-      {showDot && <span className={styles.dot} aria-hidden="true" />}
+      {showDot && <span className={`${styles.dot} pulse-dot`} aria-hidden="true" />}
       {children}
     </span>
   );
