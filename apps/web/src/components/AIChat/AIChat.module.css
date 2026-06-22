@@ -42,29 +42,28 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--r-pill);
-  border: none;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--accent-pink) 22%, var(--accent-violet)),
-    var(--accent-violet) 55%,
-    color-mix(in srgb, var(--accent-teal) 20%, var(--accent-violet))
-  );
-  color: white;
+  border: 1px solid var(--action-border);
+  background: var(--action-surface);
+  color: var(--text-primary);
   cursor: pointer;
   pointer-events: auto;
   box-shadow:
-    var(--shadow-fab),
-    0 0 calc(18px * var(--glow)) var(--accent-violet-soft);
+    var(--action-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   transition:
+    background var(--transition-base),
+    border-color var(--transition-base),
     transform var(--transition-base),
     box-shadow var(--transition-base);
 }
 
 .chatToggle:hover {
   transform: translateY(-2px);
+  background: var(--action-surface-hover);
+  border-color: var(--action-border-hover);
   box-shadow:
-    var(--shadow-fab),
-    0 0 calc(26px * var(--glow)) var(--accent-violet-soft);
+    var(--action-shadow-hover),
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
 }
 
 .chatToggle:focus-visible {

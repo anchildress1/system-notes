@@ -43,38 +43,40 @@
 }
 
 .btn[data-variant='primary'] {
-  background: var(--accent-violet);
-  color: #fff;
+  background: var(--action-primary-bg);
+  border-color: color-mix(in srgb, white 86%, transparent);
+  color: var(--action-primary-text);
   box-shadow:
-    var(--shadow-fab),
-    0 0 0 1px color-mix(in srgb, white 18%, transparent) inset;
+    var(--action-shadow),
+    0 1px 0 rgba(255, 255, 255, 0.72) inset;
 }
 .btn[data-variant='primary']:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--accent-violet) 88%, white);
+  background: var(--action-primary-bg-hover);
+  border-color: white;
   box-shadow:
-    var(--shadow-fab),
-    0 0 0 1px color-mix(in srgb, white 22%, transparent) inset;
+    var(--action-shadow-hover),
+    0 1px 0 rgba(255, 255, 255, 0.82) inset;
   transform: translateY(-1px);
 }
 
 .btn[data-variant='secondary'] {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--border-strong);
+  background: transparent;
+  border-color: var(--action-border);
   color: var(--text-primary);
 }
 .btn[data-variant='secondary']:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--text-muted);
+  background: color-mix(in srgb, var(--bg-input) 58%, transparent);
+  border-color: var(--action-border-hover);
 }
 
 .btn[data-variant='ghost'] {
-  background: rgba(255, 255, 255, 0.025);
-  border-color: var(--border-strong);
+  background: var(--action-surface);
+  border-color: transparent;
   color: var(--text-secondary);
 }
 .btn[data-variant='ghost']:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--text-muted);
+  background: var(--action-surface-hover);
+  border-color: transparent;
   color: var(--text-primary);
 }
 
@@ -82,22 +84,23 @@
   width: 60px;
   height: 60px;
   padding: 0;
-  border: none;
   border-radius: var(--r-pill);
   text-transform: none;
   font-size: 20px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-strong);
-  color: #fff;
+  background: var(--action-surface);
+  border: 1px solid var(--action-border);
+  color: var(--text-primary);
   box-shadow:
-    var(--shadow-fab),
+    var(--action-shadow),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
 .btn[data-variant='fab']:hover:not(:disabled) {
   transform: translateY(-2px);
+  background: var(--action-surface-hover);
+  border-color: var(--action-border-hover);
   box-shadow:
-    var(--shadow-fab),
-    0 0 calc(24px * var(--glow)) var(--card-accent-soft);
+    var(--action-shadow-hover),
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
 }
 
 .btn[data-variant='icon'] {

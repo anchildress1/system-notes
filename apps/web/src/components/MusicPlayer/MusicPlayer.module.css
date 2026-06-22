@@ -21,24 +21,21 @@
   width: var(--dock-size);
   height: var(--dock-size);
   border-radius: var(--r-pill);
-  background: linear-gradient(
-    135deg,
-    var(--accent-pink),
-    var(--accent-pink) 55%,
-    color-mix(in srgb, var(--accent-teal) 22%, var(--accent-pink))
-  );
-  border: none;
-  color: white;
+  background: var(--action-surface);
+  border: 1px solid var(--action-border);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition:
+    background var(--transition-base),
+    border-color var(--transition-base),
     transform var(--transition-base),
     box-shadow var(--transition-base);
   box-shadow:
-    var(--shadow-fab),
-    0 0 calc(18px * var(--glow)) var(--accent-pink-soft);
+    var(--action-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   position: relative;
   z-index: 2;
   pointer-events: auto;
@@ -46,15 +43,20 @@
 
 .playButton:hover {
   transform: translateY(-2px);
+  background: var(--action-surface-hover);
+  border-color: var(--action-border-hover);
   box-shadow:
-    var(--shadow-fab),
-    0 0 calc(26px * var(--glow)) var(--accent-pink-soft);
+    var(--action-shadow-hover),
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
 }
 
 .active {
+  background: color-mix(in srgb, var(--action-surface-hover) 78%, var(--accent-teal) 10%);
+  border-color: color-mix(in srgb, var(--accent-teal) 52%, var(--action-border));
+  color: var(--text-primary);
   box-shadow:
-    var(--shadow-fab),
-    0 0 calc(22px * var(--glow)) var(--accent-pink-soft);
+    var(--action-shadow-hover),
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
 }
 
 @media (prefers-reduced-motion: reduce) {

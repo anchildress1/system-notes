@@ -10,6 +10,17 @@ test.describe('System Notes Integration', () => {
       "This portfolio isn't browsed."
     );
     await expect(page.getByText('An engineering portfolio you query, not scroll.')).toBeVisible();
+    const buildsCta = page.locator('main').getByRole('link', { name: /cd \/sys\/builds/i });
+    await expect(buildsCta).toHaveAttribute('data-variant', 'primary');
+    const ctaStyles = await buildsCta.evaluate((node) => {
+      const styles = getComputedStyle(node);
+      return {
+        background: styles.backgroundImage,
+        color: styles.color,
+      };
+    });
+    expect(ctaStyles.background).not.toContain('185, 107, 255');
+    expect(ctaStyles.color).toBe('rgb(23, 19, 33)');
   });
 
   test('should display the footer', async ({ page }) => {

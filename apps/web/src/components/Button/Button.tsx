@@ -6,7 +6,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
 export type ButtonAccent = 'violet' | 'pink' | 'teal' | 'gold';
 
 interface ButtonProps {
-  /** Visual treatment. `primary`/`fab` carry the spectral gradient fill. */
+  /** Visual treatment. `primary` is high-emphasis; `fab` is the fixed utility control. */
   variant?: ButtonVariant;
   size?: ButtonSize;
   /** Drives the gradient/glow hue via the shared `data-accent` token system. */
@@ -27,8 +27,8 @@ interface ButtonProps {
 
 /**
  * The System Notes action primitive: a mono, uppercase-tracked button with a
- * spectral `primary`/`fab` fill, a neon-tinted `secondary`, and a monochrome
- * `ghost`. Hue comes from `accent` via the shared `data-accent` token system.
+ * pale `primary`, outlined `secondary`, quiet `ghost`, and neutral utility
+ * `fab`. Hue comes from `accent` via the shared `data-accent` token system.
  */
 export default function Button({
   variant = 'secondary',
