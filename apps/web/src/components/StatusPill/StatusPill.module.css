@@ -21,8 +21,8 @@
   width: 6px;
   height: 6px;
   border-radius: var(--r-pill);
-  background: var(--text-primary);
-  box-shadow: 0 0 calc(8px * var(--glow)) var(--text-primary);
+  background: var(--accent-teal);
+  box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
   animation: pulseDot 2.4s ease-in-out infinite;
   flex-shrink: 0;
 }

@@ -35,9 +35,16 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--text-primary);
-  box-shadow: 0 0 calc(8px * var(--glow)) var(--text-primary);
+  background: var(--accent-teal);
+  box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
   flex-shrink: 0;
+  animation: pulseDot 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brandDot {
+    animation: none;
+  }
 }
 
 .brandName {
