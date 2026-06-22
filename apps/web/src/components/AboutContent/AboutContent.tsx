@@ -87,7 +87,7 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
                   return (
                     <Button
                       key={link.href}
-                      variant="primary"
+                      variant="secondary"
                       size="sm"
                       href={link.href}
                       target={link.external ? '_blank' : undefined}
