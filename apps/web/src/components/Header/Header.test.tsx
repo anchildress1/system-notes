@@ -48,7 +48,7 @@ describe('Header Component', () => {
     expect(blogLink).toBeInTheDocument();
     expect(blogLink).toHaveAttribute('href', 'https://dev.to/anchildress1');
     expect(blogLink).toHaveAttribute('target', '_blank');
-    expect(blogLink).toHaveAttribute('data-variant', 'primary');
+    expect(blogLink).toHaveAttribute('data-variant', 'secondary');
   });
 
   it('renders skip link', () => {
