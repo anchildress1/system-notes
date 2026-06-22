@@ -113,17 +113,25 @@
 
 .recognitionItem {
   position: relative;
-  padding-left: 22px;
+  padding: 5px 8px 5px 24px;
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  color: var(--text-secondary);
+  color: color-mix(in srgb, var(--text-primary) 88%, var(--accent-gold));
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent-gold) 13%, transparent),
+    transparent 76%
+  );
+  border-left: 1px solid color-mix(in srgb, var(--accent-gold) 44%, transparent);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
 }
 
 .recognitionItem::before {
   content: '★';
   position: absolute;
-  left: 0;
-  color: var(--text-secondary);
+  left: 8px;
+  color: var(--accent-gold);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--accent-gold) 48%, transparent);
 }
 
 .links {
