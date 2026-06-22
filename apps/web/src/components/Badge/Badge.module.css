@@ -28,22 +28,34 @@
   border-color: color-mix(in srgb, var(--card-accent) 56%, transparent);
 }
 
+/* Winner badge: dark-glass chip with a flowing chromatic gradient BORDER and
+   light text — readable on every gradient stop, and more premium than a flat
+   gradient fill. The trophy reads gold. */
 .badge[data-variant='award'] {
-  padding: 6px 14px;
-  background: var(--gradient-winner);
-  background-size: 200% 100%;
+  position: relative;
+  padding: 5px 13px;
+  color: var(--text-primary);
+  font-weight: 600;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(var(--bg-elevated), var(--bg-elevated)) padding-box,
+    var(--gradient-winner) border-box;
+  background-size:
+    auto,
+    240% 100%;
   animation: gradientShimmer 9s linear infinite;
-  color: var(--bg-base);
-  border: none;
-  text-shadow: none;
   box-shadow:
-    0 6px 22px -8px rgba(0, 0, 0, 0.7),
-    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--accent-teal) 30%, transparent);
+    0 8px 24px -10px rgba(0, 0, 0, 0.66),
+    0 0 calc(20px * var(--glow)) color-mix(in srgb, var(--accent-violet) 32%, transparent);
+}
+
+.badge[data-variant='award'] .icon {
+  color: var(--accent-gold);
 }
 
 .icon {
   display: inline-flex;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
