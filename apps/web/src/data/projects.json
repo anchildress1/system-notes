@@ -104,6 +104,60 @@
     "related_project_ids": ["carbon-trace"]
   },
   {
+    "objectID": "save-the-sun",
+    "node_type": "project",
+    "name": "Save the Sun",
+    "aliases": ["The Oracle and the Wolf"],
+    "what_it_is": "A deduction game where you out-question an Oracle and race a Gemini-played wolf to name the hidden rune first.",
+    "why_it_exists": "Proves an AI can be a live, fallible opponent without ever being trusted with the truth.",
+    "long_description": "A SvelteKit app on Cloud Run where a deterministic engine owns every fact while Gemini interprets Asks, plays the wolf, transcribes speech, and voices both characters — never seeing the secret. Provably winnable every round, keyboard- and screen-reader-complete.",
+    "outcome": "Shipped and deployed live — spoken Oracle and wolf, plus a debug stream proving the engine owns truth. A Gemini + Ode to Turing entry in the June Solstice Game Jam 2026.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/save-the-sun.webp",
+    "image_alt": "A rune stone blazing with golden light at sunrise while Sköll, the great wolf, watches from a dark ridge.",
+    "tech": [
+      {
+        "name": "SvelteKit 2 / Svelte 5",
+        "role": "App Framework & SSR"
+      },
+      {
+        "name": "TypeScript",
+        "role": "Application Language"
+      },
+      {
+        "name": "Deterministic Engine",
+        "role": "In-Memory Referee & Source of Truth"
+      },
+      {
+        "name": "Gemini API",
+        "role": "Oracle, Opponent, Speech-to-Text, Text-to-Speech"
+      },
+      {
+        "name": "Google Cloud Run",
+        "role": "Containerized Hosting & Deploy"
+      },
+      {
+        "name": "Vitest · Playwright · axe-core · Lighthouse CI",
+        "role": "Testing & Quality Gates"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "The Oracle and the Wolf — I Made Gemini Lose Like a Kid",
+        "url": "https://dev.to/anchildress1/the-oracle-and-the-wolf-i-made-gemini-lose-like-a-kid-3nk5"
+      }
+    ],
+    "project_type": "game",
+    "completion_state": "active",
+    "repo_url": "https://github.com/anchildress1/save-the-sun",
+    "app_url": "https://savethesun.anchildress1.dev",
+    "award": null,
+    "order_rank": 35,
+    "updated_at": "2026-06-20",
+    "related_project_ids": []
+  },
+  {
     "objectID": "vestige",
     "node_type": "project",
     "name": "Vestige",
@@ -151,7 +205,7 @@
     "award": null,
     "order_rank": 20,
     "updated_at": "2026-05-24",
-    "related_project_ids": ["my-hermantic-agent"]
+    "related_project_ids": []
   },
   {
     "objectID": "legacy-smelter",
@@ -334,7 +388,7 @@
     "long_description": "Built on the Forem API with Node and TypeScript on Cloud Run, it scores posts by engagement and conversational signal — not recency — using LLM analysis to flag high-need, low-interaction questions before they quietly disappear beneath higher-performing content.",
     "outcome": "A deployed triage layer that helps volunteers answer unanswered questions and emerging discussions faster.",
     "status": "Active · Deployed",
-    "owner": "ChecKMarKDevTools",
+    "owner": "anchildress1",
     "image_url": "/projects/dev-community-dashboard.webp",
     "image_alt": "DEV Community Dashboard interface showing prioritized posts and signal-based interaction metrics",
     "tech": [
@@ -439,7 +493,7 @@
     "long_description": "A Python job on GitHub Actions pulls my DEV posts, restructures them for AI ingestion, and deploys to GitHub Pages. Not SEO or analytics — it exists so AI systems can correctly index and cite the work.",
     "outcome": "Improved AI discoverability with zero ongoing maintenance.",
     "status": "Active",
-    "owner": "CheckMarKDevTools",
+    "owner": "anchildress1",
     "image_url": "/projects/devto-mirror.webp",
     "image_alt": "Dev.to Mirror workflow diagram showing automated syncing of technical blogs for AI ingestion",
     "tech": [
@@ -478,7 +532,7 @@
     "long_description": "TypeScript and Python rules plug into commitlint and gitlint to require explicit attribution whenever AI tools touch a commit. Strict and mechanical by design — traceability, not policy theater. Licensed under PolyForm Shield.",
     "outcome": "Live adoption that turns invisible AI assistance into explicit, auditable git history.",
     "status": "Active · Published",
-    "owner": "CheckMarKDevTools",
+    "owner": "anchildress1",
     "image_url": "/projects/rai-lint.webp",
     "image_alt": "RAI Lint banner enforcing explicit AI attribution in git commits and workflows",
     "tech": [
@@ -565,7 +619,7 @@
     "long_description": "Built to generate draft PRs under my own PAT — with explicit human review and ownership — until Copilot's coding agent supported user PAT tokens via CLI in Actions. A deliberate stopgap with injection detection baked in.",
     "outcome": "Outpaced by Copilot's native coding agent before it proved out — a deliberate stopgap that mapped the auth and injection patterns it was built to test.",
     "status": "Scrapped",
-    "owner": "CheckMarKDevTools",
+    "owner": "anchildress1",
     "image_url": "/projects/delegate-action.webp",
     "image_alt": "Delegate Action GitHub workflow allowing secure AI-generated pull requests via personal access tokens",
     "tech": [
@@ -604,7 +658,7 @@
     "long_description": "Originally orchestrated in n8n, then rewritten in Python to test parallel AI workflows — a rewrite that broke as much as it taught. Supabase and React back a discovery surface I reused rather than rebuilt once cost constraints reshaped the project, shifting focus to generating discovery paths from incomplete systems.",
     "outcome": "An instructive, unfinished experiment that reframed cost failure as an orchestration problem. At least, until I get back to it...",
     "status": "Archived",
-    "owner": "CheckMarKDevTools",
+    "owner": "anchildress1",
     "image_url": "/projects/underfoot-underground-travel-planner.webp",
     "image_alt": "Underfoot travel planner interface showing AI-orchestrated discovery of hidden travel destinations",
     "tech": [
@@ -652,7 +706,7 @@
     "long_description": "Echo collapses formatting and linting into a single shared config so the same boundaries apply across projects and agents without restating preferences. Built for AI consumers first, humans second.",
     "outcome": "Reduced drift and predictable AI-assisted output, verified with Jest and Sonar.",
     "status": "Active · Published",
-    "owner": "CheckMarKDevTools",
+    "owner": "anchildress1",
     "image_url": "/projects/eslint-config-echo.webp",
     "image_alt": "Echo ESLint configuration banner representing reusable linting boundaries for AI coding agents",
     "tech": [
@@ -690,7 +744,7 @@
     "long_description": "I tried to persist Copilot chat context across environments and found the API simply couldn't support it. Archived immediately — a fast, deliberate kill to avoid sinking effort into a dead end.",
     "outcome": "A cleanly falsified hypothesis that redirected effort toward more viable Copilot tooling.",
     "status": "Scrapped",
-    "owner": "CheckMarKDevTools",
+    "owner": "anchildress1",
     "image_url": "/projects/checkmark-copilot-chat.webp",
     "image_alt": "Copilot Chat Extension interface showing an experimental portable chat context for IDEs",
     "tech": [
