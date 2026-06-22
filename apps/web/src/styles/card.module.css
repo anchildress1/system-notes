@@ -21,7 +21,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: var(--seam-width);
   z-index: 3;
   background: var(--card-seam);
   pointer-events: none;
@@ -37,7 +37,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: var(--seam-width);
   z-index: 3;
   background: var(--gradient-winner);
   background-size: 200% 100%;

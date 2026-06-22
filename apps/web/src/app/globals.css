@@ -58,6 +58,10 @@
   --glass-bg: rgba(24, 20, 36, 0.6);
   --glass-blur: blur(22px);
 
+  /* One width for every accent seam / divider line (card seams, hero seam,
+     about bars). Change here once — never per component. */
+  --seam-width: 1px;
+
   --nebula-1: rgba(255, 95, 162, 0.035);
   --nebula-2: rgba(47, 214, 208, 0.032);
   --nebula-3: rgba(125, 92, 255, 0.04);
