@@ -12,7 +12,7 @@ test.describe('System Notes Integration', () => {
     await expect(page.getByText('An engineering portfolio you query, not scroll.')).toBeVisible();
     const buildsCta = page.locator('main').getByRole('link', { name: /view builds/i });
     await expect(buildsCta).toHaveAttribute('href', '/projects');
-    await expect(buildsCta).toHaveAttribute('data-variant', 'secondary');
+    await expect(buildsCta).toHaveAttribute('data-variant', 'primary');
     const ctaStyles = await buildsCta.evaluate((node) => {
       const styles = getComputedStyle(node);
       return {
@@ -23,7 +23,11 @@ test.describe('System Notes Integration', () => {
     });
     expect(ctaStyles.background).not.toContain('185, 107, 255');
     expect(ctaStyles.backgroundColor).not.toContain('185, 107, 255');
-    expect(ctaStyles.color).toBe('rgb(246, 241, 255)');
+    expect(ctaStyles.color).toBe('rgb(23, 19, 33)');
+
+    await buildsCta.hover();
+    const hoverBackground = await buildsCta.evaluate((node) => getComputedStyle(node).background);
+    expect(hoverBackground).toContain('rgb(255, 255, 255)');
   });
 
   test('should display the footer', async ({ page }) => {
@@ -45,6 +49,7 @@ test.describe('System Notes Integration', () => {
       await expect(cta).toBeVisible();
     }
     await expect(cta).toHaveAttribute('href', 'https://dev.to/anchildress1');
+    await expect(cta).toHaveAttribute('data-variant', 'primary');
     await expect(cta).toContainText('$ read --blog');
   });
 

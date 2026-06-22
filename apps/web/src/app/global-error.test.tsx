@@ -87,6 +87,7 @@ describe('GlobalError', () => {
     const button = findElement(body, Button);
 
     expect(button).not.toBeNull();
+    expect(button?.props.variant).toBe('primary');
     expect(textContent(button)).toBe('Try again');
     button?.props.onClick?.();
     expect(reset).toHaveBeenCalledOnce();
