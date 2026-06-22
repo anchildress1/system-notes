@@ -189,26 +189,27 @@
   transform-origin: bottom;
 }
 
+/* Trace the Aurora band across the 7 bars: pink → violet → indigo → teal. */
 .bar:nth-child(1) {
   background: var(--accent-pink);
 }
 .bar:nth-child(2) {
-  background: color-mix(in srgb, var(--accent-pink) 60%, var(--accent-violet));
+  background: color-mix(in srgb, var(--accent-pink) 55%, var(--accent-violet));
 }
 .bar:nth-child(3) {
   background: var(--accent-violet);
 }
 .bar:nth-child(4) {
-  background: color-mix(in srgb, var(--accent-violet) 50%, var(--accent-teal));
+  background: color-mix(in srgb, var(--accent-violet) 50%, var(--accent-blue));
 }
 .bar:nth-child(5) {
-  background: var(--accent-teal);
+  background: var(--accent-blue);
 }
 .bar:nth-child(6) {
-  background: color-mix(in srgb, var(--accent-teal) 60%, var(--accent-violet));
+  background: color-mix(in srgb, var(--accent-blue) 55%, var(--accent-teal));
 }
 .bar:nth-child(7) {
-  background: var(--accent-violet);
+  background: var(--accent-teal);
 }
 
 .barActive {
