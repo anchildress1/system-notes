@@ -90,7 +90,11 @@
   bottom: calc(100% + 12px);
   right: 0;
   width: min(280px, calc(100vw - 2rem));
-  background: var(--bg-elevated);
+  /* Same raised surface as the active nav item: the shared overlay token over
+     an opaque deep base so the floating popover matches it exactly. */
+  background:
+    linear-gradient(var(--surface-active), var(--surface-active)),
+    var(--bg-deep);
   border: 1px solid var(--border-strong);
   border-radius: var(--r-md);
   padding: 16px;

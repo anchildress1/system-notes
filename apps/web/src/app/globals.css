@@ -58,6 +58,11 @@
   --glass-bg: rgba(24, 20, 36, 0.6);
   --glass-blur: blur(22px);
 
+  /* Raised "current / active" surface. The selected nav item and the music
+     popover share this so an active surface reads identically everywhere.
+     Change here once — never per component. */
+  --surface-active: rgba(255, 255, 255, 0.055);
+
   /* One width for every accent seam / divider line (card seams, hero seam,
      about bars). Change here once — never per component. */
   --seam-width: 1px;
