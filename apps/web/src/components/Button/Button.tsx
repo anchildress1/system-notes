@@ -8,7 +8,7 @@ import {
 } from 'react';
 import styles from './Button.module.css';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'fab' | 'icon';
+export type ButtonVariant = 'primary' | 'secondary' | 'fab' | 'icon';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export type ButtonAccent = 'violet' | 'pink' | 'teal' | 'gold';
 export type ButtonElement = HTMLButtonElement | HTMLAnchorElement;
@@ -52,9 +52,11 @@ interface ButtonProps {
 }
 
 /**
- * The System Notes action primitive: a mono, uppercase-tracked button with a
- * pale `primary`, outlined `secondary`, quiet `ghost`, and neutral utility
- * `fab`. Hue comes from `accent` via the shared `data-accent` token system.
+ * The System Notes action primitive: a mono, uppercase-tracked button. Four
+ * treatments — `primary` (the single high-emphasis CTA, used sparingly),
+ * outlined `secondary` (the default action), 36px `icon`, and the round `fab`.
+ * `data-state="active"` renders the shared selected/current state. Hue comes
+ * from `accent` via the shared `data-accent` token system.
  */
 const Button = forwardRef<ButtonElement, Readonly<ButtonProps>>(function Button(
   {

@@ -41,7 +41,7 @@ export default function Pagination({ classNames = {} }: Readonly<PaginationProps
           return (
             <li key={page} className={classNames.item}>
               <Button
-                variant={isActive ? 'primary' : 'secondary'}
+                variant="secondary"
                 size="sm"
                 className={classNames.button}
                 data-state={isActive ? 'active' : undefined}

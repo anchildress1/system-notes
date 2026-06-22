@@ -82,17 +82,6 @@
   border-color: var(--action-border-hover);
 }
 
-.btn[data-variant='ghost'] {
-  background: var(--action-surface);
-  border-color: transparent;
-  color: var(--text-secondary);
-}
-.btn[data-variant='ghost']:hover:not(:disabled) {
-  background: var(--action-surface-hover);
-  border-color: transparent;
-  color: var(--text-primary);
-}
-
 .btn[data-variant='fab'] {
   width: 60px;
   height: 60px;
@@ -100,7 +89,7 @@
   border-radius: var(--r-pill);
   text-transform: none;
   font-size: 20px;
-  background: var(--action-surface);
+  background: var(--surface-raised);
   border: 1px solid var(--action-border);
   color: var(--text-primary);
   box-shadow:
@@ -109,7 +98,7 @@
 }
 .btn[data-variant='fab']:hover:not(:disabled) {
   transform: translateY(-2px);
-  background: var(--action-surface-hover);
+  background: var(--surface-raised-hover);
   border-color: var(--action-border-hover);
   box-shadow:
     var(--action-shadow-hover),
@@ -131,6 +120,16 @@
   background: rgba(255, 255, 255, 0.08);
   border-color: var(--text-muted);
   color: var(--text-primary);
+}
+
+/* Shared selected / current state — same raised-pill language as the active
+   nav item, so "you are here" reads identically on any button (e.g. the
+   current pagination page). Declared after the variants so it wins. */
+.btn[data-state='active'] {
+  background: var(--surface-active);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .iconLeft {

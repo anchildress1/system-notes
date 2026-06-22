@@ -20,7 +20,7 @@ export default function GlobalError({
             : 'An unexpected error occurred.'}
         </p>
         <Button
-          variant="primary"
+          variant="secondary"
           ariaLabel="Try again"
           size="sm"
           className={styles.errorAction}
