@@ -29,7 +29,7 @@
   gap: 26px;
   margin: 0;
   padding: 0 0 0 18px;
-  background: var(--about-bar) left top / 2px 100% no-repeat;
+  background: var(--about-bar) left top / 1px 100% no-repeat;
 }
 
 .stats {
@@ -172,7 +172,7 @@
   top: 100px;
   height: fit-content;
   padding-left: 18px;
-  background: var(--about-bar) left top / 2px 100% no-repeat;
+  background: var(--about-bar) left top / 1px 100% no-repeat;
 }
 
 .nodeLabel,
