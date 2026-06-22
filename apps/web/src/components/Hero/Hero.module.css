@@ -117,7 +117,7 @@
 }
 
 .inner:not(.hasAside) .textCol .subtitle {
-  max-width: 62ch;
+  max-width: calc(200% / 3);
 }
 
 .actions {
