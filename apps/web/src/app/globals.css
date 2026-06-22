@@ -78,11 +78,11 @@
   );
   --gradient-hero: linear-gradient(
     110deg,
-    color-mix(in srgb, var(--accent-pink) 22%, var(--text-primary)),
-    color-mix(in srgb, var(--accent-violet) 22%, var(--text-primary)),
-    color-mix(in srgb, var(--accent-blue) 22%, var(--text-primary)),
-    color-mix(in srgb, var(--accent-teal) 15%, var(--text-primary)),
-    color-mix(in srgb, var(--accent-pink) 18%, var(--text-primary))
+    color-mix(in srgb, var(--accent-pink) 38%, var(--text-primary)),
+    color-mix(in srgb, var(--accent-violet) 36%, var(--text-primary)),
+    color-mix(in srgb, var(--accent-blue) 34%, var(--text-primary)),
+    color-mix(in srgb, var(--accent-teal) 28%, var(--text-primary)),
+    color-mix(in srgb, var(--accent-pink) 32%, var(--text-primary))
   );
   --gradient-seam-brand: linear-gradient(
     90deg,

@@ -107,8 +107,11 @@
 
 .navLink.active {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.055);
-  border-color: var(--border-strong);
+  background:
+    linear-gradient(180deg, rgba(39, 34, 57, 0.88), rgba(23, 19, 33, 0.92)) padding-box,
+    var(--gradient-hero) border-box;
+  border-color: transparent;
+  box-shadow: 0 0 calc(10px * var(--glow)) color-mix(in srgb, var(--accent-violet) 18%, transparent);
   padding-left: 14px;
 }
 

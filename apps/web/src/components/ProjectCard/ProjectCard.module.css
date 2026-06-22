@@ -180,7 +180,7 @@
     filter var(--transition-slow);
   position: relative;
   z-index: 2;
-  filter: grayscale(82%) saturate(0.75) contrast(1.05);
+  filter: grayscale(100%) saturate(0.82) contrast(1.04) brightness(1.06);
 }
 
 .card:hover .image {
@@ -193,8 +193,8 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(8, 7, 13, 0.08), rgba(8, 7, 13, 0.4)),
-    linear-gradient(135deg, rgba(8, 7, 13, 0.22), rgba(8, 7, 13, 0.02));
+    linear-gradient(180deg, rgba(8, 7, 13, 0.02), rgba(8, 7, 13, 0.2)),
+    linear-gradient(135deg, rgba(8, 7, 13, 0.1), rgba(8, 7, 13, 0.01));
   z-index: 3;
   pointer-events: none;
   transition: background var(--transition-slow);
@@ -202,8 +202,8 @@
 
 .card:hover .imageContainer::before {
   background:
-    linear-gradient(180deg, rgba(8, 7, 13, 0.04), rgba(8, 7, 13, 0.14)),
-    linear-gradient(135deg, rgba(8, 7, 13, 0.1), rgba(8, 7, 13, 0.02));
+    linear-gradient(180deg, rgba(8, 7, 13, 0), rgba(8, 7, 13, 0.08)),
+    linear-gradient(135deg, rgba(8, 7, 13, 0.04), rgba(8, 7, 13, 0));
 }
 
 .imageOverlay {
