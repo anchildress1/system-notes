@@ -10,37 +10,15 @@ test.describe('System Notes Integration', () => {
       "This portfolio isn't browsed."
     );
     await expect(page.getByText('An engineering portfolio you query, not scroll.')).toBeVisible();
-    const heroBackground = await page
-      .locator('main > div')
-      .first()
-      .evaluate((element) => getComputedStyle(element).backgroundImage);
-    expect(heroBackground).toContain('radial-gradient');
-    expect(heroBackground).toContain('linear-gradient');
-    const accentWordBackground = await page
-      .getByRole('heading', { level: 1 })
-      .first()
-      .locator('span')
-      .last()
-      .evaluate((element) => getComputedStyle(element).backgroundImage);
-    expect(accentWordBackground).toContain('linear-gradient');
-    const buildsCta = page.locator('main').getByRole('link', { name: /view builds/i });
-    await expect(buildsCta).toHaveAttribute('href', '/projects');
-    await expect(buildsCta).toHaveAttribute('data-variant', 'secondary');
-  });
-
-  test('keeps CWD labels out of page hero content', async ({ page }) => {
-    for (const route of ['/', '/projects', '/about', '/search']) {
-      await page.goto(route);
-      await expect(page.locator('main').getByText(/CWD/i)).toHaveCount(0);
-    }
   });
 
   test('should display the footer', async ({ page }) => {
     await page.goto('/');
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
-    await expect(footer).toContainText('A retrieval-first portfolio.');
-    await expect(footer).not.toContainText('Built with GitHub Copilot');
+    await expect(footer).toContainText(
+      'Built with GitHub Copilot, ChatGPT, Verdent, Claude + Gemini'
+    );
   });
 
   test('should expose the blog CTA contract in the header', async ({ page, isMobile }) => {
@@ -52,13 +30,12 @@ test.describe('System Notes Integration', () => {
       await expect(cta).toBeVisible();
     }
     await expect(cta).toHaveAttribute('href', 'https://dev.to/anchildress1');
-    await expect(cta).toHaveAttribute('data-variant', 'secondary');
     await expect(cta).toContainText('$ read --blog');
   });
 
   test('should load projects with current summary card metadata', async ({ page }) => {
     await page.goto('/projects');
-    const projectCard = page.getByTestId('project-card-carbon-trace');
+    const projectCard = page.getByTestId(/^project-card-/).first();
     await expect(projectCard).toBeVisible();
 
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
@@ -102,7 +79,7 @@ test.describe('System Notes Integration', () => {
     await expect(heroImage).toBeVisible();
 
     await expect(
-      page.getByRole('heading', { name: /Designing for the failures you haven't met\s+yet/i })
+      page.getByRole('heading', { name: /Designing for the failures you haven't met yet/i })
     ).toBeVisible();
 
     // Check API Content Loading (wait for it)
@@ -110,29 +87,6 @@ test.describe('System Notes Integration', () => {
       timeout: 10000,
     });
     await expect(page.locator('text=Appalachia').first()).toBeVisible();
-    const aboutNodeRails = await page
-      .locator(
-        'section[aria-label="Highlights"], div:has(> span:text-is("01 · NODE")), div:has(> span:text-is("02 · NODE"))'
-      )
-      .evaluateAll((nodes) =>
-        nodes.map((node) => {
-          const styles = getComputedStyle(node);
-          return {
-            width: styles.borderLeftWidth,
-            color: styles.borderLeftColor,
-          };
-        })
-      );
-    expect(aboutNodeRails).toEqual([
-      { width: '1px', color: 'rgba(143, 121, 188, 0.18)' },
-      { width: '1px', color: 'rgba(143, 121, 188, 0.18)' },
-      { width: '1px', color: 'rgba(143, 121, 188, 0.18)' },
-    ]);
-    const secondaryButtonBorder = await page
-      .locator('main')
-      .getByRole('link', { name: /github/i })
-      .evaluate((node) => getComputedStyle(node).borderColor);
-    expect(secondaryButtonBorder).not.toContain('181, 101, 245');
 
     // Chat toggle only renders when Algolia credentials are configured.
     // Verify a11y label when present; skip gracefully otherwise.

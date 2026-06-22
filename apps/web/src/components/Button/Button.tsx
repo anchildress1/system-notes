@@ -1,140 +1,98 @@
-import {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  type MouseEventHandler,
-  Ref,
-  forwardRef,
-  type ReactNode,
-} from 'react';
+import { ReactNode, MouseEvent } from 'react';
 import styles from './Button.module.css';
 
-type ButtonVariant = 'secondary' | 'ghost' | 'fab' | 'icon';
-type ButtonSize = 'sm' | 'md' | 'lg';
-type ButtonAccent = 'violet' | 'pink' | 'teal' | 'gold';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'fab' | 'icon';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonAccent = 'violet' | 'pink' | 'teal' | 'gold';
 
-type ButtonElement = HTMLButtonElement | HTMLAnchorElement;
-
-interface ButtonBaseProps {
-  /** Visual treatment. `secondary` is the standard neutral CTA. */
+interface ButtonProps {
+  /** Visual treatment. `primary`/`fab` carry the spectral gradient fill. */
   variant?: ButtonVariant;
   size?: ButtonSize;
   /** Drives the gradient/glow hue via the shared `data-accent` token system. */
   accent?: ButtonAccent;
   icon?: ReactNode;
   iconRight?: ReactNode;
-  /** Optional visual label override for non-text buttons. */
-  ariaLabel?: string;
+  /** Renders an `<a>` when set; otherwise a `<button>`. */
+  href?: string;
+  target?: string;
   disabled?: boolean;
-  className?: string;
-  /** Test selector passthrough. */
-  dataTestId?: string;
-  /** Keep this narrow for shared focus/scrolling semantics. */
-  tabIndex?: number;
-  /** Click semantics. */
-  onClick?: MouseEventHandler<ButtonElement>;
-  /** Child content; optional for icon-only buttons. */
+  onClick?: (e: MouseEvent) => void;
   children?: ReactNode;
+  className?: string;
+  ariaLabel?: string;
+  dataTestId?: string;
+  tabIndex?: number;
 }
 
-type ButtonButtonProps = ButtonBaseProps &
-  Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'aria-label' | 'type'> & {
-    href?: undefined;
-  };
-
-type ButtonAnchorProps = ButtonBaseProps &
-  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'children' | 'aria-label'> & {
-    href: string;
-  };
-
-export type ButtonProps = ButtonButtonProps | ButtonAnchorProps;
-
 /**
- * Shared button primitive.
- *
- * - button styles are driven by `data-variant`, `data-size`, and `data-accent`
- * - anchors and buttons share the same visual identity
+ * The System Notes action primitive: a mono, uppercase-tracked button with a
+ * spectral `primary`/`fab` fill, a neon-tinted `secondary`, and a monochrome
+ * `ghost`. Hue comes from `accent` via the shared `data-accent` token system.
  */
-const Button = forwardRef<ButtonElement, ButtonProps>(
-  (
-    {
-      variant = 'secondary',
-      size = 'md',
-      accent = 'violet',
-      icon,
-      iconRight,
-      href,
-      disabled = false,
-      children,
-      className,
-      ariaLabel,
-      dataTestId,
-      tabIndex,
-      onClick,
-      ...rest
-    },
-    ref
-  ) => {
-    const classes = [styles.btn, className].filter(Boolean).join(' ');
-    const ariaLabelText = ariaLabel;
-    const commonAttrs = {
-      'data-variant': variant,
-      'data-size': size,
-      'data-accent': accent,
-      'aria-label': ariaLabelText,
-      className: classes,
-      onClick,
-      tabIndex,
-      'data-testid': dataTestId,
-    } as const;
+export default function Button({
+  variant = 'secondary',
+  size = 'md',
+  accent = 'violet',
+  icon,
+  iconRight,
+  href,
+  target,
+  disabled = false,
+  onClick,
+  children,
+  className,
+  ariaLabel,
+  dataTestId,
+  tabIndex,
+}: Readonly<ButtonProps>) {
+  const classes = [styles.btn, className].filter(Boolean).join(' ');
 
-    const childrenRender = (
-      <>
-        {icon && <span className={styles.iconLeft}>{icon}</span>}
-        {children}
-        {iconRight && <span className={styles.iconRight}>{iconRight}</span>}
-      </>
-    );
+  const inner = (
+    <>
+      {icon && <span className={styles.iconLeft}>{icon}</span>}
+      {children}
+      {iconRight && <span className={styles.iconRight}>{iconRight}</span>}
+    </>
+  );
 
-    // External links get noopener/noreferrer; internal/_self links keep their own rel.
-    if (href && !disabled) {
-      const anchorProps = rest as Omit<
-        ButtonAnchorProps,
-        keyof ButtonBaseProps | 'onClick' | 'href'
-      >;
-      const { target, rel: explicitRel, ...anchorPropsWithoutTarget } = anchorProps;
-      const rel = target === '_blank' ? (explicitRel ?? 'noopener noreferrer') : explicitRel;
+  // External links get noopener/noreferrer; internal/_self links don't need it.
+  const rel = target === '_blank' ? 'noopener noreferrer' : undefined;
 
-      return (
-        <a
-          href={href}
-          target={target}
-          rel={rel}
-          ref={ref as Ref<HTMLAnchorElement>}
-          {...commonAttrs}
-          {...anchorPropsWithoutTarget}
-        >
-          {childrenRender}
-        </a>
-      );
-    }
-
-    const buttonProps = rest as Omit<ButtonButtonProps, keyof ButtonBaseProps | 'onClick'>;
-
+  if (href && !disabled) {
     return (
-      <button
-        type="button"
-        disabled={disabled}
-        ref={ref as Ref<HTMLButtonElement>}
-        {...commonAttrs}
-        {...buttonProps}
+      <a
+        href={href}
+        target={target}
+        rel={rel}
+        className={classes}
+        data-variant={variant}
+        data-size={size}
+        data-accent={accent}
+        aria-label={ariaLabel}
+        data-testid={dataTestId}
+        tabIndex={tabIndex}
+        onClick={onClick}
       >
-        {childrenRender}
-      </button>
+        {inner}
+      </a>
     );
   }
-);
 
-Button.displayName = 'Button';
-
-export default Button;
-export { type ButtonVariant, type ButtonSize, type ButtonAccent, type ButtonElement };
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      className={classes}
+      data-variant={variant}
+      data-size={size}
+      data-accent={accent}
+      aria-label={ariaLabel}
+      data-testid={dataTestId}
+      tabIndex={tabIndex}
+      onClick={onClick}
+    >
+      {inner}
+    </button>
+  );
+}

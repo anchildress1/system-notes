@@ -7,7 +7,6 @@ import {
   type ReactNode,
 } from 'react';
 import GlobalError from './global-error';
-import Button from '@/components/Button/Button';
 
 type ElementProps = {
   children?: ReactNode;
@@ -38,10 +37,7 @@ describe('GlobalError', () => {
     return '';
   }
 
-  function findElement(
-    node: ReactNode,
-    type: 'button' | typeof Button
-  ): ReactElement<ElementProps> | null {
+  function findElement(node: ReactNode, type: string): ReactElement<ElementProps> | null {
     if (Array.isArray(node)) {
       for (const child of node) {
         const match = findElement(child, type);
@@ -84,7 +80,7 @@ describe('GlobalError', () => {
   it('calls reset when Try again button is clicked', () => {
     const reset = vi.fn();
     const body = bodyOf(renderGlobalError({ error: new Error('boom'), reset }));
-    const button = findElement(body, Button);
+    const button = findElement(body, 'button');
 
     expect(button).not.toBeNull();
     expect(textContent(button)).toBe('Try again');

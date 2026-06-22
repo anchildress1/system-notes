@@ -1,9 +1,10 @@
 .ticker {
   position: relative;
-  border-bottom: none;
-  background: rgba(16, 13, 23, 0.56);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.018);
   overflow: hidden;
-  min-height: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
 }
@@ -18,36 +19,22 @@
 .tickerItem {
   display: inline-flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   padding: 0 24px;
   font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.25;
-  letter-spacing: 0.12em;
-  color: var(--text-secondary);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
   text-transform: uppercase;
 }
 
 .tickerSep {
-  width: 2px;
-  height: 2px;
+  width: 3px;
+  height: 3px;
   border-radius: var(--r-pill);
   background: currentColor;
-  opacity: 0.42;
+  opacity: 0.5;
   flex-shrink: 0;
-}
-
-@media (max-width: 768px) {
-  .ticker {
-    min-height: 28px;
-  }
-
-  .tickerItem {
-    gap: 14px;
-    padding: 0 18px;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-  }
 }
 
 @keyframes tick {

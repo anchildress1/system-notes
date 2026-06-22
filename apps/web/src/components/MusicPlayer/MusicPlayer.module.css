@@ -1,4 +1,8 @@
-/* Own body-level dock, sibling to the chat FAB — not nested inside the player panel. */
+/* Own body-level dock, sibling to the chat FAB — not nested inside the chat
+   container (whose stacking/transform context trapped this fixed position and
+   floated it over the grid). Offset sits just left of the chat toggle:
+   chat margin + toggle width (60px) + gap (16px). z-index clears the chat so
+   the hover panel stays visible while the chat window is open. */
 .playerWrapper {
   --dock-margin: clamp(1rem, 3vw, 2rem);
   --dock-size: clamp(52px, 4vw, 60px);
@@ -13,16 +17,70 @@
   gap: 4px;
 }
 
-/* Shared Button FAB size token override so this matches the chat control exactly. */
 .playButton {
-  --btn-fab-size: var(--dock-size);
+  width: var(--dock-size);
+  height: var(--dock-size);
+  border-radius: var(--r-pill);
+  background: linear-gradient(
+    135deg,
+    var(--accent-pink),
+    var(--accent-pink) 55%,
+    color-mix(in srgb, var(--accent-teal) 22%, var(--accent-pink))
+  );
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+  box-shadow:
+    var(--shadow-fab),
+    0 0 calc(18px * var(--glow)) var(--accent-pink-soft);
   position: relative;
   z-index: 2;
   pointer-events: auto;
 }
 
+.playButton:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    var(--shadow-fab),
+    0 0 calc(26px * var(--glow)) var(--accent-pink-soft);
+}
+
+.active {
+  box-shadow:
+    var(--shadow-fab),
+    0 0 calc(22px * var(--glow)) var(--accent-pink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playButton:hover {
+    transform: none;
+  }
+}
+
 .buttonLabel {
   display: none;
+}
+
+.explicitBadge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 3px 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  letter-spacing: 0.04em;
+  z-index: 3;
 }
 
 .panel {
@@ -31,14 +89,14 @@
   right: 0;
   width: min(280px, calc(100vw - 2rem));
   background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--r-xl);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   box-shadow:
-    var(--shadow-deep),
+    0 20px 60px -22px rgba(0, 0, 0, 0.82),
     0 0 0 1px rgba(255, 255, 255, 0.03) inset;
   pointer-events: none;
   opacity: 0;
@@ -66,7 +124,7 @@
   flex-shrink: 0;
   border-radius: var(--r-md);
   background: var(--bg-base);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,7 +157,7 @@
   font-size: 9px;
   font-weight: 700;
   padding: 2px 5px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: var(--r-sm);
   color: var(--text-muted);
   background: var(--bg-base);
@@ -180,47 +238,6 @@
   animation-name: wave7;
 }
 
-.progressSection {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.progressTrack {
-  width: 100%;
-  height: 3px;
-  border: none;
-  border-radius: 2px;
-  background: var(--border);
-  overflow: hidden;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.progressTrack::-webkit-progress-bar {
-  background: var(--border);
-  border-radius: 2px;
-}
-
-.progressTrack::-webkit-progress-value {
-  background: linear-gradient(to right, var(--accent-pink), var(--accent-teal));
-  border-radius: 2px;
-  transition: width 0.5s linear;
-}
-
-.progressTrack::-moz-progress-bar {
-  background: linear-gradient(to right, var(--accent-pink), var(--accent-teal));
-  border-radius: 2px;
-}
-
-.timestamps {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-muted);
-}
-
 @keyframes wave1 {
   0% {
     height: 8px;
@@ -273,30 +290,71 @@
     height: 26px;
   }
   100% {
-    height: 16px;
+    height: 6px;
   }
 }
 @keyframes wave6 {
   0% {
+    height: 18px;
+  }
+  50% {
     height: 12px;
+  }
+  100% {
+    height: 28px;
+  }
+}
+@keyframes wave7 {
+  0% {
+    height: 6px;
   }
   50% {
     height: 20px;
   }
   100% {
-    height: 15px;
-  }
-}
-@keyframes wave7 {
-  0% {
     height: 14px;
   }
-  50% {
-    height: 16px;
-  }
-  100% {
-    height: 24px;
-  }
+}
+
+.progressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 3px;
+  border: none;
+  border-radius: 2px;
+  background: var(--border-strong);
+  overflow: hidden;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.progressTrack::-webkit-progress-bar {
+  background: var(--border-strong);
+  border-radius: 2px;
+}
+
+.progressTrack::-webkit-progress-value {
+  background: linear-gradient(to right, var(--accent-pink), var(--accent-teal));
+  border-radius: 2px;
+  transition: width 0.5s linear;
+}
+
+.progressTrack::-moz-progress-bar {
+  background: linear-gradient(to right, var(--accent-pink), var(--accent-teal));
+  border-radius: 2px;
+}
+
+.timestamps {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {

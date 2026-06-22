@@ -22,10 +22,9 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 2px;
   z-index: 2;
   background: var(--gradient-seam-brand);
-  opacity: 0.42;
   pointer-events: none;
 }
 
@@ -134,24 +133,12 @@
 
 .rotatingWord {
   background: var(--gradient-hero);
-  background-size: 170% 100%;
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  animation: gradientShimmer 15s linear infinite;
-}
-
-.hero[data-accent-tone='teal'] .rotatingWord {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--text-primary) 92%, var(--accent-teal) 8%),
-    color-mix(in srgb, var(--text-primary) 88%, var(--accent-teal) 12%)
-  );
-  background-size: 100% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: none;
+  animation: gradientShimmer 9s linear infinite;
 }
 
 @keyframes gradientShimmer {

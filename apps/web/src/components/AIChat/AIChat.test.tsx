@@ -157,24 +157,6 @@ describe('AIChat Widget Integration', () => {
       render(<AIChat />);
       expect(typeof chatCapture.getSearchPageURL).toBe('function');
     });
-
-    it('marks the dock toggle state when the chat opens and closes', () => {
-      render(<AIChat />);
-      const toggle = screen.getByTestId('ai-chat-toggle');
-
-      expect(toggle).toHaveAttribute('data-state', 'closed');
-      expect(toggle).toHaveAttribute('aria-expanded', 'false');
-
-      fireEvent.click(toggle);
-
-      expect(toggle).toHaveAttribute('data-state', 'open');
-      expect(toggle).toHaveAttribute('aria-expanded', 'true');
-
-      fireEvent.click(toggle);
-
-      expect(toggle).toHaveAttribute('data-state', 'closed');
-      expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    });
   });
 
   // -------------------------------------------------------------------------

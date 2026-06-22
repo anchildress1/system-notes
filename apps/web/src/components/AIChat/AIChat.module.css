@@ -5,7 +5,6 @@
 .chatDock {
   --chat-dock-margin: clamp(1rem, 3vw, 2rem);
   --chat-dock-size: clamp(52px, 4vw, 60px);
-  --chat-dock-gap: 12px;
   isolation: isolate;
   pointer-events: none;
 }
@@ -18,52 +17,59 @@
 
 /* ── Root: Algolia CSS custom properties ── */
 .chatRoot {
-  --ais-chat-margin: calc(
-    var(--chat-dock-margin) + var(--chat-dock-size) + var(--chat-dock-size) + var(--chat-dock-gap)
-  );
-  --ais-primary-color-rgb: 181, 101, 245;
-  --ais-background-color-rgb: 23, 19, 33;
-  --ais-text-color-rgb: 246, 241, 255;
-  --ais-muted-color-rgb: 129, 120, 145;
-  --ais-border-color-rgb: 143, 121, 188;
+  --ais-chat-margin: var(--chat-dock-margin);
+  --ais-primary-color-rgb: 185, 107, 255;
+  --ais-background-color-rgb: 21, 19, 31;
+  --ais-text-color-rgb: 243, 240, 251;
+  --ais-muted-color-rgb: 134, 127, 155;
+  --ais-border-color-rgb: 255, 255, 255;
   --ais-shadow-color-rgb: 0, 0, 0;
-  --ais-border-radius-lg: var(--r-xl);
-  --ais-shadow-md: var(--shadow-deep);
+  --ais-border-radius-lg: var(--r-lg);
+  --ais-shadow-md: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
 }
 
-.chatWindow {
-  margin-bottom: calc(var(--chat-dock-size) + var(--chat-dock-gap) + 0.25rem);
-  padding-bottom: calc(var(--chat-dock-size) + var(--chat-dock-gap));
-  box-sizing: border-box;
-}
-
-/* ── Toggle FAB (we render it; matches shared `Button` fab token sizing) ── */
+/* ── Toggle FAB (we render it; matches the MusicPlayer FAB exactly) ── */
 .chatToggle {
   --chat-dock-margin: clamp(1rem, 3vw, 2rem);
   --chat-dock-size: clamp(52px, 4vw, 60px);
-  --btn-fab-size: var(--chat-dock-size);
   position: fixed;
   bottom: calc(env(safe-area-inset-bottom) + var(--chat-dock-margin));
   right: var(--chat-dock-margin);
   z-index: 1100;
+  width: var(--chat-dock-size);
+  height: var(--chat-dock-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  border: none;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent-pink) 22%, var(--accent-violet)),
+    var(--accent-violet) 55%,
+    color-mix(in srgb, var(--accent-teal) 20%, var(--accent-violet))
+  );
+  color: white;
+  cursor: pointer;
   pointer-events: auto;
+  box-shadow:
+    var(--shadow-fab),
+    0 0 calc(18px * var(--glow)) var(--accent-violet-soft);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
-.chatDock:focus-within .chatToggle {
+.chatToggle:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    var(--shadow-fab),
+    0 0 calc(26px * var(--glow)) var(--accent-violet-soft);
+}
+
+.chatToggle:focus-visible {
   outline: 2px solid var(--chrome-line);
   outline-offset: 4px;
-}
-
-.disclaimer {
-  font-size: clamp(0.34rem, 1.25vw, 0.52rem);
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-  text-align: center;
-  padding: 0;
-  letter-spacing: -0.01em;
 }
 
 .toggleIcon {
@@ -71,8 +77,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chatToggle[data-state='open'],
-  .chatToggle[data-state='active'] {
+  .chatToggle:hover {
     transform: none;
   }
 }

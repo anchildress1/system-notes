@@ -132,8 +132,8 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
             aria-hidden={isFlipped}
           >
             <button
-              type="button"
               ref={frontButtonRef}
+              type="button"
               className={styles.flipButton}
               onClick={toggleFlip}
               aria-expanded={isFlipped}
@@ -191,8 +191,8 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
             {/* Native button overlay closes the card — mirrors the front's
                 flip trigger so the back isn't a div-as-button (a11y/Sonar). */}
             <button
-              type="button"
               ref={backButtonRef}
+              type="button"
               className={styles.flipButton}
               onClick={toggleFlip}
               aria-label={`${hit.title}. Click to collapse.`}

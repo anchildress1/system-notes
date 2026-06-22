@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px var(--page-gutter);
+  padding: 14px var(--page-gutter);
   width: 100%;
   position: relative;
 }
@@ -32,8 +32,8 @@
 }
 
 .brandMark {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
   border-radius: var(--r-sm);
   border: 1px solid var(--border-strong);
@@ -41,8 +41,8 @@
 }
 
 .brandMarkImage {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   object-fit: cover;
   border-radius: var(--r-sm);
   display: block;
@@ -84,7 +84,7 @@
   font-size: 12px;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  padding: 7px 13px;
+  padding: 8px 14px;
   border-radius: var(--r-sm);
   border: 1px solid transparent;
   background: transparent;
@@ -107,9 +107,8 @@
 
 .navLink.active {
   color: var(--text-primary);
-  background: linear-gradient(180deg, rgba(39, 34, 57, 0.78), rgba(23, 19, 33, 0.92));
-  border-color: color-mix(in srgb, var(--accent-violet) 48%, var(--border-strong));
-  box-shadow: 0 0 calc(10px * var(--glow)) color-mix(in srgb, var(--accent-violet) 12%, transparent);
+  background: rgba(255, 255, 255, 0.055);
+  border-color: var(--border-strong);
   padding-left: 14px;
 }
 
@@ -157,7 +156,7 @@
 
 @media (max-width: 1024px) {
   .row {
-    padding: 10px var(--page-gutter);
+    padding: 12px var(--page-gutter);
   }
 
   .status {
@@ -167,7 +166,7 @@
 
 @media (max-width: 768px) {
   .row {
-    padding: 9px 16px;
+    padding: 10px 16px;
   }
 
   .navCta {

@@ -5,25 +5,6 @@
   overflow: hidden;
   user-select: none;
   cursor: default;
-  isolation: isolate;
-  background:
-    radial-gradient(
-      760px 420px at 18% 30%,
-      color-mix(in srgb, var(--accent-pink) 3%, transparent),
-      transparent 74%
-    ),
-    radial-gradient(
-      840px 460px at 84% 36%,
-      color-mix(in srgb, var(--accent-violet) 3%, transparent),
-      transparent 78%
-    ),
-    linear-gradient(
-      100deg,
-      color-mix(in srgb, var(--accent-pink) 1%, transparent) 0%,
-      transparent 46%,
-      color-mix(in srgb, var(--accent-violet) 1.5%, transparent) 100%
-    ),
-    var(--bg-base);
 }
 
 .title {
@@ -34,8 +15,8 @@
   letter-spacing: 0;
   line-height: 0.95;
   position: relative;
-  z-index: 3;
-  pointer-events: none;
+  z-index: 10;
+  pointer-events: auto;
   opacity: 1;
   visibility: visible;
   margin: 0;
@@ -54,29 +35,18 @@
   justify-content: flex-start;
   width: 100%;
   position: relative;
-  z-index: 1;
 }
 
 .glitterTrigger {
-  appearance: none;
+  display: block;
   position: absolute;
   inset: 0;
-  z-index: 1;
-  display: block;
-  width: 100%;
+  z-index: 15;
+  background: transparent;
+  border: none;
+  cursor: default;
   padding: 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  color: inherit;
-  cursor: pointer;
-}
-
-.glitterTrigger:hover,
-.glitterTrigger:focus-visible {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  margin: 0;
 }
 
 .textButton {
@@ -105,7 +75,6 @@
   position: relative;
   z-index: 10;
   text-wrap: balance;
-  pointer-events: none;
 }
 
 @media (max-width: 768px) {

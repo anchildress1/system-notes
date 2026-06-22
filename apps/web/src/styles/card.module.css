@@ -11,7 +11,6 @@
   border: 1px solid var(--border);
   border-radius: inherit;
   overflow: hidden;
-  box-shadow: var(--highlight-top);
 }
 
 /* Accent seam bar across the top of the face. */
@@ -21,13 +20,13 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 2px;
   z-index: 3;
   background: var(--card-seam);
   pointer-events: none;
 }
 
-/* Featured seam: identical to the standard accent seam (same top bar, same
+/* Featured seam: identical to the standard accent seam (same 2px top bar, same
    place) — only the color differs: the flowing 5-stop chromatic gradient
    instead of a single accent. No perimeter outline; hover lifts/glows like
    every other card. */
@@ -37,7 +36,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 2px;
   z-index: 3;
   background: var(--gradient-winner);
   background-size: 200% 100%;

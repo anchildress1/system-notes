@@ -6,13 +6,12 @@
   margin: 0;
   border-radius: var(--r-xl);
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   transition: border-color var(--transition-slow);
-  box-shadow: var(--shadow-card);
 }
 
 .portrait:hover {
-  border-color: color-mix(in srgb, var(--accent-teal) 46%, var(--border-strong));
+  border-color: var(--text-muted);
 }
 
 .image {
@@ -31,21 +30,9 @@
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(
-      circle at 30% 30%,
-      color-mix(in srgb, var(--accent-violet) 26%, transparent),
-      transparent 65%
-    ),
-    radial-gradient(
-      circle at 82% 82%,
-      color-mix(in srgb, var(--accent-gold) 18%, transparent),
-      transparent 68%
-    ),
-    radial-gradient(
-      circle at 60% 20%,
-      color-mix(in srgb, var(--accent-teal) 24%, transparent),
-      transparent 65%
-    );
+    radial-gradient(circle at 30% 30%, rgba(181, 107, 255, 0.35), transparent 65%),
+    radial-gradient(circle at 80% 80%, rgba(241, 97, 151, 0.3), transparent 65%),
+    radial-gradient(circle at 60% 20%, rgba(62, 199, 194, 0.22), transparent 65%);
   mix-blend-mode: screen;
   opacity: calc(0.85 * var(--glow));
 }
@@ -57,7 +44,7 @@
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: linear-gradient(180deg, transparent 60%, rgba(8, 7, 13, 0.66) 100%);
+  background: linear-gradient(180deg, transparent 60%, rgba(8, 9, 12, 0.6) 100%);
 }
 
 .grid {
@@ -66,8 +53,8 @@
   z-index: 1;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 

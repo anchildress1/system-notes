@@ -1,13 +1,14 @@
 'use client';
 
 import { usePagination } from 'react-instantsearch';
-import Button from '@/components/Button/Button';
 
 interface PaginationProps {
   classNames?: {
     root?: string;
     list?: string;
     item?: string;
+    itemActive?: string;
+    itemDisabled?: string;
     button?: string;
   };
 }
@@ -24,48 +25,50 @@ export default function Pagination({ classNames = {} }: Readonly<PaginationProps
   return (
     <nav className={classNames.root} aria-label="Pagination">
       <ul className={classNames.list}>
-        <li className={classNames.item}>
-          <Button
-            variant="secondary"
-            size="sm"
+        <li
+          className={`${classNames.item ?? ''} ${isFirstPage ? (classNames.itemDisabled ?? '') : ''}`}
+        >
+          <button
+            type="button"
             className={classNames.button}
             onClick={go(currentRefinement - 1)}
             disabled={isFirstPage}
             aria-label="Previous page"
           >
             ←
-          </Button>
+          </button>
         </li>
         {pages.map((page) => {
           const isActive = page === currentRefinement;
           return (
-            <li key={page} className={classNames.item}>
-              <Button
-                variant="secondary"
-                size="sm"
+            <li
+              key={page}
+              className={`${classNames.item ?? ''} ${isActive ? (classNames.itemActive ?? '') : ''}`}
+            >
+              <button
+                type="button"
                 className={classNames.button}
-                data-state={isActive ? 'active' : undefined}
-                aria-pressed={isActive}
                 onClick={go(page)}
                 aria-current={isActive ? 'page' : undefined}
                 aria-label={`Page ${String(page + 1).padStart(2, '0')}`}
               >
                 {String(page + 1).padStart(2, '0')}
-              </Button>
+              </button>
             </li>
           );
         })}
-        <li className={classNames.item}>
-          <Button
-            variant="secondary"
-            size="sm"
+        <li
+          className={`${classNames.item ?? ''} ${isLastPage ? (classNames.itemDisabled ?? '') : ''}`}
+        >
+          <button
+            type="button"
             className={classNames.button}
             onClick={go(currentRefinement + 1)}
             disabled={isLastPage}
             aria-label="Next page"
           >
             →
-          </Button>
+          </button>
         </li>
       </ul>
     </nav>

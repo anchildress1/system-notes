@@ -3,14 +3,14 @@
 import styles from './Masthead.module.css';
 
 const TICKER_ITEMS = [
-  'SEARCHABLE PORTFOLIO',
+  'QUERYABLE PORTFOLIO',
   'SYSTEM NOTES',
   'SHIPPED BUILDS',
-  'DECISION LOGS',
-  'AI SYSTEMS',
+  'SEARCHABLE DECISIONS',
+  'AI ENGINEERING',
   'FULL-STACK TOOLS',
   'WORKING PROTOTYPES',
-  'LESS VIBES, MORE PROOF',
+  'LESS VIBES, MORE RECEIPTS',
 ] as const;
 
 // Duplicate for a seamless loop; each copy carries a stable, unique key so the

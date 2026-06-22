@@ -1,10 +1,8 @@
 .btn {
   display: inline-flex;
-  position: relative;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-weight: 500;
+  gap: 7px;
   font-family: var(--font-mono);
   letter-spacing: 0.04em;
   line-height: 1;
@@ -13,36 +11,12 @@
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
-  --btn-accent: var(--accent-violet);
-  --btn-accent-soft: var(--accent-violet-soft);
-  --btn-edge: color-mix(in srgb, var(--accent-violet) 46%, var(--border-strong));
-  --btn-edge-hover: color-mix(in srgb, var(--btn-accent) 58%, var(--border-strong));
   transition:
     color var(--transition-base),
     border-color var(--transition-base),
     background var(--transition-base),
     box-shadow var(--transition-base),
     transform var(--transition-base);
-}
-
-.btn[data-accent='pink'] {
-  --btn-accent: var(--accent-pink);
-  --btn-accent-soft: var(--accent-pink-soft);
-}
-
-.btn[data-accent='violet'] {
-  --btn-accent: var(--accent-violet);
-  --btn-accent-soft: var(--accent-violet-soft);
-}
-
-.btn[data-accent='teal'] {
-  --btn-accent: var(--accent-teal);
-  --btn-accent-soft: var(--accent-teal-soft);
-}
-
-.btn[data-accent='gold'] {
-  --btn-accent: var(--accent-gold);
-  --btn-accent-soft: color-mix(in srgb, var(--accent-gold) 22%, transparent);
 }
 
 .btn:disabled {
@@ -56,125 +30,90 @@
 }
 
 .btn[data-size='sm'] {
-  min-height: 34px;
-  padding: 7px 14px;
+  padding: 6px 14px;
   font-size: 11px;
 }
 .btn[data-size='md'] {
-  min-height: 42px;
-  padding: 9px 20px;
+  padding: 8px 20px;
   font-size: 12px;
 }
 .btn[data-size='lg'] {
-  min-height: 50px;
-  padding: 12px 28px;
+  padding: 11px 26px;
   font-size: 13px;
 }
 
-.btn[data-variant='secondary'] {
-  background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--bg-elevated) 58%, transparent),
-      color-mix(in srgb, var(--bg-surface) 94%, transparent)
-    )
-    padding-box;
-  border-color: var(--btn-edge);
-  color: var(--text-primary);
+.btn[data-variant='primary'] {
+  background: var(--accent-violet);
+  color: #fff;
   box-shadow:
-    var(--highlight-top),
-    0 0 calc(10px * var(--glow)) color-mix(in srgb, var(--btn-accent) 10%, transparent);
+    var(--shadow-fab),
+    0 0 0 1px color-mix(in srgb, white 18%, transparent) inset;
 }
-.btn[data-variant='secondary']:hover:not(:disabled) {
-  background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--bg-elevated) 70%, var(--btn-accent) 8%),
-      color-mix(in srgb, var(--bg-surface) 90%, var(--btn-accent) 8%)
-    )
-    padding-box;
-  border-color: var(--btn-edge-hover);
+.btn[data-variant='primary']:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent-violet) 88%, white);
   box-shadow:
-    var(--highlight-top),
-    0 0 calc(14px * var(--glow)) color-mix(in srgb, var(--btn-accent) 14%, transparent);
+    var(--shadow-fab),
+    0 0 0 1px color-mix(in srgb, white 22%, transparent) inset;
+  transform: translateY(-1px);
 }
 
-.btn[data-variant='secondary'][aria-pressed='true'],
-.btn[data-variant='secondary'][data-state='active'],
-.btn[data-variant='secondary'][data-state='open'] {
-  background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--bg-elevated) 70%, var(--btn-accent) 10%),
-      color-mix(in srgb, var(--bg-surface) 86%, var(--btn-accent) 10%)
-    )
-    padding-box;
-  border-color: var(--btn-edge-hover);
+.btn[data-variant='secondary'] {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+.btn[data-variant='secondary']:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-muted);
 }
 
 .btn[data-variant='ghost'] {
-  background: color-mix(in srgb, var(--bg-surface) 78%, transparent);
-  border-color: color-mix(in srgb, var(--border-strong) 72%, transparent);
+  background: rgba(255, 255, 255, 0.025);
+  border-color: var(--border-strong);
   color: var(--text-secondary);
 }
 .btn[data-variant='ghost']:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--bg-surface) 84%, var(--text-primary) 14%);
-  border-color: color-mix(in srgb, var(--text-primary) 32%, var(--border));
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--text-muted);
   color: var(--text-primary);
 }
 
 .btn[data-variant='fab'] {
-  --btn-fab-size: 60px;
-  width: var(--btn-fab-size);
-  height: var(--btn-fab-size);
+  width: 60px;
+  height: 60px;
   padding: 0;
+  border: none;
   border-radius: var(--r-pill);
   text-transform: none;
   font-size: 20px;
-  background: linear-gradient(180deg, var(--bg-elevated), var(--bg-surface)) padding-box;
-  border: 1px solid var(--btn-edge);
-  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  color: #fff;
   box-shadow:
     var(--shadow-fab),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
 .btn[data-variant='fab']:hover:not(:disabled) {
   transform: translateY(-2px);
-  border-color: var(--btn-edge-hover);
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--btn-accent) 18%, transparent),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
-}
-
-.btn[data-variant='fab'][data-state='active'],
-.btn[data-variant='fab'][data-state='open'] {
-  transform: translateY(-2px);
-  border-color: var(--btn-edge-hover);
-  box-shadow:
-    var(--shadow-fab),
-    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--btn-accent) 20%, transparent),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    0 0 calc(24px * var(--glow)) var(--card-accent-soft);
 }
 
 .btn[data-variant='icon'] {
-  --btn-icon-size: 36px;
-  width: var(--btn-icon-size);
-  height: var(--btn-icon-size);
+  width: 36px;
+  height: 36px;
   padding: 0;
   border-radius: var(--r-md);
-  background: linear-gradient(180deg, var(--bg-elevated), var(--bg-surface)) padding-box;
-  border-color: var(--btn-edge);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border-strong);
+  color: var(--text-muted);
   text-transform: none;
   font-size: 1rem;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
 }
 .btn[data-variant='icon']:hover:not(:disabled) {
-  background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--bg-elevated) 88%, var(--btn-accent) 10%),
-      color-mix(in srgb, var(--bg-surface) 90%, var(--btn-accent) 10%)
-    )
-    padding-box;
-  border-color: var(--btn-edge-hover);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-muted);
   color: var(--text-primary);
 }
 
@@ -189,6 +128,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .btn[data-variant='primary']:hover:not(:disabled),
   .btn[data-variant='fab']:hover:not(:disabled) {
     transform: none;
   }

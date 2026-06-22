@@ -6,10 +6,9 @@ export default function Human() {
   return (
     <main id="main-content">
       <Hero
-        accentTone="brand"
+        kicker="CWD · /sys/human"
+        accentLead={aboutData.heroAccentLead}
         title={aboutData.heroTitle}
-        titleAccent={aboutData.heroTitleAccent}
-        accentWord={aboutData.heroAccentWord}
         subtitle={`${aboutData.role} · ${aboutData.specialty}`}
       />
       <AboutContent data={aboutData} />

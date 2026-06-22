@@ -5,15 +5,12 @@
   gap: 8px;
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--text-secondary);
-  letter-spacing: 0.12em;
-  padding: 8px 14px;
-  border-radius: var(--r-pill);
-  border: 1px solid var(--border);
-  background: rgba(16, 13, 23, 0.78);
-  box-shadow:
-    var(--shadow-fab),
-    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  padding: 6px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: rgba(0, 0, 0, 0.3);
   white-space: nowrap;
 }
 
@@ -21,8 +18,8 @@
   width: 6px;
   height: 6px;
   border-radius: var(--r-pill);
-  background: var(--text-primary);
-  box-shadow: 0 0 calc(8px * var(--glow)) var(--text-primary);
+  background: var(--accent-teal);
+  box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
   animation: pulseDot 2.4s ease-in-out infinite;
   flex-shrink: 0;
 }
