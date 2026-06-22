@@ -64,7 +64,7 @@ export default function Header() {
           ))}
           <Button
             variant="primary"
-            size="sm"
+            size="md"
             href="https://dev.to/anchildress1"
             target="_blank"
             dataTestId="blog-link"
