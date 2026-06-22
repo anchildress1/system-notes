@@ -44,9 +44,23 @@ describe('Hero Component', () => {
     expect(screen.getByTestId('hero-cta')).toBeInTheDocument();
   });
 
+  it('keeps split hero title text as one accessible heading', () => {
+    render(
+      <Hero title="Designing for the failures" titleAccent="you have not met" accentWord="yet" />
+    );
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: /Designing for the failures you have not met\s+yet/i,
+      })
+    ).toBeInTheDocument();
+  });
+
   it('can scope the accent tone for page-specific hero art direction', () => {
-    render(<Hero {...defaultProps} accentLead="Designing" accentTone="teal" />);
-    expect(screen.getByText('Designing').closest('[data-accent-tone]')).toHaveAttribute(
+    render(
+      <Hero {...defaultProps} titleAccent="Retrieve" accentWord="evidence" accentTone="teal" />
+    );
+    expect(screen.getByText('evidence').closest('[data-accent-tone]')).toHaveAttribute(
       'data-accent-tone',
       'teal'
     );

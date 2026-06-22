@@ -2,7 +2,6 @@
 
 import { useRef } from 'react';
 import type { KeyboardEvent, MouseEvent } from 'react';
-import Button from '@/components/Button/Button';
 import styles from '@/styles/SharedHero.module.css';
 import heroStyles from './FactsHero.module.css';
 
@@ -24,10 +23,10 @@ export default function FactsHero() {
           Decisions on record
         </h1>
         <span className={styles.subtitle}>so you can audit me</span>
-        <Button
-          variant="ghost"
+        <button
+          type="button"
           className={styles.glitterTrigger}
-          ariaLabel="Click to trigger a glitter effect"
+          aria-label="Click to trigger a glitter effect"
           onClick={(event: MouseEvent<HTMLButtonElement>) => {
             triggerGlow();
             globalThis.dispatchEvent(
@@ -43,9 +42,7 @@ export default function FactsHero() {
               globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
             }
           }}
-        >
-          <span aria-hidden="true" />
-        </Button>
+        />
       </div>
     </div>
   );

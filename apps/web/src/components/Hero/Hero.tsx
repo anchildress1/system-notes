@@ -3,18 +3,16 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import type { KeyboardEvent, MouseEvent } from 'react';
 import Kicker from '@/components/Kicker/Kicker';
-import Button from '@/components/Button/Button';
 import styles from './Hero.module.css';
 
 interface HeroProps {
   title: string;
   kicker?: string;
-  accentLead?: string;
   titleAccent?: string;
   accentWord?: string;
   accentTone?: 'brand' | 'teal';
   subtitle?: string;
-  /** Optional primary/secondary CTAs rendered under the subtitle. */
+  /** Optional CTAs rendered under the subtitle. */
   actions?: ReactNode;
   /** Optional media (e.g. a portrait) rendered beside the text as a split hero. */
   aside?: ReactNode;
@@ -23,7 +21,6 @@ interface HeroProps {
 export default function Hero({
   title,
   kicker,
-  accentLead,
   titleAccent,
   accentWord,
   accentTone = 'brand',
@@ -58,28 +55,26 @@ export default function Hero({
           <div className={styles.interactiveContainer}>
             {kicker && <Kicker className={styles.kicker}>{kicker}</Kicker>}
             <h1 className={styles.title}>
-              {accentLead && (
-                <>
-                  <span className={styles.rotatingWord}>{accentLead}</span>{' '}
-                </>
-              )}
               {title}
               {titleAccent && (
-                <span className={styles.titleAccent}>
-                  {titleAccent}
-                  {accentWord && (
-                    <>
-                      {/* Non-breaking space keeps the colored word from wrapping
+                <>
+                  {' '}
+                  <span className={styles.titleAccent}>
+                    {titleAccent}
+                    {accentWord && (
+                      <>
+                        {/* Non-breaking space keeps the colored word from wrapping
                           onto a line by itself. */}
-                      {' '}
-                      <span className={styles.rotatingWord}>{accentWord}</span>
-                    </>
-                  )}
-                </span>
+                        {' '}
+                        <span className={styles.rotatingWord}>{accentWord}</span>
+                      </>
+                    )}
+                  </span>
+                </>
               )}
             </h1>
-            <Button
-              variant="ghost"
+            <button
+              type="button"
               className={styles.glitterTrigger}
               data-testid="hero-interactive"
               aria-label="Trigger glitter effect"
@@ -96,7 +91,7 @@ export default function Hero({
                   globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
                 }
               }}
-            ></Button>
+            />
           </div>
           {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
           {actions && <div className={styles.actions}>{actions}</div>}

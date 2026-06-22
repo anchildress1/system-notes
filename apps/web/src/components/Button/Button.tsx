@@ -8,14 +8,14 @@ import {
 } from 'react';
 import styles from './Button.module.css';
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'fab' | 'icon';
+type ButtonVariant = 'secondary' | 'ghost' | 'fab' | 'icon';
 type ButtonSize = 'sm' | 'md' | 'lg';
 type ButtonAccent = 'violet' | 'pink' | 'teal' | 'gold';
 
 type ButtonElement = HTMLButtonElement | HTMLAnchorElement;
 
 interface ButtonBaseProps {
-  /** Visual treatment. `primary` is the white action; `secondary` is neutral glass. */
+  /** Visual treatment. `secondary` is the standard neutral CTA. */
   variant?: ButtonVariant;
   size?: ButtonSize;
   /** Drives the gradient/glow hue via the shared `data-accent` token system. */

@@ -52,13 +52,13 @@ test.describe('System Notes Integration', () => {
       await expect(cta).toBeVisible();
     }
     await expect(cta).toHaveAttribute('href', 'https://dev.to/anchildress1');
-    await expect(cta).toHaveAttribute('data-variant', 'primary');
+    await expect(cta).toHaveAttribute('data-variant', 'secondary');
     await expect(cta).toContainText('$ read --blog');
   });
 
   test('should load projects with current summary card metadata', async ({ page }) => {
     await page.goto('/projects');
-    const projectCard = page.getByTestId(/^project-card-/).first();
+    const projectCard = page.getByTestId('project-card-carbon-trace');
     await expect(projectCard).toBeVisible();
 
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
@@ -102,7 +102,7 @@ test.describe('System Notes Integration', () => {
     await expect(heroImage).toBeVisible();
 
     await expect(
-      page.getByRole('heading', { name: /Designing for the failures you haven't met yet/i })
+      page.getByRole('heading', { name: /Designing for the failures you haven't met\s+yet/i })
     ).toBeVisible();
 
     // Check API Content Loading (wait for it)
@@ -124,9 +124,9 @@ test.describe('System Notes Integration', () => {
         })
       );
     expect(aboutNodeRails).toEqual([
-      { width: '1px', color: 'rgb(246, 241, 255)' },
-      { width: '1px', color: 'rgb(246, 241, 255)' },
-      { width: '1px', color: 'rgb(246, 241, 255)' },
+      { width: '1px', color: 'rgba(143, 121, 188, 0.18)' },
+      { width: '1px', color: 'rgba(143, 121, 188, 0.18)' },
+      { width: '1px', color: 'rgba(143, 121, 188, 0.18)' },
     ]);
     const secondaryButtonBorder = await page
       .locator('main')

@@ -82,10 +82,10 @@ export default function ProjectCard({
             {/* Front-only overlay: clicking the face flips to the detail side.
                 It lives inside the front so it rotates away (and stops
                 intercepting) once the back is showing. */}
-            <Button
+            <button
+              type="button"
               ref={flipButtonRef}
               className={styles.flipButton}
-              variant="ghost"
               onClick={flip}
               aria-expanded={isFlipped}
               aria-controls={backId}

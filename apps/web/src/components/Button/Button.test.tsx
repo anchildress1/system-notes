@@ -13,14 +13,14 @@ describe('Button', () => {
     expect(btn).toHaveAttribute('type', 'button');
   });
 
-  it('honors explicit variant, size, and accent', () => {
+  it('honors explicit size and accent on the standard CTA', () => {
     render(
-      <Button variant="primary" size="lg" accent="teal">
+      <Button size="lg" accent="teal">
         Ship
       </Button>
     );
     const btn = screen.getByRole('button', { name: 'Ship' });
-    expect(btn).toHaveAttribute('data-variant', 'primary');
+    expect(btn).toHaveAttribute('data-variant', 'secondary');
     expect(btn).toHaveAttribute('data-size', 'lg');
     expect(btn).toHaveAttribute('data-accent', 'teal');
   });
