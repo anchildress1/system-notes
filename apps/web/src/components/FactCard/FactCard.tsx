@@ -127,7 +127,9 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
         <div className={styles.flipper}>
           <div
             className={`${styles.cardFront} ${cardStyles.face} ${
-              variant.size === 'two-thirds' ? cardStyles.winnerBanner : cardStyles.seam
+              variant.size === 'two-thirds'
+                ? `${cardStyles.winnerBanner} shimmer-seam`
+                : cardStyles.seam
             }`}
             aria-hidden={isFlipped}
           >
@@ -187,7 +189,10 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
             </div>
           </div>
 
-          <div className={styles.cardBack} aria-hidden={!isFlipped}>
+          <div
+            className={`${styles.cardBack}${variant.size === 'two-thirds' ? ' shimmer-seam' : ''}`}
+            aria-hidden={!isFlipped}
+          >
             {/* Native button overlay closes the card — mirrors the front's
                 flip trigger so the back isn't a div-as-button (a11y/Sonar). */}
             <button

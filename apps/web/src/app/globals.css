@@ -356,8 +356,20 @@ body {
   animation: pulseDot 2.4s ease-in-out infinite;
 }
 
+/* Flowing gradient shimmer — same scoping problem as pulseDot, so these global
+   utilities own it. `.shimmer` animates an element's gradient (award badge);
+   `.shimmer-seam` animates a host's ::before gradient (winner card seams). */
+.shimmer {
+  animation: gradientShimmer 9s linear infinite;
+}
+.shimmer-seam::before {
+  animation: gradientShimmer 9s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .pulse-dot {
+  .pulse-dot,
+  .shimmer,
+  .shimmer-seam::before {
     animation: none;
   }
 }

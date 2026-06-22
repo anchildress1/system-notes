@@ -41,12 +41,5 @@
   z-index: 3;
   background: var(--gradient-winner);
   background-size: 200% 100%;
-  animation: gradientShimmer 9s linear infinite;
   pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .winnerBanner::before {
-    animation: none;
-  }
 }

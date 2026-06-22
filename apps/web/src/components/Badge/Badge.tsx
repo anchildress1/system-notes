@@ -23,7 +23,9 @@ export default function Badge({
 }: Readonly<BadgeProps>) {
   return (
     <span
-      className={[styles.badge, className].filter(Boolean).join(' ')}
+      className={[styles.badge, variant === 'award' && 'shimmer', className]
+        .filter(Boolean)
+        .join(' ')}
       data-variant={variant}
       data-accent={accent}
     >

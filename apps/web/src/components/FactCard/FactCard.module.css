@@ -84,7 +84,6 @@
 .cardLink[data-size='two-thirds'] .cardBack::before {
   background: var(--gradient-winner);
   background-size: 200% 100%;
-  animation: gradientShimmer 9s linear infinite;
 }
 
 .cardLink[data-size='two-thirds'] .description {
@@ -346,9 +345,5 @@
 @media (prefers-reduced-motion: reduce) {
   .flipper {
     transition: none;
-  }
-
-  .cardLink[data-size='two-thirds'] .cardBack::before {
-    animation: none;
   }
 }

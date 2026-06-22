@@ -43,7 +43,6 @@
   background-size:
     auto,
     240% 100%;
-  animation: gradientShimmer 9s linear infinite;
   box-shadow:
     0 8px 24px -10px rgba(0, 0, 0, 0.66),
     0 0 calc(20px * var(--glow)) color-mix(in srgb, var(--accent-violet) 32%, transparent);
@@ -56,10 +55,4 @@
 .icon {
   display: inline-flex;
   font-size: 0.9rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .badge[data-variant='award'] {
-    animation: none;
-  }
 }
