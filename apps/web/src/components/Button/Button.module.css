@@ -15,12 +15,8 @@
   cursor: pointer;
   --btn-accent: var(--accent-violet);
   --btn-accent-soft: var(--accent-violet-soft);
-  --btn-ring: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--accent-pink) 74%, transparent),
-    color-mix(in srgb, var(--accent-violet) 82%, transparent) 45%,
-    color-mix(in srgb, var(--accent-teal) 62%, transparent)
-  );
+  --btn-edge: color-mix(in srgb, var(--accent-violet) 46%, var(--border-strong));
+  --btn-edge-hover: color-mix(in srgb, var(--btn-accent) 58%, var(--border-strong));
   transition:
     color var(--transition-base),
     border-color var(--transition-base),
@@ -76,44 +72,41 @@
 }
 
 .btn[data-variant='secondary'] {
-  background:
-    linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--bg-elevated) 72%, transparent),
-        color-mix(in srgb, var(--bg-surface) 92%, transparent)
-      )
-      padding-box,
-    var(--btn-ring) border-box;
+  background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg-elevated) 58%, transparent),
+      color-mix(in srgb, var(--bg-surface) 94%, transparent)
+    )
+    padding-box;
+  border-color: var(--btn-edge);
   color: var(--text-primary);
   box-shadow:
     var(--highlight-top),
-    0 0 calc(12px * var(--glow)) color-mix(in srgb, var(--btn-accent) 16%, transparent);
+    0 0 calc(10px * var(--glow)) color-mix(in srgb, var(--btn-accent) 10%, transparent);
 }
 .btn[data-variant='secondary']:hover:not(:disabled) {
-  background:
-    linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--bg-elevated) 82%, var(--text-primary) 8%),
-        color-mix(in srgb, var(--bg-surface) 88%, var(--btn-accent) 10%)
-      )
-      padding-box,
-    var(--btn-ring) border-box;
+  background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg-elevated) 70%, var(--btn-accent) 8%),
+      color-mix(in srgb, var(--bg-surface) 90%, var(--btn-accent) 8%)
+    )
+    padding-box;
+  border-color: var(--btn-edge-hover);
   box-shadow:
     var(--highlight-top),
-    0 0 calc(18px * var(--glow)) color-mix(in srgb, var(--btn-accent) 22%, transparent);
+    0 0 calc(14px * var(--glow)) color-mix(in srgb, var(--btn-accent) 14%, transparent);
 }
 
 .btn[data-variant='secondary'][aria-pressed='true'],
 .btn[data-variant='secondary'][data-state='active'],
 .btn[data-variant='secondary'][data-state='open'] {
-  background:
-    linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--bg-elevated) 76%, var(--btn-accent) 12%),
-        color-mix(in srgb, var(--bg-surface) 84%, var(--btn-accent) 12%)
-      )
-      padding-box,
-    var(--btn-ring) border-box;
+  background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg-elevated) 70%, var(--btn-accent) 10%),
+      color-mix(in srgb, var(--bg-surface) 86%, var(--btn-accent) 10%)
+    )
+    padding-box;
+  border-color: var(--btn-edge-hover);
 }
 
 .btn[data-variant='ghost'] {
@@ -135,10 +128,8 @@
   border-radius: var(--r-pill);
   text-transform: none;
   font-size: 20px;
-  background:
-    linear-gradient(180deg, var(--bg-elevated), var(--bg-surface)) padding-box,
-    var(--btn-ring) border-box;
-  border: 1px solid transparent;
+  background: linear-gradient(180deg, var(--bg-elevated), var(--bg-surface)) padding-box;
+  border: 1px solid var(--btn-edge);
   color: var(--text-primary);
   box-shadow:
     var(--shadow-fab),
@@ -146,18 +137,20 @@
 }
 .btn[data-variant='fab']:hover:not(:disabled) {
   transform: translateY(-2px);
+  border-color: var(--btn-edge-hover);
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(18px * var(--glow)) color-mix(in srgb, var(--btn-accent) 28%, transparent),
+    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--btn-accent) 18%, transparent),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
 
 .btn[data-variant='fab'][data-state='active'],
 .btn[data-variant='fab'][data-state='open'] {
   transform: translateY(-2px);
+  border-color: var(--btn-edge-hover);
   box-shadow:
     var(--shadow-fab),
-    0 0 calc(18px * var(--glow)) color-mix(in srgb, var(--btn-accent) 30%, transparent),
+    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--btn-accent) 20%, transparent),
     0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
 
@@ -167,24 +160,21 @@
   height: var(--btn-icon-size);
   padding: 0;
   border-radius: var(--r-md);
-  background:
-    linear-gradient(180deg, var(--bg-elevated), var(--bg-surface)) padding-box,
-    var(--btn-ring) border-box;
-  border-color: transparent;
+  background: linear-gradient(180deg, var(--bg-elevated), var(--bg-surface)) padding-box;
+  border-color: var(--btn-edge);
   color: var(--text-primary);
   text-transform: none;
   font-size: 1rem;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
 }
 .btn[data-variant='icon']:hover:not(:disabled) {
-  background:
-    linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--bg-elevated) 88%, var(--btn-accent) 10%),
-        color-mix(in srgb, var(--bg-surface) 90%, var(--btn-accent) 10%)
-      )
-      padding-box,
-    var(--btn-ring) border-box;
+  background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg-elevated) 88%, var(--btn-accent) 10%),
+      color-mix(in srgb, var(--bg-surface) 90%, var(--btn-accent) 10%)
+    )
+    padding-box;
+  border-color: var(--btn-edge-hover);
   color: var(--text-primary);
 }
 
