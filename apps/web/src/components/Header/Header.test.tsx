@@ -46,6 +46,7 @@ describe('Header Component', () => {
     render(<Header />);
     const blogLink = screen.getByTestId('blog-link');
     expect(blogLink).toBeInTheDocument();
+    expect(blogLink).toHaveAttribute('data-variant', 'primary');
     expect(blogLink).toHaveAttribute('href', 'https://dev.to/anchildress1');
     expect(blogLink).toHaveAttribute('target', '_blank');
   });

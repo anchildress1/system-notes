@@ -27,11 +27,6 @@ const TextContent = ({ text }: { text: string }) => (
 
 const sectionNumber = (index: number) => String(index + 1).padStart(2, '0');
 
-// Spread the site's hues across the page's accented spots so it reads as a mix,
-// not a wall of teal. Keyed by position, like the card grids.
-const SKILL_ACCENTS = [styles.accentTeal, styles.accentPink];
-const SECTION_ACCENTS = [styles.accentViolet, styles.accentBlue];
-
 interface AboutContentProps {
   data: AboutData;
 }
@@ -50,6 +45,8 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
         />
 
         <section className={styles.highlights} aria-label="Highlights">
+          <span className={styles.nodeLabel}>00 · NODE</span>
+
           <dl className={styles.stats}>
             {stats.map((stat) => (
               <div key={stat.label} className={styles.stat}>
@@ -61,11 +58,8 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
 
           <div className={styles.hlCols}>
             <div className={styles.hlCol}>
-              {skillGroups.map((group, i) => (
-                <div
-                  key={group.label}
-                  className={`${styles.hlGroup} ${SKILL_ACCENTS[i % SKILL_ACCENTS.length]}`}
-                >
+              {skillGroups.map((group) => (
+                <div key={group.label} className={styles.hlGroup}>
                   <span className={styles.hlLabel}>{group.label}</span>
                   <div className={styles.skills}>
                     {group.items.map((skill) => (
@@ -76,7 +70,7 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
               ))}
             </div>
             <div className={styles.hlCol}>
-              <div className={`${styles.hlGroup} ${styles.accentGold}`}>
+              <div className={styles.hlGroup}>
                 <span className={styles.hlLabel}>Recognition</span>
                 <ul className={styles.recognition}>
                   {recognition.map((item) => (
@@ -94,9 +88,11 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
                     <Button
                       key={link.href}
                       variant="secondary"
+                      size="sm"
                       href={link.href}
                       target={link.external ? '_blank' : undefined}
                       icon={Icon ? <Icon /> : undefined}
+                      className={styles.linksButton}
                     >
                       {link.label}
                     </Button>
@@ -110,9 +106,7 @@ export default function AboutContent({ data }: Readonly<AboutContentProps>) {
 
       {sections.map((section, index) => (
         <section className={styles.section} key={section.title}>
-          <div
-            className={`${styles.sectionMeta} ${SECTION_ACCENTS[index % SECTION_ACCENTS.length]}`}
-          >
+          <div className={styles.sectionMeta}>
             <span className={styles.sectionNum}>{sectionNumber(index)} · NODE</span>
             <h2 className={styles.sectionTitle}>{section.title}</h2>
             {section.subtitle && <span className={styles.sectionTag}>{section.subtitle}</span>}

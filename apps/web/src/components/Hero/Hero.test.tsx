@@ -35,13 +35,21 @@ describe('Hero Component', () => {
   });
 
   it('renders the kicker when provided', () => {
-    render(<Hero {...defaultProps} kicker="CWD · /sys/test" />);
-    expect(screen.getByText('CWD · /sys/test')).toBeInTheDocument();
+    render(<Hero {...defaultProps} kicker="// SURFACE STACK" />);
+    expect(screen.getByText('// SURFACE STACK')).toBeInTheDocument();
   });
 
   it('renders the actions slot when provided', () => {
     render(<Hero {...defaultProps} actions={<button data-testid="hero-cta">go</button>} />);
     expect(screen.getByTestId('hero-cta')).toBeInTheDocument();
+  });
+
+  it('can scope the accent tone for page-specific hero art direction', () => {
+    render(<Hero {...defaultProps} accentLead="Designing" accentTone="teal" />);
+    expect(screen.getByText('Designing').closest('[data-accent-tone]')).toHaveAttribute(
+      'data-accent-tone',
+      'teal'
+    );
   });
 
   it('dispatches trigger-glitter-bomb event on click', () => {

@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
 import Kicker from '@/components/Kicker/Kicker';
+import Button from '@/components/Button/Button';
 import styles from './Hero.module.css';
 
 interface HeroProps {
@@ -10,6 +12,7 @@ interface HeroProps {
   accentLead?: string;
   titleAccent?: string;
   accentWord?: string;
+  accentTone?: 'brand' | 'teal';
   subtitle?: string;
   /** Optional primary/secondary CTAs rendered under the subtitle. */
   actions?: ReactNode;
@@ -23,6 +26,7 @@ export default function Hero({
   accentLead,
   titleAccent,
   accentWord,
+  accentTone = 'brand',
   subtitle,
   actions,
   aside,
@@ -38,7 +42,7 @@ export default function Hero({
   useEffect(() => {
     const el = heroRef.current;
     if (!el) return;
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e: globalThis.MouseEvent) => {
       const rect = el.getBoundingClientRect();
       el.style.setProperty('--spot-x', `${e.clientX - rect.left}px`);
       el.style.setProperty('--spot-y', `${e.clientY - rect.top}px`);
@@ -48,7 +52,7 @@ export default function Hero({
   }, []);
 
   return (
-    <div className={styles.hero} ref={heroRef}>
+    <div className={styles.hero} data-accent-tone={accentTone} ref={heroRef}>
       <div className={`${styles.inner} ${aside ? styles.hasAside : ''}`}>
         <div className={styles.textCol}>
           <div className={styles.interactiveContainer}>
@@ -74,25 +78,25 @@ export default function Hero({
                 </span>
               )}
             </h1>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
               className={styles.glitterTrigger}
               data-testid="hero-interactive"
               aria-label="Trigger glitter effect"
-              onClick={(e) => {
+              onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 globalThis.dispatchEvent(
                   new CustomEvent('trigger-glitter-bomb', {
-                    detail: { x: e.clientX, y: e.clientY },
+                    detail: { x: event.clientX, y: event.clientY },
                   })
                 );
               }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
+              onKeyDown={(event: KeyboardEvent<HTMLButtonElement>) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
                   globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
                 }
               }}
-            />
+            ></Button>
           </div>
           {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
           {actions && <div className={styles.actions}>{actions}</div>}

@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px var(--page-gutter);
+  padding: 10px var(--page-gutter);
   width: 100%;
   position: relative;
 }
@@ -32,8 +32,8 @@
 }
 
 .brandMark {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
   border-radius: var(--r-sm);
   border: 1px solid var(--border-strong);
@@ -41,8 +41,8 @@
 }
 
 .brandMarkImage {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   object-fit: cover;
   border-radius: var(--r-sm);
   display: block;
@@ -84,7 +84,7 @@
   font-size: 12px;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  padding: 8px 14px;
+  padding: 7px 13px;
   border-radius: var(--r-sm);
   border: 1px solid transparent;
   background: transparent;
@@ -156,7 +156,7 @@
 
 @media (max-width: 1024px) {
   .row {
-    padding: 12px var(--page-gutter);
+    padding: 10px var(--page-gutter);
   }
 
   .status {
@@ -166,7 +166,7 @@
 
 @media (max-width: 768px) {
   .row {
-    padding: 10px 16px;
+    padding: 9px 16px;
   }
 
   .navCta {

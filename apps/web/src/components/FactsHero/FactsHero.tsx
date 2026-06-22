@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
+import type { KeyboardEvent, MouseEvent } from 'react';
+import Button from '@/components/Button/Button';
 import styles from '@/styles/SharedHero.module.css';
 import heroStyles from './FactsHero.module.css';
 
@@ -22,26 +24,28 @@ export default function FactsHero() {
           Decisions on record
         </h1>
         <span className={styles.subtitle}>so you can audit me</span>
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           className={styles.glitterTrigger}
-          onClick={(e) => {
+          ariaLabel="Click to trigger a glitter effect"
+          onClick={(event: MouseEvent<HTMLButtonElement>) => {
             triggerGlow();
             globalThis.dispatchEvent(
               new CustomEvent('trigger-glitter-bomb', {
-                detail: { x: e.clientX, y: e.clientY },
+                detail: { x: event.clientX, y: event.clientY },
               })
             );
           }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
+          onKeyDown={(event: KeyboardEvent<HTMLButtonElement>) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
               triggerGlow();
               globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
             }
           }}
-          aria-label="Click to trigger a glitter effect"
-        />
+        >
+          <span aria-hidden="true" />
+        </Button>
       </div>
     </div>
   );

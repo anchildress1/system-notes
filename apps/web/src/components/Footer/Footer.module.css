@@ -35,8 +35,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--accent-pink);
-  box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-pink);
+  background: var(--text-primary);
+  box-shadow: 0 0 calc(8px * var(--glow)) var(--text-primary);
   flex-shrink: 0;
 }
 

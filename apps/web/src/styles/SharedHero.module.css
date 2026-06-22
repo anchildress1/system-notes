@@ -5,6 +5,25 @@
   overflow: hidden;
   user-select: none;
   cursor: default;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      760px 420px at 18% 30%,
+      color-mix(in srgb, var(--accent-pink) 3%, transparent),
+      transparent 74%
+    ),
+    radial-gradient(
+      840px 460px at 84% 36%,
+      color-mix(in srgb, var(--accent-violet) 3%, transparent),
+      transparent 78%
+    ),
+    linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--accent-pink) 1%, transparent) 0%,
+      transparent 46%,
+      color-mix(in srgb, var(--accent-violet) 1.5%, transparent) 100%
+    ),
+    var(--bg-base);
 }
 
 .title {
@@ -38,15 +57,12 @@
 }
 
 .glitterTrigger {
-  display: block;
   position: absolute;
   inset: 0;
   z-index: 15;
   background: transparent;
-  border: none;
-  cursor: default;
-  padding: 0;
-  margin: 0;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .textButton {

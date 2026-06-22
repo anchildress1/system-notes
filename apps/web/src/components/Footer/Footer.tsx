@@ -25,7 +25,7 @@ export default memo(function Footer() {
             </div>
             <p className={styles.blurb}>
               A retrieval-first portfolio. The site is the artifact; the <em>system</em> is the
-              work. Built with GitHub Copilot, ChatGPT, Verdent, Claude + Gemini.
+              work.
             </p>
           </div>
 
@@ -91,9 +91,7 @@ export default memo(function Footer() {
         </div>
 
         <div className={styles.bottom}>
-          <span suppressHydrationWarning>
-            {currentYear} · Ashley Childress · Built under human supervision.
-          </span>
+          <span suppressHydrationWarning>{currentYear} · Ashley Childress</span>
           <span className={styles.bottomRight}>
             <a
               href="https://www.algolia.com"

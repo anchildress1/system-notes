@@ -14,19 +14,18 @@ export default function Home() {
   return (
     <main className={styles.main} id="main-content">
       <Hero
-        kicker="CWD · /sys/choices"
         title="This portfolio isn't browsed."
         titleAccent="It's"
         accentWord="retrieved."
         subtitle="An engineering portfolio you query, not scroll."
         actions={
           <Button
-            variant="primary"
-            size="lg"
+            variant="secondary"
+            size="md"
             href="/projects"
             iconRight={<span aria-hidden="true">→</span>}
           >
-            $ cd /sys/builds
+            View builds
           </Button>
         }
       />

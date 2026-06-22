@@ -87,7 +87,7 @@ describe('Pagination', () => {
     expect(container.querySelector('.nav-root')).toBeInTheDocument();
     expect(container.querySelector('.nav-list')).toBeInTheDocument();
     expect(container.querySelectorAll('.nav-item').length).toBeGreaterThan(0);
-    expect(container.querySelector('.nav-active')).toBeInTheDocument();
+    expect(screen.getByLabelText('Page 03')).toHaveAttribute('aria-current', 'page');
     expect(container.querySelectorAll('.nav-btn').length).toBeGreaterThan(0);
   });
 });

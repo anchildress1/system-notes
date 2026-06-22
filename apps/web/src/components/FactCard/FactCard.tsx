@@ -8,6 +8,7 @@ import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
 import Badge from '@/components/Badge/Badge';
 import Tag from '@/components/Tag/Tag';
 import { GitHubIcon, DevIcon } from '@/components/icons';
+import Button from '@/components/Button/Button';
 import { getCardVariant } from './cardVariant';
 import cardStyles from '@/styles/card.module.css';
 import styles from './FactCard.module.css';
@@ -131,10 +132,10 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
             }`}
             aria-hidden={isFlipped}
           >
-            <button
+            <Button
               ref={frontButtonRef}
-              type="button"
               className={styles.flipButton}
+              variant="ghost"
               onClick={toggleFlip}
               aria-expanded={isFlipped}
               aria-label={`${hit.title}. Click to ${isFlipped ? 'collapse' : 'expand'}.`}
@@ -190,10 +191,10 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
           <div className={styles.cardBack} aria-hidden={!isFlipped}>
             {/* Native button overlay closes the card — mirrors the front's
                 flip trigger so the back isn't a div-as-button (a11y/Sonar). */}
-            <button
+            <Button
               ref={backButtonRef}
-              type="button"
               className={styles.flipButton}
+              variant="ghost"
               onClick={toggleFlip}
               aria-label={`${hit.title}. Click to collapse.`}
               tabIndex={isFlipped ? 0 : -1}
