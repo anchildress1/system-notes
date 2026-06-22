@@ -117,7 +117,7 @@
 }
 
 .inner:not(.hasAside) .textCol .subtitle {
-  max-width: calc(200% / 3);
+  max-width: 62ch;
 }
 
 .actions {
@@ -134,12 +134,12 @@
 
 .rotatingWord {
   background: var(--gradient-hero);
-  background-size: 200% 100%;
+  background-size: 170% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  animation: gradientShimmer 9s linear infinite;
+  animation: gradientShimmer 15s linear infinite;
 }
 
 .hero[data-accent-tone='teal'] .rotatingWord {

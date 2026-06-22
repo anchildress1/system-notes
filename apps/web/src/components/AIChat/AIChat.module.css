@@ -6,18 +6,6 @@
   --chat-dock-margin: clamp(1rem, 3vw, 2rem);
   --chat-dock-size: clamp(52px, 4vw, 60px);
   --chat-dock-gap: 12px;
-  --chat-dock-panel-bottom: calc(
-    env(safe-area-inset-bottom) + var(--chat-dock-margin) + var(--chat-dock-size) +
-      var(--chat-dock-gap)
-  );
-  --chat-dock-panel-height: min(
-    42rem,
-    calc(
-      100svh - (var(--chat-dock-margin) * 2) - var(--chat-dock-size) -
-        var(--chat-dock-gap)
-    )
-  );
-  --chat-dock-panel-width: min(26rem, calc(100vw - (var(--chat-dock-margin) * 2)));
   isolation: isolate;
   pointer-events: none;
 }
@@ -29,11 +17,10 @@
 }
 
 /* ── Root: Algolia CSS custom properties ── */
-.chatRoot.chatRoot {
-  --ais-chat-margin: var(--chat-dock-margin);
-  --ais-chat-width: var(--chat-dock-panel-width);
-  --ais-chat-height: var(--chat-dock-panel-height);
-  --ais-z-index-chat: 1090;
+.chatRoot {
+  --ais-chat-margin: calc(
+    var(--chat-dock-margin) + var(--chat-dock-size) + var(--chat-dock-size) + var(--chat-dock-gap)
+  );
   --ais-primary-color-rgb: 181, 101, 245;
   --ais-background-color-rgb: 23, 19, 33;
   --ais-text-color-rgb: 246, 241, 255;
@@ -42,32 +29,22 @@
   --ais-shadow-color-rgb: 0, 0, 0;
   --ais-border-radius-lg: var(--r-xl);
   --ais-shadow-md: var(--shadow-deep);
-  top: auto;
-  right: var(--chat-dock-margin);
-  bottom: var(--chat-dock-panel-bottom);
-  left: auto;
-  width: var(--chat-dock-panel-width);
-  height: var(--chat-dock-panel-height);
-  max-width: calc(100vw - (var(--chat-dock-margin) * 2));
-  max-height: var(--chat-dock-panel-height);
 }
 
 .chatWindow {
-  margin-bottom: 0;
-  padding-bottom: 0;
+  margin-bottom: calc(var(--chat-dock-size) + var(--chat-dock-gap) + 0.25rem);
+  padding-bottom: calc(var(--chat-dock-size) + var(--chat-dock-gap));
   box-sizing: border-box;
 }
 
 /* ── Toggle FAB (we render it; matches shared `Button` fab token sizing) ── */
-.chatToggle.chatToggle.chatToggle {
+.chatToggle {
   --chat-dock-margin: clamp(1rem, 3vw, 2rem);
   --chat-dock-size: clamp(52px, 4vw, 60px);
   --btn-fab-size: var(--chat-dock-size);
   position: fixed;
   bottom: calc(env(safe-area-inset-bottom) + var(--chat-dock-margin));
   right: var(--chat-dock-margin);
-  width: var(--chat-dock-size);
-  height: var(--chat-dock-size);
   z-index: 1100;
   pointer-events: auto;
 }
