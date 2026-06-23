@@ -78,11 +78,8 @@ export default function SearchPage() {
         />
 
         <RetrieveBar />
-        <div className={styles.retrieveAttribution}>
-          <AlgoliaAttribution />
-        </div>
+        <SearchMeta />
         <FilterBar />
-        <SectionHeader />
 
         <section className={styles.results} aria-label="Search results">
           <LoadingIndicator />
@@ -400,15 +397,17 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
   );
 }
 
-function SectionHeader() {
+function SearchMeta() {
   // processingTimeMS is Algolia's server-side query time, straight off the
-  // search response — no extra plumbing, no client timing math.
+  // search response — no extra plumbing, no client timing math. The stat and
+  // the attribution share one right-aligned row under the search bar.
   const { nbHits, processingTimeMS } = useStats();
   return (
-    <div className={styles.sectionHeader}>
+    <div className={styles.retrieveAttribution}>
       <span className={styles.sectionHeaderMeta}>
         {nbHits.toLocaleString()} entries · {processingTimeMS}ms
       </span>
+      <AlgoliaAttribution />
     </div>
   );
 }

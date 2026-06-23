@@ -33,7 +33,7 @@
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--accent-teal);
 }
 
 .retrieveInput {
@@ -167,15 +167,6 @@
   white-space: nowrap;
 }
 
-.sectionHeader {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 40px;
-}
-
 .sectionHeaderMeta {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -220,7 +211,9 @@
 
 .retrieveAttribution {
   display: flex;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
   margin-top: 10px;
   font-family: var(--font-mono);
   font-size: 11px;
