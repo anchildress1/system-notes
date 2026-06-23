@@ -57,7 +57,7 @@ export default function Header() {
             <Link
               key={href}
               href={href}
-              className={`${styles.navLink} ${pathname === href ? `${styles.active} hue-active` : ''}`}
+              className={`${styles.navLink} ${pathname === href ? styles.active : ''}`}
             >
               {label}
             </Link>
