@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { FiPlay, FiPause, FiMusic } from 'react-icons/fi';
+import { FiMusic } from 'react-icons/fi';
+import { FaPlay, FaPause } from 'react-icons/fa';
 import Button from '@/components/Button/Button';
 import styles from './MusicPlayer.module.css';
 
@@ -115,7 +116,7 @@ export default function MusicPlayer() {
         dataState={isPlaying ? 'active' : 'idle'}
         dataTestId="play-button"
       >
-        {isPlaying ? <FiPause size={24} /> : <FiPlay size={24} />}
+        {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
       </Button>
 
       <span className={styles.buttonLabel} aria-hidden="true">

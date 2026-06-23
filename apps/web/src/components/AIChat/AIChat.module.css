@@ -64,10 +64,9 @@
 }
 
 .chatToggle:hover {
-  transform: translateY(-2px) scale(1.03);
-  background: var(--text-primary);
-  border-color: var(--text-primary);
-  color: var(--bg-deep);
+  transform: translateY(-2px);
+  background: var(--surface-raised-hover);
+  border-color: var(--action-border-hover);
   box-shadow:
     var(--action-shadow-hover),
     0 0 0 1px rgba(255, 255, 255, 0.07) inset;
@@ -80,6 +79,12 @@
 
 .toggleIcon {
   flex-shrink: 0;
+}
+
+/* Fill the bat with the shared chromatic gradient (CSS fill wins over the
+   icon's currentColor presentation attr). */
+.batGradient {
+  fill: url(#batGradient);
 }
 
 @media (prefers-reduced-motion: reduce) {

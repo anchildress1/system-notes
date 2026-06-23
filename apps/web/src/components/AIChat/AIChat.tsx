@@ -106,10 +106,10 @@ const ChatItemComponent = ({
 };
 
 // Custom components to enrich the chat experience
-const HeaderIcon = () => <GiBat className={styles.headerIcon} />;
+const HeaderIcon = () => <GiBat className={`${styles.headerIcon} ${styles.batGradient}`} />;
 const AssistantAvatar = () => (
   <div className={styles.avatar}>
-    <GiBat />
+    <GiBat className={styles.batGradient} />
   </div>
 );
 const UserAvatar = () => (
@@ -242,6 +242,22 @@ export default function AIChat() {
 
   return createPortal(
     <ChatNavContext.Provider value={chatNavContext}>
+      {/* Shared gradient the bat icons fill with — the same chromatic band as
+          the winner/award "special" surfaces. Rendered once, referenced by id. */}
+      <svg
+        width="0"
+        height="0"
+        aria-hidden="true"
+        focusable="false"
+        style={{ position: 'absolute' }}
+      >
+        <linearGradient id="batGradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#2fd6d0" />
+          <stop offset="38%" stopColor="#7d5cff" />
+          <stop offset="62%" stopColor="#b96bff" />
+          <stop offset="100%" stopColor="#ff5fa2" />
+        </linearGradient>
+      </svg>
       <div className={`${styles.chatDock} ${open ? styles.chatOpen : ''}`}>
         {searchClient && AGENT_ID ? (
           <InstantSearchNext
