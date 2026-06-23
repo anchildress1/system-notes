@@ -1,0 +1,31 @@
+/* Terminal-style overline. `teal` = hero kicker; `dim` = quiet section overline
+   (// labels); `accent` = hue-coded NODE labels. Hue flows from [data-accent]. */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.kicker[data-tone='teal'] {
+  color: var(--accent-teal);
+}
+.kicker[data-tone='dim'] {
+  color: var(--text-dim);
+}
+.kicker[data-tone='accent'] {
+  color: var(--card-accent);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+  flex-shrink: 0;
+}

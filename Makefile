@@ -20,6 +20,7 @@ kill:
 # Run the development environment (Turbo)
 dev:
 	@echo "🚀 Starting development servers..."
+	$(MAKE) kill
 	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run dev -- --parallel
 
 # Format code (Prettier)

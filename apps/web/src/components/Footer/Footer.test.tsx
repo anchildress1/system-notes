@@ -8,6 +8,7 @@ describe('Footer Component', () => {
     const currentYear = new Date().getFullYear();
     expect(screen.getByText(new RegExp(currentYear.toString()))).toBeInTheDocument();
     expect(screen.getByText(/Ashley Childress/)).toBeInTheDocument();
+    expect(screen.queryByText(/Built with GitHub Copilot/i)).not.toBeInTheDocument();
   });
 
   it('renders social links', () => {

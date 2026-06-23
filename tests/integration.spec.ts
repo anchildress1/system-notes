@@ -10,15 +10,34 @@ test.describe('System Notes Integration', () => {
       "This portfolio isn't browsed."
     );
     await expect(page.getByText('An engineering portfolio you query, not scroll.')).toBeVisible();
+    const buildsCta = page.locator('main').getByRole('link', { name: /view builds/i });
+    await expect(buildsCta).toHaveAttribute('href', '/projects');
+    await expect(buildsCta).toHaveAttribute('data-variant', 'primary');
+    const ctaStyles = await buildsCta.evaluate((node) => {
+      const styles = getComputedStyle(node);
+      return {
+        background: styles.backgroundImage,
+        backgroundColor: styles.backgroundColor,
+        color: styles.color,
+      };
+    });
+    expect(ctaStyles.background).not.toContain('185, 107, 255');
+    expect(ctaStyles.backgroundColor).not.toContain('185, 107, 255');
+    expect(ctaStyles.color).toBe('rgb(23, 19, 33)');
+
+    await buildsCta.hover();
+    const hoverBackground = await buildsCta.evaluate((node) => getComputedStyle(node).background);
+    expect(hoverBackground).toContain('rgb(255, 255, 255)');
   });
 
   test('should display the footer', async ({ page }) => {
     await page.goto('/');
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
-    await expect(footer).toContainText(
-      'Built with GitHub Copilot, ChatGPT, Verdent, Claude + Gemini'
-    );
+    await expect(footer).toContainText("ASHLEY'S SYSTEM NOTES");
+    await expect(footer).toContainText('/sys/choices');
+    await expect(footer).toContainText('Powered by');
+    await expect(footer).not.toContainText('Built with');
   });
 
   test('should expose the blog CTA contract in the header', async ({ page, isMobile }) => {
@@ -30,6 +49,7 @@ test.describe('System Notes Integration', () => {
       await expect(cta).toBeVisible();
     }
     await expect(cta).toHaveAttribute('href', 'https://dev.to/anchildress1');
+    await expect(cta).toHaveAttribute('data-variant', 'primary');
     await expect(cta).toContainText('$ read --blog');
   });
 
@@ -44,7 +64,9 @@ test.describe('System Notes Integration', () => {
     await expect(
       projectCard.getByRole('button', { name: /flip to read the project note/i })
     ).toBeVisible();
-    await expect(projectCard.locator('[class*="techChip"]').first()).toBeVisible();
+    const summaryTags = projectCard.locator('span[data-variant="solid"]');
+    await expect(summaryTags.filter({ hasText: /^Canvas 2D$/ })).toBeVisible();
+    await expect(summaryTags.filter({ hasText: /^PixiJS$/ })).toBeVisible();
   });
 
   test('flips a project card in place to reveal the note', async ({ page }) => {

@@ -24,6 +24,8 @@ export interface AboutSkillGroup {
 export interface AboutData {
   heroTitle: string;
   heroAccentLead?: string;
+  heroTitleAccent?: string;
+  heroAccentWord?: string;
   heroSubtitle?: string;
   role: string;
   specialty: string;

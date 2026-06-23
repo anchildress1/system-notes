@@ -1,14 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import AboutContent from './AboutContent';
 import type { AboutData } from '@/data/about';
-
-vi.mock('next/image', () => ({
-  default: ({ src, alt, ...rest }: { src: string; alt: string }) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} {...rest} />
-  ),
-}));
 
 const baseData: AboutData = {
   heroTitle: 'Designing for failures\nyou have not met yet',
@@ -60,8 +53,9 @@ describe('AboutContent', () => {
     expect(screen.getByText('Sr SWE')).toBeInTheDocument();
   });
 
-  it('renders the highlights box: skills and recognition', () => {
+  it('renders the highlights node: skills and recognition', () => {
     render(<AboutContent data={baseData} />);
+    expect(screen.getByText(/^00 ·/)).toBeInTheDocument();
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
     expect(screen.getByText('GitHub Copilot certified')).toBeInTheDocument();
   });
@@ -71,9 +65,11 @@ describe('AboutContent', () => {
     const github = screen.getByRole('link', { name: /GitHub/ });
     expect(github).toHaveAttribute('href', 'https://github.com/anchildress1');
     expect(github).toHaveAttribute('target', '_blank');
+    expect(github).toHaveAttribute('data-variant', 'secondary');
     const builds = screen.getByRole('link', { name: /See the builds/ });
     expect(builds).toHaveAttribute('href', '/projects');
     expect(builds).not.toHaveAttribute('target');
+    expect(builds).toHaveAttribute('data-variant', 'secondary');
   });
 
   it('splits double-newline content into separate paragraphs', () => {

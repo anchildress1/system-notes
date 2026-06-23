@@ -1,0 +1,45 @@
+/* Shared card SURFACE — the single source of truth for the front face of both
+   flip-card grids (ProjectCard + FactCard) so they read as one system. Applied
+   as classNames on the face element. The gradient sits over an opaque
+   --bg-surface base (matching the design system Card) so cards look identical
+   regardless of the nebula behind them. Per-card hue flows from [data-accent]
+   → --card-accent / --card-seam. The face must be position:relative. */
+
+.face {
+  background: var(--card-surface);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: inherit;
+  overflow: hidden;
+  box-shadow: var(--highlight-top);
+}
+
+/* Accent seam bar across the top of the face. */
+.seam::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--seam-width);
+  z-index: 3;
+  background: var(--card-seam);
+  pointer-events: none;
+}
+
+/* Featured seam: identical to the standard accent seam (same top bar, same
+   place) — only the color differs: the flowing 5-stop chromatic gradient
+   instead of a single accent. No perimeter outline; hover lifts/glows like
+   every other card. */
+.winnerBanner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--seam-width);
+  z-index: 3;
+  background: var(--gradient-brand);
+  background-size: 200% 100%;
+  pointer-events: none;
+}

@@ -1,29 +1,28 @@
 .gridSection {
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--section-gap);
   width: 100%;
-  /* Match the hero's gutter so the cards line up under the hero text. */
-  padding: 0 max(2rem, calc((100% - 1440px) / 2 + 2rem));
+  padding: 0 var(--page-gutter);
 }
 
 .grid {
   display: grid;
-  /* Three across to match the thirds in the Choices results grid, rather than
-     letting auto-fill pack a tighter fourth column in. */
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   width: 100%;
+  /* Breathing room above the first row so the card seams/hover lift aren't
+     flush against whatever sits above the grid. */
+  margin-top: var(--space-xs);
 }
 
 @media (max-width: 1024px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 768px) {
   .gridSection {
-    /* Hero drops to 1.5rem side padding here — match it. */
-    padding: 0 1.5rem;
+    padding: 0 var(--page-gutter);
   }
 }
 

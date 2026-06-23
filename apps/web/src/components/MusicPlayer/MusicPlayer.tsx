@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { FiPlay, FiPause, FiMusic } from 'react-icons/fi';
+import { FiMusic } from 'react-icons/fi';
+import { FaPlay, FaPause } from 'react-icons/fa';
+import Button from '@/components/Button/Button';
 import styles from './MusicPlayer.module.css';
 
 function formatTime(seconds: number): string {
@@ -73,7 +75,7 @@ export default function MusicPlayer() {
                 E
               </span>
             </span>
-            <span className={styles.trackMeta}>TWISTED GAME · THEME SONG</span>
+            <span className={styles.trackMeta}>TWISTED GAME SONGS</span>
           </div>
         </div>
 
@@ -101,23 +103,21 @@ export default function MusicPlayer() {
         </div>
       </div>
 
-      <button
-        type="button"
+      <Button
+        variant="fab"
         className={`${styles.playButton} ${isPlaying ? styles.active : ''}`}
-        onClick={togglePlay}
-        disabled={hasError}
-        aria-label={
+        ariaLabel={
           isPlaying
             ? "Pause 'I Build Things' by Twisted Game Songs"
             : "Play 'I Build Things' by Twisted Game Songs (Explicit Content). Muted by default."
         }
-        data-testid="play-button"
+        onClick={togglePlay}
+        disabled={hasError}
+        dataState={isPlaying ? 'active' : 'idle'}
+        dataTestId="play-button"
       >
-        {isPlaying ? <FiPause size={24} /> : <FiPlay size={24} />}
-        <span className={styles.explicitBadge} aria-hidden="true">
-          E
-        </span>
-      </button>
+        {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
+      </Button>
 
       <span className={styles.buttonLabel} aria-hidden="true">
         THEME SONG

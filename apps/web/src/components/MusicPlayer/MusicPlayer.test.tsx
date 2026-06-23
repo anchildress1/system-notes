@@ -33,6 +33,7 @@ describe('MusicPlayer', () => {
     expect(screen.getByTestId('music-player')).toBeInTheDocument();
     // Should show Play button initially
     expect(screen.getByTestId('play-button')).toBeInTheDocument();
+    expect(screen.getByTestId('play-button')).toHaveAttribute('data-state', 'idle');
     // Check for aria-label indicating play state
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
   });
@@ -55,6 +56,7 @@ describe('MusicPlayer', () => {
       // Should switch to Pause button
       expect(screen.getByLabelText(/Pause/i)).toBeInTheDocument();
     });
+    expect(button).toHaveAttribute('data-state', 'active');
 
     // 2. Click Pause
     fireEvent.click(button);
@@ -67,6 +69,7 @@ describe('MusicPlayer', () => {
       'aria-label',
       expect.stringMatching(/^Play/i)
     );
+    expect(button).toHaveAttribute('data-state', 'idle');
   });
 
   it('handles playback failure gracefully', async () => {
@@ -112,6 +115,7 @@ describe('MusicPlayer', () => {
   });
 
   it('disables button and shows error state when audio fails to load', () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     render(<MusicPlayer />);
 
     // Trigger the onError handler
@@ -123,6 +127,11 @@ describe('MusicPlayer', () => {
 
     // Should remain in Play (not Pause) state
     expect(screen.getByLabelText(/Play/i)).toBeInTheDocument();
+    expect(consoleSpy).toHaveBeenCalledWith('Audio element error:', {
+      code: undefined,
+      message: undefined,
+      src: expect.stringContaining('/audio/twisted-game-songs-i-build-things.mp3'),
+    });
   });
 
   it('transitions from playing to error state when audio error fires mid-playback', async () => {

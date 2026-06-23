@@ -1,0 +1,27 @@
+/* Recessed system-status chip: mono label + pulsing teal dot on a dark fill. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 0.12em;
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+  background: rgba(16, 13, 23, 0.78);
+  box-shadow:
+    var(--shadow-fab),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  white-space: nowrap;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--accent-teal);
+  box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
+  flex-shrink: 0;
+}

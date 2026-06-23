@@ -1,42 +1,43 @@
 :root {
-  /* ── v2.0.26 Base Surfaces ── */
-  --bg-base: #0e0f13;
-  --bg-deep: #08090c;
-  --bg-surface: #16181f;
-  --bg-elevated: #1d1f28;
-  --bg-input: #11131a;
+  /* Base surfaces — Aurora (Modernization Study, Direction B) */
+  --bg-deep: #08070e;
+  --bg-base: #0b0a12;
+  --bg-surface: #15131f;
+  --bg-elevated: #211d31;
+  --bg-input: #120f1c;
 
-  /* ── v2.0.26 Text Scale ── */
-  --text-primary: #ecedf0;
-  --text-secondary: #b0b3bf;
-  /* Lifted from #6b6f7d so muted text clears WCAG AA (4.5:1) on the dark bg. */
-  --text-muted: #7e8290;
-  --text-dim: #44485a;
+  /* Text scale — Aurora. dim kept AA-safe (#7c7791 ≈4.6:1) vs spec #4b4660. */
+  --text-primary: #f3f0fb;
+  --text-secondary: #bcb6cf;
+  --text-muted: #867f9b;
+  --text-dim: #7c7791;
 
-  /* ── v2.0.26 Accents ── */
-  --accent-pink: #f16197;
-  --accent-pink-soft: rgba(241, 97, 151, 0.15);
-  --accent-teal: #3ec7c2;
-  --accent-teal-soft: rgba(62, 199, 194, 0.15);
-  --accent-violet: #b56bff;
-  --accent-violet-soft: rgba(181, 107, 255, 0.15);
-  --accent-gold: #e89a6a;
-  /* Electric indigo lifted from the brand mark (icon.svg coreFacet). The one
-     genuinely "blue" hue on the site. */
-  --accent-blue: #7f5af0;
-  --accent-blue-soft: rgba(127, 90, 240, 0.15);
+  /* Accents — Aurora neon (Direction B), softs at 18% */
+  --accent-pink: #ff5fa2;
+  --accent-pink-soft: rgba(255, 95, 162, 0.18);
+  --accent-teal: #2fd6d0;
+  --accent-teal-soft: rgba(47, 214, 208, 0.18);
+  --accent-violet: #b96bff;
+  --accent-violet-soft: rgba(185, 107, 255, 0.18);
+  --accent-gold: #ffb070;
+  --accent-gold-soft: rgba(255, 176, 112, 0.18);
+  --accent-blue: #7d5cff;
+  --accent-blue-soft: rgba(125, 92, 255, 0.18);
 
   --accent: var(--accent-violet);
   --accent-soft: var(--accent-violet-soft);
 
-  /* ── Neutral interactive tier ──
-     ALL chrome (focus, hover, active, pagination, nav, links, FABs,
-     badges, tags) is monochrome. Neon --accent-* is reserved for the
-     ONLY two color moments: card top-stripes and the hero shimmer word.
-     Nothing else gets color. */
+  /* Neutral interactive tier */
   --chrome-line: var(--text-primary);
+  --action-primary-bg: linear-gradient(180deg, #fffaff, #f1eef8);
+  --action-primary-bg-hover: linear-gradient(180deg, #ffffff, #f7f3ff);
+  --action-primary-text: #171321;
+  --action-border: color-mix(in srgb, var(--border-strong) 82%, transparent);
+  --action-border-hover: color-mix(in srgb, var(--text-primary) 36%, var(--border-strong));
+  --action-shadow: 0 18px 42px -28px rgba(0, 0, 0, 0.9);
+  --action-shadow-hover: 0 20px 48px -28px rgba(0, 0, 0, 0.94);
 
-  /* ── Semantic aliases (keep old names, new dark values) ── */
+  /* Semantic aliases */
   --paper: var(--bg-base);
   --paper-dim: var(--bg-surface);
   --paper-deep: var(--bg-deep);
@@ -45,48 +46,71 @@
   --ink-3: var(--text-muted);
   --ink-4: var(--text-dim);
 
-  /* Primary accent = violet (replaces ember) */
   --ember: var(--accent-violet);
   --ember-tint: var(--accent-violet-soft);
-  --ember-soft: rgba(181, 107, 255, 0.06);
+  --ember-soft: rgba(185, 107, 255, 0.06);
 
-  /* ── Borders + Glass ── */
-  --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.12);
-  --glass-bg: rgba(22, 24, 31, 0.6);
-  --glass-blur: blur(14px);
+  /* Borders and glass — Aurora (Direction B) */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(180, 140, 255, 0.3);
+  --glass-bg: rgba(24, 20, 36, 0.6);
+  --glass-blur: blur(22px);
 
-  /* Glow multiplier (1 = full) */
-  --glow: 1;
+  /* Raised "current / active" surface. The selected nav item and the music
+     popover share this so an active surface reads identically everywhere.
+     Change here once — never per component. */
+  --surface-active: rgba(255, 255, 255, 0.055);
 
-  /* ── Card system (shared by Project + Fact cards) ──
-     One surface/seam definition for both grids so Choices and Builds stay
-     visually identical. --card-accent is the per-card hue, defaulting to
-     violet and overridden per card via [data-accent] below. */
+  /* Opaque equivalent of --surface-active for floating panels and controls
+     (filter dropdowns, the music popover, the corner FABs) so they all read as
+     one raised-surface family. Solid because these float over arbitrary
+     content. Change here once. */
+  --surface-raised: color-mix(in srgb, #ffffff 5.5%, var(--bg-deep));
+  --surface-raised-hover: color-mix(in srgb, #ffffff 9%, var(--bg-deep));
+
+  /* One width for every accent seam / divider line (card seams, hero seam,
+     about bars). Change here once — never per component. */
+  --seam-width: 1px;
+
+  --nebula-1: rgba(255, 95, 162, 0.035);
+  --nebula-2: rgba(47, 214, 208, 0.032);
+  --nebula-3: rgba(125, 92, 255, 0.04);
+
+  --glow: 1.6;
+
+  /* Card system — Aurora (Direction B): translucent violet glass so the
+     accent + ambient read through; back face stays readable. */
   --card-accent: var(--accent-violet);
   --card-accent-soft: var(--accent-violet-soft);
-  --card-surface: linear-gradient(180deg, rgba(29, 31, 40, 0.55), rgba(22, 24, 31, 0.55));
-  --card-surface-back: radial-gradient(
+  --card-surface: linear-gradient(160deg, rgba(40, 30, 62, 0.55), rgba(18, 16, 28, 0.7));
+  --card-surface-back:
+    radial-gradient(
       120% 80% at 0% 0%,
       color-mix(in srgb, var(--card-accent) 16%, transparent),
       transparent 55%
     ),
-    linear-gradient(180deg, rgba(34, 36, 48, 0.97), rgba(18, 20, 27, 0.98));
+    linear-gradient(180deg, var(--bg-elevated), var(--bg-surface));
   --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 
-  /* Shared "winner" gradient — the award badge fill and the gradient (two-thirds)
-     card seams both draw from this so they read as one system. Teal-led at both
-     ends with a clear violet→pink band through the middle; loops teal→teal so the
-     badge shimmer is seamless. */
-  --gradient-winner: linear-gradient(
+  /* One chromatic brand gradient — hero word, winner card seams, the award
+     badge all draw from this. It animates everywhere it's used, so the start
+     stop is moot; no reason for two near-identical gradients. */
+  --gradient-brand: linear-gradient(
     110deg,
-    var(--accent-teal) 0%,
-    var(--accent-violet) 38%,
-    var(--accent-pink) 55%,
-    var(--accent-teal) 100%
+    var(--accent-pink) 0%,
+    var(--accent-violet) 30%,
+    var(--accent-blue) 50%,
+    var(--accent-teal) 72%,
+    var(--accent-pink) 100%
+  );
+  --gradient-seam-brand: linear-gradient(
+    90deg,
+    var(--accent-violet),
+    var(--accent-teal) 60%,
+    transparent
   );
 
-  /* ── Legacy HSL aliases — pages using hsl(var(--color-*)) ── */
+  /* Legacy HSL aliases */
   --color-bg-base: 232 16% 7%;
   --color-bg-surface: 232 16% 11%;
   --color-bg-elevated: 232 14% 14%;
@@ -101,16 +125,15 @@
   --color-accent-teal: 177 68% 51%;
   --color-accent-gold: 23 70% 66%;
 
-  /* ── Algolia primary color → violet ── */
-  --ais-primary-color-rgb: 181, 107, 255;
+  --ais-primary-color-rgb: 185, 107, 255;
   --ais-primary-color-alpha: 1;
 
-  /* ── Typography ── */
+  /* Typography */
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
-  /* ── Motion ── */
+  /* Motion */
   --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --ease-morph: cubic-bezier(0.4, 0, 0.2, 1);
@@ -118,18 +141,20 @@
   --transition-base: 0.15s ease;
   --transition-slow: 0.25s var(--ease-morph);
 
-  /* ── Spacing ── */
+  /* Spacing */
   --space-xs: 0.75rem;
   --space-sm: 1.5rem;
   --space-md: 3rem;
   --space-lg: 6rem;
   --space-xl: 12rem;
+  --page-gutter: max(1.5rem, calc((100% - 1440px) / 2 + 2rem));
+  --section-gap: clamp(2.5rem, 5vw, 4.5rem);
 
-  /* ── Border Radius ── */
-  --r-sm: 4px;
-  --r-md: 8px;
-  --r-lg: 14px;
-  --r-xl: 22px;
+  /* Radius */
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-xl: 24px;
   --r-pill: 999px;
 
   /* Legacy radius aliases */
@@ -140,13 +165,16 @@
   --radius-pill: var(--r-pill);
   --radius-round: 50%;
 
-  /* ── Shadows ── */
-  --shadow-card: 0 16px 40px -16px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
-  --shadow-bento: 0 2px 0 rgba(255, 255, 255, 0.04);
-  --shadow-deep: 0 36px 80px -28px rgba(0, 0, 0, 0.85);
-  --highlight-top: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  /* Shadows */
+  --shadow-card:
+    0 30px 70px -26px rgba(0, 0, 0, 0.8), 0 0 50px -20px rgba(150, 90, 255, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  --shadow-bento: 0 2px 0 rgba(255, 255, 255, 0.05);
+  --shadow-deep: 0 38px 90px -34px rgba(0, 0, 0, 0.92), 0 0 54px -36px rgba(181, 101, 245, 0.32);
+  --shadow-fab: 0 18px 42px -22px rgba(0, 0, 0, 0.85);
+  --highlight-top: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
 
-  /* ── Z-Index ── */
+  /* Z-index */
   --z-background: -1;
   --z-base: 0;
   --z-sticky: 100;
@@ -157,13 +185,7 @@
   --z-footer: 9500;
 }
 
-/* Per-card accent hue — set on the card root, consumed by seams, glows,
-   badges, and back surfaces across both card grids. */
-/* --card-seam is re-declared in each scope on purpose: a custom property that
-   references another custom property resolves var() at its DECLARATION site, not
-   where it's used. Declared only on :root it would bake in the root (violet)
-   --card-accent and inherit that to every card. Re-declaring it here re-resolves
-   var(--card-accent) against the per-card hue so the seam tracks the accent. */
+/* Re-declare --card-seam per accent so it resolves against the local card hue. */
 [data-accent='pink'] {
   --card-accent: var(--accent-pink);
   --card-accent-soft: var(--accent-pink-soft);
@@ -192,8 +214,6 @@
 }
 
 html {
-  /* Base color lives on <html> so the fixed Nebula (z-index: -1, child of
-     <body>) is not painted over by an opaque body background. */
   background-color: var(--bg-base);
 }
 
@@ -251,39 +271,7 @@ body {
   backdrop-filter: var(--glass-blur);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
-  border-radius: var(--r-lg);
-}
-
-.close-button-global {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background var(--transition-base),
-    border-color var(--transition-base);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
-  cursor: pointer;
-  outline: none;
-}
-
-.close-button-global:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--text-muted);
-  color: var(--text-primary);
-}
-
-.close-button-global:focus-visible {
-  outline: 2px solid var(--chrome-line);
-  outline-offset: 2px;
+  border-radius: var(--r-xl);
 }
 
 .algolia-attribution {
@@ -325,91 +313,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Single source of truth for every "leaves the site" button (header blog CTA,
-   about-page links, project "View source"). One class so the violet treatment
-   can't drift across copies. Layout deltas (margin, sizing) stay on the local
-   class that's composed alongside this one. */
-.cta-external {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 20px;
-  border-radius: var(--r-md);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.5px;
-  border: 1px solid var(--accent-violet-soft);
-  background: color-mix(in srgb, var(--accent-violet) 10%, transparent);
-  color: var(--text-primary);
-  text-decoration: none;
-  transition:
-    color var(--transition-base),
-    border-color var(--transition-base),
-    background var(--transition-base),
-    box-shadow var(--transition-base);
-}
-
-.cta-external:hover {
-  background: color-mix(in srgb, var(--accent-violet) 18%, transparent);
-  border-color: var(--accent-violet);
-  color: var(--text-primary);
-  box-shadow: 0 0 calc(24px * var(--glow)) var(--accent-violet-soft);
-}
-
-.cta-external:focus-visible {
-  outline: 2px solid hsl(var(--color-accent-purple));
-  outline-offset: 2px;
-}
-
-.card-header-badge {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--border-strong);
-  padding: 2px 8px;
-  border-radius: var(--r-sm);
-  text-transform: uppercase;
-}
-
-/* Badge inherits its card's accent hue (set on .cardLink) — color-codes
-   every category and distributes pink/teal/violet/gold across the grid. */
-.card-header-badge[data-category] {
-  color: var(--card-accent, var(--text-primary));
-  border-color: color-mix(in srgb, var(--card-accent, var(--border-strong)) 45%, transparent);
-}
-
-/* Flowing multi-neon gradient FILL (same motion as the hero word, but on
-   the pill background) with white text on top. text-shadow keeps the label
-   legible across the lighter teal stretch of the gradient. */
-.award-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 5px 12px;
-  background: var(--gradient-winner);
-  background-size: 200% 100%;
-  animation: gradientShimmer 9s linear infinite;
-  color: white;
-  border: none;
-  border-radius: var(--r-sm);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  /* Flat, same as the FABs: a soft drop shadow to lift it off the art plus
-     the brand glow — no inset lip, so the badge and buttons read as one
-     system. */
-  box-shadow:
-    0 6px 22px -8px rgba(0, 0, 0, 0.7),
-    0 0 calc(16px * var(--glow)) color-mix(in srgb, var(--accent-teal) 30%, transparent);
-}
-
 /* Shared keyframe for all flowing multi-neon gradient animations
    (award badge, hero shimmer word). Lives here as a global so CSS
    modules can reference it by name without re-declaring. */
@@ -422,56 +325,113 @@ body {
   }
 }
 
-.award-badge-icon {
-  font-size: 0.8rem;
-  color: white;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .award-badge {
-    animation: none;
+/* Slow, flash-free drift for the background hue-washes. */
+@keyframes auroraDrift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(3%, -2%, 0) scale(1.06);
+  }
+  66% {
+    transform: translate3d(-2%, 3%, 0) scale(0.97);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
-.simple-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: auto;
+/* Status-dot pulse — shared by the header dot and card foot dots. */
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
 }
 
-.simple-tag {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  padding: 2px 8px;
-  background: var(--bg-elevated);
-  border-radius: var(--r-sm);
-  color: var(--text-muted);
-  border: 1px solid var(--border);
+/* The dot also cycles through the neon band as it pulses, so it blinks in
+   different colors instead of staying one teal. */
+@keyframes dotHue {
+  0%,
+  100% {
+    background-color: var(--accent-teal);
+    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
+  }
+  25% {
+    background-color: var(--accent-violet);
+    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-violet);
+  }
+  50% {
+    background-color: var(--accent-pink);
+    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-pink);
+  }
+  75% {
+    background-color: var(--accent-gold);
+    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-gold);
+  }
 }
 
-.tag-category {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  background: var(--accent-violet-soft);
-  color: var(--accent-violet);
-  border: 1px solid color-mix(in srgb, var(--accent-violet) 40%, transparent);
-  padding: 2px 8px;
-  border-radius: var(--r-sm);
-  text-transform: uppercase;
+/* Global pulse utility. CSS Modules scope animation-name, so a module that
+   references this keyframe never resolves it — every blinking dot uses this
+   one global class instead. Tune the pulse here, once. */
+.pulse-dot {
+  animation:
+    pulseDot 2.4s ease-in-out infinite,
+    dotHue 20s linear infinite;
 }
 
-.tag-level1 {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  padding: 1px 6px;
-  background: transparent;
-  color: var(--text-muted);
-  border-radius: var(--r-sm);
-  border: 1px solid var(--border);
-  font-weight: 500;
+/* Flowing gradient shimmer — same scoping problem as pulseDot, so these global
+   utilities own it. `.shimmer` animates an element's gradient (award badge);
+   `.shimmer-seam` animates a host's ::before gradient (winner card seams). */
+.shimmer {
+  animation: gradientShimmer 9s linear infinite;
+}
+.shimmer-seam::before {
+  animation: gradientShimmer 9s linear infinite;
+}
+
+/* The bat fills with a live gradient: each stop cycles the neon band on an
+   offset, so the colors flow across the icon instead of sitting static. */
+@keyframes batStopHue {
+  0%,
+  100% {
+    stop-color: var(--accent-teal);
+  }
+  25% {
+    stop-color: var(--accent-blue);
+  }
+  50% {
+    stop-color: var(--accent-violet);
+  }
+  75% {
+    stop-color: var(--accent-pink);
+  }
+}
+#batGradient stop {
+  animation: batStopHue 15s linear infinite;
+}
+#batGradient stop:nth-child(2) {
+  animation-delay: -3.75s;
+}
+#batGradient stop:nth-child(3) {
+  animation-delay: -7.5s;
+}
+#batGradient stop:nth-child(4) {
+  animation-delay: -11.25s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot,
+  .shimmer,
+  .shimmer-seam::before,
+  #batGradient stop {
+    animation: none;
+  }
 }
 
 a {
@@ -507,8 +467,8 @@ button {
    so equal-specificity rules lose — we must escalate to win. */
 .ais-Pagination-link--selected {
   background-color: transparent !important;
-  border-color: var(--accent-violet) !important;
-  color: var(--accent-violet) !important;
+  border-color: var(--chrome-line) !important;
+  color: var(--text-primary) !important;
 }
 
 ::selection {

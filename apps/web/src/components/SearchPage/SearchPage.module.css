@@ -1,18 +1,20 @@
 .container {
   position: relative;
   z-index: 5;
-  padding: 2.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 4rem;
+  padding: var(--section-gap) var(--page-gutter) 4rem;
 }
 
-/* ── Retrieve bar ── */
 .retrieve {
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 16px 20px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
-  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  background: rgba(16, 13, 23, 0.78);
+  box-shadow:
+    var(--shadow-fab),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
   cursor: text;
   transition:
     border-color var(--transition-base),
@@ -20,8 +22,10 @@
 }
 
 .retrieve:focus-within {
-  border-color: var(--text-muted);
-  box-shadow: 0 0 calc(22px * var(--glow)) rgba(255, 255, 255, 0.06);
+  border-color: color-mix(in srgb, var(--text-primary) 44%, transparent);
+  box-shadow:
+    var(--shadow-fab),
+    0 0 calc(18px * var(--glow)) color-mix(in srgb, var(--text-primary) 18%, transparent);
 }
 
 .retrievePrompt {
@@ -29,7 +33,7 @@
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 600;
-  color: var(--accent-teal);
+  color: var(--accent-violet);
 }
 
 .retrieveInput {
@@ -77,19 +81,18 @@
   height: 18px;
   padding: 0 4px;
   border-radius: 4px;
-  border: 1px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  background: rgba(39, 34, 57, 0.72);
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-secondary);
 }
 
-/* ── Filter bar (popover dropdowns) ── */
 .filterBar {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 18px;
   flex-wrap: wrap;
 }
 
@@ -98,50 +101,7 @@
 }
 
 .filterButton {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
-  padding: 7px 14px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.025);
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  cursor: pointer;
-  transition:
-    color var(--transition-base),
-    border-color var(--transition-base),
-    background var(--transition-base);
-}
-
-.filterButton:hover {
-  color: var(--text-primary);
-  border-color: var(--border-strong);
-  background: rgba(255, 255, 255, 0.045);
-}
-
-.filterButton:focus-visible {
-  outline: 2px solid var(--chrome-line);
-  outline-offset: 2px;
-}
-
-/* Active = subtle indicator dot + slightly lifted bg; text/border stay
-   neutral so the color cue belongs to the cards, not the chrome. */
-.filterButtonActive,
-.filterButtonActive:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--border-strong);
-  color: var(--text-primary);
-}
-
-.filterButtonActive::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-violet);
 }
 
 .filterCaret {
@@ -161,9 +121,9 @@
   max-height: 320px;
   overflow-y: auto;
   padding: 6px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border-strong);
-  background: var(--bg-elevated);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
   box-shadow: var(--shadow-deep);
   display: flex;
   flex-direction: column;
@@ -171,38 +131,11 @@
 }
 
 .filterOption {
-  display: flex;
+  width: 100%;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 10px;
-  border-radius: var(--r-sm);
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  cursor: pointer;
   text-align: left;
-  transition:
-    color var(--transition-base),
-    background var(--transition-base);
-}
-
-.filterOption:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.filterOption:focus-visible {
-  outline: 2px solid var(--chrome-line);
-  outline-offset: -2px;
-}
-
-.filterOptionActive,
-.filterOptionActive:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
 }
 
 .filterCount {
@@ -221,7 +154,7 @@
 .filterCheck {
   display: inline-block;
   width: 12px;
-  color: var(--accent-violet);
+  color: var(--chrome-line);
   font-weight: 700;
   font-size: 11px;
   text-align: center;
@@ -231,52 +164,20 @@
 .filterClearAll {
   /* Sits right after the last dropdown so it reads as part of the same
      group, separated only by the filterBar's gap. */
-  background: transparent;
-  border: none;
-  padding: 6px 10px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: color var(--transition-base);
+  white-space: nowrap;
 }
 
-.filterClearAll:hover {
-  color: var(--text-primary);
-}
-
-.filterClearAll:focus-visible {
-  outline: 2px solid var(--chrome-line);
-  outline-offset: 2px;
-  border-radius: var(--r-sm);
-}
-
-/* ── Section header ── */
-.sectionHeader {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 40px;
-}
-
-.sectionHeaderMeta {
+.searchStat {
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--text-muted);
   white-space: nowrap;
 }
 
-/* ── Results grid ── */
 .results {
   margin-top: 24px;
 }
 
-/* 6-column dense grid lets cards take thirds (span 2),
-   halves (span 3), or two-thirds (span 4); `dense` packs any
-   holes that span variation would otherwise leave behind. */
 .hitsList {
   list-style: none;
   margin: 0;
@@ -287,9 +188,6 @@
   gap: 16px;
 }
 
-/* Span lives in inline `style.gridColumn` on each li (set in ResultsGrid).
-   The 6-col cycle holds down to tablet width so the size variation
-   survives; only mobile flattens to a single column. */
 .hitsItem {
   display: flex;
 }
@@ -311,17 +209,20 @@
   color: var(--text-muted);
 }
 
-/* ── Algolia attribution row (under retrieve bar) ── */
 .retrieveAttribution {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 10px;
+  /* Match the search bar's inner padding so the stat lines up under
+     "retrieve>" and the credit under the right-hand meta. */
+  padding: 0 20px;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-muted);
 }
 
-/* ── Pagination ── */
 .pagination {
   margin-top: 32px;
   padding-top: 20px;
@@ -344,45 +245,11 @@
   display: inline-flex;
 }
 
+/* Equal-width cells so the active (primary) chip doesn't jump the row. */
 .paginationButton {
-  display: inline-grid;
-  place-items: center;
   min-width: 34px;
-  height: 34px;
-  padding: 0 10px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  cursor: pointer;
-  transition:
-    color var(--transition-base),
-    border-color var(--transition-base),
-    background var(--transition-base),
-    box-shadow var(--transition-base);
 }
 
-.paginationButton:hover:not(:disabled) {
-  color: var(--text-primary);
-  border-color: var(--text-muted);
-}
-
-/* Active = neutral lift + a soft accent outline (clean violet hue, ~half
-   strength) so the current page reads as active without a loud fill. */
-.paginationItemActive .paginationButton {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: color-mix(in srgb, var(--accent-violet) 50%, transparent);
-  color: var(--text-primary);
-}
-
-.paginationItemDisabled .paginationButton {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-/* ── Loading + error ── */
 .loadingIndicator {
   display: flex;
   align-items: center;

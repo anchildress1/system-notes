@@ -1,13 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import Portrait from './Portrait';
-
-vi.mock('next/image', () => ({
-  default: ({ src, alt, ...rest }: { src: string; alt: string }) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} {...rest} />
-  ),
-}));
 
 describe('Portrait', () => {
   it('renders the image with the given src and alt', () => {

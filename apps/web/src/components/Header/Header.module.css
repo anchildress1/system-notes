@@ -2,9 +2,9 @@
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  background: linear-gradient(180deg, rgba(8, 9, 12, 0.82) 0%, rgba(8, 9, 12, 0.55) 100%);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  background: linear-gradient(180deg, rgba(8, 7, 14, 0.9) 0%, rgba(8, 7, 14, 0.68) 100%);
   border-bottom: 1px solid var(--border);
 }
 
@@ -13,12 +13,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px 36px;
+  padding: 14px var(--page-gutter);
   width: 100%;
   position: relative;
 }
 
-/* ── Brand ── */
 .brand {
   display: flex;
   align-items: center;
@@ -36,8 +35,8 @@
   width: 36px;
   height: 36px;
   flex-shrink: 0;
-  border-radius: var(--r-md);
-  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-strong);
   overflow: hidden;
 }
 
@@ -45,7 +44,7 @@
   width: 36px;
   height: 36px;
   object-fit: cover;
-  border-radius: var(--r-md);
+  border-radius: var(--r-sm);
   display: block;
 }
 
@@ -73,7 +72,6 @@
   white-space: nowrap;
 }
 
-/* ── Nav ── */
 .nav {
   display: flex;
   align-items: center;
@@ -86,12 +84,10 @@
   font-size: 12px;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  padding: 8px 20px;
-  border-radius: var(--r-md);
-  /* Resting affordance: a visible chip (faint fill + border) so the items
-     read as tappable nav, not plain label text. */
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.025);
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  background: transparent;
   color: var(--text-secondary);
   text-decoration: none;
   display: flex;
@@ -103,92 +99,30 @@
   white-space: nowrap;
 }
 
+/* Unselected nav items follow the ghost treatment: borderless, brighten with a
+   faint glass fill on hover. The active item is the bordered surface pill. */
 .navLink:hover {
   color: var(--text-primary);
-  border-color: var(--accent-violet);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: transparent;
+  background: var(--glass-bg);
 }
 
-/* Active state: neutral text on subtle lift + a small violet indicator dot.
-   Matches the filter button pattern — color belongs to data, not chrome. */
 .navLink.active {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.045);
-  padding-left: 22px;
+  background: var(--surface-active);
+  border-color: var(--border-strong);
+  padding-left: 14px;
 }
 
 .navLink.active::before {
-  content: '';
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 5px;
-  height: 5px;
-  background: var(--accent-violet);
-  border-radius: var(--r-pill);
+  content: none;
 }
 
-/* ── CTA Blog link ── */
-/* Visual treatment comes from the shared global `.cta-external`; this class
-   only carries the header-specific layout so the look can't drift. */
 .navCta {
   margin-left: 8px;
   white-space: nowrap;
 }
 
-.navCtaArrow {
-  opacity: 0.6;
-  transition:
-    color var(--transition-base),
-    opacity var(--transition-base);
-}
-
-/* Hover brings color in through the icon only — chrome stays neutral. */
-.navCta:hover .navCtaArrow {
-  color: var(--accent-violet);
-  opacity: 1;
-}
-
-/* ── Status pill ── */
-.status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 0.8px;
-  padding: 6px 12px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border-strong);
-  background: rgba(0, 0, 0, 0.3);
-  white-space: nowrap;
-}
-
-.statusDot {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--r-pill);
-  background: var(--accent-teal);
-  box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
-  animation: pulseDot 2.4s ease-in-out infinite;
-  flex-shrink: 0;
-}
-
-@keyframes pulseDot {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(0.85);
-  }
-}
-
-/* ── Skip Link ── */
 .skipLink {
   position: absolute;
   top: -200px;
@@ -212,7 +146,7 @@
 
 @media (max-width: 1024px) {
   .row {
-    padding: 12px 24px;
+    padding: 12px var(--page-gutter);
   }
 
   .status {
@@ -236,11 +170,23 @@
 }
 
 @media (max-width: 520px) {
+  .brand {
+    gap: 8px;
+  }
+
   .brandSub {
     display: none;
   }
 
+  .brandTitle {
+    font-size: 11px;
+  }
+
   .nav {
     gap: 2px;
+  }
+
+  .navLink {
+    padding: 7px 8px;
   }
 }

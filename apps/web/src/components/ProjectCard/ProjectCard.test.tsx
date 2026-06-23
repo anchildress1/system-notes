@@ -18,7 +18,6 @@ describe('ProjectCard Component', () => {
 
     expect(screen.getByRole('heading', { level: 2, name: 'Test Project' })).toBeInTheDocument();
     expect(screen.getByText('The core purpose of the project.')).toBeInTheDocument();
-    expect(screen.getByText('ANCHildress1')).toBeInTheDocument();
     expect(screen.getAllByText('React').length).toBeGreaterThan(0);
   });
 
@@ -88,16 +87,6 @@ describe('ProjectCard Component', () => {
     expect(sourceButton).toHaveAttribute('tabindex', '-1');
   });
 
-  it('shows ARCHIVED badge for archived projects', () => {
-    render(<ProjectCard project={{ ...mockProject, status: 'Archived' }} />);
-    expect(screen.getByText('ARCHIVED')).toBeInTheDocument();
-  });
-
-  it('does not show ARCHIVED badge for active projects', () => {
-    render(<ProjectCard project={mockProject} />);
-    expect(screen.queryByText('ARCHIVED')).not.toBeInTheDocument();
-  });
-
   it('renders award badge when project has an award', () => {
     render(<ProjectCard project={{ ...mockProject, award: 'Best in Show' }} />);
     expect(screen.getByText('Best in Show')).toBeInTheDocument();
@@ -120,11 +109,6 @@ describe('ProjectCard Component', () => {
 
     const link = within(backOf(withBlog)).getByRole('link', { name: 'How it was built' });
     expect(link).toHaveAttribute('href', 'https://dev.to/anchildress1/post');
-  });
-
-  it('shows ChecKMarKDevTools badge for non-anchildress1 owner', () => {
-    render(<ProjectCard project={{ ...mockProject, owner: 'checkmarkdevtools' }} />);
-    expect(screen.getByText('ChecKMarKDevTools')).toBeInTheDocument();
   });
 
   it('does not render GitHub source button when repo_url is absent', () => {

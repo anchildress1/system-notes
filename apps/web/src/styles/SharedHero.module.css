@@ -1,24 +1,41 @@
 .hero {
   position: relative;
-  padding: 2.5rem max(2rem, calc((100% - 1440px) / 2 + 2rem)) 2.25rem;
+  padding: 3.5rem var(--page-gutter) 3rem;
   border-bottom: 1px solid var(--border);
   overflow: hidden;
   user-select: none;
   cursor: default;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      760px 420px at 18% 30%,
+      color-mix(in srgb, var(--accent-pink) 3%, transparent),
+      transparent 74%
+    ),
+    radial-gradient(
+      840px 460px at 84% 36%,
+      color-mix(in srgb, var(--accent-violet) 3%, transparent),
+      transparent 78%
+    ),
+    linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--accent-pink) 1%, transparent) 0%,
+      transparent 46%,
+      color-mix(in srgb, var(--accent-violet) 1.5%, transparent) 100%
+    ),
+    var(--bg-base);
 }
 
 .title {
   font-family: var(--font-display);
-  /* Display cap. The full-band title column keeps the longest headline's first
-     phrase on one line, so this just bounds the size on very wide screens. */
   font-size: clamp(2.75rem, 5.2vw, 4.6rem);
   font-weight: 500;
   color: var(--text-primary);
   letter-spacing: -0.04em;
   line-height: 0.95;
   position: relative;
-  z-index: 10;
-  pointer-events: auto;
+  z-index: 3;
+  pointer-events: none;
   opacity: 1;
   visibility: visible;
   margin: 0;
@@ -35,22 +52,31 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  /* Fills the title column (full band on non-aside pages) so the headline has
-     room to keep its first phrase on one line. */
   width: 100%;
   position: relative;
+  z-index: 1;
 }
 
 .glitterTrigger {
-  display: block;
+  appearance: none;
   position: absolute;
   inset: 0;
-  z-index: 15;
-  background: transparent;
-  border: none;
-  cursor: default;
+  z-index: 1;
+  display: block;
+  width: 100%;
   padding: 0;
-  margin: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.glitterTrigger:hover,
+.glitterTrigger:focus-visible {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .textButton {
@@ -79,10 +105,17 @@
   position: relative;
   z-index: 10;
   text-wrap: balance;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
   .hero {
-    padding: 3rem 1.5rem 2rem;
+    padding: 3rem var(--page-gutter) 2.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .subtitle {
+    font-size: 0.85rem;
   }
 }

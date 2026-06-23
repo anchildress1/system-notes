@@ -4,9 +4,12 @@
    chat margin + toggle width (60px) + gap (16px). z-index clears the chat so
    the hover panel stays visible while the chat window is open. */
 .playerWrapper {
+  --dock-margin: clamp(1rem, 3vw, 2rem);
+  --dock-size: clamp(52px, 4vw, 60px);
+  --dock-gap: 12px;
   position: fixed;
-  bottom: 5rem;
-  right: calc(5rem + 60px + 16px);
+  bottom: calc(env(safe-area-inset-bottom) + var(--dock-margin));
+  right: calc(var(--dock-margin) + var(--dock-size) + var(--dock-gap));
   z-index: 1100;
   display: flex;
   flex-direction: column;
@@ -14,27 +17,25 @@
   gap: 4px;
 }
 
-/* ── FAB Play Button ── */
-/* Filled neon-pink circle, white icon. A deliberate action-color burst —
-   one of the few colored elements on an otherwise monochrome surface. */
 .playButton {
-  width: 60px;
-  height: 60px;
-  border-radius: 99px;
-  background: var(--accent-pink);
-  border: none;
-  color: white;
+  width: var(--dock-size);
+  height: var(--dock-size);
+  border-radius: var(--r-pill);
+  background: var(--surface-raised);
+  border: 1px solid var(--action-border);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition:
-    transform var(--transition-base),
     background var(--transition-base),
+    border-color var(--transition-base),
+    transform var(--transition-base),
     box-shadow var(--transition-base);
   box-shadow:
-    0 6px 22px -8px rgba(0, 0, 0, 0.7),
-    0 0 calc(18px * var(--glow)) var(--accent-pink-soft);
+    var(--action-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   position: relative;
   z-index: 2;
   pointer-events: auto;
@@ -42,16 +43,26 @@
 
 .playButton:hover {
   transform: translateY(-2px);
-  background: color-mix(in srgb, var(--accent-pink) 85%, white);
+  background: var(--surface-raised-hover);
+  border-color: var(--action-border-hover);
   box-shadow:
-    0 8px 26px -8px rgba(0, 0, 0, 0.75),
-    0 0 calc(24px * var(--glow)) var(--accent-pink-soft);
+    var(--action-shadow-hover),
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
 }
 
 .active {
+  background: color-mix(in srgb, var(--surface-raised-hover) 78%, var(--accent-teal) 10%);
+  border-color: color-mix(in srgb, var(--accent-teal) 52%, var(--action-border));
+  color: var(--text-primary);
   box-shadow:
-    0 6px 22px -8px rgba(0, 0, 0, 0.7),
-    0 0 calc(22px * var(--glow)) var(--accent-pink-soft);
+    var(--action-shadow-hover),
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playButton:hover {
+    transform: none;
+  }
 }
 
 .buttonLabel {
@@ -74,22 +85,21 @@
   z-index: 3;
 }
 
-/* ── Expanded Panel (hover-revealed) ── */
 .panel {
   position: absolute;
   bottom: calc(100% + 12px);
   right: 0;
-  width: 280px;
-  background: var(--bg-elevated);
+  width: min(280px, calc(100vw - 2rem));
+  background: var(--surface-raised);
   border: 1px solid var(--border-strong);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-md);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   box-shadow:
-    0 20px 60px -20px rgba(0, 0, 0, 0.8),
-    0 0 calc(40px * var(--glow)) rgba(181, 107, 255, 0.12);
+    0 20px 60px -22px rgba(0, 0, 0, 0.82),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
   pointer-events: none;
   opacity: 0;
   transform: translateY(6px);
@@ -164,7 +174,6 @@
   text-transform: uppercase;
 }
 
-/* ── Waveform ── */
 .waveform {
   display: flex;
   align-items: flex-end;
@@ -180,30 +189,29 @@
   transform-origin: bottom;
 }
 
-/* Cycle through pink → violet → teal across 7 bars */
+/* Trace the Aurora band across the 7 bars: pink → violet → indigo → teal. */
 .bar:nth-child(1) {
   background: var(--accent-pink);
 }
 .bar:nth-child(2) {
-  background: color-mix(in srgb, var(--accent-pink) 60%, var(--accent-violet));
+  background: color-mix(in srgb, var(--accent-pink) 55%, var(--accent-violet));
 }
 .bar:nth-child(3) {
   background: var(--accent-violet);
 }
 .bar:nth-child(4) {
-  background: color-mix(in srgb, var(--accent-violet) 50%, var(--accent-teal));
+  background: color-mix(in srgb, var(--accent-violet) 50%, var(--accent-blue));
 }
 .bar:nth-child(5) {
-  background: var(--accent-teal);
+  background: var(--accent-blue);
 }
 .bar:nth-child(6) {
-  background: color-mix(in srgb, var(--accent-teal) 60%, var(--accent-violet));
+  background: color-mix(in srgb, var(--accent-blue) 55%, var(--accent-teal));
 }
 .bar:nth-child(7) {
-  background: var(--accent-violet);
+  background: var(--accent-teal);
 }
 
-/* Each bar gets a distinct random-feeling height pattern */
 .barActive {
   animation-duration: 0.9s;
   animation-iteration-count: infinite;
@@ -311,7 +319,6 @@
   }
 }
 
-/* ── Progress ── */
 .progressSection {
   display: flex;
   flex-direction: column;
@@ -356,5 +363,13 @@
 @media (prefers-reduced-motion: reduce) {
   .barActive {
     animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .playerWrapper {
+    --dock-margin: 1rem;
+    --dock-size: 52px;
+    --dock-gap: 10px;
   }
 }

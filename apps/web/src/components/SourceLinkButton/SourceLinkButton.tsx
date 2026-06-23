@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, ReactNode } from 'react';
-import styles from './SourceLinkButton.module.css';
+import Button from '@/components/Button/Button';
 
 interface SourceLinkButtonProps {
   url: string;
@@ -19,7 +19,7 @@ export default memo(
     onClick,
     tabIndex,
   }: Readonly<SourceLinkButtonProps>) {
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -31,15 +31,9 @@ export default memo(
     };
 
     return (
-      <button
-        type="button"
-        className={styles.sourceLink}
-        onClick={handleClick}
-        aria-label={label}
-        tabIndex={tabIndex}
-      >
+      <Button variant="icon" ariaLabel={label} onClick={handleClick} tabIndex={tabIndex}>
         {icon}
-      </button>
+      </Button>
     );
   },
   (prev, next) =>

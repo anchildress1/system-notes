@@ -156,7 +156,14 @@ test.describe('Search Page', () => {
     await mockAlgoliaSearch(page, [buildHit()]);
     await page.goto('/search');
 
-    await page.getByRole('button', { name: /project filter, no selection/i }).click();
+    const projectFilter = page.getByRole('button', { name: /project filter, no selection/i });
+    const inactiveBorder = await projectFilter.evaluate(
+      (node) => getComputedStyle(node).borderColor
+    );
+    expect(inactiveBorder).not.toContain('181, 101, 245');
+    expect(inactiveBorder).not.toContain('0.709804');
+
+    await projectFilter.click();
     const projectOptions = page.getByRole('group', { name: /project filter options/i });
     await expect(projectOptions).toBeVisible();
     await expect(projectOptions.getByRole('button', { name: /all/i })).toBeFocused();
@@ -165,6 +172,11 @@ test.describe('Search Page', () => {
     await page.keyboard.press('Enter');
 
     await expect(page.getByRole('button', { name: /project filter, 1 selected/i })).toBeVisible();
+    const activeBorder = await page
+      .getByRole('button', { name: /project filter, 1 selected/i })
+      .evaluate((node) => getComputedStyle(node).borderColor);
+    expect(activeBorder).not.toContain('181, 101, 245');
+    expect(activeBorder).not.toContain('0.709804');
 
     await page.keyboard.press('Escape');
     await page.getByRole('button', { name: /Clear all active filters/i }).click();

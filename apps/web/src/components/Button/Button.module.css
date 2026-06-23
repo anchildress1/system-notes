@@ -1,0 +1,165 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--transition-base),
+    border-color var(--transition-base),
+    background var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--chrome-line);
+  outline-offset: 3px;
+}
+
+.btn[data-size='sm'] {
+  padding: 6px 14px;
+  font-size: 11px;
+}
+.btn[data-size='md'] {
+  padding: 8px 20px;
+  font-size: 12px;
+}
+.btn[data-size='lg'] {
+  padding: 11px 26px;
+  font-size: 13px;
+}
+
+.btn[data-variant='primary'] {
+  position: relative;
+  overflow: hidden;
+  background: var(--action-primary-bg);
+  border-color: color-mix(in srgb, white 86%, transparent);
+  color: var(--action-primary-text);
+  box-shadow:
+    var(--action-shadow),
+    0 1px 0 rgba(255, 255, 255, 0.72) inset;
+}
+
+/* Aurora spectral sheen on the white primary (Direction B). */
+.btn[data-variant='primary']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-brand);
+  opacity: 0.16;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.btn[data-variant='primary']:hover:not(:disabled) {
+  background: var(--action-primary-bg-hover);
+  border-color: white;
+  box-shadow:
+    var(--action-shadow-hover),
+    0 1px 0 rgba(255, 255, 255, 0.82) inset;
+  transform: translateY(-1px);
+}
+
+.btn[data-variant='secondary'] {
+  background: transparent;
+  border-color: var(--action-border);
+  color: var(--text-primary);
+}
+.btn[data-variant='secondary']:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--bg-input) 58%, transparent);
+  border-color: var(--action-border-hover);
+}
+
+/* Quiet, borderless tertiary — the "unselected" treatment. Brightens and
+   picks up a faint fill on hover. */
+.btn[data-variant='ghost'] {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+.btn[data-variant='ghost']:hover:not(:disabled) {
+  background: var(--glass-bg);
+  border-color: transparent;
+  color: var(--text-primary);
+}
+
+.btn[data-variant='fab'] {
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border-radius: var(--r-pill);
+  text-transform: none;
+  font-size: 20px;
+  background: var(--surface-raised);
+  border: 1px solid var(--action-border);
+  color: var(--text-primary);
+  box-shadow:
+    var(--action-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+/* Hover like the card close buttons (icon variant): the surface lifts a touch,
+   it never flips to a harsh white. */
+.btn[data-variant='fab']:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: var(--surface-raised-hover);
+  border-color: var(--action-border-hover);
+  box-shadow:
+    var(--action-shadow-hover),
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
+}
+
+.btn[data-variant='icon'] {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+  text-transform: none;
+  font-size: 1rem;
+}
+.btn[data-variant='icon']:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--text-muted);
+  color: var(--text-primary);
+}
+
+/* Shared selected / current state — same raised-pill language as the active
+   nav item, so "you are here" reads identically on any button (e.g. the
+   current pagination page). Declared after the variants so it wins. */
+.btn[data-state='active'] {
+  background: var(--surface-active);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.iconLeft {
+  display: inline-flex;
+  font-size: 1.1em;
+}
+.iconRight {
+  display: inline-flex;
+  opacity: 0.6;
+  font-size: 1.05em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn[data-variant='primary']:hover:not(:disabled),
+  .btn[data-variant='fab']:hover:not(:disabled) {
+    transform: none;
+  }
+}

@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0  # Required by SonarCloud for full blame/new-code analysis
 
@@ -53,6 +53,7 @@ jobs:
 
       - name: SonarQube Scan
         if: env.SONAR_TOKEN != ''
+        # nosemgrep: generic.secrets.security.detected-sonarqube-docs-api-key.detected-sonarqube-docs-api-key -- false positive: this is a pinned GitHub Action commit SHA, not a secret
         uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

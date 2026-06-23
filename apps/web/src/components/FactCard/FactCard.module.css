@@ -18,7 +18,7 @@
    radius stays here only so the hover box-shadow is rounded. */
 .card {
   position: relative;
-  border-radius: var(--r-lg);
+  border-radius: var(--r-xl);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -31,7 +31,7 @@
 
 .card:hover {
   box-shadow:
-    0 0 calc(12px * var(--glow)) var(--card-accent-soft),
+    0 0 calc(18px * var(--glow)) var(--card-accent-soft),
     var(--shadow-card);
   transform: translateY(-2px);
 }
@@ -41,36 +41,33 @@
   border-color: color-mix(in srgb, var(--card-accent) 45%, var(--border-strong));
 }
 
-/* Accent seam across the top of each face, clipped to the rounded corners. */
-.cardFront::before,
+/* Back-face accent seam (front seam comes from the shared card.module.css). */
 .cardBack::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
+  height: var(--seam-width);
   background: var(--card-seam);
   z-index: 3;
   pointer-events: none;
 }
 
 .flipButton {
+  appearance: none;
   position: absolute;
   inset: 0;
   z-index: 1;
   width: 100%;
   height: 100%;
+  margin: 0;
   padding: 0;
-  border: 0;
   border-radius: inherit;
   background: transparent;
+  border: 0;
+  box-shadow: none;
   cursor: pointer;
-}
-
-.flipButton:focus-visible {
-  outline: 2px solid var(--card-accent);
-  outline-offset: 4px;
 }
 
 .cardLink[data-size='half'] .title,
@@ -82,16 +79,11 @@
   -webkit-line-clamp: 5;
 }
 
-.cardLink[data-size='two-thirds'] .cardFront,
-.cardLink[data-size='two-thirds'] .cardBack {
-  background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(8, 9, 12, 0.6) 100%);
-  border-color: var(--card-accent-soft);
-}
-
-/* The big cards wear the same gradient as the build-page winner badges. */
-.cardLink[data-size='two-thirds'] .cardFront::before,
+/* Featured (two-thirds) back face: same seam as every card, gradient color
+   only (the front gets it via the shared .winnerBanner class). */
 .cardLink[data-size='two-thirds'] .cardBack::before {
-  background: var(--gradient-winner);
+  background: var(--gradient-brand);
+  background-size: 200% 100%;
 }
 
 .cardLink[data-size='two-thirds'] .description {
@@ -124,18 +116,18 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
   background-size: 20px 20px;
   z-index: 1;
 }
 
 .content {
-  padding: var(--space-sm);
+  padding: 24px 26px 26px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .cardMetaRow {
@@ -143,7 +135,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.8rem;
 }
 
 .metaLeft {
@@ -157,8 +149,8 @@
 .cardDate {
   font-family: var(--font-mono);
   font-size: 0.62rem;
-  color: var(--text-dim);
-  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
   white-space: nowrap;
 }
 
@@ -179,16 +171,16 @@
 .factCounter {
   font-family: var(--font-mono);
   font-size: 0.62rem;
-  color: var(--text-muted);
-  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .nodeType {
   font-family: var(--font-mono);
   font-size: 0.62rem;
-  color: var(--text-muted);
-  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  letter-spacing: 0.12em;
   margin-top: auto;
   padding-top: 0.6rem;
   border-top: 1px solid var(--border);
@@ -197,36 +189,16 @@
 .title {
   font-family: var(--font-display);
   font-size: 1.35rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--ink);
   line-height: 1.25;
   margin-bottom: 0.25rem;
 }
 
-.ghLink {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--r-sm);
-  background: transparent;
-  color: var(--text-muted);
-  transition: all var(--transition-base);
-  z-index: 2;
-  border: 1px solid var(--border);
-}
-
-.ghLink:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--text-muted);
-  color: var(--text-primary);
-}
-
 .description {
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  color: var(--ink-3);
+  color: var(--text-secondary);
   margin-bottom: var(--space-md);
   line-height: 1.5;
   flex-grow: 1;
@@ -241,7 +213,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--text-primary);
   margin-bottom: 0.2rem;
   letter-spacing: 0.1em;
 }
@@ -269,15 +241,13 @@
 
 /* Front is the height dictator — in flow, drives the card's intrinsic size.
    The .card itself owns the bg/border; faces are transparent content layers. */
+/* Surface + accent/winner seam come from the shared card.module.css (.face +
+   .seam/.winnerBanner) applied in JSX. */
 .cardFront {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  background: var(--card-surface);
-  border: 1px solid var(--border);
-  border-radius: inherit;
-  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   text-align: left;
@@ -315,14 +285,14 @@
 }
 
 .cardBack:focus-visible {
-  outline: 2px solid var(--card-accent);
+  outline: 2px solid var(--chrome-line);
   outline-offset: -2px;
 }
 
 .backContent {
   flex: 1;
   overflow-y: auto;
-  padding: 1.25rem 1.5rem;
+  padding: 1.5rem 1.6rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -334,7 +304,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .backBody {
@@ -362,6 +332,14 @@
   color: var(--text-muted);
   letter-spacing: 0.06em;
   text-transform: lowercase;
+}
+
+/* Tag row — pushed to the card bottom; chips come from the Tag primitive. */
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {

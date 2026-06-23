@@ -20,6 +20,7 @@ export interface Project {
   outcome: string;
   tech: TechItem[];
   repo_url?: string;
+  app_url?: string;
   image_url?: string;
   image_alt?: string;
   owner: string;
@@ -45,6 +46,7 @@ function parseProject(item: RawProject): Project {
     outcome: str(item['outcome']) ?? '',
     tech: (item['tech'] as TechItem[]) ?? [],
     repo_url: str(item['repo_url']),
+    app_url: str(item['app_url']),
     image_url: str(item['image_url']),
     image_alt: str(item['image_alt']),
     owner: str(item['owner']) ?? '',

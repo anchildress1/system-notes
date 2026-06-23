@@ -15,7 +15,6 @@ export default async function Projects() {
   return (
     <main className={styles.main} id="main-content">
       <Hero
-        kicker="CWD · /sys/builds"
         title="Things I built and broke."
         titleAccent="I"
         accentWord="shipped."

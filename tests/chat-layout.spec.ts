@@ -48,4 +48,58 @@ test.describe('AIChat Visual Layout', () => {
       expect(hasVar).toBe(true);
     }
   });
+
+  test('music and chat toggles share the neutral utility treatment', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+
+    const musicToggle = page.getByTestId('play-button');
+    await expect(musicToggle).toBeVisible();
+
+    const chatToggle = page.getByTestId('ai-chat-toggle');
+    const chatVisible = await chatToggle.isVisible().catch(() => false);
+    if (!chatVisible) return;
+
+    const [musicStyles, chatStyles] = await Promise.all(
+      [musicToggle, chatToggle].map((locator) =>
+        locator.evaluate((node) => {
+          const styles = getComputedStyle(node);
+          return {
+            background: styles.backgroundImage,
+            backgroundColor: styles.backgroundColor,
+            borderColor: styles.borderColor,
+          };
+        })
+      )
+    );
+
+    expect(musicStyles.background).toBe('none');
+    expect(chatStyles.background).toBe('none');
+    expect(musicStyles.backgroundColor).toBe(chatStyles.backgroundColor);
+    expect(musicStyles.borderColor).toBe(chatStyles.borderColor);
+    expect(musicStyles.backgroundColor).not.toContain('185, 107, 255');
+    expect(musicStyles.backgroundColor).not.toContain('255, 95, 162');
+  });
+
+  test('open chat panel clears the fixed utility dock', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+
+    const chatToggle = page.getByTestId('ai-chat-toggle');
+    const chatVisible = await chatToggle.isVisible().catch(() => false);
+    if (!chatVisible) return;
+
+    await chatToggle.click();
+    const chatPanel = page.locator('.ais-Chat').first();
+    await expect(chatPanel).toBeVisible();
+
+    const [panelBox, toggleBox] = await Promise.all([
+      chatPanel.boundingBox(),
+      chatToggle.boundingBox(),
+    ]);
+
+    expect(panelBox).not.toBeNull();
+    expect(toggleBox).not.toBeNull();
+    expect(panelBox!.y + panelBox!.height).toBeLessThanOrEqual(toggleBox!.y - 8);
+  });
 });

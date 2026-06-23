@@ -3,48 +3,100 @@
    Algolia's chat.css reads these internally — no internal selectors targeted. */
 
 .chatDock {
-  --chat-dock-margin: 5rem;
+  --chat-dock-margin: clamp(1rem, 3vw, 2rem);
+  --chat-dock-size: clamp(52px, 4vw, 60px);
+  --chat-dock-gap: 16px;
   isolation: isolate;
   pointer-events: none;
+}
+
+/* The widget renders the overlay always-open; WE own visibility. Hide it until
+   the toggle FAB opens the chat. */
+.chatDock:not(.chatOpen) .chatRoot {
+  display: none;
 }
 
 /* ── Root: Algolia CSS custom properties ── */
 .chatRoot {
   --ais-chat-margin: var(--chat-dock-margin);
-  --ais-primary-color-rgb: 181, 107, 255;
-  --ais-background-color-rgb: 22, 24, 31;
-  --ais-text-color-rgb: 236, 237, 240;
-  --ais-muted-color-rgb: 107, 111, 125;
+  --ais-primary-color-rgb: 185, 107, 255;
+  --ais-background-color-rgb: 21, 19, 31;
+  --ais-text-color-rgb: 243, 240, 251;
+  --ais-muted-color-rgb: 134, 127, 155;
   --ais-border-color-rgb: 255, 255, 255;
   --ais-shadow-color-rgb: 0, 0, 0;
   --ais-border-radius-lg: var(--r-lg);
   --ais-shadow-md: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
+  bottom: calc(var(--chat-dock-margin) + var(--chat-dock-size) + var(--chat-dock-gap)) !important;
+  max-height: calc(
+    100% - var(--chat-dock-margin) - var(--chat-dock-margin) - var(--chat-dock-size) -
+      var(--chat-dock-gap)
+  ) !important;
 }
 
-/* ── Toggle button ── */
-/* Matches MusicPlayer .playButton — filled neon-violet circle, white icon.
-   A deliberate action-color burst. !important is required because Algolia's
-   chat widget ships its own button styles that win otherwise. */
+/* ── Toggle FAB (we render it; matches the MusicPlayer FAB exactly) ── */
 .chatToggle {
-  width: 60px !important;
-  height: 60px !important;
-  border-radius: 99px !important;
-  background: var(--accent-violet) !important;
-  border: none !important;
-  color: white !important;
+  --chat-dock-margin: clamp(1rem, 3vw, 2rem);
+  --chat-dock-size: clamp(52px, 4vw, 60px);
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + var(--chat-dock-margin));
+  right: var(--chat-dock-margin);
+  z-index: 1100;
+  width: var(--chat-dock-size);
+  height: var(--chat-dock-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--action-border);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  cursor: pointer;
+  pointer-events: auto;
   box-shadow:
-    0 6px 22px -8px rgba(0, 0, 0, 0.7),
-    0 0 calc(18px * var(--glow)) var(--accent-violet-soft) !important;
+    var(--action-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   transition:
-    transform var(--transition-base),
     background var(--transition-base),
-    box-shadow var(--transition-base) !important;
+    border-color var(--transition-base),
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .chatToggle:hover {
-  transform: translateY(-2px) !important;
-  background: color-mix(in srgb, var(--accent-violet) 85%, white) !important;
+  transform: translateY(-2px);
+  background: var(--surface-raised-hover);
+  border-color: var(--action-border-hover);
   box-shadow:
-    0 8px 26px -8px rgba(0, 0, 0, 0.75),
-    0 0 calc(24px * var(--glow)) var(--accent-violet-soft) !important;
+    var(--action-shadow-hover),
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
+}
+
+.chatToggle:focus-visible {
+  outline: 2px solid var(--chrome-line);
+  outline-offset: 4px;
+}
+
+.toggleIcon {
+  flex-shrink: 0;
+}
+
+/* Fill the bat with the shared chromatic gradient (CSS fill wins over the
+   icon's currentColor presentation attr). */
+.batGradient {
+  fill: url(#batGradient);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chatToggle:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .chatDock,
+  .chatToggle {
+    --chat-dock-margin: 1rem;
+    --chat-dock-size: 52px;
+  }
 }

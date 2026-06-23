@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import Button from '@/components/Button/Button';
+import StatusPill from '@/components/StatusPill/StatusPill';
 import styles from './Header.module.css';
 
 const NAV_ITEMS = [
@@ -45,7 +47,7 @@ export default function Header() {
           <div className={styles.brandText}>
             <span className={styles.brandTitle}>Ashley Childress</span>
             <span className={styles.brandSub} aria-hidden="true">
-              SYS_NOTES · v2.0.26
+              SYS_NOTES · v2.1.26
             </span>
           </div>
         </Link>
@@ -60,22 +62,20 @@ export default function Header() {
               {label}
             </Link>
           ))}
-          <a
+          <Button
+            variant="primary"
+            size="md"
             href="https://dev.to/anchildress1"
             target="_blank"
-            rel="noopener noreferrer"
-            data-testid="blog-link"
-            className={`cta-external ${styles.navCta}`}
+            dataTestId="blog-link"
+            className={styles.navCta}
+            iconRight={<span aria-hidden="true">↗</span>}
           >
-            <span>$ read --blog</span>
-            <span className={styles.navCtaArrow}>↗</span>
-          </a>
+            $ read --blog
+          </Button>
         </nav>
 
-        <div className={styles.status}>
-          <span className={styles.statusDot} aria-hidden="true" />
-          <span>SYS · {statusPath}</span>
-        </div>
+        <StatusPill className={styles.status}>SYS · {statusPath}</StatusPill>
       </div>
     </header>
   );
