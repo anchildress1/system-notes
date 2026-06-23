@@ -28,7 +28,6 @@ export default function ProjectCard({
   position = 1,
 }: Readonly<ProjectCardProps>) {
   const accent = accentForPosition(position);
-  const ownerName = project.owner === 'anchildress1' ? 'ANCHildress1' : 'ChecKMarKDevTools';
   const isRetired = /archiv|retire|scrap/i.test(project.status);
   const [isFlipped, setIsFlipped] = useState(false);
   const backId = useId();
@@ -133,7 +132,6 @@ export default function ProjectCard({
 
             <div className={styles.content}>
               <div className={styles.headerTop}>
-                <Badge variant="neutral">{ownerName}</Badge>
                 {project.repo_url && (
                   <span className={styles.sourceLinkRaise}>
                     <SourceLinkButton
