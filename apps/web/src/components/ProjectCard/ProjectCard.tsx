@@ -164,7 +164,9 @@ export default function ProjectCard({
 
               <div className={styles.foot}>
                 <span className={styles.footState}>
-                  <span className={`${styles.footDot} ${isRetired ? styles.footDotRetired : ''}`} />
+                  <span
+                    className={`${styles.footDot} ${isRetired ? styles.footDotRetired : 'pulse-dot'}`}
+                  />
                   {project.status}
                 </span>
                 <span className={styles.footRead} aria-hidden="true">
