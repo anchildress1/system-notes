@@ -9,6 +9,9 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   width: 100%;
+  /* Breathing room above the first row so the card seams/hover lift aren't
+     flush against whatever sits above the grid. */
+  margin-top: var(--space-xs);
 }
 
 @media (max-width: 1024px) {
