@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useRef, type ReactNode } from 'react';
-import type { KeyboardEvent, MouseEvent } from 'react';
+import { useEffect, useRef, type ReactNode, type KeyboardEvent, type MouseEvent } from 'react';
 import Kicker from '@/components/Kicker/Kicker';
 import styles from './Hero.module.css';
 

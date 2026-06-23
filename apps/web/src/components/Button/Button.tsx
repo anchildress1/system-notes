@@ -35,18 +35,18 @@ interface ButtonProps {
   ariaLabel?: string;
   ariaExpanded?: boolean;
   ariaPressed?: boolean;
-  ariaCurrent?: AriaAttributes['aria-current'];
+  ariaCurrent?: NonNullable<AriaAttributes['aria-current']>;
   ariaControls?: string;
-  ariaHaspopup?: AriaAttributes['aria-haspopup'];
+  ariaHaspopup?: NonNullable<AriaAttributes['aria-haspopup']>;
   dataState?: string;
   dataTestId?: string;
   tabIndex?: number;
   'aria-label'?: string;
   'aria-expanded'?: boolean;
   'aria-pressed'?: boolean;
-  'aria-current'?: AriaAttributes['aria-current'];
+  'aria-current'?: NonNullable<AriaAttributes['aria-current']>;
   'aria-controls'?: string;
-  'aria-haspopup'?: AriaAttributes['aria-haspopup'];
+  'aria-haspopup'?: NonNullable<AriaAttributes['aria-haspopup']>;
   'data-state'?: string;
   'data-testid'?: string;
 }

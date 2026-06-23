@@ -130,7 +130,7 @@ describe('MusicPlayer', () => {
     expect(consoleSpy).toHaveBeenCalledWith('Audio element error:', {
       code: undefined,
       message: undefined,
-      src: 'http://localhost:3000/audio/twisted-game-songs-i-build-things.mp3',
+      src: expect.stringContaining('/audio/twisted-game-songs-i-build-things.mp3'),
     });
   });
 

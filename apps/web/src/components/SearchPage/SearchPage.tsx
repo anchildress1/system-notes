@@ -320,6 +320,10 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
     }
   };
 
+  let filterState: 'open' | 'active' | undefined;
+  if (open) filterState = 'open';
+  else if (selectedCount > 0) filterState = 'active';
+
   return (
     <div ref={rootRef} className={styles.filterDropdown}>
       <Button
@@ -327,7 +331,7 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
         className={styles.filterButton}
         variant="secondary"
         size="sm"
-        data-state={open ? 'open' : selectedCount > 0 ? 'active' : undefined}
+        data-state={filterState}
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="true"

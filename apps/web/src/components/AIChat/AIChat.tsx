@@ -12,7 +12,7 @@ import {
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { Chat, SearchIndexToolType, RecommendToolType } from 'react-instantsearch';
+import { Chat, SearchIndexToolType, RecommendToolType, type ChatHandle } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import 'instantsearch.css/themes/satellite.css';
 import 'instantsearch.css/components/chat.css';
@@ -139,9 +139,8 @@ export default function AIChat() {
   const [open, setOpen] = useState(false);
   // The Chat widget owns its open state internally and only exposes it through
   // the imperative ChatHandle ref (no controlled `open` prop). Its handle type
-  // isn't re-exported, so the ref is loosely typed.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const chatRef = useRef<any>(null);
+  // exposes setOpen (plus sendMessage/setInput) — we only drive setOpen.
+  const chatRef = useRef<ChatHandle | null>(null);
   const lastChatQuery = useRef<string | null>(null);
 
   const toggleChat = useCallback(() => {
