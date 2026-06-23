@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.1](https://github.com/anchildress1/system-notes/compare/v2.4.0...v2.4.1) (2026-06-23)
+
+
+### Bug Fixes
+
+* **deploy:** set NEXT_PUBLIC_* as Cloud Run runtime env vars ([#86](https://github.com/anchildress1/system-notes/issues/86)) ([cdf11f7](https://github.com/anchildress1/system-notes/commit/cdf11f75036b5f150cf6828daadca77bf9e97bbf))
+* **docker:** writable .next/cache for next/image optimization ([#85](https://github.com/anchildress1/system-notes/issues/85)) ([0bcef3a](https://github.com/anchildress1/system-notes/commit/0bcef3a3c000bb19f68a3c1d5995f2abd71cb4ce))
+
 ## [2.4.0](https://github.com/anchildress1/system-notes/compare/v2.3.0...v2.4.0) (2026-06-23)
 
 
