@@ -149,9 +149,7 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
                   {createdLabel && <span className={styles.cardDate}>{createdLabel}</span>}
                 </span>
                 <div className={styles.cardMetaRight}>
-                  <Badge variant="accent" accent={variant.accent}>
-                    {categoryLabel}
-                  </Badge>
+                  <Badge variant="neutral">{categoryLabel}</Badge>
                   {hit.url && (
                     <SourceLinkButton
                       url={hit.url}
