@@ -216,10 +216,10 @@
 .awardSlot {
   position: absolute;
   top: 14px;
-  left: 14px;
+  right: 14px;
   max-width: calc(100% - 28px);
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 .placeholderArt {
