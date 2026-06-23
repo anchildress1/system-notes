@@ -215,6 +215,9 @@
   justify-content: space-between;
   gap: 16px;
   margin-top: 10px;
+  /* Match the search bar's inner padding so the stat lines up under
+     "retrieve>" and the credit under the right-hand meta. */
+  padding: 0 20px;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-muted);
