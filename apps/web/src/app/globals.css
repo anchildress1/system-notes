@@ -359,11 +359,35 @@ body {
   }
 }
 
+/* The dot also cycles through the neon band as it pulses, so it blinks in
+   different colors instead of staying one teal. */
+@keyframes dotHue {
+  0%,
+  100% {
+    background-color: var(--accent-teal);
+    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
+  }
+  25% {
+    background-color: var(--accent-violet);
+    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-violet);
+  }
+  50% {
+    background-color: var(--accent-pink);
+    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-pink);
+  }
+  75% {
+    background-color: var(--accent-gold);
+    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-gold);
+  }
+}
+
 /* Global pulse utility. CSS Modules scope animation-name, so a module that
    references this keyframe never resolves it — every blinking dot uses this
    one global class instead. Tune the pulse here, once. */
 .pulse-dot {
-  animation: pulseDot 2.4s ease-in-out infinite;
+  animation:
+    pulseDot 2.4s ease-in-out infinite,
+    dotHue 9s linear infinite;
 }
 
 /* Flowing gradient shimmer — same scoping problem as pulseDot, so these global
@@ -376,10 +400,41 @@ body {
   animation: gradientShimmer 9s linear infinite;
 }
 
+/* The bat fills with a live gradient: each stop cycles the neon band on an
+   offset, so the colors flow across the icon instead of sitting static. */
+@keyframes batStopHue {
+  0%,
+  100% {
+    stop-color: var(--accent-teal);
+  }
+  25% {
+    stop-color: var(--accent-blue);
+  }
+  50% {
+    stop-color: var(--accent-violet);
+  }
+  75% {
+    stop-color: var(--accent-pink);
+  }
+}
+#batGradient stop {
+  animation: batStopHue 6s linear infinite;
+}
+#batGradient stop:nth-child(2) {
+  animation-delay: -1.5s;
+}
+#batGradient stop:nth-child(3) {
+  animation-delay: -3s;
+}
+#batGradient stop:nth-child(4) {
+  animation-delay: -4.5s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pulse-dot,
   .shimmer,
-  .shimmer-seam::before {
+  .shimmer-seam::before,
+  #batGradient stop {
     animation: none;
   }
 }
