@@ -286,7 +286,19 @@ deploy_service() {
 # Execution
 # ==========================================
 
-deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "" "apps/web/Dockerfile"
+# Surface the public NEXT_PUBLIC_* config as Cloud Run runtime env vars too.
+# They're already inlined into the client bundle at build time (via cloudbuild
+# build args), so this is for visibility in the console and any server-side
+# runtime reads. All NEXT_PUBLIC_* values are public/safe to embed.
+UI_ENV_VARS="NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}"
+UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}"
+UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_AGENT_ID=${NEXT_PUBLIC_ALGOLIA_AGENT_ID}"
+UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=${NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID}"
+UI_ENV_VARS+=",NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}"
+UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME}"
+UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=${NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME}"
+
+deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "$UI_ENV_VARS" "apps/web/Dockerfile"
 
 echo ""
 echo "$SEPARATOR"
