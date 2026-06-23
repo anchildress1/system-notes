@@ -41,7 +41,6 @@
       }
     ],
     "project_type": "experience",
-    "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/carbon-trace",
     "app_url": "https://carbon-trace.anchildress1.dev",
     "award": "WeCoded 2026 Winner",
@@ -96,7 +95,6 @@
     ],
     "award": "Earth Day 2026 Winner",
     "project_type": "tool",
-    "completion_state": "retired",
     "repo_url": "https://github.com/anchildress1/unearthed",
     "app_url": "",
     "order_rank": 30,
@@ -149,7 +147,6 @@
       }
     ],
     "project_type": "game",
-    "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/save-the-sun",
     "app_url": "https://savethesun.anchildress1.dev",
     "award": null,
@@ -199,7 +196,6 @@
       }
     ],
     "project_type": "experiment",
-    "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/vestige",
     "app_url": "https://github.com/anchildress1/vestige/releases",
     "award": null,
@@ -253,7 +249,6 @@
       }
     ],
     "project_type": "experiment",
-    "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/legacy-smelter",
     "app_url": "https://hotfix.anchildress1.dev",
     "order_rank": 60,
@@ -318,9 +313,8 @@
       }
     ],
     "project_type": "experiment",
-    "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/system-notes",
-    "app_url": "https://unstable.anchildress1.dev",
+    "app_url": "https://anchildress1.dev",
     "order_rank": 50,
     "updated_at": "2026-02-08",
     "related_project_ids": ["underfoot-underground-travel-planner", "devto-mirror"]
@@ -367,7 +361,6 @@
       }
     ],
     "project_type": "tool",
-    "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/supascribe-notes-mcp",
     "order_rank": 70,
     "updated_at": "2026-02-26",
@@ -421,7 +414,7 @@
     ],
     "project_type": "tool",
     "completion_state": "active",
-    "repo_url": "https://github.com/ChecKMarKDevTools/dev-community-dashboard",
+    "repo_url": "https://github.com/anchildress1/dev-community-dashboard",
     "app_url": "https://dev-community-dashboard.checkmarkdevtools.dev",
     "order_rank": 40,
     "updated_at": "2026-03-04",
@@ -518,7 +511,7 @@
     ],
     "project_type": "tool",
     "completion_state": "active",
-    "repo_url": "https://github.com/CheckMarKDevTools/devto-mirror",
+    "repo_url": "https://github.com/anchildress1/devto-mirror",
     "order_rank": 110,
     "updated_at": "2026-02-01"
   },
@@ -569,7 +562,7 @@
     ],
     "project_type": "tool",
     "completion_state": "active",
-    "repo_url": "https://github.com/CheckMarKDevTools/rai-lint",
+    "repo_url": "https://github.com/anchildress1/rai-lint",
     "order_rank": 90,
     "updated_at": "2026-02-01",
     "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"]
@@ -583,7 +576,7 @@
     "why_it_exists": "A zero-stakes sandbox for getting agent memory wrong on purpose.",
     "long_description": "Python, Ollama, and Postgres back a local agent built to watch how memory behaves when it exists, evolves, and occasionally misbehaves — without production pressure or polish shaping the decisions.",
     "outcome": "A working local sandbox whose memory experiments inform future agent design.",
-    "status": "Scrapped",
+    "status": "Archived",
     "owner": "anchildress1",
     "image_url": "/projects/my-hermantic-agent.webp",
     "image_alt": "Hermes Agent interface showing local AI memory experiments and conversational history",
@@ -603,7 +596,6 @@
     ],
     "blog_posts": [],
     "project_type": "experiment",
-    "completion_state": "unfinished",
     "repo_url": "https://github.com/anchildress1/my-hermantic-agent",
     "order_rank": 120,
     "updated_at": "2026-02-01",
@@ -642,8 +634,7 @@
     ],
     "blog_posts": [],
     "project_type": "tool",
-    "completion_state": "unfinished",
-    "repo_url": "https://github.com/CheckMarKDevTools/delegate-action",
+    "repo_url": "https://github.com/anchildress1/delegate-action",
     "order_rank": 130,
     "updated_at": "2026-02-01",
     "related_project_ids": ["rai-lint", "awesome-github-copilot"]
@@ -690,8 +681,7 @@
       }
     ],
     "project_type": "experiment",
-    "completion_state": "archived",
-    "repo_url": "https://github.com/CheckMarKDevTools/underfoot-underground-travel-planner",
+    "repo_url": "https://github.com/anchildress1/underfoot-underground-travel-planner",
     "order_rank": 140,
     "updated_at": "2026-02-01",
     "related_project_ids": ["my-hermantic-agent"]
@@ -729,8 +719,7 @@
     ],
     "blog_posts": [],
     "project_type": "tool",
-    "completion_state": "active",
-    "repo_url": "https://github.com/CheckMarKDevTools/eslint-config-echo",
+    "repo_url": "https://github.com/anchildress1/eslint-config-echo",
     "order_rank": 100,
     "updated_at": "2026-02-01"
   },
@@ -763,8 +752,7 @@
     ],
     "blog_posts": [],
     "project_type": "experiment",
-    "completion_state": "failed",
-    "repo_url": "https://github.com/CheckMarKDevTools/checkmark-copilot-chat",
+    "repo_url": "https://github.com/anchildress1/checkmark-copilot-chat",
     "order_rank": 150,
     "updated_at": "2026-02-01",
     "related_project_ids": ["awesome-github-copilot"]
