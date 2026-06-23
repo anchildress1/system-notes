@@ -39,7 +39,7 @@
   border: 1.5px solid transparent;
   background:
     linear-gradient(var(--bg-elevated), var(--bg-elevated)) padding-box,
-    var(--gradient-winner) border-box;
+    var(--gradient-brand) border-box;
   background-size:
     auto,
     240% 100%;

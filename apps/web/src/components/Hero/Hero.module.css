@@ -133,7 +133,7 @@
 }
 
 .rotatingWord {
-  background: var(--gradient-hero);
+  background: var(--gradient-brand);
   /* 200% so a 0%→200% position shift travels exactly one full (cyclic)
      gradient period — the loop flows instead of hard-cutting. */
   background-size: 200% 100%;

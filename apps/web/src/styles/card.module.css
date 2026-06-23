@@ -39,7 +39,7 @@
   right: 0;
   height: var(--seam-width);
   z-index: 3;
-  background: var(--gradient-winner);
+  background: var(--gradient-brand);
   background-size: 200% 100%;
   pointer-events: none;
 }

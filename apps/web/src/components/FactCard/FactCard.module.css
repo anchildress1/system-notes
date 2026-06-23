@@ -82,7 +82,7 @@
 /* Featured (two-thirds) back face: same seam as every card, gradient color
    only (the front gets it via the shared .winnerBanner class). */
 .cardLink[data-size='two-thirds'] .cardBack::before {
-  background: var(--gradient-winner);
+  background: var(--gradient-brand);
   background-size: 200% 100%;
 }
 

@@ -58,7 +58,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--gradient-hero);
+  background: var(--gradient-brand);
   opacity: 0.16;
   mix-blend-mode: screen;
   pointer-events: none;

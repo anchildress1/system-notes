@@ -92,15 +92,10 @@
     linear-gradient(180deg, var(--bg-elevated), var(--bg-surface));
   --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
 
-  --gradient-winner: linear-gradient(
-    110deg,
-    var(--accent-teal) 0%,
-    var(--accent-blue) 28%,
-    var(--accent-violet) 48%,
-    var(--accent-pink) 66%,
-    var(--accent-teal) 100%
-  );
-  --gradient-hero: linear-gradient(
+  /* One chromatic brand gradient — hero word, winner card seams, the award
+     badge all draw from this. It animates everywhere it's used, so the start
+     stop is moot; no reason for two near-identical gradients. */
+  --gradient-brand: linear-gradient(
     110deg,
     var(--accent-pink) 0%,
     var(--accent-violet) 30%,
