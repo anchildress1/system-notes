@@ -413,7 +413,6 @@
       }
     ],
     "project_type": "tool",
-    "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/dev-community-dashboard",
     "app_url": "https://dev-community-dashboard.checkmarkdevtools.dev",
     "order_rank": 40,
@@ -470,7 +469,6 @@
       }
     ],
     "project_type": "resource",
-    "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
     "order_rank": 80,
     "updated_at": "2026-02-01",
@@ -510,7 +508,6 @@
       }
     ],
     "project_type": "tool",
-    "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/devto-mirror",
     "order_rank": 110,
     "updated_at": "2026-02-01"
@@ -561,7 +558,6 @@
       }
     ],
     "project_type": "tool",
-    "completion_state": "active",
     "repo_url": "https://github.com/anchildress1/rai-lint",
     "order_rank": 90,
     "updated_at": "2026-02-01",
