@@ -387,7 +387,7 @@ body {
 .pulse-dot {
   animation:
     pulseDot 2.4s ease-in-out infinite,
-    dotHue 9s linear infinite;
+    dotHue 20s linear infinite;
 }
 
 /* Flowing gradient shimmer — same scoping problem as pulseDot, so these global
@@ -418,16 +418,16 @@ body {
   }
 }
 #batGradient stop {
-  animation: batStopHue 6s linear infinite;
+  animation: batStopHue 14s linear infinite;
 }
 #batGradient stop:nth-child(2) {
-  animation-delay: -1.5s;
+  animation-delay: -3.5s;
 }
 #batGradient stop:nth-child(3) {
-  animation-delay: -3s;
+  animation-delay: -7s;
 }
 #batGradient stop:nth-child(4) {
-  animation-delay: -4.5s;
+  animation-delay: -10.5s;
 }
 
 @media (prefers-reduced-motion: reduce) {
