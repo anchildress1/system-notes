@@ -25,7 +25,6 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  transpilePackages: ['@algolia/sitesearch'],
   output: 'standalone',
   outputFileTracingRoot: path.join(__dirname, '../../'),
   compress: true,

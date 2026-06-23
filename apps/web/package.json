@@ -16,7 +16,6 @@
     "test:perf": "npm run build && lhci autorun --config=lighthouserc.mobile.json && lhci autorun --config=lighthouserc.desktop.json"
   },
   "dependencies": {
-    "@algolia/sitesearch": "^1.0.11",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
