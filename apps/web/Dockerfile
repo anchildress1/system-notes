@@ -61,7 +61,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Don't run production as root
 RUN groupadd --gid 1001 nodejs && \
     useradd --uid 1001 --gid nodejs --create-home --shell /usr/sbin/nologin nextjs
-USER nextjs
 
 COPY --from=installer /app/apps/web/next.config.ts .
 COPY --from=installer /app/apps/web/package.json .
@@ -71,4 +70,12 @@ COPY --from=installer --chown=nextjs:nodejs --chmod=555 /app/apps/web/.next/stan
 COPY --from=installer --chown=nextjs:nodejs --chmod=555 /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=installer --chown=nextjs:nodejs --chmod=555 /app/apps/web/public ./apps/web/public
 
+# next/image writes optimized images to .next/cache/images at runtime. The rest
+# of .next is read-only (S6504); carve out just this one writable, nextjs-owned
+# dir so the optimizer doesn't EACCES on mkdir. Done as root before dropping user.
+RUN mkdir -p apps/web/.next/cache \
+    && chown nextjs:nodejs apps/web/.next/cache \
+    && chmod 700 apps/web/.next/cache
+
+USER nextjs
 CMD ["node", "apps/web/server.js"]
