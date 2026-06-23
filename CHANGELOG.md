@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.4.0](https://github.com/anchildress1/system-notes/compare/v2.3.0...v2.4.0) (2026-06-23)
+
+
+### Features
+
+* **ui:** complete Aurora cohesion and button identity ([#80](https://github.com/anchildress1/system-notes/issues/80)) ([d11aeb9](https://github.com/anchildress1/system-notes/commit/d11aeb922758c70ef42486604a6cf601dd56bdae))
+* **web:** ink-ash redesign — accent system, search/chat polish, dep + security hardening ([#79](https://github.com/anchildress1/system-notes/issues/79)) ([dab93f0](https://github.com/anchildress1/system-notes/commit/dab93f0ee897829a25b054c315ec5d2b52ce66a3))
+
+
+### Bug Fixes
+
+* **ci:** add scope/component to release-please title pattern ([#81](https://github.com/anchildress1/system-notes/issues/81)) ([449223b](https://github.com/anchildress1/system-notes/commit/449223b19850d374b1a34c1865ed7ea7e7d83564))
+* **deploy:** only manage AR repo + cleanup policy on creation ([#84](https://github.com/anchildress1/system-notes/issues/84)) ([ef54f9a](https://github.com/anchildress1/system-notes/commit/ef54f9a826e0f755f13b2c28b64de4e59027b40b))
+
 ## [2.3.0](https://github.com/anchildress1/system-notes/compare/v2.2.0...v2.3.0) (2026-05-03)
 
 ### Features
