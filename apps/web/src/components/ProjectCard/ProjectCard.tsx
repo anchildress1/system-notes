@@ -10,7 +10,7 @@ import Button from '@/components/Button/Button';
 import { GitHubIcon, TrophyIcon } from '@/components/icons';
 import { accentForPosition } from '@/lib/cardAccent';
 import { FaArrowRight } from 'react-icons/fa';
-import { FiExternalLink } from 'react-icons/fi';
+import { FiExternalLink, FiGlobe } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
 import cardStyles from '@/styles/card.module.css';
 import styles from './ProjectCard.module.css';
@@ -246,18 +246,35 @@ export default function ProjectCard({
               )}
             </div>
 
-            {project.repo_url && (
-              <Button
-                variant="secondary"
-                href={project.repo_url}
-                target="_blank"
-                className={styles.backRepo}
-                icon={<GitHubIcon />}
-                iconRight={<FiExternalLink aria-hidden="true" focusable="false" size={14} />}
-                tabIndex={isFlipped ? 0 : -1}
-              >
-                View source
-              </Button>
+            {(project.app_url || project.repo_url) && (
+              <div className={styles.backActions}>
+                {project.app_url && (
+                  <Button
+                    variant="primary"
+                    href={project.app_url}
+                    target="_blank"
+                    className={styles.backAction}
+                    icon={<FiGlobe aria-hidden="true" focusable="false" size={14} />}
+                    iconRight={<FiExternalLink aria-hidden="true" focusable="false" size={14} />}
+                    tabIndex={isFlipped ? 0 : -1}
+                  >
+                    View site
+                  </Button>
+                )}
+                {project.repo_url && (
+                  <Button
+                    variant="secondary"
+                    href={project.repo_url}
+                    target="_blank"
+                    className={styles.backAction}
+                    icon={<GitHubIcon />}
+                    iconRight={<FiExternalLink aria-hidden="true" focusable="false" size={14} />}
+                    tabIndex={isFlipped ? 0 : -1}
+                  >
+                    View source
+                  </Button>
+                )}
+              </div>
             )}
           </div>
         </div>
