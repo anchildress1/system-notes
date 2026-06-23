@@ -385,6 +385,28 @@ body {
     dotHue 20s linear infinite;
 }
 
+/* Active/selected buttons cycle their accent border through the same band as
+   the dots, so the "you are here" highlight drifts in color instead of sitting
+   on one hue. Applied via the Button primitive for any data-state="active". */
+@keyframes activeHue {
+  0%,
+  100% {
+    border-color: var(--accent-teal);
+  }
+  25% {
+    border-color: var(--accent-violet);
+  }
+  50% {
+    border-color: var(--accent-pink);
+  }
+  75% {
+    border-color: var(--accent-gold);
+  }
+}
+.hue-active {
+  animation: activeHue 20s linear infinite;
+}
+
 /* Flowing gradient shimmer — same scoping problem as pulseDot, so these global
    utilities own it. `.shimmer` animates an element's gradient (award badge);
    `.shimmer-seam` animates a host's ::before gradient (winner card seams). */
@@ -429,6 +451,7 @@ body {
   .pulse-dot,
   .shimmer,
   .shimmer-seam::before,
+  .hue-active,
   #batGradient stop {
     animation: none;
   }

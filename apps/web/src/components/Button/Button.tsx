@@ -93,7 +93,13 @@ const Button = forwardRef<ButtonElement, Readonly<ButtonProps>>(function Button(
   },
   ref
 ) {
-  const classes = [styles.btn, className].filter(Boolean).join(' ');
+  // Active buttons cycle their accent through the brand band — the same global
+  // hue utility the status dots use (a CSS-Module animation-name wouldn't
+  // resolve here). Plain global class, applied for any data-state="active".
+  const isActiveState = (dataState ?? dataStateAttr) === 'active';
+  const classes = [styles.btn, className, isActiveState ? 'hue-active' : null]
+    .filter(Boolean)
+    .join(' ');
   const resolvedAriaLabel = ariaLabel ?? ariaLabelAttr;
   const resolvedAriaExpanded = ariaExpanded ?? ariaExpandedAttr;
   const resolvedAriaPressed = ariaPressed ?? ariaPressedAttr;
