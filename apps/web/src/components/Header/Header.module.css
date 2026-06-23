@@ -99,10 +99,12 @@
   white-space: nowrap;
 }
 
+/* Unselected nav items follow the ghost treatment: borderless, brighten with a
+   faint glass fill on hover. The active item is the bordered surface pill. */
 .navLink:hover {
   color: var(--text-primary);
-  border-color: var(--border);
-  background: rgba(255, 255, 255, 0.035);
+  border-color: transparent;
+  background: var(--glass-bg);
 }
 
 .navLink.active {

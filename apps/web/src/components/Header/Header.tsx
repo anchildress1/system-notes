@@ -63,7 +63,7 @@ export default function Header() {
             </Link>
           ))}
           <Button
-            variant="secondary"
+            variant="primary"
             size="md"
             href="https://dev.to/anchildress1"
             target="_blank"
