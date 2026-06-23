@@ -75,7 +75,7 @@ export default function MusicPlayer() {
                 E
               </span>
             </span>
-            <span className={styles.trackMeta}>TWISTED GAME · THEME SONG</span>
+            <span className={styles.trackMeta}>TWISTED GAME SONGS</span>
           </div>
         </div>
 
