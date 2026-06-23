@@ -196,7 +196,10 @@ deploy_service() {
     echo ""
     echo "--- Deploying $service_name ---"
 
-    # 1. Ensure Artifact Registry Repo exists
+    # 1. Ensure Artifact Registry Repo exists. Repo creation + cleanup policy
+    #    only run when the repo is missing — they need admin rights the CI deploy
+    #    SA doesn't have (it has writer to push). An existing repo is left as-is,
+    #    so the repo is provisioned out-of-band once and deploys just push to it.
     if ! gcloud artifacts repositories describe "$service_name" --location="$REGION" --project "$PROJECT_ID" --quiet &>/dev/null; then
         echo "Creating Artifact Registry repository: $service_name..."
         gcloud artifacts repositories create "$service_name" \
@@ -204,8 +207,8 @@ deploy_service() {
             --location="$REGION" \
             --project "$PROJECT_ID" \
             --description="Docker repository for $service_name"
+        ensure_artifact_cleanup_policy "$service_name"
     fi
-    ensure_artifact_cleanup_policy "$service_name"
 
     # 2. Build and Push Image
     local image_uri="$REGION-docker.pkg.dev/$PROJECT_ID/$service_name/$service_name:latest"
