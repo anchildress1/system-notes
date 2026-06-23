@@ -215,29 +215,11 @@
 
 .awardSlot {
   position: absolute;
-  bottom: 14px;
-  right: 14px;
+  top: 14px;
+  left: 14px;
   max-width: calc(100% - 28px);
   display: flex;
-  justify-content: flex-end;
-}
-
-.projId {
-  position: absolute;
-  left: 14px;
-  top: 14px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  /* Plain pill, matching the neutral badges elsewhere — neutral text + border,
-     keeping the glass backing only because it sits over the cover image. */
-  color: var(--text-secondary);
-  background: rgba(8, 7, 13, 0.72);
-  backdrop-filter: blur(8px);
-  padding: 4px 9px;
-  border-radius: var(--r-pill);
-  border: 1px solid color-mix(in srgb, var(--accent-violet) 34%, var(--border));
+  justify-content: flex-start;
 }
 
 .placeholderArt {

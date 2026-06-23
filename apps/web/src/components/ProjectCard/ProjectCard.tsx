@@ -120,16 +120,15 @@ export default function ProjectCard({
                   </div>
                 )}
               </div>
-              <div className={styles.imageOverlay}>
-                <span className={styles.projId}>/proj/{project.id}</span>
-                {project.award && (
+              {project.award && (
+                <div className={styles.imageOverlay}>
                   <span className={styles.awardSlot}>
                     <Badge variant="award" icon={<TrophyIcon />}>
                       {project.award}
                     </Badge>
                   </span>
-                )}
-              </div>
+                </div>
+              )}
             </div>
 
             <div className={styles.content}>
