@@ -134,7 +134,6 @@ export default function ProjectCard({
             <div className={styles.content}>
               <div className={styles.headerTop}>
                 <Badge variant="neutral">{ownerName}</Badge>
-                {project.status === 'Archived' && <Badge variant="neutral">ARCHIVED</Badge>}
                 {project.repo_url && (
                   <span className={styles.sourceLinkRaise}>
                     <SourceLinkButton

@@ -88,16 +88,6 @@ describe('ProjectCard Component', () => {
     expect(sourceButton).toHaveAttribute('tabindex', '-1');
   });
 
-  it('shows ARCHIVED badge for archived projects', () => {
-    render(<ProjectCard project={{ ...mockProject, status: 'Archived' }} />);
-    expect(screen.getByText('ARCHIVED')).toBeInTheDocument();
-  });
-
-  it('does not show ARCHIVED badge for active projects', () => {
-    render(<ProjectCard project={mockProject} />);
-    expect(screen.queryByText('ARCHIVED')).not.toBeInTheDocument();
-  });
-
   it('renders award badge when project has an award', () => {
     render(<ProjectCard project={{ ...mockProject, award: 'Best in Show' }} />);
     expect(screen.getByText('Best in Show')).toBeInTheDocument();
