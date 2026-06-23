@@ -418,16 +418,16 @@ body {
   }
 }
 #batGradient stop {
-  animation: batStopHue 14s linear infinite;
+  animation: batStopHue 15s linear infinite;
 }
 #batGradient stop:nth-child(2) {
-  animation-delay: -3.5s;
+  animation-delay: -3.75s;
 }
 #batGradient stop:nth-child(3) {
-  animation-delay: -7s;
+  animation-delay: -7.5s;
 }
 #batGradient stop:nth-child(4) {
-  animation-delay: -10.5s;
+  animation-delay: -11.25s;
 }
 
 @media (prefers-reduced-motion: reduce) {
