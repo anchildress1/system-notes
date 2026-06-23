@@ -374,8 +374,10 @@
 
 .backTitleRow {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -390,12 +392,11 @@
 }
 
 .backStatus {
-  align-self: flex-start;
-  margin-top: 2px;
   padding: 3px 9px;
-  border: 1px solid color-mix(in srgb, var(--card-accent) 46%, transparent);
+  /* Plain neutral pill — matches the other neutral badges, no per-card accent. */
+  border: 1px solid color-mix(in srgb, var(--accent-violet) 34%, var(--border));
   border-radius: var(--r-pill);
-  background: color-mix(in srgb, var(--card-accent) 10%, transparent);
+  background: transparent;
   font-family: var(--font-mono);
   font-size: 0.58rem;
   font-weight: 600;
