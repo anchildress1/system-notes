@@ -78,7 +78,9 @@ export default function SearchPage() {
         />
 
         <RetrieveBar />
-        <SearchMeta />
+        <div className={styles.retrieveAttribution}>
+          <AlgoliaAttribution />
+        </div>
         <FilterBar />
 
         <section className={styles.results} aria-label="Search results">
@@ -165,6 +167,7 @@ function FilterBar() {
   // reads it from the search response, so adding/reordering filters never
   // requires a code change here.
   const { attributesToRender } = useDynamicWidgets({});
+  const { nbHits, processingTimeMS } = useStats();
   // Defensive: dedupe in case renderingContent.facetOrdering.facets.order lists
   // the same attribute twice. Order-preserving.
   const attributes = useMemo(() => Array.from(new Set(attributesToRender)), [attributesToRender]);
@@ -181,6 +184,9 @@ function FilterBar() {
         />
       ))}
       <ClearAllFilters />
+      <span className={styles.filterStat}>
+        {nbHits.toLocaleString()} entries · {processingTimeMS}ms
+      </span>
     </nav>
   );
 }
@@ -393,21 +399,6 @@ function FilterDropdown({ attribute, label }: Readonly<{ attribute: string; labe
           ))}
         </fieldset>
       )}
-    </div>
-  );
-}
-
-function SearchMeta() {
-  // processingTimeMS is Algolia's server-side query time, straight off the
-  // search response — no extra plumbing, no client timing math. The stat and
-  // the attribution share one right-aligned row under the search bar.
-  const { nbHits, processingTimeMS } = useStats();
-  return (
-    <div className={styles.retrieveAttribution}>
-      <span className={styles.sectionHeaderMeta}>
-        {nbHits.toLocaleString()} entries · {processingTimeMS}ms
-      </span>
-      <AlgoliaAttribution />
     </div>
   );
 }

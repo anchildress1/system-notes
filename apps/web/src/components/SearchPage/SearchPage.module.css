@@ -33,7 +33,7 @@
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 600;
-  color: var(--accent-teal);
+  color: var(--accent-violet);
 }
 
 .retrieveInput {
@@ -167,7 +167,8 @@
   white-space: nowrap;
 }
 
-.sectionHeaderMeta {
+.filterStat {
+  margin-left: auto;
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--text-muted);
