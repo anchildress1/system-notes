@@ -230,12 +230,14 @@
   font-size: 9px;
   letter-spacing: 1.8px;
   text-transform: uppercase;
-  color: var(--card-accent);
+  /* Plain pill, matching the neutral badges elsewhere — neutral text + border,
+     keeping the glass backing only because it sits over the cover image. */
+  color: var(--text-secondary);
   background: rgba(8, 7, 13, 0.72);
   backdrop-filter: blur(8px);
   padding: 4px 9px;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--card-accent-soft);
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in srgb, var(--accent-violet) 34%, var(--border));
 }
 
 .placeholderArt {
