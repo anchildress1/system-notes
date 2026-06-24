@@ -2,7 +2,7 @@ name: SonarCloud Analysis
 
 on:
   pull_request:
-    types: [synchronize, ready_for_review]
+    types: [opened, reopened, synchronize, ready_for_review]
   push:
     branches:
       - main
