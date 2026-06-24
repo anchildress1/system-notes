@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/anchildress1/system-notes/compare/v2.4.2...v2.5.0) (2026-06-24)
+
+
+### Features
+
+* **web:** add Multivert project and re-rank portfolio ([#91](https://github.com/anchildress1/system-notes/issues/91)) ([d9f1294](https://github.com/anchildress1/system-notes/commit/d9f1294e39fe7befc9c73e6bba71be4d45e06ef9))
+
 ## [2.4.2](https://github.com/anchildress1/system-notes/compare/v2.4.1...v2.4.2) (2026-06-23)
 
 
