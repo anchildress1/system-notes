@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.2](https://github.com/anchildress1/system-notes/compare/v2.4.1...v2.4.2) (2026-06-23)
+
+
+### Bug Fixes
+
+* **ci:** keep release PR component branch so release-please auto-tags ([#88](https://github.com/anchildress1/system-notes/issues/88)) ([11659e0](https://github.com/anchildress1/system-notes/commit/11659e028957160b524f6ec444c1b68aa88ddb08))
+* **web:** drop unused @algolia/sitesearch dependency ([#90](https://github.com/anchildress1/system-notes/issues/90)) ([4637d5f](https://github.com/anchildress1/system-notes/commit/4637d5f155e097206e30f06ca55c220ec5b10cd9))
+
 ## [2.4.1](https://github.com/anchildress1/system-notes/compare/v2.4.0...v2.4.1) (2026-06-23)
 
 
