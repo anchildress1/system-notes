@@ -55,7 +55,7 @@ test.describe('System Notes Integration', () => {
 
   test('should load projects with current summary card metadata', async ({ page }) => {
     await page.goto('/projects');
-    const projectCard = page.getByTestId(/^project-card-/).first();
+    const projectCard = page.getByTestId('project-card-carbon-trace');
     await expect(projectCard).toBeVisible();
 
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(

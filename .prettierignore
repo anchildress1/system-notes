@@ -7,3 +7,4 @@ coverage
 .venv
 public
 package-lock.json
+CHANGELOG.md
