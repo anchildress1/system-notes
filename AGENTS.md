@@ -70,7 +70,11 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 
 ## Performance / Lighthouse
 
-- **Targets**: 70%+ mobile performance, 80%+ desktop performance, 95%+ accessibility/best-practices/SEO.
+- **Targets** (enforced pre-push via the lefthook `performance` step → `make test-perf`):
+  - **best-practices: 100%** on both mobile and desktop.
+  - **performance: 100% desktop, 95% mobile.**
+  - **accessibility & SEO: 95%+** on both.
+- `errors-in-console` is skipped in the LH configs — the local harness uses dummy Algolia credentials, so unreachable-host network errors are a test artifact, not a defect (same rationale as the pre-existing `uses-http2` skip).
 - Below-the-fold components must be deferred via `IntersectionObserver` or `next/dynamic` (see `SearchPageWrapper.tsx`).
 - Prefer `instantsearch.css/themes/reset.css` over `satellite.css` to minimize CSS payload.
 

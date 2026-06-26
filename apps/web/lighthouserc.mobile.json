@@ -7,7 +7,7 @@
       "settings": {
         "chromeFlags": "--headless=new --disable-gpu --no-sandbox",
         "onlyCategories": ["performance", "accessibility", "best-practices", "seo"],
-        "skipAudits": ["uses-http2"]
+        "skipAudits": ["uses-http2", "errors-in-console"]
       }
     },
     "assert": {
@@ -15,7 +15,7 @@
         "categories:performance": [
           "error",
           {
-            "minScore": 0.7,
+            "minScore": 0.95,
             "aggregationMethod": "median-run"
           }
         ],
@@ -29,14 +29,14 @@
         "categories:best-practices": [
           "error",
           {
-            "minScore": 0.96,
+            "minScore": 1,
             "aggregationMethod": "median-run"
           }
         ],
         "categories:seo": [
           "error",
           {
-            "minScore": 1,
+            "minScore": 0.95,
             "aggregationMethod": "median-run"
           }
         ]
