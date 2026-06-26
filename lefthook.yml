@@ -24,8 +24,9 @@ pre-push:
       run: make test
     security-scan:
       run: make secret-scan
-    # Lighthouse gate: 95% floor on all categories (mobile + desktop). Builds the
-    # app itself, so no separate build step is needed. Runs last — the cheap
+    # Lighthouse gate (floors live in lighthouserc.*.json): best-practices 100
+    # both viewports, performance 100 desktop / 95 mobile, a11y + SEO 95+. Builds
+    # the app itself, so no separate build step is needed. Runs last — the cheap
     # checks above fail fast before this several-minute pass.
     performance:
       run: make test-perf

@@ -66,9 +66,12 @@ describe('cross-browser vendor prefixes', () => {
     // transform shows mirrored through the flipped card in Firefox. Both faces
     // must carry an explicit transform (the front an identity rotateY(0deg)).
     it('pairs `backface-visibility: hidden` with an explicit `transform`', () => {
+      // Lookbehind keeps this focused on the standard properties (not their
+      // -webkit- variants), and matches a `transform:` anywhere in the block.
       const offenders = blocks.filter(
         (block) =>
-          /backface-visibility\s*:\s*hidden/.test(block) && !/[^-]transform\s*:/.test(block)
+          /(?<!-webkit-)backface-visibility\s*:\s*hidden/.test(block) &&
+          !/(?<!-webkit-)transform\s*:/.test(block)
       );
       expect(offenders).toEqual([]);
     });
