@@ -11,13 +11,16 @@ const spaceGrotesk = Space_Grotesk({
   fallback: ['system-ui', 'sans-serif'],
 });
 
+// Only the display font (the LCP H1) is preloaded. The serif and mono load on
+// demand behind their fallbacks (display: swap) so they don't compete with the
+// LCP font for the initial connection — shaves the hero's render delay.
 const instrumentSerif = Instrument_Serif({
   variable: '--font-serif',
   subsets: ['latin'],
   weight: '400',
   style: ['normal', 'italic'],
   display: 'swap',
-  preload: true,
+  preload: false,
   fallback: ['Georgia', 'Times New Roman', 'serif'],
 });
 
@@ -25,7 +28,7 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
   display: 'swap',
-  preload: true,
+  preload: false,
   fallback: ['ui-monospace', 'monospace'],
 });
 
