@@ -55,6 +55,7 @@
 }
 
 .flipButton {
+  -webkit-appearance: none;
   appearance: none;
   position: absolute;
   inset: 0;
@@ -248,6 +249,11 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
+  /* Explicit identity transform so Firefox treats the front as a 3D plane and
+     actually backface-culls it when the flipper rotates. Without an own
+     transform Firefox skips the cull and the front shows mirrored through the
+     back. Chrome culls either way. */
+  transform: rotateY(0deg);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   text-align: left;

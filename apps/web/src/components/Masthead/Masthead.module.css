@@ -45,7 +45,9 @@
   .tickerItem {
     gap: 14px;
     padding: 0 18px;
-    font-size: 11px;
+    /* 12px (not 11) keeps the ticker above Lighthouse's mobile legible-font
+       floor; the ticker is the largest block of small text on the page. */
+    font-size: 12px;
     letter-spacing: 0.1em;
   }
 }

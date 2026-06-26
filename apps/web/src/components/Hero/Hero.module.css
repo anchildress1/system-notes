@@ -1,11 +1,15 @@
+/* inherits:true so the cursor coords set on .hero reach .hero::after, where the
+   spotlight gradient lives. Firefox honors inherits:false strictly (the pseudo
+   would get the -1000px initial value and the glow never appears); Chrome was
+   leniently propagating it. */
 @property --spot-x {
   syntax: '<length>';
-  inherits: false;
+  inherits: true;
   initial-value: -1000px;
 }
 @property --spot-y {
   syntax: '<length>';
-  inherits: false;
+  inherits: true;
   initial-value: -1000px;
 }
 

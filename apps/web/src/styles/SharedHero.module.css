@@ -3,6 +3,7 @@
   padding: 3.5rem var(--page-gutter) 3rem;
   border-bottom: 1px solid var(--border);
   overflow: hidden;
+  -webkit-user-select: none;
   user-select: none;
   cursor: default;
   isolation: isolate;
@@ -58,6 +59,7 @@
 }
 
 .glitterTrigger {
+  -webkit-appearance: none;
   appearance: none;
   position: absolute;
   inset: 0;
