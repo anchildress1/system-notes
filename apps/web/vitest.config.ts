@@ -29,9 +29,7 @@ export default defineConfig({
         'src/components/GlitterBomb/GlitterBomb.tsx',
         'src/components/SearchPage/SearchPage.tsx',
         'src/components/icons/index.ts',
-        'src/context/ChatContext.tsx',
         'src/hooks/useSparkles.ts',
-        'src/utils/userToken.ts',
       ],
       thresholds: {
         lines: 85,
