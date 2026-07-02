@@ -2,58 +2,67 @@
 
 ## Overview
 
-System Notes is a monorepo designed to act as a "digital nervous system," bridging a Next.js frontend with a FastAPI backend that orchestrates AI interactions. It is built to be modular, scalable, and heavily introspective.
+System Notes is a single Next.js app that acts as a "digital nervous system" for a portfolio: a sparkly UI up front, Algolia doing the search and AI heavy lifting, and one lonely route handler that scrapes my DEV blog on the side. No separate backend service to keep breathing.
 
 ## High-Level Design
 
 ```mermaid
+%%{init: {'theme': 'default'}}%%
 graph TD
-    %% Theme-agnostic styling
+    accTitle: System Notes architecture
+    accDescr: A single Next.js app serves the UI and a blog-search route handler. The browser talks to Algolia for search and AI, and the route handler aggregates the DEV blog from an external sitemap behind an SSRF guard.
+
     classDef frontend stroke:#0284C7,stroke-width:2px;
     classDef backend stroke:#059669,stroke-width:2px;
     classDef external stroke:#9333EA,stroke-width:2px;
 
+    User([👤 User]) -->|Interacts| Web[Next.js App - UI]:::frontend
 
-    User([👤 User]) -->|Interacts| Web[Next.js Frontend]:::frontend
-
-    subgraph Monorepo [📂 Monorepo System]
+    subgraph App [📂 apps/web]
         direction TB
-        Web -->|REST/Streams| API[FastAPI Backend]:::backend
+        Web -->|/api/blog/search| Route[Route Handler]:::backend
     end
 
-    API -->|Context & RAG| External["🔮 GPT 5.2"]:::external
+    Web -->|Search and AI| Algolia["🔍 Algolia"]:::external
+    Route -->|SSRF-guarded fetch| Blog["📝 DEV blog sitemap"]:::external
 ```
 
 ## The Stack
 
 ### 1. The Face (apps/web)
 
-- **Framework**: Next.js (React)
-- **Role**: Handles UI, client-side logic, and initial data fetching.
+- **Framework**: Next.js (React).
+- **Role**: The whole app — UI, client-side logic, search, and the AI chat.
 - **Key Feature**: "More Sparkles," meaning it prioritizes high-fidelity interactions and animations.
 
-### 2. The Brain (apps/api)
+### 2. Search & AI (Algolia)
 
-- **Framework**: FastAPI (Python)
-- **Role**: Process complex logic, manage system prompts, and interface with AI providers.
-- **Key Feature**: Stateless orchestration of LLM requests.
+- **Provider**: Algolia via `react-instantsearch`.
+- **Role**: Powers on-page search and the AI chat directly from the browser. InstantSearch owns URL state (query, facets, page).
+- **Key Feature**: No server round-trip for search — the client talks to Algolia.
 
-### 3. The Tissue (Root Configs)
+### 3. Blog Aggregation (route handler)
 
-- **Role**: Shared build and quality tooling (Lefthook, Turbo, Prettier) at the root level ensures consistency, even though specific code isn't shared between languages.
+- **Location**: `apps/web/src/app/api/blog/search/route.ts` (GET only).
+- **Role**: Pulls DEV blog posts from an external sitemap, extracts JSON-LD, caches in memory (15 min; 60s when empty), and filters by `q`/`tag` with a clamped `limit`.
+- **Key Feature**: The sitemap is untrusted input, so outbound fetches are SSRF-guarded — same-host `/posts/` URLs only, with per-request timeouts (see `SECURITY_RULES.md`).
+
+### 4. The Tissue (root configs)
+
+- **Role**: Shared build and quality tooling (Lefthook, Turbo, Prettier) at the root keeps things consistent across the workspace.
 
 ## Data Flow
 
-1. **Input**: User interacts with the portfolio interface.
-2. **Processing**: Request is sent to the API, which constructs a prompt context.
-3. **Intelligence**: API queries external models (Gemini/GPT 5.2) using system-aware prompts.
-4. **Response**: AI response is formatted and sent back to the frontend for rendering.
+1. **Input**: User interacts with the portfolio UI.
+2. **Search / AI**: The browser queries Algolia directly via InstantSearch; results and AI responses render client-side.
+3. **Blog**: The `/api/blog/search` route handler aggregates and caches DEV posts from the external sitemap, serving a filtered slice on request.
+4. **Response**: Everything renders in the Next.js app — no separate backend in the loop.
 
 ## 🦄 For the Judges
 
-If you're looking for where the effort went, here’s the cheat sheet:
+If you're looking for where the effort went, here's the cheat sheet:
 
-- **System-First Design**: This isn't just a static site wrapper. It's a fully integrated monorepo where the frontend (Next.js) and backend (FastAPI) share types and configuration via local packages.
-- **Production AI**: The chatbot isn't a toy. It uses **GPT 5.2** with strict system prompts (see `apps/api`) to ensure it behaves effectively as a constrained agent, not a generic LLM.
+- **System-First Design**: This isn't just a static site wrapper. It's a real Next.js app with an SSRF-hardened aggregation route and Algolia-powered search/AI.
+- **Production AI**: The chat isn't a toy — it's wired through Algolia's AI features with real query and event handling, not a bolted-on demo.
 - **Vibe Engineering**: The UI uses custom shader-like effects and animations that are performant and responsive, proving that "professional" doesn't have to mean "boring."
-- **DevOps Maturity**: We treat this like a real product. CI/CD actions, `release-please` automation, and `lefthook` quality gates are all active.
+- **DevOps Maturity**: We treat this like a real product. CI/CD actions, `release-please` automation, `gitleaks` secret scanning, and `lefthook` quality gates are all active.

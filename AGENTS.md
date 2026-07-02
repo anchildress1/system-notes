@@ -15,15 +15,13 @@ Canonical instruction source for this repository. Treat this file as authoritati
 - Do not implement quick fixes in this codebase for any reason.
 - Any test files introduced for local validation must be removed, not committed.
 
-### Security: file access and path handling
+### Security: untrusted input and path handling
 
-- If changes touch file loading, path resolution, or file-serving behavior, apply `SECURITY_RULES.md` as mandatory policy.
+- If changes touch outbound fetches, file loading, or path resolution, apply `SECURITY_RULES.md` as mandatory policy.
 - Required invariants:
-  - Reject any user-controlled path input containing `..`.
-  - Resolve to absolute paths before use.
-  - Enforce sandbox-root containment after resolution.
-  - Allowlist served file types to `.md`, `.json`, `.txt`.
-  - Default to deny on validation failure.
+  - Treat remote content (e.g. the blog sitemap) as untrusted; only follow same-host, allowlisted URLs (SSRF guard).
+  - Reject any user-controlled path input containing `..`; resolve to absolute paths and enforce sandbox-root containment before use.
+  - Allowlist served file types to `.md`, `.json`, `.txt`; default to deny on validation failure.
 
 ### Commit format (when committing is requested)
 
@@ -59,7 +57,7 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 
 ## Test Standards
 
-- **Coverage thresholds**: 85% lines/functions/statements, 80% branches (enforced by `vitest.config.ts` and `pyproject.toml`).
+- **Coverage thresholds**: 85% lines/functions/statements, 80% branches (enforced by `apps/web/vitest.config.ts`).
 - Every new component or utility must ship with positive, negative, and edge-case tests.
 - Integration-heavy modules (e.g. `SearchPage.tsx`) are excluded from coverage; test them via E2E instead.
 
@@ -80,14 +78,14 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 
 ## API Design
 
-- **Methods**: GET and OPTIONS only. CORS explicitly restricts to these.
-- **CORS origins**: localhost:3000, production domains, and Cloud Run revision URLs.
-- **Logging**: Request logging middleware emits method, path, status, and duration_ms for every request.
+- **Route**: `apps/web/src/app/api/blog/search/route.ts` — a Next.js route handler, **GET only**.
+- **Behavior**: aggregates DEV blog posts from an external sitemap, extracts JSON-LD, caches results in memory (15 min; 60s when empty), and filters by `q`/`tag` with a clamped `limit` (1–50, default 3).
+- **Untrusted input**: the sitemap and post HTML are untrusted — outbound fetches are SSRF-guarded (same-host `/posts/` URLs only, 10s timeout per request). See `SECURITY_RULES.md`.
 
 ## Shared Utilities
 
 - **`@/lib/algolia.ts`**: Credential validation (`hasValidAlgoliaCredentials`, `isValidAppId`, `isValidApiKey`). Use instead of inline regex checks.
-- **`@/components/icons/`**: Shared SVG icon components (`GitHubIcon`, `DevIcon`, `CloseIcon`). Use instead of inline SVG.
+- **`@/components/icons/`**: Shared SVG icon components (`GitHubIcon`, `DevIcon`, `TrophyIcon`). Use instead of inline SVG.
 - **Icon libraries**: Use `react-icons` for all icons (UI and brand). Prefer `react-icons/fa`, `react-icons/io5`, `react-icons/si`, etc.
 
 ## Documentation
