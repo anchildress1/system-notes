@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/anchildress1/system-notes/compare/v2.5.0...v2.5.1) (2026-06-26)
+
+
+### Bug Fixes
+
+* **web:** cross-browser rendering (Firefox flip + hero spotlight) and Lighthouse pre-push gate ([#94](https://github.com/anchildress1/system-notes/issues/94)) ([7086a91](https://github.com/anchildress1/system-notes/commit/7086a9195fc8868c1717d1deac1b2af2b493c907))
+
 ## [2.5.0](https://github.com/anchildress1/system-notes/compare/v2.4.2...v2.5.0) (2026-06-24)
 
 
