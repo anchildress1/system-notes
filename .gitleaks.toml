@@ -9,7 +9,6 @@ description = "Repo-wide allowlist"
 paths = [
   '''(^|/)node_modules/''',
   '''(^|/)\.next/''',
-  '''(^|/)\.turbo/''',
   '''(^|/)coverage/''',
   '''(^|/)dist/''',
   '''(^|/)test-results/''',

@@ -1,5 +1,4 @@
 import type { NextConfig } from 'next';
-import path from 'node:path';
 
 const securityHeaders = [
   {
@@ -26,7 +25,6 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  outputFileTracingRoot: path.join(__dirname, '../../'),
   compress: true,
   images: {
     formats: ['image/avif', 'image/webp'],

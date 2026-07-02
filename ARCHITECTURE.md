@@ -18,7 +18,7 @@ graph TD
 
     User([👤 User]) -->|Interacts| Web[Next.js App - UI]:::frontend
 
-    subgraph App [📂 apps/web]
+    subgraph App [📂 Next.js app]
         direction TB
         Web -->|/api/blog/search| Route[Route Handler]:::backend
     end
@@ -29,7 +29,7 @@ graph TD
 
 ## The Stack
 
-### 1. The Face (apps/web)
+### 1. The Face
 
 - **Framework**: Next.js (React).
 - **Role**: The whole app — UI, client-side logic, search, and the AI chat.
@@ -43,13 +43,13 @@ graph TD
 
 ### 3. Blog Aggregation (route handler)
 
-- **Location**: `apps/web/src/app/api/blog/search/route.ts` (GET only).
+- **Location**: `src/app/api/blog/search/route.ts` (GET only).
 - **Role**: Pulls DEV blog posts from an external sitemap, extracts JSON-LD, caches in memory (15 min; 60s when empty), and filters by `q`/`tag` with a clamped `limit`.
 - **Key Feature**: The sitemap is untrusted input, so outbound fetches are SSRF-guarded — same-host `/posts/` URLs only, with per-request timeouts (see `SECURITY_RULES.md`).
 
 ### 4. The Tissue (root configs)
 
-- **Role**: Shared build and quality tooling (Lefthook, Turbo, Prettier) at the root keeps things consistent across the workspace.
+- **Role**: Build and quality tooling (Lefthook, Prettier, gitleaks, Playwright, Lighthouse) lives at the repo root — one app, one place for config.
 
 ## Data Flow
 

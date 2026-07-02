@@ -4,7 +4,7 @@ Strict security rules for the `system-notes` repository. Follow these whenever y
 
 ## 1. Outbound Fetch / SSRF Prevention
 
-The blog aggregation route (`apps/web/src/app/api/blog/search/route.ts`) fetches an untrusted external sitemap and post pages. Any change to outbound fetching must preserve these invariants.
+The blog aggregation route (`src/app/api/blog/search/route.ts`) fetches an untrusted external sitemap and post pages. Any change to outbound fetching must preserve these invariants.
 
 ### Rule 1.1: Treat remote content as untrusted
 

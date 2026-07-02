@@ -57,7 +57,7 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 
 ## Test Standards
 
-- **Coverage thresholds**: 85% lines/functions/statements, 80% branches (enforced by `apps/web/vitest.config.ts`).
+- **Coverage thresholds**: 85% lines/functions/statements, 80% branches (enforced by `vitest.config.ts`).
 - Every new component or utility must ship with positive, negative, and edge-case tests.
 - Integration-heavy modules (e.g. `SearchPage.tsx`) are excluded from coverage; test them via E2E instead.
 
@@ -78,7 +78,7 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 
 ## API Design
 
-- **Route**: `apps/web/src/app/api/blog/search/route.ts` — a Next.js route handler, **GET only**.
+- **Route**: `src/app/api/blog/search/route.ts` — a Next.js route handler, **GET only**.
 - **Behavior**: aggregates DEV blog posts from an external sitemap, extracts JSON-LD, caches results in memory (15 min; 60s when empty), and filters by `q`/`tag` with a clamped `limit` (1–50, default 3).
 - **Untrusted input**: the sitemap and post HTML are untrusted — outbound fetches are SSRF-guarded (same-host `/posts/` URLs only, 10s timeout per request). See `SECURITY_RULES.md`.
 

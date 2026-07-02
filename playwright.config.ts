@@ -29,7 +29,6 @@ export default defineConfig({
   webServer: {
     command: 'PORT=3002 npm run start:standalone',
     url: 'http://localhost:3002',
-    cwd: './apps/web',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },

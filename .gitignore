@@ -15,9 +15,6 @@ test-results
 out/
 build/
 
-# Turborepo
-.turbo
-
 # TypeScript
 dist/
 *.tsbuildinfo
@@ -47,21 +44,12 @@ test-results/
 playwright-report/
 .playwright-mcp/
 *.png
-!apps/web/public/icon-*.png
-!apps/web/public/favicon.png
-!apps/web/public/apple-touch-icon.png
-!apps/web/src/app/icon.png
-!apps/web/src/app/apple-icon.png
+!public/icon-*.png
+!public/favicon.png
+!public/apple-touch-icon.png
+!src/app/icon.png
+!src/app/apple-icon.png
 network-requests.txt
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-.venv/
-.coverage
-.coverage.*
-htmlcov/
-.pytest_cache/
 
 # Temporary artifacts
 *tmp*

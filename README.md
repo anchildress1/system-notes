@@ -26,7 +26,7 @@ It is **Incomplete by Design**.
 
 One Next.js app, no backend to babysit:
 
-- **apps/web**: The whole show. A Next.js app that believes in "More Sparkles, More Problems" and handles them anyway — UI, search, and the AI chat all live here.
+- **The app**: The whole show. A single Next.js app that believes in "More Sparkles, More Problems" and handles them anyway — UI, search, and the AI chat all live here.
 - **Search & brains**: Algolia does the heavy lifting (search + AI), and a lone Next.js route handler (`/api/blog/search`) aggregates my DEV blog on the side. No separate service to keep alive at 3am.
 
 ## Quick Start

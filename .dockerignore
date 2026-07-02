@@ -9,5 +9,3 @@ node_modules
 # Keep these out of the build context to save time
 .next
 dist
-# Turborepo
-.turbo

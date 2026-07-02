@@ -14,14 +14,14 @@ setup-node:
 # Kill this project's dev and test servers by port (avoids self-kill from pkill -f matching own cmdline)
 kill:
 	@echo "🛑 Killing dev/test servers..."
-	@kill $$(lsof -ti:3000,3002,8000 2>/dev/null) 2>/dev/null || true
+	@kill $$(lsof -ti:3000,3001,3002,3003 2>/dev/null) 2>/dev/null || true
 	@echo "✅ Servers stopped."
 
-# Run the development environment (Turbo)
+# Run the development environment
 dev:
-	@echo "🚀 Starting development servers..."
+	@echo "🚀 Starting development server..."
 	$(MAKE) kill
-	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run dev -- --parallel
+	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run dev
 
 # Format code (Prettier)
 format:
@@ -41,7 +41,7 @@ lint:
 # TypeScript type checking
 typecheck:
 	@echo "🔎 Type checking..."
-	cd apps/web && npx tsc --noEmit
+	npx tsc --noEmit
 
 test:
 	@echo "🧪 Running tests..."
@@ -77,7 +77,7 @@ test-perf:
 	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=test_ai_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
-	npm run test:perf -w apps/web
+	npm run test:perf
 
 # Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
 # Note: Includes build step to ensure artifacts exist before tests
@@ -107,8 +107,7 @@ deploy:
 clean:
 	@echo "🧹 Cleaning up..."
 	rm -rf node_modules
-	rm -rf .turbo
-	rm -rf apps/web/.next
-	rm -rf apps/web/node_modules
+	rm -rf .next
+	rm -rf coverage
 	@echo "✨ Clean complete."
 

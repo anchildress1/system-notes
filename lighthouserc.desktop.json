@@ -1,11 +1,12 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "PORT=3001 node .next/standalone/apps/web/server.js",
-      "url": ["http://localhost:3001/"],
+      "startServerCommand": "PORT=3003 node .next/standalone/server.js",
+      "url": ["http://localhost:3003/"],
       "numberOfRuns": 5,
       "settings": {
         "chromeFlags": "--headless=new --disable-gpu --no-sandbox",
+        "preset": "desktop",
         "onlyCategories": ["performance", "accessibility", "best-practices", "seo"],
         "skipAudits": ["uses-http2", "errors-in-console"]
       }
@@ -15,7 +16,7 @@
         "categories:performance": [
           "error",
           {
-            "minScore": 0.95,
+            "minScore": 1,
             "aggregationMethod": "median-run"
           }
         ],

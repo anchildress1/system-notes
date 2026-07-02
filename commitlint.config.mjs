@@ -1,4 +1,4 @@
-export default {
+const config = {
     extends: ['@commitlint/config-conventional'],
     plugins: ['@checkmarkdevtools/commitlint-plugin-rai'],
     rules: {
@@ -8,3 +8,5 @@ export default {
         'footer-leading-blank': [1, 'always'],
     },
 };
+
+export default config;
