@@ -74,6 +74,9 @@
   letter-spacing: 0;
   color: var(--text-primary);
   text-wrap: balance;
+  /* A value longer than its 1/4 track (e.g. "AI Orchestration") would paint over
+     the next column; break it instead of letting the ink spill the grid line. */
+  overflow-wrap: break-word;
 }
 
 .hlCols {
@@ -103,7 +106,6 @@
   text-transform: uppercase;
   color: var(--text-muted);
 }
-
 
 .skills {
   display: flex;
@@ -235,20 +237,9 @@
   }
 }
 
-@media (max-width: 768px) {
-  .human {
-    padding-left: var(--page-gutter);
-    padding-right: var(--page-gutter);
-  }
-
-  .intro {
-    padding-bottom: 36px;
-  }
-
-  .highlights {
-    padding-left: 14px;
-  }
-
+/* Four equal tracks only hold the longest value ("AI Orchestration" ≈ 120px
+   word) above ~1120px; below that the word breaks mid-way, so drop to two. */
+@media (max-width: 1120px) {
   .stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     row-gap: 18px;
@@ -266,6 +257,21 @@
   .stat:nth-child(n + 3) {
     padding-top: 18px;
     border-top: 1px solid var(--border);
+  }
+}
+
+@media (max-width: 768px) {
+  .human {
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
+  }
+
+  .intro {
+    padding-bottom: 36px;
+  }
+
+  .highlights {
+    padding-left: 14px;
   }
 
   .hlCols {
@@ -289,5 +295,13 @@
 
   .linksButton {
     flex: 1 1 120px;
+  }
+}
+
+/* Below ~340px the two-column track drops under the longest value word; a small
+   type step keeps it on one line instead of orphaning a character. */
+@media (max-width: 360px) {
+  .statValue {
+    font-size: 16px;
   }
 }
