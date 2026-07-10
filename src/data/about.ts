@@ -48,8 +48,7 @@ export const aboutData: AboutData = {
   role: 'Senior Software Engineer',
   specialty: 'Systems & architecture design',
   recognition: [
-    'WeCoded 2026 winner',
-    'Earth Day 2026 winner',
+    '3× DEV Challenge winner · 2026',
     'Gold Homer Award · The Home Depot',
     'GitHub Copilot certified',
     'Google Cloud Generative AI Leader',
