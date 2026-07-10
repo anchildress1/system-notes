@@ -68,8 +68,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: '/projects/system-notes.webp',
-        width: 1200,
-        height: 630,
+        width: 1440,
+        height: 720,
         alt: 'System Notes interface showing a grid of AI engineering projects and architectural decisions',
       },
     ],
