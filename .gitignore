@@ -18,6 +18,7 @@ build/
 # TypeScript
 dist/
 *.tsbuildinfo
+next-env.d.ts
 
 # Misc
 .DS_Store
