@@ -105,7 +105,9 @@ export default function ProjectCard({
                     fill
                     className={styles.image}
                     priority={priority}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 350px"
+                    // Real card widths: the grid gutter is 24px a side, the gap
+                    // 18px, and --page-gutter caps the content at 1376px.
+                    sizes="(max-width: 720px) calc(100vw - 48px), (max-width: 1080px) calc((100vw - 66px) / 2), (max-width: 1424px) calc((100vw - 84px) / 3), 448px"
                   />
                 ) : (
                   <div
