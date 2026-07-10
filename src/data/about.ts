@@ -97,8 +97,8 @@ export const aboutData: AboutData = {
   heroImage: {
     src: '/ashley-gen-2.webp',
     alt: 'Ashley Childress profile picture showing a stylized, AI-generated portrait of a woman with red hair and glasses',
-    width: 600,
-    height: 400,
+    width: 888,
+    height: 888,
   },
   sections: [
     {

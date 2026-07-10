@@ -19,7 +19,9 @@ export default function Portrait({ src, alt, width, height }: Readonly<PortraitP
         height={height}
         className={styles.image}
         priority
-        sizes="(max-width: 768px) 100vw, 420px"
+        // Frame is capped at 420px (max-width) and sits in a 360px column above
+        // 900px, so it never renders wider than that — don't fetch for 100vw.
+        sizes="(max-width: 900px) min(100vw, 420px), 360px"
       />
       <figcaption className={styles.meta} aria-hidden="true">
         <span>SUBJECT · 026</span>
