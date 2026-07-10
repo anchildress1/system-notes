@@ -14,19 +14,16 @@
   margin-top: var(--space-xs);
 }
 
-@media (max-width: 1024px) {
+/* Thresholds are derived from the card's ~320px floor (below it the tech tags
+   wrap into a ragged stack), not from device sizes:
+   3 cols need (V - 48 gutter - 36 gap) / 3 >= 320; 2 cols need (V - 48 - 18) / 2 >= 320. */
+@media (max-width: 1080px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 768px) {
-  .gridSection {
-    padding: 0 var(--page-gutter);
-  }
-}
-
-@media (max-width: 600px) {
+@media (max-width: 720px) {
   .grid {
     grid-template-columns: 1fr;
     gap: var(--space-sm);

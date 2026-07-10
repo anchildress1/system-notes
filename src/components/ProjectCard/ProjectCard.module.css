@@ -15,6 +15,10 @@
   height: 100%;
   perspective: 1400px;
   animation: cardFadeInUp 0.4s ease backwards;
+  /* Card width tracks column count, not viewport: ~332px in the 3-up grid but
+     ~672px single-column at 720px. Viewport media queries scale the interior
+     backwards across a column change, so the interior sizes off the card. */
+  container-type: inline-size;
 }
 
 .cardLinkFlipped {
@@ -145,6 +149,10 @@
 .imageContainer {
   width: 100%;
   aspect-ratio: 2 / 1;
+  /* A 2/1 banner on a 672px single-column card is 336px of art before any prose.
+     Capping the height bends the ratio toward 21/9 as the card grows, which a
+     second aspect-ratio would only do as a jump partway through the range. */
+  max-height: 288px;
   position: relative;
   overflow: hidden;
   background: var(--bg-deep);
@@ -240,12 +248,18 @@
   opacity: 0.6;
 }
 
+/* Interior scales continuously with the card, not in steps: a step placed at a
+   card width lands mid-column-count, so the same drag that narrows the window
+   widens the card and the type jumps backwards. Anchors: 22px/26px at the
+   ~447px 3-up card, 28px/32px at the ~672px single-column card. */
 .content {
-  padding: 24px 26px 26px;
+  --card-pad-y: clamp(18px, 16.2px + 1.76cqi, 28px);
+  --card-pad-x: clamp(20px, 14.2px + 2.64cqi, 32px);
+  padding: var(--card-pad-y) var(--card-pad-x) calc(var(--card-pad-y) + 2px);
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: clamp(12px, 8.9px + 1.05cqi, 16px);
 }
 
 .titleRow {
@@ -265,7 +279,7 @@
 
 .title {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: clamp(19px, 10.2px + 2.64cqi, 28px);
   font-weight: 600;
   letter-spacing: 0;
   line-height: 1.1;
@@ -285,7 +299,7 @@
 
 .description {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: clamp(12.5px, 11.35px + 0.4cqi, 14px);
   color: var(--text-secondary);
   line-height: 1.6;
   display: -webkit-box;
