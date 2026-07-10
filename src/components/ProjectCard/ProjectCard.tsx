@@ -119,19 +119,11 @@ export default function ProjectCard({
                   </div>
                 )}
               </div>
-              {project.award && (
-                <div className={styles.imageOverlay}>
-                  <span className={styles.awardSlot}>
-                    <Badge variant="award" icon={<TrophyIcon />}>
-                      {project.award}
-                    </Badge>
-                  </span>
-                </div>
-              )}
             </div>
 
             <div className={styles.content}>
-              <div className={styles.headerTop}>
+              <div className={styles.titleRow}>
+                <h2 className={styles.title}>{project.title}</h2>
                 {project.repo_url && (
                   <span className={styles.sourceLinkRaise}>
                     <SourceLinkButton
@@ -148,7 +140,13 @@ export default function ProjectCard({
                 )}
               </div>
 
-              <h2 className={styles.title}>{project.title}</h2>
+              {project.award && (
+                <span className={styles.awardRow}>
+                  <Badge variant="award" icon={<TrophyIcon />}>
+                    {project.award}
+                  </Badge>
+                </span>
+              )}
 
               <p className={styles.description}>{project.purpose}</p>
 

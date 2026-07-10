@@ -37,6 +37,9 @@
   color: var(--text-primary);
   font-weight: 600;
   border: 1.5px solid transparent;
+  /* Award names are long and sit in a fluid card column, so this variant wraps
+     where the shared pill does not. */
+  white-space: normal;
   background:
     linear-gradient(var(--bg-elevated), var(--bg-elevated)) padding-box,
     var(--gradient-brand) border-box;
@@ -55,4 +58,5 @@
 .icon {
   display: inline-flex;
   font-size: 0.9rem;
+  flex-shrink: 0;
 }
