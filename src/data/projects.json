@@ -1,5 +1,58 @@
 [
   {
+    "objectID": "save-the-sun",
+    "node_type": "project",
+    "name": "Save the Sun",
+    "aliases": ["The Oracle and the Wolf"],
+    "what_it_is": "A deduction game where you out-question an Oracle and race a Gemini-played wolf to name the hidden rune first.",
+    "why_it_exists": "Proves an AI can be a live, fallible opponent without ever being trusted with the truth.",
+    "long_description": "A SvelteKit app on Cloud Run where a deterministic engine owns every fact while Gemini interprets Asks, plays the wolf, transcribes speech, and voices both characters — never seeing the secret. Provably winnable every round, keyboard- and screen-reader-complete.",
+    "outcome": "A spoken Oracle and wolf, and a debug stream that shows the engine, not Gemini, holding the secret. Took Best Google AI Usage at the June Solstice Game Jam 2026.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/save-the-sun.webp",
+    "image_alt": "A rune stone blazing with golden light at sunrise while Sköll, the great wolf, watches from a dark ridge.",
+    "tech": [
+      {
+        "name": "SvelteKit 2 / Svelte 5",
+        "role": "App Framework & SSR"
+      },
+      {
+        "name": "TypeScript",
+        "role": "Application Language"
+      },
+      {
+        "name": "Deterministic Engine",
+        "role": "In-Memory Referee & Source of Truth"
+      },
+      {
+        "name": "Gemini API",
+        "role": "Oracle, Opponent, Speech-to-Text, Text-to-Speech"
+      },
+      {
+        "name": "Google Cloud Run",
+        "role": "Containerized Hosting & Deploy"
+      },
+      {
+        "name": "Vitest · Playwright · axe-core · Lighthouse CI",
+        "role": "Testing & Quality Gates"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "The Oracle and the Wolf — I Made Gemini Lose Like a Kid",
+        "url": "https://dev.to/anchildress1/the-oracle-and-the-wolf-i-made-gemini-lose-like-a-kid-3nk5"
+      }
+    ],
+    "project_type": "game",
+    "repo_url": "https://github.com/anchildress1/save-the-sun",
+    "app_url": "https://savethesun.anchildress1.dev",
+    "award": "June Solstice Game Jam 2026 Winner",
+    "order_rank": 5,
+    "updated_at": "2026-06-20",
+    "related_project_ids": []
+  },
+  {
     "objectID": "vestige",
     "node_type": "project",
     "name": "Vestige",
@@ -49,67 +102,14 @@
     "related_project_ids": []
   },
   {
-    "objectID": "save-the-sun",
-    "node_type": "project",
-    "name": "Save the Sun",
-    "aliases": ["The Oracle and the Wolf"],
-    "what_it_is": "A deduction game where you out-question an Oracle and race a Gemini-played wolf to name the hidden rune first.",
-    "why_it_exists": "Proves an AI can be a live, fallible opponent without ever being trusted with the truth.",
-    "long_description": "A SvelteKit app on Cloud Run where a deterministic engine owns every fact while Gemini interprets Asks, plays the wolf, transcribes speech, and voices both characters — never seeing the secret. Provably winnable every round, keyboard- and screen-reader-complete.",
-    "outcome": "Shipped and deployed live — spoken Oracle and wolf, plus a debug stream proving the engine owns truth. A Gemini + Ode to Turing entry in the June Solstice Game Jam 2026.",
-    "status": "Active · Deployed",
-    "owner": "anchildress1",
-    "image_url": "/projects/save-the-sun.webp",
-    "image_alt": "A rune stone blazing with golden light at sunrise while Sköll, the great wolf, watches from a dark ridge.",
-    "tech": [
-      {
-        "name": "SvelteKit 2 / Svelte 5",
-        "role": "App Framework & SSR"
-      },
-      {
-        "name": "TypeScript",
-        "role": "Application Language"
-      },
-      {
-        "name": "Deterministic Engine",
-        "role": "In-Memory Referee & Source of Truth"
-      },
-      {
-        "name": "Gemini API",
-        "role": "Oracle, Opponent, Speech-to-Text, Text-to-Speech"
-      },
-      {
-        "name": "Google Cloud Run",
-        "role": "Containerized Hosting & Deploy"
-      },
-      {
-        "name": "Vitest · Playwright · axe-core · Lighthouse CI",
-        "role": "Testing & Quality Gates"
-      }
-    ],
-    "blog_posts": [
-      {
-        "title": "The Oracle and the Wolf — I Made Gemini Lose Like a Kid",
-        "url": "https://dev.to/anchildress1/the-oracle-and-the-wolf-i-made-gemini-lose-like-a-kid-3nk5"
-      }
-    ],
-    "project_type": "game",
-    "repo_url": "https://github.com/anchildress1/save-the-sun",
-    "app_url": "https://savethesun.anchildress1.dev",
-    "award": null,
-    "order_rank": 20,
-    "updated_at": "2026-06-20",
-    "related_project_ids": []
-  },
-  {
     "objectID": "unearthed",
     "node_type": "project",
     "name": "Unearthed",
     "aliases": ["coal mine lookup", "energy grid tracer"],
-    "what_it_is": "An award-winning tool that walks the energy supply chain backward, from any U.S. address to the coal mine feeding its grid.",
+    "what_it_is": "A tool that walks the energy supply chain backward, from any U.S. address to the coal mine feeding its grid.",
     "why_it_exists": "Names the exact mine — operator, accidents, emissions — behind every light switch.",
     "long_description": "SvelteKit and FastAPI on Cloud Run trace outlet to power plant to fuel contract to mine, surfacing MSHA accident records, EIA production, and EPA emissions for each. Snowflake Cortex powers natural-language queries; a live tonnage ticker shows extraction in real time.",
-    "outcome": "Earth Day 2026 winner. A deployed tool naming the mine behind any U.S. address, backed by federal MSHA, EIA, and EPA data.",
+    "outcome": "Deployed, and traced any U.S. address back to its mine using federal MSHA, EIA, and EPA data. Won Earth Day 2026.",
     "status": "Retired",
     "owner": "anchildress1",
     "image_url": "/projects/unearthed.webp",
@@ -158,10 +158,10 @@
     "node_type": "project",
     "name": "Carbon Trace",
     "aliases": ["coal and code"],
-    "what_it_is": "An award-winning immersive memoir about fighting to become an engineer when the world wasn't built for you to.",
+    "what_it_is": "An immersive memoir about fighting to become an engineer when the world wasn't built for you to.",
     "why_it_exists": "Turns lived experience with gender bias into something you feel, not just read.",
     "long_description": "A browser-native narrative experience built on Canvas 2D, PixiJS displacement, and GSAP-timed scenes, scored with layered Howler audio. The diamond — pressure into permanence — drives every transition through bias, endurance, and becoming.",
-    "outcome": "WeCoded 2026 winner. A deployed, immersive impact piece that turns a personal story into something audiences feel and remember.",
+    "outcome": "Reaches the people who lived it and the people who never had to. Won WeCoded 2026.",
     "status": "Active · Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/carbon-trace.webp",
