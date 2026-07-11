@@ -5,7 +5,7 @@
       "url": ["http://localhost:3003/"],
       "numberOfRuns": 5,
       "settings": {
-        "chromeFlags": "--headless=new --disable-gpu --no-sandbox",
+        "chromeFlags": "--headless=new --disable-gpu --no-sandbox --disable-dev-shm-usage",
         "preset": "desktop",
         "onlyCategories": ["performance", "accessibility", "best-practices", "seo"],
         "skipAudits": ["uses-http2", "errors-in-console"]
