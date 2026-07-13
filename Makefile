@@ -14,14 +14,14 @@ setup-node:
 # Kill this project's dev and test servers by port (avoids self-kill from pkill -f matching own cmdline)
 kill:
 	@echo "🛑 Killing dev/test servers..."
-	@kill $$(lsof -ti:3000,3002,8000 2>/dev/null) 2>/dev/null || true
+	@kill $$(lsof -ti:3000,3001,3002,3003 2>/dev/null) 2>/dev/null || true
 	@echo "✅ Servers stopped."
 
-# Run the development environment (Turbo)
+# Run the development environment
 dev:
-	@echo "🚀 Starting development servers..."
+	@echo "🚀 Starting development server..."
 	$(MAKE) kill
-	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run dev -- --parallel
+	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run dev
 
 # Format code (Prettier)
 format:
@@ -41,7 +41,7 @@ lint:
 # TypeScript type checking
 typecheck:
 	@echo "🔎 Type checking..."
-	cd apps/web && npx tsc --noEmit
+	npx tsc --noEmit
 
 test:
 	@echo "🧪 Running tests..."
@@ -49,36 +49,12 @@ test:
 
 # Secret scanning (Non-interactive)
 secret-scan:
-	@echo "🔐 Scanning for secrets..."
-	@_run_scan() { \
-		SCANNER="$$1"; \
-		$$SCANNER scan --exclude-files 'node_modules|dist|.next|.turbo|.venv|.secrets.baseline|.secrets.baseline.tmp' > .secrets.baseline.tmp 2>&1 || true; \
-		if [ ! -f .secrets.baseline.tmp ]; then \
-			echo "⚠️ detect-secrets scan did not produce output. Skipping."; \
-			return 0; \
-		fi; \
-		if [ -f .secrets.baseline ]; then \
-			echo "Checking against baseline..."; \
-			NEW_SECRETS=$$($$SCANNER scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results | length' 2>/dev/null || echo 0); \
-			if [ "$${NEW_SECRETS:-0}" -gt 0 ]; then \
-				echo "❌ New secrets found! Run 'detect-secrets audit .secrets.baseline' to review."; \
-				$$SCANNER scan --baseline .secrets.baseline --exclude-files 'node_modules|dist|.next|.turbo|.venv' | jq '.results'; \
-				rm -f .secrets.baseline.tmp; \
-				return 1; \
-			else \
-				echo "✅ No new secrets found. Updating baseline timestamp."; \
-				[ -f .secrets.baseline.tmp ] && mv .secrets.baseline.tmp .secrets.baseline || true; \
-			fi; \
-		else \
-			[ -f .secrets.baseline.tmp ] && mv .secrets.baseline.tmp .secrets.baseline && echo "✅ Secrets baseline created at .secrets.baseline" || echo "⚠️ Could not create baseline."; \
-		fi; \
-	}; \
-	if command -v uvx > /dev/null; then \
-		_run_scan "uvx --from detect-secrets==1.5.0 detect-secrets" || exit 1; \
-	elif command -v detect-secrets > /dev/null; then \
-		_run_scan "detect-secrets" || exit 1; \
+	@echo "🔐 Scanning for secrets (gitleaks)..."
+	@if command -v gitleaks > /dev/null; then \
+		gitleaks dir . --redact --no-banner; \
 	else \
-		echo "⚠️ detect-secrets not found. Skipping scan."; \
+		echo "❌ gitleaks not found. Install with 'brew install gitleaks'."; \
+		exit 1; \
 	fi
 
 # Run Playwright E2E tests
@@ -101,7 +77,7 @@ test-perf:
 	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=test_ai_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
-	npm run test:perf -w apps/web
+	npm run test:perf
 
 # Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
 # Note: Includes build step to ensure artifacts exist before tests
@@ -131,11 +107,7 @@ deploy:
 clean:
 	@echo "🧹 Cleaning up..."
 	rm -rf node_modules
-	rm -rf .turbo
-	rm -rf apps/web/.next
-	rm -rf apps/web/node_modules
-	rm -rf packages/*/node_modules
-	rm -rf packages/*/dist
-	rm -f .secrets.baseline.tmp
+	rm -rf .next
+	rm -rf coverage
 	@echo "✨ Clean complete."
 

@@ -3,7 +3,7 @@ set -e
 
 # Configuration
 UI_SERVICE="system-notes"
-UI_SOURCE="apps/web"
+UI_SOURCE="."
 UI_PORT="3000"
 
 REGION="${GCP_REGION:-us-east1}"
@@ -218,7 +218,7 @@ deploy_service() {
         # Use cloudbuild.yaml for web app with build args
         # Prefix sensitive vars with _ to prevent Cloud Build from logging them
         submit_build "$source_dir" \
-            --config "apps/web/cloudbuild.yaml" \
+            --config "cloudbuild.yaml" \
             --substitutions "_IMAGE_URI=$image_uri,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=$NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME,_NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME"
     else
         # Standard build from root of service directory
@@ -298,7 +298,7 @@ UI_ENV_VARS+=",NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}"
 UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME}"
 UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=${NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME}"
 
-deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "$UI_ENV_VARS" "apps/web/Dockerfile"
+deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "$UI_ENV_VARS" "Dockerfile"
 
 echo ""
 echo "$SEPARATOR"

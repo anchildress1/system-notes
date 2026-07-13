@@ -1,40 +1,48 @@
 # Security Rules
 
-This document defines strict security rules for the `system-notes` repository. These rules must be followed to prevent vulnerabilities, specifically path traversal and unauthorized file access.
+Strict security rules for the `system-notes` repository. Follow these whenever you change code that fetches remote content, loads files, or resolves paths. Default to deny on any validation failure.
 
-## 1. Path Traversal Prevention
+## 1. Outbound Fetch / SSRF Prevention
 
-### Rule 1.1: No Direct User Input in Path Construction
+The blog aggregation route (`src/app/api/blog/search/route.ts`) fetches an untrusted external sitemap and post pages. Any change to outbound fetching must preserve these invariants.
 
-**Violation:** Using unvalidated user input directly in `os.path.join`, `pathlib.Path.joinpath`, or the `/` operator.
-**Requirement:** All user-provided strings used for file paths must be strictly validated _before_ being used in any path construction function.
+### Rule 1.1: Treat remote content as untrusted
 
-### Rule 1.2: Ban ".."
+Sitemap `<loc>` entries and post HTML are attacker-influenceable. Never follow a URL derived from them without validation.
 
-**Violation:** Allowing the string `..` in any path variable derived from user input.
-**Requirement:** Explicitly reject any input containing `..` before doing any filesystem operations or path resolution.
+### Rule 1.2: Same-host allowlist
 
-### Rule 1.3: Strict Allowlist for Filenames (when possible)
+Only fetch URLs whose hostname matches the known sitemap host **and** whose path matches the expected shape (e.g. `/posts/`). Reject everything else.
 
-**Guidance:** If the set of files is known, map user input to specific allowed filenames/IDs rather than accepting raw paths.
-**Requirement:** If raw paths are necessary, enforce a strict character set (e.g., `^[a-zA-Z0-9_./-]+$`).
+### Rule 1.3: Bounded requests
 
-### Rule 1.4: Resolve and Verify Root
+Every outbound fetch must set a timeout (`AbortSignal.timeout`) and tolerate failure by returning empty or partial results — never by throwing into the request path.
 
-**Requirement:**
+## 2. Path Traversal Prevention (if local file serving is added)
 
-1. Resolve the final path to an absolute path.
-2. Verify that the resolved path is within the intended directory (sandbox).
-3. Use `pathlib.Path.is_relative_to()` (Python) or equivalent secure methods.
+No local file serving exists today. If any is introduced, these become mandatory:
 
-## 2. File Extension Restrictions
+### Rule 2.1: No direct user input in path construction
 
-### Rule 2.1: Safe Extensions Only
+Validate all user-provided path strings _before_ using them in any path join or resolve.
 
-**Violation:** Serving potential script files or secrets (e.g., `.py`, `.env`, `.sh`, `.yml`).
-**Requirement:** When serving static content or docs, strictly whitelist allowed extensions (e.g., `.md`, `.json`, `.txt`).
+### Rule 2.2: Ban ".."
+
+Explicitly reject any input containing `..` before any filesystem operation or path resolution.
+
+### Rule 2.3: Strict allowlist for filenames (when possible)
+
+Map user input to known allowed filenames/IDs rather than accepting raw paths. If raw paths are unavoidable, enforce a strict character set (e.g. `^[a-zA-Z0-9_./-]+$`).
+
+### Rule 2.4: Resolve and verify root
+
+Resolve the final path to an absolute path, then verify it stays within the intended sandbox directory before use.
+
+### Rule 2.5: Safe extensions only
+
+When serving static content or docs, whitelist allowed extensions (`.md`, `.json`, `.txt`) and never serve `.env`, `.sh`, `.yml`, or source files.
 
 ## 3. Review Process
 
-- Any change touching file access logic must be reviewed against these rules.
-- Automated security scanners (CodeQL, etc.) must pass.
+- Any change touching outbound fetches or file access must be reviewed against these rules.
+- `gitleaks` secret scanning and automated security scanners must pass.

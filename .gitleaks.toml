@@ -1,0 +1,28 @@
+# gitleaks config — extends the built-in ruleset.
+# Local secret store (.env) and generated/vendored dirs are allowlisted;
+# real secrets belong only in .env (gitignored) or a vault.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Repo-wide allowlist"
+paths = [
+  '''(^|/)node_modules/''',
+  '''(^|/)\.next/''',
+  '''(^|/)coverage/''',
+  '''(^|/)dist/''',
+  '''(^|/)test-results/''',
+  '''(^|/)playwright-report/''',
+  '''(^|/)\.playwright-mcp/''',
+  '''(^|/)\.env$''',
+  '''(^|/)package-lock\.json$''',
+]
+# Non-secret placeholders used by tests, CI, and the Makefile.
+regexes = [
+  '''test_search_key(_valid_length_20)?''',
+  '''test_(app_id|agent_id|ai_id)''',
+  '''TESTAPPID1''',
+  '''mck_agent_id''',
+  '''my-public-index''',
+  '''12345678901234567890abcdef123456''',
+]

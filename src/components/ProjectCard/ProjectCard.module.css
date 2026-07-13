@@ -1,0 +1,583 @@
+@keyframes cardFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cardLink {
+  display: block;
+  width: 100%;
+  height: 100%;
+  perspective: 1400px;
+  animation: cardFadeInUp 0.4s ease backwards;
+  /* Card width tracks column count, not viewport: ~332px in the 3-up grid but
+     ~672px single-column at 720px. Viewport media queries scale the interior
+     backwards across a column change, so the interior sizes off the card. */
+  container-type: inline-size;
+}
+
+.cardLinkFlipped {
+  position: relative;
+  z-index: 10;
+}
+
+.card {
+  position: relative;
+  height: 100%;
+  min-height: 520px;
+  border-radius: var(--r-xl);
+  display: flex;
+  flex-direction: column;
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
+}
+
+.card:hover {
+  box-shadow:
+    0 0 calc(18px * var(--glow)) var(--card-accent-soft),
+    var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+.card:hover .cardFront,
+.card:hover .cardBack {
+  border-color: color-mix(in srgb, var(--card-accent) 40%, var(--border-strong));
+}
+
+.flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.flipped .flipper {
+  transform: rotateY(180deg);
+}
+
+.cardFront {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* Explicit identity transform so Firefox treats the front as a 3D plane and
+     actually backface-culls it when the flipper rotates. Without an own
+     transform Firefox skips the cull and the front shows mirrored through the
+     back. Chrome culls either way. */
+  transform: rotateY(0deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: border-color var(--transition-base);
+}
+
+.flipped .cardFront {
+  pointer-events: none;
+}
+
+.cardBack {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: inherit;
+  overflow: hidden;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  pointer-events: none;
+  transition: border-color var(--transition-base);
+  background: var(--card-surface-back);
+}
+
+.flipped .cardBack {
+  pointer-events: auto;
+}
+
+.cardBack::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--seam-width);
+  z-index: 3;
+  background: var(--card-seam);
+}
+
+.cardBack::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(180deg, black, transparent 45%);
+  mask-image: linear-gradient(180deg, black, transparent 45%);
+}
+
+.flipButton {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: inherit;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.imageContainer {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  /* A 2/1 banner on a 672px single-column card is 336px of art before any prose.
+     Capping the height bends the ratio toward 21/9 as the card grows, which a
+     second aspect-ratio would only do as a jump partway through the range. */
+  max-height: 288px;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-deep);
+  flex-shrink: 0;
+  isolation: isolate;
+}
+
+.imageWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.conceptBackground {
+  position: absolute;
+  inset: 0;
+  background: var(--paper-dim);
+  z-index: 0;
+}
+
+.conceptBackground::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
+  background-size: 20px 20px;
+  z-index: 1;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition:
+    transform var(--transition-slow),
+    filter var(--transition-slow);
+  position: relative;
+  z-index: 2;
+  filter: grayscale(100%) saturate(0.82) contrast(1.04) brightness(1.06);
+}
+
+.card:hover .image {
+  transform: scale(1.06);
+  filter: grayscale(0%) saturate(1.06) contrast(1.03) brightness(1.08);
+}
+
+.imageContainer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(8, 7, 13, 0.02), rgba(8, 7, 13, 0.2)),
+    linear-gradient(135deg, rgba(8, 7, 13, 0.1), rgba(8, 7, 13, 0.01));
+  z-index: 3;
+  pointer-events: none;
+  transition: background var(--transition-slow);
+}
+
+.card:hover .imageContainer::before {
+  background:
+    linear-gradient(180deg, rgba(8, 7, 13, 0), rgba(8, 7, 13, 0.08)),
+    linear-gradient(135deg, rgba(8, 7, 13, 0.04), rgba(8, 7, 13, 0));
+}
+
+.placeholderArt {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper-dim);
+  position: relative;
+}
+
+.placeholderArt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.initials {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+/* Interior scales continuously with the card, not in steps: a step placed at a
+   card width lands mid-column-count, so the same drag that narrows the window
+   widens the card and the type jumps backwards. Anchors: 22px/26px at the
+   ~447px 3-up card, 28px/32px at the ~672px single-column card. */
+.content {
+  --card-pad-y: clamp(18px, 16.2px + 1.76cqi, 28px);
+  --card-pad-x: clamp(20px, 14.2px + 2.64cqi, 32px);
+  padding: var(--card-pad-y) var(--card-pad-x) calc(var(--card-pad-y) + 2px);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 8.9px + 1.05cqi, 16px);
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.sourceLinkRaise {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(19px, 10.2px + 2.64cqi, 28px);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.1;
+  color: var(--text-primary);
+  /* Long titles wrap instead of shoving the repo link out of the row. */
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.awardRow {
+  display: flex;
+  align-self: flex-start;
+  max-width: 100%;
+  /* Pulls the pill up toward the title; the .content gap is sized for prose. */
+  margin-top: -4px;
+}
+
+.description {
+  font-family: var(--font-mono);
+  font-size: clamp(12.5px, 11.35px + 0.4cqi, 14px);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.techRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.footState {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footDot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--text-primary);
+  box-shadow: 0 0 calc(8px * var(--glow)) rgba(255, 255, 255, 0.42);
+  flex-shrink: 0;
+}
+
+.footDotRetired {
+  background: var(--text-dim);
+  box-shadow: none;
+}
+
+.footRead {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: color var(--transition-base);
+}
+
+.footRead svg {
+  color: var(--text-primary);
+  transition: transform var(--transition-base);
+}
+
+.card:hover .footRead {
+  color: var(--text-primary);
+}
+
+.card:hover .footRead svg {
+  transform: translateX(3px);
+}
+
+/* ── Back face (the flipped project note) ── */
+.backHeader {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.backTitleRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+}
+
+.backTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+
+.backStatus {
+  padding: 3px 9px;
+  /* Plain neutral pill — matches the other neutral badges, no per-card accent. */
+  border: 1px solid color-mix(in srgb, var(--accent-violet) 34%, var(--border));
+  border-radius: var(--r-pill);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-secondary);
+}
+
+.backClose {
+  --btn-icon-size: 36px;
+  flex-shrink: 0;
+}
+
+.backContent {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.backLede {
+  margin: 0;
+  padding-left: 12px;
+  border-left: 1px solid var(--card-accent);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.backBody {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.backSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.backLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--card-accent);
+}
+
+/* Hairline rule trailing each section label. */
+.backLabel::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-strong), transparent);
+}
+
+.backTech {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.backTechItem {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.backTechItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.backTechName {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.backTechRole {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-style: italic;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.backLinks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.backLinks a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+  transition: color var(--transition-base);
+}
+
+.backLinks a::before {
+  content: '↳';
+  color: var(--card-accent);
+}
+
+.backLinks a:hover {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-muted);
+}
+
+/* Visual treatment is the Button (secondary) primitive; this only carries the
+   full-width footer layout. Scoped under .cardBack so the layout outranks the
+   primitive's own rules no matter the stylesheet order. */
+.cardBack .backActions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 24px 22px;
+  flex-shrink: 0;
+}
+
+.cardBack .backAction {
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+  padding: 0.65rem 0.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardLink {
+    animation: none;
+  }
+
+  .flipper {
+    transition: none;
+  }
+
+  .card:hover .image,
+  .card:hover .footRead svg {
+    transform: none;
+  }
+}

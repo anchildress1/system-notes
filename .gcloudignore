@@ -2,9 +2,6 @@
 .gitignore
 node_modules/
 .next/
-.turbo/
-.venv/
-__pycache__/
 coverage/
 test-results/
 playwright-report/
@@ -18,6 +15,3 @@ out/
 *.tmp
 lighthouse.json
 .lighthouseci/
-
-apps/api/algolia/
-algolia_upload.sh
