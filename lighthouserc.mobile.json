@@ -3,7 +3,7 @@
     "collect": {
       "startServerCommand": "PORT=3001 node .next/standalone/server.js",
       "url": ["http://localhost:3001/"],
-      "numberOfRuns": 5,
+      "numberOfRuns": 9,
       "settings": {
         "chromeFlags": "--headless=new --disable-gpu --no-sandbox --disable-dev-shm-usage",
         "onlyCategories": ["performance", "accessibility", "best-practices", "seo"],
