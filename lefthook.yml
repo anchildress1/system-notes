@@ -10,7 +10,6 @@ pre-commit:
       stage_fixed: true
     scan-secrets:
       run: make secret-scan
-      stage_fixed: true
 
 commit-msg:
   commands:

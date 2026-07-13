@@ -1,0 +1,50 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "PORT=3003 node .next/standalone/server.js",
+      "url": ["http://localhost:3003/"],
+      "numberOfRuns": 5,
+      "settings": {
+        "chromeFlags": "--headless=new --disable-gpu --no-sandbox --disable-dev-shm-usage",
+        "preset": "desktop",
+        "onlyCategories": ["performance", "accessibility", "best-practices", "seo"],
+        "skipAudits": ["uses-http2", "errors-in-console"]
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": [
+          "error",
+          {
+            "minScore": 1,
+            "aggregationMethod": "median-run"
+          }
+        ],
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 0.95,
+            "aggregationMethod": "median-run"
+          }
+        ],
+        "categories:best-practices": [
+          "error",
+          {
+            "minScore": 1,
+            "aggregationMethod": "median-run"
+          }
+        ],
+        "categories:seo": [
+          "error",
+          {
+            "minScore": 0.95,
+            "aggregationMethod": "median-run"
+          }
+        ]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

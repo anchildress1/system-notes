@@ -1,0 +1,62 @@
+/* Shared badge primitive. Hue for `accent` flows from [data-accent] (the global
+   card-accent token system). `award` is the flowing multi-neon winner pill. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+  line-height: 1.4;
+  border: 1px solid transparent;
+}
+
+.badge[data-variant='neutral'] {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: color-mix(in srgb, var(--accent-violet) 34%, var(--border));
+}
+
+.badge[data-variant='accent'] {
+  background: rgba(181, 101, 245, 0.1);
+  color: var(--card-accent);
+  border-color: color-mix(in srgb, var(--card-accent) 56%, transparent);
+}
+
+/* Winner badge: dark-glass chip with a flowing chromatic gradient BORDER and
+   light text — readable on every gradient stop, and more premium than a flat
+   gradient fill. The trophy reads gold. */
+.badge[data-variant='award'] {
+  position: relative;
+  padding: 5px 13px;
+  color: var(--text-primary);
+  font-weight: 600;
+  border: 1.5px solid transparent;
+  /* Award names are long and sit in a fluid card column, so this variant wraps
+     where the shared pill does not. */
+  white-space: normal;
+  background:
+    linear-gradient(var(--bg-elevated), var(--bg-elevated)) padding-box,
+    var(--gradient-brand) border-box;
+  background-size:
+    auto,
+    240% 100%;
+  box-shadow:
+    0 8px 24px -10px rgba(0, 0, 0, 0.66),
+    0 0 calc(20px * var(--glow)) color-mix(in srgb, var(--accent-violet) 32%, transparent);
+}
+
+.badge[data-variant='award'] .icon {
+  color: var(--accent-gold);
+}
+
+.icon {
+  display: inline-flex;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}

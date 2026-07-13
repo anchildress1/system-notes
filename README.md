@@ -6,7 +6,7 @@
 
 <!-- Tech Stack -->
 
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white) ![Next JS](https://img.shields.io/badge/Next-black?logo=next.js&logoColor=white) ![Python](https://img.shields.io/badge/python-3670A0?logo=python&logoColor=ffdd54) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?logo=fastapi)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white) ![Next JS](https://img.shields.io/badge/Next-black?logo=next.js&logoColor=white) ![Algolia](https://img.shields.io/badge/Algolia-003DFF?logo=algolia&logoColor=white)
 
 ![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?logo=google-cloud&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white) ![Release Please](https://img.shields.io/badge/Release_Please-Configured-brightgreen)
 
@@ -24,20 +24,20 @@ It is **Incomplete by Design**.
 
 [Read the full System Architecture](./ARCHITECTURE.md)
 
-This monorepo houses the full stack of the system:
+One Next.js app, no backend to babysit:
 
-- **apps/web**: The face. A Next.js frontend that believes in "More Sparkles, More Problems" but handles them anyway.
-- **apps/api**: The brain. A FastAPI service that talks to LLMs so you don't have to guess what I was thinking.
+- **The app**: The whole show. A single Next.js app that believes in "More Sparkles, More Problems" and handles them anyway — UI, search, and the AI chat all live here.
+- **Search & brains**: Algolia does the heavy lifting (search + AI), and a lone Next.js route handler (`/api/blog/search`) aggregates my DEV blog on the side. No separate service to keep alive at 3am.
 
 ## Quick Start
 
 We use a `Makefile` to keep things civilized.
 
 ```bash
-# Setup everything (Node + Python + vibes)
+# Setup everything (Node + vibes)
 make setup
 
-# Run the development environment (Frontend + Backend)
+# Run the development environment
 make dev
 
 # Run all the checks because you care about quality
