@@ -32,7 +32,12 @@ export default function Header() {
       </a>
 
       <div className={styles.row}>
-        <Link href="/" className={styles.brand} aria-label="Ashley Childress, home">
+        <Link
+          href="/"
+          prefetch={false}
+          className={styles.brand}
+          aria-label="Ashley Childress, home"
+        >
           <div className={styles.brandMark} aria-hidden="true">
             <Image
               src="/system-notes-icon-v2.svg"
@@ -57,6 +62,7 @@ export default function Header() {
             <Link
               key={href}
               href={href}
+              prefetch={false}
               className={`${styles.navLink} ${pathname === href ? styles.active : ''}`}
             >
               {label}
