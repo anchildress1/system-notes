@@ -1,5 +1,58 @@
 [
   {
+    "objectID": "commit-chronicles",
+    "node_type": "project",
+    "name": "Commit Chronicles",
+    "aliases": ["commit story card", "git wrapped", "commit history reader"],
+    "what_it_is": "A card generator that reads one public repo's commit history and tells you what you were obsessed with — the 3am streak, the 107-day silence, the return.",
+    "why_it_exists": "Proves a model can find something true in a commit history without being allowed to invent it.",
+    "long_description": "Snowflake does all of it. An external access integration pulls the repo from inside the warehouse, fifteen SQL views score six storylines and pick exactly one, and a UDF over AI_COMPLETE narrates that single thread — 20 to 140 commit lines, never the whole history. Thirteen SQL checks run before a card exists, so it fails loudly instead of rendering a lie.",
+    "outcome": "Live and generating, capped at 140 commit lines per repo. Nothing to say gets a grey card, not a fabrication. Best Use of Snowflake, DEV Weekend Challenge: Passion Edition.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/commit-chronicles.webp",
+    "image_alt": "Commit Chronicles card plotting a repository's commits by date and hour, the night commits solid against a dark canvas",
+    "tech": [
+      {
+        "name": "Snowflake Cortex",
+        "role": "The One Model Call"
+      },
+      {
+        "name": "Snowflake SQL",
+        "role": "The Editor · 15 Views"
+      },
+      {
+        "name": "External Access Integration",
+        "role": "In-Warehouse Ingest"
+      },
+      {
+        "name": "Google Cloud Run",
+        "role": "Render & Queue"
+      },
+      {
+        "name": "snow CLI",
+        "role": "Deploy"
+      },
+      {
+        "name": "Google Cloud Storage",
+        "role": "The State"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Commit Chronicles — Your Obsession Leaves a Trail. Mine Gives It a Plot.",
+        "url": "https://dev.to/anchildress1/commit-chronicles-your-obsession-leaves-a-trail-mine-gives-it-a-plot-h8j"
+      }
+    ],
+    "project_type": "tool",
+    "repo_url": "https://github.com/anchildress1/commit-chronicles",
+    "app_url": "https://commitchronicles.anchildress1.dev",
+    "award": null,
+    "order_rank": 1,
+    "updated_at": "2026-07-13",
+    "related_project_ids": ["rai-lint"]
+  },
+  {
     "objectID": "save-the-sun",
     "node_type": "project",
     "name": "Save the Sun",
@@ -42,6 +95,10 @@
       {
         "title": "The Oracle and the Wolf — I Made Gemini Lose Like a Kid",
         "url": "https://dev.to/anchildress1/the-oracle-and-the-wolf-i-made-gemini-lose-like-a-kid-3nk5"
+      },
+      {
+        "title": "Congrats to the June Solstice Game Jam Winners",
+        "url": "https://dev.to/devteam/congrats-to-the-june-solstice-game-jam-winners-46c0"
       }
     ],
     "project_type": "game",
@@ -97,7 +154,7 @@
     "repo_url": "https://github.com/anchildress1/vestige",
     "app_url": "https://github.com/anchildress1/vestige/releases",
     "award": null,
-    "order_rank": 10,
+    "order_rank": 48,
     "updated_at": "2026-05-24",
     "related_project_ids": []
   },
@@ -144,6 +201,10 @@
       {
         "title": "Unearthed—The Coal Mine Behind Every Light Switch",
         "url": "https://dev.to/anchildress1/unearthed-the-coal-mine-behind-every-light-switch-234m"
+      },
+      {
+        "title": "Announcing the Winners of the DEV Weekend Challenge: Earth Day Edition",
+        "url": "https://dev.to/devteam/announcing-the-winners-of-the-dev-weekend-challenge-earth-day-edition-1n4"
       }
     ],
     "award": "Earth Day 2026 Winner",
@@ -192,6 +253,10 @@
       {
         "title": "Forged Between Coal and Code",
         "url": "https://dev.to/anchildress1/forged-between-coal-and-code-phi"
+      },
+      {
+        "title": "Congrats to the 2026 WeCoded Challenge Winners",
+        "url": "https://dev.to/devteam/congrats-to-the-2026-wecoded-challenge-winners-2pee"
       }
     ],
     "project_type": "experience",
@@ -200,6 +265,49 @@
     "award": "WeCoded 2026 Winner",
     "order_rank": 40,
     "updated_at": "2026-04-13",
+    "related_project_ids": ["unearthed"]
+  },
+  {
+    "objectID": "metal-birds-feed",
+    "node_type": "project",
+    "name": "Metal Birds Feed",
+    "aliases": ["aircraft registry", "aviation dataset", "icao24 lookup", "open aviation data"],
+    "what_it_is": "A unified global aircraft registry assembled from public civil-aviation sources, normalized to one schema and stripped of personal data.",
+    "why_it_exists": "Builds the free, clean, comprehensive aviation registry that doesn't otherwise exist.",
+    "long_description": "FAA is the schema baseline; other registries extend it only when they publish something structurally new. AI writes field mappings, never transform code, so one engine covers every country instead of a parser per nation. Each build ships as an immutable static snapshot — no database to pay for.",
+    "outcome": "One schema across every source, each carrying a license posture on record — Open, Personal-use, or Excluded. No paid aviation API in the stack.",
+    "status": "Active",
+    "owner": "anchildress1",
+    "image_url": "/projects/metal-birds-feed.webp",
+    "image_alt": "Metal Birds Feed registry unifying aircraft records from global civil aviation authorities into a single normalized schema",
+    "tech": [
+      {
+        "name": "FAA Registry",
+        "role": "Canonical Schema Baseline"
+      },
+      {
+        "name": "Config-Driven Mapping",
+        "role": "One Engine, Every Country"
+      },
+      {
+        "name": "AI Field Mapping",
+        "role": "Mappings, Never Code"
+      },
+      {
+        "name": "Versioned Snapshots",
+        "role": "Immutable & Diffable"
+      },
+      {
+        "name": "Static Dataset",
+        "role": "No Database, No Infra"
+      }
+    ],
+    "blog_posts": [],
+    "project_type": "resource",
+    "repo_url": "https://github.com/anchildress1/metal-birds-feed",
+    "award": null,
+    "order_rank": 45,
+    "updated_at": "2026-06-03",
     "related_project_ids": []
   },
   {
@@ -331,7 +439,7 @@
     "why_it_exists": "Surfaces the posts where a thoughtful human reply actually matters most.",
     "long_description": "Built on the Forem API with Node and TypeScript on Cloud Run, it scores posts by engagement and conversational signal — not recency — using LLM analysis to flag high-need, low-interaction questions before they quietly disappear beneath higher-performing content.",
     "outcome": "A deployed triage layer that helps volunteers answer unanswered questions and emerging discussions faster.",
-    "status": "Active · Deployed",
+    "status": "Retired",
     "owner": "anchildress1",
     "image_url": "/projects/dev-community-dashboard.webp",
     "image_alt": "DEV Community Dashboard interface showing prioritized posts and signal-based interaction metrics",
@@ -365,7 +473,6 @@
     ],
     "project_type": "tool",
     "repo_url": "https://github.com/anchildress1/dev-community-dashboard",
-    "app_url": "https://dev-community-dashboard.checkmarkdevtools.dev",
     "order_rank": 70,
     "updated_at": "2026-03-04",
     "related_project_ids": []
