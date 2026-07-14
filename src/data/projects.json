@@ -202,7 +202,7 @@
     "objectID": "metal-birds-feed",
     "name": "Metal Birds Feed",
     "what_it_is": "A unified global aircraft registry assembled from public civil-aviation sources, normalized to one schema and stripped of personal data.",
-    "why_it_exists": "Every open aviation dataset is paid, partial, or leaking names. This one is none of those.",
+    "why_it_exists": "No two countries' registries share a schema, and most carry owner names. This unifies both away.",
     "long_description": "FAA is the schema baseline; other registries extend it only when they publish something structurally new. Country differences become config-driven field mappings instead of one-off parsers, so one engine covers every country. Each build ships as an immutable, versioned static snapshot — no database to run or pay for.",
     "outcome": "One schema across every source, each carrying a license posture on record — Open, Personal-use, or Excluded. No paid aviation API in the stack.",
     "status": "Active",
