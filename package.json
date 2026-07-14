@@ -1,6 +1,6 @@
 {
   "name": "system-notes",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000",
