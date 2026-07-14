@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.2](https://github.com/anchildress1/system-notes/compare/v2.5.1...v2.5.2) (2026-07-14)
+
+
+### Bug Fixes
+
+* **projects:** add two new project cards and correct existing card data ([#99](https://github.com/anchildress1/system-notes/issues/99)) ([5bdd946](https://github.com/anchildress1/system-notes/commit/5bdd946963f84dc44a6089bf782b49ff2af69c10))
+
 ## [2.5.1](https://github.com/anchildress1/system-notes/compare/v2.5.0...v2.5.1) (2026-06-26)
 
 
