@@ -1,9 +1,55 @@
 [
   {
+    "objectID": "commit-chronicles",
+    "name": "Commit Chronicles",
+    "what_it_is": "A card generator that reads one public repo's commit history and tells you what you were obsessed with — the 3am streak, the 107-day silence, the return.",
+    "why_it_exists": "Proves a model can find something true in a commit history without being allowed to invent it.",
+    "long_description": "Snowflake does all of it. An external access integration pulls the repo from inside the warehouse, fifteen SQL views score six storylines and pick exactly one, and a UDF over AI_COMPLETE narrates that single thread — 20 to 140 commit lines, never the whole history. Thirteen SQL checks run before a card exists, so it fails loudly instead of rendering a lie.",
+    "outcome": "Live and generating, capped at 140 commit lines per repo. Nothing to say gets a grey card, not a fabrication. Best Use of Snowflake, DEV Weekend Challenge: Passion Edition.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/commit-chronicles.webp",
+    "image_alt": "Commit Chronicles card plotting a repository's commits by date and hour, the night commits solid against a dark canvas",
+    "tech": [
+      {
+        "name": "Snowflake Cortex",
+        "role": "The One Model Call"
+      },
+      {
+        "name": "Snowflake SQL",
+        "role": "The Editor · 15 Views"
+      },
+      {
+        "name": "External Access Integration",
+        "role": "In-Warehouse Ingest"
+      },
+      {
+        "name": "Hono",
+        "role": "TypeScript Backend Framework"
+      },
+      {
+        "name": "resvg",
+        "role": "SVG → PNG Card Rasterizer"
+      },
+      {
+        "name": "Google Cloud Run · Tasks · Storage",
+        "role": "Serverless Runtime & State"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Commit Chronicles — Your Obsession Leaves a Trail. Mine Gives It a Plot.",
+        "url": "https://dev.to/anchildress1/commit-chronicles-your-obsession-leaves-a-trail-mine-gives-it-a-plot-h8j"
+      }
+    ],
+    "repo_url": "https://github.com/anchildress1/commit-chronicles",
+    "app_url": "https://commitchronicles.anchildress1.dev",
+    "award": null,
+    "order_rank": 10
+  },
+  {
     "objectID": "save-the-sun",
-    "node_type": "project",
     "name": "Save the Sun",
-    "aliases": ["The Oracle and the Wolf"],
     "what_it_is": "A deduction game where you out-question an Oracle and race a Gemini-played wolf to name the hidden rune first.",
     "why_it_exists": "Proves an AI can be a live, fallible opponent without ever being trusted with the truth.",
     "long_description": "A SvelteKit app on Cloud Run where a deterministic engine owns every fact while Gemini interprets Asks, plays the wolf, transcribes speech, and voices both characters — never seeing the secret. Provably winnable every round, keyboard- and screen-reader-complete.",
@@ -22,10 +68,6 @@
         "role": "Application Language"
       },
       {
-        "name": "Deterministic Engine",
-        "role": "In-Memory Referee & Source of Truth"
-      },
-      {
         "name": "Gemini API",
         "role": "Oracle, Opponent, Speech-to-Text, Text-to-Speech"
       },
@@ -42,74 +84,24 @@
       {
         "title": "The Oracle and the Wolf — I Made Gemini Lose Like a Kid",
         "url": "https://dev.to/anchildress1/the-oracle-and-the-wolf-i-made-gemini-lose-like-a-kid-3nk5"
+      },
+      {
+        "title": "Congrats to the June Solstice Game Jam Winners",
+        "url": "https://dev.to/devteam/congrats-to-the-june-solstice-game-jam-winners-46c0"
       }
     ],
-    "project_type": "game",
     "repo_url": "https://github.com/anchildress1/save-the-sun",
     "app_url": "https://savethesun.anchildress1.dev",
     "award": "June Solstice Game Jam 2026 Winner",
-    "order_rank": 5,
-    "updated_at": "2026-06-20",
-    "related_project_ids": []
-  },
-  {
-    "objectID": "vestige",
-    "node_type": "project",
-    "name": "Vestige",
-    "aliases": ["brain tracker", "cognition tracker", "adhd tool"],
-    "what_it_is": "An on-device ADHD brain tracker for Android: 30-second voice entries in, sourced behavioral patterns out. No grading, no gamification.",
-    "why_it_exists": "On-device ADHD recall, built so nothing — not even your voice — ever leaves the phone.",
-    "long_description": "Gemma 4 E4B takes native audio (no SpeechRecognizer) and streams transcription plus follow-up, then three background lens passes feed a deterministic Kotlin convergence resolver. EmbeddingGemma drives tone-word drift; a sealed NetworkGate and a verifyNoTelemetry Gradle task make privacy a build-time guarantee, not a promise.",
-    "outcome": "Gemma 4 Challenge entry. 73% meaningful lens divergence against a 50% bar; 12/12 entries parsed at a 21.2s mean on a Galaxy S24 Ultra.",
-    "status": "Active · Released",
-    "owner": "anchildress1",
-    "image_url": "/projects/vestige.webp",
-    "image_alt": "Vestige Android brain tracker surfacing sourced behavioral patterns from on-device Gemma 4 analysis",
-    "tech": [
-      {
-        "name": "Gemma 4 E4B",
-        "role": "On-Device LLM · Native Audio"
-      },
-      {
-        "name": "EmbeddingGemma 300M",
-        "role": "Tone-Word Clustering"
-      },
-      {
-        "name": "Kotlin + Compose",
-        "role": "Android 14+ UI"
-      },
-      {
-        "name": "ObjectBox",
-        "role": "On-Device Persistence"
-      },
-      {
-        "name": "Gradle · verifyNoTelemetry",
-        "role": "Privacy as a Build Gate"
-      }
-    ],
-    "blog_posts": [
-      {
-        "title": "Vestige: A Gemma 4 Brain Tracker That Won't Blow Smoke Up Your Ass",
-        "url": "https://dev.to/anchildress1/vestige-a-gemma-4-brain-tracker-that-wont-blow-smoke-up-your-ass-5caf"
-      }
-    ],
-    "project_type": "experiment",
-    "repo_url": "https://github.com/anchildress1/vestige",
-    "app_url": "https://github.com/anchildress1/vestige/releases",
-    "award": null,
-    "order_rank": 10,
-    "updated_at": "2026-05-24",
-    "related_project_ids": []
+    "order_rank": 20
   },
   {
     "objectID": "unearthed",
-    "node_type": "project",
     "name": "Unearthed",
-    "aliases": ["coal mine lookup", "energy grid tracer"],
     "what_it_is": "A tool that walks the energy supply chain backward, from any U.S. address to the coal mine feeding its grid.",
     "why_it_exists": "Names the exact mine — operator, accidents, emissions — behind every light switch.",
     "long_description": "SvelteKit and FastAPI on Cloud Run trace outlet to power plant to fuel contract to mine, surfacing MSHA accident records, EIA production, and EPA emissions for each. Snowflake Cortex powers natural-language queries; a live tonnage ticker shows extraction in real time.",
-    "outcome": "Deployed, and traced any U.S. address back to its mine using federal MSHA, EIA, and EPA data. Won Earth Day 2026.",
+    "outcome": "Ran in production tracing any U.S. address back to its mine via federal MSHA, EIA, and EPA data — since retired. Won Earth Day 2026.",
     "status": "Retired",
     "owner": "anchildress1",
     "image_url": "/projects/unearthed.webp",
@@ -118,6 +110,10 @@
       {
         "name": "Snowflake Cortex",
         "role": "AI Query Engine"
+      },
+      {
+        "name": "Anthropic Claude API",
+        "role": "Agentic Q&A · Tool Use"
       },
       {
         "name": "SvelteKit 2",
@@ -144,24 +140,23 @@
       {
         "title": "Unearthed—The Coal Mine Behind Every Light Switch",
         "url": "https://dev.to/anchildress1/unearthed-the-coal-mine-behind-every-light-switch-234m"
+      },
+      {
+        "title": "Announcing the Winners of the DEV Weekend Challenge: Earth Day Edition",
+        "url": "https://dev.to/devteam/announcing-the-winners-of-the-dev-weekend-challenge-earth-day-edition-1n4"
       }
     ],
     "award": "Earth Day 2026 Winner",
-    "project_type": "tool",
     "repo_url": "https://github.com/anchildress1/unearthed",
-    "order_rank": 30,
-    "updated_at": "2026-04-20",
-    "related_project_ids": ["carbon-trace"]
+    "order_rank": 30
   },
   {
     "objectID": "carbon-trace",
-    "node_type": "project",
     "name": "Carbon Trace",
-    "aliases": ["coal and code"],
     "what_it_is": "An immersive memoir about fighting to become an engineer when the world wasn't built for you to.",
     "why_it_exists": "Turns lived experience with gender bias into something you feel, not just read.",
-    "long_description": "A browser-native narrative experience built on Canvas 2D, PixiJS displacement, and GSAP-timed scenes, scored with layered Howler audio. The diamond — pressure into permanence — drives every transition through bias, endurance, and becoming.",
-    "outcome": "Reaches the people who lived it and the people who never had to. Won WeCoded 2026.",
+    "long_description": "A framework-free browser experience — vanilla JS coordinating Canvas 2D rendering, PixiJS displacement shaders, and GSAP-timed scene transitions, synced to layered Howler audio cues through every shift in bias, endurance, and becoming.",
+    "outcome": "Deployed and live, pairing memoir text with real-time PixiJS/GSAP scene transitions and Howler audio cues. Won WeCoded 2026.",
     "status": "Active · Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/carbon-trace.webp",
@@ -192,25 +187,114 @@
       {
         "title": "Forged Between Coal and Code",
         "url": "https://dev.to/anchildress1/forged-between-coal-and-code-phi"
+      },
+      {
+        "title": "Congrats to the 2026 WeCoded Challenge Winners",
+        "url": "https://dev.to/devteam/congrats-to-the-2026-wecoded-challenge-winners-2pee"
       }
     ],
-    "project_type": "experience",
     "repo_url": "https://github.com/anchildress1/carbon-trace",
     "app_url": "https://carbon-trace.anchildress1.dev",
     "award": "WeCoded 2026 Winner",
-    "order_rank": 40,
-    "updated_at": "2026-04-13",
-    "related_project_ids": []
+    "order_rank": 40
+  },
+  {
+    "objectID": "metal-birds-feed",
+    "name": "Metal Birds Feed",
+    "what_it_is": "A unified global aircraft registry assembled from public civil-aviation sources, normalized to one schema and stripped of personal data.",
+    "why_it_exists": "No two countries' registries share a schema, and most carry owner names. This unifies both away.",
+    "long_description": "FAA is the schema baseline; other registries extend it only when they publish something structurally new. Country differences become config-driven field mappings instead of one-off parsers, so one engine covers every country. Each build ships as an immutable, versioned static snapshot — no database to run or pay for.",
+    "outcome": "One schema across every source, each carrying a license posture on record — Open, Personal-use, or Excluded. No paid aviation API in the stack.",
+    "status": "Active",
+    "owner": "anchildress1",
+    "image_url": "/projects/metal-birds-feed.webp",
+    "image_alt": "Metal Birds Feed registry unifying aircraft records from global civil aviation authorities into a single normalized schema",
+    "tech": [
+      {
+        "name": "Bun",
+        "role": "Runtime"
+      },
+      {
+        "name": "TypeScript",
+        "role": "Language"
+      },
+      {
+        "name": "SQLite",
+        "role": "Local Query Store"
+      },
+      {
+        "name": "Cloudflare R2",
+        "role": "Snapshot Storage"
+      },
+      {
+        "name": "GitHub Actions",
+        "role": "Daily Refresh Pipeline"
+      },
+      {
+        "name": "SonarCloud",
+        "role": "Static Analysis"
+      }
+    ],
+    "blog_posts": [],
+    "repo_url": "https://github.com/anchildress1/metal-birds-feed",
+    "award": null,
+    "order_rank": 50
+  },
+  {
+    "objectID": "vestige",
+    "name": "Vestige",
+    "what_it_is": "An on-device ADHD brain tracker for Android: 30-second voice entries in, sourced behavioral patterns out. No grading, no gamification.",
+    "why_it_exists": "On-device ADHD recall, built so nothing — not even your voice — ever leaves the phone.",
+    "long_description": "Gemma 4 E4B takes native audio (no SpeechRecognizer) and streams transcription plus follow-up, then three background lens passes feed a deterministic Kotlin convergence resolver. EmbeddingGemma drives tone-word drift; a sealed NetworkGate and a verifyNoTelemetry Gradle task make privacy a build-time guarantee, not a promise.",
+    "outcome": "Gemma 4 Challenge entry. 73% meaningful lens divergence against a 50% bar; 12/12 entries parsed at a 21.2s mean on a Galaxy S24 Ultra.",
+    "status": "Active · Released",
+    "owner": "anchildress1",
+    "image_url": "/projects/vestige.webp",
+    "image_alt": "Vestige Android brain tracker surfacing sourced behavioral patterns from on-device Gemma 4 analysis",
+    "tech": [
+      {
+        "name": "Gemma 4 E4B",
+        "role": "On-Device LLM · Native Audio"
+      },
+      {
+        "name": "LiteRT-LM",
+        "role": "On-Device Inference Runtime"
+      },
+      {
+        "name": "EmbeddingGemma 300M",
+        "role": "Tone-Word Clustering"
+      },
+      {
+        "name": "Kotlin + Compose",
+        "role": "Android 14+ UI"
+      },
+      {
+        "name": "ObjectBox",
+        "role": "On-Device Persistence"
+      },
+      {
+        "name": "Gradle",
+        "role": "Privacy as a Build Gate"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Vestige: A Gemma 4 Brain Tracker That Won't Blow Smoke Up Your Ass",
+        "url": "https://dev.to/anchildress1/vestige-a-gemma-4-brain-tracker-that-wont-blow-smoke-up-your-ass-5caf"
+      }
+    ],
+    "repo_url": "https://github.com/anchildress1/vestige",
+    "app_url": "https://github.com/anchildress1/vestige/releases",
+    "award": null,
+    "order_rank": 60
   },
   {
     "objectID": "system-notes",
-    "node_type": "project",
     "name": "System Notes",
-    "aliases": ["portfolio site", "challenge site"],
     "what_it_is": "An AI-assembled portfolio site built to test orchestration and authorship boundaries under human supervision.",
     "why_it_exists": "A portfolio that delegates its own construction to AI — and logs every decision.",
-    "long_description": "Rather than hand-author a portfolio, I scoped intent and constraints and let Gemini 3 Pro and Antigravity assemble structure and content. The artifact isn't the site — it's the traceable record of the decisions an AI makes building a system on a leash.",
-    "outcome": "A read-only, AI-assembled site that documents its own decision boundaries instead of curating a narrative.",
+    "long_description": "A Next.js app indexing every project, principle, and post through Algolia, with an AI chat layer for conversational retrieval instead of static browsing. Every merge clears CI-enforced coverage floors and Lighthouse budgets — 100% desktop, 92%+ mobile performance — before it ships.",
+    "outcome": "Live at anchildress1.dev, indexing every project and post through Algolia with a working AI chat layer, deployed on Cloud Run behind its own CI gates.",
     "status": "Active · Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/system-notes.webp",
@@ -229,16 +313,12 @@
         "role": "Search & Retrieval"
       },
       {
-        "name": "FastAPI",
-        "role": "Python API"
-      },
-      {
-        "name": "Turborepo",
-        "role": "Monorepo Build"
-      },
-      {
         "name": "Google Cloud Run",
         "role": "Runtime"
+      },
+      {
+        "name": "Vitest · Playwright · Lighthouse CI",
+        "role": "Testing & Quality Gates"
       }
     ],
     "blog_posts": [
@@ -259,22 +339,17 @@
         "url": "https://dev.to/anchildress1/my-portfolio-doesnt-live-on-the-page-218e"
       }
     ],
-    "project_type": "experiment",
     "repo_url": "https://github.com/anchildress1/system-notes",
     "app_url": "https://anchildress1.dev",
-    "order_rank": 50,
-    "updated_at": "2026-02-08",
-    "related_project_ids": ["underfoot-underground-travel-planner", "devto-mirror"]
+    "order_rank": 70
   },
   {
     "objectID": "rai-lint",
-    "node_type": "project",
     "name": "RAI Lint",
-    "aliases": ["commit attribution", "AI tagging"],
     "what_it_is": "A published linter that hard-enforces AI attribution directly in commit workflows.",
-    "why_it_exists": "Makes AI attribution in commits explicit and enforceable — not implied and ignored.",
-    "long_description": "TypeScript and Python rules plug into commitlint and gitlint to require explicit attribution whenever AI tools touch a commit. Strict and mechanical by design — traceability, not policy theater. Licensed under PolyForm Shield.",
-    "outcome": "Turns invisible AI assistance into explicit, auditable git history — enforced at commit time, not left to convention.",
+    "why_it_exists": "AI touched that commit. Now the history says so — enforced, not just implied.",
+    "long_description": "TypeScript and Python rules plug into commitlint and gitlint, enforcing explicit AI attribution on every commit that touches AI-assisted code. Mechanical and strict by design — a failing git hook, not a policy document nobody reads.",
+    "outcome": "Published to npm and PyPI — and dogfooded on this very repo, where commits fail without proper AI attribution. Enforced at commit time, not left to convention.",
     "status": "Active · Published",
     "owner": "anchildress1",
     "image_url": "/projects/rai-lint.webp",
@@ -311,74 +386,16 @@
         "url": "https://dev.to/anchildress1/signing-your-name-on-ai-assisted-commits-with-rai-footers-2b0o"
       }
     ],
-    "project_type": "tool",
     "repo_url": "https://github.com/anchildress1/rai-lint",
-    "order_rank": 60,
-    "updated_at": "2026-02-01",
-    "related_project_ids": ["eslint-config-echo", "awesome-github-copilot"]
-  },
-  {
-    "objectID": "dev-community-dashboard",
-    "node_type": "project",
-    "name": "DEV Community Dashboard",
-    "aliases": [
-      "DEV triage dashboard",
-      "community attention router",
-      "DEV signal dashboard",
-      "DEV post prioritization tool"
-    ],
-    "what_it_is": "A public signal-triage dashboard that routes volunteer attention to the DEV posts the feed would otherwise bury.",
-    "why_it_exists": "Surfaces the posts where a thoughtful human reply actually matters most.",
-    "long_description": "Built on the Forem API with Node and TypeScript on Cloud Run, it scores posts by engagement and conversational signal — not recency — using LLM analysis to flag high-need, low-interaction questions before they quietly disappear beneath higher-performing content.",
-    "outcome": "A deployed triage layer that helps volunteers answer unanswered questions and emerging discussions faster.",
-    "status": "Active · Deployed",
-    "owner": "anchildress1",
-    "image_url": "/projects/dev-community-dashboard.webp",
-    "image_alt": "DEV Community Dashboard interface showing prioritized posts and signal-based interaction metrics",
-    "tech": [
-      {
-        "name": "Forem API",
-        "role": "Data Source"
-      },
-      {
-        "name": "Node.js",
-        "role": "Application Runtime"
-      },
-      {
-        "name": "TypeScript",
-        "role": "Language"
-      },
-      {
-        "name": "Cloud Run",
-        "role": "Deployment Platform"
-      },
-      {
-        "name": "LLM Analysis",
-        "role": "Conversation Signal Evaluation"
-      }
-    ],
-    "blog_posts": [
-      {
-        "title": "Find the DEV Post That Needs You Now 🫶",
-        "url": "https://dev.to/anchildress1/find-the-dev-post-that-needs-you-now-33ng"
-      }
-    ],
-    "project_type": "tool",
-    "repo_url": "https://github.com/anchildress1/dev-community-dashboard",
-    "app_url": "https://dev-community-dashboard.checkmarkdevtools.dev",
-    "order_rank": 70,
-    "updated_at": "2026-03-04",
-    "related_project_ids": []
+    "order_rank": 80
   },
   {
     "objectID": "supascribe-notes",
-    "node_type": "project",
     "name": "SupaScribe Notes",
-    "aliases": ["system notes writer", "index card generator", "structured notes app"],
     "what_it_is": "A lightweight pipeline that turns messy thoughts into structured System Notes index cards, stored durably in Supabase.",
     "why_it_exists": "Freeform thoughts in, schema-perfect index cards out — no cleanup step.",
-    "long_description": "Exposed as an MCP server so any AI client can write directly: Supabase Edge Functions enforce schema at capture time, not cleanup time. Freeform input goes in, structured System Notes cards come out, and Postgres keeps them. Opinionated by design — no freeform persistence, no exceptions.",
-    "outcome": "An opinionated capture-to-storage pipeline that trades flexibility for guaranteed schema adherence.",
+    "long_description": "Exposed as an MCP server so any AI client can write directly: an Express API validates every payload against Zod schemas before Postgres ever sees it — enforced at capture time, not cleanup time. Freeform input in, structured System Notes cards out. No exceptions.",
+    "outcome": "Deployed and live: any MCP-speaking AI client can write a note that lands in Postgres already schema-valid, with zero manual cleanup pass.",
     "status": "Active · Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/supascribe-notes.webp",
@@ -389,20 +406,24 @@
         "role": "The AI-Facing Interface"
       },
       {
-        "name": "Supabase",
-        "role": "Durable Storage"
+        "name": "Express",
+        "role": "API Server"
       },
       {
-        "name": "Postgres",
-        "role": "Structured Cards"
-      },
-      {
-        "name": "Edge Functions",
+        "name": "Zod",
         "role": "Schema Enforcement"
+      },
+      {
+        "name": "Supabase / Postgres",
+        "role": "Durable Storage"
       },
       {
         "name": "TypeScript",
         "role": "Language"
+      },
+      {
+        "name": "Google Cloud Run",
+        "role": "Deployment"
       }
     ],
     "blog_posts": [
@@ -411,21 +432,16 @@
         "url": "https://dev.to/anchildress1/i-let-ai-write-to-my-database-with-guardrails-473o"
       }
     ],
-    "project_type": "tool",
     "repo_url": "https://github.com/anchildress1/supascribe-notes-mcp",
-    "order_rank": 80,
-    "updated_at": "2026-02-26",
-    "related_project_ids": ["system-notes"]
+    "order_rank": 90
   },
   {
     "objectID": "eslint-config-echo",
-    "node_type": "project",
     "name": "Echo ESLint",
-    "aliases": ["ESLint config", "AI boundaries"],
     "what_it_is": "A reusable ESLint configuration built for AI-assisted codebases.",
     "why_it_exists": "One shared lint boundary that keeps AI agents inside the lines across every repo.",
     "long_description": "Echo collapses formatting and linting into a single shared config so the same boundaries apply across projects and agents without restating preferences. Built for AI consumers first, humans second.",
-    "outcome": "One shared config that holds the same lint boundaries across repos, verified with Jest and Sonar.",
+    "outcome": "One shared Prettier + ESLint config enforced identically across every repo it's installed in, verified by Node's built-in test runner and SonarCloud.",
     "status": "Active · Published",
     "owner": "anchildress1",
     "image_url": "/projects/eslint-config-echo.webp",
@@ -440,8 +456,8 @@
         "role": "The Enforcer"
       },
       {
-        "name": "Jest",
-        "role": "Verification"
+        "name": "Prettier",
+        "role": "The Formatter"
       },
       {
         "name": "Sonar",
@@ -449,17 +465,101 @@
       }
     ],
     "blog_posts": [],
-    "project_type": "tool",
     "repo_url": "https://github.com/anchildress1/eslint-config-echo",
-    "order_rank": 90,
-    "updated_at": "2026-02-01",
-    "related_project_ids": []
+    "order_rank": 100
+  },
+  {
+    "objectID": "legacy-smelter",
+    "name": "Legacy Smelter",
+    "what_it_is": "A satirical incident-management app where Hotfix the dragon roasts your worst code screenshots — and thermally decommissions them.",
+    "why_it_exists": "Upload cursed code; a dragon files the incident report and smelts it to slag.",
+    "long_description": "React 19 and Tailwind front a PixiJS-animated dragon and Howler audio, while an Express API calls Gemini Flash to generate deadpan enterprise incident reports. Each report writes to a real-time Firestore manifest, powering a public leaderboard of P0 disasters.",
+    "outcome": "A live, shareable joke product — AI-generated reports, animated remediation, and community escalation in one polished challenge build.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/legacy-smelter.webp",
+    "image_alt": "Hotfix the dragon smelting an uploaded legacy-code screenshot into molten slag while generating a structured incident report",
+    "tech": [
+      {
+        "name": "React 19 / Tailwind CSS v4",
+        "role": "Frontend & Styling"
+      },
+      {
+        "name": "Express",
+        "role": "API Server"
+      },
+      {
+        "name": "Firebase / Firestore",
+        "role": "Real-Time Incident Manifest"
+      },
+      {
+        "name": "PixiJS 8",
+        "role": "Dragon Animation"
+      },
+      {
+        "name": "Howler.js",
+        "role": "Audio"
+      },
+      {
+        "name": "Gemini Flash",
+        "role": "AI Analysis"
+      },
+      {
+        "name": "Google Cloud Run",
+        "role": "Deployment"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Meet Hotfix—The Dragon Your Legacy Code Deserves",
+        "url": "https://dev.to/anchildress1/meet-hotfix-the-dragon-your-legacy-code-deserves-4141"
+      }
+    ],
+    "repo_url": "https://github.com/anchildress1/legacy-smelter",
+    "app_url": "https://hotfix.anchildress1.dev",
+    "order_rank": 110
+  },
+  {
+    "objectID": "devto-mirror",
+    "name": "Dev.to Mirror",
+    "what_it_is": "An automated, AI-optimized mirror of my technical writing.",
+    "why_it_exists": "Your best writing is invisible to the AI systems that could be citing it. This isn't.",
+    "long_description": "A Python job on GitHub Actions pulls my DEV posts, renders them through Jinja2 templates optimized for AI parsing, and deploys to Firebase Hosting. Not SEO or analytics — it exists so AI systems can correctly index and cite the work.",
+    "outcome": "Runs unattended on a GitHub Actions cron, keeping the Firebase Hosting mirror in sync with every new DEV post — zero manual steps since launch.",
+    "status": "Active",
+    "owner": "anchildress1",
+    "image_url": "/projects/devto-mirror.webp",
+    "image_alt": "Dev.to Mirror workflow diagram showing automated syncing of technical blogs for AI ingestion",
+    "tech": [
+      {
+        "name": "Python",
+        "role": "The Script"
+      },
+      {
+        "name": "Jinja2",
+        "role": "Templating Engine"
+      },
+      {
+        "name": "GitHub Actions",
+        "role": "The Cron"
+      },
+      {
+        "name": "Firebase Hosting",
+        "role": "The Host"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Weekend Hack: Making My Blog AI Searchable (No Flames Required)",
+        "url": "https://dev.to/anchildress1/weekend-hack-making-my-blog-ai-searchable-no-flames-required-16h5"
+      }
+    ],
+    "repo_url": "https://github.com/anchildress1/devto-mirror",
+    "order_rank": 120
   },
   {
     "objectID": "multivert",
-    "node_type": "project",
     "name": "Multivert",
-    "aliases": ["multivert quiz", "personality quiz", "vert quiz"],
     "what_it_is": "A free, sharable personality quiz that scores you across all five \"vert\" types — introvert, extrovert, ambivert, omnivert, and otrovert.",
     "why_it_exists": "A zero-stakes weekend build to see if I could — the only quiz that includes otrovert.",
     "long_description": "A deterministic, fully client-side TypeScript engine scores 35 questions across four axes into five independent fit percentages — the bars don't sum to 100. No backend, no tracking, no persistence. Built with vibes, AI, and a small pile of cited research.",
@@ -491,114 +591,64 @@
       }
     ],
     "blog_posts": [],
-    "project_type": "experiment",
     "repo_url": "https://github.com/anchildress1/multivert",
     "app_url": "https://multivert.pages.dev/",
     "award": null,
-    "order_rank": 100,
-    "updated_at": "2026-06-23",
-    "related_project_ids": []
+    "order_rank": 130
   },
   {
-    "objectID": "legacy-smelter",
-    "node_type": "project",
-    "name": "Legacy Smelter",
-    "aliases": ["Hotfix"],
-    "what_it_is": "A satirical incident-management app where Hotfix the dragon roasts your worst code screenshots — and thermally decommissions them.",
-    "why_it_exists": "Upload cursed code; a dragon files the incident report and smelts it to slag.",
-    "long_description": "React 19 and Tailwind v4 front a PixiJS-animated dragon and Howler audio, while Gemini Flash generates deadpan enterprise incident reports. Each report joins a global manifest where the community escalates a public leaderboard of P0 disasters.",
-    "outcome": "A live, shareable joke product — AI-generated reports, animated remediation, and community escalation in one polished challenge build.",
-    "status": "Active · Deployed",
+    "objectID": "dev-community-dashboard",
+    "name": "DEV Community Dashboard",
+    "what_it_is": "A public signal-triage dashboard that routes volunteer attention to the DEV posts the feed would otherwise bury.",
+    "why_it_exists": "The DEV feed rewards volume. This surfaces the posts a scroll-past would bury instead.",
+    "long_description": "A Next.js app that pulls the Forem API, then runs each post through a GPT-5 nano-to-mini cascade scoring engagement and conversational signal — not recency — to flag high-need, low-interaction questions before they vanish beneath higher-performing content.",
+    "outcome": "Ran in production, helping volunteers triage unanswered DEV posts by engagement signal instead of recency. Since retired.",
+    "status": "Retired",
     "owner": "anchildress1",
-    "image_url": "/projects/legacy-smelter.webp",
-    "image_alt": "Hotfix the dragon smelting an uploaded legacy-code screenshot into molten slag while generating a structured incident report",
+    "image_url": "/projects/dev-community-dashboard.webp",
+    "image_alt": "DEV Community Dashboard interface showing prioritized posts and signal-based interaction metrics",
     "tech": [
       {
-        "name": "React 19",
-        "role": "Frontend Framework"
+        "name": "Next.js / React 19",
+        "role": "App Router Frontend"
       },
       {
-        "name": "Tailwind CSS v4",
-        "role": "Styling"
+        "name": "TypeScript",
+        "role": "Language"
       },
       {
-        "name": "PixiJS 8",
-        "role": "Dragon Animation"
+        "name": "OpenAI",
+        "role": "Signal Scoring (GPT-5 Cascade)"
       },
       {
-        "name": "Howler.js",
-        "role": "Audio"
+        "name": "Supabase",
+        "role": "Data Sync Layer"
       },
       {
-        "name": "Gemini Flash",
-        "role": "AI Analysis"
+        "name": "Forem API",
+        "role": "Data Source"
       },
       {
-        "name": "Google Cloud",
-        "role": "Deployment"
+        "name": "Google Cloud Run",
+        "role": "Deployment Platform"
       }
     ],
     "blog_posts": [
       {
-        "title": "Meet Hotfix—The Dragon Your Legacy Code Deserves",
-        "url": "https://dev.to/anchildress1/meet-hotfix-the-dragon-your-legacy-code-deserves-4141"
+        "title": "Find the DEV Post That Needs You Now 🫶",
+        "url": "https://dev.to/anchildress1/find-the-dev-post-that-needs-you-now-33ng"
       }
     ],
-    "project_type": "experiment",
-    "repo_url": "https://github.com/anchildress1/legacy-smelter",
-    "app_url": "https://hotfix.anchildress1.dev",
-    "order_rank": 110,
-    "updated_at": "2026-04-13",
-    "related_project_ids": []
-  },
-  {
-    "objectID": "devto-mirror",
-    "node_type": "project",
-    "name": "Dev.to Mirror",
-    "aliases": ["blog mirror", "AI ingestion"],
-    "what_it_is": "An automated, AI-optimized mirror of my technical writing.",
-    "why_it_exists": "Makes long-form technical writing legible to the AI systems that index it.",
-    "long_description": "A Python job on GitHub Actions pulls my DEV posts, restructures them for AI ingestion, and deploys to GitHub Pages. Not SEO or analytics — it exists so AI systems can correctly index and cite the work.",
-    "outcome": "Improved AI discoverability with zero ongoing maintenance.",
-    "status": "Active",
-    "owner": "anchildress1",
-    "image_url": "/projects/devto-mirror.webp",
-    "image_alt": "Dev.to Mirror workflow diagram showing automated syncing of technical blogs for AI ingestion",
-    "tech": [
-      {
-        "name": "Python",
-        "role": "The Script"
-      },
-      {
-        "name": "GitHub Actions",
-        "role": "The Cron"
-      },
-      {
-        "name": "GitHub Pages",
-        "role": "The Host"
-      }
-    ],
-    "blog_posts": [
-      {
-        "title": "Weekend Hack: Making My Blog AI Searchable (No Flames Required)",
-        "url": "https://dev.to/anchildress1/weekend-hack-making-my-blog-ai-searchable-no-flames-required-16h5"
-      }
-    ],
-    "project_type": "tool",
-    "repo_url": "https://github.com/anchildress1/devto-mirror",
-    "order_rank": 120,
-    "updated_at": "2026-02-01",
-    "related_project_ids": []
+    "repo_url": "https://github.com/anchildress1/dev-community-dashboard",
+    "order_rank": 140
   },
   {
     "objectID": "my-hermantic-agent",
-    "node_type": "project",
     "name": "Hermes Agent",
-    "aliases": ["Hermes", "local agent", "memory playground"],
     "what_it_is": "A personal AI-agent playground exploring memory as a first-class concern.",
     "why_it_exists": "A zero-stakes sandbox for getting agent memory wrong on purpose.",
-    "long_description": "Python, Ollama, and Postgres back a local agent built to watch how memory behaves when it exists, evolves, and occasionally misbehaves — without production pressure or polish shaping the decisions.",
-    "outcome": "A working local sandbox whose memory experiments inform future agent design.",
+    "long_description": "Python and LangChain orchestrate a local agent backed by TimescaleDB + pgvector for memory — Ollama runs locally, OpenAI handles embeddings. Built to watch memory behave, drift, and misbehave, without production pressure shaping the decisions.",
+    "outcome": "Running locally with a working TimescaleDB/pgvector memory loop. No production numbers — it was never meant to ship, just to watch memory misbehave up close.",
     "status": "Archived",
     "owner": "anchildress1",
     "image_url": "/projects/my-hermantic-agent.webp",
@@ -613,25 +663,28 @@
         "role": "Local LLM Runtime"
       },
       {
-        "name": "PostgreSQL",
-        "role": "Long-term Memory"
+        "name": "OpenAI",
+        "role": "Embeddings API"
+      },
+      {
+        "name": "LangChain",
+        "role": "Memory Orchestration"
+      },
+      {
+        "name": "TimescaleDB / pgvector",
+        "role": "Long-Term Vector Memory"
       }
     ],
     "blog_posts": [],
-    "project_type": "experiment",
     "repo_url": "https://github.com/anchildress1/my-hermantic-agent",
-    "order_rank": 130,
-    "updated_at": "2026-02-01",
-    "related_project_ids": ["underfoot-underground-travel-planner"]
+    "order_rank": 150
   },
   {
     "objectID": "underfoot-underground-travel-planner",
-    "node_type": "project",
     "name": "Underfoot Travel",
-    "aliases": ["travel planner", "narrative discovery"],
     "what_it_is": "Narrative travel discovery turned into an experiment in AI orchestration and parallel workflows.",
     "why_it_exists": "A hackathon travel app repurposed into an AI-orchestration testbed.",
-    "long_description": "Originally orchestrated in n8n, then rewritten in Python to test parallel AI workflows — a rewrite that broke as much as it taught. Supabase and React back a discovery surface I reused rather than rebuilt once cost constraints reshaped the project, shifting focus to generating discovery paths from incomplete systems.",
+    "long_description": "Originally orchestrated in n8n, then rewritten as a Django API calling OpenAI for parallel AI workflows, deployed as a Python Worker on Cloudflare's edge — a rewrite that broke as much as it taught. Supabase and React back a discovery surface reused once cost constraints reshaped the project.",
     "outcome": "An instructive, unfinished experiment that reframed cost failure as an orchestration problem. At least, until I get back to it...",
     "status": "Archived",
     "owner": "anchildress1",
@@ -643,16 +696,24 @@
         "role": "Original Orchestration"
       },
       {
-        "name": "Python",
+        "name": "Django / Python",
         "role": "The Rewrite"
+      },
+      {
+        "name": "OpenAI",
+        "role": "AI Orchestration"
+      },
+      {
+        "name": "Cloudflare Workers (Python)",
+        "role": "Edge Deployment"
+      },
+      {
+        "name": "React / TypeScript",
+        "role": "The Face"
       },
       {
         "name": "Supabase",
         "role": "Storage"
-      },
-      {
-        "name": "React",
-        "role": "The Face"
       }
     ],
     "blog_posts": [
@@ -665,21 +726,16 @@
         "url": "https://dev.to/anchildress1/the-hackathon-i-swore-off-and-the-exhaustion-that-mostly-compiled-c4l"
       }
     ],
-    "project_type": "experiment",
     "repo_url": "https://github.com/anchildress1/underfoot-underground-travel-planner",
-    "order_rank": 140,
-    "updated_at": "2026-02-01",
-    "related_project_ids": ["my-hermantic-agent"]
+    "order_rank": 160
   },
   {
     "objectID": "awesome-github-copilot",
-    "node_type": "project",
     "name": "Awesome Copilot",
-    "aliases": ["curated list", "copilot workflows"],
     "what_it_is": "A curated, opinionated set of GitHub Copilot workflows, agents, and patterns that earned their place.",
     "why_it_exists": "The Copilot workflows that survived daily use — not the ones that just sounded clever.",
     "long_description": "Not a neutral list. I build a lot of Copilot tooling locally and most of it dies there; only what survives daily use, frustration, and edge cases ships here. It reflects how I actually work with Copilot, not how the docs say I should.",
-    "outcome": "A widely adopted resource that favors practical utility over volume, maintained by a GitHub Copilot–certified author.",
+    "outcome": "65 GitHub stars, maintained by a GitHub Copilot–certified author who favors practical utility over volume.",
     "status": "Active",
     "owner": "anchildress1",
     "image_url": "/projects/awesome-github-copilot.webp",
@@ -692,10 +748,6 @@
       {
         "name": "MCP",
         "role": "Agent Protocols"
-      },
-      {
-        "name": "Manual Curation",
-        "role": "The Real Method"
       }
     ],
     "blog_posts": [
@@ -720,20 +772,15 @@
         "url": "https://dev.to/anchildress1/leash-not-autopilot-building-predictable-ai-behavior-with-copilot-instructions-14ip"
       }
     ],
-    "project_type": "resource",
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
-    "order_rank": 150,
-    "updated_at": "2026-02-01",
-    "related_project_ids": []
+    "order_rank": 170
   },
   {
     "objectID": "delegate-action",
-    "node_type": "project",
     "name": "Delegate Action",
-    "aliases": ["GitHub Action", "PR generator"],
     "what_it_is": "A temporary AI coding agent shipped as a GitHub Action.",
     "why_it_exists": "AI-generated PRs under my own credentials, while the platform caught up.",
-    "long_description": "Built to generate draft PRs under my own PAT — with explicit human review and ownership — until Copilot's coding agent supported user PAT tokens via CLI in Actions. A deliberate stopgap with injection detection baked in.",
+    "long_description": "A GitHub Action calling the GitHub Models API (GPT-4o) to draft PRs under my own scoped PAT, with explicit human review before merge and prompt-injection detection built into the pipeline. A deliberate stopgap until Copilot's coding agent supported PAT-based CLI runs in Actions.",
     "outcome": "Outpaced by Copilot's native coding agent before it proved out — a deliberate stopgap that mapped the auth and injection patterns it was built to test.",
     "status": "Scrapped",
     "owner": "anchildress1",
@@ -745,31 +792,22 @@
         "role": "The Runtime"
       },
       {
+        "name": "GitHub Models",
+        "role": "AI Backend (GPT-4o)"
+      },
+      {
         "name": "Node.js",
         "role": "Logic Layer"
-      },
-      {
-        "name": "Prompt-Injection Guards",
-        "role": "Security"
-      },
-      {
-        "name": "Scoped PAT",
-        "role": "Auth"
       }
     ],
     "blog_posts": [],
-    "project_type": "tool",
     "repo_url": "https://github.com/anchildress1/delegate-action",
-    "order_rank": 160,
-    "updated_at": "2026-02-01",
-    "related_project_ids": ["rai-lint", "awesome-github-copilot"]
+    "order_rank": 180
   },
   {
     "objectID": "checkmark-copilot-chat",
-    "node_type": "project",
     "name": "Copilot Chat Extension",
-    "aliases": ["IntelliJ chat", "portable context"],
-    "what_it_is": "A falsified experiment in portable Copilot chat context for IntelliJ teams.",
+    "what_it_is": "A falsified experiment in portable Copilot chat context across IDEs.",
     "why_it_exists": "Tested whether Copilot chat context could survive a jump between IDEs. It couldn't.",
     "long_description": "I tried to persist Copilot chat context across environments and found the API simply couldn't support it. Archived immediately — a fast, deliberate kill to avoid sinking effort into a dead end.",
     "outcome": "A cleanly falsified hypothesis that redirected effort toward more viable Copilot tooling.",
@@ -785,17 +823,10 @@
       {
         "name": "JavaScript",
         "role": "The Glue"
-      },
-      {
-        "name": "IntelliJ Platform",
-        "role": "The Target"
       }
     ],
     "blog_posts": [],
-    "project_type": "experiment",
     "repo_url": "https://github.com/anchildress1/checkmark-copilot-chat",
-    "order_rank": 170,
-    "updated_at": "2026-02-01",
-    "related_project_ids": ["awesome-github-copilot"]
+    "order_rank": 190
   }
 ]
