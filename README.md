@@ -75,7 +75,7 @@ This aims to provide **AI accessible info at a speed users can enjoy**, without 
 
 ## Security
 
-Untrusted input gets treated like it's untrusted. The blog-aggregation route handler only follows same-host, allowlisted sitemap URLs (SSRF guard), served file types are allowlisted to `.md`/`.json`/`.txt`, and user-controlled path input is rejected outright rather than sanitized. Full policy: [`SECURITY_RULES.md`](./SECURITY_RULES.md).
+Untrusted input gets treated like it's untrusted. The blog-aggregation route handler only follows same-host, allowlisted sitemap URLs (SSRF guard). If local file serving is ever added, served file types must be allowlisted to `.md`/`.json`/`.txt`, and user-controlled path input must be rejected outright rather than sanitized. Full policy: [`SECURITY_RULES.md`](./SECURITY_RULES.md).
 
 Secrets never touch the repo — `gitleaks` and Lefthook's pre-commit hook see to that before a commit ever lands.
 
