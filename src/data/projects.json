@@ -390,6 +390,38 @@
     "order_rank": 80
   },
   {
+    "objectID": "rai-commit-badge",
+    "name": "RAI Commit Badge",
+    "what_it_is": "A GitHub Action that scores the RAI attribution footers already sitting in your git history and publishes the result as a badge.",
+    "why_it_exists": "rai-lint makes the footers mandatory. This one reads them back out and puts the number where people can see it.",
+    "long_description": "Every commit in the window is scored by footer type — Authored-by at 0.00 up through Generated-by at 0.90 — then weighted by lines changed so a one-line typo fix doesn't outvote a generated module. The adoption window opens at the earliest RAI footer, so the badge reads a percentage since a date instead of a number with no origin, and squash-collapsed history is reported as degraded granularity rather than quietly averaged into a wrong answer.",
+    "outcome": "Specified end to end — scoring weights, adoption window, colour thresholds, and marker-based README writeback — with the implementation still ahead of it.",
+    "status": "Active · Pre-release",
+    "owner": "anchildress1",
+    "image_url": "/projects/rai-commit-badge.webp",
+    "image_alt": "RAI Commit Badge banner showing an AI attribution score published as a repository badge",
+    "tech": [
+      {
+        "name": "TypeScript",
+        "role": "Weighted Scoring Engine"
+      },
+      {
+        "name": "GitHub Actions",
+        "role": "The Runtime"
+      },
+      {
+        "name": "Node.js",
+        "role": "Committed dist Bundle"
+      },
+      {
+        "name": "shields.io",
+        "role": "Badge Rendering"
+      }
+    ],
+    "repo_url": "https://github.com/anchildress1/rai-commit-badge",
+    "order_rank": 85
+  },
+  {
     "objectID": "supascribe-notes",
     "name": "SupaScribe Notes",
     "what_it_is": "A lightweight pipeline that turns messy thoughts into structured System Notes index cards, stored durably in Supabase.",
