@@ -390,6 +390,38 @@
     "order_rank": 80
   },
   {
+    "objectID": "rai-commit-badge",
+    "name": "RAI Commit Badge",
+    "what_it_is": "A GitHub Action that scores the RAI attribution footers already sitting in your git history and publishes the result as a badge.",
+    "why_it_exists": "rai-lint makes the footers mandatory. This one reads them back out and puts the number where people can see it.",
+    "long_description": "Non-merge commits in the adoption window are scored by footer type — Authored-by at 0.00 through Generated-by at 0.90 — and weighted by source churn, while lockfiles and generated output are excluded. The window opens at the earliest RAI footer, and squash-collapsed history is surfaced as degraded granularity in the job summary instead of being passed off as exact.",
+    "outcome": "Implemented and running against its own repository: the JavaScript action scores repository history, rewrites only the marked README block, reports the score window, commit counts, and squash granularity, and ships as a committed Node 24 bundle. The first release and Marketplace listing are still pending.",
+    "status": "Active · Pre-release",
+    "owner": "anchildress1",
+    "image_url": "/projects/rai-commit-badge.webp",
+    "image_alt": "RAI Commit Badge banner showing an AI attribution score published as a repository badge",
+    "tech": [
+      {
+        "name": "JavaScript",
+        "role": "Weighted Scoring Engine"
+      },
+      {
+        "name": "GitHub Actions",
+        "role": "Workflow Integration"
+      },
+      {
+        "name": "Node.js",
+        "role": "Node 24 Runtime"
+      },
+      {
+        "name": "shields.io",
+        "role": "Badge Rendering"
+      }
+    ],
+    "repo_url": "https://github.com/anchildress1/rai-commit-badge",
+    "order_rank": 85
+  },
+  {
     "objectID": "supascribe-notes",
     "name": "SupaScribe Notes",
     "what_it_is": "A lightweight pipeline that turns messy thoughts into structured System Notes index cards, stored durably in Supabase.",
@@ -773,7 +805,7 @@
       }
     ],
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
-    "order_rank": 170
+    "order_rank": 85
   },
   {
     "objectID": "delegate-action",

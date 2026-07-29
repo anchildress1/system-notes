@@ -20,6 +20,25 @@ System Notes treats projects like evolving organisms rather than finished artifa
 
 It is **Incomplete by Design**.
 
+## What It Actually Does
+
+- **Search that thinks**: Algolia-powered search and AI chat, running straight from the browser — no server round-trip, no backend waiting to fall over.
+- **A project index that flips**: Every project lives on a 3D flip card instead of a spreadsheet-shaped list.
+- **Blog, aggregated**: Pulls and caches posts from my DEV blog through an SSRF-guarded route handler, so the portfolio has fresh writing without blindly trusting the internet.
+- **Built for machines too**: Structured, queryable data (project cards, system prompts) so an LLM can actually parse this repo, not just a human.
+- **Fast on purpose**: Lighthouse gates block the pre-push hook. If it's slow, it doesn't ship.
+
+## Tech Stack
+
+| Layer         | Tools                                                                             |
+| ------------- | --------------------------------------------------------------------------------- |
+| Framework     | Next.js, React, TypeScript                                                        |
+| Search & AI   | Algolia, `react-instantsearch`                                                    |
+| UI & Motion   | Tailwind CSS, Framer Motion, PixiJS                                               |
+| Testing       | Vitest, Testing Library, Playwright, axe-core                                     |
+| Quality Gates | ESLint, Prettier, Lefthook, Commitlint (+ `commitlint-plugin-rai`), Lighthouse CI |
+| Infra & CI/CD | Google Cloud (Cloud Run), GitHub Actions, Release Please                          |
+
 ## The Architecture
 
 [Read the full System Architecture](./ARCHITECTURE.md)
@@ -54,6 +73,12 @@ Recent updates have focused on creating an experience that is both **lightning-f
 
 This aims to provide **AI accessible info at a speed users can enjoy**, without overloading the developer (me) or your browser.
 
+## Security
+
+Untrusted input gets treated like it's untrusted. The blog-aggregation route handler only follows same-host, allowlisted sitemap URLs (SSRF guard). If local file serving is ever added, served file types must be allowlisted to `.md`/`.json`/`.txt`, and user-controlled path input must be rejected outright rather than sanitized. Full policy: [`SECURITY_RULES.md`](./SECURITY_RULES.md).
+
+Secrets never touch the repo — `gitleaks` and Lefthook's pre-commit hook see to that before a commit ever lands.
+
 ## Mine. Read Before You Get Ideas. ⚖️
 
 This project is my work and it’s licensed under the [PolyForm Shield License 1.0.0](./LICENSE).
@@ -63,3 +88,7 @@ This project is my work and it’s licensed under the [PolyForm Shield License 1
 **Monetize it?** Absolutely not.
 
 If you’re selling it, bundling it, or otherwise profiting from my late-night coding sessions, we’re going to have a problem. Keep it open, keep it personal, and we'll be fine.
+
+## Author
+
+**Ashley Childress** — [GitHub](https://github.com/anchildress1) · [LinkedIn](https://linkedin.com/in/anchildress1) · [DEV.to](https://dev.to/anchildress1)
