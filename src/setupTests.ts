@@ -32,10 +32,18 @@ vi.mock('next/image', () => ({
     fill: _fill,
     priority: _priority,
     unoptimized: _unoptimized,
-    placeholder: _placeholder,
-    blurDataURL: _blurDataURL,
+    placeholder,
+    blurDataURL,
     ...props
   }: Record<string, unknown>) => {
-    return React.createElement('img', { src, alt, ...props });
+    // Surfaced as data-* so LQIP wiring stays assertable without React warning
+    // about non-standard attributes on a plain <img>.
+    return React.createElement('img', {
+      src,
+      alt,
+      'data-placeholder': placeholder,
+      'data-blur': blurDataURL,
+      ...props,
+    });
   },
 }));

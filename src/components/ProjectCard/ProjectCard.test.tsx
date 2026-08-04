@@ -5,6 +5,11 @@ import { mockProject } from '@/test-utils/fixtures';
 
 // next/image is mocked globally in setupTests.ts
 
+// Pinned so the LQIP assertions do not track the real generated placeholders.
+vi.mock('@/data/blur-placeholders.json', () => ({
+  default: { '/blurred.webp': 'data:image/webp;base64,TEST' },
+}));
+
 const flipToggle = (project = mockProject) =>
   within(screen.getByTestId(`project-card-${project.id}`)).getByRole('button', {
     name: /flip to read/i,
@@ -65,6 +70,22 @@ describe('ProjectCard Component', () => {
   it('renders placeholder if no image provided', () => {
     render(<ProjectCard project={{ ...mockProject, image_url: undefined }} />);
     expect(screen.getByText('TE')).toBeInTheDocument();
+  });
+
+  it('applies the generated blur placeholder when the image has one', () => {
+    render(<ProjectCard project={{ ...mockProject, image_url: '/blurred.webp' }} />);
+
+    const img = screen.getByRole('img', { name: /test project/i });
+    expect(img).toHaveAttribute('data-placeholder', 'blur');
+    expect(img).toHaveAttribute('data-blur', 'data:image/webp;base64,TEST');
+  });
+
+  it('falls back to no placeholder for an image missing from the map', () => {
+    render(<ProjectCard project={{ ...mockProject, image_url: '/unmapped.webp' }} />);
+
+    const img = screen.getByRole('img', { name: /test project/i });
+    expect(img).toHaveAttribute('data-placeholder', 'empty');
+    expect(img).not.toHaveAttribute('data-blur');
   });
 
   it('opens GitHub URL on source-link click without flipping', () => {
