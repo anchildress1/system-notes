@@ -9,6 +9,7 @@ import Tag from '@/components/Tag/Tag';
 import Button from '@/components/Button/Button';
 import { GitHubIcon, TrophyIcon } from '@/components/icons';
 import { accentForPosition } from '@/lib/cardAccent';
+import blurPlaceholders from '@/data/blur-placeholders.json';
 import { FaArrowRight } from 'react-icons/fa';
 import { FiExternalLink, FiGlobe } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
@@ -28,6 +29,9 @@ export default function ProjectCard({
   position = 1,
 }: Readonly<ProjectCardProps>) {
   const accent = accentForPosition(position);
+  // Runtime path strings mean next/image cannot derive a blurDataURL itself, so
+  // the LQIP comes from a build-time map (scripts/generate-blur-placeholders.mjs).
+  const blurDataURL = (blurPlaceholders as Record<string, string>)[project.image_url ?? ''];
   const isRetired = /archiv|retire|scrap/i.test(project.status);
   const [isFlipped, setIsFlipped] = useState(false);
   const backId = useId();
@@ -105,6 +109,8 @@ export default function ProjectCard({
                     fill
                     className={styles.image}
                     priority={priority}
+                    placeholder={blurDataURL ? 'blur' : 'empty'}
+                    blurDataURL={blurDataURL}
                     // Real card widths: the grid gutter is 24px a side, the gap
                     // 18px, and --page-gutter caps the content at 1376px.
                     sizes="(max-width: 720px) calc(100vw - 48px), (max-width: 1080px) calc((100vw - 66px) / 2), (max-width: 1424px) calc((100vw - 84px) / 3), 448px"
