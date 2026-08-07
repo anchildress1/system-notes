@@ -35,6 +35,7 @@ const jetbrainsMono = JetBrains_Mono({
 import ClientShell from '@/components/ClientShell/ClientShell';
 import Nebula from '@/components/Nebula/Nebula';
 import { getProjects } from '@/lib/api';
+import { buildSiteJsonLd } from '@/lib/siteJsonLd';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anchildress1.dev';
 const algoliaAppId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
@@ -106,34 +107,7 @@ export default async function RootLayout({
     return [] as Awaited<ReturnType<typeof getProjects>>;
   });
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: "Ashley's System Notes",
-    url: baseUrl,
-    description: 'A living, queryable index of projects and decisions.',
-    author: {
-      '@type': 'Person',
-      name: 'Ashley Childress',
-      url: baseUrl,
-      sameAs: [baseUrl, 'https://github.com/anchildress1', 'https://dev.to/anchildress1'],
-    },
-    hasPart: projects.map((p) => ({
-      '@type': 'SoftwareApplication',
-      name: p.title,
-      description: p.description,
-      applicationCategory: 'DeveloperApplication',
-      operatingSystem: 'Any',
-      url: p.id === 'system-notes' ? baseUrl : undefined,
-      codeRepository: p.repo_url,
-      relatedLink: p.blog_posts?.map((b) => b.url) || [],
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'USD',
-      },
-    })),
-  };
+  const jsonLd = buildSiteJsonLd(projects, baseUrl);
 
   return (
     <html lang="en" suppressHydrationWarning>

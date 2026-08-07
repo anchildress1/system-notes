@@ -1,4 +1,17 @@
-.PHONY: setup setup-node dev build deploy clean kill ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf
+.PHONY: setup setup-node dev build deploy clean kill ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf images
+
+# Responsive image variants + LQIP blurs are derived from the sources in public/
+# and are gitignored. Anything that compiles or type-checks the app needs the
+# manifest on disk first, and CI runs lint/test before any build — so the rule
+# hangs off the sources themselves and make skips it when nothing changed.
+IMAGE_SOURCES := $(wildcard public/projects/*.webp) public/ashley-gen-2.webp
+IMAGE_MANIFEST := src/data/image-manifest.json
+
+$(IMAGE_MANIFEST): $(IMAGE_SOURCES) scripts/generate-image-variants.mjs
+	@echo "🖼️  Generating image variants..."
+	@node scripts/generate-image-variants.mjs
+
+images: $(IMAGE_MANIFEST)
 
 # Default target
 all: setup
@@ -18,7 +31,7 @@ kill:
 	@echo "✅ Servers stopped."
 
 # Run the development environment
-dev:
+dev: images
 	@echo "🚀 Starting development server..."
 	$(MAKE) kill
 	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run dev
@@ -34,16 +47,16 @@ format-check:
 	npx prettier --check "**/*.{ts,tsx,md,json,js}"
 
 # Lint code (ESLint)
-lint:
+lint: images
 	@echo "🔍 Linting code..."
 	npm run lint
 
 # TypeScript type checking
-typecheck:
+typecheck: images
 	@echo "🔎 Type checking..."
 	npx tsc --noEmit
 
-test:
+test: images
 	@echo "🧪 Running tests..."
 	npm run test
 
@@ -58,7 +71,7 @@ secret-scan:
 	fi
 
 # Run Playwright E2E tests
-test-e2e:
+test-e2e: images
 	@echo "🎭 Running Playwright E2E tests..."
 	$(MAKE) kill
 	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
@@ -93,7 +106,7 @@ ai-checks:
 	@echo "🤖 AI Checks Complete: All Systems Nominal."
 
 # Build the project
-build:
+build: images
 	@echo "🏗️ Building project..."
 	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run build
 

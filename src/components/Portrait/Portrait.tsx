@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { blurFor } from '@/lib/imageVariants';
 import styles from './Portrait.module.css';
 
 interface PortraitProps {
@@ -19,6 +20,8 @@ export default function Portrait({ src, alt, width, height }: Readonly<PortraitP
         height={height}
         className={styles.image}
         priority
+        placeholder={blurFor(src) ? 'blur' : 'empty'}
+        blurDataURL={blurFor(src)}
         // Frame is capped at 420px (max-width) and sits in a 360px column above
         // 900px, so it never renders wider than that — don't fetch for 100vw.
         sizes="(max-width: 900px) min(100vw, 420px), 360px"

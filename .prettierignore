@@ -6,3 +6,4 @@ coverage
 public
 package-lock.json
 CHANGELOG.md
+src/data/image-manifest.json

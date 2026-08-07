@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000",
+    "prebuild": "npm run image-variants",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
     "postbuild": "if [ -d .next/standalone ]; then mkdir -p .next/standalone/.next && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public; fi",
@@ -15,7 +16,7 @@
     "bench": "vitest bench",
     "test:perf": "npm run build && lhci autorun --config=lighthouserc.mobile.json && lhci autorun --config=lighthouserc.desktop.json",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,js}\"",
-    "blur-placeholders": "node scripts/generate-blur-placeholders.mjs",
+    "image-variants": "node scripts/generate-image-variants.mjs",
     "clean": "rm -rf node_modules .next coverage",
     "postinstall": "[ -d .git ] && lefthook install || true"
   },

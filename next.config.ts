@@ -27,8 +27,14 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   compress: true,
   images: {
-    formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 31536000,
+    // Every image on the site is pre-rendered by scripts/generate-image-variants.mjs
+    // and served through a custom loader, so the runtime optimizer is off the hot
+    // path entirely. These widths exist to make the srcset Next builds line up with
+    // the rungs the generator actually emits — anything else would advertise a
+    // descriptor no file matches.
+    deviceSizes: [448, 896, 1344],
+    loader: 'custom',
+    loaderFile: './src/lib/imageLoader.ts',
   },
   experimental: {
     optimizePackageImports: ['framer-motion', 'react-icons'],
