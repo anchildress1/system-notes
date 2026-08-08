@@ -32,7 +32,11 @@ const nextConfig: NextConfig = {
     // path entirely. These widths exist to make the srcset Next builds line up with
     // the rungs the generator actually emits — anything else would advertise a
     // descriptor no file matches.
-    deviceSizes: [448, 896, 1344],
+    deviceSizes: [448, 768, 896],
+    // Next prepends imageSizes to every sizes-based srcset. The nine defaults all
+    // snap to the same 448 file through the loader, so they added eight duplicate
+    // candidates to each srcset — and to the preload links, which repeat it inline.
+    imageSizes: [256],
     loader: 'custom',
     loaderFile: './src/lib/imageLoader.ts',
   },

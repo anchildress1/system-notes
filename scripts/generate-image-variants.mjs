@@ -18,10 +18,14 @@ import sharp from 'sharp';
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
 const OUT_FILE = path.join(process.cwd(), 'src', 'data', 'image-manifest.json');
 
-// Widest CSS box each source renders into, doubled for 2x displays. Project cards
-// peak at 672px (the single-column `calc(100vw - 48px)` branch of their `sizes`);
-// the portrait frame is capped at 420px by its own max-width.
-const LADDER = [448, 896, 1344];
+// Rungs derived from the CSS slots the images actually occupy, not round numbers:
+//   448 — desktop 3-up card (the flat `448px` branch of its `sizes`) at 1x
+//   768 — phone card at 2x: a 412px viewport gives a 364px slot, so ~728px
+//   896 — desktop 3-up card at 2x, and the 672px single-column slot at 1x
+// A 1344 rung was measured and dropped: neither the mobile nor the desktop
+// Lighthouse profile ever requested it, and it cost 792 KB of build output to
+// serve only DPR-3 phones, which upscale from 896 imperceptibly.
+const LADDER = [448, 768, 896];
 
 // Sources live flat in public/; variants go in a sibling opt/ dir so the originals
 // stay recognisable as the inputs rather than as anything the site still serves.
