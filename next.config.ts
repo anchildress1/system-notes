@@ -42,6 +42,12 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ['framer-motion', 'react-icons'],
+    // Do not turn on experimental.inlineCss here. It was tried and measured: it
+    // removes all three render-blocking stylesheets, but this page already ships
+    // ~289 KB of HTML (20 cards of RSC payload plus inline blur placeholders), and
+    // folding the CSS in took it from 40 KB to 71 KB gzipped. Mobile LCP went from
+    // 3.4s to 4.4-5.2s and the score dropped from 91-92 to 80-84. The round-trips
+    // it saves cost less than the bytes it adds until the HTML gets much smaller.
   },
   async headers() {
     return [
