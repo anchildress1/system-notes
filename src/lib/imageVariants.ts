@@ -18,7 +18,7 @@ export function projectImageLoader({ src, width }: { src: string; width: number 
   // The ladder is ascending, so the first rung that covers the requested width is
   // the smallest one that does. Past the top rung the source itself ran out of
   // pixels, so the widest variant is all there is.
-  const rung = entry.widths.find((w) => w >= width) ?? entry.widths[entry.widths.length - 1];
+  const rung = entry.widths.find((w) => w >= width) ?? entry.widths.at(-1);
 
   const slash = src.lastIndexOf('/');
   const dir = src.slice(0, slash);
