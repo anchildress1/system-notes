@@ -5,9 +5,11 @@ import { mockProject } from '@/test-utils/fixtures';
 
 // next/image is mocked globally in setupTests.ts
 
-// Pinned so the LQIP assertions do not track the real generated placeholders.
-vi.mock('@/data/blur-placeholders.json', () => ({
-  default: { '/blurred.webp': 'data:image/webp;base64,TEST' },
+// Pinned so the LQIP assertions do not track the real generated manifest.
+vi.mock('@/data/image-manifest.json', () => ({
+  default: {
+    '/blurred.webp': { blur: 'data:image/webp;base64,TEST', widths: [448, 896] },
+  },
 }));
 
 const flipToggle = (project = mockProject) =>

@@ -9,7 +9,7 @@ import Tag from '@/components/Tag/Tag';
 import Button from '@/components/Button/Button';
 import { GitHubIcon, TrophyIcon } from '@/components/icons';
 import { accentForPosition } from '@/lib/cardAccent';
-import blurPlaceholders from '@/data/blur-placeholders.json';
+import { blurFor } from '@/lib/imageVariants';
 import { FaArrowRight } from 'react-icons/fa';
 import { FiExternalLink, FiGlobe } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
@@ -30,8 +30,8 @@ export default function ProjectCard({
 }: Readonly<ProjectCardProps>) {
   const accent = accentForPosition(position);
   // Runtime path strings mean next/image cannot derive a blurDataURL itself, so
-  // the LQIP comes from a build-time map (scripts/generate-blur-placeholders.mjs).
-  const blurDataURL = (blurPlaceholders as Record<string, string>)[project.image_url ?? ''];
+  // the LQIP comes from a build-time map (scripts/generate-image-variants.mjs).
+  const blurDataURL = blurFor(project.image_url);
   const isRetired = /archiv|retire|scrap/i.test(project.status);
   const [isFlipped, setIsFlipped] = useState(false);
   const backId = useId();
