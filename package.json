@@ -103,7 +103,8 @@
     "@opentelemetry/resources": "^2.8.0",
     "instantsearch.js": {
       "qs": "^6.15.2"
-    }
+    },
+    "@puppeteer/browsers": "^3.2.0"
   },
   "volta": {
     "node": "20.20.0"
