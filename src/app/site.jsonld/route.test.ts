@@ -18,9 +18,15 @@ vi.mock('@/lib/api', () => ({
 
 const load = async () => (await import('./route')).GET();
 
+// Restored rather than deleted: layout.tsx and sitemap.ts read the same variable,
+// so unconditionally unsetting it here would leak into whatever else this worker
+// runs next, and would make the fallback case pass or fail on the caller's shell.
+const ORIGINAL_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 beforeEach(() => vi.resetModules());
 afterEach(() => {
-  delete process.env.NEXT_PUBLIC_BASE_URL;
+  if (ORIGINAL_BASE_URL === undefined) delete process.env.NEXT_PUBLIC_BASE_URL;
+  else process.env.NEXT_PUBLIC_BASE_URL = ORIGINAL_BASE_URL;
 });
 
 describe('GET /site.jsonld', () => {
@@ -47,6 +53,7 @@ describe('GET /site.jsonld', () => {
   });
 
   it('falls back to the production host when the env var is absent', async () => {
+    delete process.env.NEXT_PUBLIC_BASE_URL;
     const body = JSON.parse(await (await load()).text());
     expect(body.url).toBe('https://anchildress1.dev');
   });

@@ -11,7 +11,7 @@
 // Output is gitignored. Make rebuilds it whenever a source image changes, and the
 // npm prebuild hook covers the Docker path, which never goes through Make.
 
-import { mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -45,13 +45,28 @@ const mtime = async (file) => (await stat(file).catch(() => null))?.mtimeMs ?? I
 // unconditional re-encode would tax `npm test` and `npm run dev` on every
 // invocation. Make already tracks staleness for its own targets; this makes the
 // npm hooks equally cheap when nothing has moved.
-async function isUpToDate(sourcePaths) {
+//
+// Mtimes alone are not a sufficient cache key: `mv` preserves them, so a renamed
+// or deleted source leaves every surviving file older than the manifest and the
+// run gets skipped while the manifest still points at the old name. The set of
+// keys has to match too, or the loader falls through to the unresized original.
+async function isUpToDate(expectedKeys, sourcePaths) {
   const built = await mtime(OUT_FILE);
   if (built === Infinity) return false;
+
+  const previous = await readFile(OUT_FILE, 'utf8')
+    .then((raw) => Object.keys(JSON.parse(raw)))
+    .catch(() => null);
+  if (!previous) return false;
+  if (previous.length !== expectedKeys.length) return false;
+  if (previous.some((key, i) => key !== expectedKeys[i])) return false;
+
   const self = fileURLToPath(import.meta.url);
   const newest = Math.max(...(await Promise.all([...sourcePaths, self].map(mtime))));
   return newest !== Infinity && newest <= built;
 }
+
+const publicPathFor = (dir, name) => `${dir ? `/${dir}` : ''}/${name}`;
 
 const manifest = {};
 const plan = [];
@@ -62,7 +77,12 @@ for (const { dir, files } of SOURCES) {
   plan.push({ dir, srcDir, optDir: path.join(srcDir, 'opt'), names });
 }
 
-if (await isUpToDate(plan.flatMap((p) => p.names.map((n) => path.join(p.srcDir, n))))) {
+// Built in the same order the generator writes them, so a plain positional
+// comparison is enough to spot an added, removed or renamed source.
+const expectedKeys = plan.flatMap((p) => p.names.map((n) => publicPathFor(p.dir, n)));
+const sourcePaths = plan.flatMap((p) => p.names.map((n) => path.join(p.srcDir, n)));
+
+if (await isUpToDate(expectedKeys, sourcePaths)) {
   console.log('Image variants already up to date');
   process.exit(0);
 }
@@ -87,8 +107,7 @@ for (const { dir, srcDir, optDir, names } of plan) {
       await writeFile(path.join(optDir, `${base}-${w}.webp`), buf);
     }
 
-    const publicPath = `${dir ? `/${dir}` : ''}/${name}`;
-    manifest[publicPath] = {
+    manifest[publicPathFor(dir, name)] = {
       blur: `data:image/webp;base64,${(await blurFor(srcPath)).toString('base64')}`,
       widths,
     };
