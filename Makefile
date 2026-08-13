@@ -1,17 +1,13 @@
 .PHONY: setup setup-node dev build deploy clean kill ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf images
 
 # Responsive image variants + LQIP blurs are derived from the sources in public/
-# and are gitignored. Anything that compiles or type-checks the app needs the
-# manifest on disk first, and CI runs lint/test before any build — so the rule
-# hangs off the sources themselves and make skips it when nothing changed.
-IMAGE_SOURCES := $(wildcard public/projects/*.webp) public/ashley-gen-2.webp
-IMAGE_MANIFEST := src/data/image-manifest.json
-
-$(IMAGE_MANIFEST): $(IMAGE_SOURCES) scripts/generate-image-variants.mjs
-	@echo "🖼️  Generating image variants..."
+# and are gitignored, so anything that compiles or type-checks the app needs the
+# manifest on disk first. Always invoke: the script decides for itself whether
+# there is work to do, and it checks source membership as well as mtimes — which
+# a make prerequisite list cannot, since `mv` preserves mtime and a renamed
+# source would leave make believing the target was current.
+images:
 	@node scripts/generate-image-variants.mjs
-
-images: $(IMAGE_MANIFEST)
 
 # Default target
 all: setup
