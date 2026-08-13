@@ -105,7 +105,7 @@ flowchart LR
 ├── public/               # Static assets; source images live here, variants in opt/
 ├── scripts/              # Build-time generators (responsive image variants + LQIP blurs)
 ├── tests/                # Playwright end-to-end specs
-└── .github/workflows/    # ci.yml, sonar.yml, release-please.yml
+└── .github/workflows/    # ci.yml, sonar.yml, release-please.yml, rai-badge.yml
 ```
 
 Unit tests sit next to the code they cover; only end-to-end specs live in `tests/`.
