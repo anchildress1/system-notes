@@ -8,7 +8,6 @@ import './globals.css';
 const spaceGrotesk = localFont({
   src: './fonts/SpaceGrotesk-Variable.woff2',
   variable: '--font-display',
-  // Variable font: one file covers the 400/500/700 the design uses.
   weight: '300 700',
   display: 'swap',
   preload: true,

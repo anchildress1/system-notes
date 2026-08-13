@@ -13,7 +13,10 @@ and redistribution provided the copyright notice travels with the files.
 | Instrument Serif | Copyright 2022 The Instrument Serif Project Authors | https://github.com/Instrument/instrument-serif  |
 | JetBrains Mono   | Copyright 2020 The JetBrains Mono Project Authors   | https://github.com/JetBrains/JetBrainsMono      |
 
-Full license text: https://openfontlicense.org/open-font-license-official-text/
+The full license text lives at [`public/fonts/OFL.txt`](../../../public/fonts/OFL.txt), carrying all
+three copyright notices. It sits in `public/` deliberately rather than beside these `.woff2` files:
+the fonts are redistributed to every visitor out of `/_next/static`, and OFL §2 requires the licence
+to travel with them, so the copy has to be served too — it is reachable at `/fonts/OFL.txt`.
 
 ## Refreshing these files
 
