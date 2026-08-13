@@ -29,8 +29,8 @@ export default function ProjectCard({
   position = 1,
 }: Readonly<ProjectCardProps>) {
   const accent = accentForPosition(position);
-  // Runtime path strings mean next/image cannot derive a blurDataURL itself, so
-  // the LQIP comes from a build-time map (scripts/generate-image-variants.mjs).
+  // next/image cannot derive a blurDataURL from a runtime path string, so the LQIP
+  // comes from the build-time manifest.
   const blurDataURL = blurFor(project.image_url);
   const isRetired = /archiv|retire|scrap/i.test(project.status);
   const [isFlipped, setIsFlipped] = useState(false);

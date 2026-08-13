@@ -1,9 +1,8 @@
 import { getProjects } from '@/lib/api';
 import { buildSiteJsonLd } from '@/lib/siteJsonLd';
 
-// Prerendered at build time rather than served per request: the payload only
-// changes when projects.json does, and a scale-to-zero instance should not be
-// waking up to rebuild the same document for a crawler.
+// Prerendered: the payload only changes when projects.json does, and a
+// scale-to-zero instance should not wake to rebuild it for a crawler.
 export const dynamic = 'force-static';
 
 export async function GET() {

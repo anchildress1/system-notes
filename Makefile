@@ -1,10 +1,7 @@
 .PHONY: setup setup-node dev build deploy clean kill ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf images
 
-# Responsive image variants + LQIP blurs are derived from the sources in public/
-# and are gitignored, so anything that compiles or type-checks the app needs the
-# manifest on disk first. Always invoke: the script decides for itself whether
-# there is work to do, and it checks source membership as well as mtimes — which
-# a make prerequisite list cannot, since `mv` preserves mtime and a renamed
+# Always invoke rather than using a prerequisite list: the script also compares
+# source membership, which make cannot, since `mv` preserves mtime and a renamed
 # source would leave make believing the target was current.
 images:
 	@node scripts/generate-image-variants.mjs

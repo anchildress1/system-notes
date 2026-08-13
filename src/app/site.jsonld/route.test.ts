@@ -19,8 +19,7 @@ vi.mock('@/lib/api', () => ({
 const load = async () => (await import('./route')).GET();
 
 // Restored rather than deleted: layout.tsx and sitemap.ts read the same variable,
-// so unconditionally unsetting it here would leak into whatever else this worker
-// runs next, and would make the fallback case pass or fail on the caller's shell.
+// so unsetting it unconditionally leaks into the rest of the worker.
 const ORIGINAL_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 beforeEach(() => vi.resetModules());

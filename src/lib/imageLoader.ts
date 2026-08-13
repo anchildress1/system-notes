@@ -1,4 +1,3 @@
-// Wired in via images.loaderFile. A default export is the only shape Next accepts
-// there, and it has to be a module rather than a `loader` prop so server components
-// (Portrait) can use it without passing a function across the client boundary.
+// A module rather than a `loader` prop because Portrait is a server component and
+// cannot pass a function across the client boundary. loaderFile needs a default export.
 export { projectImageLoader as default } from '@/lib/imageVariants';

@@ -27,15 +27,9 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   compress: true,
   images: {
-    // Every image on the site is pre-rendered by scripts/generate-image-variants.mjs
-    // and served through a custom loader, so the runtime optimizer is off the hot
-    // path entirely. These widths exist to make the srcset Next builds line up with
-    // the rungs the generator actually emits — anything else would advertise a
-    // descriptor no file matches.
-    // Next builds a sizes-based srcset from imageSizes + deviceSizes, so between
-    // them these must name exactly the rungs the generator emits and nothing else.
-    // Any extra width would be labelled with a descriptor no file matches: the
-    // loader would snap it to a real rung and the browser would size its choice
+    // Next builds a sizes-based srcset from imageSizes + deviceSizes, so between them
+    // these must name exactly the rungs generate-image-variants.mjs emits. Any other
+    // width gets a descriptor no file matches, and the browser sizes its choice
     // against a number that was never true.
     imageSizes: [448],
     deviceSizes: [768, 896],
@@ -44,12 +38,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ['framer-motion', 'react-icons'],
-    // Do not turn on experimental.inlineCss here. It was tried and measured: it
-    // removes all three render-blocking stylesheets, but this page already ships
-    // ~289 KB of HTML (20 cards of RSC payload plus inline blur placeholders), and
-    // folding the CSS in took it from 40 KB to 71 KB gzipped. Mobile LCP went from
-    // 3.4s to 4.4-5.2s and the score dropped from 91-92 to 80-84. The round-trips
-    // it saves cost less than the bytes it adds until the HTML gets much smaller.
+    // Do not add experimental.inlineCss. Measured: it removes all three
+    // render-blocking stylesheets but takes the HTML from 40 KB to 71 KB gzipped,
+    // and mobile LCP went 3.4s -> 4.4-5.2s (score 91-92 -> 80-84).
   },
   async headers() {
     return [

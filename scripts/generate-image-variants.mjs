@@ -1,15 +1,10 @@
 #!/usr/bin/env node
-// Pre-renders every responsive variant next/image would otherwise build on demand,
-// plus the LQIP blur for each source, into src/data/image-manifest.json.
+// Exists because next/image's runtime optimizer caches into .next/cache/images,
+// inside the container. Cloud Run scales to zero, so that cache dies with every
+// instance and each cold start re-encodes every card: ~1s TTFB per variant against
+// ~0.28s for a plain static file.
 //
-// Why this exists: the runtime optimizer writes to .next/cache/images inside the
-// container. Cloud Run scales to zero, so that cache dies with every instance and
-// each cold start re-encodes all twenty cards from scratch — measured at ~1s TTFB
-// per variant against ~0.28s for a plain static file. Encoding at build time and
-// serving the results as static assets removes the optimizer from the hot path.
-//
-// Output is gitignored. Make rebuilds it whenever a source image changes, and the
-// npm prebuild hook covers the Docker path, which never goes through Make.
+// Output is gitignored; make and the npm pre-hooks both invoke this.
 
 import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -28,8 +23,6 @@ const OUT_FILE = path.join(process.cwd(), 'src', 'data', 'image-manifest.json');
 // serve only DPR-3 phones, which upscale from 896 imperceptibly.
 const LADDER = [448, 768, 896];
 
-// Sources live flat in public/; variants go in a sibling opt/ dir so the originals
-// stay recognisable as the inputs rather than as anything the site still serves.
 const SOURCES = [
   { dir: 'projects', files: null },
   { dir: '', files: ['ashley-gen-2.webp'] },
@@ -41,15 +34,10 @@ const blurFor = (file) => sharp(file).resize(12).grayscale().webp({ quality: 30 
 
 const mtime = async (file) => (await stat(file).catch(() => null))?.mtimeMs ?? Infinity;
 
-// Every npm entry point that compiles the app now runs this first, so an
-// unconditional re-encode would tax `npm test` and `npm run dev` on every
-// invocation. Make already tracks staleness for its own targets; this makes the
-// npm hooks equally cheap when nothing has moved.
-//
-// Mtimes alone are not a sufficient cache key: `mv` preserves them, so a renamed
-// or deleted source leaves every surviving file older than the manifest and the
-// run gets skipped while the manifest still points at the old name. The set of
-// keys has to match too, or the loader falls through to the unresized original.
+// Mtimes alone are not a sufficient cache key: `mv` preserves them, so a renamed or
+// deleted source leaves every survivor older than the manifest and the run gets
+// skipped while the manifest still points at the old name. The key set must match
+// too, or the loader falls through to the unresized original.
 async function isUpToDate(expectedKeys, sourcePaths) {
   const built = await mtime(OUT_FILE);
   if (built === Infinity) return false;
@@ -77,8 +65,7 @@ for (const { dir, files } of SOURCES) {
   plan.push({ dir, srcDir, optDir: path.join(srcDir, 'opt'), names });
 }
 
-// Built in the same order the generator writes them, so a plain positional
-// comparison is enough to spot an added, removed or renamed source.
+// Same order the manifest is written in, so isUpToDate can compare positionally.
 const expectedKeys = plan.flatMap((p) => p.names.map((n) => publicPathFor(p.dir, n)));
 const sourcePaths = plan.flatMap((p) => p.names.map((n) => path.join(p.srcDir, n)));
 
@@ -88,8 +75,7 @@ if (await isUpToDate(expectedKeys, sourcePaths)) {
 }
 
 for (const { dir, srcDir, optDir, names } of plan) {
-  // Wipe first so variants of a deleted or renamed source cannot linger and get
-  // served long after the image they came from is gone.
+  // Wipe first so variants of a deleted or renamed source cannot linger.
   await rm(optDir, { recursive: true, force: true });
   await mkdir(optDir, { recursive: true });
 
@@ -98,8 +84,7 @@ for (const { dir, srcDir, optDir, names } of plan) {
     const { width: srcWidth } = await sharp(srcPath).metadata();
     const base = name.replace(/\.webp$/, '');
 
-    // Never upscale: a ladder rung wider than the source would cost bytes for
-    // pixels that were never there.
+    // Clamped so a rung wider than the source never upscales.
     const widths = [...new Set(LADDER.map((w) => Math.min(w, srcWidth)))].sort((a, b) => a - b);
 
     for (const w of widths) {
