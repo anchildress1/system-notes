@@ -8,7 +8,7 @@
 
 <!--END_SECTION:rai-badge-->
 
-_That badge is [rai-commit-badge](https://github.com/anchildress1/rai-commit-badge) reading this repo's own git history. It is not a vibe — every commit here carries an RAI footer, and the number is what the footers add up to._
+_That badge is [rai-commit-badge](https://github.com/anchildress1/rai-commit-badge) scoring this repo's own git history: the share of commits carrying an RAI attribution footer since the first one landed. Dependabot bumps and release automation sit in that denominator without footers, so it reads as adoption across the whole history rather than a claim about any single commit._
 
 # System Notes
 
