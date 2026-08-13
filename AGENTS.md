@@ -57,7 +57,7 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 
 ## Test Standards
 
-- **Coverage thresholds**: 85% lines/functions/statements, 80% branches (enforced by `vitest.config.ts`).
+- **Coverage thresholds**: 95% lines, 92% functions/statements, 85% branches (enforced by `vitest.config.ts`). Floors sit a few points under actual so a regression trips them; do not lower them to make a run pass.
 - Every new component or utility must ship with positive, negative, and edge-case tests.
 - Integration-heavy modules (e.g. `SearchPage.tsx`) are excluded from coverage; test them via E2E instead.
 
@@ -69,9 +69,12 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 ## Performance / Lighthouse
 
 - **Targets** (enforced pre-push via the lefthook `performance` step → `make test-perf`):
-  - **best-practices: 100%** on both mobile and desktop.
-  - **performance: 100% desktop, 92% mobile.**
-  - **accessibility & SEO: 95%+** on both.
+  - **accessibility, best-practices, SEO: 100%** on both. These are deterministic given the
+    same DOM, so the gate sits exactly at the observed score — a drop is a real regression.
+  - **performance: 98% desktop, 92% mobile.** Performance is the only timing-dependent
+    category, so it is the only one carrying headroom. Desktop sat at `minScore: 1` and failed
+    CI at 0.99 on a slightly slower runner while scoring 100 locally and on a re-run of the
+    same commit; a perfect-score gate measures the runner, not the code.
 - `errors-in-console` is skipped in the LH configs — the local harness uses dummy Algolia credentials, so unreachable-host network errors are a test artifact, not a defect (same rationale as the pre-existing `uses-http2` skip).
 - Below-the-fold components must be deferred via `IntersectionObserver` or `next/dynamic` (see `SearchPageWrapper.tsx`).
 - Prefer `instantsearch.css/themes/reset.css` over `satellite.css` to minimize CSS payload.

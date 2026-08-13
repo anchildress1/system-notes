@@ -33,11 +33,15 @@ export default defineConfig({
         'src/components/icons/index.ts',
         'src/hooks/useSparkles.ts',
       ],
+      // Floors sit a few points under what the suite actually reports (98.2 lines,
+      // 95.5 functions, 95.2 statements, 89.4 branches) so a real regression trips
+      // them while ordinary churn does not. The previous 85/80 left roughly ten
+      // points of slack — enough to delete a tenth of the tests and stay green.
       thresholds: {
-        lines: 85,
-        functions: 85,
-        branches: 80,
-        statements: 85,
+        lines: 95,
+        functions: 92,
+        branches: 85,
+        statements: 92,
       },
     },
   },
