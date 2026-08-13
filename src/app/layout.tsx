@@ -2,11 +2,9 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 
-// Vendored rather than fetched from next/font/google. Google Fonts is downloaded at
-// build time, which made every build depend on reaching fonts.googleapis.com — a
-// fetch that failed in CI and took the whole build with it ("Error while requesting
-// resource", then Turbopack could not resolve the internal font module). The files
-// in ./fonts are the same latin subsets Google was serving. See ./fonts/LICENSE.md.
+// Vendored, not next/font/google: that downloads at build time, so every build
+// depended on reaching fonts.googleapis.com — a fetch that has already failed CI
+// and taken the build with it. Same latin subsets. See ./fonts/LICENSE.md.
 const spaceGrotesk = localFont({
   src: './fonts/SpaceGrotesk-Variable.woff2',
   variable: '--font-display',
