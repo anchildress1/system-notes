@@ -1,7 +1,7 @@
 name: RAI Attribution Badge
 
-# Rescores the git history and opens a pull request when the README badge drifts.
-# Without this the number is a snapshot that quietly rots into a false claim.
+# Opens a PR when the README badge drifts. Without it the number is a snapshot
+# that rots into a false claim.
 on:
   push:
     branches: [main]
@@ -21,8 +21,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          # The action scores author dates across the whole history, so a shallow
-          # clone would report against whatever slice CI happened to fetch.
+          # Scores author dates across the whole history; a shallow clone would
+          # report against whatever slice CI happened to fetch.
           fetch-depth: 0
 
       - name: Score RAI footers and refresh the badge
