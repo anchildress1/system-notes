@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from 'next';
-import { Instrument_Serif, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 
-const spaceGrotesk = Space_Grotesk({
+// Vendored, not next/font/google: that downloads at build time, so every build
+// depended on reaching fonts.googleapis.com — a fetch that has already failed CI
+// and taken the build with it. Same latin subsets. See ./fonts/LICENSE.md.
+const spaceGrotesk = localFont({
+  src: './fonts/SpaceGrotesk-Variable.woff2',
   variable: '--font-display',
-  subsets: ['latin'],
-  weight: ['400', '500', '700'],
+  weight: '300 700',
   display: 'swap',
   preload: true,
   fallback: ['system-ui', 'sans-serif'],
@@ -14,19 +17,21 @@ const spaceGrotesk = Space_Grotesk({
 // Only the display font (the LCP H1) is preloaded. The serif and mono load on
 // demand behind their fallbacks (display: swap) so they don't compete with the
 // LCP font for the initial connection — shaves the hero's render delay.
-const instrumentSerif = Instrument_Serif({
+const instrumentSerif = localFont({
+  src: [
+    { path: './fonts/InstrumentSerif-Regular.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/InstrumentSerif-Italic.woff2', weight: '400', style: 'italic' },
+  ],
   variable: '--font-serif',
-  subsets: ['latin'],
-  weight: '400',
-  style: ['normal', 'italic'],
   display: 'swap',
   preload: false,
   fallback: ['Georgia', 'Times New Roman', 'serif'],
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const jetbrainsMono = localFont({
+  src: './fonts/JetBrainsMono-Variable.woff2',
   variable: '--font-mono',
-  subsets: ['latin'],
+  weight: '100 800',
   display: 'swap',
   preload: false,
   fallback: ['ui-monospace', 'monospace'],
