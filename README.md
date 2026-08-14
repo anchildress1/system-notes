@@ -3,9 +3,7 @@
 [![CI](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml/badge.svg)](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml) [![Quality Gate](https://img.shields.io/sonar/alert_status/anchildress1_system-notes?server=https%3A%2F%2Fsonarcloud.io&logo=sonarqubecloud)](https://sonarcloud.io/summary/new_code?id=anchildress1_system-notes) ![License](https://img.shields.io/badge/License-PolyForm%20Shield%201.0.0-blue)
 
 <!--START_SECTION:rai-badge-->
-
-![AI attribution](https://img.shields.io/badge/AI%20attribution-51%25%20since%202026--01-C03070)
-
+![AI attribution](https://img.shields.io/badge/AI%20attribution-69%25%20since%202026--01-C03070?style=flat)
 <!--END_SECTION:rai-badge-->
 
 _That badge is [rai-commit-badge](https://github.com/anchildress1/rai-commit-badge) scoring this repo's own git history: the share of commits carrying an RAI attribution footer since the first one landed. Dependabot bumps and release automation sit in that denominator without footers, so it reads as adoption across the whole history rather than a claim about any single commit._
