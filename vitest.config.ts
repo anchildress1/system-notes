@@ -33,11 +33,13 @@ export default defineConfig({
         'src/components/icons/index.ts',
         'src/hooks/useSparkles.ts',
       ],
+      // Floors track a few points under actual so a regression trips them. Raise
+      // them when coverage rises; never lower them to make a run pass.
       thresholds: {
-        lines: 85,
-        functions: 85,
-        branches: 80,
-        statements: 85,
+        lines: 95,
+        functions: 92,
+        branches: 85,
+        statements: 92,
       },
     },
   },

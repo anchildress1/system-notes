@@ -1,0 +1,29 @@
+name: RAI Attribution Badge
+
+# Opens a PR when the README badge drifts. Without it the number is a snapshot
+# that rots into a false claim.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  badge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Scores author dates across the whole history; a shallow clone would
+          # report against whatever slice CI happened to fetch.
+          fetch-depth: 0
+
+      - name: Score RAI footers and refresh the badge
+        uses: anchildress1/rai-commit-badge@4116096f0a33a6ac8bf3daafcd239fa548328e99 # v1.0.0

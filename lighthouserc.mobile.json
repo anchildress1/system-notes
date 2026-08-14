@@ -22,7 +22,7 @@
         "categories:accessibility": [
           "error",
           {
-            "minScore": 0.95,
+            "minScore": 1,
             "aggregationMethod": "median-run"
           }
         ],
@@ -36,7 +36,7 @@
         "categories:seo": [
           "error",
           {
-            "minScore": 0.95,
+            "minScore": 1,
             "aggregationMethod": "median-run"
           }
         ]
