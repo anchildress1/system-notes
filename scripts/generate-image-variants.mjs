@@ -1,18 +1,14 @@
 #!/usr/bin/env node
-// Pre-renders every responsive variant next/image would otherwise build on demand,
-// plus the LQIP blur for each source, into src/data/image-manifest.json.
+// Exists because next/image's runtime optimizer caches into .next/cache/images,
+// inside the container. Cloud Run scales to zero, so that cache dies with every
+// instance and each cold start re-encodes every card: ~1s TTFB per variant against
+// ~0.28s for a plain static file.
 //
-// Why this exists: the runtime optimizer writes to .next/cache/images inside the
-// container. Cloud Run scales to zero, so that cache dies with every instance and
-// each cold start re-encodes all twenty cards from scratch — measured at ~1s TTFB
-// per variant against ~0.28s for a plain static file. Encoding at build time and
-// serving the results as static assets removes the optimizer from the hot path.
-//
-// Output is gitignored. Make rebuilds it whenever a source image changes, and the
-// npm prebuild hook covers the Docker path, which never goes through Make.
+// Output is gitignored; make and the npm pre-hooks both invoke this.
 
-import { mkdir, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
@@ -27,8 +23,6 @@ const OUT_FILE = path.join(process.cwd(), 'src', 'data', 'image-manifest.json');
 // serve only DPR-3 phones, which upscale from 896 imperceptibly.
 const LADDER = [448, 768, 896];
 
-// Sources live flat in public/; variants go in a sibling opt/ dir so the originals
-// stay recognisable as the inputs rather than as anything the site still serves.
 const SOURCES = [
   { dir: 'projects', files: null },
   { dir: '', files: ['ashley-gen-2.webp'] },
@@ -38,17 +32,50 @@ const SOURCES = [
 // does not flash in colour and desaturate the moment the real image decodes.
 const blurFor = (file) => sharp(file).resize(12).grayscale().webp({ quality: 30 }).toBuffer();
 
+const mtime = async (file) => (await stat(file).catch(() => null))?.mtimeMs ?? Infinity;
+
+// Mtimes alone are not a sufficient cache key: `mv` preserves them, so a renamed or
+// deleted source leaves every survivor older than the manifest and the run gets
+// skipped while the manifest still points at the old name. The key set must match
+// too, or the loader falls through to the unresized original.
+async function isUpToDate(expectedKeys, sourcePaths) {
+  const built = await mtime(OUT_FILE);
+  if (built === Infinity) return false;
+
+  const previous = await readFile(OUT_FILE, 'utf8')
+    .then((raw) => Object.keys(JSON.parse(raw)))
+    .catch(() => null);
+  if (!previous) return false;
+  if (previous.length !== expectedKeys.length) return false;
+  if (previous.some((key, i) => key !== expectedKeys[i])) return false;
+
+  const self = fileURLToPath(import.meta.url);
+  const newest = Math.max(...(await Promise.all([...sourcePaths, self].map(mtime))));
+  return newest !== Infinity && newest <= built;
+}
+
+const publicPathFor = (dir, name) => `${dir ? `/${dir}` : ''}/${name}`;
+
 const manifest = {};
+const plan = [];
 
 for (const { dir, files } of SOURCES) {
   const srcDir = path.join(PUBLIC_DIR, dir);
-  const optDir = path.join(srcDir, 'opt');
+  const names = files ?? (await readdir(srcDir)).filter((f) => f.endsWith('.webp')).sort();
+  plan.push({ dir, srcDir, optDir: path.join(srcDir, 'opt'), names });
+}
 
-  const names =
-    files ?? (await readdir(srcDir)).filter((f) => f.endsWith('.webp')).sort();
+// Same order the manifest is written in, so isUpToDate can compare positionally.
+const expectedKeys = plan.flatMap((p) => p.names.map((n) => publicPathFor(p.dir, n)));
+const sourcePaths = plan.flatMap((p) => p.names.map((n) => path.join(p.srcDir, n)));
 
-  // Wipe first so variants of a deleted or renamed source cannot linger and get
-  // served long after the image they came from is gone.
+if (await isUpToDate(expectedKeys, sourcePaths)) {
+  console.log('Image variants already up to date');
+  process.exit(0);
+}
+
+for (const { dir, srcDir, optDir, names } of plan) {
+  // Wipe first so variants of a deleted or renamed source cannot linger.
   await rm(optDir, { recursive: true, force: true });
   await mkdir(optDir, { recursive: true });
 
@@ -57,8 +84,7 @@ for (const { dir, files } of SOURCES) {
     const { width: srcWidth } = await sharp(srcPath).metadata();
     const base = name.replace(/\.webp$/, '');
 
-    // Never upscale: a ladder rung wider than the source would cost bytes for
-    // pixels that were never there.
+    // Clamped so a rung wider than the source never upscales.
     const widths = [...new Set(LADDER.map((w) => Math.min(w, srcWidth)))].sort((a, b) => a - b);
 
     for (const w of widths) {
@@ -66,8 +92,7 @@ for (const { dir, files } of SOURCES) {
       await writeFile(path.join(optDir, `${base}-${w}.webp`), buf);
     }
 
-    const publicPath = `${dir ? `/${dir}` : ''}/${name}`;
-    manifest[publicPath] = {
+    manifest[publicPathFor(dir, name)] = {
       blur: `data:image/webp;base64,${(await blurFor(srcPath)).toString('base64')}`,
       widths,
     };

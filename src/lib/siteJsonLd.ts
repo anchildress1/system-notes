@@ -1,10 +1,8 @@
 import type { Project } from '@/lib/api';
 
 /**
- * Builds the site-wide schema.org graph from the project list.
- *
- * Shared by the inline <head> block in layout.tsx and the /site.jsonld route, so
- * the copy crawlers fetch and the copy they parse from the page cannot disagree.
+ * Builds the site-wide schema.org graph from the project list. Shared by the inline
+ * <head> block and the /site.jsonld route so the two cannot drift apart.
  */
 export function buildSiteJsonLd(projects: Project[], baseUrl: string) {
   return {
@@ -31,8 +29,6 @@ export function buildSiteJsonLd(projects: Project[], baseUrl: string) {
       operatingSystem: 'Any',
       url: p.app_url,
       codeRepository: p.repo_url,
-      // Only the projects that actually placed carry this; everything else omits
-      // the key rather than advertising an empty award.
       award: p.award,
       image: p.image_url ? new URL(p.image_url, baseUrl).toString() : undefined,
       relatedLink: p.blog_posts?.map((b) => b.url) ?? [],
