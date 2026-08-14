@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.5.3](https://github.com/anchildress1/system-notes/compare/v2.5.2...v2.5.3) (2026-08-14)
+
+
+### Bug Fixes
+
+* land the PR [#109](https://github.com/anchildress1/system-notes/issues/109) review findings that missed the merge ([#111](https://github.com/anchildress1/system-notes/issues/111)) ([d954c57](https://github.com/anchildress1/system-notes/commit/d954c5751e5a5af8f78d8e1ef8ed0ec78e5a4e05))
+* patch 17 advisories, drop unearned award claim, ship LQIP placeholders ([#107](https://github.com/anchildress1/system-notes/issues/107)) ([4e20ad9](https://github.com/anchildress1/system-notes/commit/4e20ad951be9be93a38fd7248c88e811d59e0a04))
+
+
+### Performance Improvements
+
+* **fonts:** vendor the woff2 files instead of fetching Google at build ([#113](https://github.com/anchildress1/system-notes/issues/113)) ([4d031ef](https://github.com/anchildress1/system-notes/commit/4d031efad2de6218c92334ab9b1be4c09407f0ad))
+* pre-render image variants, drop the runtime optimizer ([#109](https://github.com/anchildress1/system-notes/issues/109)) ([76af9bb](https://github.com/anchildress1/system-notes/commit/76af9bb2e3c0087a05e53a2f00492320a0041c45))
+
 ## [2.5.2](https://github.com/anchildress1/system-notes/compare/v2.5.1...v2.5.2) (2026-07-14)
 
 
