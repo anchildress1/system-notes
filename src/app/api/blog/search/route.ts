@@ -101,8 +101,8 @@ async function fetchSitemapUrls(): Promise<string[]> {
     if (!xml) return [];
 
     const urls = new Set<string>();
-    for (const match of xml.matchAll(/<loc>\s*(https?:\/\/[^<]+?)\s*<\/loc>/gi)) {
-      const url = match[1].replaceAll('&amp;', '&');
+    for (const match of xml.matchAll(/<loc>([^<]*)<\/loc>/gi)) {
+      const url = match[1].trim().replaceAll('&amp;', '&');
       if (isAllowedPostUrl(url)) urls.add(url);
       if (urls.size === MAX_POST_URLS) break;
     }
@@ -128,24 +128,76 @@ function findArticle(value: unknown): JsonObject | null {
   return findArticle(value['@graph']);
 }
 
+interface OpeningTag {
+  value: string;
+  contentStart: number;
+}
+
+function findOpeningTag(
+  html: string,
+  openingPattern: RegExp,
+  fromIndex: number
+): OpeningTag | null {
+  openingPattern.lastIndex = fromIndex;
+
+  while (openingPattern.lastIndex < html.length) {
+    const match = openingPattern.exec(html);
+    if (!match) return null;
+
+    const boundary = html[openingPattern.lastIndex];
+    if (boundary && !' \t\r\n\f/>'.includes(boundary)) {
+      continue;
+    }
+
+    const end = html.indexOf('>', openingPattern.lastIndex);
+    if (end === -1) return null;
+    return { value: html.slice(match.index, end + 1), contentStart: end + 1 };
+  }
+
+  return null;
+}
+
 function extractJsonLd(html: string): JsonObject | null {
-  const pattern = /<script\b[^>]*\btype=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-  for (const match of html.matchAll(pattern)) {
+  const openingPattern = /<script/gi;
+  const closingPattern = /<\/script>/gi;
+  let cursor = 0;
+
+  while (cursor < html.length) {
+    const openingTag = findOpeningTag(html, openingPattern, cursor);
+    if (!openingTag) return null;
+
+    closingPattern.lastIndex = openingTag.contentStart;
+    const closingTag = closingPattern.exec(html);
+    if (!closingTag) return null;
+    cursor = closingPattern.lastIndex;
+
+    if (!/\btype=["']application\/ld\+json["']/i.test(openingTag.value)) continue;
     try {
-      const article = findArticle(JSON.parse(match[1]));
+      const article = findArticle(
+        JSON.parse(html.slice(openingTag.contentStart, closingTag.index))
+      );
       if (article) return article;
     } catch {
       continue;
     }
   }
+
   return null;
 }
 
 function extractReadingTime(html: string): string | undefined {
-  for (const [tag] of html.matchAll(/<meta\b[^>]*>/gi)) {
-    if (!/\bname=["']reading-time["']/i.test(tag)) continue;
-    return /\bcontent=["']([^"']*)["']/i.exec(tag)?.[1];
+  const openingPattern = /<meta/gi;
+  let cursor = 0;
+
+  while (cursor < html.length) {
+    const tag = findOpeningTag(html, openingPattern, cursor);
+    if (!tag) return undefined;
+    cursor = tag.contentStart;
+
+    if (!/\bname=["']reading-time["']/i.test(tag.value)) continue;
+    return /\bcontent=["']([^"']*)["']/i.exec(tag.value)?.[1];
   }
+
   return undefined;
 }
 
@@ -264,21 +316,19 @@ export async function GET(request: NextRequest): Promise<NextResponse<BlogSearch
   let posts = await getAllBlogPosts();
 
   if (q) {
-    const query = q.toLocaleLowerCase();
+    const query = q.toLowerCase();
     posts = posts.filter(
       (post) =>
-        post.title.toLocaleLowerCase().includes(query) ||
-        post.blurb.toLocaleLowerCase().includes(query) ||
-        post.fact.toLocaleLowerCase().includes(query) ||
-        post.tags.some((value) => value.toLocaleLowerCase().includes(query))
+        post.title.toLowerCase().includes(query) ||
+        post.blurb.toLowerCase().includes(query) ||
+        post.fact.toLowerCase().includes(query) ||
+        post.tags.some((value) => value.toLowerCase().includes(query))
     );
   }
 
   if (tag) {
-    const query = tag.toLocaleLowerCase();
-    posts = posts.filter((post) =>
-      post.tags.some((value) => value.toLocaleLowerCase().includes(query))
-    );
+    const query = tag.toLowerCase();
+    posts = posts.filter((post) => post.tags.some((value) => value.toLowerCase().includes(query)));
   }
 
   return NextResponse.json({

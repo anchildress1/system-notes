@@ -160,6 +160,43 @@ describe('GET /api/blog/search', () => {
     expect(body.results.map((item: { title: string }) => item.title)).toEqual(['Safe']);
   });
 
+  it('trims and decodes sitemap URLs before fetching posts', async () => {
+    const postUrl = `${HOST}/posts/encoded?one=1&two=2`;
+    const sitemap = `<urlset><loc>\n  ${HOST}/posts/encoded?one=1&amp;two=2 \t</loc></urlset>`;
+    const fetchMock = mockFetch(sitemap, (url) => articleHtml({ id: url }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const body = await requestBody();
+
+    expect(fetchMock).toHaveBeenCalledWith(postUrl, expect.any(Object));
+    expect(body.results[0].url).toBe(postUrl);
+  });
+
+  it.each(['javascript:alert(1)', 'not a URL', '   '])(
+    'rejects invalid sitemap location %j',
+    async (invalidLocation) => {
+      const fetchMock = mockFetch(buildSitemap([invalidLocation]), () => articleHtml({}));
+      vi.stubGlobal('fetch', fetchMock);
+
+      const body = await requestBody();
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(body.results).toEqual([]);
+    }
+  );
+
+  it('continues after a long malformed sitemap location', async () => {
+    const safeUrl = `${HOST}/posts/safe`;
+    const sitemap = `<urlset><loc>${'x'.repeat(100_000)}<broken>${buildSitemap([safeUrl])}</urlset>`;
+    const fetchMock = mockFetch(sitemap, (url) => articleHtml({ headline: 'Safe', id: url }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const body = await requestBody();
+
+    expect(fetchMock.mock.calls.map(([input]) => input.toString())).toEqual([SITEMAP_URL, safeUrl]);
+    expect(body.results.map((item: { title: string }) => item.title)).toEqual(['Safe']);
+  });
+
   it('does not follow redirects from either upstream request', async () => {
     const fetchMock = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       expect(init?.redirect).toBe('manual');
@@ -218,6 +255,91 @@ describe('GET /api/blog/search', () => {
 
     const body = await requestBody();
     expect(body.results[0].title).toBe('Graph Post');
+  });
+
+  it.each([
+    { label: 'before the script', prefix: 'İ', headline: 'Unicode Prefix' },
+    { label: 'inside JSON-LD', prefix: '', headline: 'İstanbul' },
+  ])('preserves source indices with Unicode $label', async ({ prefix, headline }) => {
+    const postUrl = `${HOST}/posts/unicode`;
+    vi.stubGlobal(
+      'fetch',
+      mockFetch(buildSitemap([postUrl]), () =>
+        prefix.concat(articleHtml({ headline, id: postUrl }))
+      )
+    );
+
+    const body = await requestBody();
+
+    expect(body.results[0].title).toBe(headline);
+  });
+
+  it('skips lookalike tag names and accepts case-insensitive HTML tags', async () => {
+    const postUrl = `${HOST}/posts/tag-boundaries`;
+    const jsonLd = JSON.stringify({
+      '@type': 'Article',
+      headline: 'Boundary Post',
+      mainEntityOfPage: { '@id': postUrl },
+    });
+    const html = [
+      '<scripture type="application/ld+json">not-json</scripture>',
+      `<SCRIPT TYPE="application/ld+json">${jsonLd}</SCRIPT>`,
+      '<metadata name="reading-time" content="wrong">',
+      '<META CONTENT="4 min read" NAME="reading-time">',
+    ].join('');
+    vi.stubGlobal(
+      'fetch',
+      mockFetch(buildSitemap([postUrl]), () => html)
+    );
+
+    const body = await requestBody();
+
+    expect(body.results[0]).toEqual(
+      expect.objectContaining({ title: 'Boundary Post', reading_time: '4 min read' })
+    );
+  });
+
+  it('rejects near-limit JSON-LD with no closing script without rescanning suffixes', async () => {
+    const postUrl = `${HOST}/posts/unclosed-json-ld`;
+    const html = '<script type="application/ld+json">'.repeat(45_000);
+    vi.stubGlobal(
+      'fetch',
+      mockFetch(buildSitemap([postUrl]), () => html)
+    );
+
+    const body = await requestBody();
+
+    expect(body.results).toEqual([]);
+  });
+
+  it('extracts reading time from a meta tag', async () => {
+    const postUrl = `${HOST}/posts/reading-time`;
+    vi.stubGlobal(
+      'fetch',
+      mockFetch(buildSitemap([postUrl]), () =>
+        articleHtml({ headline: 'Timed Post', id: postUrl, readingTime: '7 min read' })
+      )
+    );
+
+    const body = await requestBody();
+
+    expect(body.results[0].reading_time).toBe('7 min read');
+  });
+
+  it('ignores near-limit unterminated meta tags without rescanning suffixes', async () => {
+    const postUrl = `${HOST}/posts/unclosed-meta`;
+    const html = articleHtml({ headline: 'Safe Post', id: postUrl }).concat(
+      '<meta name="reading-time" '.repeat(20_000)
+    );
+    vi.stubGlobal(
+      'fetch',
+      mockFetch(buildSitemap([postUrl]), () => html)
+    );
+
+    const body = await requestBody();
+
+    expect(body.results[0]).toEqual(expect.objectContaining({ title: 'Safe Post' }));
+    expect(body.results[0]).not.toHaveProperty('reading_time');
   });
 
   it('skips malformed pages while returning valid posts', async () => {
