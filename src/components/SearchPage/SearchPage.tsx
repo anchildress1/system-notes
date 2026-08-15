@@ -141,7 +141,7 @@ function RetrieveBar() {
         className={styles.retrieveInput}
         value={query}
         onChange={(e) => refine(e.target.value)}
-        placeholder="search by keyword · 'code review', 'adhd', 'carbon trace'"
+        placeholder="search by keyword · 'code review', 'AI', 'awards'"
         aria-label="Search the index"
         autoComplete="off"
         spellCheck={false}
