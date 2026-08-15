@@ -144,12 +144,16 @@ export default function AIChat() {
   const lastChatQuery = useRef<string | null>(null);
 
   const toggleChat = useCallback(() => {
-    setOpen((prev) => {
-      const next = !prev;
-      chatRef.current?.setOpen(next);
-      return next;
-    });
+    setOpen((prev) => !prev);
   }, []);
+
+  // Syncs the widget's imperative open state after commit, not during AIChat's
+  // own render — calling chatRef.current.setOpen() from inside the setOpen
+  // updater triggers "Cannot update a component while rendering a different
+  // component" because it updates ChatInner mid-render of AIChat.
+  useEffect(() => {
+    chatRef.current?.setOpen(open);
+  }, [open]);
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
