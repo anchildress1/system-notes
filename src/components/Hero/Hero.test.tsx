@@ -8,6 +8,14 @@ const defaultProps = {
   subtitle: 'Test Subtitle',
 };
 
+function findGlitterEvent(
+  calls: Parameters<typeof globalThis.dispatchEvent>[]
+): CustomEvent<{ x?: number; y?: number }> | undefined {
+  return calls.find(([event]) => event.type === 'trigger-glitter-bomb')?.[0] as
+    | CustomEvent<{ x?: number; y?: number }>
+    | undefined;
+}
+
 async function pressHeroKey(key: string) {
   const user = userEvent.setup();
   render(<Hero {...defaultProps} />);
@@ -91,19 +99,12 @@ describe('Hero Component', () => {
     render(<Hero {...defaultProps} />);
 
     const container = screen.getByTestId('hero-interactive');
-    fireEvent.click(container);
+    fireEvent.click(container, { clientX: 120, clientY: 240 });
 
-    expect(dispatchSpy).toHaveBeenCalled();
-    const event = dispatchSpy.mock.calls.find(
-      (call) => (call[0] as Event).type === 'trigger-glitter-bomb'
-    );
-    expect(event).toBeTruthy();
+    expect(findGlitterEvent(dispatchSpy.mock.calls)?.detail).toEqual({ x: 120, y: 240 });
   });
 
-  // jsdom has no layout, so nothing here can prove the trigger covers the hero.
-  // What it can pin is the structure that decides it: the trigger must be a child
-  // of the element carrying the gradient, not of the title box. Nesting it back
-  // inside the text column is exactly what left the page-gutter columns dead.
+  // jsdom cannot measure the hit area, so the DOM relationship is the regression boundary.
   it('mounts the trigger on the hero itself, not inside the text column', () => {
     const { container } = render(<Hero {...defaultProps} subtitle="Sub" />);
     const trigger = screen.getByTestId('hero-interactive');
@@ -121,7 +122,7 @@ describe('Hero Component', () => {
     const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
     await pressHeroKey(key);
 
-    expect(dispatchSpy).toHaveBeenCalled();
+    expect(findGlitterEvent(dispatchSpy.mock.calls)?.detail).toBeNull();
   });
 
   it('does not dispatch on other keys', async () => {
