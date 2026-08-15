@@ -258,7 +258,7 @@ deploy_service() {
             [[ -z "$revision" || "$revision" == "$active_revision" ]] && continue
             echo "  Deleting $revision..."
             gcloud run revisions delete "$revision" \
-                --region "$REGION" --project "$PROJECT_ID" --quiet
+                --region "$REGION" --project "$PROJECT_ID" --quiet 2>&1 || true
         done <<< "$revisions"
     fi
 }
