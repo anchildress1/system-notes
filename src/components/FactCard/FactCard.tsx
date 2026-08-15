@@ -14,6 +14,7 @@ import { useEscapeToClose } from '@/hooks/useEscapeToClose';
 import { getSafeHostname, isSafeExternalUrl } from '@/lib/urlSafety';
 import cardStyles from '@/styles/card.module.css';
 import styles from './FactCard.module.css';
+import './highlight-overrides.css';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 

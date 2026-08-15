@@ -1,0 +1,12 @@
+/* Overrides the browser's default yellow <mark> for Algolia's Highlight
+   component. Plain CSS file (not a module) so the global
+   .ais-Highlight-highlighted class isn't locally scoped/mangled — same
+   pattern as AIChat/chat-overrides.css. Solid primary accent, no gradient —
+   the gradient is reserved for genuine brand moments (Hero, Button, Badge);
+   an inline search match isn't one, and impeccable flags gradient text as
+   an anti-pattern for exactly this kind of decorative-not-meaningful use. */
+.ais-Highlight-highlighted {
+  background: none;
+  color: var(--accent-violet);
+  font-weight: 600;
+}
