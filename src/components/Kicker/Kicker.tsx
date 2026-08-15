@@ -1,20 +1,17 @@
 import { ReactNode } from 'react';
 import styles from './Kicker.module.css';
 
-export type KickerTone = 'teal' | 'dim' | 'accent';
-export type KickerAccent = 'violet' | 'pink' | 'teal' | 'gold';
+type KickerTone = 'teal' | 'dim' | 'accent';
+type KickerAccent = 'violet' | 'pink' | 'teal' | 'gold';
 
 interface KickerProps {
-  /** `teal` hero label, `dim` section overline, `accent` color-coded by hue. */
   tone?: KickerTone;
   accent?: KickerAccent;
-  /** Leading pulsing dot. Defaults on for `teal`, off otherwise. */
   dot?: boolean;
   children: ReactNode;
   className?: string;
 }
 
-/** Terminal-style overline label — hero kickers, `// section` labels, NODE tags. */
 export default function Kicker({
   tone = 'teal',
   accent = 'violet',

@@ -20,7 +20,7 @@ paths = [
 # Non-secret placeholders used by tests, CI, and the Makefile.
 regexes = [
   '''test_search_key(_valid_length_20)?''',
-  '''test_(app_id|agent_id|ai_id)''',
+  '''test_(app_id|agent_id)''',
   '''TESTAPPID1''',
   '''mck_agent_id''',
   '''my-public-index''',

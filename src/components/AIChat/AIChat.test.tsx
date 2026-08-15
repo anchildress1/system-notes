@@ -3,13 +3,10 @@ import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import React from 'react';
 
-// Must be hoisted so the value is available before the vi.mock factory runs
 const mockRouterPush = vi.hoisted(() => vi.fn());
 
 vi.hoisted(() => {
-  // Built at runtime (not string literals) so secret scanners don't flag these
-  // obviously-fake fixtures. App ID must be 10 alphanumerics; key must be >= 20
-  // chars (see lib/algolia.ts validation).
+  // Runtime construction keeps deliberately fake credentials out of secret-scanner matches.
   process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = ['TESTAPP', 'ID0'].join('');
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key'.padEnd(20, '0');
   process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID = 'test_agent_id';
@@ -17,9 +14,6 @@ vi.hoisted(() => {
 
 import AIChat from './AIChat';
 
-// ---------------------------------------------------------------------------
-// Types (mirror the private interfaces in AIChat.tsx)
-// ---------------------------------------------------------------------------
 interface ChatHitItem {
   objectID: string;
   title?: string;
@@ -51,16 +45,9 @@ interface CapturedChatProps {
   getSearchPageURL?: (uiState: unknown) => string;
 }
 
-// ---------------------------------------------------------------------------
-// Mutable test controls — reset in beforeEach
-// ---------------------------------------------------------------------------
 const chatCapture: CapturedChatProps = {};
-// Controls which hit the Chat mock renders. null = default BASE_HIT.
 let mockChatItemOverride: ChatHitItem | null = null;
 
-// ---------------------------------------------------------------------------
-// Fixtures
-// ---------------------------------------------------------------------------
 const BASE_HIT: ChatHitItem = {
   objectID: 'fact-abc-123',
   title: 'Test Fact Title',
@@ -70,16 +57,10 @@ const BASE_HIT: ChatHitItem = {
   __position: 0,
 };
 
-// ---------------------------------------------------------------------------
-// Mocks
-// ---------------------------------------------------------------------------
-
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockRouterPush }),
 }));
 
-// Chat mock captures all props AND renders ItemComponent so it lives
-// inside the ChatNavContext.Provider that AIChat creates.
 vi.mock('react-instantsearch', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-instantsearch')>();
   return {
@@ -91,8 +72,6 @@ vi.mock('react-instantsearch', async (importOriginal) => {
       chatCapture.getSearchPageURL = props.getSearchPageURL as (uiState: unknown) => string;
 
       const ItemComponent = props.itemComponent;
-      // Use the test override if set, otherwise fall back to BASE_HIT.
-      // Read at render time so tests can set it before calling render().
       const item: ChatHitItem = mockChatItemOverride ?? {
         objectID: 'fact-abc-123',
         title: 'Test Fact Title',
@@ -123,10 +102,6 @@ vi.mock('algoliasearch/lite', () => ({
     apiKey: 'test-api-key',
   })),
 }));
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 describe('AIChat Widget Integration', () => {
   beforeEach(() => {
@@ -319,10 +294,10 @@ describe('AIChat Widget Integration', () => {
         expect(mockFetch.mock.calls[0][0]).toContain('limit=5');
       });
 
-      it('always includes indexName param', async () => {
+      it('does not send the unused indexName param', async () => {
         mockFetch.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
         await getToolCall()({ input: {}, addToolResult: vi.fn() });
-        expect(mockFetch.mock.calls[0][0]).toContain('indexName=');
+        expect(mockFetch.mock.calls[0][0]).not.toContain('indexName=');
       });
 
       it('omits q when no query is provided', async () => {
@@ -336,6 +311,25 @@ describe('AIChat Widget Integration', () => {
         const addToolResult = vi.fn();
         await expect(getToolCall()({ input: undefined, addToolResult })).resolves.not.toThrow();
         expect(addToolResult).toHaveBeenCalledOnce();
+      });
+
+      it('rejects invalid tool argument types', async () => {
+        mockFetch.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
+        await getToolCall()({
+          input: { query: 42, tag: ['Architecture'], limit: 2.5 },
+          addToolResult: vi.fn(),
+        });
+        expect(mockFetch.mock.calls[0][0]).toBe('/api/blog/search?');
+      });
+
+      it('trims strings and caps the requested result limit', async () => {
+        mockFetch.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
+        await getToolCall()({
+          input: { query: '  bounded query  ', limit: 500 },
+          addToolResult: vi.fn(),
+        });
+        expect(mockFetch.mock.calls[0][0]).toContain('q=bounded+query');
+        expect(mockFetch.mock.calls[0][0]).toContain('limit=50');
       });
     });
 
@@ -397,11 +391,22 @@ describe('AIChat Widget Integration', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // query persistence: tool call → navigation URL
-  // -------------------------------------------------------------------------
   describe('query persistence in navigation URL', () => {
     const mockFetch = vi.fn();
+
+    const navigateAfterSearches = async (...inputs: unknown[]) => {
+      render(<AIChat />);
+      for (const input of inputs) {
+        await chatCapture.tools!.searchBlogPosts.onToolCall({ input, addToolResult: vi.fn() });
+      }
+
+      fireEvent.click(screen.getByRole('link'));
+      expect(mockRouterPush).toHaveBeenCalledOnce();
+      return new URL(
+        mockRouterPush.mock.calls[0][0] as string,
+        'https://localhost'
+      ).searchParams.get('q');
+    };
 
     beforeEach(() => {
       vi.stubGlobal('fetch', mockFetch);
@@ -409,65 +414,25 @@ describe('AIChat Widget Integration', () => {
     });
 
     it('uses the captured query after searchBlogPosts captures a query', async () => {
-      render(<AIChat />);
-
-      await chatCapture.tools!.searchBlogPosts.onToolCall({
-        input: { query: 'hexagonal architecture' },
-        addToolResult: vi.fn(),
-      });
-
-      fireEvent.click(screen.getByRole('link'));
-
-      expect(mockRouterPush).toHaveBeenCalledOnce();
-      const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('q')).toBe('hexagonal architecture');
+      expect(await navigateAfterSearches({ query: 'hexagonal architecture' })).toBe(
+        'hexagonal architecture'
+      );
     });
 
     it('uses the item title when tool was called without a query', async () => {
-      render(<AIChat />);
-
-      await chatCapture.tools!.searchBlogPosts.onToolCall({
-        input: { tag: 'Performance', limit: 3 },
-        addToolResult: vi.fn(),
-      });
-
-      fireEvent.click(screen.getByRole('link'));
-
-      expect(mockRouterPush).toHaveBeenCalledOnce();
-      const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('q')).toBe(BASE_HIT.title);
+      expect(await navigateAfterSearches({ tag: 'Performance', limit: 3 })).toBe(BASE_HIT.title);
     });
 
     it('correctly round-trips a query with special characters', async () => {
-      render(<AIChat />);
-
-      await chatCapture.tools!.searchBlogPosts.onToolCall({
-        input: { query: 'C++ & memory management' },
-        addToolResult: vi.fn(),
-      });
-
-      fireEvent.click(screen.getByRole('link'));
-
-      const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('q')).toBe('C++ & memory management');
+      expect(await navigateAfterSearches({ query: 'C++ & memory management' })).toBe(
+        'C++ & memory management'
+      );
     });
 
     it('last tool call wins — overrides the prior query', async () => {
-      render(<AIChat />);
-
-      await chatCapture.tools!.searchBlogPosts.onToolCall({
-        input: { query: 'first query' },
-        addToolResult: vi.fn(),
-      });
-      await chatCapture.tools!.searchBlogPosts.onToolCall({
-        input: { query: 'second query' },
-        addToolResult: vi.fn(),
-      });
-
-      fireEvent.click(screen.getByRole('link'));
-
-      const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('q')).toBe('second query');
+      expect(await navigateAfterSearches({ query: 'first query' }, { query: 'second query' })).toBe(
+        'second query'
+      );
     });
   });
 });

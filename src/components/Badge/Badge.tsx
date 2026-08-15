@@ -1,11 +1,10 @@
 import { ReactNode } from 'react';
 import styles from './Badge.module.css';
 
-export type BadgeVariant = 'neutral' | 'accent' | 'award';
-export type BadgeAccent = 'violet' | 'pink' | 'teal' | 'gold';
+type BadgeVariant = 'neutral' | 'accent' | 'award';
+type BadgeAccent = 'violet' | 'pink' | 'teal' | 'gold';
 
 interface BadgeProps {
-  /** `neutral` bordered mono, `accent` color-coded by hue, `award` spectral pill. */
   variant?: BadgeVariant;
   accent?: BadgeAccent;
   icon?: ReactNode;
@@ -13,7 +12,6 @@ interface BadgeProps {
   className?: string;
 }
 
-/** Small uppercase mono label — the shared badge for awards, types, and statuses. */
 export default function Badge({
   variant = 'neutral',
   accent = 'violet',

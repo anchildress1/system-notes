@@ -7,14 +7,13 @@
  */
 export function humanizeAttribute(attribute: string): string {
   const base = attribute.replace(/\.lvl\d+$/, '');
-  const words = base
-    .replace(/[_-]+/g, ' ')
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .split('.')
-    .pop()!
-    .toLowerCase()
-    .trim();
-  return singularize(words);
+  const words =
+    base
+      .replace(/[_-]+/g, ' ')
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .split('.')
+      .at(-1) ?? '';
+  return singularize(words.toLowerCase().trim());
 }
 
 function singularize(word: string): string {

@@ -1,9 +1,28 @@
-/* Shared card SURFACE — the single source of truth for the front face of both
-   flip-card grids (ProjectCard + FactCard) so they read as one system. Applied
-   as classNames on the face element. The gradient sits over an opaque
-   --bg-surface base (matching the design system Card) so cards look identical
-   regardless of the nebula behind them. Per-card hue flows from [data-accent]
-   → --card-accent / --card-seam. The face must be position:relative. */
+.frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: var(--r-xl);
+  transition:
+    box-shadow var(--card-hover-transition, var(--transition-base)),
+    transform var(--transition-base);
+}
+
+.frame:hover {
+  box-shadow:
+    0 0 calc(18px * var(--glow)) var(--card-accent-soft),
+    var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+.frame:hover :is(.face, .flipBack) {
+  border-color: color-mix(
+    in srgb,
+    var(--card-accent) var(--card-hover-border-strength, 45%),
+    var(--border-strong)
+  );
+}
 
 .face {
   background: var(--card-surface);
@@ -14,7 +33,6 @@
   box-shadow: var(--highlight-top);
 }
 
-/* Accent seam bar across the top of the face. */
 .seam::before {
   content: '';
   position: absolute;
@@ -27,10 +45,6 @@
   pointer-events: none;
 }
 
-/* Featured seam: identical to the standard accent seam (same top bar, same
-   place) — only the color differs: the flowing 5-stop chromatic gradient
-   instead of a single accent. No perimeter outline; hover lifts/glows like
-   every other card. */
 .winnerBanner::before {
   content: '';
   position: absolute;
@@ -41,5 +55,71 @@
   z-index: 3;
   background: var(--gradient-brand);
   background-size: 200% 100%;
+  pointer-events: none;
+}
+
+.flipButton {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.flipFront {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* Firefox only backface-culls the front reliably when it owns a transform. */
+  transform: rotateY(0deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flipBack {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: inherit;
+  overflow: hidden;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  pointer-events: none;
+  background: var(--card-surface-back);
+}
+
+.backSeam::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 3;
+  height: var(--seam-width);
+  background: var(--card-seam);
   pointer-events: none;
 }

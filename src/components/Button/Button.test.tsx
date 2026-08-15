@@ -28,7 +28,7 @@ describe('Button', () => {
 
   it('forwards expanded and state attributes for controlled utility buttons', () => {
     render(
-      <Button variant="fab" ariaExpanded dataState="open">
+      <Button variant="fab" aria-expanded data-state="open">
         Chat
       </Button>
     );
@@ -60,7 +60,7 @@ describe('Button', () => {
 
   it('renders an <a> with rel for external targets when href is set', () => {
     render(
-      <Button href="https://dev.to/anchildress1" target="_blank" dataTestId="blog-link">
+      <Button href="https://dev.to/anchildress1" target="_blank" data-testid="blog-link">
         $ read --blog
       </Button>
     );
@@ -72,7 +72,7 @@ describe('Button', () => {
 
   it('omits rel for non-blank links', () => {
     render(
-      <Button href="/projects" dataTestId="internal">
+      <Button href="/projects" data-testid="internal">
         Builds
       </Button>
     );
@@ -81,7 +81,7 @@ describe('Button', () => {
 
   it('renders a <button> (not <a>) when disabled even with href', () => {
     render(
-      <Button href="/x" disabled dataTestId="dead">
+      <Button href="/x" disabled data-testid="dead">
         Nope
       </Button>
     );
@@ -100,7 +100,7 @@ describe('Button', () => {
   it('renders left and right icons plus aria-label', () => {
     render(
       <Button
-        ariaLabel="play"
+        aria-label="play"
         icon={<span data-testid="ico-l">L</span>}
         iconRight={<span data-testid="ico-r">R</span>}
       >

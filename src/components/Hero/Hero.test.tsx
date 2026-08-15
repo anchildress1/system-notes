@@ -1,21 +1,30 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Hero from './Hero';
 
-// Mock useSparkles hook
-vi.mock('@/hooks/useSparkles', () => ({
-  useSparkles: vi.fn(),
-}));
+const defaultProps = {
+  title: 'Test Title',
+  subtitle: 'Test Subtitle',
+};
+
+async function pressHeroKey(key: string) {
+  const user = userEvent.setup();
+  render(<Hero {...defaultProps} />);
+
+  const container = screen.getByTestId('hero-interactive');
+  container.focus();
+  await user.keyboard(key);
+}
 
 describe('Hero Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  const defaultProps = {
-    title: 'Test Title',
-    subtitle: 'Test Subtitle',
-  };
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
   it('renders the title and subtitle', () => {
     render(<Hero {...defaultProps} />);
@@ -89,31 +98,36 @@ describe('Hero Component', () => {
       (call) => (call[0] as Event).type === 'trigger-glitter-bomb'
     );
     expect(event).toBeTruthy();
-    dispatchSpy.mockRestore();
+  });
+
+  // jsdom has no layout, so nothing here can prove the trigger covers the hero.
+  // What it can pin is the structure that decides it: the trigger must be a child
+  // of the element carrying the gradient, not of the title box. Nesting it back
+  // inside the text column is exactly what left the page-gutter columns dead.
+  it('mounts the trigger on the hero itself, not inside the text column', () => {
+    const { container } = render(<Hero {...defaultProps} subtitle="Sub" />);
+    const trigger = screen.getByTestId('hero-interactive');
+    const hero = container.querySelector('[data-accent-tone]');
+
+    expect(trigger.parentElement).toBe(hero);
+    expect(trigger.closest('h1')).toBeNull();
+    expect(screen.getByText('Sub').contains(trigger)).toBe(false);
   });
 
   it.each([
-    { key: 'Enter', label: 'Enter' },
+    { key: '{Enter}', label: 'Enter' },
     { key: ' ', label: 'Space' },
-  ])('dispatches trigger-glitter-bomb event on $label key', ({ key }) => {
+  ])('dispatches trigger-glitter-bomb event on $label key', async ({ key }) => {
     const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
-    render(<Hero {...defaultProps} />);
-
-    const container = screen.getByTestId('hero-interactive');
-    fireEvent.keyDown(container, { key });
+    await pressHeroKey(key);
 
     expect(dispatchSpy).toHaveBeenCalled();
-    dispatchSpy.mockRestore();
   });
 
-  it('does not dispatch on other keys', () => {
+  it('does not dispatch on other keys', async () => {
     const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
-    render(<Hero {...defaultProps} />);
-
-    const container = screen.getByTestId('hero-interactive');
-    fireEvent.keyDown(container, { key: 'Escape' });
+    await pressHeroKey('{Escape}');
 
     expect(dispatchSpy).not.toHaveBeenCalled();
-    dispatchSpy.mockRestore();
   });
 });

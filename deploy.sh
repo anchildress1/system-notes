@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Configuration
 UI_SERVICE="system-notes"
@@ -19,7 +19,10 @@ if ! command -v gcloud &> /dev/null; then
     exit 1
 fi
 
-PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
+PROJECT_ID="${GCP_PROJECT_ID:-}"
+if [[ -z "$PROJECT_ID" ]]; then
+    PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
+fi
 if [[ "$PROJECT_ID" == "(unset)" ]] || [[ -z "$PROJECT_ID" ]]; then
     echo "Error: No Google Cloud Project ID set." >&2
     exit 1
@@ -54,7 +57,7 @@ fi
 
 require_env() {
     local name=$1
-    if [[ -z "${!name}" ]]; then
+    if [[ -z "${!name-}" ]]; then
         echo "Error: Required env var '$name' is missing or empty." >&2
         exit 1
     fi
@@ -63,17 +66,16 @@ require_env() {
 
 require_env "NEXT_PUBLIC_ALGOLIA_APPLICATION_ID"
 require_env "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY"
-require_env "NEXT_PUBLIC_ALGOLIA_AGENT_ID"
-require_env "NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID"
-require_env "NEXT_PUBLIC_BASE_URL"
 
-# Set defaults for optional vars that are required by build
+NEXT_PUBLIC_ALGOLIA_AGENT_ID="${NEXT_PUBLIC_ALGOLIA_AGENT_ID:-}"
+NEXT_PUBLIC_BASE_URL="${NEXT_PUBLIC_BASE_URL:-https://anchildress1.dev}"
 NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME:-system-notes}"
-NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME:-${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME}_query_suggestions}"
+BUILD_TIMEOUT="${BUILD_TIMEOUT:-1200}"
 
-# ==========================================
-# Artifact Registry Helpers
-# ==========================================
+if ! [[ "$BUILD_TIMEOUT" =~ ^[1-9][0-9]*$ ]]; then
+    echo "Error: BUILD_TIMEOUT must be a positive integer." >&2
+    exit 1
+fi
 
 truthy() {
     case "$1" in
@@ -137,10 +139,6 @@ EOF
     rm -f "$policy_file"
 }
 
-# ==========================================
-# Build Helpers
-# ==========================================
-
 # gcloud builds submit exits 1 when it can't stream logs from the default
 # Cloud Build bucket (SA lacks storage.objectViewer). Submit async and poll
 # the build status instead.
@@ -153,7 +151,7 @@ submit_build() {
     echo "Build $build_id submitted"
 
     local status
-    local timeout=${BUILD_TIMEOUT:-1200}
+    local timeout=$BUILD_TIMEOUT
     local interval=15
     local elapsed=0
 
@@ -182,9 +180,6 @@ submit_build() {
     return 1
 }
 
-# ==========================================
-# Deployment Function
-# ==========================================
 deploy_service() {
     local service_name=$1
     local source_dir=$2
@@ -196,10 +191,7 @@ deploy_service() {
     echo ""
     echo "--- Deploying $service_name ---"
 
-    # 1. Ensure Artifact Registry Repo exists. Repo creation + cleanup policy
-    #    only run when the repo is missing — they need admin rights the CI deploy
-    #    SA doesn't have (it has writer to push). An existing repo is left as-is,
-    #    so the repo is provisioned out-of-band once and deploys just push to it.
+    # Repository creation requires admin rights; ordinary deploys only need writer.
     if ! gcloud artifacts repositories describe "$service_name" --location="$REGION" --project "$PROJECT_ID" --quiet &>/dev/null; then
         echo "Creating Artifact Registry repository: $service_name..."
         gcloud artifacts repositories create "$service_name" \
@@ -210,25 +202,19 @@ deploy_service() {
         ensure_artifact_cleanup_policy "$service_name"
     fi
 
-    # 2. Build and Push Image
     local image_uri="$REGION-docker.pkg.dev/$PROJECT_ID/$service_name/$service_name:latest"
     echo "Building: $image_uri"
 
     if [[ -n "$dockerfile_path" ]]; then
-        # Use cloudbuild.yaml for web app with build args
-        # Prefix sensitive vars with _ to prevent Cloud Build from logging them
         submit_build "$source_dir" \
             --config "cloudbuild.yaml" \
-            --substitutions "_IMAGE_URI=$image_uri,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=$NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME,_NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME"
+            --substitutions "_IMAGE_URI=$image_uri,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME"
     else
-        # Standard build from root of service directory
         submit_build --tag "$image_uri" "$source_dir"
     fi
 
-    # 3. Deploy to Cloud Run
     echo "Deploying to Cloud Run..."
 
-    # Use array to prevent word splitting issues
     local -a deploy_args=(
         "deploy" "$service_name"
         "--image" "$image_uri"
@@ -246,7 +232,6 @@ deploy_service() {
         deploy_args+=("--set-env-vars" "$env_vars")
     fi
 
-    # Enable startup CPU boost for faster cold starts (UI service)
     if [[ "$service_name" = "$UI_SERVICE" ]]; then
         deploy_args+=("--cpu-boost")
     fi
@@ -255,36 +240,28 @@ deploy_service() {
 
     gcloud run "${deploy_args[@]}"
 
-    # Delete all revisions not currently serving traffic
     echo "Cleaning up old revisions for $service_name..."
     local active_revision
     active_revision=$(gcloud run services describe "$service_name" \
         --region "$REGION" --project "$PROJECT_ID" \
         --format='value(status.latestReadyRevisionName)')
-    # Guard: without a known active revision the grep -v below would match every
-    # name and delete the live revision too. Skip cleanup rather than risk that.
-    if [ -z "$active_revision" ]; then
+    if [[ -z "$active_revision" ]]; then
         echo "  Skipping cleanup: could not determine the active revision."
     else
-        gcloud run revisions list \
+        local revisions
+        revisions=$(gcloud run revisions list \
             --service "$service_name" \
             --region "$REGION" \
             --project "$PROJECT_ID" \
-            --format='value(metadata.name)' \
-            | grep -v "^${active_revision}$" \
-            | while read -r rev; do
-                echo "  Deleting $rev..."
-                gcloud run revisions delete "$rev" \
-                    --region "$REGION" --project "$PROJECT_ID" --quiet 2>&1 || true
-            done
+            --format='value(metadata.name)')
+        while IFS= read -r revision; do
+            [[ -z "$revision" || "$revision" == "$active_revision" ]] && continue
+            echo "  Deleting $revision..."
+            gcloud run revisions delete "$revision" \
+                --region "$REGION" --project "$PROJECT_ID" --quiet
+        done <<< "$revisions"
     fi
-
-    return 0
 }
-
-# ==========================================
-# Execution
-# ==========================================
 
 # Surface the public NEXT_PUBLIC_* config as Cloud Run runtime env vars too.
 # They're already inlined into the client bundle at build time (via cloudbuild
@@ -293,10 +270,8 @@ deploy_service() {
 UI_ENV_VARS="NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATION_ID}"
 UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}"
 UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_AGENT_ID=${NEXT_PUBLIC_ALGOLIA_AGENT_ID}"
-UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=${NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID}"
 UI_ENV_VARS+=",NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}"
 UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME}"
-UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME=${NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME}"
 
 deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "$UI_ENV_VARS" "Dockerfile"
 

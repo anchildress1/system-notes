@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test } from './utils';
+import { openFirstProjectCard, test } from './utils';
 
 test.describe('Mobile Responsiveness', () => {
   test('should render header correctly on mobile', async ({ page }) => {
@@ -19,13 +19,8 @@ test.describe('Mobile Responsiveness', () => {
   });
 
   test('should flip project detail in place on click', async ({ page }) => {
-    await page.goto('/projects');
-    const card = page.getByTestId(/^project-card-/).first();
-    const toggle = card.locator('button[aria-label*="Flip to read the project note"]').first();
+    const { card, toggle } = await openFirstProjectCard(page);
 
-    await toggle.click();
-
-    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await expect(card.getByRole('button', { name: /back to summary/i })).toBeVisible();
 
     const closeBtn = card.getByRole('button', { name: /back to summary/i });

@@ -27,36 +27,8 @@
 }
 
 .card {
-  position: relative;
-  height: 100%;
   min-height: 520px;
-  border-radius: var(--r-xl);
-  display: flex;
-  flex-direction: column;
-  transition:
-    box-shadow var(--transition-base),
-    transform var(--transition-base);
-}
-
-.card:hover {
-  box-shadow:
-    0 0 calc(18px * var(--glow)) var(--card-accent-soft),
-    var(--shadow-card);
-  transform: translateY(-2px);
-}
-
-.card:hover .cardFront,
-.card:hover .cardBack {
-  border-color: color-mix(in srgb, var(--card-accent) 40%, var(--border-strong));
-}
-
-.flipper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  flex: 1;
-  transform-style: preserve-3d;
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  --card-hover-border-strength: 40%;
 }
 
 .flipped .flipper {
@@ -64,18 +36,6 @@
 }
 
 .cardFront {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  /* Explicit identity transform so Firefox treats the front as a 3D plane and
-     actually backface-culls it when the flipper rotates. Without an own
-     transform Firefox skips the cull and the front shows mirrored through the
-     back. Chrome culls either way. */
-  transform: rotateY(0deg);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   transition: border-color var(--transition-base);
 }
 
@@ -84,35 +44,11 @@
 }
 
 .cardBack {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: inherit;
-  overflow: hidden;
-  transform: rotateY(180deg);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  pointer-events: none;
   transition: border-color var(--transition-base);
-  background: var(--card-surface-back);
 }
 
 .flipped .cardBack {
   pointer-events: auto;
-}
-
-.cardBack::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--seam-width);
-  z-index: 3;
-  background: var(--card-seam);
 }
 
 .cardBack::after {
@@ -127,23 +63,6 @@
   background-size: 22px 22px;
   -webkit-mask-image: linear-gradient(180deg, black, transparent 45%);
   mask-image: linear-gradient(180deg, black, transparent 45%);
-}
-
-.flipButton {
-  -webkit-appearance: none;
-  appearance: none;
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  border-radius: inherit;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  cursor: pointer;
 }
 
 .imageContainer {
@@ -174,7 +93,8 @@
   z-index: 0;
 }
 
-.conceptBackground::before {
+.conceptBackground::before,
+.placeholderArt::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -182,6 +102,9 @@
     linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
   background-size: 20px 20px;
+}
+
+.conceptBackground::before {
   z-index: 1;
 }
 
@@ -228,16 +151,6 @@
   justify-content: center;
   background: var(--paper-dim);
   position: relative;
-}
-
-.placeholderArt::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
-  background-size: 20px 20px;
 }
 
 .initials {

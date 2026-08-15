@@ -41,10 +41,13 @@ import ClientShell from '@/components/ClientShell/ClientShell';
 import Nebula from '@/components/Nebula/Nebula';
 import { getProjects } from '@/lib/api';
 import { buildSiteJsonLd } from '@/lib/siteJsonLd';
+import { isValidAppId } from '@/lib/algolia';
+import { resolveBaseUrl, serializeJsonLd } from '@/lib/urlSafety';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anchildress1.dev';
+const baseUrl = resolveBaseUrl();
 const algoliaAppId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
-const algoliaPreconnectHost = algoliaAppId ? `https://${algoliaAppId}-dsn.algolia.net` : null;
+const algoliaPreconnectHost =
+  algoliaAppId && isValidAppId(algoliaAppId) ? `https://${algoliaAppId}-dsn.algolia.net` : null;
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -107,17 +110,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const projects = await getProjects().catch((err) => {
-    console.error('[RootLayout] Failed to load projects:', err);
-    return [] as Awaited<ReturnType<typeof getProjects>>;
-  });
-
+  const projects = getProjects();
   const jsonLd = buildSiteJsonLd(projects, baseUrl);
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Preconnect to Algolia domains for faster API requests */}
         {algoliaPreconnectHost && (
           <>
             <link rel="preconnect" href={algoliaPreconnectHost} crossOrigin="anonymous" />
@@ -127,7 +125,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://insights.algolia.io" crossOrigin="anonymous" />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
       </head>
       <body

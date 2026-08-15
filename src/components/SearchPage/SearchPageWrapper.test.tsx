@@ -2,10 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import SearchPageWrapper from './SearchPageWrapper';
 
-// Mock dynamic import of SearchPage
 vi.mock('next/dynamic', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  default: (_loader: () => Promise<any>, _opts: any) => {
+  default: (_loader: unknown, _options: unknown) => {
     const Component = () => <div data-testid="search-page-loaded">SearchPage</div>;
     Component.displayName = 'DynamicSearchPage';
     return Component;

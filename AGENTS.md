@@ -51,10 +51,6 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 - Algolia events (`sendEvent`) fire on card open. Never gate events on URL state.
 - Do not add custom `createURL` logic that fights InstantSearch's default routing behavior.
 
-## Frontend Style Skill
-
-- Refer to `.claude/skills/frontend-style.md`.
-
 ## Test Standards
 
 - **Coverage thresholds**: 95% lines, 92% functions/statements, 85% branches (enforced by `vitest.config.ts`). Floors sit a few points under actual so a regression trips them; do not lower them to make a run pass.

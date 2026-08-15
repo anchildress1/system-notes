@@ -1,6 +1,27 @@
 import type { NextConfig } from 'next';
+import bundleAnalyzer from '@next/bundle-analyzer';
+
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self'",
+  "connect-src 'self' https://*.algolia.io https://*.algolia.net https://*.algolianet.com",
+  "media-src 'self' data:",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "manifest-src 'self'",
+].join('; ');
 
 const securityHeaders = [
+  {
+    key: 'Content-Security-Policy',
+    value: contentSecurityPolicy,
+  },
   {
     key: 'X-Frame-Options',
     value: 'DENY',
@@ -16,6 +37,10 @@ const securityHeaders = [
   {
     key: 'Cross-Origin-Opener-Policy',
     value: 'same-origin',
+  },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), geolocation=(), microphone=()',
   },
   // HSTS is intentionally omitted here — it is gated to HTTPS requests below.
   // RFC 6797 §7.2: servers MUST NOT include HSTS over plain HTTP.
@@ -37,7 +62,7 @@ const nextConfig: NextConfig = {
     loaderFile: './src/lib/imageLoader.ts',
   },
   experimental: {
-    optimizePackageImports: ['framer-motion', 'react-icons'],
+    optimizePackageImports: ['react-icons'],
     // Do not add experimental.inlineCss. Measured: it removes all three
     // render-blocking stylesheets but takes the HTML from 40 KB to 71 KB gzipped,
     // and mobile LCP went 3.4s -> 4.4-5.2s (score 91-92 -> 80-84).
@@ -80,17 +105,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-const config = async (): Promise<NextConfig> => {
-  if (process.env.ANALYZE !== 'true') {
-    return nextConfig;
-  }
-
-  const analyzerPackage = '@next/bundle-analyzer';
-  const { default: bundleAnalyzer } = await import(analyzerPackage);
-  const withBundleAnalyzer = bundleAnalyzer({
-    enabled: true,
-  });
-  return withBundleAnalyzer(nextConfig);
-};
-
-export default config;
+export default bundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })(nextConfig);

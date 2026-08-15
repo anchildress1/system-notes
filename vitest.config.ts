@@ -26,12 +26,9 @@ export default defineConfig({
         '**/*.test.*',
         '**/setupTests.ts',
         '**/*.css',
-        '**/app/**',
-        'src/components/AIChat/AIChat.tsx',
-        'src/components/GlitterBomb/GlitterBomb.tsx',
+        'src/app/**/page.tsx',
+        'src/app/layout.tsx',
         'src/components/SearchPage/SearchPage.tsx',
-        'src/components/icons/index.ts',
-        'src/hooks/useSparkles.ts',
       ],
       // Floors track a few points under actual so a regression trips them. Raise
       // them when coverage rises; never lower them to make a run pass.

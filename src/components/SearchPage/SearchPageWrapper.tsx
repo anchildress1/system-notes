@@ -5,16 +5,15 @@ import dynamic from 'next/dynamic';
 import ErrorBoundary from '@/components/ErrorBoundary/ErrorBoundary';
 import styles from './SearchPageWrapper.module.css';
 
-// Lazy load SearchPage to reduce initial bundle size and improve performance.
-// The search functionality is below the fold and not immediately needed for FCP/LCP.
-// This defers loading all Algolia dependencies until the wrapper enters the viewport.
+const SearchLoading = () => (
+  <div className={styles.loadingContainer}>
+    <div className={styles.loadingContent}>Loading search...</div>
+  </div>
+);
+
 const SearchPage = dynamic(() => import('./SearchPage'), {
   ssr: false,
-  loading: () => (
-    <div className={styles.loadingContainer}>
-      <div className={styles.loadingContent}>Loading search...</div>
-    </div>
-  ),
+  loading: SearchLoading,
 });
 
 export default function SearchPageWrapper() {
@@ -42,13 +41,7 @@ export default function SearchPageWrapper() {
   return (
     <ErrorBoundary>
       <div ref={wrapperRef} data-testid="search-page-wrapper">
-        {isVisible ? (
-          <SearchPage />
-        ) : (
-          <div className={styles.loadingContainer}>
-            <div className={styles.loadingContent}>Loading search...</div>
-          </div>
-        )}
+        {isVisible ? <SearchPage /> : <SearchLoading />}
       </div>
     </ErrorBoundary>
   );

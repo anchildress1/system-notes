@@ -2,9 +2,13 @@
 
 [![CI](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml/badge.svg)](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml) [![Quality Gate](https://img.shields.io/sonar/alert_status/anchildress1_system-notes?server=https%3A%2F%2Fsonarcloud.io&logo=sonarqubecloud)](https://sonarcloud.io/summary/new_code?id=anchildress1_system-notes) ![License](https://img.shields.io/badge/License-PolyForm%20Shield%201.0.0-blue)
 
+<!-- prettier-ignore-start -->
 <!--START_SECTION:rai-badge-->
+
 ![AI attribution](https://img.shields.io/badge/AI%20attribution-69%25%20since%202026--01-C03070?style=flat)
+
 <!--END_SECTION:rai-badge-->
+<!-- prettier-ignore-end -->
 
 _That badge is [rai-commit-badge](https://github.com/anchildress1/rai-commit-badge) scoring this repo's own git history: the share of commits carrying an RAI attribution footer since the first one landed. Dependabot bumps and release automation sit in that denominator without footers, so it reads as adoption across the whole history rather than a claim about any single commit._
 
@@ -135,16 +139,14 @@ compiles the app builds them first, so there is no separate step to remember.
 Copy the keys below into a local `.env`. Everything prefixed `NEXT_PUBLIC_` is embedded in the
 client bundle at build time — never put a secret behind that prefix.
 
-| Variable                                     | Required | What it does                                                                        |
-| -------------------------------------------- | -------- | ----------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_ALGOLIA_APPLICATION_ID`         | Yes      | Algolia app the browser queries                                                     |
-| `NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY`         | Yes      | Search-only key. Safe to ship; it cannot write                                      |
-| `NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME`      | Yes      | Index backing the search page                                                       |
-| `NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME` | No       | Query-suggestions index, if one exists                                              |
-| `NEXT_PUBLIC_ALGOLIA_AGENT_ID`               | No       | Algolia AI agent powering chat                                                      |
-| `NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID`           | No       | Algolia AI search identifier                                                        |
-| `NEXT_PUBLIC_BASE_URL`                       | No       | Canonical origin for metadata, sitemap and JSON-LD. Defaults to the production host |
-| `ANALYZE`                                    | No       | Set to `true` with `npm run build:analyze` for a bundle report                      |
+| Variable                                | Required | What it does                                                                        |
+| --------------------------------------- | -------- | ----------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_ALGOLIA_APPLICATION_ID`    | Yes      | Algolia app the browser queries                                                     |
+| `NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY`    | Yes      | Search-only key. Safe to ship; it cannot write                                      |
+| `NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME` | No       | Search index. Defaults to `system-notes`                                            |
+| `NEXT_PUBLIC_ALGOLIA_AGENT_ID`          | No       | Algolia AI agent powering chat                                                      |
+| `NEXT_PUBLIC_BASE_URL`                  | No       | Canonical origin for metadata, sitemap and JSON-LD. Defaults to the production host |
+| `ANALYZE`                               | No       | Set to `true` with `npm run build:analyze` for a bundle report                      |
 
 Admin and write-scoped Algolia keys are used only for indexing from outside the app. They are
 never read by anything under `src/`, and they must not be given a `NEXT_PUBLIC_` prefix.

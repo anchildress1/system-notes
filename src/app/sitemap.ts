@@ -1,11 +1,12 @@
 import type { MetadataRoute } from 'next';
+import { resolveBaseUrl } from '@/lib/urlSafety';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const rawBaseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anchildress1.dev';
-  const baseUrl = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
+  const baseUrl = resolveBaseUrl();
 
   return [
     { url: `${baseUrl}/`, changeFrequency: 'weekly', priority: 1 },
+    { url: `${baseUrl}/projects`, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${baseUrl}/about`, changeFrequency: 'monthly', priority: 0.8 },
   ];
 }

@@ -8,22 +8,34 @@ import styles from './AboutContent.module.css';
 
 const LINK_ICONS = { github: GitHubIcon, dev: DevIcon, linkedin: FaLinkedin };
 
+function occurrenceKey(counts: Map<string, number>, value: string): string {
+  const count = (counts.get(value) ?? 0) + 1;
+  counts.set(value, count);
+  return `${value}:${count}`;
+}
+
 // Splits on *text* markers, alternating between plain strings and <em> nodes.
 // Requires non-whitespace at both boundaries (\S) so *foo bar* works but
 // a lone * or a trailing space before * doesn't create unintended wrapping.
 function parseEmphasis(text: string) {
+  const counts = new Map<string, number>();
   return text
     .split(/\*(\S[^*]*\S|\S)\*/)
-    .map((part, i) => (i % 2 === 1 ? <em key={`em-${part}`}>{part}</em> : part));
+    .map((part, index) =>
+      index % 2 === 1 ? <em key={occurrenceKey(counts, part)}>{part}</em> : part
+    );
 }
 
-const TextContent = ({ text }: { text: string }) => (
-  <>
-    {text.split('\n\n').map((paragraph) => (
-      <p key={paragraph}>{parseEmphasis(paragraph.trim())}</p>
-    ))}
-  </>
-);
+const TextContent = ({ text }: { text: string }) => {
+  const counts = new Map<string, number>();
+  return (
+    <>
+      {text.split('\n\n').map((paragraph) => (
+        <p key={occurrenceKey(counts, paragraph)}>{parseEmphasis(paragraph.trim())}</p>
+      ))}
+    </>
+  );
+};
 
 const sectionNumber = (index: number) => String(index + 1).padStart(2, '0');
 

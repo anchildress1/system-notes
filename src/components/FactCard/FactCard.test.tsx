@@ -16,6 +16,14 @@ vi.mock('react-instantsearch', () => ({
   ),
 }));
 
+const openCard = async (sendEvent?: typeof mockSendEvent) => {
+  const user = userEvent.setup();
+  render(<FactCard hit={createMockHit()} sendEvent={sendEvent} />);
+  const frontButton = screen.getByRole('button', { name: /Click to expand/i });
+  await user.click(frontButton);
+  return { frontButton, user };
+};
+
 describe('FactCard Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -68,7 +76,7 @@ describe('FactCard Component', () => {
 
   it('renders content fallback when fact is missing', () => {
     render(<FactCard hit={createMockHit({ blurb: '', fact: '', content: 'Fallback content' })} />);
-    expect(screen.getByText('Fallback content...')).toBeInTheDocument();
+    expect(screen.getAllByText('Fallback content')).toHaveLength(2);
   });
 
   it('flips card on click', async () => {
@@ -157,23 +165,14 @@ describe('FactCard Component', () => {
   });
 
   it('only tracks expansion once per card instance', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} sendEvent={mockSendEvent} />);
-
-    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
-
-    await user.click(cardButton);
-    await user.click(cardButton);
+    const { frontButton, user } = await openCard(mockSendEvent);
+    await user.click(frontButton);
 
     expect(mockSendEvent).toHaveBeenCalledTimes(1);
   });
 
   it('does not track when sendEvent is not provided', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} />);
-
-    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
-    await user.click(cardButton);
+    await openCard();
 
     expect(mockSendEvent).not.toHaveBeenCalled();
   });
@@ -184,18 +183,14 @@ describe('FactCard Component', () => {
     expect(screen.getByLabelText('View source for Test Fact Title')).toBeInTheDocument();
   });
 
-  it('opens GitHub source without flipping the card', async () => {
+  it('links to GitHub without flipping the card', async () => {
     const user = userEvent.setup();
-    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     render(<FactCard hit={createMockHit({ url: 'https://github.com/user/repo' })} />);
 
-    await user.click(screen.getByLabelText('View source for Test Fact Title'));
+    const source = screen.getByLabelText('View source for Test Fact Title');
+    expect(source).toHaveAttribute('href', 'https://github.com/user/repo');
+    await user.click(source);
 
-    expect(openSpy).toHaveBeenCalledWith(
-      'https://github.com/user/repo',
-      '_blank',
-      'noopener,noreferrer'
-    );
     expect(screen.getByRole('button', { name: /Click to expand/i })).toHaveAttribute(
       'aria-expanded',
       'false'
@@ -214,9 +209,8 @@ describe('FactCard Component', () => {
     expect(screen.getByLabelText(/Read .* on DEV Community/i)).toBeInTheDocument();
   });
 
-  it('opens DEV source without tracking a fact-card view', async () => {
+  it('links to DEV without tracking a fact-card view', async () => {
     const user = userEvent.setup();
-    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     render(
       <FactCard
         hit={createMockHit({ url: 'https://dev.to/user/post-title' })}
@@ -224,13 +218,10 @@ describe('FactCard Component', () => {
       />
     );
 
-    await user.click(screen.getByLabelText(/Read .* on DEV Community/i));
+    const source = screen.getByLabelText(/Read .* on DEV Community/i);
+    expect(source).toHaveAttribute('href', 'https://dev.to/user/post-title');
+    await user.click(source);
 
-    expect(openSpy).toHaveBeenCalledWith(
-      'https://dev.to/user/post-title',
-      '_blank',
-      'noopener,noreferrer'
-    );
     expect(mockSendEvent).not.toHaveBeenCalled();
   });
 
@@ -253,7 +244,7 @@ describe('FactCard Component', () => {
 
   it('handles hit with no content, fact, or blurb gracefully', () => {
     render(<FactCard hit={createMockHit({ blurb: '', fact: '', content: '' })} />);
-    expect(screen.getByText('...')).toBeInTheDocument();
+    expect(screen.getByText('No summary available.')).toBeInTheDocument();
   });
 
   it('handles very long title without crashing', () => {
@@ -268,25 +259,22 @@ describe('FactCard Component', () => {
     expect(screen.queryByLabelText(/Read .* on DEV/)).not.toBeInTheDocument();
   });
 
+  it('does not render an unsafe source URL from a search hit', () => {
+    render(<FactCard hit={createMockHit({ url: 'javascript:alert(1)' })} />);
+    expect(screen.queryByLabelText(/View source/)).not.toBeInTheDocument();
+  });
+
   it('closes card via keyboard when already flipped', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} />);
+    const { frontButton, user } = await openCard();
+    expect(frontButton).toHaveAttribute('aria-expanded', 'true');
 
-    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
-    await user.click(cardButton);
-    expect(cardButton).toHaveAttribute('aria-expanded', 'true');
-
-    cardButton.focus();
+    frontButton.focus();
     await user.keyboard(' ');
-    expect(cardButton).toHaveAttribute('aria-expanded', 'false');
+    expect(frontButton).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('closes card from a back-face click', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} />);
-
-    const frontButton = screen.getByRole('button', { name: /Click to expand/i });
-    await user.click(frontButton);
+    const { frontButton, user } = await openCard();
     expect(frontButton).toHaveAttribute('aria-expanded', 'true');
 
     await user.click(screen.getByRole('button', { name: /Click to collapse/i }));
@@ -298,11 +286,7 @@ describe('FactCard Component', () => {
     { key: '{Enter}', label: 'Enter' },
     { key: ' ', label: 'Space' },
   ])('closes card from the back face with $label', async ({ key }) => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} />);
-
-    const frontButton = screen.getByRole('button', { name: /Click to expand/i });
-    await user.click(frontButton);
+    const { frontButton, user } = await openCard();
     const backButton = screen.getByRole('button', { name: /Click to collapse/i });
     backButton.focus();
 
@@ -312,15 +296,11 @@ describe('FactCard Component', () => {
   });
 
   it('closes flipped card via Escape key', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} />);
-
-    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
-    await user.click(cardButton);
-    expect(cardButton).toHaveAttribute('aria-expanded', 'true');
+    const { frontButton, user } = await openCard();
+    expect(frontButton).toHaveAttribute('aria-expanded', 'true');
 
     await user.keyboard('{Escape}');
-    expect(cardButton).toHaveAttribute('aria-expanded', 'false');
-    expect(cardButton).toHaveFocus();
+    expect(frontButton).toHaveAttribute('aria-expanded', 'false');
+    expect(frontButton).toHaveFocus();
   });
 });

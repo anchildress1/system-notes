@@ -23,14 +23,14 @@ import LoadingIndicator from './LoadingIndicator';
 import Button from '@/components/Button/Button';
 import type { ButtonElement } from '@/components/Button/Button';
 import { createSearchRouting } from './searchRouting';
-import { ALGOLIA_INDEX } from '@/config';
+import { ALGOLIA_INDEX_NAME } from '@/config';
 import { getChatSessionId } from '@/utils/userToken';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
 import { humanizeAttribute } from '@/lib/humanize';
 
 const appId = ALGOLIA_APP_ID;
 const searchKey = ALGOLIA_SEARCH_KEY;
-const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
+const indexName = ALGOLIA_INDEX_NAME;
 
 const hasCredentials = hasValidAlgoliaCredentials();
 
@@ -194,7 +194,7 @@ function ClearAllFilters() {
       size="sm"
       className={styles.filterClearAll}
       onClick={() => refine()}
-      ariaLabel="Clear all active filters"
+      aria-label="Clear all active filters"
     >
       clear all ✕
     </Button>

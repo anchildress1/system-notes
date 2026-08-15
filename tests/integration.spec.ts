@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { test } from './utils';
+import { openFirstProjectCard, test } from './utils';
 
 test.describe('System Notes Integration', () => {
   test('loads homepage with correct metadata', async ({ page }) => {
@@ -25,9 +25,11 @@ test.describe('System Notes Integration', () => {
     expect(ctaStyles.backgroundColor).not.toContain('185, 107, 255');
     expect(ctaStyles.color).toBe('rgb(23, 19, 33)');
 
-    await buildsCta.hover();
-    const hoverBackground = await buildsCta.evaluate((node) => getComputedStyle(node).background);
-    expect(hoverBackground).toContain('rgb(255, 255, 255)');
+    if (await page.evaluate(() => matchMedia('(hover: hover)').matches)) {
+      await buildsCta.hover();
+      const hoverBackground = await buildsCta.evaluate((node) => getComputedStyle(node).background);
+      expect(hoverBackground).toContain('rgb(255, 255, 255)');
+    }
   });
 
   test('should display the footer', async ({ page }) => {
@@ -70,23 +72,14 @@ test.describe('System Notes Integration', () => {
   });
 
   test('flips a project card in place to reveal the note', async ({ page }) => {
-    await page.goto('/projects');
-    const card = page.getByTestId(/^project-card-/).first();
-    const toggle = card.locator('button[aria-label*="Flip to read the project note"]').first();
-    await toggle.click();
+    const { card } = await openFirstProjectCard(page);
 
-    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    // The back face is now showing — its close affordance and source link are reachable.
-    await expect(page.getByRole('button', { name: /back to summary/i }).first()).toBeVisible();
-    await expect(page.getByRole('link', { name: /view source/i }).first()).toBeVisible();
+    await expect(card.getByRole('button', { name: /back to summary/i })).toBeVisible();
+    await expect(card.getByRole('link', { name: /view source/i })).toBeVisible();
   });
 
   test('flips a card back on Escape', async ({ page }) => {
-    await page.goto('/projects');
-    const card = page.getByTestId(/^project-card-/).first();
-    const toggle = card.locator('button[aria-label*="Flip to read the project note"]').first();
-    await toggle.click();
-    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    const { toggle } = await openFirstProjectCard(page);
 
     await page.keyboard.press('Escape');
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
@@ -102,21 +95,17 @@ test.describe('System Notes Integration', () => {
       page.getByRole('heading', { name: /Designing for the failures you haven't met yet/i })
     ).toBeVisible();
 
-    // Check API Content Loading (wait for it)
     await expect(page.locator('text=Initializing identity protocol')).not.toBeVisible({
       timeout: 10000,
     });
     await expect(page.locator('text=Appalachia').first()).toBeVisible();
 
-    // Chat toggle only renders when Algolia credentials are configured.
-    // Verify a11y label when present; skip gracefully otherwise.
     const chatToggle = page.locator('.ais-ChatToggleButton');
     const toggleVisible = await chatToggle.isVisible().catch(() => false);
     if (toggleVisible) {
       await expect(chatToggle).toHaveAttribute('aria-label', 'Open AI Chat');
     }
 
-    // Accessibility check (exclude chat toggle area since widget may not load)
     const accessibilityScanResults = await new AxeBuilder({ page })
       .disableRules(['region'])
       .exclude('.ais-ChatToggleButton')
@@ -125,14 +114,8 @@ test.describe('System Notes Integration', () => {
   });
 
   test('flipping a project card does not change the URL', async ({ page }) => {
-    await page.goto('/projects');
-    const url = page.url();
+    const { url } = await openFirstProjectCard(page);
 
-    const card = page.getByTestId(/^project-card-/).first();
-    const toggle = card.locator('button[aria-label*="Flip to read the project note"]').first();
-    await toggle.click();
-
-    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     expect(page.url()).toBe(url);
   });
 });

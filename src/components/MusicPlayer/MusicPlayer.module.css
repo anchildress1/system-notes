@@ -20,37 +20,12 @@
 .playButton {
   width: var(--dock-size);
   height: var(--dock-size);
-  border-radius: var(--r-pill);
-  background: var(--surface-raised);
-  border: 1px solid var(--action-border);
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
-    background var(--transition-base),
-    border-color var(--transition-base),
-    transform var(--transition-base),
-    box-shadow var(--transition-base);
-  box-shadow:
-    var(--action-shadow),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   position: relative;
   z-index: 2;
   pointer-events: auto;
 }
 
-.playButton:hover {
-  transform: translateY(-2px);
-  background: var(--surface-raised-hover);
-  border-color: var(--action-border-hover);
-  box-shadow:
-    var(--action-shadow-hover),
-    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
-}
-
-.active {
+.playButton[data-state='active'] {
   background: color-mix(in srgb, var(--surface-raised-hover) 78%, var(--accent-teal) 10%);
   border-color: color-mix(in srgb, var(--accent-teal) 52%, var(--action-border));
   color: var(--text-primary);
@@ -59,30 +34,8 @@
     0 0 0 1px rgba(255, 255, 255, 0.07) inset;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .playButton:hover {
-    transform: none;
-  }
-}
-
 .buttonLabel {
   display: none;
-}
-
-.explicitBadge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  font-size: 10px;
-  font-weight: 800;
-  line-height: 1;
-  padding: 3px 6px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-sm);
-  letter-spacing: 0.04em;
-  z-index: 3;
 }
 
 .panel {

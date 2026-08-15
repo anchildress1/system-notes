@@ -21,7 +21,8 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - id: release
+      - name: Create Release
+        id: release
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         env:
           FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -43,16 +44,9 @@ jobs:
     env:
       GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID || 'anchildress1-unstable' }}
       GCP_REGION: ${{ vars.GCP_REGION || 'us-east1' }}
-      NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID }}
-      NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY }}
-      NEXT_PUBLIC_ALGOLIA_AGENT_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_AGENT_ID }}
-      NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID }}
-      NEXT_PUBLIC_BASE_URL: ${{ vars.NEXT_PUBLIC_BASE_URL }}
-      NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME: ${{ vars.NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME || 'system-notes' }}
-      NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME: ${{ vars.NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
@@ -69,3 +63,9 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: ./deploy.sh
+        env:
+          NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID }}
+          NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: ${{ secrets.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY }}
+          NEXT_PUBLIC_ALGOLIA_AGENT_ID: ${{ secrets.NEXT_PUBLIC_ALGOLIA_AGENT_ID }}
+          NEXT_PUBLIC_BASE_URL: ${{ vars.NEXT_PUBLIC_BASE_URL }}
+          NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME: ${{ vars.NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME || 'system-notes' }}

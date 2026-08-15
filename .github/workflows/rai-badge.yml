@@ -19,7 +19,8 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Scores author dates across the whole history; a shallow clone would
           # report against whatever slice CI happened to fetch.

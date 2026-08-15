@@ -21,7 +21,7 @@ export default function GlobalError({
         </p>
         <Button
           variant="secondary"
-          ariaLabel="Try again"
+          aria-label="Try again"
           size="sm"
           className={styles.errorAction}
           onClick={reset}

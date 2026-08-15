@@ -7,16 +7,16 @@ import type { SendEventForHits, FactHitRecord } from '@/types/algolia';
 import SourceLinkButton from '@/components/SourceLinkButton/SourceLinkButton';
 import Badge from '@/components/Badge/Badge';
 import Tag from '@/components/Tag/Tag';
+import FlipCardShell from '@/components/FlipCardShell/FlipCardShell';
 import { GitHubIcon, DevIcon } from '@/components/icons';
 import { getCardVariant } from './cardVariant';
+import { useEscapeToClose } from '@/hooks/useEscapeToClose';
+import { getSafeHostname, isSafeExternalUrl } from '@/lib/urlSafety';
 import cardStyles from '@/styles/card.module.css';
 import styles from './FactCard.module.css';
 
-export type { FactHitRecord } from '@/types/algolia';
-
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-// ISO timestamp ("2026-05-24T21:42:51Z") -> "May 2026"; null if unparseable.
 function formatMonthYear(iso?: string): string | null {
   if (!iso) return null;
   const [year, month] = iso.slice(0, 10).split('-');
@@ -58,18 +58,8 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
       return next;
     });
   }, [sendEvent, hit]);
-
-  useEffect(() => {
-    if (!isFlipped) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        setIsFlipped(false);
-      }
-    };
-    globalThis.addEventListener('keydown', handler);
-    return () => globalThis.removeEventListener('keydown', handler);
-  }, [isFlipped]);
+  const close = useCallback(() => setIsFlipped(false), []);
+  useEscapeToClose(isFlipped, close);
 
   useEffect(() => {
     if (isFlipped) {
@@ -86,15 +76,12 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
     }
   }, [isFlipped]);
 
-  const isDevPost = useMemo(() => hit.url?.includes('dev.to') ?? false, [hit.url]);
+  const sourceUrl = isSafeExternalUrl(hit.url) ? hit.url : undefined;
+  const isDevPost = getSafeHostname(sourceUrl) === 'dev.to';
 
   const variantPosition = position ?? hit.__position ?? 1;
   const variant = useMemo(() => getCardVariant(variantPosition), [variantPosition]);
 
-  // Display tags: prefer lvl1 leaf parts ("Parent > Child" → "Child");
-  // fall back to lvl0 names when no lvl1 entries exist. Dedupe leaves —
-  // distinct hierarchical paths can share a leaf (e.g. `A > X` + `B > X`),
-  // and showing the same chip twice on one card reads as a bug.
   const displayTags = useMemo(() => {
     const lvl1 = hit['tags.lvl1'] ?? [];
     const source =
@@ -108,114 +95,102 @@ export default function FactCard({ hit, sendEvent, position }: Readonly<FactCard
   }, [hit]);
 
   const backBody = hit.content || hit.fact || hit.blurb || '';
+  const summarySuffix = backBody.length > 100 ? '…' : '';
+  const fallbackSummary = backBody
+    ? `${backBody.slice(0, 100)}${summarySuffix}`
+    : 'No summary available.';
 
-  // Top-of-card label: project name, falling back to the fact position
-  // when a card has no project association.
   const topLabel = hit.projects?.[0] ?? `FACT · ${String(hit.__position ?? 0).padStart(2, '0')}`;
   const createdLabel = formatMonthYear(hit.created_at);
 
   return (
-    <article
+    <FlipCardShell
       className={`${styles.cardLink} ${isFlipped ? styles.cardLinkFlipped : ''}`}
-      data-accent={variant.accent}
-      data-size={variant.size}
+      accent={variant.accent}
+      size={variant.size}
+      cardClassName={`${styles.card} ${isFlipped ? styles.flipped : ''}`}
+      flipperClassName={styles.flipper}
+      frontClassName={styles.cardFront}
+      featured={variant.size === 'two-thirds'}
+      isFlipped={isFlipped}
+      front={
+        <>
+          <button
+            type="button"
+            ref={frontButtonRef}
+            className={cardStyles.flipButton}
+            onClick={toggleFlip}
+            aria-expanded={isFlipped}
+            aria-label={`${hit.title}. Click to ${isFlipped ? 'collapse' : 'expand'}.`}
+            tabIndex={isFlipped ? -1 : 0}
+          />
+          <div className={styles.content}>
+            <div className={styles.cardMetaRow}>
+              <span className={styles.metaLeft}>
+                <span className={styles.factCounter}>{topLabel}</span>
+                {createdLabel && <span className={styles.cardDate}>{createdLabel}</span>}
+              </span>
+              <div className={styles.cardMetaRight}>
+                <Badge variant="neutral">{categoryLabel}</Badge>
+                {sourceUrl && (
+                  <SourceLinkButton
+                    url={sourceUrl}
+                    label={
+                      isDevPost
+                        ? `Read ${hit.title} on DEV Community`
+                        : `View source for ${hit.title}`
+                    }
+                    icon={isDevPost ? <DevIcon /> : <GitHubIcon />}
+                    tabIndex={isFlipped ? -1 : 0}
+                  />
+                )}
+              </div>
+            </div>
+
+            <h2 className={styles.title}>
+              <Highlight attribute="title" hit={hit} />
+            </h2>
+
+            <p className={styles.description}>
+              {hit.blurb ? <Highlight attribute="blurb" hit={hit} /> : fallbackSummary}
+            </p>
+
+            {displayTags.length > 0 && (
+              <div className={styles.tagRow}>
+                {displayTags.map((tag) => (
+                  <Tag key={tag}>{tag}</Tag>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      }
     >
       <div
-        className={`${styles.card} ${isFlipped ? styles.flipped : ''}`}
-        data-state={isFlipped ? 'expanded' : 'collapsed'}
+        className={`${styles.cardBack} ${cardStyles.flipBack} ${cardStyles.backSeam}${
+          variant.size === 'two-thirds' ? ' shimmer-seam' : ''
+        }`}
+        aria-hidden={!isFlipped}
       >
-        <div className={styles.flipper}>
-          <div
-            className={`${styles.cardFront} ${cardStyles.face} ${
-              variant.size === 'two-thirds'
-                ? `${cardStyles.winnerBanner} shimmer-seam`
-                : cardStyles.seam
-            }`}
-            aria-hidden={isFlipped}
-          >
-            <button
-              type="button"
-              ref={frontButtonRef}
-              className={styles.flipButton}
-              onClick={toggleFlip}
-              aria-expanded={isFlipped}
-              aria-label={`${hit.title}. Click to ${isFlipped ? 'collapse' : 'expand'}.`}
-              tabIndex={isFlipped ? -1 : 0}
-            />
-            <div className={styles.content}>
-              <div className={styles.cardMetaRow}>
-                <span className={styles.metaLeft}>
-                  <span className={styles.factCounter}>{topLabel}</span>
-                  {createdLabel && <span className={styles.cardDate}>{createdLabel}</span>}
-                </span>
-                <div className={styles.cardMetaRight}>
-                  <Badge variant="neutral">{categoryLabel}</Badge>
-                  {hit.url && (
-                    <SourceLinkButton
-                      url={hit.url}
-                      label={
-                        isDevPost
-                          ? `Read ${hit.title} on DEV Community`
-                          : `View source for ${hit.title}`
-                      }
-                      icon={isDevPost ? <DevIcon /> : <GitHubIcon />}
-                      tabIndex={isFlipped ? -1 : 0}
-                    />
-                  )}
-                </div>
-              </div>
-
-              <h2 className={styles.title}>
-                <Highlight attribute="title" hit={hit} />
-              </h2>
-
-              <p className={styles.description}>
-                {hit.blurb ? (
-                  <Highlight attribute="blurb" hit={hit} />
-                ) : (
-                  (hit.content || hit.fact || '').substring(0, 100) + '...'
-                )}
-              </p>
-
-              {displayTags.length > 0 && (
-                <div className={styles.tagRow}>
-                  {displayTags.map((tag) => (
-                    <Tag key={tag}>{tag}</Tag>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div
-            className={`${styles.cardBack}${variant.size === 'two-thirds' ? ' shimmer-seam' : ''}`}
-            aria-hidden={!isFlipped}
-          >
-            {/* Native button overlay closes the card — mirrors the front's
-                flip trigger so the back isn't a div-as-button (a11y/Sonar). */}
-            <button
-              type="button"
-              ref={backButtonRef}
-              className={styles.flipButton}
-              onClick={toggleFlip}
-              aria-label={`${hit.title}. Click to collapse.`}
-              tabIndex={isFlipped ? 0 : -1}
-            />
-            <div className={styles.backContent}>
-              <h3 className={styles.backTitle}>{hit.title}</h3>
-              <p className={styles.backBody}>{backBody}</p>
-              <div className={styles.backMeta}>
-                <span className={styles.backMetaItem}>
-                  node_type · {hit.node_type ?? 'principle'}
-                </span>
-                {hit.projects && hit.projects.length > 0 && (
-                  <span className={styles.backMetaItem}>projects · {hit.projects.join(', ')}</span>
-                )}
-              </div>
-            </div>
+        <button
+          type="button"
+          ref={backButtonRef}
+          className={cardStyles.flipButton}
+          onClick={toggleFlip}
+          aria-label={`${hit.title}. Click to collapse.`}
+          tabIndex={isFlipped ? 0 : -1}
+        />
+        <div className={styles.backContent}>
+          <h3 className={styles.backTitle}>{hit.title}</h3>
+          <p className={styles.backBody}>{backBody}</p>
+          <div className={styles.backMeta}>
+            <span className={styles.backMetaItem}>node_type · {hit.node_type ?? 'principle'}</span>
+            {hit.projects && hit.projects.length > 0 && (
+              <span className={styles.backMetaItem}>projects · {hit.projects.join(', ')}</span>
+            )}
           </div>
         </div>
       </div>
-    </article>
+    </FlipCardShell>
   );
 }

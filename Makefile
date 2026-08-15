@@ -1,4 +1,6 @@
-.PHONY: setup setup-node dev build deploy clean kill ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf images
+.PHONY: all setup setup-node dev build deploy clean ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf images
+
+GITLEAKS_IMAGE := ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
 
 # Always invoke rather than using a prerequisite list: the script also compares
 # source membership, which make cannot, since `mv` preserves mtime and a renamed
@@ -6,114 +8,87 @@
 images:
 	@node scripts/generate-image-variants.mjs
 
-# Default target
 all: setup
 
 setup: setup-node
 	@echo "✅ Project setup complete. Run 'make dev' to start."
 
-# Setup Node.js dependencies
 setup-node:
 	@echo "📦 Installing Node dependencies..."
-	npm install
+	npm ci --ignore-scripts
+	npm exec lefthook install
 
-# Kill this project's dev and test servers by port (avoids self-kill from pkill -f matching own cmdline)
-kill:
-	@echo "🛑 Killing dev/test servers..."
-	@kill $$(lsof -ti:3000,3001,3002,3003 2>/dev/null) 2>/dev/null || true
-	@echo "✅ Servers stopped."
-
-# Run the development environment
 dev: images
 	@echo "🚀 Starting development server..."
-	$(MAKE) kill
 	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run dev
 
-# Format code (Prettier)
 format:
 	@echo "✨ Formatting code..."
 	npm run format
 
-# Check formatting (non-destructive, for CI)
 format-check:
 	@echo "✨ Checking formatting..."
-	npx prettier --check "**/*.{ts,tsx,md,json,js}"
+	npm run format:check
 
-# Lint code (ESLint)
 lint: images
 	@echo "🔍 Linting code..."
 	npm run lint
 
-# TypeScript type checking
 typecheck: images
 	@echo "🔎 Type checking..."
-	npx tsc --noEmit
+	npm run typecheck
 
 test: images
 	@echo "🧪 Running tests..."
 	npm run test
 
-# Secret scanning (Non-interactive)
 secret-scan:
 	@echo "🔐 Scanning for secrets (gitleaks)..."
-	@if command -v gitleaks > /dev/null; then \
-		gitleaks dir . --redact --no-banner; \
-	else \
-		echo "❌ gitleaks not found. Install with 'brew install gitleaks'."; \
-		exit 1; \
-	fi
+	docker run --rm --volume "$(CURDIR):/repo:ro" --workdir /repo \
+		$(GITLEAKS_IMAGE) dir . --redact --no-banner
 
-# Run Playwright E2E tests
 test-e2e: images
 	@echo "🎭 Running Playwright E2E tests..."
-	$(MAKE) kill
+	ANALYZE=false \
 	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
 	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
-	NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=test_ai_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
+	NEXT_PUBLIC_BASE_URL=http://localhost:3002 \
 	npm run build
-	CI=true npm exec playwright test
+	env -u NO_COLOR CI=true npm exec playwright test
 
-# Run Performance tests
 test-perf:
 	@echo "🚀 Running Performance tests..."
+	ANALYZE=false \
 	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
 	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
-	NEXT_PUBLIC_ALGOLIA_SEARCH_AI_ID=test_ai_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
-	npm run test:perf
+	NEXT_PUBLIC_BASE_URL=https://anchildress1.dev \
+	env -u NO_COLOR npm run test:perf
 
-# Run all AI checks (Scan -> Format -> Lint -> Test -> E2E -> Perf)
-# Note: Includes build step to ensure artifacts exist before tests
 ai-checks:
 	$(MAKE) setup
 	$(MAKE) secret-scan
-	$(MAKE) format
+	npm run audit
+	$(MAKE) format-check
 	$(MAKE) lint
-	$(MAKE) build
+	$(MAKE) typecheck
 	$(MAKE) test
 	$(MAKE) test-e2e
 	$(MAKE) test-perf
 	@echo "🤖 AI Checks Complete: All Systems Nominal."
 
-# Build the project
 build: images
 	@echo "🏗️ Building project..."
 	[ -f ./.env ] && { set -a; . ./.env; set +a; }; npm run build
 
-# Deploy the application to Google Cloud
 deploy:
 	@echo "🚀 Deploying to Google Cloud..."
-	npm install
 	./deploy.sh
 
-# Clean up all dependencies and build artifacts
 clean:
 	@echo "🧹 Cleaning up..."
-	rm -rf node_modules
-	rm -rf .next
-	rm -rf coverage
+	rm -rf node_modules .next coverage
 	@echo "✨ Clean complete."
-

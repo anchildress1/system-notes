@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, type ReactNode, type KeyboardEvent, type MouseEvent } from 'react';
+import { useEffect, useRef, type ReactNode, type MouseEvent } from 'react';
 import Kicker from '@/components/Kicker/Kicker';
 import styles from './Hero.module.css';
 
@@ -51,6 +51,23 @@ export default function Hero({
 
   return (
     <div className={styles.hero} data-accent-tone={accentTone} ref={heroRef}>
+      {/* Sibling of .inner rather than a child of it, so the hit area is the
+          gradient box itself — including the page-gutter padding down each side,
+          which is dead space in every other layer. .inner is pointer-transparent
+          above it; only real controls inside opt back in. */}
+      <button
+        type="button"
+        className={styles.glitterTrigger}
+        data-testid="hero-interactive"
+        aria-label="Trigger glitter effect"
+        onClick={(event: MouseEvent<HTMLButtonElement>) => {
+          globalThis.dispatchEvent(
+            new CustomEvent('trigger-glitter-bomb', {
+              detail: { x: event.clientX, y: event.clientY },
+            })
+          );
+        }}
+      />
       <div className={`${styles.inner} ${aside ? styles.hasAside : ''}`}>
         <div className={styles.textCol}>
           <div className={styles.interactiveContainer}>
@@ -79,25 +96,6 @@ export default function Hero({
                 </>
               )}
             </h1>
-            <button
-              type="button"
-              className={styles.glitterTrigger}
-              data-testid="hero-interactive"
-              aria-label="Trigger glitter effect"
-              onClick={(event: MouseEvent<HTMLButtonElement>) => {
-                globalThis.dispatchEvent(
-                  new CustomEvent('trigger-glitter-bomb', {
-                    detail: { x: event.clientX, y: event.clientY },
-                  })
-                );
-              }}
-              onKeyDown={(event: KeyboardEvent<HTMLButtonElement>) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
-                  globalThis.dispatchEvent(new CustomEvent('trigger-glitter-bomb'));
-                }
-              }}
-            />
           </div>
           {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
           {actions && <div className={styles.actions}>{actions}</div>}
