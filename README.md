@@ -50,15 +50,15 @@ It is **Incomplete by Design**.
 
 ## Tech Stack
 
-| Layer         | Tools                                                                             |
-| ------------- | --------------------------------------------------------------------------------- |
-| Framework     | Next.js, React, TypeScript                                                        |
-| Search & AI   | Algolia, `react-instantsearch`                                                    |
-| UI & Motion   | Tailwind CSS, Framer Motion, PixiJS                                               |
-| Images        | `sharp`, build-time responsive variants (no runtime optimizer)                    |
-| Testing       | Vitest, Testing Library, Playwright, axe-core                                     |
-| Quality Gates | ESLint, Prettier, Lefthook, Commitlint (+ `commitlint-plugin-rai`), Lighthouse CI |
-| Infra & CI/CD | Google Cloud (Cloud Run), GitHub Actions, Release Please                          |
+| Layer         | Tools                                                          |
+| ------------- | -------------------------------------------------------------- |
+| Framework     | Next.js, React, TypeScript                                     |
+| Search & AI   | Algolia, `react-instantsearch`                                 |
+| UI & Motion   | CSS Modules, CSS custom properties, Web Animations API         |
+| Images        | `sharp`, build-time responsive variants (no runtime optimizer) |
+| Testing       | Vitest, Testing Library, Playwright, axe-core                  |
+| Quality Gates | ESLint, Prettier, SonarCloud, Semgrep, gitleaks, Lighthouse CI |
+| Infra & CI/CD | Google Cloud (Cloud Run), GitHub Actions, Release Please       |
 
 ---
 
@@ -125,7 +125,7 @@ make setup
 # Run the development environment
 make dev
 
-# Run all the checks because you care about quality
+# Optional full local sweep; PR scanners still run remotely
 make ai-checks
 ```
 
@@ -158,7 +158,7 @@ never read by anything under `src/`, and they must not be given a `NEXT_PUBLIC_`
 Recent updates have focused on creating an experience that is both **lightning-fast for users** and **transparently readable for AI agents**.
 
 - **Images cost nothing at runtime**: every responsive variant is encoded at build time and served as a static file. The runtime image optimizer is gone — the route does not exist in the build.
-- **Interactive Glitter**: Particle effects are batched and scaled based on device capabilities, ensuring high-fidelity fun without the frame drops.
+- **Interactive Glitter**: The decorative burst supports pointer and keyboard activation, falls back to viewport coordinates when needed, and honors reduced-motion preferences.
 - **AI-Ready Context**: System prompts, project data and a generated `/site.jsonld` are structured to be ingested by LLMs, making this entire repository a queryable knowledge base.
 
 Lighthouse gates run pre-push and in CI: accessibility, best-practices and SEO must all hit 100,
@@ -168,9 +168,9 @@ performance must clear 98 on desktop and 92 on mobile.
 
 ## Security
 
-Untrusted input gets treated like it's untrusted. The blog-aggregation route handler only follows same-host, allowlisted sitemap URLs (SSRF guard). If local file serving is ever added, served file types must be allowlisted to `.md`/`.json`/`.txt`, and user-controlled path input must be rejected outright rather than sanitized. Full policy: [`SECURITY_RULES.md`](./SECURITY_RULES.md).
+Untrusted input gets treated like it's untrusted. The blog route accepts only credential-free URLs on the sitemap's exact origin under `/posts/`, refuses redirects, and bounds response size, URL count, concurrency, and request time. If local file serving is ever added, served file types must be allowlisted to `.md`/`.json`/`.txt`, and user-controlled path input must be rejected outright rather than sanitized. Full policy: [`SECURITY_RULES.md`](./SECURITY_RULES.md).
 
-Secrets never touch the repo — `gitleaks` and Lefthook's pre-commit hook see to that before a commit ever lands. Dependabot, CodeQL, Semgrep and SonarCloud all run against every pull request.
+Secrets never touch the repo — `gitleaks` and Lefthook's pre-commit hook see to that before a commit ever lands. CodeQL, Semgrep, and SonarCloud inspect pull requests; Dependabot keeps the dependency graph from becoming an archaeological site.
 
 ---
 
@@ -186,7 +186,7 @@ If you do send a pull request:
 - Commits need an RAI attribution footer and a `Signed-off-by` line. `commitlint-plugin-rai`
   will reject the commit if AI wrote part of it and the footer does not say so. That is the
   point — it is the same rule that produces the badge at the top.
-- `make ai-checks` must pass before you push. The pre-push hook runs it anyway.
+- Push normally. Lefthook's pre-push gate runs unit tests, `gitleaks`, and Lighthouse. Pull-request CI adds formatting, linting, types, audit, E2E, SonarCloud, and Semgrep; `make ai-checks` is an optional local full sweep, not a duplicate entrance fee.
 
 ---
 

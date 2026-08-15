@@ -10,13 +10,19 @@ The blog aggregation route (`src/app/api/blog/search/route.ts`) fetches an untru
 
 Sitemap `<loc>` entries and post HTML are attacker-influenceable. Never follow a URL derived from them without validation.
 
-### Rule 1.2: Same-host allowlist
+### Rule 1.2: Exact-origin allowlist
 
-Only fetch URLs whose hostname matches the known sitemap host **and** whose path matches the expected shape (e.g. `/posts/`). Reject everything else.
+Only fetch URLs whose origin exactly matches the sitemap origin and whose path starts with `/posts/`. Reject alternate schemes, ports, credentials, lookalike hosts, and every validation failure.
 
 ### Rule 1.3: Bounded requests
 
-Every outbound fetch must set a timeout (`AbortSignal.timeout`) and tolerate failure by returning empty or partial results — never by throwing into the request path.
+Every outbound fetch must set a timeout (`AbortSignal.timeout`), disable automatic redirects, and tolerate failure by returning empty or partial results — never by throwing into the request path.
+
+### Rule 1.4: Bound remote work
+
+- Cap the sitemap at 1 MB and each post response at 2 MB.
+- Process at most 50 unique post URLs with no more than five concurrent post fetches.
+- Keep parsing linear in input size; do not use backtracking-prone patterns over remote content.
 
 ## 2. Path Traversal Prevention (if local file serving is added)
 

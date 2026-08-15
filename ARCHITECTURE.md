@@ -45,7 +45,7 @@ graph TD
 
 - **Location**: `src/app/api/blog/search/route.ts` (GET only).
 - **Role**: Pulls DEV blog posts from an external sitemap, extracts JSON-LD, caches in memory (15 min; 60s when empty), and filters by `q`/`tag` with a clamped `limit`.
-- **Key Feature**: The sitemap is untrusted input, so outbound fetches are SSRF-guarded — same-host `/posts/` URLs only, with per-request timeouts (see `SECURITY_RULES.md`).
+- **Key Feature**: The sitemap is untrusted input. Fetches accept only credential-free URLs on its exact origin under `/posts/`, refuse redirects, time out after 10 seconds, and cap the sitemap at 1 MB, each post at 2 MB, URLs at 50, and concurrent post fetches at five (see `SECURITY_RULES.md`).
 
 ### 4. The Tissue (root configs)
 
@@ -57,6 +57,12 @@ graph TD
 2. **Search / AI**: The browser queries Algolia directly via InstantSearch; results and AI responses render client-side.
 3. **Blog**: The `/api/blog/search` route handler aggregates and caches DEV posts from the external sitemap, serving a filtered slice on request.
 4. **Response**: Everything renders in the Next.js app — no separate backend in the loop.
+
+## Validation Flow
+
+- **Pre-push**: Lefthook runs unit tests, `gitleaks`, and both Lighthouse profiles.
+- **Build and Test CI**: Checks formatting, lint, types, dependencies, unit coverage, E2E, and performance. Playwright installs Chromium, WebKit, and their Linux libraries fresh, then uses one CI worker so a busy runner cannot cosplay as a product defect.
+- **Security and quality**: SonarCloud, Semgrep, and CodeQL inspect pull requests. The token-dependent Sonar scan is skipped for forked and Dependabot pull requests because GitHub does not expose repository secrets to either.
 
 ## 🦄 For the Judges
 
