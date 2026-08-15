@@ -3,7 +3,15 @@ import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import React from 'react';
 
-const mockRouterPush = vi.hoisted(() => vi.fn());
+const { mockChatSetOpen, mockLiteClient, mockRouterPush } = vi.hoisted(() => ({
+  mockChatSetOpen: vi.fn(),
+  mockLiteClient: vi.fn(() => ({
+    search: vi.fn().mockResolvedValue({ results: [] }),
+    appId: 'test-app-id',
+    apiKey: 'test-api-key',
+  })),
+  mockRouterPush: vi.fn(),
+}));
 
 vi.hoisted(() => {
   // Runtime construction keeps deliberately fake credentials out of secret-scanner matches.
@@ -43,10 +51,14 @@ interface CapturedChatProps {
   tools?: Record<string, ToolCall>;
   agentId?: string;
   getSearchPageURL?: (uiState: unknown) => string;
+  ref?: React.Ref<{ setOpen: (open: boolean) => void }>;
 }
 
 const chatCapture: CapturedChatProps = {};
 let mockChatItemOverride: ChatHitItem | null = null;
+const mockSendEvent = vi.fn();
+const mockAuxClick = vi.fn();
+const chatSetOpenCommitStates: Array<{ open: boolean; state: string | null }> = [];
 
 const BASE_HIT: ChatHitItem = {
   objectID: 'fact-abc-123',
@@ -70,6 +82,9 @@ vi.mock('react-instantsearch', async (importOriginal) => {
       chatCapture.tools = props.tools as Record<string, ToolCall>;
       chatCapture.agentId = props.agentId;
       chatCapture.getSearchPageURL = props.getSearchPageURL as (uiState: unknown) => string;
+      if (props.ref && typeof props.ref === 'object') {
+        props.ref.current = { setOpen: mockChatSetOpen };
+      }
 
       const ItemComponent = props.itemComponent;
       const item: ChatHitItem = mockChatItemOverride ?? {
@@ -82,7 +97,12 @@ vi.mock('react-instantsearch', async (importOriginal) => {
       };
       return (
         <div data-testid="algolia-chat-mock">
-          {ItemComponent && <ItemComponent item={item} sendEvent={vi.fn()} />}
+          <button type="button" className="ais-ChatHeader-close">
+            Close widget
+          </button>
+          {ItemComponent && (
+            <ItemComponent item={item} sendEvent={mockSendEvent} onAuxClick={mockAuxClick} />
+          )}
         </div>
       );
     },
@@ -96,16 +116,21 @@ vi.mock('react-instantsearch-nextjs', () => ({
 }));
 
 vi.mock('algoliasearch/lite', () => ({
-  liteClient: vi.fn(() => ({
-    search: vi.fn().mockResolvedValue({ results: [] }),
-    appId: 'test-app-id',
-    apiKey: 'test-api-key',
-  })),
+  liteClient: mockLiteClient,
 }));
 
 describe('AIChat Widget Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    chatSetOpenCommitStates.length = 0;
+    mockChatSetOpen.mockImplementation((open: boolean) => {
+      chatSetOpenCommitStates.push({
+        open,
+        state:
+          document.querySelector('[data-testid="ai-chat-toggle"]')?.getAttribute('data-state') ??
+          null,
+      });
+    });
     mockChatItemOverride = null;
     chatCapture.itemComponent = undefined;
     chatCapture.tools = undefined;
@@ -113,9 +138,6 @@ describe('AIChat Widget Integration', () => {
     chatCapture.getSearchPageURL = undefined;
   });
 
-  // -------------------------------------------------------------------------
-  // Widget-level rendering
-  // -------------------------------------------------------------------------
   describe('widget rendering', () => {
     it('renders Chat inside InstantSearchNext when credentials are valid', () => {
       render(<AIChat />);
@@ -139,22 +161,58 @@ describe('AIChat Widget Integration', () => {
 
       expect(toggle).toHaveAttribute('data-state', 'closed');
       expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(mockChatSetOpen.mock.calls).toEqual([[false]]);
 
       fireEvent.click(toggle);
 
       expect(toggle).toHaveAttribute('data-state', 'open');
       expect(toggle).toHaveAttribute('aria-expanded', 'true');
+      expect(mockChatSetOpen).toHaveBeenLastCalledWith(true);
 
       fireEvent.click(toggle);
 
       expect(toggle).toHaveAttribute('data-state', 'closed');
       expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(mockChatSetOpen.mock.calls).toEqual([[false], [true], [false]]);
+      expect(chatSetOpenCommitStates).toEqual([
+        { open: false, state: 'closed' },
+        { open: true, state: 'open' },
+        { open: false, state: 'closed' },
+      ]);
+    });
+
+    it('synchronizes a widget close back to the dock state', () => {
+      render(<AIChat />);
+      const toggle = screen.getByTestId('ai-chat-toggle');
+      fireEvent.click(toggle);
+
+      fireEvent.click(screen.getByRole('button', { name: 'Close widget' }));
+
+      expect(toggle).toHaveAttribute('data-state', 'closed');
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(mockChatSetOpen).toHaveBeenLastCalledWith(false);
+    });
+
+    it('renders no widget or toggle when credentials are invalid', async () => {
+      vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'invalid');
+      vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'short');
+      vi.stubEnv('NEXT_PUBLIC_ALGOLIA_AGENT_ID', '');
+      vi.resetModules();
+
+      try {
+        const { default: AIChatWithoutCredentials } = await import('./AIChat');
+        render(<AIChatWithoutCredentials />);
+
+        expect(mockLiteClient).not.toHaveBeenCalled();
+        expect(screen.queryByTestId('algolia-chat-mock')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('ai-chat-toggle')).not.toBeInTheDocument();
+      } finally {
+        vi.unstubAllEnvs();
+        vi.resetModules();
+      }
     });
   });
 
-  // -------------------------------------------------------------------------
-  // ChatItemComponent — rendering
-  // -------------------------------------------------------------------------
   describe('ChatItemComponent rendering', () => {
     it('renders the item title', () => {
       render(<AIChat />);
@@ -190,9 +248,6 @@ describe('AIChat Widget Integration', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // ChatItemComponent — href construction
-  // -------------------------------------------------------------------------
   describe('ChatItemComponent href construction', () => {
     it('sets href to /search?q=<title>', () => {
       render(<AIChat />);
@@ -217,9 +272,6 @@ describe('AIChat Widget Integration', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // ChatItemComponent — click / navigation
-  // -------------------------------------------------------------------------
   describe('ChatItemComponent click navigation', () => {
     it('calls router.push with /search?q on click', () => {
       render(<AIChat />);
@@ -238,8 +290,45 @@ describe('AIChat Widget Integration', () => {
       expect(event.defaultPrevented).toBe(true);
     });
 
+    it.each([
+      { name: 'Meta', init: { metaKey: true } },
+      { name: 'Control', init: { ctrlKey: true } },
+      { name: 'Shift', init: { shiftKey: true } },
+      { name: 'Alt', init: { altKey: true } },
+      { name: 'middle-button', init: { button: 1 } },
+    ])('preserves $name-click browser navigation and analytics', ({ init }) => {
+      render(<AIChat />);
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true, ...init });
+      let componentPreventedDefault: boolean | undefined;
+      document.addEventListener(
+        'click',
+        (clickEvent) => {
+          componentPreventedDefault = clickEvent.defaultPrevented;
+          clickEvent.preventDefault();
+        },
+        { once: true }
+      );
+
+      screen.getByRole('link').dispatchEvent(event);
+
+      expect(componentPreventedDefault).toBe(false);
+      expect(mockRouterPush).not.toHaveBeenCalled();
+      expect(mockSendEvent).toHaveBeenCalledWith('click', expect.any(Object), 'Item Clicked');
+    });
+
+    it('delegates auxiliary clicks to the widget', () => {
+      render(<AIChat />);
+
+      fireEvent(
+        screen.getByRole('link'),
+        new MouseEvent('auxclick', { bubbles: true, cancelable: true, button: 1 })
+      );
+
+      expect(mockAuxClick).toHaveBeenCalledOnce();
+      expect(mockRouterPush).not.toHaveBeenCalled();
+    });
+
     it('does not call router.push when ChatNavContext provider is absent', () => {
-      // Render ItemComponent in isolation — no provider → ctx is null → no-op
       render(<AIChat />);
       const ItemComponent = chatCapture.itemComponent!;
       const { container } = render(<ItemComponent item={BASE_HIT} sendEvent={vi.fn()} />);
@@ -256,9 +345,6 @@ describe('AIChat Widget Integration', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // searchBlogPosts tool — onToolCall
-  // -------------------------------------------------------------------------
   describe('searchBlogPosts tool', () => {
     const mockFetch = vi.fn();
 
@@ -379,14 +465,16 @@ describe('AIChat Widget Integration', () => {
         consoleSpy.mockRestore();
       });
 
-      it('resolves cleanly on network error — does not re-throw', async () => {
-        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-        mockFetch.mockRejectedValue(new Error('Timeout'));
-        await expect(
-          getToolCall()({ input: { query: 'fail' }, addToolResult: vi.fn() })
-        ).resolves.toBeUndefined();
-        expect(consoleSpy).toHaveBeenCalledWith('AIChat tool error:', expect.any(Error));
-        consoleSpy.mockRestore();
+      it('passes a ten-second timeout signal to fetch', async () => {
+        const signal = new AbortController().signal;
+        const timeoutSpy = vi.spyOn(AbortSignal, 'timeout').mockReturnValue(signal);
+        mockFetch.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
+
+        await getToolCall()({ input: { query: 'bounded' }, addToolResult: vi.fn() });
+
+        expect(timeoutSpy).toHaveBeenCalledOnce();
+        expect(timeoutSpy).toHaveBeenCalledWith(10_000);
+        expect(mockFetch).toHaveBeenCalledWith(expect.any(String), { signal });
       });
     });
   });
