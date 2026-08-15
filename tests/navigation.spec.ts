@@ -23,13 +23,13 @@ test.describe('Primary Navigation Flows', () => {
   });
 
   test('should navigate to Builds and back', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/');
 
-    await page
+    const buildsLink = page
       .getByRole('navigation', { name: 'Main Navigation' })
-      .getByRole('link', { name: 'Builds' })
-      .click();
-    await expect(page).toHaveURL('/projects');
+      .getByRole('link', { name: 'Builds' });
+    await expect(buildsLink).toHaveAttribute('href', '/projects');
+    await Promise.all([page.waitForURL('/projects'), buildsLink.click()]);
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
       'Things I built and broke.'
     );
