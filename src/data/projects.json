@@ -1,53 +1,5 @@
 [
   {
-    "objectID": "commit-chronicles",
-    "name": "Commit Chronicles",
-    "what_it_is": "A card generator that reads one public repo's commit history and tells you what you were obsessed with — the 3am streak, the 107-day silence, the return.",
-    "why_it_exists": "Proves a model can find something true in a commit history without being allowed to invent it.",
-    "long_description": "Snowflake does all of it. An external access integration pulls the repo from inside the warehouse, fifteen SQL views score six storylines and pick exactly one, and a UDF over AI_COMPLETE narrates that single thread — 20 to 140 commit lines, never the whole history. Thirteen SQL checks run before a card exists, so it fails loudly instead of rendering a lie.",
-    "outcome": "Live and generating, capped at 140 commit lines per repo. Nothing to say gets a grey card, not a fabrication. Submitted to the DEV Weekend Challenge: Passion Edition.",
-    "status": "Active · Deployed",
-    "owner": "anchildress1",
-    "image_url": "/projects/commit-chronicles.webp",
-    "image_alt": "Commit Chronicles card plotting a repository's commits by date and hour, the night commits solid against a dark canvas",
-    "tech": [
-      {
-        "name": "Snowflake Cortex",
-        "role": "The One Model Call"
-      },
-      {
-        "name": "Snowflake SQL",
-        "role": "The Editor · 15 Views"
-      },
-      {
-        "name": "External Access Integration",
-        "role": "In-Warehouse Ingest"
-      },
-      {
-        "name": "Hono",
-        "role": "TypeScript Backend Framework"
-      },
-      {
-        "name": "resvg",
-        "role": "SVG → PNG Card Rasterizer"
-      },
-      {
-        "name": "Google Cloud Run · Tasks · Storage",
-        "role": "Serverless Runtime & State"
-      }
-    ],
-    "blog_posts": [
-      {
-        "title": "Commit Chronicles — Your Obsession Leaves a Trail. Mine Gives It a Plot.",
-        "url": "https://dev.to/anchildress1/commit-chronicles-your-obsession-leaves-a-trail-mine-gives-it-a-plot-h8j"
-      }
-    ],
-    "repo_url": "https://github.com/anchildress1/commit-chronicles",
-    "app_url": "https://commitchronicles.anchildress1.dev",
-    "award": null,
-    "order_rank": 10
-  },
-  {
     "objectID": "save-the-sun",
     "name": "Save the Sun",
     "what_it_is": "A deduction game where you out-question an Oracle and race a Gemini-played wolf to name the hidden rune first.",
@@ -468,39 +420,6 @@
     "order_rank": 90
   },
   {
-    "objectID": "eslint-config-echo",
-    "name": "Echo ESLint",
-    "what_it_is": "A reusable ESLint configuration built for AI-assisted codebases.",
-    "why_it_exists": "One shared lint boundary that keeps AI agents inside the lines across every repo.",
-    "long_description": "Echo collapses formatting and linting into a single shared config so the same boundaries apply across projects and agents without restating preferences. Built for AI consumers first, humans second.",
-    "outcome": "One shared Prettier + ESLint config enforced identically across every repo it's installed in, verified by Node's built-in test runner and SonarCloud.",
-    "status": "Active · Published",
-    "owner": "anchildress1",
-    "image_url": "/projects/eslint-config-echo.webp",
-    "image_alt": "Echo ESLint configuration banner representing reusable linting boundaries for AI coding agents",
-    "tech": [
-      {
-        "name": "Node.js",
-        "role": "Ecosystem"
-      },
-      {
-        "name": "ESLint",
-        "role": "The Enforcer"
-      },
-      {
-        "name": "Prettier",
-        "role": "The Formatter"
-      },
-      {
-        "name": "Sonar",
-        "role": "Static Analysis"
-      }
-    ],
-    "blog_posts": [],
-    "repo_url": "https://github.com/anchildress1/eslint-config-echo",
-    "order_rank": 100
-  },
-  {
     "objectID": "legacy-smelter",
     "name": "Legacy Smelter",
     "what_it_is": "A satirical incident-management app where Hotfix the dragon roasts your worst code screenshots — and thermally decommissions them.",
@@ -549,7 +468,88 @@
     ],
     "repo_url": "https://github.com/anchildress1/legacy-smelter",
     "app_url": "https://hotfix.anchildress1.dev",
-    "order_rank": 110
+    "order_rank": 93
+  },
+  {
+    "objectID": "commit-chronicles",
+    "name": "Commit Chronicles",
+    "what_it_is": "A card generator that reads one public repo's commit history and tells you what you were obsessed with — the 3am streak, the 107-day silence, the return.",
+    "why_it_exists": "Proves a model can find something true in a commit history without being allowed to invent it.",
+    "long_description": "Snowflake does all of it. An external access integration pulls the repo from inside the warehouse, fifteen SQL views score six storylines and pick exactly one, and a UDF over AI_COMPLETE narrates that single thread — 20 to 140 commit lines, never the whole history. Thirteen SQL checks run before a card exists, so it fails loudly instead of rendering a lie.",
+    "outcome": "Live and generating, capped at 140 commit lines per repo. Nothing to say gets a grey card, not a fabrication. Submitted to the DEV Weekend Challenge: Passion Edition.",
+    "status": "Active · Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/commit-chronicles.webp",
+    "image_alt": "Commit Chronicles card plotting a repository's commits by date and hour, the night commits solid against a dark canvas",
+    "tech": [
+      {
+        "name": "Snowflake Cortex",
+        "role": "The One Model Call"
+      },
+      {
+        "name": "Snowflake SQL",
+        "role": "The Editor · 15 Views"
+      },
+      {
+        "name": "External Access Integration",
+        "role": "In-Warehouse Ingest"
+      },
+      {
+        "name": "Hono",
+        "role": "TypeScript Backend Framework"
+      },
+      {
+        "name": "resvg",
+        "role": "SVG → PNG Card Rasterizer"
+      },
+      {
+        "name": "Google Cloud Run · Tasks · Storage",
+        "role": "Serverless Runtime & State"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Commit Chronicles — Your Obsession Leaves a Trail. Mine Gives It a Plot.",
+        "url": "https://dev.to/anchildress1/commit-chronicles-your-obsession-leaves-a-trail-mine-gives-it-a-plot-h8j"
+      }
+    ],
+    "repo_url": "https://github.com/anchildress1/commit-chronicles",
+    "app_url": "https://commitchronicles.anchildress1.dev",
+    "award": null,
+    "order_rank": 95
+  },
+  {
+    "objectID": "eslint-config-echo",
+    "name": "Echo ESLint",
+    "what_it_is": "A reusable ESLint configuration built for AI-assisted codebases.",
+    "why_it_exists": "One shared lint boundary that keeps AI agents inside the lines across every repo.",
+    "long_description": "Echo collapses formatting and linting into a single shared config so the same boundaries apply across projects and agents without restating preferences. Built for AI consumers first, humans second.",
+    "outcome": "One shared Prettier + ESLint config enforced identically across every repo it's installed in, verified by Node's built-in test runner and SonarCloud.",
+    "status": "Active · Published",
+    "owner": "anchildress1",
+    "image_url": "/projects/eslint-config-echo.webp",
+    "image_alt": "Echo ESLint configuration banner representing reusable linting boundaries for AI coding agents",
+    "tech": [
+      {
+        "name": "Node.js",
+        "role": "Ecosystem"
+      },
+      {
+        "name": "ESLint",
+        "role": "The Enforcer"
+      },
+      {
+        "name": "Prettier",
+        "role": "The Formatter"
+      },
+      {
+        "name": "Sonar",
+        "role": "Static Analysis"
+      }
+    ],
+    "blog_posts": [],
+    "repo_url": "https://github.com/anchildress1/eslint-config-echo",
+    "order_rank": 100
   },
   {
     "objectID": "devto-mirror",
