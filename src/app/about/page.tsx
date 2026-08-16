@@ -1,19 +1,124 @@
-import Hero from '@/components/Hero/Hero';
-import AboutContent from '@/components/AboutContent/AboutContent';
-import { aboutData } from '@/data/about';
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { FiArrowUpRight } from 'react-icons/fi';
+import { profile } from '@/data/profile';
+import { getProjects } from '@/lib/api';
+import { groupProjects } from '@/lib/projectStatus';
+import { buildPageMetadata } from '@/lib/siteMetadata';
+import styles from './page.module.css';
 
-export default function Human() {
+const pageTitle = "About | Ashley's System Notes";
+const pageDescription =
+  'Ashley Childress is a senior software engineer focused on systems architecture, AI orchestration, and failure-tested delivery.';
+
+export const metadata: Metadata = buildPageMetadata({
+  title: pageTitle,
+  description: pageDescription,
+  path: '/about',
+  type: 'profile',
+});
+
+export default function AboutPage() {
+  const projects = getProjects();
+  const groups = groupProjects(projects);
+  const awardedProjects = projects.filter((project) => project.award);
+
   return (
-    <main id="main-content">
-      <Hero
-        accentTone="brand"
-        accentLead={aboutData.heroAccentLead}
-        title={aboutData.heroTitle}
-        titleAccent={aboutData.heroTitleAccent}
-        accentWord={aboutData.heroAccentWord}
-        subtitle={`${aboutData.role} · ${aboutData.specialty}`}
-      />
-      <AboutContent data={aboutData} />
+    <main id="main-content" className={styles.main}>
+      <section className={styles.hero} aria-labelledby="about-heading">
+        <div className={styles.heroCopy}>
+          <p className={styles.kicker}>About · {profile.name}</p>
+          <h1 id="about-heading">
+            Forged between <em>coal and code.</em>
+          </h1>
+          <p className={styles.role}>
+            {profile.role} · {profile.location}
+          </p>
+          <div className={styles.introduction}>
+            {profile.introduction.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+        </div>
+        <figure className={styles.portrait}>
+          <Image
+            src={profile.portrait.src}
+            alt={profile.portrait.alt}
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 36vw"
+          />
+          <figcaption>
+            <span>Verified human</span>
+            <span>Usually opinionated</span>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section className={styles.proof} aria-labelledby="proof-heading">
+        <header>
+          <p>The record</p>
+          <h2 id="proof-heading">Claims should have receipts.</h2>
+        </header>
+        <dl>
+          <div>
+            <dt>Projects documented</dt>
+            <dd>{projects.length}</dd>
+          </div>
+          <div>
+            <dt>Currently active</dt>
+            <dd>{groups.current.length}</dd>
+          </div>
+          <div>
+            <dt>Recorded awards</dt>
+            <dd>{awardedProjects.length}</dd>
+          </div>
+        </dl>
+        {awardedProjects.length > 0 ? (
+          <ul className={styles.awards} aria-label="Recorded project awards">
+            {awardedProjects.map((project) => (
+              <li key={project.id}>
+                <span>{project.title}</span>
+                <span>{project.award}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </section>
+
+      <section className={styles.principles} aria-labelledby="principles-heading">
+        <header>
+          <p>How I work</p>
+          <h2 id="principles-heading">The rules are short on purpose.</h2>
+        </header>
+        <ol>
+          {profile.principles.map((principle, index) => (
+            <li key={principle.title}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h3>{principle.title}</h3>
+              <p>{principle.body}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className={styles.contact} aria-labelledby="contact-heading">
+        <div>
+          <p>Elsewhere</p>
+          <h2 id="contact-heading">Follow the work, not a funnel.</h2>
+        </div>
+        <nav aria-label="Ashley Childress profiles">
+          {profile.links.map((link) => (
+            <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
+              {link.label} <FiArrowUpRight aria-hidden="true" />
+            </a>
+          ))}
+          <Link href="/">
+            Search the index <FiArrowUpRight aria-hidden="true" />
+          </Link>
+        </nav>
+      </section>
     </main>
   );
 }
