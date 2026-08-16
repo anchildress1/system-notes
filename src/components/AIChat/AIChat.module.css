@@ -6,6 +6,13 @@
   --chat-dock-margin: clamp(1rem, 3vw, 2rem);
   --chat-dock-size: clamp(52px, 4vw, 60px);
   --chat-dock-gap: 16px;
+  /* isolation alone made this a stacking context without placing it in one, so
+     the panel's own z-index was scoped inside a dock that still sorted at auto
+     — the sticky header (--z-sticky) painted over the whole maximized chat.
+     z-index needs a positioned element to take effect; relative changes no
+     geometry here, and the fixed descendants are unaffected by it. */
+  position: relative;
+  z-index: var(--z-chat);
   isolation: isolate;
   pointer-events: none;
 }

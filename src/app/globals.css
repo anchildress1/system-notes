@@ -200,6 +200,8 @@
   --z-card-flip: 5000;
   --z-search-widget: 9000;
   --z-footer: 9500;
+  /* The chat floats over everything, footer included. */
+  --z-chat: 9600;
 }
 
 /* Re-declare --card-seam per accent so it resolves against the local card hue. */
