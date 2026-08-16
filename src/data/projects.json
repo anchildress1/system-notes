@@ -291,14 +291,14 @@
   {
     "objectID": "system-notes",
     "name": "System Notes",
-    "what_it_is": "An AI-assembled portfolio site built to test orchestration and authorship boundaries under human supervision.",
-    "why_it_exists": "A portfolio that delegates its own construction to AI — and logs every decision.",
-    "long_description": "A Next.js app indexing every project, principle, and post through Algolia, with an AI chat layer for conversational retrieval instead of static browsing. Every merge clears CI-enforced coverage floors and Lighthouse budgets — 100% desktop, 92%+ mobile performance — before it ships.",
-    "outcome": "Live at anchildress1.dev, indexing every project and post through Algolia with a working AI chat layer, deployed on Cloud Run behind its own CI gates.",
+    "what_it_is": "An evidence-first engineering portfolio organized around searchable decisions instead of finished-product theater.",
+    "why_it_exists": "The useful part of a project is usually the constraint, failure, or choice that produced it. This keeps that reasoning attached to the work.",
+    "long_description": "A Next.js app with an Algolia-backed decision index, durable note pages, and a complete project directory spanning active systems, retired tools, and deliberate dead ends. Every merge clears CI-enforced coverage and Lighthouse budgets before it ships.",
+    "outcome": "Live at anchildress1.dev as a searchable record of engineering work, deployed on Cloud Run behind unit, browser, accessibility, security, and performance gates.",
     "status": "Active · Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/system-notes.webp",
-    "image_alt": "System Notes project dashboard showing AI-generated portfolio entries and architecture decisions",
+    "image_alt": "System Notes decision index in a plum-black and neon-fuchsia interface",
     "tech": [
       {
         "name": "Next.js",
