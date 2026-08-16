@@ -42,7 +42,7 @@
 
 .brandName {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: var(--text-micro);
   font-weight: 700;
   letter-spacing: 0.12em;
   color: var(--text-primary);
@@ -55,8 +55,7 @@
 }
 
 .blurb {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--text-body);
   line-height: 1.6;
   color: var(--text-secondary);
   max-width: 32ch;
@@ -97,7 +96,7 @@
   justify-content: space-between;
   padding-top: 1.25rem;
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: var(--text-micro);
   letter-spacing: 0.08em;
   color: var(--text-muted);
 }

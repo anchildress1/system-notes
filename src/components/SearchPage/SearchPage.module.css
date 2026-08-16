@@ -62,7 +62,7 @@
   gap: 6px;
   flex-shrink: 0;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--text-micro);
   color: var(--text-muted);
 }
 
@@ -84,7 +84,7 @@
   border: 1px solid var(--border);
   background: rgba(39, 34, 57, 0.72);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-micro);
   color: var(--text-secondary);
 }
 
@@ -139,7 +139,7 @@
 }
 
 .filterCount {
-  font-size: 10px;
+  font-size: var(--text-micro);
   opacity: 0.7;
   font-variant-numeric: tabular-nums;
 }
@@ -219,7 +219,7 @@
      "retrieve>" and the credit under the right-hand meta. */
   padding: 0 20px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--text-micro);
   color: var(--text-muted);
 }
 

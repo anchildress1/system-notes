@@ -135,6 +135,21 @@
   --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
   --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, monospace;
 
+  /* Type scale. Two rules govern it, and they are the whole point:
+     1. Anything that reads as a SENTENCE sits at --text-body or above. Light
+        text on a dark canvas loses acuity as size drops, so the floor is where
+        prose stops being work.
+     2. The steps below --text-body are for chrome only — chips, counters,
+        dates, unit labels. They are not somewhere to put prose.
+     Sizes are px on purpose: these are chrome dimensions, not user-scalable
+     reading measures, and rem here only obscured how small they really were.
+     Headings are not in here on purpose: they were never the problem, so they
+     keep the sizes they already had rather than gaining tokens nothing reads. */
+  --text-micro: 12px; /* tag chips, counters, dates, badge caps */
+  --text-meta: 13px; /* dense UI: filter rows, nav, attribution */
+  --text-body: 14px; /* floor for anything that forms a sentence */
+  --text-lead: 16px; /* standfirst, chat copy */
+
   /* Motion */
   --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -217,12 +232,19 @@
 
 html {
   background-color: var(--bg-base);
+  /* The palette is dark-only. Declaring it stops the UA painting light form
+     controls, scrollbars, and spellcheck underlines onto a dark canvas. */
+  color-scheme: dark;
 }
 
 html,
 body {
   color: var(--text-primary);
-  font-family: var(--font-mono);
+  /* Sans, not mono. Mono as the document default made every unstyled node
+     monospace by inheritance — 316 of 368 text nodes on the home page — which
+     is what made a dense page read as hostile. Mono is now opt-in, for labels
+     and metadata that earn it. */
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;

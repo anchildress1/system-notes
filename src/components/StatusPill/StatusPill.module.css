@@ -4,7 +4,7 @@
   align-items: center;
   gap: 8px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-micro);
   color: var(--text-secondary);
   letter-spacing: 0.12em;
   padding: 8px 14px;

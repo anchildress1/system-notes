@@ -192,15 +192,17 @@
   text-wrap: balance;
 }
 
+/* The one line on the page that speaks as a person rather than a system, so it
+   reads in the body face at reading size — not muted mono like a caption. */
 .subtitle {
-  font-family: var(--font-mono);
-  font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+  font-size: clamp(var(--text-body), 1.2vw, var(--text-lead));
   font-weight: 400;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin-top: 1.5rem;
   line-height: 1.6;
-  letter-spacing: 0.02em;
-  max-width: 52ch;
+  letter-spacing: 0;
+  max-width: 56ch;
+  text-wrap: pretty;
   opacity: 1;
   visibility: visible;
   position: relative;

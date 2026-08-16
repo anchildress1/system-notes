@@ -68,7 +68,7 @@
 /* Creation date — dim, with a leading dot separating it from the label. */
 .cardDate {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: var(--text-micro);
   color: var(--text-muted);
   letter-spacing: 0.12em;
   white-space: nowrap;
@@ -90,7 +90,7 @@
 
 .factCounter {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: var(--text-micro);
   color: var(--text-secondary);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -106,8 +106,7 @@
 }
 
 .description {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--text-body);
   color: var(--text-secondary);
   margin-bottom: var(--space-md);
   line-height: 1.5;
@@ -180,8 +179,7 @@
 
 .backBody {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--text-body);
   line-height: 1.6;
   color: var(--text-secondary);
   white-space: pre-wrap;
@@ -199,7 +197,7 @@
 
 .backMetaItem {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: var(--text-micro);
   color: var(--text-muted);
   letter-spacing: 0.06em;
   text-transform: lowercase;

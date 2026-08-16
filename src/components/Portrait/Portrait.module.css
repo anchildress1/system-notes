@@ -82,7 +82,7 @@
   align-items: center;
   justify-content: space-between;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-micro);
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.75);

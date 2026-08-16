@@ -109,7 +109,7 @@
 
 .trackExplicit {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--text-micro);
   font-weight: 700;
   padding: 2px 5px;
   border: 1px solid var(--border-strong);
@@ -121,7 +121,7 @@
 
 .trackMeta {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: var(--text-micro);
   color: var(--text-muted);
   letter-spacing: 0.8px;
   text-transform: uppercase;
@@ -309,7 +309,7 @@
   display: flex;
   justify-content: space-between;
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: var(--text-micro);
   color: var(--text-muted);
 }
 
