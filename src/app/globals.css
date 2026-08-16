@@ -128,10 +128,12 @@
   --ais-primary-color-rgb: 185, 107, 255;
   --ais-primary-color-alpha: 1;
 
-  /* Typography */
+  /* Typography. next/font re-declares these on <body> with the hashed family
+     names; the values here are the SSR-time fallback. */
   --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Atkinson Hyperlegible Next', system-ui, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, monospace;
 
   /* Motion */
   --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1);

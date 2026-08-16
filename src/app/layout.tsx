@@ -14,7 +14,23 @@ const spaceGrotesk = localFont({
   fallback: ['system-ui', 'sans-serif'],
 });
 
-// Only the display font (the LCP H1) is preloaded. The serif and mono load on
+// Body/UI face. Atkinson Hyperlegible Next is drawn by the Braille Institute
+// for glyph disambiguation at small sizes — I/l/1 and 0/O stay distinct, which
+// is what a dense, dark, technical page actually needs.
+// NOT preloaded: the LCP element is the first project image, not text, so this
+// font is not on the critical path. (Preloading it measured no better and no
+// worse; it is off to match the serif and mono, which are also not preloaded.)
+// Body text paints immediately in the size-adjusted fallback and swaps in.
+const atkinson = localFont({
+  src: './fonts/AtkinsonHyperlegibleNext-Variable.woff2',
+  variable: '--font-sans',
+  weight: '200 800',
+  display: 'swap',
+  preload: false,
+  fallback: ['system-ui', 'sans-serif'],
+});
+
+// Only the display font (the hero H1) is preloaded. The body, serif and mono load on
 // demand behind their fallbacks (display: swap) so they don't compete with the
 // LCP font for the initial connection — shaves the hero's render delay.
 const instrumentSerif = localFont({
@@ -28,10 +44,12 @@ const instrumentSerif = localFont({
   fallback: ['Georgia', 'Times New Roman', 'serif'],
 });
 
-const jetbrainsMono = localFont({
-  src: './fonts/JetBrainsMono-Variable.woff2',
+// Monospace sibling of the body face — same skeleton and disambiguation rules,
+// so labels and prose read as one family instead of two competing voices.
+const atkinsonMono = localFont({
+  src: './fonts/AtkinsonHyperlegibleMono-Variable.woff2',
   variable: '--font-mono',
-  weight: '100 800',
+  weight: '200 800',
   display: 'swap',
   preload: false,
   fallback: ['ui-monospace', 'monospace'],
@@ -129,7 +147,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${spaceGrotesk.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${atkinson.variable} ${instrumentSerif.variable} ${atkinsonMono.variable} antialiased`}
         suppressHydrationWarning
       >
         <Nebula />
