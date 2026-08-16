@@ -22,7 +22,7 @@ import styles from './AIChat.module.css';
 import { ALGOLIA_INDEX_NAME } from '@/config';
 import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
 import { getChatSessionId } from '@/utils/userToken';
-import Button from '@/components/Button/Button';
+import Button, { type ButtonElement } from '@/components/Button/Button';
 import {
   ALGOLIA_APP_ID,
   ALGOLIA_SEARCH_KEY,
@@ -147,6 +147,7 @@ export default function AIChat() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const chatRef = useRef<ChatHandle | null>(null);
+  const toggleRef = useRef<ButtonElement | null>(null);
   const lastChatQuery = useRef<string | null>(null);
 
   const toggleChat = useCallback(() => {
@@ -160,6 +161,22 @@ export default function AIChat() {
   useEffect(() => {
     chatRef.current?.setOpen(open);
   }, [open]);
+
+  // Escape closes the panel. The widget covers a column of cards while open, so
+  // without this the only way out is finding the toggle again — Escape is the
+  // key people already reach for, and it did nothing.
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [open]);
+
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
@@ -289,6 +306,7 @@ export default function AIChat() {
       </div>
       {chatAvailable && (
         <Button
+          ref={toggleRef}
           variant="fab"
           className={styles.chatToggle}
           aria-label={open ? 'Close AI chat' : 'Open AI chat'}

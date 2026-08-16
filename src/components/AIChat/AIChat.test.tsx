@@ -138,6 +138,47 @@ describe('AIChat Widget Integration', () => {
     chatCapture.getSearchPageURL = undefined;
   });
 
+  describe('dismissal', () => {
+    const openChat = () => {
+      const toggle = screen.getByTestId('ai-chat-toggle');
+      fireEvent.click(toggle);
+      expect(toggle).toHaveAttribute('data-state', 'open');
+      return toggle;
+    };
+
+    it('closes on Escape and returns focus to the toggle', () => {
+      render(<AIChat />);
+      const toggle = openChat();
+
+      fireEvent.keyDown(document, { key: 'Escape' });
+
+      expect(toggle).toHaveAttribute('data-state', 'closed');
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(toggle).toHaveFocus();
+    });
+
+    it('ignores keys other than Escape while open', () => {
+      render(<AIChat />);
+      const toggle = openChat();
+
+      fireEvent.keyDown(document, { key: 'Enter' });
+      fireEvent.keyDown(document, { key: 'a' });
+
+      expect(toggle).toHaveAttribute('data-state', 'open');
+    });
+
+    it('does not listen for Escape while closed', () => {
+      render(<AIChat />);
+      const toggle = screen.getByTestId('ai-chat-toggle');
+      expect(toggle).toHaveAttribute('data-state', 'closed');
+
+      fireEvent.keyDown(document, { key: 'Escape' });
+
+      expect(toggle).toHaveAttribute('data-state', 'closed');
+      expect(toggle).not.toHaveFocus();
+    });
+  });
+
   describe('widget rendering', () => {
     it('renders Chat inside InstantSearchNext when credentials are valid', () => {
       render(<AIChat />);
@@ -273,7 +314,7 @@ describe('AIChat Widget Integration', () => {
   });
 
   describe('ChatItemComponent click navigation', () => {
-    it('calls router.push with /search?q on click', () => {
+    it('calls router.push with /choices?q on click', () => {
       render(<AIChat />);
       fireEvent.click(screen.getByRole('link'));
       expect(mockRouterPush).toHaveBeenCalledOnce();

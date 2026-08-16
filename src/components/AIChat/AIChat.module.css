@@ -58,7 +58,7 @@
 }
 
 .chatResultCategory {
-  font-size: 0.65rem;
+  font-size: var(--text-micro);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -95,7 +95,7 @@
 
 .disclaimer {
   width: 100%;
-  font-size: 0.72rem;
+  font-size: var(--text-micro);
   line-height: 1.35;
   text-align: center;
 }
