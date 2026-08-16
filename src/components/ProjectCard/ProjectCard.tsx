@@ -59,7 +59,7 @@ export default function ProjectCard({
 
   return (
     <FlipCardShell
-      className={`${styles.cardLink} ${isFlipped ? styles.cardLinkFlipped : ''}`}
+      className={`${styles.cardLink} ${priority ? styles.cardLinkInstant : ''} ${isFlipped ? styles.cardLinkFlipped : ''}`}
       accent={accent}
       testId={`project-card-${project.id}`}
       cardClassName={`${styles.card} ${isFlipped ? styles.flipped : ''}`}

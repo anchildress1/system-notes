@@ -21,6 +21,23 @@
   container-type: inline-size;
 }
 
+/* The fade-in starts at opacity 0, which means the element it contains cannot
+   be the LCP until the animation has run. On the front page the first cards
+   hold the LCP image, so they skip the entrance entirely and paint immediately;
+   everything below the fold still fades in. */
+.cardLinkInstant {
+  animation: none;
+}
+
+/* Every project renders, in order — this only defers the style/layout/paint of
+   cards that are still offscreen, which is what 20 flip cards (each a container
+   query root with its own 3D context) cost on a throttled phone. The intrinsic
+   size matches .card's min-height so the scrollbar does not jump. */
+.cardLink:not(.cardLinkInstant) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 520px;
+}
+
 .cardLinkFlipped {
   position: relative;
   z-index: 10;
