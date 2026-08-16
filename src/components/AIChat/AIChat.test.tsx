@@ -3,8 +3,9 @@ import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import React from 'react';
 
-const { mockChatSetOpen, mockLiteClient, mockRouterPush } = vi.hoisted(() => ({
+const { mockChatSetOpen, mockChatSendMessage, mockLiteClient, mockRouterPush } = vi.hoisted(() => ({
   mockChatSetOpen: vi.fn(),
+  mockChatSendMessage: vi.fn(),
   mockLiteClient: vi.fn(() => ({
     search: vi.fn().mockResolvedValue({ results: [] }),
     appId: 'test-app-id',
@@ -51,7 +52,11 @@ interface CapturedChatProps {
   tools?: Record<string, ToolCall>;
   agentId?: string;
   getSearchPageURL?: (uiState: unknown) => string;
-  ref?: React.Ref<{ setOpen: (open: boolean) => void }>;
+  emptyComponent?: React.ComponentType;
+  ref?: React.Ref<{
+    setOpen: (open: boolean) => void;
+    sendMessage: (params: { text: string }) => void;
+  }>;
 }
 
 const chatCapture: CapturedChatProps = {};
@@ -82,10 +87,12 @@ vi.mock('react-instantsearch', async (importOriginal) => {
       chatCapture.tools = props.tools as Record<string, ToolCall>;
       chatCapture.agentId = props.agentId;
       chatCapture.getSearchPageURL = props.getSearchPageURL as (uiState: unknown) => string;
+      chatCapture.emptyComponent = props.emptyComponent;
       if (props.ref && typeof props.ref === 'object') {
-        props.ref.current = { setOpen: mockChatSetOpen };
+        props.ref.current = { setOpen: mockChatSetOpen, sendMessage: mockChatSendMessage };
       }
 
+      const EmptyComponent = props.emptyComponent;
       const ItemComponent = props.itemComponent;
       const item: ChatHitItem = mockChatItemOverride ?? {
         objectID: 'fact-abc-123',
@@ -100,6 +107,7 @@ vi.mock('react-instantsearch', async (importOriginal) => {
           <button type="button" className="ais-ChatHeader-close">
             Close widget
           </button>
+          {EmptyComponent && <EmptyComponent />}
           {ItemComponent && (
             <ItemComponent item={item} sendEvent={mockSendEvent} onAuxClick={mockAuxClick} />
           )}
@@ -136,6 +144,7 @@ describe('AIChat Widget Integration', () => {
     chatCapture.tools = undefined;
     chatCapture.agentId = undefined;
     chatCapture.getSearchPageURL = undefined;
+    chatCapture.emptyComponent = undefined;
   });
 
   describe('dismissal', () => {
@@ -176,6 +185,35 @@ describe('AIChat Widget Integration', () => {
 
       expect(toggle).toHaveAttribute('data-state', 'closed');
       expect(toggle).not.toHaveFocus();
+    });
+  });
+
+  describe('empty-thread greeting', () => {
+    it('explains what the assistant is before the input', () => {
+      render(<AIChat />);
+      expect(chatCapture.emptyComponent).toBeDefined();
+      expect(
+        screen.getByText(/Ask about any project, decision, or tradeoff in this portfolio/)
+      ).toBeInTheDocument();
+    });
+
+    it('offers starter prompts as buttons', () => {
+      render(<AIChat />);
+      const starters = [
+        'What does she actually build?',
+        'Show me something that failed.',
+        'What is the most opinionated call in here?',
+      ];
+      for (const label of starters) {
+        expect(screen.getByRole('button', { name: label })).toBeInTheDocument();
+      }
+    });
+
+    it('sends the prompt text when a starter is clicked', () => {
+      render(<AIChat />);
+      fireEvent.click(screen.getByRole('button', { name: 'Show me something that failed.' }));
+
+      expect(mockChatSendMessage).toHaveBeenCalledWith({ text: 'Show me something that failed.' });
     });
   });
 

@@ -116,6 +116,15 @@ const UserAvatar = () => (
 const PromptFooter = () => (
   <div className={styles.disclaimer}>Powered by Algolia | Indexed. Not Imagined.</div>
 );
+
+// Deliberately makes no claim about how many notes are indexed — the count is
+// not available here, and inventing one would break the same rule the index
+// itself is built on.
+const STARTER_PROMPTS = [
+  'What does she actually build?',
+  'Show me something that failed.',
+  'What is the most opinionated call in here?',
+] as const;
 // The agent searches these tools, but their raw result layout is intentionally hidden.
 const HiddenToolLayout = () => <></>;
 
@@ -180,6 +189,34 @@ export default function AIChat() {
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
+    []
+  );
+
+  // Shown while the thread is empty. A bare input over a black panel gave a
+  // first-time visitor nothing to act on; this says what Ruckus is and hands
+  // over three questions that already work.
+  const ChatEmptyState = useCallback(
+    () => (
+      <div className={styles.emptyState}>
+        <p className={styles.emptyIntro}>
+          Ask about any project, decision, or tradeoff in this portfolio. Answers come from the
+          index — if it isn&rsquo;t written down, you get told so.
+        </p>
+        <ul className={styles.starterList}>
+          {STARTER_PROMPTS.map((prompt) => (
+            <li key={prompt}>
+              <button
+                type="button"
+                className={styles.starterPrompt}
+                onClick={() => chatRef.current?.sendMessage({ text: prompt })}
+              >
+                {prompt}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ),
     []
   );
 
@@ -299,6 +336,7 @@ export default function AIChat() {
               assistantMessageLeadingComponent={AssistantAvatar}
               userMessageLeadingComponent={UserAvatar}
               promptFooterComponent={PromptFooter}
+              emptyComponent={ChatEmptyState}
               classNames={chatClassNames}
             />
           </InstantSearchNext>
