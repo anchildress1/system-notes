@@ -27,13 +27,13 @@ User-agent: Claude-Web
 Allow: /
 
 # Content Information
-Content-Type: Portfolio, Projects, Technical Documentation
+Content-Type: Engineering Notes, Projects, Technical Documentation
 Language: en-US
-Primary-Purpose: Professional portfolio and project showcase
+Primary-Purpose: Searchable engineering decision record and project portfolio
 
 # Sitemap
 Sitemap: /sitemap.xml
 
 # Metadata
-Last-Updated: 2026-02-02
-Version: 1.0
+Last-Updated: 2026-08-16
+Version: 2.0

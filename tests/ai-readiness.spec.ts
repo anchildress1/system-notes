@@ -25,10 +25,10 @@ test.describe('AI Readiness & SEO', () => {
     expect(data.hasPart[0]['@type']).toBe('SoftwareApplication');
   });
 
-  test('robots.txt should allow bots', async ({ page }) => {
-    const response = await page.goto('/robots.txt');
-    expect(response?.status()).toBe(200);
-    const text = (await response?.text()) ?? '';
+  test('robots.txt should allow bots', async ({ request }) => {
+    const response = await request.get('/robots.txt');
+    expect(response.status()).toBe(200);
+    const text = await response.text();
 
     expect(text).toMatch(/User-agent: \*/i);
     expect(text).toContain('Allow: /');
