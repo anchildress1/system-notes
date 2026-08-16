@@ -17,58 +17,9 @@
    a single rounded edge, not the card's border fighting a second face clip.
    radius stays here only so the hover box-shadow is rounded. */
 .card {
-  position: relative;
-  border-radius: var(--r-xl);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
   min-height: 200px;
   cursor: pointer;
-  transition:
-    box-shadow var(--transition-slow),
-    transform var(--transition-base);
-}
-
-.card:hover {
-  box-shadow:
-    0 0 calc(18px * var(--glow)) var(--card-accent-soft),
-    var(--shadow-card);
-  transform: translateY(-2px);
-}
-
-.card:hover .cardFront,
-.card:hover .cardBack {
-  border-color: color-mix(in srgb, var(--card-accent) 45%, var(--border-strong));
-}
-
-/* Back-face accent seam (front seam comes from the shared card.module.css). */
-.cardBack::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--seam-width);
-  background: var(--card-seam);
-  z-index: 3;
-  pointer-events: none;
-}
-
-.flipButton {
-  -webkit-appearance: none;
-  appearance: none;
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  border-radius: inherit;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  cursor: pointer;
+  --card-hover-transition: var(--transition-slow);
 }
 
 .cardLink[data-size='half'] .title,
@@ -89,38 +40,6 @@
 
 .cardLink[data-size='two-thirds'] .description {
   -webkit-line-clamp: 6;
-}
-
-.imageContainer {
-  width: 100%;
-  aspect-ratio: 2 / 1;
-  position: relative;
-  overflow: hidden;
-}
-
-.imageWrapper {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-.conceptBackground {
-  position: absolute;
-  inset: 0;
-  background: var(--paper-dim);
-  z-index: 0;
-}
-
-.conceptBackground::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
-  background-size: 20px 20px;
-  z-index: 1;
 }
 
 .content {
@@ -177,16 +96,6 @@
   text-transform: uppercase;
 }
 
-.nodeType {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: var(--text-secondary);
-  letter-spacing: 0.12em;
-  margin-top: auto;
-  padding-top: 0.6rem;
-  border-top: 1px solid var(--border);
-}
-
 .title {
   font-family: var(--font-display);
   font-size: 1.35rem;
@@ -209,31 +118,12 @@
   overflow: hidden;
 }
 
-.intentLabel {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--text-primary);
-  margin-bottom: 0.2rem;
-  letter-spacing: 0.1em;
-}
-
 /* ── 3D Flip (in-place) ── */
 
 .cardLinkFlipped {
   /* Lift the flipped card so its back doesn't clip behind neighbors. */
   z-index: 10;
   position: relative;
-}
-
-.flipper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  flex: 1;
-  transform-style: preserve-3d;
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .flipped .flipper {
@@ -245,20 +135,8 @@
 /* Surface + accent/winner seam come from the shared card.module.css (.face +
    .seam/.winnerBanner) applied in JSX. */
 .cardFront {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  /* Explicit identity transform so Firefox treats the front as a 3D plane and
-     actually backface-culls it when the flipper rotates. Without an own
-     transform Firefox skips the cull and the front shows mirrored through the
-     back. Chrome culls either way. */
-  transform: rotateY(0deg);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   text-align: left;
   width: 100%;
-  height: 100%;
   transition: border-color var(--transition-slow);
 }
 
@@ -270,19 +148,6 @@
 }
 
 .cardBack {
-  position: absolute;
-  inset: 0;
-  transform: rotateY(180deg);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  z-index: 1;
-  background: var(--card-surface-back);
-  border: 1px solid var(--border);
-  border-radius: inherit;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  pointer-events: none;
   transition: border-color var(--transition-slow);
 }
 

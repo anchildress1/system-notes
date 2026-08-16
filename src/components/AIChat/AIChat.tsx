@@ -12,13 +12,14 @@ import {
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import aa from 'search-insights';
 import { Chat, SearchIndexToolType, RecommendToolType, type ChatHandle } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
-import 'instantsearch.css/themes/satellite.css';
+import 'instantsearch.css/themes/reset.css';
 import 'instantsearch.css/components/chat.css';
 import './chat-overrides.css';
 import styles from './AIChat.module.css';
-import { ALGOLIA_INDEX } from '@/config';
+import { ALGOLIA_INDEX_NAME } from '@/config';
 import { getSearchPageURL } from '@/components/SearchPage/searchRouting';
 import { getChatSessionId } from '@/utils/userToken';
 import Button from '@/components/Button/Button';
@@ -41,24 +42,20 @@ const ChatNavContext = createContext<ChatNavContextType | null>(null);
 
 const appId = ALGOLIA_APP_ID;
 const apiKey = ALGOLIA_SEARCH_KEY;
-const indexName = ALGOLIA_INDEX.SEARCH_RESULTS;
+const indexName = ALGOLIA_INDEX_NAME;
 
 const hasValidCredentials = hasValidAlgoliaCredentials();
 
-// Create searchClient at module level for stable reference (prevents unnecessary re-renders).
-// null when credentials are absent — InstantSearchNext is only rendered when this is non-null.
 const searchClient = hasValidCredentials
   ? algoliasearch(appId, apiKey, {
-      headers: {
+      baseHeaders: {
         'X-Algolia-UserToken': getChatSessionId(),
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any)
+    })
   : null;
 
 const AGENT_ID = ALGOLIA_AGENT_ID;
 
-// Item component for rendering search results in the chat carousel
 interface ChatHitItem {
   objectID: string;
   title?: string;
@@ -105,7 +102,6 @@ const ChatItemComponent = ({
   );
 };
 
-// Custom components to enrich the chat experience
 const HeaderIcon = () => <GiBat className={`${styles.headerIcon} ${styles.batGradient}`} />;
 const AssistantAvatar = () => (
   <div className={styles.avatar}>
@@ -120,36 +116,50 @@ const UserAvatar = () => (
 const PromptFooter = () => (
   <div className={styles.disclaimer}>Powered by Algolia | Indexed. Not Imagined.</div>
 );
-// Suppress the built-in result carousel: the agent still searches, we just don't
-// render the raw hit cards (or their "View all" link) until that data gets a
-// proper formatted view. Overriding the tool's layout wins over createDefaultTools.
-// Returns an empty fragment (not null) to satisfy the layoutComponent signature.
+// The agent searches these tools, but their raw result layout is intentionally hidden.
 const HiddenToolLayout = () => <></>;
 
-// The upgraded Chat widget renders only the open overlay (no built-in toggle
-// FAB), so we own open/close: a custom toggle button drives a `chatOpen` class
-// that shows/hides the dock, and the overlay's own close button is synced back.
 const chatClassNames = {
   root: styles.chatRoot,
-  container: styles.chatWindow,
 };
+
+function normalizeToolInput(input: unknown): {
+  query?: string;
+  tag?: string;
+  limit?: number;
+} {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return {};
+  const record = input as Record<string, unknown>;
+  const normalizeString = (value: unknown) =>
+    typeof value === 'string' ? value.trim().slice(0, 200) || undefined : undefined;
+  const limit = record['limit'];
+  return {
+    query: normalizeString(record['query']),
+    tag: normalizeString(record['tag']),
+    limit:
+      typeof limit === 'number' && Number.isSafeInteger(limit) && limit > 0
+        ? Math.min(limit, 50)
+        : undefined,
+  };
+}
 
 export default function AIChat() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  // The Chat widget owns its open state internally and only exposes it through
-  // the imperative ChatHandle ref (no controlled `open` prop). Its handle type
-  // exposes setOpen (plus sendMessage/setInput) — we only drive setOpen.
   const chatRef = useRef<ChatHandle | null>(null);
   const lastChatQuery = useRef<string | null>(null);
 
   const toggleChat = useCallback(() => {
-    setOpen((prev) => {
-      const next = !prev;
-      chatRef.current?.setOpen(next);
-      return next;
-    });
+    setOpen((prev) => !prev);
   }, []);
+
+  // Syncs the widget's imperative open state after commit, not during AIChat's
+  // own render — calling chatRef.current.setOpen() from inside the setOpen
+  // updater triggers "Cannot update a component while rendering a different
+  // component" because it updates ChatInner mid-render of AIChat.
+  useEffect(() => {
+    chatRef.current?.setOpen(open);
+  }, [open]);
   const resolveSearchPageURL = useCallback(
     (nextUiState: Parameters<typeof getSearchPageURL>[0]) =>
       getSearchPageURL(nextUiState, indexName),
@@ -175,17 +185,18 @@ export default function AIChat() {
           input: unknown;
           addToolResult: (result: { output: unknown }) => void;
         }) => {
-          const { input, addToolResult } = params;
-          const typedInput = input as { query?: string; tag?: string; limit?: number } | undefined;
-          lastChatQuery.current = typedInput?.query ?? null;
+          const { addToolResult } = params;
+          const toolInput = normalizeToolInput(params.input);
+          lastChatQuery.current = toolInput.query ?? null;
           try {
             const urlParams = new URLSearchParams();
-            if (typedInput?.query) urlParams.set('q', typedInput.query);
-            if (typedInput?.tag) urlParams.set('tag', typedInput.tag);
-            if (typedInput?.limit) urlParams.set('limit', String(typedInput.limit));
-            urlParams.set('indexName', ALGOLIA_INDEX.CHAT_SOURCE);
+            if (toolInput.query) urlParams.set('q', toolInput.query);
+            if (toolInput.tag) urlParams.set('tag', toolInput.tag);
+            if (toolInput.limit) urlParams.set('limit', String(toolInput.limit));
 
-            const response = await fetch(`/api/blog/search?${urlParams.toString()}`);
+            const response = await fetch(`/api/blog/search?${urlParams.toString()}`, {
+              signal: AbortSignal.timeout(10_000),
+            });
             if (!response.ok) {
               addToolResult({
                 output: { error: 'Failed to fetch blog posts', results: [] },
@@ -207,8 +218,6 @@ export default function AIChat() {
     []
   );
 
-  // The overlay's own close button (rendered by the widget) syncs back to our
-  // open state so the toggle FAB and the in-panel close stay in lockstep.
   useEffect(() => {
     if (typeof document === 'undefined') return;
     const onDocClick = (e: MouseEvent) => {
@@ -241,8 +250,6 @@ export default function AIChat() {
 
   return createPortal(
     <ChatNavContext.Provider value={chatNavContext}>
-      {/* Shared gradient the bat icons fill with — the same chromatic band as
-          the winner/award "special" surfaces. Rendered once, referenced by id. */}
       <svg
         width="0"
         height="0"
@@ -261,7 +268,7 @@ export default function AIChat() {
         {searchClient && AGENT_ID ? (
           <InstantSearchNext
             searchClient={searchClient}
-            insights
+            insights={{ insightsClient: aa }}
             future={{ preserveSharedStateOnUnmount: true }}
           >
             <Chat
@@ -284,11 +291,11 @@ export default function AIChat() {
         <Button
           variant="fab"
           className={styles.chatToggle}
-          ariaLabel={open ? 'Close AI chat' : 'Open AI chat'}
-          ariaExpanded={open}
+          aria-label={open ? 'Close AI chat' : 'Open AI chat'}
+          aria-expanded={open}
           onClick={toggleChat}
-          dataState={open ? 'open' : 'closed'}
-          dataTestId="ai-chat-toggle"
+          data-state={open ? 'open' : 'closed'}
+          data-testid="ai-chat-toggle"
         >
           {open ? (
             <IoClose size={24} className={styles.toggleIcon} />

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import SourceLinkButton from './SourceLinkButton';
@@ -10,60 +10,35 @@ describe('SourceLinkButton', () => {
     icon: <span data-testid="test-icon">icon</span>,
   };
 
-  it('renders with icon and label', () => {
+  it('renders a secure external link with its icon and label', () => {
     render(<SourceLinkButton {...defaultProps} />);
-    expect(screen.getByLabelText('View source')).toBeInTheDocument();
+    const link = screen.getByRole('link', { name: 'View source' });
+    expect(link).toHaveAttribute('href', defaultProps.url);
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
     expect(screen.getByTestId('test-icon')).toBeInTheDocument();
   });
 
-  it('opens URL in new tab on click', async () => {
-    const user = userEvent.setup();
-    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
-    render(<SourceLinkButton {...defaultProps} />);
-
-    await user.click(screen.getByLabelText('View source'));
-
-    expect(openSpy).toHaveBeenCalledWith(
-      'https://github.com/test/repo',
-      '_blank',
-      'noopener,noreferrer'
-    );
-    openSpy.mockRestore();
-  });
-
-  it('calls custom onClick instead of window.open when provided', async () => {
-    const user = userEvent.setup();
-    const customClick = vi.fn();
-    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
-    render(<SourceLinkButton {...defaultProps} onClick={customClick} />);
-
-    await user.click(screen.getByLabelText('View source'));
-
-    expect(customClick).toHaveBeenCalled();
-    expect(openSpy).not.toHaveBeenCalled();
-    openSpy.mockRestore();
+  it('rejects unsafe URLs', () => {
+    render(<SourceLinkButton {...defaultProps} url="javascript:alert(1)" />);
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 
   it('applies caller-provided tab index', () => {
     render(<SourceLinkButton {...defaultProps} tabIndex={-1} />);
-
-    expect(screen.getByLabelText('View source')).toHaveAttribute('tabindex', '-1');
+    expect(screen.getByRole('link')).toHaveAttribute('tabindex', '-1');
   });
 
-  it('stops event propagation', async () => {
+  it('stops click propagation without cancelling navigation', async () => {
     const user = userEvent.setup();
     const parentClick = vi.fn();
-    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
-
     render(
       <div onClick={parentClick}>
         <SourceLinkButton {...defaultProps} />
       </div>
     );
 
-    await user.click(screen.getByLabelText('View source'));
-
+    await user.click(screen.getByRole('link'));
     expect(parentClick).not.toHaveBeenCalled();
-    openSpy.mockRestore();
   });
 });

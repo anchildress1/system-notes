@@ -59,7 +59,7 @@ export default function MusicPlayer() {
     if (audioRef.current) setDuration(audioRef.current.duration);
   };
 
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const progress = duration > 0 ? Math.min(100, Math.max(0, (currentTime / duration) * 100)) : 0;
 
   return (
     <div className={styles.playerWrapper} data-testid="music-player">
@@ -105,16 +105,16 @@ export default function MusicPlayer() {
 
       <Button
         variant="fab"
-        className={`${styles.playButton} ${isPlaying ? styles.active : ''}`}
-        ariaLabel={
+        className={styles.playButton}
+        aria-label={
           isPlaying
             ? "Pause 'I Build Things' by Twisted Game Songs"
-            : "Play 'I Build Things' by Twisted Game Songs (Explicit Content). Muted by default."
+            : "Play 'I Build Things' by Twisted Game Songs (Explicit Content)."
         }
         onClick={togglePlay}
         disabled={hasError}
-        dataState={isPlaying ? 'active' : 'idle'}
-        dataTestId="play-button"
+        data-state={isPlaying ? 'active' : 'idle'}
+        data-testid="play-button"
       >
         {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
       </Button>
@@ -127,12 +127,13 @@ export default function MusicPlayer() {
         ref={audioRef}
         src="/audio/twisted-game-songs-i-build-things.mp3"
         onEnded={handleEnded}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
         onError={handleAudioError}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         preload="none"
       >
-        {/* S4084: track element required for accessible media */}
         <track kind="captions" src="data:text/vtt," default label="No captions available" />
       </audio>
     </div>

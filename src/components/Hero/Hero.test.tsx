@@ -1,21 +1,38 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Hero from './Hero';
 
-// Mock useSparkles hook
-vi.mock('@/hooks/useSparkles', () => ({
-  useSparkles: vi.fn(),
-}));
+const defaultProps = {
+  title: 'Test Title',
+  subtitle: 'Test Subtitle',
+};
+
+function findGlitterEvent(
+  calls: Parameters<typeof globalThis.dispatchEvent>[]
+): CustomEvent<{ x?: number; y?: number }> | undefined {
+  return calls.find(([event]) => event.type === 'trigger-glitter-bomb')?.[0] as
+    | CustomEvent<{ x?: number; y?: number }>
+    | undefined;
+}
+
+async function pressHeroKey(key: string) {
+  const user = userEvent.setup();
+  render(<Hero {...defaultProps} />);
+
+  const container = screen.getByTestId('hero-interactive');
+  container.focus();
+  await user.keyboard(key);
+}
 
 describe('Hero Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  const defaultProps = {
-    title: 'Test Title',
-    subtitle: 'Test Subtitle',
-  };
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
   it('renders the title and subtitle', () => {
     render(<Hero {...defaultProps} />);
@@ -82,38 +99,36 @@ describe('Hero Component', () => {
     render(<Hero {...defaultProps} />);
 
     const container = screen.getByTestId('hero-interactive');
-    fireEvent.click(container);
+    fireEvent.click(container, { clientX: 120, clientY: 240 });
 
-    expect(dispatchSpy).toHaveBeenCalled();
-    const event = dispatchSpy.mock.calls.find(
-      (call) => (call[0] as Event).type === 'trigger-glitter-bomb'
-    );
-    expect(event).toBeTruthy();
-    dispatchSpy.mockRestore();
+    expect(findGlitterEvent(dispatchSpy.mock.calls)?.detail).toEqual({ x: 120, y: 240 });
+  });
+
+  // jsdom cannot measure the hit area, so the DOM relationship is the regression boundary.
+  it('mounts the trigger on the hero itself, not inside the text column', () => {
+    const { container } = render(<Hero {...defaultProps} subtitle="Sub" />);
+    const trigger = screen.getByTestId('hero-interactive');
+    const hero = container.querySelector('[data-accent-tone]');
+
+    expect(trigger.parentElement).toBe(hero);
+    expect(trigger.closest('h1')).toBeNull();
+    expect(screen.getByText('Sub').contains(trigger)).toBe(false);
   });
 
   it.each([
-    { key: 'Enter', label: 'Enter' },
+    { key: '{Enter}', label: 'Enter' },
     { key: ' ', label: 'Space' },
-  ])('dispatches trigger-glitter-bomb event on $label key', ({ key }) => {
+  ])('dispatches trigger-glitter-bomb event on $label key', async ({ key }) => {
     const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
-    render(<Hero {...defaultProps} />);
+    await pressHeroKey(key);
 
-    const container = screen.getByTestId('hero-interactive');
-    fireEvent.keyDown(container, { key });
-
-    expect(dispatchSpy).toHaveBeenCalled();
-    dispatchSpy.mockRestore();
+    expect(findGlitterEvent(dispatchSpy.mock.calls)?.detail).toBeNull();
   });
 
-  it('does not dispatch on other keys', () => {
+  it('does not dispatch on other keys', async () => {
     const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
-    render(<Hero {...defaultProps} />);
-
-    const container = screen.getByTestId('hero-interactive');
-    fireEvent.keyDown(container, { key: 'Escape' });
+    await pressHeroKey('{Escape}');
 
     expect(dispatchSpy).not.toHaveBeenCalled();
-    dispatchSpy.mockRestore();
   });
 });

@@ -3,12 +3,25 @@ import '@testing-library/jest-dom';
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
-// Runs a cleanup after each test case (e.g. clearing jsdom)
+const storageEntries = new Map<string, string>();
+const localStorageStub: Storage = {
+  clear: () => storageEntries.clear(),
+  getItem: (key) => storageEntries.get(key) ?? null,
+  key: (index) => [...storageEntries.keys()][index] ?? null,
+  get length() {
+    return storageEntries.size;
+  },
+  removeItem: (key) => storageEntries.delete(key),
+  setItem: (key, value) => storageEntries.set(key, value),
+};
+
 afterEach(() => {
   cleanup();
+  localStorageStub.clear();
 });
 
-// Mock IntersectionObserver
+vi.stubGlobal('localStorage', localStorageStub);
+
 class IntersectionObserverMock {
   readonly root: Element | Document | null = null;
   readonly rootMargin: string = '';
@@ -24,7 +37,6 @@ vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
 
 import React from 'react';
 
-// Mock next/image to avoid DOM warnings for non-standard attributes.
 vi.mock('next/image', () => ({
   default: ({
     src,
@@ -36,8 +48,6 @@ vi.mock('next/image', () => ({
     blurDataURL,
     ...props
   }: Record<string, unknown>) => {
-    // Surfaced as data-* so LQIP wiring stays assertable without React warning
-    // about non-standard attributes on a plain <img>.
     return React.createElement('img', {
       src,
       alt,

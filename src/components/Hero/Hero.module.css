@@ -14,7 +14,32 @@
 }
 
 .hero {
-  composes: hero from '@/styles/SharedHero.module.css';
+  position: relative;
+  padding: 3.5rem var(--page-gutter) 3rem;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      760px 420px at 18% 30%,
+      color-mix(in srgb, var(--accent-pink) 3%, transparent),
+      transparent 74%
+    ),
+    radial-gradient(
+      840px 460px at 84% 36%,
+      color-mix(in srgb, var(--accent-violet) 3%, transparent),
+      transparent 78%
+    ),
+    linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--accent-pink) 1%, transparent) 0%,
+      transparent 46%,
+      color-mix(in srgb, var(--accent-violet) 1.5%, transparent) 100%
+    ),
+    var(--bg-base);
   transition:
     --spot-x 0.45s var(--ease-snap),
     --spot-y 0.45s var(--ease-snap);
@@ -67,6 +92,20 @@
 .inner {
   position: relative;
   z-index: 10;
+  /* Transparent to the pointer so the glitter trigger underneath receives clicks
+     anywhere over the hero. Anything genuinely interactive re-enables below. */
+  pointer-events: none;
+}
+
+.inner a,
+.inner button,
+.inner input,
+.inner select,
+.inner textarea,
+.inner [role='button'],
+.inner [role='link'],
+.inner [tabindex]:not([tabindex='-1']) {
+  pointer-events: auto;
 }
 
 .inner.hasAside {
@@ -87,6 +126,10 @@
 }
 
 @media (max-width: 768px) {
+  .hero {
+    padding: 3rem var(--page-gutter) 2.25rem;
+  }
+
   .inner.hasAside {
     grid-template-columns: 1fr;
     gap: 28px;
@@ -99,19 +142,71 @@
 }
 
 .interactiveContainer {
-  composes: interactiveContainer from '@/styles/SharedHero.module.css';
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
+/* Fills .hero, so the hit area matches the gradient exactly. Sits above the seam
+   (::before, z-index 2) and below .inner (z-index 10) — .inner gives its pointer
+   events back so clicks over the text land here instead of dying on a container. */
 .glitterTrigger {
-  composes: glitterTrigger from '@/styles/SharedHero.module.css';
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: block;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.glitterTrigger:hover,
+.glitterTrigger:focus-visible {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .title {
-  composes: title from '@/styles/SharedHero.module.css';
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 5.2vw, 4.6rem);
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  position: relative;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+  margin: 0;
+  text-wrap: balance;
 }
 
 .subtitle {
-  composes: subtitle from '@/styles/SharedHero.module.css';
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 1.5rem;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  max-width: 52ch;
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+  z-index: 10;
+  text-wrap: balance;
+  pointer-events: none;
 }
 
 .textCol .subtitle {
@@ -175,5 +270,11 @@
     background: none;
     color: var(--text-primary);
     -webkit-text-fill-color: var(--text-primary);
+  }
+}
+
+@media (max-width: 480px) {
+  .subtitle {
+    font-size: 0.85rem;
   }
 }

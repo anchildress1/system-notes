@@ -37,6 +37,7 @@ vi.mock('@/data/projects.json', () => ({
       name: 'Project Gamma',
       status: 'Archived',
       owner: 'anchildress1',
+      tech: [],
       award: null,
       repo_url: null,
       image_url: null,

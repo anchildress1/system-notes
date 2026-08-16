@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import { expectSurfaceLinks } from '@/test-utils/navigation';
 import Header from './Header';
 
 vi.mock('next/navigation', () => ({
@@ -14,9 +15,9 @@ describe('Header Component', () => {
 
   it('renders navigation links', () => {
     render(<Header />);
-    expect(screen.getByRole('link', { name: /Choices/i })).toHaveAttribute('href', '/');
-    expect(screen.getByRole('link', { name: /Builds/i })).toHaveAttribute('href', '/projects');
-    expect(screen.getByRole('link', { name: /Human/i })).toHaveAttribute('href', '/about');
+    const navigation = screen.getByRole('navigation', { name: 'Main Navigation' });
+    expect(navigation).toBeVisible();
+    expectSurfaceLinks(navigation);
   });
 
   it('applies active class to the current path', async () => {

@@ -90,15 +90,14 @@ describe('ProjectCard Component', () => {
     expect(img).not.toHaveAttribute('data-blur');
   });
 
-  it('opens GitHub URL on source-link click without flipping', () => {
-    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
+  it('links to GitHub without flipping the card', () => {
     render(<ProjectCard project={mockProject} />);
 
-    fireEvent.click(screen.getByLabelText(`View ${mockProject.title} source code on GitHub`));
+    const link = screen.getByLabelText(`View ${mockProject.title} source code on GitHub`);
+    expect(link).toHaveAttribute('href', mockProject.repo_url);
+    fireEvent.click(link);
 
-    expect(openSpy).toHaveBeenCalledWith(mockProject.repo_url, '_blank', 'noopener,noreferrer');
     expect(flipToggle()).toHaveAttribute('aria-expanded', 'false');
-    openSpy.mockRestore();
   });
 
   it('removes the front source button from tab order while flipped', () => {

@@ -91,16 +91,6 @@
   color: var(--text-primary);
 }
 
-.colophon {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-}
-
 .bottom {
   display: flex;
   align-items: center;

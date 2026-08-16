@@ -51,15 +51,18 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 - Algolia events (`sendEvent`) fire on card open. Never gate events on URL state.
 - Do not add custom `createURL` logic that fights InstantSearch's default routing behavior.
 
-## Frontend Style Skill
-
-- Refer to `.claude/skills/frontend-style.md`.
-
 ## Test Standards
 
 - **Coverage thresholds**: 95% lines, 92% functions/statements, 85% branches (enforced by `vitest.config.ts`). Floors sit a few points under actual so a regression trips them; do not lower them to make a run pass.
 - Every new component or utility must ship with positive, negative, and edge-case tests.
 - Integration-heavy modules (e.g. `SearchPage.tsx`) are excluded from coverage; test them via E2E instead.
+- Playwright uses one worker in CI. Do not increase it without a zero-retry stress run across every configured browser project.
+
+## Validation
+
+- Lefthook pre-push runs unit tests, `gitleaks`, and Lighthouse; it does not run E2E, SonarCloud, or Semgrep.
+- Let pre-push execute once. Run only task-required checks it omits before pushing.
+- Run SonarCloud and Semgrep explicitly for security, scanner, or repository-wide review work.
 
 ## TypeScript Strictness
 
@@ -83,7 +86,7 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 
 - **Route**: `src/app/api/blog/search/route.ts` — a Next.js route handler, **GET only**.
 - **Behavior**: aggregates DEV blog posts from an external sitemap, extracts JSON-LD, caches results in memory (15 min; 60s when empty), and filters by `q`/`tag` with a clamped `limit` (1–50, default 3).
-- **Untrusted input**: the sitemap and post HTML are untrusted — outbound fetches are SSRF-guarded (same-host `/posts/` URLs only, 10s timeout per request). See `SECURITY_RULES.md`.
+- **Untrusted input**: the sitemap and post HTML are untrusted. Accept only credential-free URLs on the sitemap's exact origin under `/posts/`; refuse redirects; cap sitemap/post bodies at 1 MB/2 MB, URLs at 50, concurrency at five, and requests at 10 seconds. See `SECURITY_RULES.md`.
 
 ## Shared Utilities
 

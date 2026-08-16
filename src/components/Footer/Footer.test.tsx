@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
+import { expectSurfaceLinks } from '@/test-utils/navigation';
 import Footer from './Footer';
 
 describe('Footer Component', () => {
@@ -29,9 +30,9 @@ describe('Footer Component', () => {
 
   it('renders nav surface links', () => {
     render(<Footer />);
-    expect(screen.getByRole('link', { name: /Choices/i })).toHaveAttribute('href', '/');
-    expect(screen.getByRole('link', { name: /Builds/i })).toHaveAttribute('href', '/projects');
-    expect(screen.getByRole('link', { name: /Human/i })).toHaveAttribute('href', '/about');
+    const footer = screen.getByRole('contentinfo');
+    expect(footer).toBeVisible();
+    expectSurfaceLinks(footer);
   });
 
   it('renders Algolia attribution', () => {

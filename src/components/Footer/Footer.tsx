@@ -1,6 +1,5 @@
 'use client';
 
-import { memo } from 'react';
 import { FaGithub, FaLinkedin, FaDev } from 'react-icons/fa';
 import { FiTerminal, FiCode, FiUser, FiExternalLink } from 'react-icons/fi';
 import { SiAlgolia } from 'react-icons/si';
@@ -10,7 +9,7 @@ import styles from './Footer.module.css';
 
 const currentYear = new Date().getFullYear();
 
-export default memo(function Footer() {
+export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
@@ -105,10 +104,10 @@ export default memo(function Footer() {
                 <span className="algolia-name">Algolia</span>
               </span>
             </a>{' '}
-            · SYS_NOTES v2.1.26 · build / break / ship
+            · SYS_NOTES · build / break / ship
           </span>
         </div>
       </div>
     </footer>
   );
-});
+}

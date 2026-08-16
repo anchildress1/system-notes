@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@/lib/api', () => ({
-  getProjects: vi.fn(async () => [
+  getProjects: vi.fn(() => [
     {
       id: 'a',
       title: 'Alpha',
@@ -18,8 +18,6 @@ vi.mock('@/lib/api', () => ({
 
 const load = async () => (await import('./route')).GET();
 
-// Restored rather than deleted: layout.tsx and sitemap.ts read the same variable,
-// so unsetting it unconditionally leaks into the rest of the worker.
 const ORIGINAL_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 beforeEach(() => vi.resetModules());

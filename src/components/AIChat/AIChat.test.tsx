@@ -3,13 +3,18 @@ import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import React from 'react';
 
-// Must be hoisted so the value is available before the vi.mock factory runs
-const mockRouterPush = vi.hoisted(() => vi.fn());
+const { mockChatSetOpen, mockLiteClient, mockRouterPush } = vi.hoisted(() => ({
+  mockChatSetOpen: vi.fn(),
+  mockLiteClient: vi.fn(() => ({
+    search: vi.fn().mockResolvedValue({ results: [] }),
+    appId: 'test-app-id',
+    apiKey: 'test-api-key',
+  })),
+  mockRouterPush: vi.fn(),
+}));
 
 vi.hoisted(() => {
-  // Built at runtime (not string literals) so secret scanners don't flag these
-  // obviously-fake fixtures. App ID must be 10 alphanumerics; key must be >= 20
-  // chars (see lib/algolia.ts validation).
+  // Runtime construction keeps deliberately fake credentials out of secret-scanner matches.
   process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID = ['TESTAPP', 'ID0'].join('');
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY = 'test-search-key'.padEnd(20, '0');
   process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID = 'test_agent_id';
@@ -17,9 +22,6 @@ vi.hoisted(() => {
 
 import AIChat from './AIChat';
 
-// ---------------------------------------------------------------------------
-// Types (mirror the private interfaces in AIChat.tsx)
-// ---------------------------------------------------------------------------
 interface ChatHitItem {
   objectID: string;
   title?: string;
@@ -49,18 +51,15 @@ interface CapturedChatProps {
   tools?: Record<string, ToolCall>;
   agentId?: string;
   getSearchPageURL?: (uiState: unknown) => string;
+  ref?: React.Ref<{ setOpen: (open: boolean) => void }>;
 }
 
-// ---------------------------------------------------------------------------
-// Mutable test controls — reset in beforeEach
-// ---------------------------------------------------------------------------
 const chatCapture: CapturedChatProps = {};
-// Controls which hit the Chat mock renders. null = default BASE_HIT.
 let mockChatItemOverride: ChatHitItem | null = null;
+const mockSendEvent = vi.fn();
+const mockAuxClick = vi.fn();
+const chatSetOpenCommitStates: Array<{ open: boolean; state: string | null }> = [];
 
-// ---------------------------------------------------------------------------
-// Fixtures
-// ---------------------------------------------------------------------------
 const BASE_HIT: ChatHitItem = {
   objectID: 'fact-abc-123',
   title: 'Test Fact Title',
@@ -70,16 +69,10 @@ const BASE_HIT: ChatHitItem = {
   __position: 0,
 };
 
-// ---------------------------------------------------------------------------
-// Mocks
-// ---------------------------------------------------------------------------
-
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockRouterPush }),
 }));
 
-// Chat mock captures all props AND renders ItemComponent so it lives
-// inside the ChatNavContext.Provider that AIChat creates.
 vi.mock('react-instantsearch', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-instantsearch')>();
   return {
@@ -89,10 +82,11 @@ vi.mock('react-instantsearch', async (importOriginal) => {
       chatCapture.tools = props.tools as Record<string, ToolCall>;
       chatCapture.agentId = props.agentId;
       chatCapture.getSearchPageURL = props.getSearchPageURL as (uiState: unknown) => string;
+      if (props.ref && typeof props.ref === 'object') {
+        props.ref.current = { setOpen: mockChatSetOpen };
+      }
 
       const ItemComponent = props.itemComponent;
-      // Use the test override if set, otherwise fall back to BASE_HIT.
-      // Read at render time so tests can set it before calling render().
       const item: ChatHitItem = mockChatItemOverride ?? {
         objectID: 'fact-abc-123',
         title: 'Test Fact Title',
@@ -103,7 +97,12 @@ vi.mock('react-instantsearch', async (importOriginal) => {
       };
       return (
         <div data-testid="algolia-chat-mock">
-          {ItemComponent && <ItemComponent item={item} sendEvent={vi.fn()} />}
+          <button type="button" className="ais-ChatHeader-close">
+            Close widget
+          </button>
+          {ItemComponent && (
+            <ItemComponent item={item} sendEvent={mockSendEvent} onAuxClick={mockAuxClick} />
+          )}
         </div>
       );
     },
@@ -117,20 +116,21 @@ vi.mock('react-instantsearch-nextjs', () => ({
 }));
 
 vi.mock('algoliasearch/lite', () => ({
-  liteClient: vi.fn(() => ({
-    search: vi.fn().mockResolvedValue({ results: [] }),
-    appId: 'test-app-id',
-    apiKey: 'test-api-key',
-  })),
+  liteClient: mockLiteClient,
 }));
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 describe('AIChat Widget Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    chatSetOpenCommitStates.length = 0;
+    mockChatSetOpen.mockImplementation((open: boolean) => {
+      chatSetOpenCommitStates.push({
+        open,
+        state:
+          document.querySelector('[data-testid="ai-chat-toggle"]')?.getAttribute('data-state') ??
+          null,
+      });
+    });
     mockChatItemOverride = null;
     chatCapture.itemComponent = undefined;
     chatCapture.tools = undefined;
@@ -138,9 +138,6 @@ describe('AIChat Widget Integration', () => {
     chatCapture.getSearchPageURL = undefined;
   });
 
-  // -------------------------------------------------------------------------
-  // Widget-level rendering
-  // -------------------------------------------------------------------------
   describe('widget rendering', () => {
     it('renders Chat inside InstantSearchNext when credentials are valid', () => {
       render(<AIChat />);
@@ -164,22 +161,58 @@ describe('AIChat Widget Integration', () => {
 
       expect(toggle).toHaveAttribute('data-state', 'closed');
       expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(mockChatSetOpen.mock.calls).toEqual([[false]]);
 
       fireEvent.click(toggle);
 
       expect(toggle).toHaveAttribute('data-state', 'open');
       expect(toggle).toHaveAttribute('aria-expanded', 'true');
+      expect(mockChatSetOpen).toHaveBeenLastCalledWith(true);
 
       fireEvent.click(toggle);
 
       expect(toggle).toHaveAttribute('data-state', 'closed');
       expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(mockChatSetOpen.mock.calls).toEqual([[false], [true], [false]]);
+      expect(chatSetOpenCommitStates).toEqual([
+        { open: false, state: 'closed' },
+        { open: true, state: 'open' },
+        { open: false, state: 'closed' },
+      ]);
+    });
+
+    it('synchronizes a widget close back to the dock state', () => {
+      render(<AIChat />);
+      const toggle = screen.getByTestId('ai-chat-toggle');
+      fireEvent.click(toggle);
+
+      fireEvent.click(screen.getByRole('button', { name: 'Close widget' }));
+
+      expect(toggle).toHaveAttribute('data-state', 'closed');
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(mockChatSetOpen).toHaveBeenLastCalledWith(false);
+    });
+
+    it('renders no widget or toggle when credentials are invalid', async () => {
+      vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', 'invalid');
+      vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', 'short');
+      vi.stubEnv('NEXT_PUBLIC_ALGOLIA_AGENT_ID', '');
+      vi.resetModules();
+
+      try {
+        const { default: AIChatWithoutCredentials } = await import('./AIChat');
+        render(<AIChatWithoutCredentials />);
+
+        expect(mockLiteClient).not.toHaveBeenCalled();
+        expect(screen.queryByTestId('algolia-chat-mock')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('ai-chat-toggle')).not.toBeInTheDocument();
+      } finally {
+        vi.unstubAllEnvs();
+        vi.resetModules();
+      }
     });
   });
 
-  // -------------------------------------------------------------------------
-  // ChatItemComponent — rendering
-  // -------------------------------------------------------------------------
   describe('ChatItemComponent rendering', () => {
     it('renders the item title', () => {
       render(<AIChat />);
@@ -215,9 +248,6 @@ describe('AIChat Widget Integration', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // ChatItemComponent — href construction
-  // -------------------------------------------------------------------------
   describe('ChatItemComponent href construction', () => {
     it('sets href to /search?q=<title>', () => {
       render(<AIChat />);
@@ -242,9 +272,6 @@ describe('AIChat Widget Integration', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // ChatItemComponent — click / navigation
-  // -------------------------------------------------------------------------
   describe('ChatItemComponent click navigation', () => {
     it('calls router.push with /search?q on click', () => {
       render(<AIChat />);
@@ -263,8 +290,45 @@ describe('AIChat Widget Integration', () => {
       expect(event.defaultPrevented).toBe(true);
     });
 
+    it.each([
+      { name: 'Meta', init: { metaKey: true } },
+      { name: 'Control', init: { ctrlKey: true } },
+      { name: 'Shift', init: { shiftKey: true } },
+      { name: 'Alt', init: { altKey: true } },
+      { name: 'middle-button', init: { button: 1 } },
+    ])('preserves $name-click browser navigation and analytics', ({ init }) => {
+      render(<AIChat />);
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true, ...init });
+      let componentPreventedDefault: boolean | undefined;
+      document.addEventListener(
+        'click',
+        (clickEvent) => {
+          componentPreventedDefault = clickEvent.defaultPrevented;
+          clickEvent.preventDefault();
+        },
+        { once: true }
+      );
+
+      screen.getByRole('link').dispatchEvent(event);
+
+      expect(componentPreventedDefault).toBe(false);
+      expect(mockRouterPush).not.toHaveBeenCalled();
+      expect(mockSendEvent).toHaveBeenCalledWith('click', expect.any(Object), 'Item Clicked');
+    });
+
+    it('delegates auxiliary clicks to the widget', () => {
+      render(<AIChat />);
+
+      fireEvent(
+        screen.getByRole('link'),
+        new MouseEvent('auxclick', { bubbles: true, cancelable: true, button: 1 })
+      );
+
+      expect(mockAuxClick).toHaveBeenCalledOnce();
+      expect(mockRouterPush).not.toHaveBeenCalled();
+    });
+
     it('does not call router.push when ChatNavContext provider is absent', () => {
-      // Render ItemComponent in isolation — no provider → ctx is null → no-op
       render(<AIChat />);
       const ItemComponent = chatCapture.itemComponent!;
       const { container } = render(<ItemComponent item={BASE_HIT} sendEvent={vi.fn()} />);
@@ -281,9 +345,6 @@ describe('AIChat Widget Integration', () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // searchBlogPosts tool — onToolCall
-  // -------------------------------------------------------------------------
   describe('searchBlogPosts tool', () => {
     const mockFetch = vi.fn();
 
@@ -319,10 +380,10 @@ describe('AIChat Widget Integration', () => {
         expect(mockFetch.mock.calls[0][0]).toContain('limit=5');
       });
 
-      it('always includes indexName param', async () => {
+      it('does not send the unused indexName param', async () => {
         mockFetch.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
         await getToolCall()({ input: {}, addToolResult: vi.fn() });
-        expect(mockFetch.mock.calls[0][0]).toContain('indexName=');
+        expect(mockFetch.mock.calls[0][0]).not.toContain('indexName=');
       });
 
       it('omits q when no query is provided', async () => {
@@ -336,6 +397,25 @@ describe('AIChat Widget Integration', () => {
         const addToolResult = vi.fn();
         await expect(getToolCall()({ input: undefined, addToolResult })).resolves.not.toThrow();
         expect(addToolResult).toHaveBeenCalledOnce();
+      });
+
+      it('rejects invalid tool argument types', async () => {
+        mockFetch.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
+        await getToolCall()({
+          input: { query: 42, tag: ['Architecture'], limit: 2.5 },
+          addToolResult: vi.fn(),
+        });
+        expect(mockFetch.mock.calls[0][0]).toBe('/api/blog/search?');
+      });
+
+      it('trims strings and caps the requested result limit', async () => {
+        mockFetch.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
+        await getToolCall()({
+          input: { query: '  bounded query  ', limit: 500 },
+          addToolResult: vi.fn(),
+        });
+        expect(mockFetch.mock.calls[0][0]).toContain('q=bounded+query');
+        expect(mockFetch.mock.calls[0][0]).toContain('limit=50');
       });
     });
 
@@ -385,23 +465,36 @@ describe('AIChat Widget Integration', () => {
         consoleSpy.mockRestore();
       });
 
-      it('resolves cleanly on network error — does not re-throw', async () => {
-        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-        mockFetch.mockRejectedValue(new Error('Timeout'));
-        await expect(
-          getToolCall()({ input: { query: 'fail' }, addToolResult: vi.fn() })
-        ).resolves.toBeUndefined();
-        expect(consoleSpy).toHaveBeenCalledWith('AIChat tool error:', expect.any(Error));
-        consoleSpy.mockRestore();
+      it('passes a ten-second timeout signal to fetch', async () => {
+        const signal = new AbortController().signal;
+        const timeoutSpy = vi.spyOn(AbortSignal, 'timeout').mockReturnValue(signal);
+        mockFetch.mockResolvedValue({ ok: true, json: async () => ({ results: [] }) });
+
+        await getToolCall()({ input: { query: 'bounded' }, addToolResult: vi.fn() });
+
+        expect(timeoutSpy).toHaveBeenCalledOnce();
+        expect(timeoutSpy).toHaveBeenCalledWith(10_000);
+        expect(mockFetch).toHaveBeenCalledWith(expect.any(String), { signal });
       });
     });
   });
 
-  // -------------------------------------------------------------------------
-  // query persistence: tool call → navigation URL
-  // -------------------------------------------------------------------------
   describe('query persistence in navigation URL', () => {
     const mockFetch = vi.fn();
+
+    const navigateAfterSearches = async (...inputs: unknown[]) => {
+      render(<AIChat />);
+      for (const input of inputs) {
+        await chatCapture.tools!.searchBlogPosts.onToolCall({ input, addToolResult: vi.fn() });
+      }
+
+      fireEvent.click(screen.getByRole('link'));
+      expect(mockRouterPush).toHaveBeenCalledOnce();
+      return new URL(
+        mockRouterPush.mock.calls[0][0] as string,
+        'https://localhost'
+      ).searchParams.get('q');
+    };
 
     beforeEach(() => {
       vi.stubGlobal('fetch', mockFetch);
@@ -409,65 +502,25 @@ describe('AIChat Widget Integration', () => {
     });
 
     it('uses the captured query after searchBlogPosts captures a query', async () => {
-      render(<AIChat />);
-
-      await chatCapture.tools!.searchBlogPosts.onToolCall({
-        input: { query: 'hexagonal architecture' },
-        addToolResult: vi.fn(),
-      });
-
-      fireEvent.click(screen.getByRole('link'));
-
-      expect(mockRouterPush).toHaveBeenCalledOnce();
-      const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('q')).toBe('hexagonal architecture');
+      expect(await navigateAfterSearches({ query: 'hexagonal architecture' })).toBe(
+        'hexagonal architecture'
+      );
     });
 
     it('uses the item title when tool was called without a query', async () => {
-      render(<AIChat />);
-
-      await chatCapture.tools!.searchBlogPosts.onToolCall({
-        input: { tag: 'Performance', limit: 3 },
-        addToolResult: vi.fn(),
-      });
-
-      fireEvent.click(screen.getByRole('link'));
-
-      expect(mockRouterPush).toHaveBeenCalledOnce();
-      const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('q')).toBe(BASE_HIT.title);
+      expect(await navigateAfterSearches({ tag: 'Performance', limit: 3 })).toBe(BASE_HIT.title);
     });
 
     it('correctly round-trips a query with special characters', async () => {
-      render(<AIChat />);
-
-      await chatCapture.tools!.searchBlogPosts.onToolCall({
-        input: { query: 'C++ & memory management' },
-        addToolResult: vi.fn(),
-      });
-
-      fireEvent.click(screen.getByRole('link'));
-
-      const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('q')).toBe('C++ & memory management');
+      expect(await navigateAfterSearches({ query: 'C++ & memory management' })).toBe(
+        'C++ & memory management'
+      );
     });
 
     it('last tool call wins — overrides the prior query', async () => {
-      render(<AIChat />);
-
-      await chatCapture.tools!.searchBlogPosts.onToolCall({
-        input: { query: 'first query' },
-        addToolResult: vi.fn(),
-      });
-      await chatCapture.tools!.searchBlogPosts.onToolCall({
-        input: { query: 'second query' },
-        addToolResult: vi.fn(),
-      });
-
-      fireEvent.click(screen.getByRole('link'));
-
-      const params = new URLSearchParams((mockRouterPush.mock.calls[0][0] as string).split('?')[1]);
-      expect(params.get('q')).toBe('second query');
+      expect(await navigateAfterSearches({ query: 'first query' }, { query: 'second query' })).toBe(
+        'second query'
+      );
     });
   });
 });

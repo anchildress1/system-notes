@@ -1,8 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { toRouteState, toUiState, getSearchPageURL, createSearchRouting } from './searchRouting';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createSearchRouting, getSearchPageURL, toRouteState, toUiState } from './searchRouting';
 
-// Mock the history router from instantsearch.js
-const mockHistory = vi.fn();
+const { mockHistory } = vi.hoisted(() => ({ mockHistory: vi.fn() }));
 vi.mock('instantsearch.js/es/lib/routers', () => ({
   history: (config: Record<string, unknown>) => {
     mockHistory(config);
@@ -13,39 +12,45 @@ vi.mock('instantsearch.js/es/lib/routers', () => ({
 const indexName = 'system-notes';
 
 describe('searchRouting', () => {
-  beforeEach(() => {
-    mockHistory.mockClear();
-  });
+  beforeEach(() => mockHistory.mockClear());
 
-  it('maps uiState (query, page, refinementList kind, project, tag) to route state', () => {
-    const uiState = {
-      [indexName]: {
-        query: 'carbon',
-        page: 2,
-        refinementList: {
-          category: ['Decisions', 'Principle'],
-          projects: ['Vestige'],
-          'tags.lvl0': ['Engineering', 'Design'],
+  it('maps query, page, and refinements to route state', () => {
+    expect(
+      toRouteState(
+        {
+          [indexName]: {
+            query: 'carbon',
+            page: 2,
+            refinementList: {
+              category: ['Decision', 'Principle'],
+              projects: ['Vestige'],
+              'tags.lvl0': ['Engineering', 'Design'],
+            },
+          },
         },
-      },
-    };
-    expect(toRouteState(uiState, indexName)).toEqual({
+        indexName
+      )
+    ).toEqual({
       q: 'carbon',
       page: 2,
-      kind: ['Decisions', 'Principle'],
+      kind: ['Decision', 'Principle'],
       project: ['Vestige'],
       tag: ['Engineering', 'Design'],
     });
   });
 
-  it('omits empty refinement lists', () => {
-    const uiState = {
-      [indexName]: {
-        query: '',
-        refinementList: { category: [], projects: [], 'tags.lvl0': [] },
-      },
-    };
-    expect(toRouteState(uiState, indexName)).toEqual({
+  it('omits empty query and refinement lists', () => {
+    expect(
+      toRouteState(
+        {
+          [indexName]: {
+            query: '',
+            refinementList: { category: [], projects: [], 'tags.lvl0': [] },
+          },
+        },
+        indexName
+      )
+    ).toEqual({
       q: undefined,
       page: undefined,
       kind: undefined,
@@ -54,20 +59,24 @@ describe('searchRouting', () => {
     });
   });
 
-  it('maps route state back to uiState with multi-select refinementList', () => {
-    const routeState = {
-      q: 'agents',
-      page: 3,
-      kind: ['Philosophy', 'Decisions'],
-      project: ['Vestige'],
-      tag: ['Engineering'],
-    };
-    expect(toUiState(routeState, indexName)).toEqual({
+  it('maps route state back to multi-select refinement state', () => {
+    expect(
+      toUiState(
+        {
+          q: 'agents',
+          page: 3,
+          kind: ['Philosophy'],
+          project: ['Vestige'],
+          tag: ['Engineering'],
+        },
+        indexName
+      )
+    ).toEqual({
       [indexName]: {
         query: 'agents',
         page: 3,
         refinementList: {
-          category: ['Philosophy', 'Decisions'],
+          category: ['Philosophy'],
           projects: ['Vestige'],
           'tags.lvl0': ['Engineering'],
         },
@@ -75,43 +84,45 @@ describe('searchRouting', () => {
     });
   });
 
-  it('maps route state back to uiState with only kind', () => {
-    expect(toUiState({ q: 'a', kind: ['P'] }, indexName)).toEqual({
-      [indexName]: { query: 'a', page: undefined, refinementList: { category: ['P'] } },
+  it.each([
+    { route: { kind: ['P'] }, attribute: 'category' },
+    { route: { project: ['V'] }, attribute: 'projects' },
+    { route: { tag: ['TypeScript'] }, attribute: 'tags.lvl0' },
+  ])('maps an isolated $attribute refinement', ({ route, attribute }) => {
+    expect(toUiState(route, indexName)[indexName]?.refinementList).toEqual({
+      [attribute]: Object.values(route)[0],
     });
   });
 
-  it('maps route state back to uiState with only project', () => {
-    expect(toUiState({ q: 'a', project: ['V'] }, indexName)).toEqual({
-      [indexName]: { query: 'a', page: undefined, refinementList: { projects: ['V'] } },
-    });
-  });
-
-  it('maps route state back to uiState with only tag', () => {
-    expect(toUiState({ q: 'a', tag: ['TypeScript'] }, indexName)).toEqual({
-      [indexName]: {
-        query: 'a',
-        page: undefined,
-        refinementList: { 'tags.lvl0': ['TypeScript'] },
-      },
-    });
-  });
-
-  it('omits refinementList when no facet refinements are selected', () => {
-    expect(toUiState({ q: 'x', page: 2 }, indexName)).toEqual({
+  it('omits refinementList when no facets are selected', () => {
+    expect(toUiState({ q: 'x', page: 2, kind: [], project: [], tag: [] }, indexName)).toEqual({
       [indexName]: { query: 'x', page: 2 },
     });
   });
 
-  it('omits refinementList when arrays are present but empty', () => {
-    expect(toUiState({ q: 'x', kind: [], project: [], tag: [] }, indexName)).toEqual({
-      [indexName]: { query: 'x', page: undefined },
+  it('handles empty UI and route state', () => {
+    expect(toRouteState({ [indexName]: {} }, indexName)).toEqual({
+      q: undefined,
+      page: undefined,
+      kind: undefined,
+      project: undefined,
+      tag: undefined,
+    });
+    expect(toUiState({}, indexName)).toEqual({
+      [indexName]: { query: undefined, page: undefined },
     });
   });
 
-  it('handles uiState without query or refinementList gracefully', () => {
-    expect(toRouteState({ [indexName]: {} } as never, indexName)).toEqual({
-      q: undefined,
+  it('uses the default InstantSearch history router', () => {
+    const routing = createSearchRouting(indexName);
+    const config = mockHistory.mock.calls[0][0];
+
+    expect(config).toMatchObject({ cleanUrlOnDispose: false });
+    expect(config).not.toHaveProperty('createURL');
+    expect(config).not.toHaveProperty('parseURL');
+    expect(config).not.toHaveProperty('windowTitle');
+    expect(routing.stateMapping.stateToRoute({ [indexName]: { query: 'x' } })).toEqual({
+      q: 'x',
       page: undefined,
       kind: undefined,
       project: undefined,
@@ -119,139 +130,21 @@ describe('searchRouting', () => {
     });
   });
 
-  it('handles a completely empty routeState in toUiState', () => {
-    expect(toUiState({}, indexName)).toEqual({
-      [indexName]: { query: undefined, page: undefined },
-    });
+  it('builds a URL with repeated facet values', () => {
+    expect(
+      getSearchPageURL(
+        {
+          query: 'carbon',
+          page: 2,
+          refinementList: { category: ['Work Style', 'Decisions'] },
+        },
+        indexName
+      )
+    ).toBe('/?q=carbon&page=2&kind=Work+Style&kind=Decisions');
   });
 
-  it('builds a search page URL with multiple facet values appended', () => {
-    const indexUiState = {
-      query: 'carbon',
-      page: 2,
-      refinementList: { category: ['Work Style', 'Decisions'] },
-    };
-    expect(getSearchPageURL(indexUiState, indexName)).toBe(
-      '/?q=carbon&page=2&kind=Work+Style&kind=Decisions'
-    );
-  });
-
-  it('returns base path when there is no state', () => {
+  it('returns the requested base path for empty state', () => {
     expect(getSearchPageURL({}, indexName)).toBe('/');
-  });
-
-  it('respects a custom basePath', () => {
     expect(getSearchPageURL({}, indexName, '/search')).toBe('/search');
-  });
-
-  describe('router configuration', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let routerConfig: any;
-    const qsModule = {
-      stringify: (params: Record<string, unknown>) => {
-        const search = new URLSearchParams();
-        for (const [key, value] of Object.entries(params)) {
-          if (Array.isArray(value)) for (const v of value) search.append(key, String(v));
-          else if (value !== undefined) search.append(key, String(value));
-        }
-        return search.toString();
-      },
-      parse: (str: string) => {
-        const params = new URLSearchParams(str);
-        const result: Record<string, string | string[]> = {};
-        params.forEach((value, key) => {
-          if (result[key]) {
-            if (Array.isArray(result[key])) {
-              (result[key] as string[]).push(value);
-            } else {
-              result[key] = [result[key] as string, value];
-            }
-          } else {
-            result[key] = value;
-          }
-        });
-        return result;
-      },
-    };
-
-    beforeEach(() => {
-      createSearchRouting(indexName);
-      routerConfig = mockHistory.mock.calls[0][0];
-    });
-
-    it('generates the correct window title', () => {
-      expect(routerConfig.windowTitle()).toBe("Choices | Ashley's System Notes");
-    });
-
-    it('creates a URL with q, page, and multi-value kind', () => {
-      const routeState = { q: 'carbon', page: 2, kind: ['Decisions', 'Principle'] };
-      const location = { origin: 'https://example.com', pathname: '/', search: '' };
-      const mockStringify = vi.fn().mockReturnValue('?mocked');
-      const url = routerConfig.createURL({
-        qsModule: { ...qsModule, stringify: mockStringify },
-        routeState,
-        location,
-      });
-      expect(mockStringify).toHaveBeenCalledWith(
-        expect.objectContaining({ q: 'carbon', page: 2, kind: ['Decisions', 'Principle'] }),
-        expect.any(Object)
-      );
-      expect(url).toBe('https://example.com/?mocked');
-    });
-
-    it('does not preserve stale factId params from the current URL', () => {
-      const location = {
-        origin: 'https://example.com',
-        pathname: '/',
-        search: '?factId=card%3Atest%3A001',
-      };
-      const mockStringify = vi.fn().mockReturnValue('');
-      routerConfig.createURL({
-        qsModule: { ...qsModule, stringify: mockStringify },
-        routeState: {},
-        location,
-      });
-      expect(mockStringify).toHaveBeenCalledWith(
-        expect.not.objectContaining({ factId: expect.anything() }),
-        expect.any(Object)
-      );
-    });
-
-    it('does not inject factId when absent from the current URL', () => {
-      const location = { origin: 'https://example.com', pathname: '/', search: '' };
-      const mockStringify = vi.fn().mockReturnValue('');
-      routerConfig.createURL({
-        qsModule: { ...qsModule, stringify: mockStringify },
-        routeState: {},
-        location,
-      });
-      expect(mockStringify).toHaveBeenCalledWith(
-        expect.not.objectContaining({ factId: expect.anything() }),
-        expect.any(Object)
-      );
-    });
-
-    it('parses a single kind value into a one-element array', () => {
-      const location = { search: '?q=carbon&page=2&kind=Decisions' };
-      expect(routerConfig.parseURL({ qsModule, location })).toEqual({
-        q: 'carbon',
-        page: 2,
-        kind: ['Decisions'],
-        project: undefined,
-        tag: undefined,
-      });
-    });
-
-    it('parses repeated kind params into an array', () => {
-      const location = { search: '?kind=A&kind=B&kind=C' };
-      expect(routerConfig.parseURL({ qsModule, location }).kind).toEqual(['A', 'B', 'C']);
-    });
-
-    it.each(['?page=invalid', '?page=0', '?page=1', '?page=-5'])(
-      'ignores invalid/low page value %s',
-      (search) => {
-        expect(routerConfig.parseURL({ qsModule, location: { search } }).page).toBeUndefined();
-      }
-    );
   });
 });

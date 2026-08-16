@@ -34,6 +34,72 @@
   ) !important;
 }
 
+.chatResultCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text-primary);
+  text-decoration: none;
+  background: var(--surface-raised);
+}
+
+.chatResultCard:hover {
+  border-color: var(--action-border-hover);
+}
+
+.chatResultCategory,
+.chatResultBlurb,
+.disclaimer {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.chatResultCategory {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.chatResultTitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.chatResultBlurb {
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.headerIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.avatar,
+.userAvatar {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface-raised);
+}
+
+.userAvatar {
+  color: var(--accent-teal);
+}
+
+.disclaimer {
+  width: 100%;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
 /* ── Toggle FAB (we render it; matches the MusicPlayer FAB exactly) ── */
 .chatToggle {
   --chat-dock-margin: clamp(1rem, 3vw, 2rem);
@@ -44,32 +110,7 @@
   z-index: 1100;
   width: var(--chat-dock-size);
   height: var(--chat-dock-size);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--r-pill);
-  border: 1px solid var(--action-border);
-  background: var(--surface-raised);
-  color: var(--text-primary);
-  cursor: pointer;
   pointer-events: auto;
-  box-shadow:
-    var(--action-shadow),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
-  transition:
-    background var(--transition-base),
-    border-color var(--transition-base),
-    transform var(--transition-base),
-    box-shadow var(--transition-base);
-}
-
-.chatToggle:hover {
-  transform: translateY(-2px);
-  background: var(--surface-raised-hover);
-  border-color: var(--action-border-hover);
-  box-shadow:
-    var(--action-shadow-hover),
-    0 0 0 1px rgba(255, 255, 255, 0.07) inset;
 }
 
 .chatToggle:focus-visible {
@@ -85,12 +126,6 @@
    icon's currentColor presentation attr). */
 .batGradient {
   fill: url(#batGradient);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .chatToggle:hover {
-    transform: none;
-  }
 }
 
 @media (max-width: 640px) {

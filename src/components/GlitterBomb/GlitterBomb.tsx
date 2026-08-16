@@ -2,19 +2,16 @@
 
 import { useEffect } from 'react';
 
-// Pink, teal, violet, amber — the brand palette.
 const SPARKLE_COLORS = ['#f16197', '#3ec7c2', '#b56bff', '#e89a6a'];
+const visualRandom = () => Math.random(); // NOSONAR(S2245) — decorative, never security-sensitive
 
-// Glittery burst at the click point: a ring of small glowing dots that fly
-// outward and fade. Driven by the Web Animations API, so the duration is
-// wall-clock based — the burst plays at the same speed on any display.
 function spawnSparkles(x: number, y: number, count = 24) {
   for (let i = 0; i < count; i++) {
     const el = document.createElement('div');
     el.className = 'sparkle';
     const color = SPARKLE_COLORS[i % SPARKLE_COLORS.length];
-    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3; // NOSONAR(S2245) - visual randomness
-    const dist = 60 + Math.random() * 120; // NOSONAR(S2245) - visual randomness
+    const angle = (Math.PI * 2 * i) / count + visualRandom() * 0.3;
+    const dist = 60 + visualRandom() * 120;
     const dx = Math.cos(angle) * dist;
     const dy = Math.sin(angle) * dist;
 
@@ -26,7 +23,7 @@ function spawnSparkles(x: number, y: number, count = 24) {
       height: '6px',
       borderRadius: '99px',
       background: color,
-      boxShadow: `0 0 8px ${color}`, // the glow
+      boxShadow: `0 0 8px ${color}`,
       pointerEvents: 'none',
       zIndex: '200',
     });
@@ -37,7 +34,7 @@ function spawnSparkles(x: number, y: number, count = 24) {
         { transform: `translate(${dx}px, ${dy}px) scale(1)`, opacity: 1, offset: 0.5 },
         { transform: `translate(${dx * 1.2}px, ${dy * 1.2}px) scale(0)`, opacity: 0 },
       ],
-      { duration: 900 + Math.random() * 400, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' } // NOSONAR(S2245)
+      { duration: 900 + visualRandom() * 400, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' }
     );
 
     document.body.appendChild(el);

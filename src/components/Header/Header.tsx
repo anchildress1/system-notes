@@ -52,7 +52,7 @@ export default function Header() {
           <div className={styles.brandText}>
             <span className={styles.brandTitle}>Ashley Childress</span>
             <span className={styles.brandSub} aria-hidden="true">
-              SYS_NOTES · v2.1.26
+              SYS_NOTES
             </span>
           </div>
         </Link>
@@ -73,7 +73,7 @@ export default function Header() {
             size="md"
             href="https://dev.to/anchildress1"
             target="_blank"
-            dataTestId="blog-link"
+            data-testid="blog-link"
             className={styles.navCta}
             iconRight={<span aria-hidden="true">↗</span>}
           >

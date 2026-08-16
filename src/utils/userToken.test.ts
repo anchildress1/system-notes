@@ -1,11 +1,9 @@
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-// UUID v4: version nibble = '4', variant nibble ∈ {8,9,a,b}
 const UUID_V4_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 describe('userToken', () => {
-  // Reset module between tests so the in-memory singletons start fresh each time.
   beforeEach(() => {
     vi.resetModules();
   });
@@ -24,24 +22,15 @@ describe('userToken', () => {
     expect(getChatSessionId()).toBe(getChatSessionId());
   });
 
-  it('falls back to crypto.getRandomValues and produces a valid UUID v4 when randomUUID is absent', async () => {
-    const mockGetRandomValues = vi.fn((buf: Uint8Array) => {
-      for (let i = 0; i < buf.length; i++) buf[i] = i + 1;
-      return buf;
-    });
-    vi.stubGlobal('crypto', { getRandomValues: mockGetRandomValues });
-
+  it('returns an RFC 4122 UUID v4', async () => {
     const { getChatSessionId } = await import('./userToken');
-    const id = getChatSessionId();
-
-    expect(mockGetRandomValues).toHaveBeenCalled();
-    expect(id).toMatch(UUID_V4_PATTERN);
+    expect(getChatSessionId()).toMatch(UUID_V4_PATTERN);
   });
 
-  it('throws when neither crypto.randomUUID nor crypto.getRandomValues is available', async () => {
+  it('throws when secure UUID generation is unavailable', async () => {
     vi.stubGlobal('crypto', {});
 
     const { getChatSessionId } = await import('./userToken');
-    expect(() => getChatSessionId()).toThrow('Secure random number generator is not available.');
+    expect(() => getChatSessionId()).toThrow('Secure UUID generation is not available.');
   });
 });

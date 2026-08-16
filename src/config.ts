@@ -1,7 +1,2 @@
-// Read index name from environment variable with fallback default
-const baseIndexName = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME || 'system-notes';
-
-export const ALGOLIA_INDEX = {
-  CHAT_SOURCE: baseIndexName,
-  SEARCH_RESULTS: baseIndexName,
-} as const;
+export const ALGOLIA_INDEX_NAME =
+  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME || 'system-notes';

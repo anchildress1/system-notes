@@ -1,22 +1,22 @@
-export interface AboutSection {
+interface AboutSection {
   title: string;
   subtitle?: string;
   content: string;
 }
 
-export interface AboutStat {
+interface AboutStat {
   label: string;
   value: string;
 }
 
-export interface AboutLink {
+interface AboutLink {
   label: string;
   href: string;
   external?: boolean;
   icon?: 'github' | 'dev' | 'linkedin';
 }
 
-export interface AboutSkillGroup {
+interface AboutSkillGroup {
   label: string;
   items: string[];
 }

@@ -2,11 +2,6 @@ import type { Project } from '@/lib/api';
 import type { Hit } from 'instantsearch.js';
 import type { FactHitRecord } from '@/types/algolia';
 
-/**
- * Shared mock data factories for tests.
- * Centralizes test fixtures to reduce duplication and keep mock shapes consistent.
- */
-
 export const mockProject: Project = {
   id: 'test-project',
   title: 'Test Project',

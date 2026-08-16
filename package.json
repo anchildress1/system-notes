@@ -13,6 +13,7 @@
     "start": "next start",
     "start:standalone": "[ -f .next/standalone/server.js ] && node .next/standalone/server.js || (echo 'Error: Standalone build not found. Run npm run build first.' && exit 1)",
     "lint": "ESLINT_USE_FLAT_CONFIG=true eslint --config eslint.config.mjs .",
+    "typecheck": "tsc --noEmit",
     "pretest": "npm run image-variants",
     "test": "vitest run --coverage --passWithNoTests",
     "pretest:watch": "npm run image-variants",
@@ -20,37 +21,33 @@
     "prebench": "npm run image-variants",
     "bench": "vitest bench",
     "test:perf": "npm run build && lhci autorun --config=lighthouserc.mobile.json && lhci autorun --config=lighthouserc.desktop.json",
-    "format": "prettier --write \"**/*.{ts,tsx,md,json,js}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml,css}\"",
+    "audit": "npm audit --audit-level=high",
     "image-variants": "node scripts/generate-image-variants.mjs",
     "clean": "rm -rf node_modules .next coverage",
-    "postinstall": "[ -d .git ] && lefthook install || true"
+    "postinstall": "[ ! -d .git ] || lefthook install"
   },
-  "packageManager": "npm@10.0.0",
+  "packageManager": "npm@11.19.0",
+  "engines": {
+    "node": ">=24"
+  },
   "dependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@algolia/client-common": "^5.48.0",
     "algoliasearch": "^5.48.0",
-    "framer-motion": "^12.26.2",
     "instantsearch.css": "^8.9.0",
     "instantsearch.js": "^4.99.0",
     "next": "16.3.0",
-    "pixi.js": "^8.15.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-icons": "^5.5.0",
     "react-instantsearch": "^7.23.1",
     "react-instantsearch-nextjs": "^1.0.13",
-    "react-markdown": "^10.1.0",
-    "search-insights": "^2.17.3",
-    "typescript": "^5"
+    "search-insights": "^2.17.3"
   },
   "optionalDependencies": {
     "@esbuild/linux-x64": "0.27.2",
-    "@rollup/rollup-linux-x64-gnu": "latest",
-    "@tailwindcss/oxide-linux-x64-gnu": "4.1.18",
-    "@tailwindcss/oxide-linux-x64-musl": "4.1.18",
+    "@rollup/rollup-linux-x64-gnu": "4.62.4",
     "lightningcss-linux-x64-gnu": "1.31.1",
     "lightningcss-linux-x64-musl": "1.31.1"
   },
@@ -65,8 +62,9 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.17",
     "commitlint-plugin-rai": "^1.0.1",
@@ -74,11 +72,9 @@
     "eslint-config-next": "16.3.0",
     "jsdom": "^27.4.0",
     "lefthook": "^2.0.15",
-    "lighthouse": "^12.2.1",
     "prettier": "^3.8.0",
-    "rollup": "^4.59.0",
     "sharp": "^0.35.3",
-    "tailwindcss": "^4",
+    "typescript": "^5",
     "vitest": "^4.0.17"
   },
   "overrides": {
@@ -91,6 +87,8 @@
     "next": "$next",
     "uuid": "^14.0.0",
     "postcss": ">=8.5.23 <9",
+    "nanoid": "^3.3.18",
+    "chrome-launcher": "^1.2.1",
     "ip-address": "^10.3.1",
     "fast-uri": "^3.1.5",
     "sharp": "^0.35.3",
@@ -107,6 +105,11 @@
     "@puppeteer/browsers": "^3.2.0"
   },
   "volta": {
-    "node": "20.20.0"
+    "node": "24.19.0"
+  },
+  "knip": {
+    "entry": [
+      "src/lib/imageLoader.ts"
+    ]
   }
 }
