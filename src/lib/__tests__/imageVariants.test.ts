@@ -38,9 +38,7 @@ describe('projectImageLoader', () => {
   });
 
   it('passes through an unmanaged source untouched', () => {
-    expect(projectImageLoader({ src: '/system-notes-icon-v2.svg', width: 448 })).toBe(
-      '/system-notes-icon-v2.svg'
-    );
+    expect(projectImageLoader({ src: '/icon.svg', width: 448 })).toBe('/icon.svg');
   });
 });
 

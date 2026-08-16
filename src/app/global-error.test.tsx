@@ -1,95 +1,30 @@
-import { describe, it, expect, vi } from 'vitest';
-import {
-  Children,
-  isValidElement,
-  type ComponentProps,
-  type ReactElement,
-  type ReactNode,
-} from 'react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import GlobalError from './global-error';
-import Button from '@/components/Button/Button';
-
-type ElementProps = {
-  children?: ReactNode;
-  onClick?: () => void;
-};
 
 describe('GlobalError', () => {
-  function renderGlobalError(
-    props: ComponentProps<typeof GlobalError>
-  ): ReactElement<ElementProps> {
-    const page = GlobalError(props);
-    if (!isValidElement<ElementProps>(page)) {
-      throw new TypeError('GlobalError must return a React element.');
-    }
-    return page;
-  }
+  it('renders the generic failure path without leaking the error message', () => {
+    render(<GlobalError error={new Error('secret internal path')} reset={vi.fn()} />);
 
-  function textContent(node: ReactNode): string {
-    if (typeof node === 'string' || typeof node === 'number') {
-      return String(node);
-    }
-    if (Array.isArray(node)) {
-      return node.map(textContent).join('');
-    }
-    if (isValidElement<ElementProps>(node)) {
-      return textContent(node.props.children);
-    }
-    return '';
-  }
-
-  function findElement(
-    node: ReactNode,
-    type: 'button' | typeof Button
-  ): ReactElement<ElementProps> | null {
-    if (Array.isArray(node)) {
-      for (const child of node) {
-        const match = findElement(child, type);
-        if (match) return match;
-      }
-      return null;
-    }
-    if (!isValidElement<ElementProps>(node)) {
-      return null;
-    }
-    if (node.type === type) {
-      return node;
-    }
-    return findElement(node.props.children, type);
-  }
-
-  function bodyOf(page: ReactElement<ElementProps>): ReactElement<ElementProps> {
-    const body = Children.only(page.props.children);
-    if (!isValidElement<ElementProps>(body)) {
-      throw new TypeError('GlobalError must render one body element.');
-    }
-    return body;
-  }
-
-  it('renders heading and generic message when no digest', () => {
-    const error = new Error('boom');
-    const body = bodyOf(renderGlobalError({ error, reset: vi.fn() }));
-
-    expect(textContent(body)).toContain('Something went wrong');
-    expect(textContent(body)).toContain('An unexpected error occurred.');
+    expect(screen.getByRole('heading', { name: 'The failure path works.' })).toBeInTheDocument();
+    expect(screen.getByText(/stopped before it could produce/i)).toBeInTheDocument();
+    expect(screen.queryByText(/secret internal path/i)).not.toBeInTheDocument();
   });
 
-  it('renders error digest when present', () => {
+  it('renders the safe digest when Next provides one', () => {
     const error = Object.assign(new Error('boom'), { digest: 'abc123' });
-    const body = bodyOf(renderGlobalError({ error, reset: vi.fn() }));
 
-    expect(textContent(body)).toContain('An unexpected error occurred (abc123).');
+    render(<GlobalError error={error} reset={vi.fn()} />);
+
+    expect(screen.getByText(/reference abc123/i)).toBeInTheDocument();
   });
 
-  it('calls reset when Try again button is clicked', () => {
+  it('calls reset from the native retry control', () => {
     const reset = vi.fn();
-    const body = bodyOf(renderGlobalError({ error: new Error('boom'), reset }));
-    const button = findElement(body, Button);
+    render(<GlobalError error={new Error('boom')} reset={reset} />);
 
-    expect(button).not.toBeNull();
-    expect(button?.props.variant).toBe('secondary');
-    expect(textContent(button)).toBe('Try again');
-    button?.props.onClick?.();
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+
     expect(reset).toHaveBeenCalledOnce();
   });
 });

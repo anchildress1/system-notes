@@ -2,9 +2,9 @@ import { within } from '@testing-library/react';
 import { expect } from 'vitest';
 
 const SURFACE_LINKS = [
-  { name: /Choices/i, href: '/' },
-  { name: /Builds/i, href: '/projects' },
-  { name: /Human/i, href: '/about' },
+  { name: 'Index', href: '/' },
+  { name: 'Projects', href: '/projects' },
+  { name: 'About', href: '/about' },
 ] as const;
 
 export function expectSurfaceLinks(container: HTMLElement) {
