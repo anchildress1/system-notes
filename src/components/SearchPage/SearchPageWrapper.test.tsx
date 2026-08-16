@@ -35,8 +35,15 @@ beforeEach(() => {
 describe('SearchPageWrapper', () => {
   it('renders loading placeholder before intersection', () => {
     render(<SearchPageWrapper />);
-    expect(screen.getByText('Loading search...')).toBeInTheDocument();
+    expect(screen.getByText(/loading search/i)).toBeInTheDocument();
     expect(screen.queryByTestId('search-page-loaded')).not.toBeInTheDocument();
+  });
+
+  it('hides the decorative skeleton shapes from assistive tech', () => {
+    const { container } = render(<SearchPageWrapper />);
+    // Only the status text should be announced; the bars are pure chrome.
+    expect(container.querySelectorAll('[aria-hidden="true"]').length).toBeGreaterThan(0);
+    expect(screen.getByRole('status').textContent).toMatch(/loading search/i);
   });
 
   it('renders SearchPage after intersection', () => {
