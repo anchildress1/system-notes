@@ -1,306 +1,134 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import FactCard from './FactCard';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createMockHit } from '@/test-utils/fixtures';
-
-vi.mock('next/navigation', () => ({
-  useSearchParams: () => new URLSearchParams(),
-}));
-
-const mockSendEvent = vi.fn();
+import FactCard from './FactCard';
 
 vi.mock('react-instantsearch', () => ({
   Highlight: ({ attribute, hit }: { attribute: string; hit: Record<string, unknown> }) => (
-    <span data-testid={`highlight-${attribute}`}>{String(hit[attribute])}</span>
+    <span>{String(hit[attribute] ?? '')}</span>
   ),
 }));
 
-const openCard = async (sendEvent?: typeof mockSendEvent) => {
-  const user = userEvent.setup();
-  render(<FactCard hit={createMockHit()} sendEvent={sendEvent} />);
-  const frontButton = screen.getByRole('button', { name: /Click to expand/i });
-  await user.click(frontButton);
-  return { frontButton, user };
-};
+describe('FactCard', () => {
+  const sendEvent = vi.fn();
 
-describe('FactCard Component', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+  beforeEach(() => vi.clearAllMocks());
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+  it('renders the compact front face with evidence metadata', () => {
+    render(<FactCard hit={createMockHit({ created_at: '2026-05-24T21:42:51Z' })} position={6} />);
 
-  it('renders fact card with front-side fields and project label', () => {
-    render(<FactCard hit={createMockHit()} />);
-
-    expect(screen.getByTestId('highlight-title')).toHaveTextContent('Test Fact Title');
-    expect(screen.getByTestId('highlight-blurb')).toHaveTextContent('This is a test blurb.');
+    expect(screen.getByRole('heading', { name: 'Test Fact Title' })).toBeInTheDocument();
+    expect(screen.getByText(/№ 06 · Project Alpha · May 2026/)).toBeInTheDocument();
     expect(screen.getByText('Work Style')).toBeInTheDocument();
-    // First project becomes the top label (counter style); secondary projects no longer render.
-    expect(screen.getByText('Project Alpha')).toBeInTheDocument();
-    expect(screen.queryByText('Project Beta')).not.toBeInTheDocument();
-  });
-
-  it('falls back to FACT counter when the hit has no projects', () => {
-    render(<FactCard hit={createMockHit({ projects: [], __position: 7 })} />);
-    expect(screen.getByText('FACT · 07')).toBeInTheDocument();
-  });
-
-  it('shows the created date as month + year when present, omits it otherwise', () => {
-    const { unmount } = render(
-      <FactCard hit={createMockHit({ created_at: '2026-05-24T21:42:51Z' })} />
-    );
-    expect(screen.getByText('May 2026')).toBeInTheDocument();
-    unmount();
-
-    render(<FactCard hit={createMockHit({ created_at: undefined })} />);
-    expect(screen.queryByText('May 2026')).not.toBeInTheDocument();
-  });
-
-  it.each(['not-a-date', '2026-13-01T00:00:00Z', '2026-00-01T00:00:00Z'])(
-    'omits unparseable created date %s',
-    (createdAt) => {
-      render(<FactCard hit={createMockHit({ created_at: createdAt })} />);
-
-      expect(screen.queryByText(/\b2026\b/)).not.toBeInTheDocument();
-    }
-  );
-
-  it('renders category label', () => {
-    render(<FactCard hit={createMockHit({ category: 'Philosophy' })} />);
-    expect(screen.getByText('Philosophy')).toBeInTheDocument();
-  });
-
-  it('renders content fallback when fact is missing', () => {
-    render(<FactCard hit={createMockHit({ blurb: '', fact: '', content: 'Fallback content' })} />);
-    expect(screen.getAllByText('Fallback content')).toHaveLength(2);
-  });
-
-  it('flips card on click', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} />);
-
-    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
-    expect(cardButton).toHaveAttribute('aria-expanded', 'false');
-
-    await user.click(cardButton);
-    expect(cardButton).toHaveAttribute('aria-expanded', 'true');
-  });
-
-  it('moves focus to the visible back face when opened by keyboard', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit({ url: 'https://github.com/user/repo' })} />);
-
-    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
-    cardButton.focus();
-    await user.keyboard('{Enter}');
-
-    const backButton = screen.getByRole('button', { name: /Click to collapse/i });
-    await waitFor(() => expect(backButton).toHaveFocus());
-    expect(screen.getByLabelText('View source for Test Fact Title')).toHaveAttribute(
-      'tabindex',
-      '-1'
-    );
-  });
-
-  it('renders without project label when projects is empty', () => {
-    render(<FactCard hit={createMockHit({ projects: [] })} />);
-    expect(screen.queryByText('Project Alpha')).not.toBeInTheDocument();
-    expect(screen.queryByText('Project Beta')).not.toBeInTheDocument();
-  });
-
-  it('renders leaf topic tags on the front', () => {
-    render(
-      <FactCard
-        hit={createMockHit({
-          'tags.lvl0': ['Engineering', 'Design'],
-          'tags.lvl1': ['Engineering > TypeScript', 'Engineering > React', 'Design > Motion'],
-        })}
-      />
-    );
-
-    // Back is always in the DOM (it's the rear face of the 3D flip),
-    // hidden via aria-hidden until the card is flipped.
-    expect(screen.getByText('TypeScript')).toBeInTheDocument();
-    expect(screen.getByText('React')).toBeInTheDocument();
-    expect(screen.getByText('Motion')).toBeInTheDocument();
-  });
-
-  it('has correct structure for accessibility', () => {
-    render(<FactCard hit={createMockHit()} />);
-
-    const card = screen.getByRole('button', { name: /Click to expand/i });
-    expect(card).toBeInTheDocument();
-    expect(card).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.queryByRole('link', { name: /Click to expand/i })).not.toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 2, name: 'Test Fact Title' })).toBeInTheDocument();
-  });
-
-  it.each([
-    { key: '{Enter}', label: 'Enter' },
-    { key: ' ', label: 'Space' },
-  ])('supports keyboard navigation with $label', async ({ key }) => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit()} />);
-
-    const card = screen.getByRole('button', { name: /Click to expand/i });
-    card.focus();
-    await user.keyboard(key);
-
-    expect(card).toHaveAttribute('aria-expanded', 'true');
-  });
-
-  it('tracks expansion event with insights client', async () => {
-    const user = userEvent.setup();
-    const hit = createMockHit();
-    render(<FactCard hit={hit} sendEvent={mockSendEvent} />);
-
-    const cardButton = screen.getByRole('button', { name: /Click to expand/i });
-    await user.click(cardButton);
-
-    expect(mockSendEvent).toHaveBeenCalledWith('click', hit, 'Fact Card Viewed');
-  });
-
-  it('only tracks expansion once per card instance', async () => {
-    const { frontButton, user } = await openCard(mockSendEvent);
-    await user.click(frontButton);
-
-    expect(mockSendEvent).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not track when sendEvent is not provided', async () => {
-    await openCard();
-
-    expect(mockSendEvent).not.toHaveBeenCalled();
-  });
-
-  it('renders GitHub link on the front for GitHub URLs', () => {
-    render(<FactCard hit={createMockHit({ url: 'https://github.com/user/repo' })} />);
-
-    expect(screen.getByLabelText('View source for Test Fact Title')).toBeInTheDocument();
-  });
-
-  it('links to GitHub without flipping the card', async () => {
-    const user = userEvent.setup();
-    render(<FactCard hit={createMockHit({ url: 'https://github.com/user/repo' })} />);
-
-    const source = screen.getByLabelText('View source for Test Fact Title');
-    expect(source).toHaveAttribute('href', 'https://github.com/user/repo');
-    await user.click(source);
-
-    expect(screen.getByRole('button', { name: /Click to expand/i })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: /Open note/i })).toHaveAttribute(
       'aria-expanded',
       'false'
     );
   });
 
-  it('does not render GitHub link for DEV.to URLs', () => {
-    render(<FactCard hit={createMockHit({ url: 'https://dev.to/user/post-title' })} />);
+  it('opens locally, tracks once, and moves focus to the visible face', async () => {
+    const user = userEvent.setup();
+    const hit = createMockHit();
+    render(<FactCard hit={hit} sendEvent={sendEvent} />);
 
-    expect(screen.queryByLabelText('View source for Test Fact Title')).not.toBeInTheDocument();
+    const open = screen.getByRole('button', { name: /Open note/i });
+    await user.click(open);
+
+    expect(open).toHaveAttribute('aria-expanded', 'true');
+    expect(sendEvent).toHaveBeenCalledWith('click', hit, 'Note Opened');
+    await waitFor(() => expect(screen.getByRole('button', { name: /Close note/i })).toHaveFocus());
+
+    await user.click(screen.getByRole('button', { name: /Close note/i }));
+    await user.click(open);
+    expect(sendEvent).toHaveBeenCalledTimes(1);
   });
 
-  it('renders DEV icon on the front for DEV.to URLs', () => {
-    render(<FactCard hit={createMockHit({ url: 'https://dev.to/user/post-title' })} />);
+  it('moves focus into a note promoted from the reading queue', async () => {
+    render(<FactCard hit={createMockHit()} focusOnMount />);
 
-    expect(screen.getByLabelText(/Read .* on DEV Community/i)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole('button', { name: /Open note/i })).toHaveFocus());
   });
 
-  it('links to DEV without tracking a fact-card view', async () => {
+  it('closes with Escape and restores focus to the opener', async () => {
+    const user = userEvent.setup();
+    render(<FactCard hit={createMockHit()} />);
+
+    const open = screen.getByRole('button', { name: /Open note/i });
+    await user.click(open);
+    await user.keyboard('{Escape}');
+
+    expect(open).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(() => expect(open).toHaveFocus());
+  });
+
+  it('exposes a permalink and safe DEV evidence only on the back face', async () => {
+    const user = userEvent.setup();
+    render(
+      <FactCard hit={createMockHit({ url: 'https://dev.to/user/post', objectID: 'card:test:1' })} />
+    );
+
+    await user.click(screen.getByRole('button', { name: /Open note/i }));
+
+    expect(screen.getByRole('link', { name: /Permalink/i })).toHaveAttribute(
+      'href',
+      '/notes/card%3Atest%3A1'
+    );
+    expect(screen.getByRole('link', { name: /Read on DEV/i })).toHaveAttribute(
+      'href',
+      'https://dev.to/user/post'
+    );
+  });
+
+  it.each(['javascript:alert(1)', 'data:text/html,bad', undefined])(
+    'does not expose unsafe or missing evidence URL %j',
+    async (url) => {
+      const user = userEvent.setup();
+      render(<FactCard hit={createMockHit({ url })} />);
+      await user.click(screen.getByRole('button', { name: /Open note/i }));
+
+      expect(
+        screen.queryByRole('link', { name: /View source|Read on DEV/i })
+      ).not.toBeInTheDocument();
+    }
+  );
+
+  it('renders fallbacks when optional note fields are absent', async () => {
     const user = userEvent.setup();
     render(
       <FactCard
-        hit={createMockHit({ url: 'https://dev.to/user/post-title' })}
-        sendEvent={mockSendEvent}
+        hit={createMockHit({
+          content: '',
+          fact: '',
+          blurb: '',
+          category: '',
+          projects: [],
+          'tags.lvl0': [],
+          'tags.lvl1': [],
+          created_at: 'bad-date',
+        })}
       />
     );
 
-    const source = screen.getByLabelText(/Read .* on DEV Community/i);
-    expect(source).toHaveAttribute('href', 'https://dev.to/user/post-title');
-    await user.click(source);
+    expect(screen.getAllByText('No detail available.')).toHaveLength(2);
+    expect(screen.getByText('Note')).toBeInTheDocument();
+    expect(screen.getByText(/№ 01 · System Notes/)).toBeInTheDocument();
 
-    expect(mockSendEvent).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: /Open note/i }));
+    expect(screen.queryByText('Date')).not.toBeInTheDocument();
+    expect(screen.queryByText('Projects')).not.toBeInTheDocument();
+    expect(screen.queryByRole('list', { name: 'Topics' })).not.toBeInTheDocument();
   });
 
-  it('does not render DEV icon for GitHub URLs', () => {
-    render(<FactCard hit={createMockHit({ url: 'https://github.com/user/repo' })} />);
+  it('removes the Escape listener after closing', async () => {
+    render(<FactCard hit={createMockHit()} />);
+    fireEvent.click(screen.getByRole('button', { name: /Open note/i }));
+    fireEvent.keyDown(window, { key: 'Escape' });
+    fireEvent.keyDown(window, { key: 'Escape' });
 
-    expect(screen.queryByLabelText(/Read .* on DEV Community/i)).not.toBeInTheDocument();
-  });
-
-  it('does not render DEV icon when no URL is present', () => {
-    render(<FactCard hit={createMockHit({ url: undefined })} />);
-
-    expect(screen.queryByLabelText(/Read .* on DEV Community/i)).not.toBeInTheDocument();
-  });
-
-  it('renders default category label when category is empty', () => {
-    render(<FactCard hit={createMockHit({ category: '' })} />);
-    expect(screen.getByText('System')).toBeInTheDocument();
-  });
-
-  it('handles hit with no content, fact, or blurb gracefully', () => {
-    render(<FactCard hit={createMockHit({ blurb: '', fact: '', content: '' })} />);
-    expect(screen.getByText('No summary available.')).toBeInTheDocument();
-  });
-
-  it('handles very long title without crashing', () => {
-    const longTitle = 'A'.repeat(500);
-    render(<FactCard hit={createMockHit({ title: longTitle })} />);
-    expect(screen.getByTestId('highlight-title')).toHaveTextContent(longTitle);
-  });
-
-  it('does not render source link when url is missing', () => {
-    render(<FactCard hit={createMockHit({ url: undefined })} />);
-    expect(screen.queryByLabelText(/View source/)).not.toBeInTheDocument();
-    expect(screen.queryByLabelText(/Read .* on DEV/)).not.toBeInTheDocument();
-  });
-
-  it('does not render an unsafe source URL from a search hit', () => {
-    render(<FactCard hit={createMockHit({ url: 'javascript:alert(1)' })} />);
-    expect(screen.queryByLabelText(/View source/)).not.toBeInTheDocument();
-  });
-
-  it('closes card via keyboard when already flipped', async () => {
-    const { frontButton, user } = await openCard();
-    expect(frontButton).toHaveAttribute('aria-expanded', 'true');
-
-    frontButton.focus();
-    await user.keyboard(' ');
-    expect(frontButton).toHaveAttribute('aria-expanded', 'false');
-  });
-
-  it('closes card from a back-face click', async () => {
-    const { frontButton, user } = await openCard();
-    expect(frontButton).toHaveAttribute('aria-expanded', 'true');
-
-    await user.click(screen.getByRole('button', { name: /Click to collapse/i }));
-
-    expect(frontButton).toHaveAttribute('aria-expanded', 'false');
-  });
-
-  it.each([
-    { key: '{Enter}', label: 'Enter' },
-    { key: ' ', label: 'Space' },
-  ])('closes card from the back face with $label', async ({ key }) => {
-    const { frontButton, user } = await openCard();
-    const backButton = screen.getByRole('button', { name: /Click to collapse/i });
-    backButton.focus();
-
-    await user.keyboard(key);
-
-    expect(frontButton).toHaveAttribute('aria-expanded', 'false');
-  });
-
-  it('closes flipped card via Escape key', async () => {
-    const { frontButton, user } = await openCard();
-    expect(frontButton).toHaveAttribute('aria-expanded', 'true');
-
-    await user.keyboard('{Escape}');
-    expect(frontButton).toHaveAttribute('aria-expanded', 'false');
-    expect(frontButton).toHaveFocus();
+    expect(screen.getByRole('button', { name: /Open note/i })).toHaveAttribute(
+      'aria-expanded',
+      'false'
+    );
   });
 });

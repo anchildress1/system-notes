@@ -1,35 +1,22 @@
-import { Metadata } from 'next';
-import Hero from '@/components/Hero/Hero';
-import Button from '@/components/Button/Button';
-import SearchPageWrapper from '@/components/SearchPage/SearchPageWrapper';
+import type { Metadata } from 'next';
+import IndexWorkspaceLoader from '@/components/IndexWorkspace/IndexWorkspaceLoader';
+import { buildPageMetadata } from '@/lib/siteMetadata';
 import styles from './page.module.css';
 
-export const metadata: Metadata = {
-  title: 'Choices',
+export const metadata: Metadata = buildPageMetadata({
+  title: "Index | Ashley's System Notes",
   description:
-    'Search and explore facts, principles, and insights from my portfolio of system notes and projects.',
-};
+    'Search the engineering decisions, constraints, failures, and working rules behind what Ashley Childress builds.',
+  path: '/',
+});
 
 export default function Home() {
   return (
-    <main className={styles.main} id="main-content">
-      <Hero
-        title="This portfolio isn't browsed."
-        titleAccent="It's"
-        accentWord="retrieved."
-        subtitle="An engineering portfolio you query, not scroll."
-        actions={
-          <Button
-            variant="primary"
-            size="md"
-            href="/projects"
-            iconRight={<span aria-hidden="true">→</span>}
-          >
-            View builds
-          </Button>
-        }
-      />
-      <SearchPageWrapper />
+    <main id="main-content" className={styles.main}>
+      <h1 className="visually-hidden">System Notes Index</h1>
+      <section id="notes-index" className={styles.indexSection} aria-label="System Notes index">
+        <IndexWorkspaceLoader />
+      </section>
     </main>
   );
 }

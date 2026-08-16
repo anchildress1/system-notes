@@ -1,220 +1,287 @@
-.cardLink {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  /* Perspective lives on the root so the card flips around itself. */
-  perspective: 1400px;
-  /* Fill the grid cell — the parent <li> is display:flex, so without
-     explicit width the anchor would size to its content and leave a
-     visible gap when the cell is wider than the card's text. */
-  flex: 1;
+.card {
+  position: relative;
+  min-width: 0;
+  min-height: clamp(15rem, 30vh, 19rem);
+  height: 100%;
+  border-radius: 0.85rem;
+  perspective: 90rem;
+}
+
+.flipper {
+  position: relative;
   width: 100%;
   height: 100%;
+  min-height: inherit;
+  transform-style: preserve-3d;
+  transition: transform 520ms var(--ease-out);
 }
 
-/* Transparent flip wrapper — the frame (surface, border, rounding, clip,
-   accent seam) lives on each face so the 3D flip survives Firefox and there's
-   a single rounded edge, not the card's border fighting a second face clip.
-   radius stays here only so the hover box-shadow is rounded. */
-.card {
-  min-height: 200px;
-  cursor: pointer;
-  --card-hover-transition: var(--transition-slow);
+.card[data-state='expanded'] .flipper {
+  transform: rotateY(180deg);
 }
 
-.cardLink[data-size='half'] .title,
-.cardLink[data-size='two-thirds'] .title {
-  font-size: 1.55rem;
-}
-
-.cardLink[data-size='half'] .description {
-  -webkit-line-clamp: 5;
-}
-
-/* Featured (two-thirds) back face: same seam as every card, gradient color
-   only (the front gets it via the shared .winnerBanner class). */
-.cardLink[data-size='two-thirds'] .cardBack::before {
-  background: var(--gradient-brand);
-  background-size: 200% 100%;
-}
-
-.cardLink[data-size='two-thirds'] .description {
-  -webkit-line-clamp: 6;
-}
-
-.content {
-  padding: 24px 26px 26px;
-  flex-grow: 1;
+.front,
+.back {
+  position: absolute;
+  inset: 0;
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  gap: 0.75rem;
+  padding: clamp(1.25rem, 2.5vw, 1.8rem);
+  border: 1px solid oklch(84% 0.02 330);
+  border-radius: inherit;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-.cardMetaRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.8rem;
+.front {
+  background: var(--paper);
+  color: var(--paper-ink);
+  animation: queue-rise 340ms var(--ease-out) both;
 }
 
-.metaLeft {
+.back {
+  overflow: hidden;
+  background: oklch(92% 0.012 330);
+  color: var(--paper-ink);
+  pointer-events: none;
+  transform: rotateY(180deg);
+}
+
+.card[data-state='expanded'] .front {
+  pointer-events: none;
+}
+
+.card[data-state='expanded'] .back {
+  pointer-events: auto;
+}
+
+.openButton {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  border-radius: inherit;
+  background: transparent;
+}
+
+.cardMeta {
   display: flex;
   align-items: baseline;
-  gap: 0.45rem;
-  min-width: 0;
+  justify-content: space-between;
+  color: oklch(45% 0.025 330);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  gap: 1rem;
+  text-transform: lowercase;
 }
 
-/* Creation date — dim, with a leading dot separating it from the label. */
-.cardDate {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: var(--text-muted);
-  letter-spacing: 0.12em;
+.cardMeta > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.cardDate::before {
-  content: '·';
-  margin-right: 0.45rem;
-  opacity: 0.6;
-}
-
-.cardMetaRight {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  position: relative;
-  z-index: 5;
-}
-
-.factCounter {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: var(--text-secondary);
-  letter-spacing: 0.12em;
+.category {
+  flex: 0 0 auto;
+  padding: 0.15rem 0.65rem;
+  border: 1px solid oklch(51% 0.24 330);
+  border-radius: 999px;
+  color: oklch(42% 0.2 330);
+  font-size: 0.6rem;
   text-transform: uppercase;
 }
 
 .title {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 600;
-  color: var(--ink);
-  line-height: 1.25;
-  margin-bottom: 0.25rem;
+  max-width: 66rem;
+  margin-top: clamp(1.15rem, 3vh, 2rem);
+  font-family: var(--font-sans);
+  font-size: clamp(1.55rem, 2.8vw, 2.6rem);
+  font-weight: 850;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
 }
 
-.description {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-md);
-  line-height: 1.5;
-  flex-grow: 1;
+.summary {
   display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
+  max-width: 58rem;
+  margin-top: 0.8rem;
   overflow: hidden;
+  color: oklch(44% 0.022 330);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.7;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
-/* ── 3D Flip (in-place) ── */
+.frontTags,
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  gap: 0.4rem;
+  list-style: none;
+}
 
-.cardLinkFlipped {
-  /* Lift the flipped card so its back doesn't clip behind neighbors. */
-  z-index: 10;
+.frontTags {
   position: relative;
-}
-
-.flipped .flipper {
-  transform: rotateY(180deg);
-}
-
-/* Front is the height dictator — in flow, drives the card's intrinsic size.
-   The .card itself owns the bg/border; faces are transparent content layers. */
-/* Surface + accent/winner seam come from the shared card.module.css (.face +
-   .seam/.winnerBanner) applied in JSX. */
-.cardFront {
-  text-align: left;
-  width: 100%;
-  transition: border-color var(--transition-slow);
-}
-
-/* Interaction follows the visible face. backface-visibility hides the back
-   face visually but does NOT remove it from pointer/wheel hit-testing, so the
-   flipped-away front would otherwise swallow scroll over the note. Gate it. */
-.flipped .cardFront {
+  z-index: 3;
+  margin-top: auto;
+  padding-top: 0.85rem;
   pointer-events: none;
 }
 
-.cardBack {
-  transition: border-color var(--transition-slow);
+.frontTags li,
+.tags li {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid oklch(18% 0.024 330 / 0.2);
+  border-radius: 999px;
+  color: oklch(39% 0.022 330);
+  font-family: var(--font-mono);
+  font-size: 0.61rem;
 }
 
-.flipped .cardBack {
-  pointer-events: auto;
+.backHeader {
+  display: flex;
+  min-height: 2.4rem;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid oklch(18% 0.024 330 / 0.18);
+  color: oklch(42% 0.025 330);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.cardBack:focus-visible {
-  outline: 2px solid var(--chrome-line);
-  outline-offset: -2px;
+.backHeader button {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--paper-ink);
+  font-size: 1rem;
 }
 
-.backContent {
+.backHeader button:hover {
+  background: oklch(18% 0.024 330 / 0.09);
+}
+
+.backScroll {
+  min-height: 0;
   flex: 1;
   overflow-y: auto;
-  padding: 1.5rem 1.6rem;
-  display: flex;
-  flex-direction: column;
+  padding-block: 1rem;
+  scrollbar-color: oklch(18% 0.024 330 / 0.35) transparent;
+}
+
+.backScroll h3 {
+  font-family: var(--font-sans);
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.backScroll > p {
+  margin-top: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  white-space: pre-wrap;
+}
+
+.noteData {
+  display: grid;
+  margin-top: 1rem;
+  gap: 0.4rem;
+}
+
+.noteData div {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
   gap: 0.75rem;
 }
 
-.backTitle {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  letter-spacing: 0;
-}
-
-.backBody {
-  margin: 0;
+.noteData dt,
+.noteData dd {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  white-space: pre-wrap;
-  flex: 1;
+  font-size: 0.65rem;
 }
 
-.backMeta {
-  margin-top: auto;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--border);
+.noteData dt {
+  color: oklch(42% 0.025 330);
+  text-transform: uppercase;
+}
+
+.tags {
+  margin-top: 0.85rem;
+}
+
+.backActions {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid oklch(18% 0.024 330 / 0.18);
+  gap: 0.75rem;
 }
 
-.backMetaItem {
+.backActions a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--paper-ink);
   font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: var(--text-muted);
-  letter-spacing: 0.06em;
-  text-transform: lowercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-/* Tag row — pushed to the card bottom; chips come from the Tag primitive. */
-.tagRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-top: auto;
+.backActions a:hover {
+  color: oklch(51% 0.24 330);
+}
+
+@keyframes queue-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.65rem);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .card {
+    min-height: 20rem;
+  }
+
+  .cardMeta {
+    align-items: flex-start;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .flipper {
-    transition: none;
+  .flipper,
+  .card[data-state='expanded'] .flipper {
+    transform: none;
+  }
+
+  .front {
+    animation: none;
+  }
+
+  .back {
+    transform: none;
+    visibility: hidden;
+  }
+
+  .card[data-state='expanded'] .front {
+    visibility: hidden;
+  }
+
+  .card[data-state='expanded'] .back {
+    visibility: visible;
   }
 }

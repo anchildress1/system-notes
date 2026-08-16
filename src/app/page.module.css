@@ -1,3 +1,7 @@
 .main {
-  min-height: 100vh;
+  min-height: calc(100svh - var(--header-height));
+}
+
+.indexSection {
+  min-height: inherit;
 }

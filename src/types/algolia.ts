@@ -15,8 +15,6 @@ export interface FactHitRecord extends BaseHit {
   'tags.lvl1'?: string[];
   projects: string[];
   category: string;
-  node_type?: string;
-  signal: number;
   url?: string;
   created_at?: string;
 }

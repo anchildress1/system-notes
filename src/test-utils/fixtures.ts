@@ -27,7 +27,6 @@ export const createMockHit = (overrides: Partial<FactHitRecord> = {}): Hit<FactH
   'tags.lvl1': ['Engineering > Frontend', 'Engineering > TypeScript'],
   projects: ['Project Alpha', 'Project Beta'],
   category: 'Work Style',
-  signal: 3,
   __position: 1,
   __queryID: 'test-query',
   ...overrides,
