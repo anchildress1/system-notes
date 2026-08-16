@@ -14,7 +14,7 @@ const baseData: AboutData = {
   ],
   links: [
     { label: 'GitHub', href: 'https://github.com/anchildress1', external: true },
-    { label: 'See the builds', href: '/projects' },
+    { label: 'See the builds', href: '/' },
   ],
   stats: [
     { label: 'origin', value: 'Appalachia' },
@@ -67,7 +67,7 @@ describe('AboutContent', () => {
     expect(github).toHaveAttribute('target', '_blank');
     expect(github).toHaveAttribute('data-variant', 'secondary');
     const builds = screen.getByRole('link', { name: /See the builds/ });
-    expect(builds).toHaveAttribute('href', '/projects');
+    expect(builds).toHaveAttribute('href', '/');
     expect(builds).not.toHaveAttribute('target');
     expect(builds).toHaveAttribute('data-variant', 'secondary');
   });

@@ -8,16 +8,16 @@ import StatusPill from '@/components/StatusPill/StatusPill';
 import styles from './Header.module.css';
 
 const NAV_ITEMS = [
-  { label: 'Choices', href: '/' },
-  { label: 'Builds', href: '/projects' },
-  { label: 'Human', href: '/about' },
+  { label: 'Builds', href: '/' },
+  { label: 'Choices', href: '/choices' },
+  { label: 'Human', href: '/human' },
 ] as const;
 
+// Every route is now `/sys` + its own path. Only the front page needs an entry,
+// because Builds lives at `/` and has no path word of its own — the rest of the
+// old map existed purely because the routes had drifted from the nav labels.
 const PATH_LABEL: Record<string, string> = {
-  '/': '/sys/choices',
-  '/projects': '/sys/builds',
-  '/about': '/sys/human',
-  '/search': '/sys/search',
+  '/': '/sys/builds',
 };
 
 export default function Header() {

@@ -80,7 +80,7 @@ const ChatItemComponent = ({
   const ctx = useContext(ChatNavContext);
   const href =
     ctx?.getItemUrl(item) ??
-    `/search?${new URLSearchParams({ q: item.title ?? item.objectID }).toString()}`;
+    `/choices?${new URLSearchParams({ q: item.title ?? item.objectID }).toString()}`;
   return (
     <a
       href={href}
@@ -285,7 +285,7 @@ export default function AIChat() {
   const getItemUrl = useCallback((item: ChatHitItem): string => {
     const params = new URLSearchParams();
     params.set('q', lastChatQuery.current?.trim() || item.title || item.objectID);
-    return `/search?${params.toString()}`;
+    return `/choices?${params.toString()}`;
   }, []);
 
   const handleChatItemNavigate = useCallback(

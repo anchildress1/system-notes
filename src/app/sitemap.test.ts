@@ -14,8 +14,8 @@ describe('sitemap', () => {
     const sitemap = (await import('./sitemap')).default();
     expect(sitemap.map((entry) => entry.url)).toEqual([
       'https://staging.example/',
-      'https://staging.example/projects',
-      'https://staging.example/about',
+      'https://staging.example/choices',
+      'https://staging.example/human',
     ]);
   });
 

@@ -13,7 +13,7 @@ test.describe('Mobile Responsiveness', () => {
   });
 
   test('should render project grid responsively', async ({ page }) => {
-    await page.goto('/projects');
+    await page.goto('/');
     const projects = page.getByTestId(/^project-card-/);
     await expect(projects.first()).toBeVisible();
   });

@@ -92,7 +92,7 @@ test.describe('Search Page', () => {
   test('renders the retrieve UI and mocked hit', async ({ page }) => {
     await mockAlgoliaSearch(page, [buildHit()]);
 
-    await page.goto('/search');
+    await page.goto('/choices');
 
     await expect(page.getByRole('searchbox', { name: 'Search the index' })).toBeVisible();
     await expect(
@@ -104,7 +104,7 @@ test.describe('Search Page', () => {
 
   test('flips a mocked hit from a real card-area click', async ({ page }) => {
     await mockAlgoliaSearch(page, [buildHit()]);
-    await page.goto('/search');
+    await page.goto('/choices');
 
     const resultCard = page
       .getByRole('region', { name: 'Search results' })
@@ -113,6 +113,9 @@ test.describe('Search Page', () => {
     const state = resultCard.locator('[data-state]');
     await expect(state).toHaveAttribute('data-state', 'collapsed');
 
+    // This page leads with the hero, so on short viewports the first card sits
+    // below the fold and raw mouse coordinates would land somewhere else.
+    await resultCard.scrollIntoViewIfNeeded();
     const box = await resultCard.boundingBox();
     expect(box).not.toBeNull();
     await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2);
@@ -126,17 +129,17 @@ test.describe('Search Page', () => {
 
   test('updates the q route state when typing', async ({ page }) => {
     await mockAlgoliaSearch(page, [buildHit({ title: 'Carbon Trace Test' })]);
-    await page.goto('/search');
+    await page.goto('/choices');
 
     await page.getByRole('searchbox', { name: 'Search the index' }).fill('carbon');
 
-    await expect(page).toHaveURL(/\/search\?q=carbon$/);
+    await expect(page).toHaveURL(/\/choices\?q=carbon$/);
   });
 
   test('renders empty state when Algolia returns no hits', async ({ page }) => {
     await mockAlgoliaSearch(page, []);
 
-    await page.goto('/search?q=nope');
+    await page.goto('/choices?q=nope');
 
     await expect(page.getByText(/No results/i)).toBeVisible();
     await expect(page.getByText('0 entries · 1ms')).toBeVisible();
@@ -145,7 +148,7 @@ test.describe('Search Page', () => {
   test('keeps factId as inert legacy state', async ({ page }) => {
     await mockAlgoliaSearch(page, [buildHit()]);
 
-    await page.goto('/search?factId=test-hit-id');
+    await page.goto('/choices?factId=test-hit-id');
 
     await expect(page.getByRole('searchbox', { name: 'Search the index' })).toBeVisible();
     await expect(page.locator('article[role="dialog"]')).toHaveCount(0);
@@ -154,7 +157,7 @@ test.describe('Search Page', () => {
 
   test('opens and clears dynamic filters from mocked facet data', async ({ page }) => {
     await mockAlgoliaSearch(page, [buildHit()]);
-    await page.goto('/search');
+    await page.goto('/choices');
 
     const projectFilter = page.getByRole('button', { name: /project filter, no selection/i });
     const inactiveBorder = await projectFilter.evaluate(

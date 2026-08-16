@@ -10,33 +10,33 @@ test.describe('Primary Navigation Flows', () => {
       .getByRole('navigation', { name: 'Main Navigation' })
       .getByRole('link', { name: 'Human' })
       .click();
-    await expect(page).toHaveURL('/about');
+    await expect(page).toHaveURL('/human');
 
     await expect(page.locator('body')).toContainText('Ashley Childress', { timeout: 10000 });
     await expect(page.locator('body')).toContainText('Appalachia');
 
     await page
       .getByRole('navigation', { name: 'Main Navigation' })
-      .getByRole('link', { name: 'Choices' })
+      .getByRole('link', { name: 'Builds' })
       .click();
     await expect(page).toHaveURL('/');
   });
 
-  test('should navigate to Builds and back', async ({ page }) => {
+  test('should navigate to Choices and back', async ({ page }) => {
     await page.goto('/');
 
-    const buildsLink = page
+    const choicesLink = page
       .getByRole('navigation', { name: 'Main Navigation' })
-      .getByRole('link', { name: 'Builds' });
-    await expect(buildsLink).toHaveAttribute('href', '/projects');
-    await Promise.all([page.waitForURL('/projects'), buildsLink.click()]);
+      .getByRole('link', { name: 'Choices' });
+    await expect(choicesLink).toHaveAttribute('href', '/choices');
+    await Promise.all([page.waitForURL('/choices'), choicesLink.click()]);
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
-      'Things I built and broke.'
+      "This portfolio isn't browsed."
     );
 
     await page
       .getByRole('navigation', { name: 'Main Navigation' })
-      .getByRole('link', { name: 'Choices' })
+      .getByRole('link', { name: 'Builds' })
       .click();
     await expect(page).toHaveURL('/');
   });

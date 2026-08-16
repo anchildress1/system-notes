@@ -328,9 +328,9 @@ describe('AIChat Widget Integration', () => {
   });
 
   describe('ChatItemComponent href construction', () => {
-    it('sets href to /search?q=<title>', () => {
+    it('sets href to /choices?q=<title>', () => {
       render(<AIChat />);
-      const expected = `/search?${new URLSearchParams({ q: BASE_HIT.title! }).toString()}`;
+      const expected = `/choices?${new URLSearchParams({ q: BASE_HIT.title! }).toString()}`;
       expect(screen.getByRole('link')).toHaveAttribute('href', expected);
     });
 
@@ -346,7 +346,7 @@ describe('AIChat Widget Integration', () => {
     ])('href correctly encodes $desc when title is absent', ({ objectID }) => {
       mockChatItemOverride = { ...BASE_HIT, objectID, title: undefined };
       render(<AIChat />);
-      const expected = `/search?${new URLSearchParams({ q: objectID }).toString()}`;
+      const expected = `/choices?${new URLSearchParams({ q: objectID }).toString()}`;
       expect(screen.getByRole('link')).toHaveAttribute('href', expected);
     });
   });
@@ -357,7 +357,7 @@ describe('AIChat Widget Integration', () => {
       fireEvent.click(screen.getByRole('link'));
       expect(mockRouterPush).toHaveBeenCalledOnce();
       expect(mockRouterPush).toHaveBeenCalledWith(
-        `/search?${new URLSearchParams({ q: BASE_HIT.title! }).toString()}`
+        `/choices?${new URLSearchParams({ q: BASE_HIT.title! }).toString()}`
       );
     });
 

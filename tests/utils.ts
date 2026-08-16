@@ -18,7 +18,7 @@ async function mockAlgolia(page: Page) {
 }
 
 export async function openFirstProjectCard(page: Page) {
-  await page.goto('/projects');
+  await page.goto('/');
   const url = page.url();
   const card = page.getByTestId(/^project-card-/).first();
   const toggle = card.locator('button[aria-label*="Flip to read the project note"]').first();

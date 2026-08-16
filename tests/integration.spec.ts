@@ -5,13 +5,13 @@ import { openFirstProjectCard, test } from './utils';
 test.describe('System Notes Integration', () => {
   test('loads homepage with correct metadata', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle('Choices');
+    await expect(page).toHaveTitle('Builds');
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
-      "This portfolio isn't browsed."
+      'Things I built and broke.'
     );
-    await expect(page.getByText('An engineering portfolio you query, not scroll.')).toBeVisible();
-    const buildsCta = page.locator('main').getByRole('link', { name: /view builds/i });
-    await expect(buildsCta).toHaveAttribute('href', '/projects');
+    await expect(page.getByText(/a senior software engineer who builds AI systems/)).toBeVisible();
+    const buildsCta = page.locator('main').getByRole('link', { name: /query the index/i });
+    await expect(buildsCta).toHaveAttribute('href', '/choices');
     await expect(buildsCta).toHaveAttribute('data-variant', 'primary');
     const ctaStyles = await buildsCta.evaluate((node) => {
       const styles = getComputedStyle(node);
@@ -56,7 +56,7 @@ test.describe('System Notes Integration', () => {
   });
 
   test('should load projects with current summary card metadata', async ({ page }) => {
-    await page.goto('/projects');
+    await page.goto('/');
     const projectCard = page.getByTestId('project-card-carbon-trace');
     await expect(projectCard).toBeVisible();
 
@@ -86,7 +86,7 @@ test.describe('System Notes Integration', () => {
   });
 
   test('Human page smoke test', async ({ page }) => {
-    await page.goto('/about');
+    await page.goto('/human');
 
     const heroImage = page.getByAltText(/Ashley Childress profile picture/i);
     await expect(heroImage).toBeVisible();

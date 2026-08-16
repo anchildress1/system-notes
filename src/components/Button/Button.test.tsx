@@ -72,7 +72,7 @@ describe('Button', () => {
 
   it('omits rel for non-blank links', () => {
     render(
-      <Button href="/projects" data-testid="internal">
+      <Button href="/choices" data-testid="internal">
         Builds
       </Button>
     );

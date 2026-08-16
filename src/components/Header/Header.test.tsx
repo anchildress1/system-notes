@@ -22,7 +22,7 @@ describe('Header Component', () => {
 
   it('applies active class to the current path', async () => {
     const { usePathname } = await import('next/navigation');
-    vi.mocked(usePathname).mockReturnValue('/projects');
+    vi.mocked(usePathname).mockReturnValue('/');
 
     render(<Header />);
 
@@ -33,9 +33,9 @@ describe('Header Component', () => {
     expect(choicesLink.className).not.toContain('active');
   });
 
-  it('applies active class to the Human link when on /about', async () => {
+  it('applies active class to the Human link when on /human', async () => {
     const { usePathname } = await import('next/navigation');
-    vi.mocked(usePathname).mockReturnValue('/about');
+    vi.mocked(usePathname).mockReturnValue('/human');
 
     render(<Header />);
 

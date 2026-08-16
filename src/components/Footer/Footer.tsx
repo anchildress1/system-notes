@@ -34,12 +34,12 @@ export default function Footer() {
             </Kicker>
             <div className={styles.stack}>
               <Link href="/" className={styles.link}>
-                <FiTerminal aria-hidden="true" size={12} /> /sys/choices
-              </Link>
-              <Link href="/projects" className={styles.link}>
                 <FiCode aria-hidden="true" size={12} /> /sys/builds
               </Link>
-              <Link href="/about" className={styles.link}>
+              <Link href="/choices" className={styles.link}>
+                <FiTerminal aria-hidden="true" size={12} /> /sys/choices
+              </Link>
+              <Link href="/human" className={styles.link}>
                 <FiUser aria-hidden="true" size={12} /> /sys/human
               </Link>
               <a

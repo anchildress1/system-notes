@@ -140,11 +140,11 @@ describe('searchRouting', () => {
         },
         indexName
       )
-    ).toBe('/?q=carbon&page=2&kind=Work+Style&kind=Decisions');
+    ).toBe('/choices?q=carbon&page=2&kind=Work+Style&kind=Decisions');
   });
 
   it('returns the requested base path for empty state', () => {
-    expect(getSearchPageURL({}, indexName)).toBe('/');
-    expect(getSearchPageURL({}, indexName, '/search')).toBe('/search');
+    expect(getSearchPageURL({}, indexName)).toBe('/choices');
+    expect(getSearchPageURL({}, indexName, '/elsewhere')).toBe('/elsewhere');
   });
 });

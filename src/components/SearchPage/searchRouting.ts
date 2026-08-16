@@ -60,7 +60,7 @@ export const createSearchRouting = (indexName: string) => ({
 export const getSearchPageURL = (
   indexUiState: IndexUiState,
   indexName: string,
-  basePath = '/'
+  basePath = '/choices'
 ): string => {
   const routeState = toRouteState({ [indexName]: indexUiState }, indexName);
   const params = new URLSearchParams();
