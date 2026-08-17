@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useMemo } from 'react';
 import type { Hit } from 'instantsearch.js';
 import { FiArrowUpRight } from 'react-icons/fi';
@@ -12,10 +11,9 @@ import styles from './FactCard.module.css';
 interface FactCardProps {
   hit: Hit<FactHitRecord>;
   position?: number;
-  permalink?: string;
 }
 
-export default function FactCard({ hit, position = 1, permalink }: Readonly<FactCardProps>) {
+export default function FactCard({ hit, position = 1 }: Readonly<FactCardProps>) {
   const sourceUrl = isSafeExternalUrl(hit.url) ? hit.url : undefined;
   const sourceHost = getSafeHostname(sourceUrl);
   const fact = hit.fact.trim() || getNoteBody(hit);
@@ -58,9 +56,6 @@ export default function FactCard({ hit, position = 1, permalink }: Readonly<Fact
       ) : null}
 
       <div className={styles.actions}>
-        <Link href={permalink ?? `/notes/${encodeURIComponent(hit.objectID)}`} prefetch={false}>
-          Permalink <FiArrowUpRight aria-hidden="true" />
-        </Link>
         {sourceUrl ? (
           <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
             {sourceHost === 'dev.to' ? 'Read on DEV' : 'View source'}

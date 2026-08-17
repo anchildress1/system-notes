@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
 import type { Hit } from 'instantsearch.js';
 import FactCard from '@/components/FactCard/FactCard';
 import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteContent';
@@ -24,20 +23,12 @@ export default function ResultQueue({
   onSelect,
 }: Readonly<ResultQueueProps>) {
   const readerRef = useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const shouldFocusReader = useRef(false);
   const featuredIndex = Math.max(
     items.findIndex((item) => item.objectID === selectedId),
     0
   );
   const featured = items[featuredIndex];
-  const readerPermalink = (() => {
-    const params = new URLSearchParams(searchParams?.toString());
-    params.set('note', featured?.objectID ?? '');
-    const queryString = params.toString();
-    return `${pathname}${queryString ? `?${queryString}` : ''}#notes-index`;
-  })();
 
   useEffect(() => {
     if (!shouldFocusReader.current) return;
@@ -74,7 +65,6 @@ export default function ResultQueue({
             key={featured.objectID}
             hit={featured}
             position={getFactHitPosition(featured, featuredIndex + 1)}
-            permalink={readerPermalink}
           />
         </div>
 

@@ -29,18 +29,14 @@ describe('FactCard', () => {
     expect(screen.queryByText('Longer source content that is not the selected fact.')).toBeNull();
   });
 
-  it('exposes permalink, topics, and safe DEV evidence immediately', () => {
+  it('exposes topics and safe DEV evidence immediately, without a permalink', () => {
     render(
-      <FactCard
-        hit={createMockHit({ url: 'https://dev.to/user/post', objectID: 'card:test:1' })}
-        permalink="/?note=card%3Atest%3A1#notes-index"
-      />
+      <FactCard hit={createMockHit({ url: 'https://dev.to/user/post', objectID: 'card:test:1' })} />
     );
 
-    expect(screen.getByRole('link', { name: /Permalink/i })).toHaveAttribute(
-      'href',
-      '/?note=card%3Atest%3A1#notes-index'
-    );
+    // Selection is what identifies a note, and that already reaches Algolia as a
+    // click event — the card does not need to carry a URL of its own.
+    expect(screen.queryByRole('link', { name: /Permalink/i })).toBeNull();
     expect(screen.getByRole('link', { name: /Read on DEV/i })).toHaveAttribute(
       'href',
       'https://dev.to/user/post'

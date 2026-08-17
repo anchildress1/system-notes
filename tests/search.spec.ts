@@ -63,10 +63,7 @@ test.describe('Notes index', () => {
     await expect(card.getByText('Principle')).toBeVisible();
     await expect(card.getByText(/System Notes/)).toBeVisible();
     await expect(card.getByRole('button', { name: /Open note|Close note/i })).toHaveCount(0);
-    await expect(card.getByRole('link', { name: /Permalink/i })).toHaveAttribute(
-      'href',
-      '/?note=card%3Atest%3A1#notes-index'
-    );
+    await expect(card.getByRole('link', { name: /Permalink/i })).toHaveCount(0);
     await expect(card.getByRole('link', { name: /View source/i })).toHaveAttribute(
       'href',
       'https://github.com/anchildress1/system-notes'
