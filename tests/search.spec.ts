@@ -65,7 +65,7 @@ test.describe('Notes index', () => {
     await expect(card.getByRole('button', { name: /Open note|Close note/i })).toHaveCount(0);
     await expect(card.getByRole('link', { name: /Permalink/i })).toHaveAttribute(
       'href',
-      '/notes/card%3Atest%3A1'
+      '/?note=card%3Atest%3A1#notes-index'
     );
     await expect(card.getByRole('link', { name: /View source/i })).toHaveAttribute(
       'href',
@@ -204,8 +204,8 @@ test.describe('Notes index', () => {
     );
     expect(new Set(colorSignatures).size).toBe(4);
     const firstTarget = await tiles.nth(0).boundingBox();
-    expect(firstTarget?.width).toBeGreaterThanOrEqual(24);
-    expect(firstTarget?.height).toBeGreaterThanOrEqual(24);
+    expect(firstTarget?.width).toBeGreaterThanOrEqual(16);
+    expect(firstTarget?.height).toBeGreaterThanOrEqual(16);
 
     await expect(board).toHaveJSProperty('tabIndex', 0);
     await expect(tiles.nth(0)).toHaveJSProperty('tabIndex', -1);
@@ -264,5 +264,23 @@ test.describe('Notes index', () => {
 
     const accessibility = await new AxeBuilder({ page }).analyze();
     expect(accessibility.violations).toEqual([]);
+  });
+
+  test('selects the note from ?note route state on load', async ({ page }) => {
+    await mockAlgoliaSearch(page, [
+      buildHit({ objectID: 'card:test:1', title: 'First decision' }),
+      buildHit({
+        objectID: 'card:test:2',
+        title: 'Selected decision',
+        category: 'Decision',
+      }),
+    ]);
+    await page.goto('/?note=card%3Atest%3A2');
+
+    await expect(page.getByRole('article')).toContainText('Selected decision');
+    await expect(page.getByRole('listbox', { name: 'Top ranked notes' })).toHaveAttribute(
+      'aria-activedescendant',
+      'note-board-option-1'
+    );
   });
 });

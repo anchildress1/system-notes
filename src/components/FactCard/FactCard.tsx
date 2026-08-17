@@ -12,9 +12,10 @@ import styles from './FactCard.module.css';
 interface FactCardProps {
   hit: Hit<FactHitRecord>;
   position?: number;
+  permalink?: string;
 }
 
-export default function FactCard({ hit, position = 1 }: Readonly<FactCardProps>) {
+export default function FactCard({ hit, position = 1, permalink }: Readonly<FactCardProps>) {
   const sourceUrl = isSafeExternalUrl(hit.url) ? hit.url : undefined;
   const sourceHost = getSafeHostname(sourceUrl);
   const fact = hit.fact.trim() || getNoteBody(hit);
@@ -57,7 +58,7 @@ export default function FactCard({ hit, position = 1 }: Readonly<FactCardProps>)
       ) : null}
 
       <div className={styles.actions}>
-        <Link href={`/notes/${encodeURIComponent(hit.objectID)}`} prefetch={false}>
+        <Link href={permalink ?? `/notes/${encodeURIComponent(hit.objectID)}`} prefetch={false}>
           Permalink <FiArrowUpRight aria-hidden="true" />
         </Link>
         {sourceUrl ? (

@@ -31,12 +31,15 @@ describe('FactCard', () => {
 
   it('exposes permalink, topics, and safe DEV evidence immediately', () => {
     render(
-      <FactCard hit={createMockHit({ url: 'https://dev.to/user/post', objectID: 'card:test:1' })} />
+      <FactCard
+        hit={createMockHit({ url: 'https://dev.to/user/post', objectID: 'card:test:1' })}
+        permalink="/?note=card%3Atest%3A1#notes-index"
+      />
     );
 
     expect(screen.getByRole('link', { name: /Permalink/i })).toHaveAttribute(
       'href',
-      '/notes/card%3Atest%3A1'
+      '/?note=card%3Atest%3A1#notes-index'
     );
     expect(screen.getByRole('link', { name: /Read on DEV/i })).toHaveAttribute(
       'href',

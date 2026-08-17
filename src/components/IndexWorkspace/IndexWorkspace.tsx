@@ -5,6 +5,7 @@ import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { useCallback, useMemo, useState } from 'react';
 import { Configure, InstantSearch, useHits, useInstantSearch, useStats } from 'react-instantsearch';
 import aa from 'search-insights';
+import { useSearchParams } from 'next/navigation';
 import 'instantsearch.css/themes/reset.css';
 import { ALGOLIA_INDEX_NAME } from '@/config';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
@@ -99,12 +100,10 @@ export default function IndexWorkspace() {
 
 function IndexExperience() {
   const { items, sendEvent } = useHits<FactHitRecord>();
-  const { indexUiState, status } = useInstantSearch({ catchError: true });
+  const { status } = useInstantSearch({ catchError: true });
   const { nbHits } = useStats();
-  const resultKey = JSON.stringify({
-    indexUiState,
-    objectIDs: items.map((item) => item.objectID),
-  });
+  const searchParams = useSearchParams();
+  const selectedByRoute = useMemo(() => searchParams.get('note'), [searchParams]);
   const readableItems = useMemo(() => {
     const seenIds = new Set<string>();
     return items.flatMap((item) => {
@@ -115,19 +114,25 @@ function IndexExperience() {
     });
   }, [items]);
   const rankedItems = useMemo(() => readableItems.slice(0, MAX_BOARD_NOTES), [readableItems]);
-  const [selection, setSelection] = useState<{ id: string; resultKey: string } | null>(null);
-  const selectedId =
-    selection?.resultKey === resultKey && rankedItems.some((item) => item.objectID === selection.id)
-      ? selection.id
-      : rankedItems[0]?.objectID;
+  const [selection, setSelection] = useState<string | null>(null);
+  const selectedId = useMemo(() => {
+    const selectedFromRoute =
+      typeof selectedByRoute === 'string' && selectedByRoute.trim() ? selectedByRoute.trim() : null;
+    const hasSelection = selection && rankedItems.some((item) => item.objectID === selection);
+    if (hasSelection) return selection;
+    if (selectedFromRoute && rankedItems.some((item) => item.objectID === selectedFromRoute)) {
+      return selectedFromRoute;
+    }
+    return rankedItems[0]?.objectID;
+  }, [rankedItems, selectedByRoute, selection]);
   const selectNote = useCallback(
     (id: string) => {
       const hit = rankedItems.find((item) => item.objectID === id);
       if (!hit) return;
       sendEvent('click', hit, 'Note Selected');
-      setSelection({ id, resultKey });
+      setSelection(id);
     },
-    [rankedItems, resultKey, sendEvent]
+    [rankedItems, sendEvent]
   );
 
   return (

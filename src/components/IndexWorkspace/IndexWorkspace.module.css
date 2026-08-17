@@ -132,11 +132,12 @@
 
 .boardTiles {
   display: grid;
-  padding: 0.35rem;
-  margin-top: 0.75rem;
+  padding: 0;
+  margin-top: 0.5rem;
   border: 1px solid transparent;
   border-radius: 0.35rem;
-  grid-template-columns: repeat(auto-fill, minmax(1.5rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(1rem, 1fr));
+  gap: 0.06rem;
   list-style: none;
   outline: none;
 }
@@ -146,14 +147,14 @@
   min-width: 0;
   display: grid;
   width: 100%;
-  min-width: 1.5rem;
+  min-width: 1rem;
   aspect-ratio: 1;
   cursor: pointer;
   place-items: center;
 }
 
 .boardTiles li::before {
-  width: 0.72rem;
+  width: 0.78rem;
   aspect-ratio: 1;
   border-radius: 0.08rem;
   background: var(--neon);
