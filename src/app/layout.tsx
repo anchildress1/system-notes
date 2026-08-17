@@ -79,7 +79,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   const jsonLd = buildSiteJsonLd(getProjects(), baseUrl);
 
   return (
-    <html lang="en">
+    // Extensions (password managers, contrast and translation tools) write
+    // attributes onto <html> and <body> before React hydrates, which surfaces as
+    // "some attributes of the server rendered HTML didn't match". It suppresses
+    // one level only, so real mismatches inside the app still report.
+    <html lang="en" suppressHydrationWarning>
       <head>
         {algoliaPreconnectHost ? (
           <>
@@ -93,7 +97,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
       </head>
-      <body className={`${editorial.variable} ${mono.variable}`}>
+      <body className={`${editorial.variable} ${mono.variable}`} suppressHydrationWarning>
         <SiteHeader />
         {children}
         <SiteFooter />
