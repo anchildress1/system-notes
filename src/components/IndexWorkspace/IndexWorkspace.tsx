@@ -2,15 +2,8 @@
 
 import { createNullCache } from '@algolia/client-common';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { useMemo } from 'react';
-import {
-  Configure,
-  InstantSearch,
-  useHits,
-  useInstantSearch,
-  usePagination,
-  useStats,
-} from 'react-instantsearch';
+import { useCallback, useMemo, useState } from 'react';
+import { Configure, InstantSearch, useHits, useInstantSearch, useStats } from 'react-instantsearch';
 import aa from 'search-insights';
 import 'instantsearch.css/themes/reset.css';
 import { ALGOLIA_INDEX_NAME } from '@/config';
@@ -27,6 +20,7 @@ import styles from './IndexWorkspace.module.css';
 const hasCredentials = hasValidAlgoliaCredentials();
 const isDevelopment = process.env.NODE_ENV === 'development';
 const SEARCH_DEADLINE_MS = 5_000;
+const MAX_RANKED_NOTES = 100;
 const algoliaClient = hasCredentials
   ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, {
       ...(isDevelopment
@@ -90,26 +84,20 @@ export default function IndexWorkspace() {
   }
 
   return (
-    <div className={styles.workspace}>
-      <InstantSearch
-        searchClient={searchClient}
-        indexName={ALGOLIA_INDEX_NAME}
-        routing={routing}
-        insights={{ insightsClient: aa }}
-        future={{ preserveSharedStateOnUnmount: true }}
-      >
-        <Configure hitsPerPage={5} clickAnalytics />
-        <IndexSidebar />
-        <div className={styles.readingPane}>
-          <IndexSearch />
-          <SearchResults />
-        </div>
-      </InstantSearch>
-    </div>
+    <InstantSearch
+      searchClient={searchClient}
+      indexName={ALGOLIA_INDEX_NAME}
+      routing={routing}
+      insights={{ insightsClient: aa }}
+      future={{ preserveSharedStateOnUnmount: true }}
+    >
+      <Configure hitsPerPage={MAX_RANKED_NOTES} clickAnalytics />
+      <IndexExperience />
+    </InstantSearch>
   );
 }
 
-function SearchResults() {
+function IndexExperience() {
   const { items, sendEvent } = useHits<FactHitRecord>();
   const { indexUiState, status } = useInstantSearch({ catchError: true });
   const { nbHits } = useStats();
@@ -121,11 +109,68 @@ function SearchResults() {
     () => items.map(normalizeFactSearchHit).filter((item) => item !== null),
     [items]
   );
+  const rankedItems = useMemo(() => readableItems.slice(0, MAX_RANKED_NOTES), [readableItems]);
+  const [selection, setSelection] = useState<{ id: string; resultKey: string } | null>(null);
+  const selectedId =
+    selection?.resultKey === resultKey && rankedItems.some((item) => item.objectID === selection.id)
+      ? selection.id
+      : rankedItems[0]?.objectID;
+  const hasUserSelection = selection?.resultKey === resultKey && selectedId === selection.id;
+  const selectNote = useCallback((id: string) => setSelection({ id, resultKey }), [resultKey]);
 
-  if (readableItems.length === 0) {
-    if (items.length > 0) return <UnreadableResults />;
+  return (
+    <div className={styles.workspace}>
+      <IndexSidebar
+        items={rankedItems}
+        selectedId={selectedId}
+        activatedId={hasUserSelection ? selectedId : undefined}
+        onSelect={selectNote}
+      />
+      <div className={styles.readingPane}>
+        <IndexSearch />
+        <SearchResults
+          rawItemCount={items.length}
+          items={rankedItems}
+          nbHits={nbHits}
+          status={status}
+          readableItemCount={readableItems.length}
+          selectedId={selectedId}
+          hasUserSelection={hasUserSelection}
+          onSelect={selectNote}
+          sendEvent={sendEvent as SendEventForHits}
+        />
+      </div>
+    </div>
+  );
+}
+
+interface SearchResultsProps {
+  rawItemCount: number;
+  readableItemCount: number;
+  items: NonNullable<ReturnType<typeof normalizeFactSearchHit>>[];
+  nbHits: number;
+  status: string;
+  selectedId?: string;
+  hasUserSelection: boolean;
+  onSelect: (id: string) => void;
+  sendEvent: SendEventForHits;
+}
+
+function SearchResults({
+  rawItemCount,
+  readableItemCount,
+  items,
+  nbHits,
+  status,
+  selectedId,
+  hasUserSelection,
+  onSelect,
+  sendEvent,
+}: Readonly<SearchResultsProps>) {
+  if (items.length === 0) {
+    if (rawItemCount > 0) return <UnreadableResults />;
     if (status === 'error') return <SearchFailure />;
-    if (status !== 'idle') return <SearchStatus />;
+    if (status !== 'idle') return <SearchStatus status={status} />;
     return (
       <div className={styles.emptyState}>
         <span aria-hidden="true">00</span>
@@ -137,15 +182,16 @@ function SearchResults() {
 
   return (
     <div className={styles.resultArea}>
-      <SearchStatus />
-      {items.length !== readableItems.length ? <PartialResultsWarning /> : null}
+      <SearchStatus status={status} />
+      {rawItemCount !== readableItemCount ? <PartialResultsWarning /> : null}
       <ResultQueue
-        items={readableItems}
+        items={items}
         nbHits={nbHits}
-        resultKey={resultKey}
-        sendEvent={sendEvent as SendEventForHits}
+        selectedId={selectedId}
+        focusSelection={hasUserSelection}
+        onSelect={onSelect}
+        sendEvent={sendEvent}
       />
-      <IndexPagination />
     </div>
   );
 }
@@ -177,8 +223,7 @@ function SearchFailure() {
   );
 }
 
-function SearchStatus() {
-  const { status } = useInstantSearch();
+function SearchStatus({ status }: Readonly<{ status: string }>) {
   if (status === 'error') {
     return (
       <p className={styles.searchStatus} role="alert">
@@ -191,45 +236,5 @@ function SearchStatus() {
     <p className={styles.searchStatus} role="status">
       Searching…
     </p>
-  );
-}
-
-function IndexPagination() {
-  const { pages, currentRefinement, nbPages, isFirstPage, isLastPage, refine } = usePagination({
-    padding: 1,
-  });
-
-  if (nbPages <= 1) return null;
-
-  return (
-    <nav className={styles.pagination} aria-label="Notes pagination">
-      <button
-        type="button"
-        onClick={() => refine(currentRefinement - 1)}
-        disabled={isFirstPage}
-        aria-label="Previous page"
-      >
-        ←
-      </button>
-      {pages.map((page) => (
-        <button
-          key={page}
-          type="button"
-          onClick={() => refine(page)}
-          aria-current={page === currentRefinement ? 'page' : undefined}
-          aria-label={`Page ${page + 1}`}
-        >
-          {String(page + 1).padStart(2, '0')}
-        </button>
-      ))}
-      <button
-        type="button"
-        onClick={() => refine(currentRefinement + 1)}
-        disabled={isLastPage}
-        aria-label="Next page"
-      >
-        →
-      </button>
-    </nav>
   );
 }

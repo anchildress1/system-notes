@@ -132,34 +132,73 @@
 
 .boardTiles {
   display: grid;
+  padding: 0;
   margin-top: 0.75rem;
-  gap: 0.23rem;
-  grid-template-columns: repeat(auto-fill, minmax(0.68rem, 1fr));
+  gap: 0.28rem;
+  grid-template-columns: repeat(auto-fill, minmax(1.5rem, 1fr));
+  list-style: none;
 }
 
-.boardTiles span {
-  min-width: 0.58rem;
-  aspect-ratio: 1.35;
+.boardTiles li {
+  min-width: 0;
+}
+
+.boardTiles button {
+  display: block;
+  width: 100%;
+  min-width: 1.5rem;
+  aspect-ratio: 1;
   border-radius: 0.08rem;
   background: var(--neon);
-  transition: opacity 180ms ease;
+  box-shadow: 0 0 0 transparent;
+  transition:
+    transform 180ms var(--ease-out),
+    box-shadow 180ms ease;
 }
 
-.boardTiles span[data-category='architecture'] {
+.boardTiles button[data-category='architecture'] {
   background: var(--paper);
 }
 
-.boardTiles span[data-category='decision'] {
+.boardTiles button[data-category='decision'] {
   background: oklch(56% 0.012 330);
 }
 
-.boardTiles span[data-category='award'] {
+.boardTiles button[data-category='award'] {
   border: 1px solid var(--neon);
   background: transparent;
 }
 
-.boardTiles span[data-dimmed] {
-  opacity: 0.14;
+.boardTiles button:hover,
+.boardTiles button:focus-visible {
+  z-index: 1;
+  box-shadow: 0 0 0.8rem oklch(67% 0.25 330 / 0.52);
+  transform: translateY(-0.15rem) scale(1.08);
+}
+
+.boardTiles button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.boardTiles button:active {
+  transform: scale(0.9);
+}
+
+.boardTiles button[data-selected] {
+  box-shadow:
+    0 0 0 2px var(--void),
+    0 0 0 4px var(--neon-bright),
+    0 0 1rem oklch(67% 0.25 330 / 0.62);
+  transform: scale(1.08);
+}
+
+.boardTiles button[data-activated] {
+  animation: board-select 360ms var(--ease-out);
+}
+
+.boardTiles button[data-selected]:active {
+  transform: scale(0.9);
 }
 
 .board small {
@@ -384,6 +423,10 @@
   gap: 0.75rem;
 }
 
+.reader {
+  scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+
 .queueList {
   display: grid;
   min-width: 0;
@@ -394,6 +437,12 @@
 
 .queueList li {
   min-width: 0;
+}
+
+.queueList li[data-selected] button {
+  border-color: var(--neon);
+  background: oklch(17% 0.04 330);
+  box-shadow: inset 0.2rem 0 0 var(--neon);
 }
 
 .queueList button {
@@ -544,35 +593,14 @@
   color: var(--ink-soft);
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  padding-top: 1.25rem;
-  gap: 0.35rem;
-}
-
-.pagination button {
-  display: grid;
-  width: 2.75rem;
-  height: 2.75rem;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--ink-soft);
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-}
-
-.pagination button[aria-current='page'] {
-  border-color: var(--neon);
-  background: var(--neon);
-  color: var(--void);
-}
-
-.pagination button:disabled {
-  cursor: not-allowed;
-  opacity: 0.28;
+@keyframes board-select {
+  0% {
+    box-shadow: 0 0 0 transparent;
+    transform: scale(0.72);
+  }
+  65% {
+    transform: scale(1.18);
+  }
 }
 
 @media (max-width: 64rem) {
@@ -631,10 +659,6 @@
     padding: 0.25rem 1rem 1rem;
   }
 
-  .boardTiles {
-    grid-template-columns: repeat(auto-fill, minmax(0.6rem, 1fr));
-  }
-
   .readingPane {
     padding: 1rem;
   }
@@ -676,6 +700,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boardTiles button,
+  .boardTiles button:hover,
+  .boardTiles button:focus-visible,
+  .boardTiles button:active,
+  .boardTiles button[data-selected],
+  .boardTiles button[data-activated] {
+    animation: none !important;
+    transition: none !important;
   }
 }
 

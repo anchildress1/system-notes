@@ -37,62 +37,70 @@ test.describe('System Notes redesign', () => {
   test('matches the approved desktop filing composition', async ({ page }, testInfo) => {
     const isDesktop = testInfo.project.name === 'chromium';
     if (isDesktop) await page.setViewportSize({ width: 1440, height: 720 });
-    await mockAlgoliaSearch(
-      page,
-      [
-        {
-          objectID: 'card:test:1',
-          title: 'Save the Sun won Best Google AI Usage in the June Solstice Game Jam 2026',
-          blurb: 'Recognized in the Best Google AI Usage category of the June Solstice Game Jam.',
-          category: 'Awards',
-          projects: ['Save the Sun'],
-          'tags.lvl0': ['June Solstice Game Jam 2026', 'Gemini'],
-          created_at: '2026-08-01',
-        },
-        {
-          objectID: 'card:test:2',
-          title: 'Unearthed won the 2026 Earth Day Weekend DEV Challenge',
-          category: 'Awards',
-          projects: ['Unearthed'],
-          created_at: '2026-05-01',
-        },
-        {
-          objectID: 'card:test:3',
-          title: 'Carbon Trace was selected as a Frontend Art winner in WeCoded 2026',
-          category: 'Awards',
-          projects: ['Carbon Trace'],
-          created_at: '2026-04-01',
-        },
-        {
-          objectID: 'card:test:4',
-          title: 'Every automated gate replaced a review I stopped doing by hand',
-          category: 'Principle',
-          projects: ['System Notes'],
-          created_at: '2026-08-01',
-        },
-        {
-          objectID: 'card:test:5',
-          title:
-            'I put a database between the AI and the search index so I could review before publishing',
-          category: 'Architecture',
-          projects: ['SupaScribe Notes MCP'],
-          created_at: '2026-08-01',
-        },
-      ],
+    const featuredHits = [
       {
-        nbHits: 347,
-        facets: {
-          category: {
-            Principles: 118,
-            Architecture: 28,
-            Decisions: 174,
-            Awards: 27,
-          },
-          projects: { 'System Notes': 347 },
-          'tags.lvl0': { Testing: 347 },
+        objectID: 'card:test:1',
+        title: 'Save the Sun won Best Google AI Usage in the June Solstice Game Jam 2026',
+        blurb: 'Recognized in the Best Google AI Usage category of the June Solstice Game Jam.',
+        category: 'Awards',
+        projects: ['Save the Sun'],
+        'tags.lvl0': ['June Solstice Game Jam 2026', 'Gemini'],
+        created_at: '2026-08-01',
+      },
+      {
+        objectID: 'card:test:2',
+        title: 'Unearthed won the 2026 Earth Day Weekend DEV Challenge',
+        category: 'Awards',
+        projects: ['Unearthed'],
+        created_at: '2026-05-01',
+      },
+      {
+        objectID: 'card:test:3',
+        title: 'Carbon Trace was selected as a Frontend Art winner in WeCoded 2026',
+        category: 'Awards',
+        projects: ['Carbon Trace'],
+        created_at: '2026-04-01',
+      },
+      {
+        objectID: 'card:test:4',
+        title: 'Every automated gate replaced a review I stopped doing by hand',
+        category: 'Principle',
+        projects: ['System Notes'],
+        created_at: '2026-08-01',
+      },
+      {
+        objectID: 'card:test:5',
+        title:
+          'I put a database between the AI and the search index so I could review before publishing',
+        category: 'Architecture',
+        projects: ['SupaScribe Notes MCP'],
+        created_at: '2026-08-01',
+      },
+    ];
+    const filingCategories = ['Principle', 'Architecture', 'Decision', 'Award'] as const;
+    const rankedHits = [
+      ...featuredHits,
+      ...Array.from({ length: 95 }, (_, index) => ({
+        objectID: `card:test:${index + 6}`,
+        title: `Ranked system note ${index + 6}`,
+        category: filingCategories[index % filingCategories.length],
+        projects: ['System Notes'],
+        created_at: '2026-08-01',
+      })),
+    ];
+    await mockAlgoliaSearch(page, rankedHits, {
+      nbHits: 347,
+      facets: {
+        category: {
+          Principles: 118,
+          Architecture: 28,
+          Decisions: 174,
+          Awards: 27,
         },
-      }
-    );
+        projects: { 'System Notes': 347 },
+        'tags.lvl0': { Testing: 347 },
+      },
+    });
     await page.goto('/');
     await page.getByRole('article').waitFor();
     await page.evaluate(() => document.fonts.ready);

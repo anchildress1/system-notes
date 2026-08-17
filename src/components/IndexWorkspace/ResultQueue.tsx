@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type { Hit } from 'instantsearch.js';
 import FactCard from '@/components/FactCard/FactCard';
 import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteContent';
@@ -10,27 +10,38 @@ import styles from './IndexWorkspace.module.css';
 interface ResultQueueProps {
   items: Hit<FactHitRecord>[];
   nbHits: number;
-  resultKey: string;
+  selectedId?: string;
+  focusSelection: boolean;
+  onSelect: (id: string) => void;
   sendEvent: SendEventForHits;
 }
 
 export default function ResultQueue({
   items,
   nbHits,
-  resultKey,
+  selectedId,
+  focusSelection,
+  onSelect,
   sendEvent,
 }: Readonly<ResultQueueProps>) {
-  const [promotion, setPromotion] = useState<{
-    id: string;
-    resultKey: string;
-  } | null>(null);
-  const pinnedId = promotion?.resultKey === resultKey ? promotion.id : null;
-  const orderedItems = useMemo(() => {
-    if (!pinnedId) return items;
-    const pinned = items.find((item) => item.objectID === pinnedId);
-    return pinned ? [pinned, ...items.filter((item) => item.objectID !== pinnedId)] : items;
-  }, [items, pinnedId]);
-  const featured = orderedItems[0];
+  const readerRef = useRef<HTMLDivElement>(null);
+  const featuredIndex = Math.max(
+    items.findIndex((item) => item.objectID === selectedId),
+    0
+  );
+  const featured = items[featuredIndex];
+
+  useEffect(() => {
+    if (!focusSelection) return;
+    const frame = globalThis.requestAnimationFrame(() => {
+      const reduceMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      readerRef.current?.scrollIntoView({
+        behavior: reduceMotion ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    });
+    return () => globalThis.cancelAnimationFrame(frame);
+  }, [featured?.objectID, focusSelection]);
 
   if (!featured) return null;
 
@@ -38,29 +49,35 @@ export default function ResultQueue({
     <section className={styles.results} aria-label="Notes results">
       <h2 className="visually-hidden">Matching notes</h2>
       <p className={styles.queueStatus}>
-        showing {orderedItems.length.toLocaleString()} of {nbHits.toLocaleString()} matching notes
+        showing the top {items.length.toLocaleString()} of {nbHits.toLocaleString()} matching notes
       </p>
 
       <div className={styles.readingQueue}>
-        <FactCard
-          key={featured.objectID}
-          hit={featured}
-          position={getFactHitPosition(featured, 1)}
-          sendEvent={sendEvent}
-          focusOnMount={pinnedId === featured.objectID}
-        />
+        <div ref={readerRef} className={styles.reader}>
+          <FactCard
+            key={`${featured.objectID}:${focusSelection ? 'selected' : 'default'}`}
+            hit={featured}
+            position={getFactHitPosition(featured, featuredIndex + 1)}
+            sendEvent={sendEvent}
+            focusOnMount={focusSelection}
+          />
+        </div>
 
-        {orderedItems.length > 1 ? (
-          <ol className={styles.queueList}>
-            {orderedItems.slice(1).map((hit, index) => {
-              const position = getFactHitPosition(hit, index + 2);
+        {items.length > 1 ? (
+          <ol className={styles.queueList} data-ranked-queue>
+            {items.map((hit, index) => {
+              const position = getFactHitPosition(hit, index + 1);
               const project = getNoteProjects(hit)[0] ?? 'System Notes';
               const date = formatNoteDate(hit.created_at);
               return (
-                <li key={hit.objectID}>
+                <li
+                  key={hit.objectID}
+                  data-selected={hit.objectID === featured.objectID || undefined}
+                >
                   <button
                     type="button"
-                    onClick={() => setPromotion({ id: hit.objectID, resultKey })}
+                    aria-current={hit.objectID === featured.objectID ? 'true' : undefined}
+                    onClick={() => onSelect(hit.objectID)}
                   >
                     <span className={styles.queueMeta}>
                       <span>
@@ -79,7 +96,7 @@ export default function ResultQueue({
       </div>
 
       <p className={styles.queueFooter}>
-        The newest matches read here. Search, filter, or choose a row to bring a note up top.
+        The ranking stays put. Choose any row or board tile to read that note above.
       </p>
     </section>
   );

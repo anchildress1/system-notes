@@ -9,7 +9,6 @@ type RouteValue = string | string[];
 
 export type SearchRouteState = {
   q?: unknown;
-  page?: unknown;
   kind?: unknown;
   project?: unknown;
   tag?: unknown;
@@ -30,13 +29,6 @@ function toRouteValue(values: string[] | undefined): RouteValue | undefined {
   return values.length === 1 ? values[0] : values;
 }
 
-function toPage(value: unknown): number | undefined {
-  if (typeof value !== 'number' && typeof value !== 'string') return undefined;
-  if (value === '') return undefined;
-  const page = typeof value === 'number' ? value : Number(value);
-  return Number.isSafeInteger(page) && page > 0 ? page : undefined;
-}
-
 function toQuery(value: unknown): string | undefined {
   return toList(value)?.[0];
 }
@@ -46,7 +38,6 @@ export function toRouteState(uiState: UiState, indexName: string): SearchRouteSt
   const refinementList = indexState.refinementList ?? {};
   return {
     q: indexState.query || undefined,
-    page: indexState.page,
     kind: toRouteValue(refinementList[CATEGORY_ATTRIBUTE]),
     project: toRouteValue(refinementList[PROJECT_ATTRIBUTE]),
     tag: toRouteValue(refinementList[TAG_ATTRIBUTE]),
@@ -66,7 +57,6 @@ export function toUiState(routeState: SearchRouteState, indexName: string): UiSt
   return {
     [indexName]: {
       query: toQuery(routeState.q),
-      page: toPage(routeState.page),
       ...(Object.keys(refinementList).length > 0 ? { refinementList } : {}),
     },
   };

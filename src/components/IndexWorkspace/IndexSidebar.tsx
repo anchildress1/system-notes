@@ -1,7 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type KeyboardEvent } from 'react';
+import type { Hit } from 'instantsearch.js';
 import { useRefinementList, useStats } from 'react-instantsearch';
+import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
 const categoryGroups = [
@@ -30,8 +32,29 @@ function normalizeCategory(value: string): string {
   return plurals[normalized] ?? normalized;
 }
 
-export default function IndexSidebar() {
+function getFilingFamily(category: string | undefined): (typeof categoryGroups)[number]['key'] {
+  const normalized = normalizeCategory(category ?? '');
+  return (
+    categoryGroups.find((group) => group.values.some((value) => value === normalized))?.key ??
+    'decision'
+  );
+}
+
+interface IndexSidebarProps {
+  items: Hit<FactHitRecord>[];
+  selectedId?: string;
+  activatedId?: string;
+  onSelect: (id: string) => void;
+}
+
+export default function IndexSidebar({
+  items: rankedItems,
+  selectedId,
+  activatedId,
+  onSelect,
+}: Readonly<IndexSidebarProps>) {
   const [isOpen, setIsOpen] = useState(true);
+  const [focusedId, setFocusedId] = useState<string>();
   const { nbHits } = useStats();
   const { items, refine } = useRefinementList({
     attribute: 'category',
@@ -69,30 +92,38 @@ export default function IndexSidebar() {
       },
     ];
   }, [items]);
-  const tiles = useMemo(() => {
-    const remaining = categories.map((category) => ({
-      key: category.key,
-      count: category.count,
-      isRefined: category.isRefined,
-    }));
-    const nextTiles: Array<{ key: string; isDimmed: boolean; id: string }> = [];
-    let round = 0;
+  const tabStopId = rankedItems.some((item) => item.objectID === focusedId)
+    ? focusedId
+    : selectedId;
 
-    while (remaining.some((category) => category.count > 0)) {
-      for (const category of remaining) {
-        if (category.count <= 0) continue;
-        nextTiles.push({
-          key: category.key,
-          isDimmed: categories.some((item) => item.isRefined) && !category.isRefined,
-          id: `${category.key}-${round}-${category.count}`,
-        });
-        category.count -= 1;
-      }
-      round += 1;
+  function moveBoardFocus(event: KeyboardEvent<HTMLButtonElement>, currentIndex: number) {
+    let nextIndex: number;
+    switch (event.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        nextIndex = (currentIndex + 1) % rankedItems.length;
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        nextIndex = (currentIndex - 1 + rankedItems.length) % rankedItems.length;
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = rankedItems.length - 1;
+        break;
+      default:
+        return;
     }
 
-    return nextTiles;
-  }, [categories]);
+    event.preventDefault();
+    const buttons = event.currentTarget
+      .closest('ol')
+      ?.querySelectorAll<HTMLButtonElement>('button');
+    if (!buttons) return;
+    buttons.item(nextIndex).focus();
+  }
 
   return (
     <section className={styles.sidebar} data-open={isOpen} aria-label="Browse notes by type">
@@ -134,19 +165,41 @@ export default function IndexSidebar() {
           ))}
         </ul>
 
-        {tiles.length > 0 ? (
-          <div className={styles.board} aria-hidden="true">
-            <p>The board — one tile per note · {nbHits.toLocaleString()} ↑</p>
-            <div className={styles.boardTiles} data-note-board>
-              {tiles.map((tile) => (
-                <span
-                  key={tile.id}
-                  data-category={tile.key}
-                  data-dimmed={tile.isDimmed || undefined}
-                />
+        {rankedItems.length > 0 ? (
+          <div className={styles.board}>
+            <p>
+              The board — top {rankedItems.length.toLocaleString()} of {nbHits.toLocaleString()}
+            </p>
+            <ol
+              className={styles.boardTiles}
+              data-note-board
+              aria-label="Top ranked notes"
+              aria-describedby="note-board-instructions"
+            >
+              {rankedItems.map((item, index) => (
+                <li key={item.objectID}>
+                  <button
+                    type="button"
+                    data-category={getFilingFamily(item.category)}
+                    data-selected={item.objectID === selectedId || undefined}
+                    data-activated={item.objectID === activatedId || undefined}
+                    aria-label={`Read note ${index + 1}: ${item.title}`}
+                    aria-pressed={item.objectID === selectedId}
+                    tabIndex={item.objectID === tabStopId ? 0 : -1}
+                    title={`${index + 1}. ${item.title}`}
+                    onClick={() => {
+                      setFocusedId(item.objectID);
+                      onSelect(item.objectID);
+                    }}
+                    onFocus={() => setFocusedId(item.objectID)}
+                    onKeyDown={(event) => moveBoardFocus(event, index)}
+                  />
+                </li>
               ))}
-            </div>
-            <small>The index at a glance. A tile appears when a note is filed.</small>
+            </ol>
+            <small id="note-board-instructions">
+              Arrow through the board. Select a tile to bring that note into the reader.
+            </small>
           </div>
         ) : null}
       </div>

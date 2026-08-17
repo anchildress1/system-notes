@@ -10,7 +10,6 @@ describe('search routing', () => {
         {
           [indexName]: {
             query: 'failure',
-            page: 3,
             refinementList: {
               category: ['Principle'],
               projects: ['System Notes'],
@@ -22,7 +21,6 @@ describe('search routing', () => {
       )
     ).toEqual({
       q: 'failure',
-      page: 3,
       kind: 'Principle',
       project: 'System Notes',
       tag: 'Testing',
@@ -45,7 +43,6 @@ describe('search routing', () => {
   it('omits empty search state', () => {
     expect(toRouteState({}, indexName)).toEqual({
       q: undefined,
-      page: undefined,
       kind: undefined,
       project: undefined,
       tag: undefined,
@@ -57,7 +54,6 @@ describe('search routing', () => {
       toUiState(
         {
           q: '  reliability  ',
-          page: '2',
           kind: 'Principle',
           project: ['System Notes', ' '],
           tag: ['Testing'],
@@ -67,7 +63,6 @@ describe('search routing', () => {
     ).toEqual({
       [indexName]: {
         query: 'reliability',
-        page: 2,
         refinementList: {
           category: ['Principle'],
           projects: ['System Notes'],
@@ -77,16 +72,11 @@ describe('search routing', () => {
     });
   });
 
-  it.each(['0', '-1', '1.5', 'nope', ''])('drops invalid route page %j', (page) => {
-    expect(toUiState({ page }, indexName)[indexName]?.page).toBeUndefined();
-  });
-
   it('normalizes repeated scalars and rejects structured route values', () => {
     expect(
       toUiState(
         {
           q: ['first', 'second'],
-          page: { nested: '2' },
           kind: { 0: 'Principle' },
           project: ['System Notes', 42, ''],
         },
@@ -95,7 +85,6 @@ describe('search routing', () => {
     ).toEqual({
       [indexName]: {
         query: 'first',
-        page: undefined,
         refinementList: { projects: ['System Notes'] },
       },
     });
@@ -108,7 +97,6 @@ describe('search routing', () => {
     expect(routing.stateMapping.routeToState({ project: 'System Notes' })).toEqual({
       [indexName]: {
         query: undefined,
-        page: undefined,
         refinementList: { projects: ['System Notes'] },
       },
     });

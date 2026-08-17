@@ -17,9 +17,7 @@ export type MockAlgoliaHit = {
 
 interface MockAlgoliaOptions {
   nbHits?: number;
-  nbPages?: number;
   facets?: Record<string, Record<string, number>>;
-  pageHits?: Record<number, MockAlgoliaHit[]>;
   onRequest?: (params: URLSearchParams) => void;
 }
 
@@ -77,12 +75,16 @@ export async function mockAlgoliaSearch(
       const requestedPage = Number(params.get('page') ?? '0');
       const resultPage =
         Number.isSafeInteger(requestedPage) && requestedPage >= 0 ? requestedPage : 0;
-      const requestedHitsPerPage = Number(params.get('hitsPerPage') ?? '5');
+      const requestedHitsPerPage = Number(params.get('hitsPerPage') ?? '100');
       const hitsPerPage =
         Number.isSafeInteger(requestedHitsPerPage) && requestedHitsPerPage > 0
           ? requestedHitsPerPage
-          : 5;
-      const resultHits = options.pageHits?.[resultPage] ?? hits;
+          : 100;
+      const totalHits = options.nbHits ?? hits.length;
+      const resultHits = hits.slice(
+        resultPage * hitsPerPage,
+        resultPage * hitsPerPage + hitsPerPage
+      );
       const positionedHits = resultHits.map((hit, index) => ({
         ...hit,
         __position: hit.__position ?? resultPage * hitsPerPage + index + 1,
@@ -90,9 +92,9 @@ export async function mockAlgoliaSearch(
 
       return {
         hits: positionedHits,
-        nbHits: options.nbHits ?? hits.length,
+        nbHits: totalHits,
         page: resultPage,
-        nbPages: options.nbPages ?? (hits.length > 0 ? 1 : 0),
+        nbPages: Math.ceil(totalHits / hitsPerPage),
         hitsPerPage,
         processingTimeMS: 1,
         exhaustiveNbHits: true,

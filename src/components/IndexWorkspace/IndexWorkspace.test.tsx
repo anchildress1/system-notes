@@ -4,10 +4,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const searchHarness = vi.hoisted(() => ({
   hits: [] as Array<Record<string, unknown>>,
   facets: {} as Record<string, Record<string, number>>,
-  nbPages: 1,
-  statusPromise: null as Promise<unknown> | null,
   search: vi.fn(),
   insights: vi.fn(),
+  scrollIntoView: vi.fn(),
 }));
 
 vi.mock('search-insights', () => ({ default: searchHarness.insights }));
@@ -28,8 +27,8 @@ function result() {
     hits: searchHarness.hits,
     nbHits: searchHarness.hits.length,
     page: 0,
-    nbPages: searchHarness.nbPages,
-    hitsPerPage: 5,
+    nbPages: Math.ceil(searchHarness.hits.length / 100),
+    hitsPerPage: 100,
     processingTimeMS: 1,
     exhaustiveNbHits: true,
     query: '',
@@ -69,11 +68,24 @@ describe('IndexWorkspace', () => {
       projects: { 'System Notes': 1 },
       'tags.lvl0': { Testing: 1 },
     };
-    searchHarness.nbPages = 2;
-    searchHarness.statusPromise = null;
     searchHarness.search.mockReset();
     searchHarness.search.mockImplementation(async () => ({ results: [result()] }));
     searchHarness.insights.mockClear();
+    searchHarness.scrollIntoView.mockClear();
+    Element.prototype.scrollIntoView = searchHarness.scrollIntoView;
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => ({
+        matches: false,
+        media: '(prefers-reduced-motion: reduce)',
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+    );
   });
 
   afterEach(() => {
@@ -89,7 +101,7 @@ describe('IndexWorkspace', () => {
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
   });
 
-  it('renders the approved filing workspace with live counts and pagination', async () => {
+  it('renders the approved filing workspace with a capped ranked board', async () => {
     await renderWorkspace();
 
     expect(await screen.findByRole('searchbox', { name: 'Search the notes index' })).toBeVisible();
@@ -100,10 +112,11 @@ describe('IndexWorkspace', () => {
       'true'
     );
     expect(screen.getByText('principles')).toBeInTheDocument();
-    expect(screen.getByText(/one tile per note/i)).toBeInTheDocument();
+    expect(screen.getByText(/^The board — top 1 of 1$/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Read note 1: Failure is data/i })).toBeVisible();
     expect(screen.getByText('Project')).toBeInTheDocument();
     expect(screen.getByText('Topic')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Page 2' })).toBeInTheDocument();
+    expect(screen.queryByRole('navigation', { name: 'Notes pagination' })).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Powered by.*Algolia/i })).toHaveAttribute(
       'href',
       'https://www.algolia.com'
@@ -133,11 +146,109 @@ describe('IndexWorkspace', () => {
     expect(screen.getByRole('button', { name: /decisions, 174 notes/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /awards ★, 27 notes/i })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /other/i })).not.toBeInTheDocument();
-    expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(347);
+    expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(1);
+    expect(view.container.querySelector('[data-note-board] button')).toHaveAttribute(
+      'data-category',
+      'principle'
+    );
 
     fireEvent.click(screen.getByRole('button', { name: /principles, 118 notes/i }));
     await waitFor(() =>
-      expect(view.container.querySelectorAll('[data-note-board] [data-dimmed]')).toHaveLength(229)
+      expect(screen.getByRole('button', { name: /principles, 118 notes/i })).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      )
+    );
+  });
+
+  it('maps the first 100 ranked hits to ordered, clickable filing colors', async () => {
+    const categories = ['Award', 'Decision', 'Architecture', 'Principle'] as const;
+    searchHarness.hits = Array.from({ length: 105 }, (_, index) => ({
+      objectID: `card:test:${index + 1}`,
+      title: `Ranked note ${index + 1}`,
+      blurb: `Summary ${index + 1}`,
+      fact: `Evidence ${index + 1}`,
+      category: categories[index % categories.length],
+      projects: ['System Notes'],
+      'tags.lvl0': ['Testing'],
+      __position: index + 1,
+    }));
+    searchHarness.facets.category = {
+      Award: 27,
+      Decision: 26,
+      Architecture: 26,
+      Principle: 26,
+    };
+
+    await renderWorkspace();
+    expect(await screen.findByRole('article')).toHaveTextContent('Ranked note 1');
+    const board = within(screen.getByRole('list', { name: 'Top ranked notes' }));
+    const tiles = board.getAllByRole('button');
+
+    expect(tiles).toHaveLength(100);
+    expect(tiles.slice(0, 4).map((tile) => tile.dataset.category)).toEqual([
+      'award',
+      'decision',
+      'architecture',
+      'principle',
+    ]);
+    expect(tiles[99]).toHaveAccessibleName('Read note 100: Ranked note 100');
+    expect(board.queryByRole('button', { name: /Read note 101/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/top 100 of 105 matching notes/i)).toBeInTheDocument();
+    expect(screen.queryByText(/malformed notes were withheld/i)).not.toBeInTheDocument();
+    expect(tiles[0]).toHaveAttribute('tabindex', '0');
+    expect(tiles.slice(1).every((tile) => tile.tabIndex === -1)).toBe(true);
+
+    fireEvent.keyDown(tiles[0]!, { key: 'ArrowRight' });
+    expect(tiles[1]).toHaveFocus();
+    expect(tiles[1]).toHaveAttribute('tabindex', '0');
+
+    fireEvent.click(tiles[36]!);
+
+    expect(screen.getByRole('article')).toHaveTextContent('Ranked note 37');
+    expect(tiles[36]).toHaveAttribute('aria-pressed', 'true');
+    await waitFor(() =>
+      expect(searchHarness.scrollIntoView).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    );
+  });
+
+  it('scrolls an activated board note without motion when reduced motion is requested', async () => {
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => ({
+        matches: true,
+        media: '(prefers-reduced-motion: reduce)',
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+    );
+    searchHarness.hits.push({
+      objectID: 'card:test:2',
+      title: 'Reduced motion note',
+      blurb: 'No animated scroll',
+      fact: 'Motion is optional',
+      category: 'Decision',
+      projects: ['System Notes'],
+      'tags.lvl0': ['Accessibility'],
+    });
+
+    await renderWorkspace();
+    fireEvent.click(
+      await screen.findByRole('button', { name: /Read note 2: Reduced motion note/i })
+    );
+
+    await waitFor(() =>
+      expect(searchHarness.scrollIntoView).toHaveBeenCalledWith({
+        behavior: 'auto',
+        block: 'start',
+      })
     );
   });
 
@@ -193,7 +304,7 @@ describe('IndexWorkspace', () => {
     expect(screen.getByRole('button', { name: 'Clear search and filters' })).toBeEnabled();
   });
 
-  it('promotes a compact queue row into the featured reading slot', async () => {
+  it('reads a compact queue row without changing the ranked order', async () => {
     searchHarness.hits.push({
       objectID: 'card:test:2',
       title: 'Second decision',
@@ -204,13 +315,21 @@ describe('IndexWorkspace', () => {
       'tags.lvl0': ['Testing'],
     });
     searchHarness.facets.category = { Principle: 1, Decision: 1 };
-    await renderWorkspace();
+    const view = await renderWorkspace();
     const featured = await screen.findByRole('article');
     expect(featured).toHaveTextContent('Failure is data');
 
-    fireEvent.click(screen.getByRole('button', { name: /Second decision/i }));
+    fireEvent.click(view.container.querySelectorAll('[data-ranked-queue] button')[1]!);
 
     expect(screen.getByRole('article')).toHaveTextContent('Second decision');
+    expect(
+      [...view.container.querySelectorAll('[data-ranked-queue] button')].map((row) =>
+        row.textContent?.trim()
+      )
+    ).toEqual([
+      expect.stringContaining('Failure is data'),
+      expect.stringContaining('Second decision'),
+    ]);
 
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'fresh ranking' } });
     await waitFor(() => expect(screen.getByRole('article')).toHaveTextContent('Failure is data'));
@@ -238,12 +357,17 @@ describe('IndexWorkspace', () => {
 
   it('files unknown future categories under other without losing refinement', async () => {
     searchHarness.facets.category = { Mystery: 3 };
+    searchHarness.hits[0]!.category = 'Mystery';
 
     const view = await renderWorkspace();
     await screen.findByText('Failure is data');
     const other = screen.getByRole('button', { name: /other, 3 notes/i });
 
-    expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(3);
+    expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(1);
+    expect(view.container.querySelector('[data-note-board] button')).toHaveAttribute(
+      'data-category',
+      'decision'
+    );
     fireEvent.click(other);
     await waitFor(() => expect(other).toHaveAttribute('aria-pressed', 'true'));
   });
@@ -251,7 +375,6 @@ describe('IndexWorkspace', () => {
   it('renders a direct no-results state without fictional suggestions', async () => {
     searchHarness.hits = [];
     searchHarness.facets = {};
-    searchHarness.nbPages = 0;
     await renderWorkspace();
 
     expect(
@@ -268,7 +391,6 @@ describe('IndexWorkspace', () => {
   it('reports a search failure instead of leaving an empty result region', async () => {
     searchHarness.hits = [];
     searchHarness.facets = {};
-    searchHarness.nbPages = 0;
     searchHarness.search.mockRejectedValue(new Error('Algolia unavailable'));
 
     await renderWorkspace();
@@ -334,30 +456,5 @@ describe('IndexWorkspace', () => {
     await renderWorkspace();
 
     expect(await screen.findByText('Failure is data')).toBeInTheDocument();
-  });
-
-  it('moves between pagination pages and disables the first-page back control', async () => {
-    await renderWorkspace();
-    await screen.findByText('Failure is data');
-    const pagination = screen.getByRole('navigation', { name: 'Notes pagination' });
-
-    expect(within(pagination).getByRole('button', { name: 'Previous page' })).toBeDisabled();
-    fireEvent.click(within(pagination).getByRole('button', { name: 'Next page' }));
-
-    await waitFor(() =>
-      expect(within(pagination).getByRole('button', { name: 'Page 2' })).toHaveAttribute(
-        'aria-current',
-        'page'
-      )
-    );
-    expect(within(pagination).getByRole('button', { name: 'Next page' })).toBeDisabled();
-
-    fireEvent.click(within(pagination).getByRole('button', { name: 'Previous page' }));
-    await waitFor(() =>
-      expect(within(pagination).getByRole('button', { name: 'Page 1' })).toHaveAttribute(
-        'aria-current',
-        'page'
-      )
-    );
   });
 });

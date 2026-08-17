@@ -29,14 +29,17 @@ test.describe('Notes index', () => {
     await expect(page.getByText(/1 entry · 1ms/i)).toBeVisible();
   });
 
-  test('moves focus into a note promoted from the queue', async ({ page }) => {
+  test('moves focus into a note selected from the ranked queue', async ({ page }) => {
     await mockAlgoliaSearch(page, [
       buildHit(),
       buildHit({ objectID: 'card:test:2', title: 'Second decision' }),
     ]);
     await page.goto('/');
 
-    await page.getByRole('button', { name: /Second decision/i }).click();
+    await page
+      .locator('[data-ranked-queue]')
+      .getByRole('button', { name: /Second decision/i })
+      .click();
 
     await expect(page.getByRole('button', { name: 'Open note: Second decision' })).toBeFocused();
   });
@@ -62,10 +65,21 @@ test.describe('Notes index', () => {
 
   test('swaps visible faces and restores focus with reduced motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await mockAlgoliaSearch(page, [buildHit()]);
+    await mockAlgoliaSearch(page, [
+      buildHit(),
+      buildHit({ objectID: 'card:test:2', title: 'Second decision', category: 'Architecture' }),
+    ]);
     await page.goto('/');
-    const card = page.getByRole('article').filter({ hasText: 'Failure is useful data' });
+    const secondTile = page.getByRole('button', { name: 'Read note 2: Second decision' });
+    await expect(secondTile).toHaveCSS('transition-duration', '0s');
+    await expect(secondTile).toHaveCSS('animation-name', 'none');
+    await secondTile.press('Enter');
+    await expect(secondTile).toHaveCSS('transition-duration', '0s');
+    await expect(secondTile).toHaveCSS('animation-name', 'none');
+
+    const card = page.getByRole('article').filter({ hasText: 'Second decision' });
     const open = card.getByRole('button', { name: /Open note/i });
+    await expect(open).toBeFocused();
 
     await open.click();
     const close = card.getByRole('button', { name: /Close note/i });
@@ -145,20 +159,102 @@ test.describe('Notes index', () => {
     expect(widths.scroll).toBe(widths.client);
   });
 
-  test('keeps absolute note numbering on later result pages', async ({ page }) => {
-    await mockAlgoliaSearch(page, [buildHit()], {
-      nbHits: 10,
-      nbPages: 2,
-      pageHits: {
-        1: [buildHit({ objectID: 'card:test:6', title: 'Page two note' })],
+  test('maps the ordered top 100 to animated board controls', async ({ page }) => {
+    const categories = ['Award', 'Decision', 'Architecture', 'Principle'] as const;
+    const hits = Array.from({ length: 105 }, (_, index) =>
+      buildHit({
+        objectID: `card:test:${index + 1}`,
+        title: `Ranked note ${index + 1}`,
+        category: categories[index % categories.length],
+        __position: index + 1,
+      })
+    );
+    const requestedLimits: string[] = [];
+    await mockAlgoliaSearch(page, hits, {
+      onRequest: (params) => {
+        const limit = params.get('hitsPerPage');
+        if (limit) requestedLimits.push(limit);
       },
     });
     await page.goto('/');
+    const initialURL = page.url();
+    const board = page.getByRole('list', { name: 'Top ranked notes' });
+    const tiles = board.getByRole('button');
 
-    await page.getByRole('button', { name: 'Page 2' }).click();
+    await expect(tiles).toHaveCount(100);
+    await expect(tiles.nth(0)).toHaveAttribute('data-category', 'award');
+    await expect(tiles.nth(1)).toHaveAttribute('data-category', 'decision');
+    await expect(tiles.nth(2)).toHaveAttribute('data-category', 'architecture');
+    await expect(tiles.nth(3)).toHaveAttribute('data-category', 'principle');
+    await expect(tiles.nth(99)).toHaveAccessibleName('Read note 100: Ranked note 100');
+    await expect(page.getByRole('button', { name: /Read note 101/i })).toHaveCount(0);
+    await expect(page.getByRole('navigation', { name: 'Notes pagination' })).toHaveCount(0);
+    expect(requestedLimits).toContain('100');
 
-    const pageTwoCard = page.getByRole('article').filter({ hasText: 'Page two note' });
-    await expect(pageTwoCard).toBeVisible();
-    await expect(pageTwoCard.getByText(/№ 06/)).toBeVisible();
+    const tileTitles = await tiles.evaluateAll((buttons) =>
+      buttons.map((button) => button.getAttribute('aria-label')?.replace(/^Read note \d+: /, ''))
+    );
+    const tileCategories = await tiles.evaluateAll((buttons) =>
+      buttons.map((button) => button.getAttribute('data-category'))
+    );
+    const queueTitles = await page
+      .locator('[data-ranked-queue] button')
+      .evaluateAll((buttons) => buttons.map((button) => button.children.item(1)?.textContent));
+    expect(tileTitles).toEqual(queueTitles);
+    expect(tileCategories).toEqual(
+      hits.slice(0, 100).map((hit) => hit.category?.toLocaleLowerCase())
+    );
+
+    const colorSignatures = await tiles.evaluateAll((buttons) =>
+      buttons.slice(0, 4).map((button) => {
+        const style = getComputedStyle(button);
+        return `${style.backgroundColor}|${style.borderTopColor}|${style.borderTopWidth}`;
+      })
+    );
+    expect(new Set(colorSignatures).size).toBe(4);
+
+    await expect(tiles.nth(0)).toHaveJSProperty('tabIndex', 0);
+    await expect(tiles.nth(1)).toHaveJSProperty('tabIndex', -1);
+    await expect(tiles.nth(0)).toHaveCSS('animation-name', 'none');
+    await tiles.nth(0).focus();
+    await tiles.nth(0).press('ArrowLeft');
+    await expect(tiles.nth(99)).toBeFocused();
+    await tiles.nth(99).press('ArrowDown');
+    await expect(tiles.nth(0)).toBeFocused();
+    await tiles.nth(0).press('ArrowUp');
+    await expect(tiles.nth(99)).toBeFocused();
+    await tiles.nth(99).press('ArrowRight');
+    await expect(tiles.nth(0)).toBeFocused();
+    await tiles.nth(0).press('End');
+    await expect(tiles.nth(99)).toBeFocused();
+    await tiles.nth(99).press('Home');
+    await expect(tiles.nth(0)).toBeFocused();
+    await tiles.nth(0).press('a');
+    await expect(tiles.nth(0)).toBeFocused();
+    await tiles.nth(0).press('ArrowRight');
+    await expect(tiles.nth(1)).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('searchbox', { name: 'Search the notes index' })).toBeFocused();
+
+    const selectedTile = tiles.nth(36);
+    await expect(selectedTile).not.toHaveCSS('transition-duration', '0s');
+    await selectedTile.click();
+
+    await expect(selectedTile).toHaveAttribute('aria-pressed', 'true');
+    await expect(selectedTile).toHaveCSS('animation-name', /board-select/);
+    await expect(selectedTile).toHaveCSS('animation-duration', '0.36s');
+    await expect(selectedTile).toHaveCSS('animation-iteration-count', '1');
+    await expect(selectedTile).toHaveCSS(
+      'animation-timing-function',
+      'cubic-bezier(0.16, 1, 0.3, 1)'
+    );
+    const selectedCard = page.getByRole('article').filter({ hasText: 'Ranked note 37' });
+    await expect(
+      selectedCard.getByRole('button', { name: 'Open note: Ranked note 37' })
+    ).toBeFocused();
+    expect(page.url()).toBe(initialURL);
+
+    const accessibility = await new AxeBuilder({ page }).analyze();
+    expect(accessibility.violations).toEqual([]);
   });
 });
