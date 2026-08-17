@@ -19,7 +19,9 @@ vi.mock('algoliasearch/lite', () => ({
 }));
 
 vi.mock('@/components/FactCard/FactCard', () => ({
-  default: ({ hit }: { hit: { title: string } }) => <article>{hit.title}</article>,
+  default: ({ hit, position }: { hit: { title: string }; position: number }) => (
+    <article data-position={position}>{hit.title}</article>
+  ),
 }));
 
 function result() {
@@ -112,7 +114,7 @@ describe('IndexWorkspace', () => {
       'true'
     );
     expect(screen.getByText('principles')).toBeInTheDocument();
-    expect(screen.getByText(/^The board — top 1 of 1$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^The board — 1 ranked · 1 match$/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Read note 1: Failure is data/i })).toBeVisible();
     expect(screen.getByText('Project')).toBeInTheDocument();
     expect(screen.getByText('Topic')).toBeInTheDocument();
@@ -194,8 +196,20 @@ describe('IndexWorkspace', () => {
     ]);
     expect(tiles[99]).toHaveAccessibleName('Read note 100: Ranked note 100');
     expect(board.queryByRole('button', { name: /Read note 101/i })).not.toBeInTheDocument();
-    expect(screen.getByText(/top 100 of 105 matching notes/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/5 notes in view · 100 ranked on the board · 105 matches/i)
+    ).toBeInTheDocument();
     expect(screen.queryByText(/malformed notes were withheld/i)).not.toBeInTheDocument();
+    expect(
+      [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
+        row.textContent?.trim()
+      )
+    ).toEqual([
+      expect.stringContaining('Ranked note 2'),
+      expect.stringContaining('Ranked note 3'),
+      expect.stringContaining('Ranked note 4'),
+      expect.stringContaining('Ranked note 5'),
+    ]);
     expect(tiles[0]).toHaveAttribute('tabindex', '0');
     expect(tiles.slice(1).every((tile) => tile.tabIndex === -1)).toBe(true);
 
@@ -206,14 +220,70 @@ describe('IndexWorkspace', () => {
     fireEvent.click(tiles[36]!);
 
     expect(screen.getByRole('article')).toHaveTextContent('Ranked note 37');
+    expect(screen.getByRole('article')).toHaveAttribute('data-position', '37');
     expect(tiles[36]).toHaveAttribute('aria-pressed', 'true');
+    expect(
+      [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
+        row.textContent?.trim()
+      )
+    ).toEqual([
+      expect.stringContaining('Ranked note 1'),
+      expect.stringContaining('Ranked note 2'),
+      expect.stringContaining('Ranked note 3'),
+      expect.stringContaining('Ranked note 4'),
+    ]);
     await waitFor(() =>
       expect(searchHarness.scrollIntoView).toHaveBeenCalledWith({
         behavior: 'smooth',
         block: 'start',
       })
     );
+
+    fireEvent.click(tiles[2]!);
+    expect(screen.getByRole('article')).toHaveTextContent('Ranked note 3');
+    expect(
+      [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
+        row.textContent?.trim()
+      )
+    ).toEqual([
+      expect.stringContaining('Ranked note 1'),
+      expect.stringContaining('Ranked note 2'),
+      expect.stringContaining('Ranked note 4'),
+      expect.stringContaining('Ranked note 5'),
+    ]);
   });
+
+  it.each([1, 2, 3, 4])(
+    'shows every unique note when only %i ranked notes are available',
+    async (count) => {
+      searchHarness.hits = Array.from({ length: count }, (_, index) => ({
+        objectID: `card:test:${index + 1}`,
+        title: `Ranked note ${index + 1}`,
+        blurb: `Summary ${index + 1}`,
+        fact: `Evidence ${index + 1}`,
+        category: 'Decision',
+        projects: ['System Notes'],
+        'tags.lvl0': ['Testing'],
+        __position: index + 1,
+      }));
+
+      await renderWorkspace();
+
+      expect(await screen.findByRole('article')).toHaveTextContent('Ranked note 1');
+      const rows = [...document.querySelectorAll('[data-ranked-queue] button')];
+      expect(rows).toHaveLength(Math.max(0, count - 1));
+      expect(rows.map((row) => row.textContent)).toEqual(
+        Array.from({ length: count - 1 }, (_, index) =>
+          expect.stringContaining(`Ranked note ${index + 2}`)
+        )
+      );
+      expect(
+        screen.getByText(
+          `${count} ${count === 1 ? 'note' : 'notes'} in view · ${count} ranked on the board · ${count} ${count === 1 ? 'match' : 'matches'}`
+        )
+      ).toBeInTheDocument();
+    }
+  );
 
   it('scrolls an activated board note without motion when reduced motion is requested', async () => {
     vi.stubGlobal(
@@ -319,17 +389,14 @@ describe('IndexWorkspace', () => {
     const featured = await screen.findByRole('article');
     expect(featured).toHaveTextContent('Failure is data');
 
-    fireEvent.click(view.container.querySelectorAll('[data-ranked-queue] button')[1]!);
+    fireEvent.click(view.container.querySelector('[data-ranked-queue] button')!);
 
     expect(screen.getByRole('article')).toHaveTextContent('Second decision');
     expect(
       [...view.container.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
       )
-    ).toEqual([
-      expect.stringContaining('Failure is data'),
-      expect.stringContaining('Second decision'),
-    ]);
+    ).toEqual([expect.stringContaining('Failure is data')]);
 
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'fresh ranking' } });
     await waitFor(() => expect(screen.getByRole('article')).toHaveTextContent('Failure is data'));
@@ -448,6 +515,53 @@ describe('IndexWorkspace', () => {
     expect(await screen.findByText('Failure is data')).toBeInTheDocument();
     expect(screen.getByRole('alert')).toHaveTextContent('Some malformed notes were withheld.');
     expect(screen.queryByText('Broken')).not.toBeInTheDocument();
+  });
+
+  it('preserves remote ranks when a malformed hit is withheld', async () => {
+    searchHarness.hits = [
+      { ...searchHarness.hits[0], __position: 1 },
+      { objectID: '../escape', title: 'Broken', __position: 2 },
+      {
+        ...searchHarness.hits[0],
+        objectID: 'card:test:3',
+        title: 'Actual rank three',
+        __position: 3,
+      },
+    ];
+
+    await renderWorkspace();
+
+    const board = within(await screen.findByRole('list', { name: 'Top ranked notes' }));
+    expect(board.getByRole('button', { name: 'Read note 1: Failure is data' })).toBeVisible();
+    expect(board.getByRole('button', { name: 'Read note 3: Actual rank three' })).toBeVisible();
+    expect(screen.getByText(/The board — 2 ranked · 3 matches/i)).toBeInTheDocument();
+    expect(document.querySelector('[data-ranked-queue] button')).toHaveTextContent(
+      '№ 3 · System Notes'
+    );
+    fireEvent.click(board.getByRole('button', { name: 'Read note 3: Actual rank three' }));
+    expect(screen.getByRole('article')).toHaveAttribute('data-position', '3');
+  });
+
+  it('withholds duplicate remote IDs from the board and visible notes', async () => {
+    searchHarness.hits = Array.from({ length: 6 }, (_, index) => ({
+      ...searchHarness.hits[0],
+      objectID: `card:test:${index + 1}`,
+      title: `Unique note ${index + 1}`,
+      __position: index + 1,
+    }));
+    searchHarness.hits.splice(2, 0, {
+      ...searchHarness.hits[1],
+      title: 'Duplicate should disappear',
+      __position: 3,
+    });
+
+    await renderWorkspace();
+
+    expect(await screen.findByRole('article')).toHaveTextContent('Unique note 1');
+    expect(screen.queryByText('Duplicate should disappear')).not.toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /Read note \d+: Unique note/i })).toHaveLength(6);
+    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(4);
+    expect(screen.getByRole('alert')).toHaveTextContent('Some malformed notes were withheld.');
   });
 
   it('strips malformed Algolia highlight metadata before InstantSearch processes it', async () => {

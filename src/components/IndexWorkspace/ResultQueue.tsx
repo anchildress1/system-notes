@@ -7,6 +7,8 @@ import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteC
 import type { FactHitRecord, SendEventForHits } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
+const VISIBLE_NOTE_LIMIT = 5;
+
 interface ResultQueueProps {
   items: Hit<FactHitRecord>[];
   nbHits: number;
@@ -44,12 +46,19 @@ export default function ResultQueue({
   }, [featured?.objectID, focusSelection]);
 
   if (!featured) return null;
+  const alternatives = items
+    .map((hit, index) => ({ hit, index }))
+    .filter(({ hit }) => hit.objectID !== featured.objectID)
+    .slice(0, VISIBLE_NOTE_LIMIT - 1);
+  const visibleCount = alternatives.length + 1;
 
   return (
     <section className={styles.results} aria-label="Notes results">
       <h2 className="visually-hidden">Matching notes</h2>
       <p className={styles.queueStatus}>
-        showing the top {items.length.toLocaleString()} of {nbHits.toLocaleString()} matching notes
+        {visibleCount.toLocaleString()} {visibleCount === 1 ? 'note' : 'notes'} in view ·{' '}
+        {items.length.toLocaleString()} ranked on the board · {nbHits.toLocaleString()}{' '}
+        {nbHits === 1 ? 'match' : 'matches'}
       </p>
 
       <div className={styles.readingQueue}>
@@ -63,22 +72,19 @@ export default function ResultQueue({
           />
         </div>
 
-        {items.length > 1 ? (
-          <ol className={styles.queueList} data-ranked-queue>
-            {items.map((hit, index) => {
+        {alternatives.length > 0 ? (
+          <ol
+            className={styles.queueList}
+            data-ranked-queue
+            aria-label="Highest-ranked alternate notes"
+          >
+            {alternatives.map(({ hit, index }) => {
               const position = getFactHitPosition(hit, index + 1);
               const project = getNoteProjects(hit)[0] ?? 'System Notes';
               const date = formatNoteDate(hit.created_at);
               return (
-                <li
-                  key={hit.objectID}
-                  data-selected={hit.objectID === featured.objectID || undefined}
-                >
-                  <button
-                    type="button"
-                    aria-current={hit.objectID === featured.objectID ? 'true' : undefined}
-                    onClick={() => onSelect(hit.objectID)}
-                  >
+                <li key={hit.objectID}>
+                  <button type="button" onClick={() => onSelect(hit.objectID)}>
                     <span className={styles.queueMeta}>
                       <span>
                         № {position} · {project}
@@ -96,7 +102,7 @@ export default function ResultQueue({
       </div>
 
       <p className={styles.queueFooter}>
-        The ranking stays put. Choose any row or board tile to read that note above.
+        The board and ranking stay put. Choose an alternate or any board tile to read another note.
       </p>
     </section>
   );

@@ -439,12 +439,6 @@
   min-width: 0;
 }
 
-.queueList li[data-selected] button {
-  border-color: var(--neon);
-  background: oklch(17% 0.04 330);
-  box-shadow: inset 0.2rem 0 0 var(--neon);
-}
-
 .queueList button {
   display: grid;
   width: 100%;

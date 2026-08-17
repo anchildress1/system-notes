@@ -3,6 +3,7 @@
 import { useMemo, useState, type KeyboardEvent } from 'react';
 import type { Hit } from 'instantsearch.js';
 import { useRefinementList, useStats } from 'react-instantsearch';
+import { getFactHitPosition } from '@/lib/noteContent';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
@@ -168,7 +169,8 @@ export default function IndexSidebar({
         {rankedItems.length > 0 ? (
           <div className={styles.board}>
             <p>
-              The board — top {rankedItems.length.toLocaleString()} of {nbHits.toLocaleString()}
+              The board — {rankedItems.length.toLocaleString()} ranked · {nbHits.toLocaleString()}{' '}
+              {nbHits === 1 ? 'match' : 'matches'}
             </p>
             <ol
               className={styles.boardTiles}
@@ -176,26 +178,29 @@ export default function IndexSidebar({
               aria-label="Top ranked notes"
               aria-describedby="note-board-instructions"
             >
-              {rankedItems.map((item, index) => (
-                <li key={item.objectID}>
-                  <button
-                    type="button"
-                    data-category={getFilingFamily(item.category)}
-                    data-selected={item.objectID === selectedId || undefined}
-                    data-activated={item.objectID === activatedId || undefined}
-                    aria-label={`Read note ${index + 1}: ${item.title}`}
-                    aria-pressed={item.objectID === selectedId}
-                    tabIndex={item.objectID === tabStopId ? 0 : -1}
-                    title={`${index + 1}. ${item.title}`}
-                    onClick={() => {
-                      setFocusedId(item.objectID);
-                      onSelect(item.objectID);
-                    }}
-                    onFocus={() => setFocusedId(item.objectID)}
-                    onKeyDown={(event) => moveBoardFocus(event, index)}
-                  />
-                </li>
-              ))}
+              {rankedItems.map((item, index) => {
+                const position = getFactHitPosition(item, index + 1);
+                return (
+                  <li key={item.objectID}>
+                    <button
+                      type="button"
+                      data-category={getFilingFamily(item.category)}
+                      data-selected={item.objectID === selectedId || undefined}
+                      data-activated={item.objectID === activatedId || undefined}
+                      aria-label={`Read note ${position}: ${item.title}`}
+                      aria-pressed={item.objectID === selectedId}
+                      tabIndex={item.objectID === tabStopId ? 0 : -1}
+                      title={`${position}. ${item.title}`}
+                      onClick={() => {
+                        setFocusedId(item.objectID);
+                        onSelect(item.objectID);
+                      }}
+                      onFocus={() => setFocusedId(item.objectID)}
+                      onKeyDown={(event) => moveBoardFocus(event, index)}
+                    />
+                  </li>
+                );
+              })}
             </ol>
             <small id="note-board-instructions">
               Arrow through the board. Select a tile to bring that note into the reader.

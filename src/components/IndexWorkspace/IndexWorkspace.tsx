@@ -105,10 +105,15 @@ function IndexExperience() {
     indexUiState,
     objectIDs: items.map((item) => item.objectID),
   });
-  const readableItems = useMemo(
-    () => items.map(normalizeFactSearchHit).filter((item) => item !== null),
-    [items]
-  );
+  const readableItems = useMemo(() => {
+    const seenIds = new Set<string>();
+    return items.flatMap((item) => {
+      const readableItem = normalizeFactSearchHit(item);
+      if (!readableItem || seenIds.has(readableItem.objectID)) return [];
+      seenIds.add(readableItem.objectID);
+      return [readableItem];
+    });
+  }, [items]);
   const rankedItems = useMemo(() => readableItems.slice(0, MAX_RANKED_NOTES), [readableItems]);
   const [selection, setSelection] = useState<{ id: string; resultKey: string } | null>(null);
   const selectedId =

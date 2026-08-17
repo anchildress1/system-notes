@@ -35,6 +35,7 @@ test.describe('Notes index', () => {
       buildHit({ objectID: 'card:test:2', title: 'Second decision' }),
     ]);
     await page.goto('/');
+    const initialURL = page.url();
 
     await page
       .locator('[data-ranked-queue]')
@@ -42,6 +43,7 @@ test.describe('Notes index', () => {
       .click();
 
     await expect(page.getByRole('button', { name: 'Open note: Second decision' })).toBeFocused();
+    expect(page.url()).toBe(initialURL);
   });
 
   test('flips a note locally without changing the URL', async ({ page }) => {
@@ -197,13 +199,17 @@ test.describe('Notes index', () => {
     const tileCategories = await tiles.evaluateAll((buttons) =>
       buttons.map((button) => button.getAttribute('data-category'))
     );
-    const queueTitles = await page
+    const initialQueueTitles = await page
       .locator('[data-ranked-queue] button')
       .evaluateAll((buttons) => buttons.map((button) => button.children.item(1)?.textContent));
-    expect(tileTitles).toEqual(queueTitles);
+    expect(tileTitles).toEqual(hits.slice(0, 100).map((hit) => hit.title));
+    expect(initialQueueTitles).toEqual(hits.slice(1, 5).map((hit) => hit.title));
     expect(tileCategories).toEqual(
       hits.slice(0, 100).map((hit) => hit.category?.toLocaleLowerCase())
     );
+    await expect(
+      page.getByText(/5 notes in view · 100 ranked on the board · 105 matches/i)
+    ).toBeVisible();
 
     const colorSignatures = await tiles.evaluateAll((buttons) =>
       buttons.slice(0, 4).map((button) => {
@@ -252,6 +258,11 @@ test.describe('Notes index', () => {
     await expect(
       selectedCard.getByRole('button', { name: 'Open note: Ranked note 37' })
     ).toBeFocused();
+    const selectedQueueTitles = await page
+      .locator('[data-ranked-queue] button')
+      .evaluateAll((buttons) => buttons.map((button) => button.children.item(1)?.textContent));
+    expect(selectedQueueTitles).toEqual(hits.slice(0, 4).map((hit) => hit.title));
+    await expect(page.getByRole('list', { name: 'Highest-ranked alternate notes' })).toBeVisible();
     expect(page.url()).toBe(initialURL);
 
     const accessibility = await new AxeBuilder({ page }).analyze();
