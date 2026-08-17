@@ -3,9 +3,15 @@
 import { createNullCache } from '@algolia/client-common';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
 import { useCallback, useMemo, useState } from 'react';
-import { Configure, InstantSearch, useHits, useInstantSearch, useStats } from 'react-instantsearch';
+import {
+  Configure,
+  InstantSearch,
+  useHits,
+  useInstantSearch,
+  useSearchBox,
+  useStats,
+} from 'react-instantsearch';
 import aa from 'search-insights';
-import { useSearchParams } from 'next/navigation';
 import 'instantsearch.css/themes/reset.css';
 import { ALGOLIA_INDEX_NAME } from '@/config';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
@@ -102,8 +108,6 @@ function IndexExperience() {
   const { items, sendEvent } = useHits<FactHitRecord>();
   const { status } = useInstantSearch({ catchError: true });
   const { nbHits } = useStats();
-  const searchParams = useSearchParams();
-  const selectedByRoute = useMemo(() => searchParams.get('note'), [searchParams]);
   const readableItems = useMemo(() => {
     const seenIds = new Set<string>();
     return items.flatMap((item) => {
@@ -114,25 +118,30 @@ function IndexExperience() {
     });
   }, [items]);
   const rankedItems = useMemo(() => readableItems.slice(0, MAX_BOARD_NOTES), [readableItems]);
-  const [selection, setSelection] = useState<string | null>(null);
+  const { query } = useSearchBox();
+  // The selection carries the query it was made under, so a new search discards
+  // it by derivation rather than by resetting state in an effect. Otherwise the
+  // pane keeps showing a note left over from the previous query while the board
+  // underneath it has already moved on.
+  const [selection, setSelection] = useState<{ id: string; query: string } | null>(null);
+
+  // Selection lives in the workspace, not the URL. The board is a reading
+  // surface: picking a note swaps the pane and reports the click to Algolia,
+  // and it falls back to the top-ranked note whenever the current pick is stale
+  // or has dropped out of the results.
   const selectedId = useMemo(() => {
-    const selectedFromRoute =
-      typeof selectedByRoute === 'string' && selectedByRoute.trim() ? selectedByRoute.trim() : null;
-    const hasSelection = selection && rankedItems.some((item) => item.objectID === selection);
-    if (hasSelection) return selection;
-    if (selectedFromRoute && rankedItems.some((item) => item.objectID === selectedFromRoute)) {
-      return selectedFromRoute;
-    }
-    return rankedItems[0]?.objectID;
-  }, [rankedItems, selectedByRoute, selection]);
+    const stillValid =
+      selection?.query === query && rankedItems.some((item) => item.objectID === selection?.id);
+    return stillValid ? selection?.id : rankedItems[0]?.objectID;
+  }, [rankedItems, selection, query]);
   const selectNote = useCallback(
     (id: string) => {
       const hit = rankedItems.find((item) => item.objectID === id);
       if (!hit) return;
       sendEvent('click', hit, 'Note Selected');
-      setSelection(id);
+      setSelection({ id, query });
     },
-    [rankedItems, sendEvent]
+    [rankedItems, sendEvent, query]
   );
 
   return (
