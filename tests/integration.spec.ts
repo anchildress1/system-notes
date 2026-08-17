@@ -80,7 +80,7 @@ test.describe('System Notes redesign', () => {
     const filingCategories = ['Principle', 'Architecture', 'Decision', 'Award'] as const;
     const rankedHits = [
       ...featuredHits,
-      ...Array.from({ length: 95 }, (_, index) => ({
+      ...Array.from({ length: 342 }, (_, index) => ({
         objectID: `card:test:${index + 6}`,
         title: `Ranked system note ${index + 6}`,
         category: filingCategories[index % filingCategories.length],

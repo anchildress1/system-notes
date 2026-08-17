@@ -75,11 +75,11 @@ export async function mockAlgoliaSearch(
       const requestedPage = Number(params.get('page') ?? '0');
       const resultPage =
         Number.isSafeInteger(requestedPage) && requestedPage >= 0 ? requestedPage : 0;
-      const requestedHitsPerPage = Number(params.get('hitsPerPage') ?? '100');
+      const requestedHitsPerPage = Number(params.get('hitsPerPage') ?? '500');
       const hitsPerPage =
         Number.isSafeInteger(requestedHitsPerPage) && requestedHitsPerPage > 0
           ? requestedHitsPerPage
-          : 100;
+          : 500;
       const totalHits = options.nbHits ?? hits.length;
       const resultHits = hits.slice(
         resultPage * hitsPerPage,

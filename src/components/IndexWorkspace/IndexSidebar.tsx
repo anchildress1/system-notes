@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type KeyboardEvent } from 'react';
+import { useMemo, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import type { Hit } from 'instantsearch.js';
 import { useRefinementList, useStats } from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
@@ -44,18 +44,16 @@ function getFilingFamily(category: string | undefined): (typeof categoryGroups)[
 interface IndexSidebarProps {
   items: Hit<FactHitRecord>[];
   selectedId?: string;
-  activatedId?: string;
   onSelect: (id: string) => void;
 }
 
 export default function IndexSidebar({
   items: rankedItems,
   selectedId,
-  activatedId,
   onSelect,
 }: Readonly<IndexSidebarProps>) {
   const [isOpen, setIsOpen] = useState(true);
-  const [focusedId, setFocusedId] = useState<string>();
+  const [activation, setActivation] = useState<{ id: string; nonce: number }>();
   const { nbHits } = useStats();
   const { items, refine } = useRefinementList({
     attribute: 'category',
@@ -93,20 +91,28 @@ export default function IndexSidebar({
       },
     ];
   }, [items]);
-  const tabStopId = rankedItems.some((item) => item.objectID === focusedId)
-    ? focusedId
-    : selectedId;
+  const selectedIndex = Math.max(
+    rankedItems.findIndex((item) => item.objectID === selectedId),
+    0
+  );
+  const activeOptionId = rankedItems.length > 0 ? `note-board-option-${selectedIndex}` : undefined;
 
-  function moveBoardFocus(event: KeyboardEvent<HTMLButtonElement>, currentIndex: number) {
+  function activateNote(id: string) {
+    setActivation((current) => ({ id, nonce: (current?.nonce ?? 0) + 1 }));
+    onSelect(id);
+  }
+
+  function moveBoardSelection(event: KeyboardEvent<HTMLOListElement>) {
+    if (rankedItems.length === 0) return;
     let nextIndex: number;
     switch (event.key) {
       case 'ArrowRight':
       case 'ArrowDown':
-        nextIndex = (currentIndex + 1) % rankedItems.length;
+        nextIndex = Math.min(selectedIndex + 1, rankedItems.length - 1);
         break;
       case 'ArrowLeft':
       case 'ArrowUp':
-        nextIndex = (currentIndex - 1 + rankedItems.length) % rankedItems.length;
+        nextIndex = Math.max(selectedIndex - 1, 0);
         break;
       case 'Home':
         nextIndex = 0;
@@ -119,11 +125,16 @@ export default function IndexSidebar({
     }
 
     event.preventDefault();
-    const buttons = event.currentTarget
-      .closest('ol')
-      ?.querySelectorAll<HTMLButtonElement>('button');
-    if (!buttons) return;
-    buttons.item(nextIndex).focus();
+    activateNote(rankedItems[nextIndex]!.objectID);
+  }
+
+  function selectBoardOption(event: MouseEvent<HTMLOListElement>) {
+    const option =
+      event.target instanceof Element ? event.target.closest<HTMLElement>('[data-note-id]') : null;
+    if (!option || !event.currentTarget.contains(option)) return;
+    event.currentTarget.focus({ preventScroll: true });
+    const noteId = option.dataset.noteId;
+    if (noteId) activateNote(noteId);
   }
 
   return (
@@ -175,35 +186,37 @@ export default function IndexSidebar({
             <ol
               className={styles.boardTiles}
               data-note-board
+              role="listbox"
+              tabIndex={0}
               aria-label="Top ranked notes"
               aria-describedby="note-board-instructions"
+              aria-activedescendant={activeOptionId}
+              onClick={selectBoardOption}
+              onKeyDown={moveBoardSelection}
             >
               {rankedItems.map((item, index) => {
                 const position = getFactHitPosition(item, index + 1);
                 return (
-                  <li key={item.objectID}>
-                    <button
-                      type="button"
-                      data-category={getFilingFamily(item.category)}
-                      data-selected={item.objectID === selectedId || undefined}
-                      data-activated={item.objectID === activatedId || undefined}
-                      aria-label={`Read note ${position}: ${item.title}`}
-                      aria-pressed={item.objectID === selectedId}
-                      tabIndex={item.objectID === tabStopId ? 0 : -1}
-                      title={`${position}. ${item.title}`}
-                      onClick={() => {
-                        setFocusedId(item.objectID);
-                        onSelect(item.objectID);
-                      }}
-                      onFocus={() => setFocusedId(item.objectID)}
-                      onKeyDown={(event) => moveBoardFocus(event, index)}
-                    />
-                  </li>
+                  <li
+                    id={`note-board-option-${index}`}
+                    key={
+                      item.objectID === activation?.id
+                        ? `${item.objectID}:${activation.nonce}`
+                        : item.objectID
+                    }
+                    role="option"
+                    data-note-id={item.objectID}
+                    data-category={getFilingFamily(item.category)}
+                    data-activated={item.objectID === activation?.id || undefined}
+                    aria-label={`Read note ${position}: ${item.title}`}
+                    aria-selected={item.objectID === selectedId}
+                    title={`${position}. ${item.title}`}
+                  />
                 );
               })}
             </ol>
             <small id="note-board-instructions">
-              Arrow through the board. Select a tile to bring that note into the reader.
+              One tab stop. Arrow keys move one note; Home/End jumps. Click any tile.
             </small>
           </div>
         ) : null}

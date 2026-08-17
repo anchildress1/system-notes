@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import type { Hit } from 'instantsearch.js';
 import FactCard from '@/components/FactCard/FactCard';
 import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteContent';
-import type { FactHitRecord, SendEventForHits } from '@/types/algolia';
+import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
 const VISIBLE_NOTE_LIMIT = 5;
@@ -13,20 +13,17 @@ interface ResultQueueProps {
   items: Hit<FactHitRecord>[];
   nbHits: number;
   selectedId?: string;
-  focusSelection: boolean;
   onSelect: (id: string) => void;
-  sendEvent: SendEventForHits;
 }
 
 export default function ResultQueue({
   items,
   nbHits,
   selectedId,
-  focusSelection,
   onSelect,
-  sendEvent,
 }: Readonly<ResultQueueProps>) {
   const readerRef = useRef<HTMLDivElement>(null);
+  const shouldFocusReader = useRef(false);
   const featuredIndex = Math.max(
     items.findIndex((item) => item.objectID === selectedId),
     0
@@ -34,16 +31,10 @@ export default function ResultQueue({
   const featured = items[featuredIndex];
 
   useEffect(() => {
-    if (!focusSelection) return;
-    const frame = globalThis.requestAnimationFrame(() => {
-      const reduceMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-      readerRef.current?.scrollIntoView({
-        behavior: reduceMotion ? 'auto' : 'smooth',
-        block: 'start',
-      });
-    });
-    return () => globalThis.cancelAnimationFrame(frame);
-  }, [featured?.objectID, focusSelection]);
+    if (!shouldFocusReader.current) return;
+    shouldFocusReader.current = false;
+    readerRef.current?.focus({ preventScroll: true });
+  }, [featured?.objectID]);
 
   if (!featured) return null;
   const alternatives = items
@@ -62,13 +53,18 @@ export default function ResultQueue({
       </p>
 
       <div className={styles.readingQueue}>
-        <div ref={readerRef} className={styles.reader}>
+        <div
+          ref={readerRef}
+          className={styles.reader}
+          tabIndex={-1}
+          aria-label={`Now reading: ${featured.title}`}
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <FactCard
-            key={`${featured.objectID}:${focusSelection ? 'selected' : 'default'}`}
+            key={featured.objectID}
             hit={featured}
             position={getFactHitPosition(featured, featuredIndex + 1)}
-            sendEvent={sendEvent}
-            focusOnMount={focusSelection}
           />
         </div>
 
@@ -84,7 +80,13 @@ export default function ResultQueue({
               const date = formatNoteDate(hit.created_at);
               return (
                 <li key={hit.objectID}>
-                  <button type="button" onClick={() => onSelect(hit.objectID)}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      shouldFocusReader.current = true;
+                      onSelect(hit.objectID);
+                    }}
+                  >
                     <span className={styles.queueMeta}>
                       <span>
                         № {position} · {project}

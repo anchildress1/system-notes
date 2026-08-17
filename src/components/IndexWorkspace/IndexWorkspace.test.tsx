@@ -6,7 +6,6 @@ const searchHarness = vi.hoisted(() => ({
   facets: {} as Record<string, Record<string, number>>,
   search: vi.fn(),
   insights: vi.fn(),
-  scrollIntoView: vi.fn(),
 }));
 
 vi.mock('search-insights', () => ({ default: searchHarness.insights }));
@@ -26,11 +25,11 @@ vi.mock('@/components/FactCard/FactCard', () => ({
 
 function result() {
   return {
-    hits: searchHarness.hits,
+    hits: searchHarness.hits.slice(0, 500),
     nbHits: searchHarness.hits.length,
     page: 0,
-    nbPages: Math.ceil(searchHarness.hits.length / 100),
-    hitsPerPage: 100,
+    nbPages: Math.ceil(searchHarness.hits.length / 500),
+    hitsPerPage: 500,
     processingTimeMS: 1,
     exhaustiveNbHits: true,
     query: '',
@@ -73,21 +72,6 @@ describe('IndexWorkspace', () => {
     searchHarness.search.mockReset();
     searchHarness.search.mockImplementation(async () => ({ results: [result()] }));
     searchHarness.insights.mockClear();
-    searchHarness.scrollIntoView.mockClear();
-    Element.prototype.scrollIntoView = searchHarness.scrollIntoView;
-    vi.stubGlobal(
-      'matchMedia',
-      vi.fn(() => ({
-        matches: false,
-        media: '(prefers-reduced-motion: reduce)',
-        onchange: null,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      }))
-    );
   });
 
   afterEach(() => {
@@ -115,7 +99,7 @@ describe('IndexWorkspace', () => {
     );
     expect(screen.getByText('principles')).toBeInTheDocument();
     expect(screen.getByText(/^The board — 1 ranked · 1 match$/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Read note 1: Failure is data/i })).toBeVisible();
+    expect(screen.getByRole('option', { name: /Read note 1: Failure is data/i })).toBeVisible();
     expect(screen.getByText('Project')).toBeInTheDocument();
     expect(screen.getByText('Topic')).toBeInTheDocument();
     expect(screen.queryByRole('navigation', { name: 'Notes pagination' })).not.toBeInTheDocument();
@@ -149,7 +133,7 @@ describe('IndexWorkspace', () => {
     expect(screen.getByRole('button', { name: /awards ★, 27 notes/i })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /other/i })).not.toBeInTheDocument();
     expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(1);
-    expect(view.container.querySelector('[data-note-board] button')).toHaveAttribute(
+    expect(view.container.querySelector('[data-note-board] [role="option"]')).toHaveAttribute(
       'data-category',
       'principle'
     );
@@ -163,9 +147,9 @@ describe('IndexWorkspace', () => {
     );
   });
 
-  it('maps the first 100 ranked hits to ordered, clickable filing colors', async () => {
+  it('maps the original 347 ranked hits to one keyboard-operable board', async () => {
     const categories = ['Award', 'Decision', 'Architecture', 'Principle'] as const;
-    searchHarness.hits = Array.from({ length: 105 }, (_, index) => ({
+    searchHarness.hits = Array.from({ length: 347 }, (_, index) => ({
       objectID: `card:test:${index + 1}`,
       title: `Ranked note ${index + 1}`,
       blurb: `Summary ${index + 1}`,
@@ -184,20 +168,20 @@ describe('IndexWorkspace', () => {
 
     await renderWorkspace();
     expect(await screen.findByRole('article')).toHaveTextContent('Ranked note 1');
-    const board = within(screen.getByRole('list', { name: 'Top ranked notes' }));
-    const tiles = board.getAllByRole('button');
+    const boardElement = screen.getByRole('listbox', { name: 'Top ranked notes' });
+    const board = within(boardElement);
+    const tiles = board.getAllByRole('option');
 
-    expect(tiles).toHaveLength(100);
+    expect(tiles).toHaveLength(347);
     expect(tiles.slice(0, 4).map((tile) => tile.dataset.category)).toEqual([
       'award',
       'decision',
       'architecture',
       'principle',
     ]);
-    expect(tiles[99]).toHaveAccessibleName('Read note 100: Ranked note 100');
-    expect(board.queryByRole('button', { name: /Read note 101/i })).not.toBeInTheDocument();
+    expect(tiles[346]).toHaveAccessibleName('Read note 347: Ranked note 347');
     expect(
-      screen.getByText(/5 notes in view · 100 ranked on the board · 105 matches/i)
+      screen.getByText(/5 notes in view · 347 ranked on the board · 347 matches/i)
     ).toBeInTheDocument();
     expect(screen.queryByText(/malformed notes were withheld/i)).not.toBeInTheDocument();
     expect(
@@ -210,18 +194,43 @@ describe('IndexWorkspace', () => {
       expect.stringContaining('Ranked note 4'),
       expect.stringContaining('Ranked note 5'),
     ]);
-    expect(tiles[0]).toHaveAttribute('tabindex', '0');
-    expect(tiles.slice(1).every((tile) => tile.tabIndex === -1)).toBe(true);
+    expect(boardElement).toHaveAttribute('tabindex', '0');
+    expect(tiles.every((tile) => !tile.hasAttribute('tabindex'))).toBe(true);
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
+    boardElement.focus();
 
-    fireEvent.keyDown(tiles[0]!, { key: 'ArrowRight' });
-    expect(tiles[1]).toHaveFocus();
-    expect(tiles[1]).toHaveAttribute('tabindex', '0');
+    fireEvent.keyDown(boardElement, { key: 'ArrowRight' });
+    expect(boardElement).toHaveFocus();
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
+    expect(board.getByRole('option', { name: 'Read note 2: Ranked note 2' })).toHaveAttribute(
+      'aria-selected',
+      'true'
+    );
 
-    fireEvent.click(tiles[36]!);
+    fireEvent.keyDown(boardElement, { key: 'Home' });
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
+    fireEvent.keyDown(boardElement, { key: 'ArrowLeft' });
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
+    fireEvent.keyDown(boardElement, { key: 'ArrowDown' });
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
+    fireEvent.keyDown(boardElement, { key: 'ArrowUp' });
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
+    fireEvent.keyDown(boardElement, { key: 'End' });
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-346');
+    fireEvent.keyDown(boardElement, { key: 'ArrowUp' });
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-345');
+    fireEvent.keyDown(boardElement, { key: 'a' });
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-345');
+
+    fireEvent.click(board.getByRole('option', { name: 'Read note 37: Ranked note 37' }));
 
     expect(screen.getByRole('article')).toHaveTextContent('Ranked note 37');
     expect(screen.getByRole('article')).toHaveAttribute('data-position', '37');
-    expect(tiles[36]).toHaveAttribute('aria-pressed', 'true');
+    expect(boardElement).toHaveFocus();
+    expect(board.getByRole('option', { name: 'Read note 37: Ranked note 37' })).toHaveAttribute(
+      'aria-selected',
+      'true'
+    );
     expect(
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
@@ -232,14 +241,7 @@ describe('IndexWorkspace', () => {
       expect.stringContaining('Ranked note 3'),
       expect.stringContaining('Ranked note 4'),
     ]);
-    await waitFor(() =>
-      expect(searchHarness.scrollIntoView).toHaveBeenCalledWith({
-        behavior: 'smooth',
-        block: 'start',
-      })
-    );
-
-    fireEvent.click(tiles[2]!);
+    fireEvent.click(board.getByRole('option', { name: 'Read note 3: Ranked note 3' }));
     expect(screen.getByRole('article')).toHaveTextContent('Ranked note 3');
     expect(
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
@@ -251,6 +253,28 @@ describe('IndexWorkspace', () => {
       expect.stringContaining('Ranked note 4'),
       expect.stringContaining('Ranked note 5'),
     ]);
+  });
+
+  it('caps the board at 500 notes without expanding the reading pane', async () => {
+    searchHarness.hits = Array.from({ length: 501 }, (_, index) => ({
+      objectID: `card:test:${index + 1}`,
+      title: `Ranked note ${index + 1}`,
+      blurb: `Summary ${index + 1}`,
+      fact: `Evidence ${index + 1}`,
+      category: 'Decision',
+      projects: ['System Notes'],
+      'tags.lvl0': ['Testing'],
+      __position: index + 1,
+    }));
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    const board = within(screen.getByRole('listbox', { name: 'Top ranked notes' }));
+    expect(board.getAllByRole('option')).toHaveLength(500);
+    expect(board.getByRole('option', { name: 'Read note 500: Ranked note 500' })).toBeVisible();
+    expect(board.queryByRole('option', { name: /Read note 501/i })).not.toBeInTheDocument();
+    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(4);
   });
 
   it.each([1, 2, 3, 4])(
@@ -284,43 +308,6 @@ describe('IndexWorkspace', () => {
       ).toBeInTheDocument();
     }
   );
-
-  it('scrolls an activated board note without motion when reduced motion is requested', async () => {
-    vi.stubGlobal(
-      'matchMedia',
-      vi.fn(() => ({
-        matches: true,
-        media: '(prefers-reduced-motion: reduce)',
-        onchange: null,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      }))
-    );
-    searchHarness.hits.push({
-      objectID: 'card:test:2',
-      title: 'Reduced motion note',
-      blurb: 'No animated scroll',
-      fact: 'Motion is optional',
-      category: 'Decision',
-      projects: ['System Notes'],
-      'tags.lvl0': ['Accessibility'],
-    });
-
-    await renderWorkspace();
-    fireEvent.click(
-      await screen.findByRole('button', { name: /Read note 2: Reduced motion note/i })
-    );
-
-    await waitFor(() =>
-      expect(searchHarness.scrollIntoView).toHaveBeenCalledWith({
-        behavior: 'auto',
-        block: 'start',
-      })
-    );
-  });
 
   it('updates the query and supports the command-K focus shortcut', async () => {
     await renderWorkspace();
@@ -392,6 +379,9 @@ describe('IndexWorkspace', () => {
     fireEvent.click(view.container.querySelector('[data-ranked-queue] button')!);
 
     expect(screen.getByRole('article')).toHaveTextContent('Second decision');
+    await waitFor(() =>
+      expect(screen.getByLabelText('Now reading: Second decision')).toHaveFocus()
+    );
     expect(
       [...view.container.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
@@ -431,7 +421,7 @@ describe('IndexWorkspace', () => {
     const other = screen.getByRole('button', { name: /other, 3 notes/i });
 
     expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(1);
-    expect(view.container.querySelector('[data-note-board] button')).toHaveAttribute(
+    expect(view.container.querySelector('[data-note-board] [role="option"]')).toHaveAttribute(
       'data-category',
       'decision'
     );
@@ -531,14 +521,14 @@ describe('IndexWorkspace', () => {
 
     await renderWorkspace();
 
-    const board = within(await screen.findByRole('list', { name: 'Top ranked notes' }));
-    expect(board.getByRole('button', { name: 'Read note 1: Failure is data' })).toBeVisible();
-    expect(board.getByRole('button', { name: 'Read note 3: Actual rank three' })).toBeVisible();
+    const board = within(await screen.findByRole('listbox', { name: 'Top ranked notes' }));
+    expect(board.getByRole('option', { name: 'Read note 1: Failure is data' })).toBeVisible();
+    expect(board.getByRole('option', { name: 'Read note 3: Actual rank three' })).toBeVisible();
     expect(screen.getByText(/The board — 2 ranked · 3 matches/i)).toBeInTheDocument();
     expect(document.querySelector('[data-ranked-queue] button')).toHaveTextContent(
       '№ 3 · System Notes'
     );
-    fireEvent.click(board.getByRole('button', { name: 'Read note 3: Actual rank three' }));
+    fireEvent.click(board.getByRole('option', { name: 'Read note 3: Actual rank three' }));
     expect(screen.getByRole('article')).toHaveAttribute('data-position', '3');
   });
 
@@ -559,7 +549,7 @@ describe('IndexWorkspace', () => {
 
     expect(await screen.findByRole('article')).toHaveTextContent('Unique note 1');
     expect(screen.queryByText('Duplicate should disappear')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('button', { name: /Read note \d+: Unique note/i })).toHaveLength(6);
+    expect(screen.getAllByRole('option', { name: /Read note \d+: Unique note/i })).toHaveLength(6);
     expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(4);
     expect(screen.getByRole('alert')).toHaveTextContent('Some malformed notes were withheld.');
   });

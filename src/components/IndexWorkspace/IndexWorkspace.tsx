@@ -10,7 +10,7 @@ import { ALGOLIA_INDEX_NAME } from '@/config';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
 import { normalizeFactSearchHit } from '@/lib/noteContent';
 import { createSearchRouting } from '@/lib/searchRouting';
-import type { FactHitRecord, SendEventForHits } from '@/types/algolia';
+import type { FactHitRecord } from '@/types/algolia';
 import { getSearchUserToken } from '@/utils/userToken';
 import IndexSearch from './IndexSearch';
 import IndexSidebar from './IndexSidebar';
@@ -20,7 +20,7 @@ import styles from './IndexWorkspace.module.css';
 const hasCredentials = hasValidAlgoliaCredentials();
 const isDevelopment = process.env.NODE_ENV === 'development';
 const SEARCH_DEADLINE_MS = 5_000;
-const MAX_RANKED_NOTES = 100;
+const MAX_BOARD_NOTES = 500;
 const algoliaClient = hasCredentials
   ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, {
       ...(isDevelopment
@@ -91,7 +91,7 @@ export default function IndexWorkspace() {
       insights={{ insightsClient: aa }}
       future={{ preserveSharedStateOnUnmount: true }}
     >
-      <Configure hitsPerPage={MAX_RANKED_NOTES} clickAnalytics />
+      <Configure hitsPerPage={MAX_BOARD_NOTES} clickAnalytics />
       <IndexExperience />
     </InstantSearch>
   );
@@ -114,23 +114,25 @@ function IndexExperience() {
       return [readableItem];
     });
   }, [items]);
-  const rankedItems = useMemo(() => readableItems.slice(0, MAX_RANKED_NOTES), [readableItems]);
+  const rankedItems = useMemo(() => readableItems.slice(0, MAX_BOARD_NOTES), [readableItems]);
   const [selection, setSelection] = useState<{ id: string; resultKey: string } | null>(null);
   const selectedId =
     selection?.resultKey === resultKey && rankedItems.some((item) => item.objectID === selection.id)
       ? selection.id
       : rankedItems[0]?.objectID;
-  const hasUserSelection = selection?.resultKey === resultKey && selectedId === selection.id;
-  const selectNote = useCallback((id: string) => setSelection({ id, resultKey }), [resultKey]);
+  const selectNote = useCallback(
+    (id: string) => {
+      const hit = rankedItems.find((item) => item.objectID === id);
+      if (!hit) return;
+      sendEvent('click', hit, 'Note Selected');
+      setSelection({ id, resultKey });
+    },
+    [rankedItems, resultKey, sendEvent]
+  );
 
   return (
     <div className={styles.workspace}>
-      <IndexSidebar
-        items={rankedItems}
-        selectedId={selectedId}
-        activatedId={hasUserSelection ? selectedId : undefined}
-        onSelect={selectNote}
-      />
+      <IndexSidebar items={rankedItems} selectedId={selectedId} onSelect={selectNote} />
       <div className={styles.readingPane}>
         <IndexSearch />
         <SearchResults
@@ -140,9 +142,7 @@ function IndexExperience() {
           status={status}
           readableItemCount={readableItems.length}
           selectedId={selectedId}
-          hasUserSelection={hasUserSelection}
           onSelect={selectNote}
-          sendEvent={sendEvent as SendEventForHits}
         />
       </div>
     </div>
@@ -156,9 +156,7 @@ interface SearchResultsProps {
   nbHits: number;
   status: string;
   selectedId?: string;
-  hasUserSelection: boolean;
   onSelect: (id: string) => void;
-  sendEvent: SendEventForHits;
 }
 
 function SearchResults({
@@ -168,9 +166,7 @@ function SearchResults({
   nbHits,
   status,
   selectedId,
-  hasUserSelection,
   onSelect,
-  sendEvent,
 }: Readonly<SearchResultsProps>) {
   if (items.length === 0) {
     if (rawItemCount > 0) return <UnreadableResults />;
@@ -189,14 +185,7 @@ function SearchResults({
     <div className={styles.resultArea}>
       <SearchStatus status={status} />
       {rawItemCount !== readableItemCount ? <PartialResultsWarning /> : null}
-      <ResultQueue
-        items={items}
-        nbHits={nbHits}
-        selectedId={selectedId}
-        focusSelection={hasUserSelection}
-        onSelect={onSelect}
-        sendEvent={sendEvent}
-      />
+      <ResultQueue items={items} nbHits={nbHits} selectedId={selectedId} onSelect={onSelect} />
     </div>
   );
 }
