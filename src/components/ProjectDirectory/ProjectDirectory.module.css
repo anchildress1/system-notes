@@ -91,6 +91,15 @@
   font-size: 0.75rem;
 }
 
+/* Marks a winner in the collapsed row, so the award is visible without opening
+   the entry — the same signal the index gives its awards facet. */
+.summaryAward {
+  margin-left: 0.4rem;
+  color: var(--neon);
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
 .status {
   color: var(--ink-muted);
   font-size: 0.75rem;
@@ -117,15 +126,21 @@
   animation: rise-in 360ms var(--ease-out) both;
 }
 
+/* The project banners are authored 2:1. A 16/10 frame cropped ~20% of their
+   width, and because these images carry their wordmark on the left edge, that
+   is what got cut. Matching the frame to the artwork crops nothing. */
 .projectMedia {
   position: relative;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 2 / 1;
   overflow: hidden;
   background: var(--void-soft);
 }
 
+/* left, so any banner that is not 2:1 keeps its wordmark instead of centring
+   the crop over it. */
 .projectMedia img {
   object-fit: cover;
+  object-position: left center;
 }
 
 .imageFallback {

@@ -63,7 +63,15 @@ function ProjectEntry({ project, number }: Readonly<{ project: Project; number: 
     <details className={styles.project} data-testid={`project-${project.id}`}>
       <summary>
         <span className={styles.number}>{String(number).padStart(2, '0')}</span>
-        <span className={styles.summaryTitle}>{project.title}</span>
+        <span className={styles.summaryTitle}>
+          {project.title}
+          {project.award ? (
+            <span className={styles.summaryAward}>
+              <span aria-hidden="true">★</span>
+              <span className="visually-hidden">Award winner: {project.award}</span>
+            </span>
+          ) : null}
+        </span>
         <span className={styles.summaryDescription}>{project.description}</span>
         <span className={styles.status}>{project.status || 'Status unavailable'}</span>
         <span className={styles.indicator} aria-hidden="true">
