@@ -17,6 +17,7 @@ import {
   useStats,
 } from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
+import { fitBoardToWholeRows } from './boardLayout';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
@@ -34,12 +35,6 @@ const categoryGroups = [
   },
   { key: 'award', label: 'awards ★', values: ['award'] },
 ] as const;
-
-// The board is a shape, not a manifest — it reads as a dense block of ranked
-// signal, and at full height it ran long enough to push the rest of the sidebar
-// down. Two thirds of the rows it would otherwise fill keeps that read while
-// leaving the column headroom intact at every width.
-const BOARD_ROW_SCALE = 2 / 3;
 
 function normalizeCategory(value: string): string {
   const normalized = value.trim().toLowerCase();
@@ -89,9 +84,16 @@ function useResolvedColumnCount(): {
     if (!node || typeof ResizeObserver === 'undefined') return;
 
     const measure = () => {
+      // A display:none subtree — the collapsed sidebar — reports the *specified*
+      // template ("repeat(auto-fill, minmax(16px, 1fr))") rather than resolved
+      // pixel tracks, and counting its tokens yields a fake 3. Only a laid-out
+      // element has tracks worth reading; while hidden, the last good count is
+      // kept so the board does not reflow behind the collapse.
+      if (node.getClientRects().length === 0) return;
       const template = globalThis.getComputedStyle(node).gridTemplateColumns;
-      const count =
-        template && template !== 'none' ? template.split(/\s+/).filter(Boolean).length : 0;
+      const hasResolvedTracks = Boolean(template) && template !== 'none' && !template.includes('(');
+      if (!hasResolvedTracks) return;
+      const count = template.split(/\s+/).filter(Boolean).length;
       setColumns((previous) => (previous === count ? previous : count));
     };
 
@@ -164,21 +166,23 @@ export default function IndexSidebar({
   // wherever it lands. Unfiltered, the board is a shape rather than a result
   // set: the grid auto-fills columns from the sidebar's width, so trimming to
   // whole rows keeps it a clean rectangle instead of a ragged part-row that
-  // changes with the window. The tiles it drops there are the lowest-ranked,
-  // still reachable through search and the reading queue.
+  // changes with the window.
+  //
+  // The tiles dropped there are the lowest-ranked, and searching or filtering
+  // brings them back because both paths render every match. The reading queue
+  // does not — it shows the top VISIBLE_NOTE_LIMIT of the same ranking, so it
+  // can never surface a trimmed tile.
   const boardItems = useMemo(() => {
     if (isNarrowed) return rankedItems;
-    if (boardColumns < 1 || rankedItems.length < boardColumns) return rankedItems;
-    const wholeRows = Math.floor(rankedItems.length / boardColumns);
-    const rows = Math.max(1, Math.round(wholeRows * BOARD_ROW_SCALE));
-    return rankedItems.slice(0, rows * boardColumns);
+    return fitBoardToWholeRows(rankedItems, boardColumns);
   }, [rankedItems, boardColumns, isNarrowed]);
 
-  const selectedIndex = Math.max(
-    boardItems.findIndex((item) => item.objectID === selectedId),
-    0
-  );
-  const activeOptionId = boardItems.length > 0 ? `note-board-option-${selectedIndex}` : undefined;
+  // -1 when the selected note is ranked below the board's last tile. Collapsing
+  // that to 0 would point aria-activedescendant at a note the reader did not
+  // choose and make the next arrow key resume from the wrong tile, so the board
+  // reports no active option instead and arrows restart from the top.
+  const selectedIndex = boardItems.findIndex((item) => item.objectID === selectedId);
+  const activeOptionId = selectedIndex >= 0 ? `note-board-option-${selectedIndex}` : undefined;
 
   function activateNote(id: string) {
     setActivation((current) => ({ id, nonce: (current?.nonce ?? 0) + 1 }));
@@ -187,15 +191,18 @@ export default function IndexSidebar({
 
   function moveBoardSelection(event: KeyboardEvent<HTMLOListElement>) {
     if (boardItems.length === 0) return;
+    // Off-board selections start from the first tile rather than from a
+    // position the reader never landed on.
+    const currentIndex = selectedIndex >= 0 ? selectedIndex : 0;
     let nextIndex: number;
     switch (event.key) {
       case 'ArrowRight':
       case 'ArrowDown':
-        nextIndex = Math.min(selectedIndex + 1, boardItems.length - 1);
+        nextIndex = Math.min(currentIndex + 1, boardItems.length - 1);
         break;
       case 'ArrowLeft':
       case 'ArrowUp':
-        nextIndex = Math.max(selectedIndex - 1, 0);
+        nextIndex = Math.max(currentIndex - 1, 0);
         break;
       case 'Home':
         nextIndex = 0;
@@ -263,8 +270,13 @@ export default function IndexSidebar({
         {boardItems.length > 0 ? (
           <div className={styles.board}>
             <p>
-              The board — {boardItems.length.toLocaleString()} ranked · {nbHits.toLocaleString()}{' '}
-              {nbHits === 1 ? 'match' : 'matches'}
+              {/* "N of M" only while trimmed, so the board never states a
+                  different total from the queue beside it without saying why. */}
+              The board —{' '}
+              {boardItems.length === rankedItems.length
+                ? `${boardItems.length.toLocaleString()} ranked`
+                : `${boardItems.length.toLocaleString()} of ${rankedItems.length.toLocaleString()} ranked`}{' '}
+              · {nbHits.toLocaleString()} {nbHits === 1 ? 'match' : 'matches'}
             </p>
             <ol
               ref={boardRef}
