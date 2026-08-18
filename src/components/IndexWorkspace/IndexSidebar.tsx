@@ -30,6 +30,12 @@ const categoryGroups = [
   { key: 'award', label: 'awards ★', values: ['award'] },
 ] as const;
 
+// The board is a shape, not a manifest — it reads as a dense block of ranked
+// signal, and at full height it ran long enough to push the rest of the sidebar
+// down. Two thirds of the rows it would otherwise fill keeps that read while
+// leaving the column headroom intact at every width.
+const BOARD_ROW_SCALE = 2 / 3;
+
 function normalizeCategory(value: string): string {
   const normalized = value.trim().toLowerCase();
   const plurals: Record<string, string> = {
@@ -149,7 +155,9 @@ export default function IndexSidebar({
   // square off, so everything renders.
   const boardItems = useMemo(() => {
     if (boardColumns < 1 || rankedItems.length < boardColumns) return rankedItems;
-    return rankedItems.slice(0, Math.floor(rankedItems.length / boardColumns) * boardColumns);
+    const wholeRows = Math.floor(rankedItems.length / boardColumns);
+    const rows = Math.max(1, Math.round(wholeRows * BOARD_ROW_SCALE));
+    return rankedItems.slice(0, rows * boardColumns);
   }, [rankedItems, boardColumns]);
 
   const selectedIndex = Math.max(
