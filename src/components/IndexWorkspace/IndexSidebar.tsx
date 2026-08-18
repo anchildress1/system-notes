@@ -10,7 +10,12 @@ import {
   type MouseEvent,
 } from 'react';
 import type { Hit } from 'instantsearch.js';
-import { useRefinementList, useStats } from 'react-instantsearch';
+import {
+  useClearRefinements,
+  useRefinementList,
+  useSearchBox,
+  useStats,
+} from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
@@ -146,19 +151,28 @@ export default function IndexSidebar({
     ];
   }, [items]);
   const { measureRef: boardRef, columns: boardColumns } = useResolvedColumnCount();
+  // canRefine reports whether anything is currently refined across every facet,
+  // so this does not need updating when a new filter is added.
+  const { canRefine: hasActiveFacets } = useClearRefinements();
+  const { query } = useSearchBox();
+  const isNarrowed = hasActiveFacets || query.trim().length > 0;
 
-  // The grid auto-fills columns from the sidebar's width, so a fixed tile count
-  // leaves a ragged part-row at whatever width the last row does not divide
-  // into. Trim to whole rows instead: the board stays a clean rectangle at every
-  // size, and the tiles it drops are the lowest-ranked ones, still reachable
-  // through search and the reading queue. Below one full row there is nothing to
-  // square off, so everything renders.
+  // Every tile is a real note — the board is never padded to fill a row.
+  //
+  // Narrowing the index is a question, and the whole answer should be visible,
+  // so a query or an active facet renders every match and the last row lands
+  // wherever it lands. Unfiltered, the board is a shape rather than a result
+  // set: the grid auto-fills columns from the sidebar's width, so trimming to
+  // whole rows keeps it a clean rectangle instead of a ragged part-row that
+  // changes with the window. The tiles it drops there are the lowest-ranked,
+  // still reachable through search and the reading queue.
   const boardItems = useMemo(() => {
+    if (isNarrowed) return rankedItems;
     if (boardColumns < 1 || rankedItems.length < boardColumns) return rankedItems;
     const wholeRows = Math.floor(rankedItems.length / boardColumns);
     const rows = Math.max(1, Math.round(wholeRows * BOARD_ROW_SCALE));
     return rankedItems.slice(0, rows * boardColumns);
-  }, [rankedItems, boardColumns]);
+  }, [rankedItems, boardColumns, isNarrowed]);
 
   const selectedIndex = Math.max(
     boardItems.findIndex((item) => item.objectID === selectedId),
