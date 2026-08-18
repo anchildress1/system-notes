@@ -168,12 +168,26 @@ test.describe('Notes index', () => {
     const board = page.getByRole('listbox', { name: 'Top ranked notes' });
     const tiles = board.getByRole('option');
 
-    await expect(tiles).toHaveCount(347);
+    // Unfiltered, the board trims to whole rows, so its tile count follows the
+    // resolved column track rather than the hit count and differs per viewport.
+    // Assert the shape contract instead of a fixed number.
+    const boardShape = await board.evaluate((node) => ({
+      columns: globalThis.getComputedStyle(node).gridTemplateColumns.split(/\s+/).filter(Boolean)
+        .length,
+      tiles: node.children.length,
+    }));
+    expect(boardShape.columns).toBeGreaterThan(0);
+    expect(boardShape.tiles).toBeLessThan(hits.length);
+    expect(boardShape.tiles % boardShape.columns).toBe(0);
+
+    await expect(tiles).toHaveCount(boardShape.tiles);
     await expect(tiles.nth(0)).toHaveAttribute('data-category', 'award');
     await expect(tiles.nth(1)).toHaveAttribute('data-category', 'decision');
     await expect(tiles.nth(2)).toHaveAttribute('data-category', 'architecture');
     await expect(tiles.nth(3)).toHaveAttribute('data-category', 'principle');
-    await expect(tiles.nth(346)).toHaveAccessibleName('Read note 347: Ranked note 347');
+    await expect(tiles.nth(boardShape.tiles - 1)).toHaveAccessibleName(
+      `Read note ${boardShape.tiles}: Ranked note ${boardShape.tiles}`
+    );
     await expect(page.getByRole('navigation', { name: 'Notes pagination' })).toHaveCount(0);
     expect(requestedLimits).toContain('500');
 
@@ -186,9 +200,12 @@ test.describe('Notes index', () => {
     const initialQueueTitles = await page
       .locator('[data-ranked-queue] button')
       .evaluateAll((buttons) => buttons.map((button) => button.children.item(1)?.textContent));
-    expect(tileTitles).toEqual(hits.map((hit) => hit.title));
+    // The board keeps rank order and trims from the tail, so the tiles are the
+    // ranked list's prefix — never a reordering or a sample of it.
+    const onBoard = hits.slice(0, boardShape.tiles);
+    expect(tileTitles).toEqual(onBoard.map((hit) => hit.title));
     expect(initialQueueTitles).toEqual(hits.slice(1, 5).map((hit) => hit.title));
-    expect(tileCategories).toEqual(hits.map((hit) => hit.category?.toLocaleLowerCase()));
+    expect(tileCategories).toEqual(onBoard.map((hit) => hit.category?.toLocaleLowerCase()));
     await expect(page.getByText(/5 notes in view · 347 ranked · 347 matches/i)).toBeVisible();
 
     const colorSignatures = await tiles.evaluateAll((options) =>
@@ -216,8 +233,13 @@ test.describe('Notes index', () => {
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
     await board.press('ArrowRight');
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
+    // End lands on the board's last tile, which the row trim moves off the
+    // ranked list's tail.
     await board.press('End');
-    await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-346');
+    await expect(board).toHaveAttribute(
+      'aria-activedescendant',
+      `note-board-option-${boardShape.tiles - 1}`
+    );
     await board.press('Home');
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
     await board.press('a');
@@ -261,7 +283,7 @@ test.describe('Notes index', () => {
     expect(accessibility.violations).toEqual([]);
   });
 
-  test('selects the note from ?note route state on load', async ({ page }) => {
+  test('ignores a ?note param and opens the top-ranked note', async ({ page }) => {
     await mockAlgoliaSearch(page, [
       buildHit({ objectID: 'card:test:1', title: 'First decision' }),
       buildHit({
@@ -270,12 +292,14 @@ test.describe('Notes index', () => {
         category: 'Decision',
       }),
     ]);
+    // Selection lives in the workspace, not the URL. A stale ?note link is inert
+    // rather than authoritative, so the reader opens on the top-ranked note.
     await page.goto('/?note=card%3Atest%3A2');
 
-    await expect(page.getByRole('article')).toContainText('Selected decision');
+    await expect(page.getByRole('article')).toContainText('First decision');
     await expect(page.getByRole('listbox', { name: 'Top ranked notes' })).toHaveAttribute(
       'aria-activedescendant',
-      'note-board-option-1'
+      'note-board-option-0'
     );
   });
 });
