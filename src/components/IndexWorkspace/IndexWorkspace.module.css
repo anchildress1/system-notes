@@ -86,19 +86,6 @@
   background: var(--neon);
 }
 
-.categoryList button[data-category='architecture'] .categorySwatch {
-  background: var(--paper);
-}
-
-.categoryList button[data-category='decision'] .categorySwatch {
-  background: oklch(56% 0.012 330);
-}
-
-.categoryList button[data-category='award'] .categorySwatch {
-  border: 1px solid var(--neon);
-  background: transparent;
-}
-
 .categoryName {
   overflow: hidden;
   font-size: 0.9rem;
@@ -157,26 +144,15 @@
   width: 0.78rem;
   aspect-ratio: 1;
   border-radius: 0.08rem;
-  background: var(--neon);
+  /* Set per tile from the category's own swatch; --neon covers a note whose
+     category is absent from the current facet list. */
+  background: var(--tile-swatch, var(--neon));
   box-shadow: 0 0 0 transparent;
   content: '';
   transition:
     transform 180ms var(--ease-out),
     box-shadow 180ms ease,
     filter 180ms ease;
-}
-
-.boardTiles li[data-category='architecture']::before {
-  background: var(--paper);
-}
-
-.boardTiles li[data-category='decision']::before {
-  background: oklch(56% 0.012 330);
-}
-
-.boardTiles li[data-category='award']::before {
-  border: 1px solid var(--neon);
-  background: transparent;
 }
 
 .boardTiles li:hover::before {

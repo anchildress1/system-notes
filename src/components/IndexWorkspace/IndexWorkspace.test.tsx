@@ -97,7 +97,7 @@ describe('IndexWorkspace', () => {
       'aria-expanded',
       'true'
     );
-    expect(screen.getByText('principle')).toBeInTheDocument();
+    expect(screen.getByText('Principle')).toBeInTheDocument();
     expect(screen.getByText(/^The board — 1 ranked · 1 match$/i)).toBeInTheDocument();
     expect(screen.getByRole('option', { name: /Read note 1: Failure is data/i })).toBeVisible();
     expect(screen.getByText('Project')).toBeInTheDocument();
@@ -132,28 +132,28 @@ describe('IndexWorkspace', () => {
     // Board tiles also carry data-category, so count the filter controls.
     expect(screen.getAllByRole('button', { name: /, [\d,]+ notes$/i })).toHaveLength(11);
     for (const [label, count] of [
-      ['principles', 12],
-      ['philosophy', 26],
-      ['work style', 73],
-      ['about', 7],
-      ['architecture', 16],
-      ['constraints', 12],
-      ['decisions', 77],
-      ['process', 11],
-      ['experience', 55],
-      ['experimentation', 31],
+      ['Principles', 12],
+      ['Philosophy', 26],
+      ['Work Style', 73],
+      ['About', 7],
+      ['Architecture', 16],
+      ['Constraints', 12],
+      ['Decisions', 77],
+      ['Process', 11],
+      ['Experience', 55],
+      ['Experimentation', 31],
+      ['Awards', 27],
     ] as const) {
       expect(
         screen.getByRole('button', { name: new RegExp(`^${label}, ${count} notes$`, 'i') })
       ).toBeInTheDocument();
     }
-    // The award family still earns its star.
-    expect(screen.getByRole('button', { name: /awards ★, 27 notes/i })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^other,/i })).not.toBeInTheDocument();
 
+    // The tile carries the note's own category, not a family it was folded into.
     expect(view.container.querySelector('[data-note-board] [role="option"]')).toHaveAttribute(
       'data-category',
-      'principle'
+      'Principle'
     );
 
     const principles = screen.getByRole('button', { name: /principles, 12 notes/i });
@@ -187,11 +187,12 @@ describe('IndexWorkspace', () => {
     const tiles = board.getAllByRole('option');
 
     expect(tiles).toHaveLength(347);
+    // Tiles carry the note's own category, exactly as the index reported it.
     expect(tiles.slice(0, 4).map((tile) => tile.dataset.category)).toEqual([
-      'award',
-      'decision',
-      'architecture',
-      'principle',
+      'Award',
+      'Decision',
+      'Architecture',
+      'Principle',
     ]);
     expect(tiles[346]).toHaveAccessibleName('Read note 347: Ranked note 347');
     expect(screen.getByText(/5 notes in view · 347 ranked · 347 matches/i)).toBeInTheDocument();
@@ -444,7 +445,7 @@ describe('IndexWorkspace', () => {
     expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(1);
     expect(view.container.querySelector('[data-note-board] [role="option"]')).toHaveAttribute(
       'data-category',
-      'decision'
+      'Mystery'
     );
     fireEvent.click(mystery);
     await waitFor(() => expect(mystery).toHaveAttribute('aria-pressed', 'true'));
@@ -459,7 +460,7 @@ describe('IndexWorkspace', () => {
       await screen.findByRole('heading', { name: 'No notes match that.' })
     ).toBeInTheDocument();
     expect(screen.getByText(/literal, not psychic/i)).toBeInTheDocument();
-    expect(screen.queryByText('principle')).not.toBeInTheDocument();
+    expect(screen.queryByText('Principle')).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Clear search and filters' })
     ).not.toBeInTheDocument();

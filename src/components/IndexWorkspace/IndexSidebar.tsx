@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type KeyboardEvent,
   type MouseEvent,
 } from 'react';
@@ -21,38 +22,22 @@ import { fitBoardToWholeRows } from './boardLayout';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
-const categoryGroups = [
-  {
-    key: 'principle',
-    label: 'principles',
-    values: ['principle', 'philosophy', 'work style', 'about'],
-  },
-  { key: 'architecture', label: 'architecture', values: ['architecture', 'constraint'] },
-  {
-    key: 'decision',
-    label: 'decisions',
-    values: ['decision', 'process', 'experience', 'experimentation'],
-  },
-  { key: 'award', label: 'awards ★', values: ['award'] },
-] as const;
+// The index owns the taxonomy. Categories are rendered exactly as Algolia
+// returns them — no grouping, no relabelling, no fallback bucket — so changing
+// a category name is a data change, not a code change.
+//
+// Swatches come from a category's position in that list rather than its name,
+// so any number of categories gets a distinct, on-brand tone without the
+// component knowing what they are called. The lightness range is divided by the
+// number of categories rather than stepped by a fixed amount, so tones never
+// wrap around and repeat once the taxonomy grows.
+const SWATCH_LIGHTEST = 74;
+const SWATCH_DARKEST = 34;
 
-function normalizeCategory(value: string): string {
-  const normalized = value.trim().toLowerCase();
-  const plurals: Record<string, string> = {
-    principles: 'principle',
-    constraints: 'constraint',
-    decisions: 'decision',
-    awards: 'award',
-  };
-  return plurals[normalized] ?? normalized;
-}
-
-function getFilingFamily(category: string | undefined): (typeof categoryGroups)[number]['key'] {
-  const normalized = normalizeCategory(category ?? '');
-  return (
-    categoryGroups.find((group) => group.values.some((value) => value === normalized))?.key ??
-    'decision'
-  );
+function swatchForIndex(index: number, total: number): string {
+  const span = SWATCH_LIGHTEST - SWATCH_DARKEST;
+  const lightness = SWATCH_LIGHTEST - (index * span) / Math.max(total - 1, 1);
+  return `oklch(${lightness.toFixed(1)}% 0.26 330)`;
 }
 
 interface IndexSidebarProps {
@@ -121,26 +106,26 @@ export default function IndexSidebar({
     limit: 40,
     operator: 'or',
   });
-  // Every category the index returns gets its own filter. Folding them into a
-  // fixed set of families hid whichever values were not on that list, so a
-  // migration that changes the taxonomy would have needed a code change here to
-  // become visible. The swatch still resolves through getFilingFamily, and an
-  // unrecognised category falls back to the default swatch rather than vanishing.
   const categories = useMemo(
     () =>
-      items.map((item) => {
-        const family = getFilingFamily(item.value);
-        const label = item.label.toLocaleLowerCase();
-        return {
-          key: item.value,
-          family,
-          label: family === 'award' ? `${label} ★` : label,
-          count: item.count,
-          isRefined: item.isRefined,
-        };
-      }),
+      items.map((item, index) => ({
+        key: item.value,
+        label: item.label,
+        count: item.count,
+        isRefined: item.isRefined,
+        swatch: swatchForIndex(index, items.length),
+      })),
     [items]
   );
+
+  // Tiles take the same tone as their category's filter, matched on the value
+  // Algolia reported. A note whose category is not in the current facet list
+  // keeps the default tone rather than being reassigned to another category.
+  const swatchByCategory = useMemo(
+    () => new Map(categories.map((category) => [category.key, category.swatch])),
+    [categories]
+  );
+
   const { measureRef: boardRef, columns: boardColumns } = useResolvedColumnCount();
   // canRefine reports whether anything is currently refined across every facet,
   // so this does not need updating when a new filter is added.
@@ -235,13 +220,17 @@ export default function IndexSidebar({
             <li key={category.key}>
               <button
                 type="button"
-                data-category={category.family}
+                data-category={category.key}
                 data-selected={category.isRefined || undefined}
                 aria-label={`${category.label}, ${category.count.toLocaleString()} notes`}
                 aria-pressed={category.isRefined}
                 onClick={() => refine(category.key)}
               >
-                <span className={styles.categorySwatch} aria-hidden="true" />
+                <span
+                  className={styles.categorySwatch}
+                  style={{ background: category.swatch }}
+                  aria-hidden="true"
+                />
                 <span className={styles.categoryName}>{category.label}</span>
                 <span className={styles.categoryCount}>
                   {category.count.toLocaleString()} {category.isRefined ? '−' : '+'}
@@ -286,7 +275,10 @@ export default function IndexSidebar({
                     }
                     role="option"
                     data-note-id={item.objectID}
-                    data-category={getFilingFamily(item.category)}
+                    data-category={item.category}
+                    style={
+                      { '--tile-swatch': swatchByCategory.get(item.category) } as CSSProperties
+                    }
                     data-activated={item.objectID === activation?.id || undefined}
                     aria-label={`Read note ${position}: ${item.title}`}
                     aria-selected={item.objectID === selectedId}
