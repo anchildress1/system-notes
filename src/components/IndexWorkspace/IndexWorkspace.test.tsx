@@ -97,7 +97,7 @@ describe('IndexWorkspace', () => {
       'aria-expanded',
       'true'
     );
-    expect(screen.getByText('principles')).toBeInTheDocument();
+    expect(screen.getByText('principle')).toBeInTheDocument();
     expect(screen.getByText(/^The board — 1 ranked · 1 match$/i)).toBeInTheDocument();
     expect(screen.getByRole('option', { name: /Read note 1: Failure is data/i })).toBeVisible();
     expect(screen.getByText('Project')).toBeInTheDocument();
@@ -109,7 +109,9 @@ describe('IndexWorkspace', () => {
     );
   });
 
-  it('groups the live taxonomy into the four approved filing families', async () => {
+  it('shows every category the index returns as its own filter', async () => {
+    // A migration that changes the taxonomy must surface without a code change,
+    // so nothing is folded into a fixed set of families or an "other" bucket.
     searchHarness.facets.category = {
       Principles: 12,
       Philosophy: 26,
@@ -127,24 +129,36 @@ describe('IndexWorkspace', () => {
     const view = await renderWorkspace();
     await screen.findByText('Failure is data');
 
-    expect(screen.getByRole('button', { name: /principles, 118 notes/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /architecture, 28 notes/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /decisions, 174 notes/i })).toBeInTheDocument();
+    // Board tiles also carry data-category, so count the filter controls.
+    expect(screen.getAllByRole('button', { name: /, [\d,]+ notes$/i })).toHaveLength(11);
+    for (const [label, count] of [
+      ['principles', 12],
+      ['philosophy', 26],
+      ['work style', 73],
+      ['about', 7],
+      ['architecture', 16],
+      ['constraints', 12],
+      ['decisions', 77],
+      ['process', 11],
+      ['experience', 55],
+      ['experimentation', 31],
+    ] as const) {
+      expect(
+        screen.getByRole('button', { name: new RegExp(`^${label}, ${count} notes$`, 'i') })
+      ).toBeInTheDocument();
+    }
+    // The award family still earns its star.
     expect(screen.getByRole('button', { name: /awards ★, 27 notes/i })).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /other/i })).not.toBeInTheDocument();
-    expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(1);
+    expect(screen.queryByRole('button', { name: /^other,/i })).not.toBeInTheDocument();
+
     expect(view.container.querySelector('[data-note-board] [role="option"]')).toHaveAttribute(
       'data-category',
       'principle'
     );
 
-    fireEvent.click(screen.getByRole('button', { name: /principles, 118 notes/i }));
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: /principles, 118 notes/i })).toHaveAttribute(
-        'aria-pressed',
-        'true'
-      )
-    );
+    const principles = screen.getByRole('button', { name: /principles, 12 notes/i });
+    fireEvent.click(principles);
+    await waitFor(() => expect(principles).toHaveAttribute('aria-pressed', 'true'));
   });
 
   it('maps the original 347 ranked hits to one keyboard-operable board', async () => {
@@ -346,13 +360,13 @@ describe('IndexWorkspace', () => {
     fireEvent.click(toggle);
 
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.getByRole('button', { name: /principles/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /principle/i })).toBeInTheDocument();
   });
 
   it('refines from the filing rail and exposes a clear action', async () => {
     await renderWorkspace();
     await screen.findByText('Failure is data');
-    const category = screen.getByRole('button', { name: /principles/i });
+    const category = screen.getByRole('button', { name: /principle/i });
     fireEvent.click(category);
 
     await waitFor(() => expect(category).toHaveAttribute('aria-pressed', 'true'));
@@ -390,7 +404,7 @@ describe('IndexWorkspace', () => {
     await waitFor(() => expect(screen.getByRole('article')).toHaveTextContent('Failure is data'));
   });
 
-  it('selects, clears, and recovers a grouped filing category', async () => {
+  it('toggles one category without disturbing its neighbours', async () => {
     searchHarness.facets.category = {
       Principles: 2,
       Philosophy: 3,
@@ -401,30 +415,39 @@ describe('IndexWorkspace', () => {
 
     await renderWorkspace();
     await screen.findByText('Failure is data');
-    const principles = screen.getByRole('button', { name: /principles, 14 notes/i });
+    const principles = screen.getByRole('button', { name: /principles, 2 notes/i });
+    const philosophy = screen.getByRole('button', { name: /philosophy, 3 notes/i });
 
-    expect(principles).toHaveAttribute('aria-pressed', 'mixed');
-    fireEvent.click(principles);
+    // Each value refines on its own, so there is no partially-selected family
+    // and no "mixed" state to reason about.
     await waitFor(() => expect(principles).toHaveAttribute('aria-pressed', 'true'));
+    expect(philosophy).toHaveAttribute('aria-pressed', 'false');
+
     fireEvent.click(principles);
     await waitFor(() => expect(principles).toHaveAttribute('aria-pressed', 'false'));
+
+    fireEvent.click(philosophy);
+    await waitFor(() => expect(philosophy).toHaveAttribute('aria-pressed', 'true'));
+    expect(principles).toHaveAttribute('aria-pressed', 'false');
   });
 
-  it('files unknown future categories under other without losing refinement', async () => {
+  it('surfaces a category it has never seen instead of hiding it', async () => {
     searchHarness.facets.category = { Mystery: 3 };
     searchHarness.hits[0]!.category = 'Mystery';
 
     const view = await renderWorkspace();
     await screen.findByText('Failure is data');
-    const other = screen.getByRole('button', { name: /other, 3 notes/i });
+    const mystery = screen.getByRole('button', { name: /mystery, 3 notes/i });
 
+    // An unrecognised category is a real filter, not an "other" bucket. Its
+    // board tile falls back to the default swatch rather than disappearing.
     expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(1);
     expect(view.container.querySelector('[data-note-board] [role="option"]')).toHaveAttribute(
       'data-category',
       'decision'
     );
-    fireEvent.click(other);
-    await waitFor(() => expect(other).toHaveAttribute('aria-pressed', 'true'));
+    fireEvent.click(mystery);
+    await waitFor(() => expect(mystery).toHaveAttribute('aria-pressed', 'true'));
   });
 
   it('renders a direct no-results state without fictional suggestions', async () => {
@@ -436,7 +459,7 @@ describe('IndexWorkspace', () => {
       await screen.findByRole('heading', { name: 'No notes match that.' })
     ).toBeInTheDocument();
     expect(screen.getByText(/literal, not psychic/i)).toBeInTheDocument();
-    expect(screen.queryByText('principles')).not.toBeInTheDocument();
+    expect(screen.queryByText('principle')).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Clear search and filters' })
     ).not.toBeInTheDocument();

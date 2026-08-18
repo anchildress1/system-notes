@@ -121,37 +121,26 @@ export default function IndexSidebar({
     limit: 40,
     operator: 'or',
   });
-  const categories = useMemo(() => {
-    const groupedValues = new Set<string>(categoryGroups.flatMap((group) => [...group.values]));
-    const groups = categoryGroups.flatMap((group) => {
-      const values = new Set<string>(group.values);
-      const groupItems = items.filter((item) => values.has(normalizeCategory(item.value)));
-      if (groupItems.length === 0) return [];
-      return [
-        {
-          key: group.key,
-          label: group.label,
-          items: groupItems,
-          count: groupItems.reduce((total, item) => total + item.count, 0),
-          isRefined: groupItems.some((item) => item.isRefined),
-          isFullyRefined: groupItems.every((item) => item.isRefined),
-        },
-      ];
-    });
-    const otherItems = items.filter((item) => !groupedValues.has(normalizeCategory(item.value)));
-    if (otherItems.length === 0) return groups;
-    return [
-      ...groups,
-      {
-        key: 'other',
-        label: 'other',
-        items: otherItems,
-        count: otherItems.reduce((total, item) => total + item.count, 0),
-        isRefined: otherItems.some((item) => item.isRefined),
-        isFullyRefined: otherItems.every((item) => item.isRefined),
-      },
-    ];
-  }, [items]);
+  // Every category the index returns gets its own filter. Folding them into a
+  // fixed set of families hid whichever values were not on that list, so a
+  // migration that changes the taxonomy would have needed a code change here to
+  // become visible. The swatch still resolves through getFilingFamily, and an
+  // unrecognised category falls back to the default swatch rather than vanishing.
+  const categories = useMemo(
+    () =>
+      items.map((item) => {
+        const family = getFilingFamily(item.value);
+        const label = item.label.toLocaleLowerCase();
+        return {
+          key: item.value,
+          family,
+          label: family === 'award' ? `${label} ★` : label,
+          count: item.count,
+          isRefined: item.isRefined,
+        };
+      }),
+    [items]
+  );
   const { measureRef: boardRef, columns: boardColumns } = useResolvedColumnCount();
   // canRefine reports whether anything is currently refined across every facet,
   // so this does not need updating when a new filter is added.
@@ -246,16 +235,11 @@ export default function IndexSidebar({
             <li key={category.key}>
               <button
                 type="button"
-                data-category={category.key}
+                data-category={category.family}
                 data-selected={category.isRefined || undefined}
                 aria-label={`${category.label}, ${category.count.toLocaleString()} notes`}
-                aria-pressed={category.isFullyRefined ? true : category.isRefined ? 'mixed' : false}
-                onClick={() => {
-                  const shouldSelect = !category.isFullyRefined;
-                  for (const item of category.items) {
-                    if (item.isRefined !== shouldSelect) refine(item.value);
-                  }
-                }}
+                aria-pressed={category.isRefined}
+                onClick={() => refine(category.key)}
               >
                 <span className={styles.categorySwatch} aria-hidden="true" />
                 <span className={styles.categoryName}>{category.label}</span>
