@@ -1,6 +1,14 @@
 'use client';
 
-import { useMemo, useState, type KeyboardEvent, type MouseEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
+} from 'react';
 import type { Hit } from 'instantsearch.js';
 import { useRefinementList, useStats } from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
@@ -47,6 +55,46 @@ interface IndexSidebarProps {
   onSelect: (id: string) => void;
 }
 
+/**
+ * Number of columns the board's auto-fill grid actually resolved to.
+ * Reads the computed track list rather than recomputing the CSS in JS, so the
+ * stylesheet stays the single source of truth for tile size and gap.
+ * Returns 0 when it cannot be measured (no ResizeObserver, or jsdom, which does
+ * not resolve grid tracks) — callers treat that as "don't trim".
+ */
+function useResolvedColumnCount(): {
+  measureRef: (node: HTMLElement | null) => void;
+  columns: number;
+} {
+  const [columns, setColumns] = useState(0);
+  const observerRef = useRef<ResizeObserver | null>(null);
+
+  // A callback ref, not an effect on a ref object: the board only enters the DOM
+  // once results arrive, and an effect keyed on the ref would have run once
+  // against a null node at mount and never attached.
+  const measureRef = useCallback((node: HTMLElement | null) => {
+    observerRef.current?.disconnect();
+    observerRef.current = null;
+    if (!node || typeof ResizeObserver === 'undefined') return;
+
+    const measure = () => {
+      const template = globalThis.getComputedStyle(node).gridTemplateColumns;
+      const count =
+        template && template !== 'none' ? template.split(/\s+/).filter(Boolean).length : 0;
+      setColumns((previous) => (previous === count ? previous : count));
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
+    observerRef.current = observer;
+  }, []);
+
+  useEffect(() => () => observerRef.current?.disconnect(), []);
+
+  return { measureRef, columns };
+}
+
 export default function IndexSidebar({
   items: rankedItems,
   selectedId,
@@ -91,11 +139,24 @@ export default function IndexSidebar({
       },
     ];
   }, [items]);
+  const { measureRef: boardRef, columns: boardColumns } = useResolvedColumnCount();
+
+  // The grid auto-fills columns from the sidebar's width, so a fixed tile count
+  // leaves a ragged part-row at whatever width the last row does not divide
+  // into. Trim to whole rows instead: the board stays a clean rectangle at every
+  // size, and the tiles it drops are the lowest-ranked ones, still reachable
+  // through search and the reading queue. Below one full row there is nothing to
+  // square off, so everything renders.
+  const boardItems = useMemo(() => {
+    if (boardColumns < 1 || rankedItems.length < boardColumns) return rankedItems;
+    return rankedItems.slice(0, Math.floor(rankedItems.length / boardColumns) * boardColumns);
+  }, [rankedItems, boardColumns]);
+
   const selectedIndex = Math.max(
-    rankedItems.findIndex((item) => item.objectID === selectedId),
+    boardItems.findIndex((item) => item.objectID === selectedId),
     0
   );
-  const activeOptionId = rankedItems.length > 0 ? `note-board-option-${selectedIndex}` : undefined;
+  const activeOptionId = boardItems.length > 0 ? `note-board-option-${selectedIndex}` : undefined;
 
   function activateNote(id: string) {
     setActivation((current) => ({ id, nonce: (current?.nonce ?? 0) + 1 }));
@@ -103,12 +164,12 @@ export default function IndexSidebar({
   }
 
   function moveBoardSelection(event: KeyboardEvent<HTMLOListElement>) {
-    if (rankedItems.length === 0) return;
+    if (boardItems.length === 0) return;
     let nextIndex: number;
     switch (event.key) {
       case 'ArrowRight':
       case 'ArrowDown':
-        nextIndex = Math.min(selectedIndex + 1, rankedItems.length - 1);
+        nextIndex = Math.min(selectedIndex + 1, boardItems.length - 1);
         break;
       case 'ArrowLeft':
       case 'ArrowUp':
@@ -118,14 +179,14 @@ export default function IndexSidebar({
         nextIndex = 0;
         break;
       case 'End':
-        nextIndex = rankedItems.length - 1;
+        nextIndex = boardItems.length - 1;
         break;
       default:
         return;
     }
 
     event.preventDefault();
-    activateNote(rankedItems[nextIndex]!.objectID);
+    activateNote(boardItems[nextIndex]!.objectID);
   }
 
   function selectBoardOption(event: MouseEvent<HTMLOListElement>) {
@@ -177,13 +238,14 @@ export default function IndexSidebar({
           ))}
         </ul>
 
-        {rankedItems.length > 0 ? (
+        {boardItems.length > 0 ? (
           <div className={styles.board}>
             <p>
-              The board — {rankedItems.length.toLocaleString()} ranked · {nbHits.toLocaleString()}{' '}
+              The board — {boardItems.length.toLocaleString()} ranked · {nbHits.toLocaleString()}{' '}
               {nbHits === 1 ? 'match' : 'matches'}
             </p>
             <ol
+              ref={boardRef}
               className={styles.boardTiles}
               data-note-board
               role="listbox"
@@ -194,7 +256,7 @@ export default function IndexSidebar({
               onClick={selectBoardOption}
               onKeyDown={moveBoardSelection}
             >
-              {rankedItems.map((item, index) => {
+              {boardItems.map((item, index) => {
                 const position = getFactHitPosition(item, index + 1);
                 return (
                   <li

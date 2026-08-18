@@ -48,7 +48,7 @@ export default function ResultQueue({
       <h2 className="visually-hidden">Matching notes</h2>
       <p className={styles.queueStatus}>
         {visibleCount.toLocaleString()} {visibleCount === 1 ? 'note' : 'notes'} in view ·{' '}
-        {items.length.toLocaleString()} ranked on the board · {nbHits.toLocaleString()}{' '}
+        {items.length.toLocaleString()} ranked · {nbHits.toLocaleString()}{' '}
         {nbHits === 1 ? 'match' : 'matches'}
       </p>
 

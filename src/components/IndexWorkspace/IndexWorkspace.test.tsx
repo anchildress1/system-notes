@@ -180,9 +180,7 @@ describe('IndexWorkspace', () => {
       'principle',
     ]);
     expect(tiles[346]).toHaveAccessibleName('Read note 347: Ranked note 347');
-    expect(
-      screen.getByText(/5 notes in view · 347 ranked on the board · 347 matches/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/5 notes in view · 347 ranked · 347 matches/i)).toBeInTheDocument();
     expect(screen.queryByText(/malformed notes were withheld/i)).not.toBeInTheDocument();
     expect(
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
@@ -303,7 +301,7 @@ describe('IndexWorkspace', () => {
       );
       expect(
         screen.getByText(
-          `${count} ${count === 1 ? 'note' : 'notes'} in view · ${count} ranked on the board · ${count} ${count === 1 ? 'match' : 'matches'}`
+          `${count} ${count === 1 ? 'note' : 'notes'} in view · ${count} ranked · ${count} ${count === 1 ? 'match' : 'matches'}`
         )
       ).toBeInTheDocument();
     }

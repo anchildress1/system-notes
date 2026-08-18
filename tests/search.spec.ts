@@ -189,9 +189,7 @@ test.describe('Notes index', () => {
     expect(tileTitles).toEqual(hits.map((hit) => hit.title));
     expect(initialQueueTitles).toEqual(hits.slice(1, 5).map((hit) => hit.title));
     expect(tileCategories).toEqual(hits.map((hit) => hit.category?.toLocaleLowerCase()));
-    await expect(
-      page.getByText(/5 notes in view · 347 ranked on the board · 347 matches/i)
-    ).toBeVisible();
+    await expect(page.getByText(/5 notes in view · 347 ranked · 347 matches/i)).toBeVisible();
 
     const colorSignatures = await tiles.evaluateAll((options) =>
       options.slice(0, 4).map((option) => {
