@@ -181,10 +181,11 @@ test.describe('Notes index', () => {
     expect(boardShape.tiles % boardShape.columns).toBe(0);
 
     await expect(tiles).toHaveCount(boardShape.tiles);
-    await expect(tiles.nth(0)).toHaveAttribute('data-category', 'award');
-    await expect(tiles.nth(1)).toHaveAttribute('data-category', 'decision');
-    await expect(tiles.nth(2)).toHaveAttribute('data-category', 'architecture');
-    await expect(tiles.nth(3)).toHaveAttribute('data-category', 'principle');
+    // Tiles carry the note's category verbatim — the index owns the taxonomy.
+    await expect(tiles.nth(0)).toHaveAttribute('data-category', 'Award');
+    await expect(tiles.nth(1)).toHaveAttribute('data-category', 'Decision');
+    await expect(tiles.nth(2)).toHaveAttribute('data-category', 'Architecture');
+    await expect(tiles.nth(3)).toHaveAttribute('data-category', 'Principle');
     await expect(tiles.nth(boardShape.tiles - 1)).toHaveAccessibleName(
       `Read note ${boardShape.tiles}: Ranked note ${boardShape.tiles}`
     );
@@ -205,7 +206,7 @@ test.describe('Notes index', () => {
     const onBoard = hits.slice(0, boardShape.tiles);
     expect(tileTitles).toEqual(onBoard.map((hit) => hit.title));
     expect(initialQueueTitles).toEqual(hits.slice(1, 5).map((hit) => hit.title));
-    expect(tileCategories).toEqual(onBoard.map((hit) => hit.category?.toLocaleLowerCase()));
+    expect(tileCategories).toEqual(onBoard.map((hit) => hit.category));
     await expect(page.getByText(/5 notes in view · 347 ranked · 347 matches/i)).toBeVisible();
 
     const colorSignatures = await tiles.evaluateAll((options) =>
