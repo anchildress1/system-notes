@@ -145,8 +145,10 @@
   aspect-ratio: 1;
   border-radius: 0.08rem;
   /* Set per tile from the category's own swatch; --neon covers a note whose
-     category is absent from the current facet list. */
+     category is absent from the current facet list. The border carries the
+     hollow award treatment. */
   background: var(--tile-swatch, var(--neon));
+  border: var(--tile-border, 0);
   box-shadow: 0 0 0 transparent;
   content: '';
   transition:

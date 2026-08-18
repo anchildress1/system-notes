@@ -26,18 +26,30 @@ import styles from './IndexWorkspace.module.css';
 // returns them — no grouping, no relabelling, no fallback bucket — so changing
 // a category name is a data change, not a code change.
 //
-// Swatches come from a category's position in that list rather than its name,
-// so any number of categories gets a distinct, on-brand tone without the
-// component knowing what they are called. The lightness range is divided by the
-// number of categories rather than stepped by a fixed amount, so tones never
-// wrap around and repeat once the taxonomy grows.
-const SWATCH_LIGHTEST = 74;
-const SWATCH_DARKEST = 34;
+// Swatches come from a category's position in that list rather than its name, so
+// a renamed or added category still gets a distinct tone. The palette runs pink
+// through paper and grey to near-black rather than one hue's lightness ramp,
+// which is what made every filter read as the same colour.
+const SWATCH_PALETTE = [
+  'var(--neon)',
+  'var(--paper)',
+  'oklch(56% 0.012 330)',
+  'oklch(38% 0.014 330)',
+  'var(--void-soft)',
+] as const;
 
-function swatchForIndex(index: number, total: number): string {
-  const span = SWATCH_LIGHTEST - SWATCH_DARKEST;
-  const lightness = SWATCH_LIGHTEST - (index * span) / Math.max(total - 1, 1);
-  return `oklch(${lightness.toFixed(1)}% 0.26 330)`;
+// Awards keep the hollow outline and the star they have always had. This is the
+// one place a name matters, and it matches on meaning rather than an exact
+// value, so "Awards", "Award", or "Awards ★" all keep the treatment.
+function isAwardCategory(value: string | undefined): boolean {
+  return /award/i.test(value ?? '');
+}
+
+function swatchStyle(value: string | undefined, index: number) {
+  if (isAwardCategory(value)) {
+    return { background: 'transparent', border: '1px solid var(--neon)' };
+  }
+  return { background: SWATCH_PALETTE[index % SWATCH_PALETTE.length] };
 }
 
 interface IndexSidebarProps {
@@ -110,10 +122,10 @@ export default function IndexSidebar({
     () =>
       items.map((item, index) => ({
         key: item.value,
-        label: item.label,
+        label: isAwardCategory(item.value) ? `${item.label} ★` : item.label,
         count: item.count,
         isRefined: item.isRefined,
-        swatch: swatchForIndex(index, items.length),
+        swatch: swatchStyle(item.value, index),
       })),
     [items]
   );
@@ -228,7 +240,7 @@ export default function IndexSidebar({
               >
                 <span
                   className={styles.categorySwatch}
-                  style={{ background: category.swatch }}
+                  style={category.swatch}
                   aria-hidden="true"
                 />
                 <span className={styles.categoryName}>{category.label}</span>
@@ -277,7 +289,10 @@ export default function IndexSidebar({
                     data-note-id={item.objectID}
                     data-category={item.category}
                     style={
-                      { '--tile-swatch': swatchByCategory.get(item.category) } as CSSProperties
+                      {
+                        '--tile-swatch': swatchByCategory.get(item.category)?.background,
+                        '--tile-border': swatchByCategory.get(item.category)?.border ?? '0',
+                      } as CSSProperties
                     }
                     data-activated={item.objectID === activation?.id || undefined}
                     aria-label={`Read note ${position}: ${item.title}`}
