@@ -1,6 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
-import sharp from 'sharp';
 import { mockAlgoliaSearch, test } from './utils';
 
 test.describe('System Notes redesign', () => {
@@ -105,47 +104,45 @@ test.describe('System Notes redesign', () => {
     await page.getByRole('article').waitFor();
     await page.evaluate(() => document.fonts.ready);
 
-    if (!isDesktop) {
-      const layout = await page.evaluate(() => {
-        const sidebar = document.querySelector<HTMLElement>('[aria-label="Browse notes by type"]');
-        const search = document
-          .querySelector<HTMLInputElement>('[aria-label="Search the notes index"]')
-          ?.closest<HTMLElement>('div');
-        if (!sidebar || !search) return null;
-        return {
-          sidebarBottom: sidebar.getBoundingClientRect().bottom,
-          searchTop: search.getBoundingClientRect().top,
-          scrollWidth: document.documentElement.scrollWidth,
-          clientWidth: document.documentElement.clientWidth,
-        };
-      });
-      expect(layout).not.toBeNull();
-      expect(layout!.searchTop).toBeGreaterThanOrEqual(layout!.sidebarBottom);
-      expect(layout!.scrollWidth).toBe(layout!.clientWidth);
+    // Composition is asserted structurally, not by pixel-diffing the page
+    // against public/projects/system-notes.webp. That file is the social card
+    // artwork, not a baseline, and using it as one meant every intentional
+    // layout change "failed" until the artwork was overwritten with a
+    // screenshot — which is how the illustration came to be lost.
+    const layout = await page.evaluate(() => {
+      const sidebar = document.querySelector<HTMLElement>('[aria-label="Browse notes by type"]');
+      const search = document
+        .querySelector<HTMLInputElement>('[aria-label="Search the notes index"]')
+        ?.closest<HTMLElement>('div');
+      const board = document.querySelector<HTMLElement>('[data-note-board]');
+      const reader = document.querySelector<HTMLElement>('article');
+      if (!sidebar || !search || !board || !reader) return null;
+      return {
+        sidebarBottom: sidebar.getBoundingClientRect().bottom,
+        sidebarRight: sidebar.getBoundingClientRect().right,
+        searchTop: search.getBoundingClientRect().top,
+        searchLeft: search.getBoundingClientRect().left,
+        readerLeft: reader.getBoundingClientRect().left,
+        boardWidth: board.getBoundingClientRect().width,
+        sidebarWidth: sidebar.getBoundingClientRect().width,
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+      };
+    });
+    expect(layout).not.toBeNull();
+    expect(layout!.scrollWidth).toBe(layout!.clientWidth);
+
+    if (isDesktop) {
+      // Two columns: the catalog sits beside the reading pane, not above it.
+      expect(layout!.searchLeft).toBeGreaterThanOrEqual(layout!.sidebarRight);
+      expect(layout!.readerLeft).toBeGreaterThanOrEqual(layout!.sidebarRight);
+      // The board fills its column rather than overflowing it.
+      expect(layout!.boardWidth).toBeLessThanOrEqual(layout!.sidebarWidth);
       return;
     }
 
-    const actual = await page.screenshot({ animations: 'disabled' });
-    const [actualImage, referenceImage] = await Promise.all([
-      sharp(actual).removeAlpha().raw().toBuffer({ resolveWithObject: true }),
-      sharp('public/projects/system-notes.webp')
-        .removeAlpha()
-        .raw()
-        .toBuffer({ resolveWithObject: true }),
-    ]);
-    expect(actualImage.info).toMatchObject({ width: 1440, height: 720, channels: 3 });
-    expect(referenceImage.info).toMatchObject({ width: 1440, height: 720, channels: 3 });
-
-    let changedPixels = 0;
-    for (let index = 0; index < actualImage.data.length; index += 3) {
-      const difference = Math.max(
-        Math.abs(actualImage.data[index]! - referenceImage.data[index]!),
-        Math.abs(actualImage.data[index + 1]! - referenceImage.data[index + 1]!),
-        Math.abs(actualImage.data[index + 2]! - referenceImage.data[index + 2]!)
-      );
-      if (difference > 32) changedPixels += 1;
-    }
-    expect(changedPixels / (1440 * 720)).toBeLessThan(0.05);
+    // Stacked: the catalog sits above the search.
+    expect(layout!.searchTop).toBeGreaterThanOrEqual(layout!.sidebarBottom);
   });
 
   test('renders the restrained footer on every surface', async ({ page }) => {
