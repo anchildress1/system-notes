@@ -259,6 +259,14 @@
   font-weight: 700;
 }
 
+/* The ring goes on the pill, not the input: an outline drawn inside the pale
+   pill is nearly invisible, and the global :where() focus rule has zero
+   specificity so the input's own `outline: 0` was winning outright. */
+.searchPill:has(input:focus-visible) {
+  outline: 2px solid var(--neon-bright);
+  outline-offset: 3px;
+}
+
 .searchPill input {
   min-width: 0;
   border: 0;
@@ -414,6 +422,9 @@
 .readingQueue {
   display: grid;
   min-width: 0;
+  /* Without an explicit track the implicit one resolves to max(min-content),
+     which the queue's nowrap meta line pushed to 337px inside a 288px pane. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.75rem;
 }
 

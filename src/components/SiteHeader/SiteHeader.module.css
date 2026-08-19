@@ -68,8 +68,17 @@
 
 .navigation {
   display: flex;
+  /* Wrap the row rather than the words. At 320px every item was breaking
+     across two lines and the theme-song pill across three, which grew the
+     header from 85px to 125px and squeezed the gaps to 4px. */
+  flex-wrap: wrap;
   align-items: center;
-  gap: clamp(0.35rem, 1.4vw, 1.25rem);
+  justify-content: flex-end;
+  gap: 0.5rem clamp(0.6rem, 1.4vw, 1.25rem);
+}
+
+.navigation > * {
+  white-space: nowrap;
 }
 
 .navLink {

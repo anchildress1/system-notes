@@ -768,7 +768,7 @@ describe('board column measurement', () => {
     expect(board()?.children).toHaveLength(6);
   });
 
-  it('reports the whole census in the heading even though it renders fewer tiles', async () => {
+  it('says how many of the census it is showing once it trims', async () => {
     installResizeObserver();
     layOutBoard(resolvedTracks());
 
@@ -776,7 +776,21 @@ describe('board column measurement', () => {
     await screen.findByText('Ranked note 1');
 
     await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
-    expect(screen.getByText(/^The board — one tile per card · 347/)).toBeInTheDocument();
+    // Stating only the census would claim 347 tiles above a board of 220.
+    expect(screen.getByText(/one tile per card · 220 of 347/)).toBeInTheDocument();
+  });
+
+  it('states a bare total when nothing was trimmed away', async () => {
+    installResizeObserver();
+    // 347 notes across 347 columns is one full row, so no tile is dropped.
+    layOutBoard(resolvedTracks(347));
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    await waitFor(() => expect(board()?.children).toHaveLength(347));
+    expect(screen.getByText(/one tile per card · 347/)).toBeInTheDocument();
+    expect(screen.queryByText(/347 of 347/)).not.toBeInTheDocument();
   });
 
   it('keeps aria-activedescendant pointing at a tile that exists after trimming', async () => {

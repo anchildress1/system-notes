@@ -22,7 +22,10 @@
   text-transform: lowercase;
 }
 
+/* min-width:0 is what lets the ellipsis engage: a flex item's automatic
+   minimum size is min-content, so overflow:hidden alone never shrinks it. */
 .cardMeta > span:first-child {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

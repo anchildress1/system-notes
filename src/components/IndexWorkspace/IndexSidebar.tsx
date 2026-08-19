@@ -290,8 +290,11 @@ export default function IndexSidebar({
           <div className={styles.board}>
             <p>
               {/* "N of M" only while trimmed, so the board never states a
-                  different total from the queue beside it without saying why. */}
-              The board — one tile per card · {boardCensus.length.toLocaleString()}{' '}
+                  different total from the number of tiles under it. */}
+              The board — one tile per card ·{' '}
+              {boardItems.length < boardCensus.length
+                ? `${boardItems.length.toLocaleString()} of ${boardCensus.length.toLocaleString()}`
+                : boardCensus.length.toLocaleString()}{' '}
               <span aria-hidden="true">↑</span>
             </p>
             <ol
