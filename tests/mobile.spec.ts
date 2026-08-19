@@ -80,6 +80,26 @@ test.describe('mobile interactions', () => {
     );
   });
 
+  test('keeps the theme song panel fully on screen once the nav wraps', async ({ page }) => {
+    // Anchored to the pill, the panel hung off its right edge. At 320px the nav
+    // wraps and the pill is no longer flush right, which put the panel's left
+    // edge at -88px — off the screen, and invisible to a scrollWidth check
+    // because it overflowed leftward.
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto('/');
+      await page.getByRole('button', { name: /theme song/i }).click();
+
+      const panel = page.getByText('Twisted Game Songs').locator('..');
+      await expect(panel).toBeVisible();
+
+      const box = await panel.boundingBox();
+      expect(box, `no panel at ${width}px`).not.toBeNull();
+      expect(box!.x, `panel starts off-screen at ${width}px`).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width, `panel ends off-screen at ${width}px`).toBeLessThanOrEqual(width);
+    }
+  });
+
   test('expands a project into one readable column', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/projects');

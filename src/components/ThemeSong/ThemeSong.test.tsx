@@ -59,6 +59,39 @@ describe('ThemeSong', () => {
     expect(screen.getByText('', { selector: '[aria-live="polite"]' })).toBeEmptyDOMElement();
   });
 
+  it('never plays on its own', () => {
+    const { play } = stubPlayback();
+    render(<ThemeSong />);
+
+    // No autoplay attribute, no play() at mount, and nothing pressed. The track
+    // is explicit; it may only ever start because someone asked for it.
+    expect(audio()).not.toHaveAttribute('autoplay');
+    expect(audio().autoplay).toBe(false);
+    expect(play).not.toHaveBeenCalled();
+    expect(toggle()).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('warns that the track is explicit before it can be started', () => {
+    stubPlayback();
+    render(<ThemeSong />);
+
+    // The advisory has to be on the control, because the panel that repeats it
+    // does not exist until the track is already playing.
+    expect(toggle()).toHaveAccessibleName(/explicit content/i);
+    expect(toggle().textContent).toContain('E');
+    expect(screen.getByTitle('Explicit content')).toBeInTheDocument();
+  });
+
+  it('repeats the advisory in the panel once playing', async () => {
+    stubPlayback();
+    render(<ThemeSong />);
+
+    fireEvent.click(toggle());
+    await screen.findByText(TRACK_TITLE);
+
+    expect(screen.getByText(new RegExp(`${TRACK_ARTIST} · explicit`))).toBeInTheDocument();
+  });
+
   it('points at the track without downloading it up front', () => {
     stubPlayback();
     render(<ThemeSong />);
@@ -76,7 +109,7 @@ describe('ThemeSong', () => {
     expect(play).toHaveBeenCalledOnce();
 
     expect(await screen.findByText(TRACK_TITLE)).toBeVisible();
-    expect(screen.getByText(TRACK_ARTIST)).toBeVisible();
+    expect(screen.getByText(new RegExp(TRACK_ARTIST))).toBeVisible();
     expect(toggle()).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByRole('progressbar', { name: /progress/i })).toBeInTheDocument();
     expect(screen.getByText('Theme song playing')).toBeInTheDocument();

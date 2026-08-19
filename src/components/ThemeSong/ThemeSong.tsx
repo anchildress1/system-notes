@@ -62,9 +62,12 @@ export default function ThemeSong() {
   }
 
   const progress = duration > 0 ? Math.min(100, Math.max(0, (currentTime / duration) * 100)) : 0;
+  // The advisory is part of the control's name, not just the panel's: the panel
+  // only exists once the track is already playing, which is too late to warn.
   const label = hasError
     ? 'Theme song unavailable'
-    : `${isPlaying ? 'Stop' : 'Play'} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}`;
+    : `${isPlaying ? 'Stop' : 'Play'} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. ` +
+      'Explicit content.';
 
   return (
     <div className={styles.wrapper}>
@@ -78,13 +81,23 @@ export default function ThemeSong() {
         onClick={toggle}
       >
         <span aria-hidden="true">♫</span> theme song
+        {/* Visible before the click, because that is when it is useful. The
+            accessible name carries it in words; this is the seen equivalent. */}
+        <span className={styles.explicit} aria-hidden="true" title="Explicit content">
+          E
+        </span>
       </button>
 
       {isPlaying ? (
         <div className={styles.panel} id={panelId}>
           <p className={styles.track}>
-            <span className={styles.trackTitle}>{TRACK_TITLE}</span>
-            <span className={styles.trackArtist}>{TRACK_ARTIST}</span>
+            <span className={styles.trackTitle}>
+              {TRACK_TITLE}
+              <span className={styles.explicit} aria-hidden="true">
+                E
+              </span>
+            </span>
+            <span className={styles.trackArtist}>{TRACK_ARTIST} · explicit</span>
           </p>
           <div className={styles.waveform} aria-hidden="true">
             {WAVEFORM_BARS.map((bar) => (

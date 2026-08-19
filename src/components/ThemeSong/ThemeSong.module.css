@@ -69,6 +69,26 @@
   letter-spacing: -0.01em;
 }
 
+/* The parental-advisory mark. Small, but it has to be legible rather than
+   decorative, so it keeps a real border and full-contrast ink. */
+.explicit {
+  display: inline-grid;
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 1px solid currentcolor;
+  border-radius: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  line-height: 1;
+  place-items: center;
+}
+
+.trackTitle .explicit {
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
 .trackArtist {
   color: var(--ink-muted);
   font-family: var(--font-mono);
@@ -150,6 +170,21 @@
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+/* Anchoring to the pill breaks once the nav wraps: at 320px the pill no longer
+   sits flush right, so a panel hung off its right edge started at -88px and ran
+   off the left of the screen. Below this width it spans the viewport instead. */
+@media (max-width: 30rem) {
+  .panel {
+    position: fixed;
+    top: auto;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    width: auto;
+    min-width: 0;
+  }
 }
 
 /* The waveform is the only thing here that moves, and it moves continuously.
