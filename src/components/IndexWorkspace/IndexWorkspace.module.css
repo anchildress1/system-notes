@@ -163,7 +163,7 @@
 
 .boardTiles li:hover::before {
   z-index: 1;
-  box-shadow: 0 0 0.8rem oklch(67% 0.19 330 / 0.52);
+  box-shadow: 0 0 0.8rem oklch(67% 0.22 330 / 0.52);
   transform: scale(1.5);
 }
 
@@ -179,7 +179,7 @@
 }
 
 .boardTiles li[aria-selected='true']::before {
-  box-shadow: 0 0 0.65rem oklch(67% 0.19 330 / 0.72);
+  box-shadow: 0 0 0.65rem oklch(67% 0.22 330 / 0.72);
   filter: brightness(1.25);
   transform: scale(0.68);
 }

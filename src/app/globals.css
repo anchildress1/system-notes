@@ -7,9 +7,12 @@
   --void-soft: oklch(21% 0.032 330);
   --paper: oklch(95% 0.008 330);
   --paper-ink: oklch(18% 0.024 330);
-  --neon: oklch(72% 0.2 330);
-  --neon-bright: oklch(78% 0.19 330);
-  --neon-soft: oklch(72% 0.2 330 / 0.14);
+  --neon: oklch(72% 0.23 330);
+  /* 76%, not 78%: sRGB runs out of chroma at hue 330 around 0.205 by 78%, so
+     the browser clips and the hue drifts. 76% is the highest lightness that
+     still renders 0.23 honestly, and it stays clear of --neon. */
+  --neon-bright: oklch(76% 0.23 330);
+  --neon-soft: oklch(72% 0.23 330 / 0.14);
   --line: oklch(95% 0.008 330 / 0.13);
   --line-strong: oklch(95% 0.008 330 / 0.28);
   /* next/font re-declares these on <body> with hashed family names; the values
