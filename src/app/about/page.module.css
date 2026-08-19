@@ -20,6 +20,7 @@
 .kicker,
 .proof header > p,
 .principles header > p,
+.themeSong header > p:first-child,
 .contact > div > p {
   margin-bottom: 1.25rem;
   color: var(--neon-bright);
@@ -109,6 +110,7 @@
 
 .proof,
 .principles,
+.themeSong,
 .contact {
   display: grid;
   padding-block: clamp(4rem, 8vw, 8rem);
@@ -119,6 +121,7 @@
 
 .proof header h2,
 .principles header h2,
+.themeSong header h2,
 .contact h2 {
   font-family: var(--font-editorial);
   font-size: clamp(2.7rem, 5vw, 5rem);
@@ -283,4 +286,36 @@
   .principles li p {
     grid-column: 2;
   }
+}
+
+.themeSongTrack {
+  margin-top: 1.25rem;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.themeSongTrack cite {
+  color: var(--ink);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.themeSongCopy {
+  display: grid;
+  max-width: 46rem;
+  gap: 1.35rem;
+}
+
+.themeSongCopy p {
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.themeSongCopy em {
+  color: var(--ink);
+  font-style: normal;
+  font-weight: 700;
 }

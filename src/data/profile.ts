@@ -1,3 +1,44 @@
+/** One paragraph of the theme-song note. `lead` carried emphasis in the copy. */
+export interface ThemeSongParagraph {
+  readonly lead?: string;
+  readonly body?: string;
+}
+
+// Typed before it reaches `profile`, because `as const` would narrow each entry
+// to its own literal shape and the renderer could not read both fields off the
+// resulting union.
+const themeSongParagraphs: readonly ThemeSongParagraph[] = [
+  { body: 'I’ve called “I Build Things” my theme song since the first time I heard it.' },
+  {
+    body:
+      'Part of that is Appalachian ingenuity. I was taught to fix what breaks, reuse what ' +
+      'still works, and take things apart just to understand how they function. I’ve been ' +
+      'dismantling systems and occasionally putting them back together since before I had ' +
+      'the vocabulary to call them systems.',
+  },
+  {
+    body:
+      'Another part is simpler. The song is just fun. It’s catchy, energetic, and it makes ' +
+      'me want to build things. I don’t treat a theme song as a metaphor exercise alone. I ' +
+      'picked this one because it’s motivating, memorable, and genuinely enjoyable.',
+  },
+  { lead: 'The rest is how I build software.' },
+  {
+    lead: 'I design systems by actively hunting failure points.',
+    body:
+      'If something can break, I assume it will and I try to find it before production does. ' +
+      'There’s nothing I dislike more than shipping a “done” deployment and immediately ' +
+      'needing a hotfix. If I deployed it, the failure should already have been found, ' +
+      'understood, and addressed.',
+  },
+  {
+    body:
+      'This song captures that balance. The joy of building something yourself, combined ' +
+      'with the belief that breaking things early, loudly, and intentionally is how you end ' +
+      'up with systems that actually ship clean and stay that way.',
+  },
+];
+
 export const profile = {
   name: 'Ashley Childress',
   role: 'Senior Software Engineer',
@@ -29,4 +70,12 @@ export const profile = {
     { label: 'LinkedIn', href: 'https://linkedin.com/in/anchildress1' },
     { label: 'DEV Community', href: 'https://dev.to/anchildress1' },
   ],
+  // `lead` is the sentence that carried emphasis in the original copy; it is a
+  // separate field rather than inline markup so the data stays free of markup
+  // and the page decides how emphasis is rendered.
+  themeSong: {
+    track: 'I Build Things',
+    artist: 'Twisted Game Songs',
+    paragraphs: themeSongParagraphs,
+  },
 } as const;

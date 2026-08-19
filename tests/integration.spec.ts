@@ -234,6 +234,27 @@ test.describe('System Notes redesign', () => {
     expect(accessibility.violations).toEqual([]);
   });
 
+  test('explains the theme song rather than leaving the header control unexplained', async ({
+    page,
+  }) => {
+    await page.goto('/about');
+    const section = page
+      .locator('section')
+      .filter({ hasText: 'Why there is a song in the header' });
+
+    await expect(section.getByRole('heading', { level: 2 })).toHaveText(
+      'Why there is a song in the header.'
+    );
+    await expect(section).toContainText('I Build Things');
+    await expect(section).toContainText('Twisted Game Songs');
+    // The two claims the note actually makes: where the instinct comes from,
+    // and that the song is not only a metaphor.
+    await expect(section).toContainText('Appalachian ingenuity');
+    await expect(section).toContainText('The song is just fun');
+    await expect(section).toContainText('hunting failure points');
+    await expect(section.locator('p')).not.toHaveCount(0);
+  });
+
   test('renders the designed 404 with a working skip-link target', async ({ page }) => {
     const response = await page.goto('/notes/not%20valid');
 

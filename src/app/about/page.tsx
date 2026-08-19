@@ -103,6 +103,25 @@ export default function AboutPage() {
         </ol>
       </section>
 
+      <section className={styles.themeSong} aria-labelledby="theme-song-heading">
+        <header>
+          <p>The theme song</p>
+          <h2 id="theme-song-heading">Why there is a song in the header.</h2>
+          <p className={styles.themeSongTrack}>
+            <cite>{profile.themeSong.track}</cite> · {profile.themeSong.artist}
+          </p>
+        </header>
+        <div className={styles.themeSongCopy}>
+          {profile.themeSong.paragraphs.map((paragraph) => (
+            <p key={paragraph.lead ?? paragraph.body}>
+              {paragraph.lead ? <em>{paragraph.lead}</em> : null}
+              {paragraph.lead && paragraph.body ? ' ' : null}
+              {paragraph.body}
+            </p>
+          ))}
+        </div>
+      </section>
+
       <section className={styles.contact} aria-labelledby="contact-heading">
         <div>
           <p>Elsewhere</p>
