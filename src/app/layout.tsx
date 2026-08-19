@@ -21,12 +21,32 @@ const editorial = localFont({
 });
 
 const mono = localFont({
-  src: './fonts/JetBrainsMono-Variable.woff2',
+  src: './fonts/FragmentMono-Regular.woff2',
   variable: '--font-mono',
-  weight: '100 800',
+  weight: '400',
   display: 'swap',
   preload: true,
   fallback: ['ui-monospace', 'SFMono-Regular', 'monospace'],
+});
+
+// Body and UI copy.
+const sans = localFont({
+  src: './fonts/Archivo-Variable.woff2',
+  variable: '--font-sans',
+  weight: '500 900',
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+});
+
+// Wordmark and headline weight only — never body copy.
+const display = localFont({
+  src: './fonts/Syne-Variable.woff2',
+  variable: '--font-display',
+  weight: '700 800',
+  display: 'swap',
+  preload: false,
+  fallback: ['system-ui', 'sans-serif'],
 });
 
 const baseUrl = resolveBaseUrl();
@@ -97,7 +117,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
       </head>
-      <body className={`${editorial.variable} ${mono.variable}`} suppressHydrationWarning>
+      <body
+        className={`${sans.variable} ${mono.variable} ${display.variable} ${editorial.variable}`}
+        suppressHydrationWarning
+      >
         <SiteHeader />
         {children}
         <SiteFooter />

@@ -1,5 +1,7 @@
 Copyright 2022 The Instrument Serif Project Authors (https://github.com/Instrument/instrument-serif)
-Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)
+Copyright 2019 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)
+Copyright 2021 The Fragment Mono Project Authors (https://github.com/weiweihuanghuang/fragment-mono)
+Copyright 2020 The Syne Project Authors (https://github.com/bonjour-monde/fonderie)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

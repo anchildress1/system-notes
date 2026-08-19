@@ -4,13 +4,15 @@ The `.woff2` files in this directory are the `latin` subsets published by Google
 vendored here so the build does not depend on reaching `fonts.googleapis.com` — a fetch that has
 already failed a CI run and taken the whole build with it.
 
-Both families are licensed under the **SIL Open Font License 1.1**, which permits bundling
+Every family here is licensed under the **SIL Open Font License 1.1**, which permits bundling
 and redistribution provided the copyright notice travels with the files.
 
-| Font             | Copyright                                           | Upstream                                       |
-| ---------------- | --------------------------------------------------- | ---------------------------------------------- |
-| Instrument Serif | Copyright 2022 The Instrument Serif Project Authors | https://github.com/Instrument/instrument-serif |
-| JetBrains Mono   | Copyright 2020 The JetBrains Mono Project Authors   | https://github.com/JetBrains/JetBrainsMono     |
+| Font             | Role                | Copyright                                           | Upstream                                          |
+| ---------------- | ------------------- | --------------------------------------------------- | ------------------------------------------------- |
+| Archivo          | Body and UI         | Copyright 2019 The Archivo Project Authors          | https://github.com/Omnibus-Type/Archivo           |
+| Syne             | Wordmark, headlines | Copyright 2020 The Syne Project Authors             | https://github.com/bonjour-monde/fonderie         |
+| Fragment Mono    | Labels, metadata    | Copyright 2021 The Fragment Mono Project Authors    | https://github.com/weiweihuanghuang/fragment-mono |
+| Instrument Serif | Editorial accents   | Copyright 2022 The Instrument Serif Project Authors | https://github.com/Instrument/instrument-serif    |
 
 The full license text lives at [`public/fonts/OFL.txt`](../../../public/fonts/OFL.txt), carrying all
 copyright notices. It sits in `public/` deliberately rather than beside these `.woff2` files:
@@ -24,8 +26,10 @@ newer cut, take the `/* latin */` block from the Google Fonts CSS for each famil
 `woff2` it points at:
 
 ```
+https://fonts.googleapis.com/css2?family=Archivo:wght@100..900
+https://fonts.googleapis.com/css2?family=Syne:wght@400..800
+https://fonts.googleapis.com/css2?family=Fragment+Mono
 https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1
-https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800
 ```
 
 Request them with a modern browser `User-Agent`; Google serves `ttf` to unrecognised clients.
