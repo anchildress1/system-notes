@@ -433,6 +433,37 @@ describe('IndexWorkspace', () => {
     expect(principles).toHaveAttribute('aria-pressed', 'false');
   });
 
+  it('keeps each category on its own swatch when a filter reorders the facets', async () => {
+    searchHarness.facets.category = { Alpha: 30, Beta: 20, Gamma: 10 };
+
+    const view = await renderWorkspace();
+    await screen.findByText('Failure is data');
+    const swatchOf = (name: RegExp) =>
+      screen.getByRole('button', { name }).querySelector('span')?.getAttribute('style');
+
+    const before = {
+      alpha: swatchOf(/alpha, 30 notes/i),
+      beta: swatchOf(/beta, 20 notes/i),
+      gamma: swatchOf(/gamma, 10 notes/i),
+    };
+    expect(before.alpha).toBeTruthy();
+    expect(new Set(Object.values(before)).size).toBe(3);
+
+    // Narrowing re-sorts the facet list by the reduced counts. Reading a
+    // category's tone from that order repainted most of the board on every
+    // refinement, so the census could not be compared against itself.
+    searchHarness.facets.category = { Gamma: 9, Alpha: 3, Beta: 1 };
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'narrowed' } });
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /gamma, 9 notes/i })).toBeInTheDocument()
+    );
+
+    expect(swatchOf(/alpha, 3 notes/i)).toBe(before.alpha);
+    expect(swatchOf(/beta, 1 note/i)).toBe(before.beta);
+    expect(swatchOf(/gamma, 9 notes/i)).toBe(before.gamma);
+    expect(view.container.querySelector('[data-note-board]')).toBeInTheDocument();
+  });
+
   it('surfaces a category it has never seen instead of hiding it', async () => {
     searchHarness.facets.category = { Mystery: 3 };
     searchHarness.hits[0]!.category = 'Mystery';
