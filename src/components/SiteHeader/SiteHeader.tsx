@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import ThemeSong from '@/components/ThemeSong/ThemeSong';
 import styles from './SiteHeader.module.css';
 
 const destinations = [
@@ -18,7 +18,6 @@ function isCurrentPath(pathname: string, href: string): boolean {
 
 export default function SiteHeader() {
   const pathname = usePathname();
-  const [songOn, setSongOn] = useState(false);
 
   return (
     <header className={styles.header}>
@@ -54,14 +53,7 @@ export default function SiteHeader() {
               blog <span aria-hidden="true">↗</span>
               <span className={styles.srOnly}> (opens in a new tab)</span>
             </a>
-            <button
-              type="button"
-              className={styles.songToggle}
-              aria-pressed={songOn}
-              onClick={() => setSongOn((on) => !on)}
-            >
-              <span aria-hidden="true">♫</span> theme song
-            </button>
+            <ThemeSong />
           </nav>
           <p className={styles.status}>
             <span aria-hidden="true" /> the index never closes
