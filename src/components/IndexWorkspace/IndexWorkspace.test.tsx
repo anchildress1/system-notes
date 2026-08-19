@@ -616,3 +616,201 @@ describe('IndexWorkspace', () => {
     expect(await screen.findByText('Failure is data')).toBeInTheDocument();
   });
 });
+
+describe('board column measurement', () => {
+  const COLUMNS = 20;
+  // 347 notes over 20 columns: 17 whole rows, scaled by 2/3 to 11.
+  const TRIMMED = 11 * COLUMNS;
+
+  /**
+   * jsdom lays nothing out: every element reports zero client rects and grid
+   * tracks never resolve, which is the one state the board treats as
+   * "unmeasured". These stubs put it in the state a real browser is in.
+   */
+  function layOutBoard(gridTemplateColumns: string, laidOut = true) {
+    vi.spyOn(HTMLElement.prototype, 'getClientRects').mockReturnValue(
+      (laidOut ? [{ width: 359, height: 152 }] : []) as unknown as DOMRectList
+    );
+    const computeStyle = globalThis.getComputedStyle.bind(globalThis);
+    vi.spyOn(globalThis, 'getComputedStyle').mockImplementation(((
+      element: Element,
+      pseudoElement?: string | null
+    ) => {
+      const style = computeStyle(element, pseudoElement ?? undefined);
+      if (!(element instanceof HTMLElement) || !element.hasAttribute('data-note-board')) {
+        return style;
+      }
+      return new Proxy(style, {
+        get(target, property) {
+          if (property === 'gridTemplateColumns') return gridTemplateColumns;
+          const value = Reflect.get(target, property, target);
+          return typeof value === 'function' ? value.bind(target) : value;
+        },
+      });
+    }) as typeof globalThis.getComputedStyle);
+  }
+
+  const resolvedTracks = (columns = COLUMNS) =>
+    Array.from({ length: columns }, () => '14px').join(' ');
+
+  function installResizeObserver() {
+    class StubResizeObserver {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal('ResizeObserver', StubResizeObserver);
+  }
+
+  function board() {
+    return document.querySelector('[data-note-board]');
+  }
+
+  beforeEach(() => {
+    searchHarness.hits = Array.from({ length: 347 }, (_, index) => ({
+      objectID: `card:test:${index + 1}`,
+      title: `Ranked note ${index + 1}`,
+      blurb: `Summary ${index + 1}`,
+      fact: `Evidence ${index + 1}`,
+      category: 'Principle',
+      projects: ['System Notes'],
+      'tags.lvl0': ['Testing'],
+      __position: index + 1,
+    }));
+    searchHarness.facets = {
+      category: { Principle: 347 },
+      projects: { 'System Notes': 347 },
+      'tags.lvl0': { Testing: 347 },
+    };
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  it('trims to whole rows when a ResizeObserver is available', async () => {
+    installResizeObserver();
+    layOutBoard(resolvedTracks());
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
+    expect(board()!.children.length % COLUMNS).toBe(0);
+  });
+
+  it('trims to whole rows with no ResizeObserver at all', async () => {
+    // The observer only reports *later* width changes. Gating the first
+    // measurement on it left the board untrimmed, and so ragged in its last
+    // row — 13 rows of 20 followed by a row of 19.
+    expect(globalThis.ResizeObserver).toBeUndefined();
+    layOutBoard(resolvedTracks());
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
+    expect(board()!.children.length % COLUMNS).toBe(0);
+  });
+
+  it('leaves the board untrimmed while the track list is still unresolved', async () => {
+    // The specified value, not resolved pixel tracks. Counting its tokens
+    // would yield a fake 3 and drop the board to a third of a row.
+    layOutBoard('repeat(auto-fill, 14px)');
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    expect(board()?.children).toHaveLength(347);
+  });
+
+  it('leaves the board untrimmed when the element reports no grid at all', async () => {
+    layOutBoard('none');
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    expect(board()?.children).toHaveLength(347);
+  });
+
+  it('ignores a measurement taken while the board is not laid out', async () => {
+    // A display:none subtree reports the specified template rather than
+    // resolved tracks, so a hidden board must not re-fit the visible one.
+    layOutBoard(resolvedTracks(), false);
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    expect(board()?.children).toHaveLength(347);
+  });
+
+  it('counts tracks separated by irregular whitespace', async () => {
+    layOutBoard(`  14px   14px \n 14px  `);
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    // 3 columns, 115 whole rows, scaled to 77.
+    await waitFor(() => expect(board()?.children).toHaveLength(77 * 3));
+  });
+
+  it('keeps every note when the board is wider than the index is long', async () => {
+    searchHarness.hits = searchHarness.hits.slice(0, 6);
+    searchHarness.facets.category = { Principle: 6 };
+    layOutBoard(resolvedTracks());
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    // Six notes cannot fill a 20-column row; a single short row is still a
+    // rectangle, and dropping them all would empty the board.
+    expect(board()?.children).toHaveLength(6);
+  });
+
+  it('reports the whole census in the heading even though it renders fewer tiles', async () => {
+    installResizeObserver();
+    layOutBoard(resolvedTracks());
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
+    expect(screen.getByText(/^The board — one tile per card · 347/)).toBeInTheDocument();
+  });
+
+  it('keeps aria-activedescendant pointing at a tile that exists after trimming', async () => {
+    installResizeObserver();
+    layOutBoard(resolvedTracks());
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+    await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
+
+    const tiles = board() as HTMLElement;
+    fireEvent.keyDown(tiles, { key: 'End' });
+
+    await waitFor(() => {
+      const active = tiles.getAttribute('aria-activedescendant');
+      expect(active).toBe(`note-board-option-${TRIMMED - 1}`);
+      // A dangling reference is the failure this guards: the id must resolve.
+      expect(document.getElementById(active!)).toBeInTheDocument();
+    });
+  });
+
+  it('keeps every trimmed tile a labelled option', async () => {
+    installResizeObserver();
+    layOutBoard(resolvedTracks());
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+    await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
+
+    const options = within(board() as HTMLElement).getAllByRole('option');
+    expect(options).toHaveLength(TRIMMED);
+    for (const option of options) {
+      expect(option).toHaveAttribute('aria-label', expect.stringMatching(/^Read note \d+: /));
+      expect(option).toHaveAttribute('aria-selected');
+    }
+  });
+});

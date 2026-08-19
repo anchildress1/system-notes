@@ -65,8 +65,8 @@ interface IndexSidebarProps {
  * Number of columns the board's auto-fill grid actually resolved to.
  * Reads the computed track list rather than recomputing the CSS in JS, so the
  * stylesheet stays the single source of truth for tile size and gap.
- * Returns 0 when it cannot be measured (no ResizeObserver, or jsdom, which does
- * not resolve grid tracks) — callers treat that as "don't trim".
+ * Returns 0 only where grid tracks never resolve at all — jsdom — and callers
+ * treat that as "don't trim".
  */
 function useResolvedColumnCount(): {
   measureRef: (node: HTMLElement | null) => void;
@@ -81,7 +81,7 @@ function useResolvedColumnCount(): {
   const measureRef = useCallback((node: HTMLElement | null) => {
     observerRef.current?.disconnect();
     observerRef.current = null;
-    if (!node || typeof ResizeObserver === 'undefined') return;
+    if (!node) return;
 
     const measure = () => {
       // A display:none subtree — the collapsed sidebar — reports the *specified*
@@ -97,7 +97,12 @@ function useResolvedColumnCount(): {
       setColumns((previous) => (previous === count ? previous : count));
     };
 
+    // Measure first, and unconditionally. ResizeObserver is only the channel for
+    // *subsequent* width changes; gating the initial read on it left the board
+    // untrimmed — and so visibly ragged in its last row — wherever the observer
+    // is absent.
     measure();
+    if (typeof ResizeObserver === 'undefined') return;
     const observer = new ResizeObserver(measure);
     observer.observe(node);
     observerRef.current = observer;
