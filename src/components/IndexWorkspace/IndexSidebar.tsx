@@ -14,6 +14,7 @@ import type { Hit } from 'instantsearch.js';
 import { useClearRefinements, useRefinementList, useSearchBox } from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
 import { fitBoardToWholeRows } from './boardLayout';
+import { SWATCH_PALETTE } from './swatchPalette';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
@@ -30,13 +31,10 @@ import styles from './IndexWorkspace.module.css';
 // census. Refining re-sorts the live list by the narrowed counts, and keying off
 // that repainted most of the board the moment a filter was applied, so the
 // census could no longer be read as "the same board, with matches lit".
-const SWATCH_PALETTE = [
-  'var(--neon)',
-  'var(--paper)',
-  'oklch(56% 0.012 330)',
-  'oklch(38% 0.014 330)',
-  'var(--void-soft)',
-] as const;
+// The ramp stops at 50% lightness; swatchPalette.ts carries the floor and the
+// reason. It used to run down to --void-soft, 5.5 lightness points off the
+// board's own background, and that category looked unselectable because
+// filtering it changed nothing a reader could see.
 
 // Awards keep the hollow outline and the star they have always had. This is the
 // one place a name matters, and it matches on meaning rather than an exact

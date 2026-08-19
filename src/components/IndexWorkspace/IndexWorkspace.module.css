@@ -179,9 +179,16 @@
 }
 
 .boardTiles li[aria-selected='true']::before {
-  box-shadow: 0 0 0.65rem oklch(67% 0.22 330 / 0.72);
-  filter: brightness(1.25);
-  transform: scale(0.68);
+  /* A ring in the accent, not a brightness filter. brightness() scales what is
+     already there, so it did almost nothing to the darkest swatches and blew
+     out the lightest — the selected tile read as unchanged on exactly the
+     categories that needed the cue most. A ring is the same cue on every tone.
+     The swatch shrinks to leave room for it inside the tile's own cell. */
+  box-shadow:
+    0 0 0 1.5px var(--void-raised),
+    0 0 0 3px var(--neon-bright),
+    0 0 0.7rem oklch(67% 0.22 330 / 0.8);
+  transform: scale(0.62);
 }
 
 .boardTiles li[data-activated]::before {
