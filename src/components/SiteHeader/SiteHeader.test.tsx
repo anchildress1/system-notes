@@ -24,15 +24,15 @@ describe('SiteHeader', () => {
       'href',
       '#main-content'
     );
-    expect(screen.getByRole('link', { name: 'Index' })).toHaveAttribute('aria-current', 'page');
-    expect(screen.getByRole('link', { name: 'Projects' })).toHaveAttribute('href', '/projects');
-    expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
+    expect(screen.getByRole('link', { name: 'the index' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: 'exhibits' })).toHaveAttribute('href', '/projects');
+    expect(screen.getByRole('link', { name: 'about' })).toHaveAttribute('href', '/about');
   });
 
   it.each([
-    ['/projects', 'Projects'],
-    ['/about', 'About'],
-    ['/notes/card:test:1', 'Index'],
+    ['/projects', 'exhibits'],
+    ['/about', 'about'],
+    ['/notes/card:test:1', 'the index'],
   ])('marks %s as the %s navigation surface', (pathname, label) => {
     navigation.pathname = pathname;
 
@@ -41,10 +41,10 @@ describe('SiteHeader', () => {
     expect(screen.getByRole('link', { name: label })).toHaveAttribute('aria-current', 'page');
   });
 
-  it('identifies Writing as a safe external link', () => {
+  it('identifies the blog as a safe external link', () => {
     render(<SiteHeader />);
 
-    expect(screen.getByRole('link', { name: /Writing/i })).toMatchObject({
+    expect(screen.getByRole('link', { name: /blog/i })).toMatchObject({
       target: '_blank',
       rel: 'noopener noreferrer',
     });

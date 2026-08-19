@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import styles from './SiteHeader.module.css';
 
 const destinations = [
-  { href: '/', label: 'Index' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/about', label: 'About' },
+  { href: '/', label: 'the index' },
+  { href: '/projects', label: 'exhibits' },
+  { href: '/about', label: 'about' },
 ] as const;
 
 function isCurrentPath(pathname: string, href: string): boolean {
@@ -17,6 +18,7 @@ function isCurrentPath(pathname: string, href: string): boolean {
 
 export default function SiteHeader() {
   const pathname = usePathname();
+  const [songOn, setSongOn] = useState(false);
 
   return (
     <header className={styles.header}>
@@ -49,11 +51,20 @@ export default function SiteHeader() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Writing <span aria-hidden="true">↗</span>
+              blog <span aria-hidden="true">↗</span>
+              <span className={styles.srOnly}> (opens in a new tab)</span>
             </a>
+            <button
+              type="button"
+              className={styles.songToggle}
+              aria-pressed={songOn}
+              onClick={() => setSongOn((on) => !on)}
+            >
+              <span aria-hidden="true">♫</span> theme song
+            </button>
           </nav>
           <p className={styles.status}>
-            <span aria-hidden="true" /> searchable decisions · the index stays open
+            <span aria-hidden="true" /> the index never closes
           </p>
         </div>
       </div>

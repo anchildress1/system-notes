@@ -2,19 +2,22 @@
   --ink: oklch(95% 0.008 330);
   --ink-soft: oklch(78% 0.018 330);
   --ink-muted: oklch(64% 0.024 330);
-  --void: oklch(13% 0.024 330);
+  --void: oklch(17% 0.025 330);
   --void-raised: oklch(17% 0.028 330);
   --void-soft: oklch(21% 0.032 330);
   --paper: oklch(95% 0.008 330);
   --paper-ink: oklch(18% 0.024 330);
-  --neon: oklch(72% 0.26 330);
-  --neon-bright: oklch(78% 0.25 330);
-  --neon-soft: oklch(72% 0.26 330 / 0.14);
+  --neon: oklch(72% 0.2 330);
+  --neon-bright: oklch(78% 0.19 330);
+  --neon-soft: oklch(72% 0.2 330 / 0.14);
   --line: oklch(95% 0.008 330 / 0.13);
   --line-strong: oklch(95% 0.008 330 / 0.28);
+  /* next/font re-declares these on <body> with hashed family names; the values
+     here are the SSR-time fallback. */
   --font-editorial: Georgia, 'Times New Roman', serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Fragment Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: Archivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: Syne, system-ui, sans-serif;
   --page-max: 96rem;
   --gutter: clamp(1rem, 3vw, 3rem);
   --header-height: 5.25rem;
@@ -50,7 +53,7 @@ body {
     ),
     var(--void);
   color: var(--ink);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }

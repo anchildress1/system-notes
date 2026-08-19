@@ -40,12 +40,14 @@
 
 .title {
   max-width: 66rem;
-  margin-top: clamp(1.15rem, 3vh, 2rem);
+  /* The mockup sets a flat 25px here rather than a fluid display size — the
+     reading pane is a card, not a hero. */
+  margin-top: 0.75rem;
   font-family: var(--font-sans);
-  font-size: clamp(1.55rem, 2.8vw, 2.6rem);
-  font-weight: 850;
-  letter-spacing: -0.035em;
-  line-height: 1.08;
+  font-size: 1.5625rem;
+  font-weight: 900;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
   overflow-wrap: anywhere;
   text-wrap: pretty;
 }

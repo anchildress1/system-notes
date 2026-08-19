@@ -11,12 +11,7 @@ import {
   type MouseEvent,
 } from 'react';
 import type { Hit } from 'instantsearch.js';
-import {
-  useClearRefinements,
-  useRefinementList,
-  useSearchBox,
-  useStats,
-} from 'react-instantsearch';
+import { useClearRefinements, useRefinementList, useSearchBox } from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
 import { fitBoardToWholeRows } from './boardLayout';
 import type { FactHitRecord } from '@/types/algolia';
@@ -112,7 +107,6 @@ export default function IndexSidebar({
 }: Readonly<IndexSidebarProps>) {
   const [isOpen, setIsOpen] = useState(true);
   const [activation, setActivation] = useState<{ id: string; nonce: number }>();
-  const { nbHits } = useStats();
   const { items, refine } = useRefinementList({
     attribute: 'category',
     limit: 40,
@@ -147,21 +141,38 @@ export default function IndexSidebar({
 
   // Every tile is a real note — the board is never padded to fill a row.
   //
-  // Narrowing the index is a question, and the whole answer should be visible,
-  // so a query or an active facet renders every match and the last row lands
-  // wherever it lands. Unfiltered, the board is a shape rather than a result
-  // set: the grid auto-fills columns from the sidebar's width, so trimming to
-  // whole rows keeps it a clean rectangle instead of a ragged part-row that
-  // changes with the window.
-  //
-  // The tiles dropped there are the lowest-ranked, and searching or filtering
-  // brings them back because both paths render every match. The reading queue
-  // does not — it shows the top VISIBLE_NOTE_LIMIT of the same ranking, so it
-  // can never surface a trimmed tile.
-  const boardItems = useMemo(() => {
-    if (isNarrowed) return rankedItems;
-    return fitBoardToWholeRows(rankedItems, boardColumns);
-  }, [rankedItems, boardColumns, isNarrowed]);
+  // The board is a census, not a result list: it keeps rendering the whole
+  // ranked set and recedes the cards that do not match, so filtering shows you
+  // where the answer sits inside the index rather than shrinking the index.
+  // Algolia only returns matches, so the last unfiltered set is held as the
+  // census and the current matches light it.
+  // Adjusted during render rather than in an effect: an effect that calls
+  // setState triggers a cascading render. The key is a primitive, so the
+  // comparison settles after one extra pass instead of looping.
+  const [census, setCensus] = useState<{ key: string; items: Hit<FactHitRecord>[] }>({
+    key: '',
+    items: [],
+  });
+  const unfilteredKey = isNarrowed
+    ? null
+    : `${rankedItems.length}:${rankedItems[0]?.objectID ?? ''}`;
+  if (unfilteredKey !== null && unfilteredKey !== census.key) {
+    setCensus({ key: unfilteredKey, items: rankedItems });
+  }
+  const boardCensus = isNarrowed && census.items.length > 0 ? census.items : rankedItems;
+
+  const matchedIds = useMemo(
+    () => new Set(rankedItems.map((item) => item.objectID)),
+    [rankedItems]
+  );
+
+  // Trimming to whole rows keeps the board a clean rectangle at every width, and
+  // it now applies to the census rather than the result set, so the shape holds
+  // steady while a filter is on instead of reflowing under the reader.
+  const boardItems = useMemo(
+    () => fitBoardToWholeRows(boardCensus, boardColumns),
+    [boardCensus, boardColumns]
+  );
 
   // -1 when the selected note is ranked below the board's last tile. Collapsing
   // that to 0 would point aria-activedescendant at a note the reader did not
@@ -222,7 +233,7 @@ export default function IndexSidebar({
         aria-controls="index-catalog"
         onClick={() => setIsOpen((open) => !open)}
       >
-        <span>{isOpen ? 'Browse by type' : 'Types'}</span>
+        <span>{isOpen ? 'Filed under' : 'Menu'}</span>
         <span aria-hidden="true">{isOpen ? '«' : '»'}</span>
       </button>
 
@@ -257,11 +268,8 @@ export default function IndexSidebar({
             <p>
               {/* "N of M" only while trimmed, so the board never states a
                   different total from the queue beside it without saying why. */}
-              The board —{' '}
-              {boardItems.length === rankedItems.length
-                ? `${boardItems.length.toLocaleString()} ranked`
-                : `${boardItems.length.toLocaleString()} of ${rankedItems.length.toLocaleString()} ranked`}{' '}
-              · {nbHits.toLocaleString()} {nbHits === 1 ? 'match' : 'matches'}
+              The board — one tile per card · {boardCensus.length.toLocaleString()}{' '}
+              <span aria-hidden="true">↑</span>
             </p>
             <ol
               ref={boardRef}
@@ -292,6 +300,7 @@ export default function IndexSidebar({
                       {
                         '--tile-swatch': swatchByCategory.get(item.category)?.background,
                         '--tile-border': swatchByCategory.get(item.category)?.border ?? '0',
+                        '--tile-opacity': matchedIds.has(item.objectID) ? '1' : '0.13',
                       } as CSSProperties
                     }
                     data-activated={item.objectID === activation?.id || undefined}
@@ -303,7 +312,8 @@ export default function IndexSidebar({
               })}
             </ol>
             <small id="note-board-instructions">
-              One tab stop. Arrow keys move one note; Home/End jumps. Click any tile.
+              one tile per card · click a tile, or use search and the queue below, to read one ·
+              arrow keys move one tile, Home and End jump
             </small>
           </div>
         ) : null}

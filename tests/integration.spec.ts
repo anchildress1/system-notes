@@ -22,7 +22,7 @@ test.describe('System Notes redesign', () => {
     await expect(page).toHaveTitle("Index | Ashley's System Notes");
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('System Notes Index');
     await expect(page.getByRole('region', { name: /Browse notes by type/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Browse by type/i })).toHaveAttribute(
+    await expect(page.getByRole('button', { name: /Filed under/i })).toHaveAttribute(
       'aria-expanded',
       'true'
     );

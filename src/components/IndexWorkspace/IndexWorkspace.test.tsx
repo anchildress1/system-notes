@@ -93,12 +93,12 @@ describe('IndexWorkspace', () => {
     expect(await screen.findByRole('searchbox', { name: 'Search the notes index' })).toBeVisible();
     expect(await screen.findByText('Failure is data')).toBeInTheDocument();
     expect(screen.getByText(/1 entry · 1ms/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Browse by type/i })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: /Filed under/i })).toHaveAttribute(
       'aria-expanded',
       'true'
     );
     expect(screen.getByText('Principle')).toBeInTheDocument();
-    expect(screen.getByText(/^The board — 1 ranked · 1 match$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^The board — one tile per card · 1/i)).toBeInTheDocument();
     expect(screen.getByRole('option', { name: /Read note 1: Failure is data/i })).toBeVisible();
     expect(screen.getByText('Project')).toBeInTheDocument();
     expect(screen.getByText('Topic')).toBeInTheDocument();
@@ -357,7 +357,7 @@ describe('IndexWorkspace', () => {
   it('collapses the filing rail without removing its category controls', async () => {
     await renderWorkspace();
     await screen.findByText('Failure is data');
-    const toggle = screen.getByRole('button', { name: /Browse by type/i });
+    const toggle = screen.getByRole('button', { name: /Filed under/i });
 
     fireEvent.click(toggle);
 
@@ -547,7 +547,7 @@ describe('IndexWorkspace', () => {
     const board = within(await screen.findByRole('listbox', { name: 'Top ranked notes' }));
     expect(board.getByRole('option', { name: 'Read note 1: Failure is data' })).toBeVisible();
     expect(board.getByRole('option', { name: 'Read note 3: Actual rank three' })).toBeVisible();
-    expect(screen.getByText(/The board — 2 ranked · 3 matches/i)).toBeInTheDocument();
+    expect(screen.getByText(/The board — one tile per card · 2/i)).toBeInTheDocument();
     expect(document.querySelector('[data-ranked-queue] button')).toHaveTextContent(
       '№ 3 · System Notes'
     );

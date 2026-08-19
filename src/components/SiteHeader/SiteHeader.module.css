@@ -45,8 +45,8 @@
 
 .wordmark {
   color: var(--ink);
-  font-family: var(--font-sans);
-  font-size: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
   font-weight: 800;
   letter-spacing: 0.01em;
   line-height: 1;
@@ -160,4 +160,46 @@
   .motto {
     display: none;
   }
+}
+
+/* Pill toggle sitting inside the nav row, per the mockup. */
+.songToggle {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  gap: 0.44rem;
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid oklch(40% 0.03 330);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.songToggle:hover {
+  border-color: var(--neon);
+  color: var(--neon-bright);
+}
+
+.songToggle[aria-pressed='true'] {
+  border-color: var(--neon);
+  color: var(--neon);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
