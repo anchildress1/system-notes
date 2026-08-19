@@ -160,26 +160,33 @@ test.describe('System Notes redesign', () => {
   test('lists all projects in one directory, including Echo ESLint', async ({ page }) => {
     await page.goto('/projects');
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('What shipped.');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+      'The choices are the argument.'
+    );
     await expect(page.getByText('Echo ESLint', { exact: true })).toBeVisible();
     await expect(page.getByTestId(/^project-/)).toHaveCount(20);
-    await expect(page.getByRole('heading', { name: 'Current' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Ended' })).toBeVisible();
+    // Lettered end to end, in one run — status rides on each exhibit rather
+    // than splitting the page into Current and Ended sections.
+    await expect(page.getByText('Exhibit A', { exact: true })).toBeVisible();
+    await expect(page.getByText('Exhibit T', { exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Current' })).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'Ended' })).toHaveCount(0);
   });
 
   test('expands project evidence inline and links back to filtered notes', async ({ page }) => {
     await page.goto('/projects');
     const project = page.getByTestId('project-system-notes');
 
+    // The exhibit states itself without expanding; the disclosure holds the
+    // deeper evidence.
+    await expect(
+      project.getByRole('link', { name: /cards filed under this exhibit/i })
+    ).toHaveAttribute('href', '/?project=System+Notes#notes-index');
+
     await project.locator('summary').click();
 
-    await expect(
-      project.getByRole('heading', { name: /evidence-first engineering portfolio/i })
-    ).toBeVisible();
-    await expect(project.getByText(/Algolia-backed decision index/i)).toBeVisible();
-    await expect(
-      project.getByRole('link', { name: /Search this project in the index/i })
-    ).toHaveAttribute('href', '/?project=System+Notes#notes-index');
+    await expect(project.getByRole('heading', { name: 'Why it exists' })).toBeVisible();
+    await expect(project.getByRole('heading', { name: 'Outcome' })).toBeVisible();
 
     const accessibility = await new AxeBuilder({ page }).analyze();
     expect(accessibility.violations).toEqual([]);
@@ -206,9 +213,8 @@ test.describe('System Notes redesign', () => {
     );
     await page.goto('/projects');
     const project = page.getByTestId('project-system-notes');
-    await project.locator('summary').click();
 
-    await project.getByRole('link', { name: /Search this project in the index/i }).click();
+    await project.getByRole('link', { name: /cards filed under this exhibit/i }).click();
 
     await expect(page).toHaveURL(/\/?\?project=System(?:\+|%20)Notes#notes-index$/);
     await page

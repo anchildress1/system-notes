@@ -22,18 +22,19 @@ export default function ProjectsPage() {
   return (
     <main id="main-content" className={styles.main}>
       <header className={styles.hero}>
-        <p className={styles.kicker}>Projects · {projects.length} total</p>
+        <p className={styles.kicker}>Exhibits · {projects.length} total</p>
         <h1>
-          What shipped. <em>What stopped.</em>
+          The choices are the argument. <em>These are the exhibits.</em>
         </h1>
         <p>
-          Current systems, retired tools, archived experiments, and deliberate dead ends. Each one
-          stays because the outcome matters more than the victory pose.
+          Shipped systems entered into evidence — alongside the retired, the archived, and the
+          deliberate dead ends. Each one is cross-filed with the cards it produced in the index.
         </p>
-        <nav className={styles.jumpLinks} aria-label="Project groups">
-          <a href="#current-projects">Current · {groups.current.length}</a>
-          <a href="#ended-projects">Ended · {groups.ended.length}</a>
-        </nav>
+        {/* Each exhibit states its own status, so the directory reads in one
+            uninterrupted run rather than splitting into current and ended. */}
+        <p className={styles.tally}>
+          {groups.current.length} current · {groups.ended.length} ended
+        </p>
       </header>
       <ProjectDirectory projects={projects} />
     </main>

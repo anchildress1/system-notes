@@ -241,6 +241,7 @@
   .hero,
   .proof,
   .principles,
+  .themeSong,
   .contact {
     grid-template-columns: minmax(0, 1fr);
   }

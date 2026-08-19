@@ -1,20 +1,38 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { mockProject } from '@/test-utils/fixtures';
-import ProjectDirectory from './ProjectDirectory';
+import ProjectDirectory, { exhibitLabel } from './ProjectDirectory';
 
-describe('ProjectDirectory', () => {
-  it('renders current and ended projects in one directory', () => {
-    const ended = { ...mockProject, id: 'ended', title: 'Ended Project', status: 'Archived' };
-    render(<ProjectDirectory projects={[mockProject, ended]} />);
-
-    expect(screen.getByRole('heading', { name: 'Current' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Ended' })).toBeInTheDocument();
-    expect(screen.getByText('Test Project')).toBeInTheDocument();
-    expect(screen.getByText('Ended Project')).toBeInTheDocument();
+describe('exhibitLabel', () => {
+  it('letters exhibits from the start of the alphabet', () => {
+    expect(exhibitLabel(0)).toBe('A');
+    expect(exhibitLabel(19)).toBe('T');
+    expect(exhibitLabel(25)).toBe('Z');
   });
 
-  it('reveals full project evidence and cross-links to filtered notes', () => {
+  it('falls back to a number once the alphabet runs out', () => {
+    // Twenty projects fit today; a twenty-seventh must not render undefined.
+    expect(exhibitLabel(26)).toBe('27');
+    expect(exhibitLabel(40)).toBe('41');
+  });
+});
+
+describe('ProjectDirectory', () => {
+  it('letters every project as one uninterrupted run of exhibits', () => {
+    const second = { ...mockProject, id: 'ended', title: 'Ended Project', status: 'Archived' };
+    render(<ProjectDirectory projects={[mockProject, second]} />);
+
+    expect(screen.getByText('Exhibit A')).toBeInTheDocument();
+    expect(screen.getByText('Exhibit B')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Test Project' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Ended Project' })).toBeInTheDocument();
+    // Status rides on each exhibit, so the page needs no Current/Ended split.
+    expect(screen.getByText('Archived')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Current' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Ended' })).not.toBeInTheDocument();
+  });
+
+  it('states the exhibit, its stack, and where its cards are filed', () => {
     const project = {
       ...mockProject,
       status: 'Active · Deployed',
@@ -23,19 +41,19 @@ describe('ProjectDirectory', () => {
       blog_posts: [{ title: 'Build post', url: 'https://dev.to/test/post' }],
     };
     render(<ProjectDirectory projects={[project]} />);
-
     const entry = screen.getByTestId('project-test-project');
-    fireEvent.click(within(entry).getByText('Test Project'));
 
-    expect(within(entry).getByText('Test Award')).toBeInTheDocument();
+    expect(within(entry).getByText('Exhibit A')).toBeInTheDocument();
+    expect(within(entry).getByText('Active · Deployed')).toBeInTheDocument();
+    expect(within(entry).getByText(/Test Award/)).toBeInTheDocument();
     expect(within(entry).getByText('Long detailed description.')).toBeInTheDocument();
-    expect(within(entry).getByText('Why it exists')).toBeInTheDocument();
-    expect(within(entry).getByText('Outcome')).toBeInTheDocument();
+    expect(within(entry).getByRole('list', { name: /Test Project stack/i })).toBeInTheDocument();
     expect(within(entry).getByText('React')).toBeInTheDocument();
+
     expect(
-      within(entry).getByRole('link', { name: /Search this project in the index/i })
+      within(entry).getByRole('link', { name: /cards filed under this exhibit/i })
     ).toHaveAttribute('href', '/?project=Test+Project#notes-index');
-    expect(within(entry).getByRole('link', { name: /Open app/i })).toHaveAttribute(
+    expect(within(entry).getByRole('link', { name: /launch/i })).toHaveAttribute(
       'href',
       'https://example.com'
     );
@@ -45,7 +63,20 @@ describe('ProjectDirectory', () => {
     );
   });
 
-  it('uses a numbered fallback and omits unavailable detail sections', () => {
+  it('keeps the deeper evidence behind a disclosure rather than dropping it', () => {
+    render(<ProjectDirectory projects={[mockProject]} />);
+    const entry = screen.getByTestId('project-test-project');
+
+    // Present in the DOM but collapsed — the exhibit reads as the spec draws it.
+    const disclosure = within(entry).getByText('evidence');
+    expect(disclosure.closest('details')).not.toHaveAttribute('open');
+    expect(within(entry).getByRole('heading', { name: 'Why it exists' })).toBeInTheDocument();
+    expect(within(entry).getByRole('heading', { name: 'Outcome' })).toBeInTheDocument();
+    // The fixture carries no image_alt, so the title-derived fallback applies.
+    expect(within(entry).getByRole('img')).toHaveAttribute('alt', 'Test Project project preview');
+  });
+
+  it('omits every optional part a project does not have', () => {
     render(
       <ProjectDirectory
         projects={[
@@ -66,20 +97,27 @@ describe('ProjectDirectory', () => {
         ]}
       />
     );
-
     const entry = screen.getByTestId('project-test-project');
-    fireEvent.click(within(entry).getByText('Test Project'));
 
-    expect(within(entry).getAllByText('01').length).toBeGreaterThan(0);
-    expect(within(entry).queryByText('Why it exists')).not.toBeInTheDocument();
-    expect(within(entry).queryByText('Outcome')).not.toBeInTheDocument();
-    expect(within(entry).queryByText('Technology')).not.toBeInTheDocument();
-    expect(within(entry).queryByRole('link', { name: /View source/i })).not.toBeInTheDocument();
+    // No purpose, outcome, or image means there is no evidence to disclose.
+    expect(within(entry).queryByText('evidence')).not.toBeInTheDocument();
+    expect(within(entry).queryByRole('list', { name: /stack/i })).not.toBeInTheDocument();
+    expect(within(entry).queryByRole('link', { name: /^repo/i })).not.toBeInTheDocument();
+    expect(within(entry).queryByRole('link', { name: /^launch/i })).not.toBeInTheDocument();
+    // The summary falls back to the short description when there is no long one.
+    expect(within(entry).getByText('Short description tagline.')).toBeInTheDocument();
   });
 
-  it('renders empty group counts when the registry is empty', () => {
-    render(<ProjectDirectory projects={[]} />);
+  it('says so rather than leaving a status blank', () => {
+    render(<ProjectDirectory projects={[{ ...mockProject, status: '' }]} />);
 
-    expect(screen.getAllByText('00')).toHaveLength(2);
+    expect(screen.getByText('Status unavailable')).toBeInTheDocument();
+  });
+
+  it('renders nothing but an empty list for an empty registry', () => {
+    const view = render(<ProjectDirectory projects={[]} />);
+
+    expect(view.container.querySelectorAll('article')).toHaveLength(0);
+    expect(screen.queryByText(/^Exhibit /)).not.toBeInTheDocument();
   });
 });

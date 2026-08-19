@@ -4,9 +4,11 @@
   top: 0;
   min-height: var(--header-height);
   border-bottom: 1px solid var(--line);
-  background: oklch(13% 0.024 330 / 0.97);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  /* Opaque, not 0.97. Three percent of transparency bought nothing and cost
+     legibility: scrolled content read through the bar, and compositing against
+     whatever happened to be behind it dropped the nav below the 4.5:1 contrast
+     floor. An opaque bar also makes the blur redundant, so it goes too. */
+  background: oklch(13% 0.024 330);
 }
 
 .inner {
