@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
 import { test } from './utils';
 
@@ -20,6 +21,16 @@ for (const viewport of viewports) {
           client: document.documentElement.clientWidth,
         }));
         expect(widths.scroll).toBe(widths.client);
+      });
+
+      // Desktop-only axe runs miss the violations that only exist once the
+      // layout reflows — reflow itself, target size, and anything the narrow
+      // composition reorders or overlaps.
+      test(`${path} has no accessibility violations`, async ({ page }) => {
+        await page.goto(path);
+
+        const accessibility = await new AxeBuilder({ page }).analyze();
+        expect(accessibility.violations).toEqual([]);
       });
     }
   });

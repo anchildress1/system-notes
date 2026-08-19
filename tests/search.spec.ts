@@ -291,6 +291,55 @@ test.describe('Notes index', () => {
     expect(accessibility.violations).toEqual([]);
   });
 
+  test('keeps the board a rectangle at every width, including after a resize', async ({ page }) => {
+    // The board trims itself to whole rows so it never renders a ragged last
+    // row. The column count comes from the resolved grid track list, which
+    // changes with the viewport, so the invariant has to hold across widths
+    // and across a live resize — not just on a fresh load at one size.
+    const hits = Array.from({ length: 347 }, (_, index) =>
+      buildHit({
+        objectID: `card:test:${index + 1}`,
+        title: `Ranked note ${index + 1}`,
+        __position: index + 1,
+      })
+    );
+    await mockAlgoliaSearch(page, hits);
+    await page.goto('/');
+    const board = page.getByRole('listbox', { name: 'Top ranked notes' });
+    await expect(board.getByRole('option').first()).toBeVisible();
+
+    const shape = async () =>
+      board.evaluate((node) => {
+        const rows = new Map<number, number>();
+        for (const tile of node.children) {
+          const top = Math.round(tile.getBoundingClientRect().top);
+          rows.set(top, (rows.get(top) ?? 0) + 1);
+        }
+        return {
+          tiles: node.children.length,
+          rowLengths: [...new Set(rows.values())],
+          columns: globalThis
+            .getComputedStyle(node)
+            .gridTemplateColumns.split(/\s+/)
+            .filter(Boolean).length,
+        };
+      });
+
+    for (const width of [1440, 1180, 1024, 820, 390, 320]) {
+      await page.setViewportSize({ width, height: 900 });
+      // Re-measuring runs off a ResizeObserver, so wait for the board to settle
+      // rather than asserting against the previous width's tile count.
+      await expect.poll(async () => (await shape()).tiles % (await shape()).columns).toBe(0);
+
+      const { tiles, rowLengths, columns } = await shape();
+      // One distinct row length is the whole point: every row is full.
+      expect(rowLengths, `ragged board at ${width}px`).toHaveLength(1);
+      expect(rowLengths[0]).toBe(columns);
+      expect(tiles).toBeGreaterThan(0);
+      expect(tiles).toBeLessThanOrEqual(hits.length);
+    }
+  });
+
   test('ignores a ?note param and opens the top-ranked note', async ({ page }) => {
     await mockAlgoliaSearch(page, [
       buildHit({ objectID: 'card:test:1', title: 'First decision' }),

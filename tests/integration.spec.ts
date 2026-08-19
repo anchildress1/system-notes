@@ -247,5 +247,9 @@ test.describe('System Notes redesign', () => {
     await skipLink.focus();
     await expect(skipLink).toBeFocused();
     await expect(skipLink).toHaveAttribute('href', '#main-content');
+
+    // The 404 is a designed surface, not a fallback nobody looks at.
+    const accessibility = await new AxeBuilder({ page }).analyze();
+    expect(accessibility.violations).toEqual([]);
   });
 });
