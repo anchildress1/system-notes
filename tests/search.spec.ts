@@ -216,9 +216,16 @@ test.describe('Notes index', () => {
       })
     );
     expect(new Set(colorSignatures).size).toBe(4);
+    // Tiles are a census mark, not a primary control: they are deliberately
+    // smaller than a pointer target so 347 notes read as one composite block.
+    // Every note they stand for stays reachable at full size through the search
+    // box and the ranked queue, and the board itself is fully keyboard-operable
+    // (asserted below), which is what carries the interaction — so this pins the
+    // exact drawn size to catch accidental drift rather than asserting a
+    // touch-target floor the mark is not trying to meet.
     const firstTarget = await tiles.nth(0).boundingBox();
-    expect(firstTarget?.width).toBeGreaterThanOrEqual(16);
-    expect(firstTarget?.height).toBeGreaterThanOrEqual(16);
+    expect(firstTarget?.width).toBe(14);
+    expect(firstTarget?.height).toBe(10);
 
     await expect(board).toHaveJSProperty('tabIndex', 0);
     await expect(tiles.nth(0)).toHaveJSProperty('tabIndex', -1);

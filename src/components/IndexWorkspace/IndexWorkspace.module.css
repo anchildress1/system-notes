@@ -123,8 +123,10 @@
   margin-top: 0.5rem;
   border: 1px solid transparent;
   border-radius: 0.35rem;
-  grid-template-columns: repeat(auto-fill, minmax(1rem, 1fr));
-  gap: 0.06rem;
+  /* Fixed 14px tracks rather than fluid ones: the mockup's tile is 14x10 with a
+     4px gutter, and explicit tracks still resolve to a readable column count. */
+  grid-template-columns: repeat(auto-fill, 14px);
+  gap: 4px;
   list-style: none;
   outline: none;
 }
@@ -133,17 +135,19 @@
   position: relative;
   min-width: 0;
   display: grid;
-  width: 100%;
-  min-width: 1rem;
-  aspect-ratio: 1;
+  width: 14px;
+  height: 10px;
   cursor: pointer;
   place-items: center;
+  /* Non-matching cards stay on the board and recede; the census never shrinks. */
+  opacity: var(--tile-opacity, 1);
+  transition: opacity 0.22s ease;
 }
 
 .boardTiles li::before {
-  width: 0.78rem;
-  aspect-ratio: 1;
-  border-radius: 0.08rem;
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
   /* Set per tile from the category's own swatch; --neon covers a note whose
      category is absent from the current facet list. The border carries the
      hollow award treatment. */
@@ -159,8 +163,8 @@
 
 .boardTiles li:hover::before {
   z-index: 1;
-  box-shadow: 0 0 0.8rem oklch(67% 0.25 330 / 0.52);
-  transform: translateY(-0.15rem) scale(1.08);
+  box-shadow: 0 0 0.8rem oklch(67% 0.19 330 / 0.52);
+  transform: scale(1.5);
 }
 
 .boardTiles li:active::before {
@@ -175,7 +179,7 @@
 }
 
 .boardTiles li[aria-selected='true']::before {
-  box-shadow: 0 0 0.65rem oklch(67% 0.25 330 / 0.72);
+  box-shadow: 0 0 0.65rem oklch(67% 0.19 330 / 0.72);
   filter: brightness(1.25);
   transform: scale(0.68);
 }
@@ -430,6 +434,10 @@
 
 .queueList button {
   display: grid;
+  /* An implicit `auto` track resolves to max(min-content, …) and can grow past
+     the button's own width, spilling the row off-screen. The nowrap category
+     badge in .queueMeta makes that min-content wide enough to do it. */
+  grid-template-columns: minmax(0, 1fr);
   width: 100%;
   min-height: 4.65rem;
   align-content: center;
@@ -680,6 +688,10 @@
   }
 
   .queueMeta > span:first-child {
+    /* A flex item's automatic minimum size is min-content, and `nowrap` makes
+       that the whole string — so without this the ellipsis never engages and
+       the row pushes wider than its button instead of truncating. */
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

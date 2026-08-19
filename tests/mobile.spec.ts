@@ -31,10 +31,10 @@ test.describe('mobile interactions', () => {
     await page.goto('/');
     const nav = page.getByRole('navigation', { name: 'Primary navigation' });
 
-    await expect(nav.getByRole('link', { name: 'Index' })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'Projects' })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'About' })).toBeVisible();
-    await expect(nav.getByRole('link', { name: /Writing/i })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'the index' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'exhibits' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'about' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: /blog/i })).toBeVisible();
   });
 
   test('stacks the filing rail above retrieval without horizontal drift', async ({ page }) => {
@@ -49,8 +49,8 @@ test.describe('mobile interactions', () => {
     expect(searchBox).not.toBeNull();
     expect(sidebarBox!.y + sidebarBox!.height).toBeLessThanOrEqual(searchBox!.y);
 
-    await sidebar.getByRole('button', { name: /Browse by type/i }).click();
-    await expect(sidebar.getByRole('button', { name: /Types/i })).toHaveAttribute(
+    await sidebar.getByRole('button', { name: /Filed under/i }).click();
+    await expect(sidebar.getByRole('button', { name: /Menu/i })).toHaveAttribute(
       'aria-expanded',
       'false'
     );
