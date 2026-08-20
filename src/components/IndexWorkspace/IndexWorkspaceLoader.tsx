@@ -6,10 +6,10 @@ import styles from './IndexWorkspace.module.css';
 const IndexWorkspace = dynamic(() => import('./IndexWorkspace'), {
   ssr: false,
   loading: () => (
-    <div className={styles.loadingShell} role="status">
+    <output className={styles.loadingShell}>
       <span>Loading the index</span>
       <span aria-hidden="true">•••</span>
-    </div>
+    </output>
   ),
 });
 

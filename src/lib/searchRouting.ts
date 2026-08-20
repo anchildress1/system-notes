@@ -15,7 +15,9 @@ export type SearchRouteState = {
 };
 
 function toList(value: unknown): string[] | undefined {
-  const values = typeof value === 'string' ? [value] : Array.isArray(value) ? value : [];
+  let values: string[] = [];
+  if (typeof value === 'string') values = [value];
+  else if (Array.isArray(value)) values = value;
   const normalized = values.flatMap((item) => {
     if (typeof item !== 'string') return [];
     const trimmed = item.trim();

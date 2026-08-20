@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: NotePageProps): Promise<Metad
   return buildPageMetadata({ title, description, path: url, type: 'article' });
 }
 
-export default async function NotePage({ params }: NotePageProps) {
+export default async function NotePage({ params }: Readonly<NotePageProps>) {
   const { id } = await params;
   const result = await getNoteById(id);
   if (result.status === 'missing') notFound();
@@ -105,7 +105,7 @@ export default async function NotePage({ params }: NotePageProps) {
 function NoteUnavailable() {
   return (
     <main id="main-content" className={styles.main}>
-      <section className={styles.unavailable} role="status">
+      <output className={styles.unavailable}>
         <Link className={styles.backLink} href="/">
           <FiArrowLeft aria-hidden="true" /> Back to index
         </Link>
@@ -115,7 +115,7 @@ function NoteUnavailable() {
           The address is valid. Its evidence could not be retrieved right now, so nothing was
           invented to fill the gap.
         </p>
-      </section>
+      </output>
     </main>
   );
 }

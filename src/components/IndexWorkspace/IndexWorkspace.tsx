@@ -28,12 +28,13 @@ const hasCredentials = hasValidAlgoliaCredentials();
 const isDevelopment = process.env.NODE_ENV === 'development';
 const SEARCH_DEADLINE_MS = 5_000;
 const MAX_BOARD_NOTES = 500;
+// Caching is disabled in development so an edited record shows up on reload
+// rather than being served from the previous session's response cache.
+const clientOptions = isDevelopment
+  ? { responsesCache: createNullCache(), requestsCache: createNullCache() }
+  : {};
 const algoliaClient = hasCredentials
-  ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, {
-      ...(isDevelopment
-        ? { responsesCache: createNullCache(), requestsCache: createNullCache() }
-        : {}),
-    })
+  ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, clientOptions)
   : null;
 const searchClient = algoliaClient ? withSearchDeadline(algoliaClient) : null;
 
@@ -82,11 +83,11 @@ export default function IndexWorkspace() {
 
   if (!searchClient) {
     return (
-      <div className={styles.unavailable} role="status">
+      <output className={styles.unavailable}>
         <p className={styles.sectionLabel}>Index unavailable</p>
         <h2>Search has gone quiet.</h2>
         <p>The project directory and About page are still available while the index reconnects.</p>
-      </div>
+      </output>
     );
   }
 
@@ -240,9 +241,5 @@ function SearchStatus({ status }: Readonly<{ status: string }>) {
     );
   }
   if (status !== 'loading' && status !== 'stalled') return null;
-  return (
-    <p className={styles.searchStatus} role="status">
-      Searching…
-    </p>
-  );
+  return <output className={styles.searchStatus}>Searching…</output>;
 }
