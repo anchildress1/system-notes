@@ -7,8 +7,15 @@ export const TRACK_TITLE = 'I Build Things';
 export const TRACK_ARTIST = 'Twisted Game Songs';
 export const TRACK_SRC = '/audio/twisted-game-songs-i-build-things.mp3';
 
-/** Bars in the panel's waveform. Decorative, and hidden from assistive tech. */
-const WAVEFORM_BARS = [0, 1, 2, 3, 4, 5, 6];
+/**
+ * Bars in the panel's waveform. Decorative, and hidden from assistive tech.
+ * The count is what makes the waveform span the panel: each bar keeps its own
+ * fixed width, so widening the run means more bars rather than fatter ones.
+ */
+const WAVEFORM_BARS = Array.from({ length: 22 }, (_, index) => index);
+
+/** Bars per visual wave. The stagger repeats so a long run still reads as motion. */
+const WAVE_PERIOD = 7;
 
 /**
  * Formats a media time for display.
@@ -38,6 +45,10 @@ export default function ThemeSong() {
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const panelId = useId();
+  // The panel is a peek at the track, not a status readout, so it follows the
+  // pointer rather than playback. Focus opens it too, and Escape closes it,
+  // because hover-only content strands keyboard users (WCAG 2.1.1, 1.4.13).
+  const [isPeeking, setIsPeeking] = useState(false);
 
   // Pausing on unmount stops audio outliving the header across a route change.
   useEffect(() => {
@@ -70,13 +81,24 @@ export default function ThemeSong() {
       'Explicit content.';
 
   return (
-    <div className={styles.wrapper}>
+    <div
+      className={styles.wrapper}
+      onPointerEnter={() => setIsPeeking(true)}
+      onPointerLeave={() => setIsPeeking(false)}
+      onFocus={() => setIsPeeking(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setIsPeeking(false);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') setIsPeeking(false);
+      }}
+    >
       <button
         type="button"
         className={styles.toggle}
         aria-pressed={isPlaying}
         aria-label={label}
-        aria-describedby={isPlaying ? panelId : undefined}
+        aria-describedby={isPeeking ? panelId : undefined}
         disabled={hasError}
         onClick={toggle}
       >
@@ -88,7 +110,7 @@ export default function ThemeSong() {
         </span>
       </button>
 
-      {isPlaying ? (
+      {isPeeking ? (
         <div className={styles.panel} id={panelId}>
           <p className={styles.track}>
             <span className={styles.trackTitle}>
@@ -99,9 +121,13 @@ export default function ThemeSong() {
             </span>
             <span className={styles.trackArtist}>{TRACK_ARTIST} · explicit</span>
           </p>
-          <div className={styles.waveform} aria-hidden="true">
+          <div className={styles.waveform} data-playing={isPlaying} aria-hidden="true">
             {WAVEFORM_BARS.map((bar) => (
-              <span key={bar} className={styles.bar} style={{ animationDelay: `${bar * 90}ms` }} />
+              <span
+                key={bar}
+                className={styles.bar}
+                style={{ animationDelay: `${(bar % WAVE_PERIOD) * 90}ms` }}
+              />
             ))}
           </div>
           <div className={styles.progressRow}>

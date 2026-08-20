@@ -22,6 +22,9 @@ function stubPlayback({ rejectWith }: { rejectWith?: Error } = {}) {
 }
 
 const toggle = () => screen.getByRole('button', { name: /theme song/i });
+/** The panel follows the pointer now, not playback, so tests must open it. */
+const peek = () => fireEvent.pointerEnter(toggle().parentElement as HTMLElement);
+const unpeek = () => fireEvent.pointerLeave(toggle().parentElement as HTMLElement);
 const audio = () => screen.getByTestId('theme-song-audio') as HTMLAudioElement;
 
 describe('formatTime', () => {
@@ -75,8 +78,8 @@ describe('ThemeSong', () => {
     stubPlayback();
     render(<ThemeSong />);
 
-    // The advisory has to be on the control, because the panel that repeats it
-    // does not exist until the track is already playing.
+    // The advisory has to be on the control: the panel that repeats it only
+    // opens under the pointer, which is not where a reader looks first.
     expect(toggle()).toHaveAccessibleName(/explicit content/i);
     expect(toggle().textContent).toContain('E');
     expect(screen.getByTitle('Explicit content')).toBeInTheDocument();
@@ -87,9 +90,55 @@ describe('ThemeSong', () => {
     render(<ThemeSong />);
 
     fireEvent.click(toggle());
+    peek();
     await screen.findByText(TRACK_TITLE);
 
     expect(screen.getByText(new RegExp(`${TRACK_ARTIST} · explicit`))).toBeInTheDocument();
+  });
+
+  it('opens the panel under the pointer and closes it again', () => {
+    stubPlayback();
+    render(<ThemeSong />);
+
+    expect(screen.queryByText(TRACK_TITLE)).not.toBeInTheDocument();
+    peek();
+    expect(screen.getByText(TRACK_TITLE)).toBeVisible();
+    unpeek();
+    expect(screen.queryByText(TRACK_TITLE)).not.toBeInTheDocument();
+  });
+
+  it('opens the panel on keyboard focus', () => {
+    // Hover-only content strands anyone who never uses a pointer.
+    stubPlayback();
+    render(<ThemeSong />);
+
+    fireEvent.focus(toggle());
+
+    expect(screen.getByText(TRACK_TITLE)).toBeVisible();
+  });
+
+  it('closes the panel on Escape without stopping the track', () => {
+    stubPlayback();
+    render(<ThemeSong />);
+    fireEvent.click(toggle());
+    peek();
+
+    fireEvent.keyDown(toggle(), { key: 'Escape' });
+
+    expect(screen.queryByText(TRACK_TITLE)).not.toBeInTheDocument();
+    // Dismissing the peek is not a request to stop listening.
+    expect(toggle()).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('shows the track before it has ever been played', () => {
+    stubPlayback();
+    render(<ThemeSong />);
+
+    peek();
+
+    // The panel is a preview of what the button would play, not a status line.
+    expect(screen.getByText(TRACK_TITLE)).toBeVisible();
+    expect(toggle()).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('points at the track without downloading it up front', () => {
@@ -101,12 +150,13 @@ describe('ThemeSong', () => {
     expect(audio()).toHaveAttribute('preload', 'none');
   });
 
-  it('plays, expands the panel, and announces on activation', async () => {
+  it('plays and announces on activation, showing the track under the pointer', async () => {
     const { play } = stubPlayback();
     render(<ThemeSong />);
 
     fireEvent.click(toggle());
     expect(play).toHaveBeenCalledOnce();
+    peek();
 
     expect(await screen.findByText(TRACK_TITLE)).toBeVisible();
     expect(screen.getByText(new RegExp(TRACK_ARTIST))).toBeVisible();
@@ -115,16 +165,20 @@ describe('ThemeSong', () => {
     expect(screen.getByText('Theme song playing')).toBeInTheDocument();
   });
 
-  it('pauses and collapses the panel on a second activation', async () => {
+  it('pauses on a second activation without closing the panel under the pointer', async () => {
     const { pause } = stubPlayback();
     render(<ThemeSong />);
 
     fireEvent.click(toggle());
+    peek();
     await screen.findByText(TRACK_TITLE);
     fireEvent.click(toggle());
 
     expect(pause).toHaveBeenCalledOnce();
     expect(toggle()).toHaveAttribute('aria-pressed', 'false');
+    // The panel is a peek at the track, so it stays while the pointer is on it.
+    expect(screen.getByText(TRACK_TITLE)).toBeVisible();
+    unpeek();
     expect(screen.queryByText(TRACK_TITLE)).not.toBeInTheDocument();
   });
 
@@ -132,12 +186,10 @@ describe('ThemeSong', () => {
     stubPlayback();
     render(<ThemeSong />);
     fireEvent.click(toggle());
-    await screen.findByText(TRACK_TITLE);
 
     fireEvent.ended(audio());
 
     expect(toggle()).toHaveAttribute('aria-pressed', 'false');
-    expect(screen.queryByText(TRACK_TITLE)).not.toBeInTheDocument();
   });
 
   it('never claims to be playing when play() is refused', async () => {
@@ -168,6 +220,7 @@ describe('ThemeSong', () => {
     stubPlayback();
     render(<ThemeSong />);
     fireEvent.click(toggle());
+    peek();
     await screen.findByText(TRACK_TITLE);
 
     // timeUpdate can fire before loadedmetadata; dividing by 0 must not render NaN.
@@ -181,6 +234,7 @@ describe('ThemeSong', () => {
     stubPlayback();
     render(<ThemeSong />);
     fireEvent.click(toggle());
+    peek();
     await screen.findByText(TRACK_TITLE);
 
     const element = audio();
