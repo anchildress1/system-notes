@@ -39,7 +39,7 @@ A searchable record of Ashley Childress's engineering decisions, constraints, fa
 ## Local development
 
 ```bash
-make setup
+make install
 make dev
 ```
 
