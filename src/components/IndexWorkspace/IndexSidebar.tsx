@@ -13,7 +13,7 @@ import {
 import type { Hit } from 'instantsearch.js';
 import { useClearRefinements, useRefinementList, useSearchBox } from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
-import { fitBoardToWholeRows } from './boardLayout';
+import { extendBoardToMatches, fitBoardToWholeRows } from './boardLayout';
 import { SWATCH_PALETTE } from './swatchPalette';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
@@ -192,10 +192,15 @@ export default function IndexSidebar({
   // Trimming to whole rows keeps the board a clean rectangle at every width, and
   // it now applies to the census rather than the result set, so the shape holds
   // steady while a filter is on instead of reflowing under the reader.
-  const boardItems = useMemo(
-    () => fitBoardToWholeRows(boardCensus, boardColumns),
-    [boardCensus, boardColumns]
-  );
+  const boardItems = useMemo(() => {
+    const trimmed = fitBoardToWholeRows(boardCensus, boardColumns);
+    if (!isNarrowed) return trimmed;
+    // Under a refinement the trim would hide matches, and a match the board
+    // never draws has no route to it — the queue shows only a handful.
+    return extendBoardToMatches(boardCensus, trimmed.length, boardColumns, (item) =>
+      matchedIds.has(item.objectID)
+    );
+  }, [boardCensus, boardColumns, isNarrowed, matchedIds]);
 
   // -1 when the selected note is ranked below the board's last tile. Collapsing
   // that to 0 would point aria-activedescendant at a note the reader did not
