@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import SiteHeader from '@/components/SiteHeader/SiteHeader';
+import { getIndexPulse } from '@/lib/indexPulse';
 import { getProjects } from '@/lib/api';
 import { isValidAppId } from '@/lib/algolia';
 import { buildSiteJsonLd } from '@/lib/siteJsonLd';
@@ -95,7 +96,8 @@ export const viewport: Viewport = {
   themeColor: '#100b11',
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const pulse = await getIndexPulse();
   const jsonLd = buildSiteJsonLd(getProjects(), baseUrl);
 
   return (
@@ -121,7 +123,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         className={`${sans.variable} ${mono.variable} ${display.variable} ${editorial.variable}`}
         suppressHydrationWarning
       >
-        <SiteHeader />
+        <SiteHeader pulse={pulse} />
         {children}
         <SiteFooter />
       </body>

@@ -2,7 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSyncExternalStore } from 'react';
 import ThemeSong from '@/components/ThemeSong/ThemeSong';
+import type { IndexPulse } from '@/lib/indexPulse';
+import { relativeAge } from '@/lib/relativeAge';
 import styles from './SiteHeader.module.css';
 
 const destinations = [
@@ -11,13 +14,24 @@ const destinations = [
   { href: '/about', label: 'about' },
 ] as const;
 
+/** The age depends on the clock, not on a store anything can push to. */
+const subscribeToNothing = () => () => {};
+
 function isCurrentPath(pathname: string, href: string): boolean {
   if (href === '/') return pathname === '/' || pathname.startsWith('/notes/');
   return pathname === href;
 }
 
-export default function SiteHeader() {
+export default function SiteHeader({ pulse }: Readonly<{ pulse?: IndexPulse | null }>) {
   const pathname = usePathname();
+  // The server snapshot is deliberately null. Most routes are statically
+  // rendered, so an age resolved on the server would be stamped at build time
+  // and then quietly rot; the client resolves it against the reader's clock.
+  const age = useSyncExternalStore(
+    subscribeToNothing,
+    () => relativeAge(pulse?.latestCreatedAt),
+    () => null
+  );
 
   return (
     <header className={styles.header}>
@@ -56,7 +70,11 @@ export default function SiteHeader() {
             <ThemeSong />
           </nav>
           <p className={styles.status}>
-            <span aria-hidden="true" /> the index never closes
+            <span aria-hidden="true" />
+            {pulse
+              ? `entry № ${pulse.total.toLocaleString()}${age ? ` logged ${age}` : ''} — `
+              : ''}
+            the index never closes
           </p>
         </div>
       </div>
