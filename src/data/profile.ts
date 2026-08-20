@@ -1,5 +1,5 @@
 /** One paragraph of the theme-song note. `lead` carried emphasis in the copy. */
-export interface ThemeSongParagraph {
+interface ThemeSongParagraph {
   readonly lead?: string;
   readonly body?: string;
 }

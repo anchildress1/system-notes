@@ -1,9 +1,4 @@
-import type { Hit, BaseHit } from 'instantsearch.js';
-
-export type SendEventForHits = {
-  (eventType: string, hits: Hit | Hit[], eventName?: string): void;
-  (customPayload: unknown): void;
-};
+import type { BaseHit } from 'instantsearch.js';
 
 export interface FactHitRecord extends BaseHit {
   objectID: string;
