@@ -40,8 +40,12 @@
 
 .brand {
   display: inline-flex;
-  min-height: 2.75rem;
+  /* Padding, not min-height. The two spans align on their baselines, so a
+     min-height taller than the text put every spare pixel below it — a 25px
+     band of invisible, clickable nothing hanging under the name. Symmetric
+     padding reaches the same 44px target with the text in the middle of it. */
   align-items: baseline;
+  padding-block: 0.9rem;
   gap: 0.8rem;
 }
 
@@ -148,10 +152,6 @@
     gap: 0.6rem;
   }
 
-  .brand {
-    min-height: auto;
-  }
-
   .rightSide {
     justify-items: stretch;
   }
@@ -182,8 +182,6 @@
     display: none;
   }
 }
-
-/* Pill toggle sitting inside the nav row, per the mockup. */
 
 .srOnly {
   position: absolute;

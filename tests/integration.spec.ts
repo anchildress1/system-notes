@@ -145,6 +145,34 @@ test.describe('System Notes redesign', () => {
     expect(layout!.searchTop).toBeGreaterThanOrEqual(layout!.sidebarBottom);
   });
 
+  test('keeps the brand link tight around its own text', async ({ page }) => {
+    await page.goto('/');
+    // Two links in the header point at "/" — the brand and the index nav item.
+    const brand = page.getByRole('link', { name: /Ashley Childress/ });
+
+    // A min-height taller than the text, with the spans baseline-aligned, put
+    // every spare pixel below it — a band of invisible clickable nothing under
+    // the name. The hit area must stay centred on the text it belongs to.
+    const geometry = await brand.evaluate((node) => {
+      const box = node.getBoundingClientRect();
+      // The motto is display:none under 25rem, and a hidden span reports a
+      // zero rect at the document origin, which would drag the min/max to 0.
+      const spans = [...node.querySelectorAll('span')]
+        .map((s) => s.getBoundingClientRect())
+        .filter((r) => r.height > 0);
+      const textTop = Math.min(...spans.map((r) => r.top));
+      const textBottom = Math.max(...spans.map((r) => r.bottom));
+      return {
+        height: box.height,
+        above: textTop - box.top,
+        below: box.bottom - textBottom,
+      };
+    });
+
+    expect(geometry.height).toBeGreaterThanOrEqual(44);
+    expect(Math.abs(geometry.above - geometry.below)).toBeLessThanOrEqual(2);
+  });
+
   test('renders the restrained footer on every surface', async ({ page }) => {
     await page.goto('/');
 
