@@ -231,3 +231,27 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.postList {
+  display: grid;
+  padding: 0;
+  margin-top: 0.4rem;
+  gap: 0.35rem;
+  list-style: none;
+}
+
+.postList a {
+  display: inline-flex;
+  align-items: baseline;
+  color: var(--neon);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  gap: 0.3rem;
+  line-height: 1.6;
+  text-decoration: none;
+  text-wrap: pretty;
+}
+
+.postList a:hover {
+  text-decoration: underline;
+}

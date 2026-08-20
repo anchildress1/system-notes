@@ -40,14 +40,19 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
 
 function Exhibit({ project, index }: Readonly<{ project: Project; index: number }>) {
   const label = exhibitLabel(index);
+  // Only the two destinations the exhibit itself offers. Post titles are full
+  // sentences and turned the link row into a wall of prose, so they move into
+  // the evidence panel where there is room to read them.
   const links = [
     project.app_url ? { label: 'launch', href: project.app_url } : null,
     project.repo_url ? { label: 'repo', href: project.repo_url } : null,
-    ...(project.blog_posts ?? []).map((post) => ({ label: post.title, href: post.url })),
   ].filter((link): link is { label: string; href: string } => link !== null);
 
+  const posts = project.blog_posts ?? [];
   const summary = project.long_description || project.description;
-  const hasEvidence = Boolean(project.purpose || project.outcome || project.image_url);
+  const hasEvidence = Boolean(
+    project.purpose || project.outcome || project.image_url || posts.length
+  );
 
   return (
     <article className={styles.exhibit} data-testid={`project-${project.id}`}>
@@ -124,6 +129,21 @@ function Exhibit({ project, index }: Readonly<{ project: Project; index: number 
                   <section>
                     <h3>Outcome</h3>
                     <p>{project.outcome}</p>
+                  </section>
+                ) : null}
+                {posts.length > 0 ? (
+                  <section>
+                    <h3>Written up</h3>
+                    <ul className={styles.postList}>
+                      {posts.map((post) => (
+                        <li key={post.url}>
+                          <a href={post.url} target="_blank" rel="noopener noreferrer">
+                            {post.title} <FiArrowUpRight aria-hidden="true" />
+                            <span className="visually-hidden"> (opens in a new tab)</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
                   </section>
                 ) : null}
               </div>

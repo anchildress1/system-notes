@@ -57,10 +57,47 @@ describe('ProjectDirectory', () => {
       'href',
       'https://example.com'
     );
-    expect(within(entry).getByRole('link', { name: /Build post/i })).toHaveAttribute(
-      'target',
-      '_blank'
+  });
+
+  it('files write-ups in the evidence panel, not the exhibit link row', () => {
+    const project = {
+      ...mockProject,
+      app_url: 'https://example.com',
+      blog_posts: [{ title: 'Build post', url: 'https://dev.to/test/post' }],
+    };
+    render(<ProjectDirectory projects={[project]} />);
+    const entry = screen.getByTestId('project-test-project');
+
+    // Post titles are full sentences; in the link row they read as a wall of
+    // prose beside the two one-word destinations the exhibit actually offers.
+    const post = within(entry).getByRole('link', { name: /Build post/i });
+    expect(post).toHaveAttribute('target', '_blank');
+    expect(post.closest('details')).not.toBeNull();
+    expect(within(entry).getByRole('heading', { name: 'Written up' })).toBeInTheDocument();
+
+    const linkRow = within(entry).getByRole('navigation', { name: /Test Project links/i });
+    expect(within(linkRow).queryByRole('link', { name: /Build post/i })).not.toBeInTheDocument();
+    expect(within(linkRow).getByRole('link', { name: /launch/i })).toBeInTheDocument();
+  });
+
+  it('opens an evidence panel for a project whose only extra is a write-up', () => {
+    render(
+      <ProjectDirectory
+        projects={[
+          {
+            ...mockProject,
+            purpose: '',
+            outcome: '',
+            image_url: undefined,
+            blog_posts: [{ title: 'Only post', url: 'https://dev.to/test/only' }],
+          },
+        ]}
+      />
     );
+    const entry = screen.getByTestId('project-test-project');
+
+    expect(within(entry).getByText('evidence')).toBeInTheDocument();
+    expect(within(entry).getByRole('link', { name: /Only post/i })).toBeInTheDocument();
   });
 
   it('keeps the deeper evidence behind a disclosure rather than dropping it', () => {
