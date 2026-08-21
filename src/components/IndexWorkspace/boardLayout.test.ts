@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOARD_ROW_SCALE, extendBoardToMatches, fitBoardToWholeRows } from './boardLayout';
+import { BOARD_ROW_SCALE, fitBoardToWholeRows } from './boardLayout';
 
 const notes = (count: number) => Array.from({ length: count }, (_, index) => index + 1);
 
@@ -73,63 +73,5 @@ describe('fitBoardToWholeRows', () => {
 
   it('tolerates an empty index', () => {
     expect(fitBoardToWholeRows([], 21)).toEqual([]);
-  });
-});
-
-describe('extendBoardToMatches', () => {
-  const notes = (count: number) => Array.from({ length: count }, (_, index) => index + 1);
-  const matching =
-    (...ids: number[]) =>
-    (item: number) =>
-      ids.includes(item);
-
-  it('leaves the board alone when every match already fits', () => {
-    // Matches at 3 and 12 are inside a 40-tile board; nothing needs to grow.
-    expect(extendBoardToMatches(notes(65), 40, 20, matching(3, 12))).toHaveLength(40);
-  });
-
-  it('grows to reach a match past the trim', () => {
-    // Filtering to System Notes: 65 matches against a 40-tile board dropped 25.
-    const fitted = extendBoardToMatches(notes(65), 40, 20, matching(65));
-    expect(fitted).toHaveLength(65);
-    expect(fitted.at(-1)).toBe(65);
-  });
-
-  it('grows in whole rows so the board keeps its shape', () => {
-    // Last match at 41 needs 3 rows of 20, not 41 loose tiles.
-    expect(extendBoardToMatches(notes(200), 40, 20, matching(41))).toHaveLength(60);
-  });
-
-  it('stops at the end of the census rather than inventing tiles', () => {
-    // 65 items cannot fill the 80 that whole rows would ask for.
-    expect(extendBoardToMatches(notes(65), 40, 20, matching(65))).toHaveLength(65);
-  });
-
-  it('keeps rank order and stays a prefix', () => {
-    const fitted = extendBoardToMatches(notes(100), 20, 10, matching(73));
-    expect(fitted).toEqual(notes(fitted.length));
-  });
-
-  it('holds the trimmed board when nothing matches at all', () => {
-    expect(extendBoardToMatches(notes(65), 40, 20, () => false)).toHaveLength(40);
-  });
-
-  it('reaches the furthest match, not the first one it finds', () => {
-    expect(extendBoardToMatches(notes(200), 40, 20, matching(5, 99))).toHaveLength(100);
-  });
-
-  it('falls back to an exact cut when the column count is unmeasured', () => {
-    expect(extendBoardToMatches(notes(200), 40, 0, matching(57))).toHaveLength(57);
-  });
-
-  it('tolerates an empty census', () => {
-    expect(extendBoardToMatches([], 40, 20, () => true)).toEqual([]);
-  });
-
-  it('never returns fewer tiles than the trimmed board', () => {
-    for (const trimmed of [0, 5, 40, 120]) {
-      const fitted = extendBoardToMatches(notes(100), trimmed, 20, matching(2));
-      expect(fitted.length).toBeGreaterThanOrEqual(Math.min(trimmed, 100));
-    }
   });
 });
