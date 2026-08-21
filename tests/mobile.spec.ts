@@ -103,12 +103,14 @@ test.describe('mobile interactions', () => {
   test('expands a project into one readable column', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/projects');
+    // System Notes is not one of the six highlights, so the archive opens first.
+    await page.getByRole('button', { name: /show all \d+ exhibits/i }).click();
     const project = page.getByTestId('project-system-notes');
 
-    await project.locator('summary').click();
+    await project.getByRole('button', { name: 'read the argument' }).click();
 
     await expect(project.getByRole('img')).toBeVisible();
-    await expect(project.getByRole('heading', { name: 'Why it exists' })).toBeVisible();
+    await expect(project.getByRole('heading', { name: "How it's built" })).toBeVisible();
     const widths = await page.evaluate(() => ({
       scroll: document.documentElement.scrollWidth,
       client: document.documentElement.clientWidth,

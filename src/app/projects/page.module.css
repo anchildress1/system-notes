@@ -1,57 +1,77 @@
+/* The exhibits room runs warm. The design gives this page its own palette —
+   a warmer void and a yellow accent against the index's pink — so the tokens
+   are scoped here rather than swapped globally, and every other surface keeps
+   the colours it already had. */
 .main {
-  width: min(100%, var(--page-max));
-  padding: 0 var(--gutter) clamp(6rem, 10vw, 10rem);
-  margin: 0 auto;
+  --exhibit-void: oklch(17% 0.016 45);
+  --exhibit-deep: oklch(22.5% 0.02 40);
+  --exhibit-ink: oklch(96% 0.006 70);
+  --exhibit-ink-soft: oklch(79% 0.014 55);
+  --exhibit-ink-muted: oklch(63% 0.016 50);
+  --exhibit-accent: oklch(83% 0.15 80);
+  --exhibit-accent-deep: oklch(52% 0.12 76);
+
+  min-height: 100svh;
+  background: var(--exhibit-void);
+  color: var(--exhibit-ink);
+  overflow-x: clip;
+}
+
+.main :focus-visible {
+  outline: 2px solid var(--exhibit-accent);
+  outline-offset: 4px;
 }
 
 .hero {
-  display: grid;
-  min-height: min(48rem, calc(100svh - var(--header-height)));
-  align-content: center;
-  padding-block: clamp(4rem, 9vw, 8rem);
-  animation: rise-in 650ms var(--ease-out) both;
+  position: relative;
+  max-width: 94rem;
+  padding: clamp(3.5rem, 12vh, 9rem) 6vw 0;
+  margin: 0 auto;
 }
 
 .kicker {
-  margin-bottom: clamp(1.5rem, 4vw, 3rem);
-  color: var(--neon-bright);
+  margin-bottom: 1.375rem;
+  color: var(--exhibit-accent);
   font-size: 0.75rem;
-  letter-spacing: 0.16em;
+  font-weight: 500;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
 }
 
 .hero h1 {
-  font-family: var(--font-editorial);
-  font-size: clamp(4.5rem, 10vw, 10rem);
-  font-weight: 400;
-  letter-spacing: -0.065em;
-  line-height: 0.77;
+  font-family: var(--font-display);
+  /* 13vw with a 74px floor: the word is the page's one large gesture, and it
+     has to stay one line down to 320px. */
+  font-size: clamp(4.625rem, 13vw, 12.25rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.82;
 }
 
 .hero h1 em {
-  display: block;
-  color: var(--neon);
+  color: var(--exhibit-accent);
+  font-family: var(--font-editorial);
+  font-style: italic;
   font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
-.hero > p:not(.kicker) {
-  max-width: 48rem;
-  margin-top: clamp(2rem, 5vw, 4rem);
-  color: var(--ink-soft);
-  font-size: clamp(0.9rem, 1.35vw, 1.1rem);
+.claim {
+  max-width: 22ch;
+  margin-top: 2.125rem;
+  color: var(--exhibit-ink-soft);
+  font-family: var(--font-editorial);
+  font-size: clamp(1.75rem, 3.4vw, 2.875rem);
+  font-style: italic;
+  line-height: 1.22;
+  text-wrap: pretty;
 }
 
-@media (max-width: 32rem) {
-  .hero h1 {
-    font-size: clamp(4rem, 20vw, 6rem);
-  }
-}
-
-.tally {
-  margin-top: 2.25rem;
-  color: var(--ink-muted);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.blurb {
+  max-width: 46ch;
+  margin-top: 1.625rem;
+  color: var(--exhibit-ink-muted);
+  font-size: 1.16rem;
+  line-height: 1.75;
+  text-wrap: pretty;
 }
