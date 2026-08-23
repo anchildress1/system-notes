@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useMemo, useState } from 'react';
+import { useId, useMemo, useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight } from 'react-icons/fi';
@@ -23,16 +23,61 @@ export function exhibitStamp(status: string | undefined): string {
   return 'in evidence';
 }
 
+/** Opens one system directly: /projects?system=<id>. */
+export const SYSTEM_PARAM = 'system';
+
+/**
+ * The system named in the URL when the page was opened.
+ *
+ * Read through a store rather than useSearchParams, which would opt this
+ * statically rendered page out of static generation for a parameter only a deep
+ * link ever carries. Cached so the snapshot stays referentially stable.
+ */
+let linkedSystem: string | null | undefined;
+
+function subscribeToNothing(): () => void {
+  return () => {};
+}
+
+function readLinkedSystem(): string | null {
+  if (linkedSystem === undefined) {
+    linkedSystem = new URLSearchParams(globalThis.location.search).get(SYSTEM_PARAM);
+  }
+  return linkedSystem;
+}
+
+function noLinkedSystem(): string | null {
+  return null;
+}
+
 /**
  * The systems rail and the detail pane beside it.
  *
- * Selection is local. The rail is a list of links to nothing — the page holds
- * every project already, so moving between them is a state change rather than a
- * navigation, and nothing here writes to the URL.
+ * Every project is already on the page, so moving between them is a state change
+ * rather than a navigation. The URL trails that state instead of driving it, so
+ * one system can be linked to without the rail becoming a set of routes.
  */
+
 export default function ProjectDirectory({ projects }: Readonly<{ projects: Project[] }>) {
-  const [selectedId, setSelectedId] = useState(projects[0]?.id);
+  const [chosen, setChosen] = useState<string | null>(null);
   const panelId = useId();
+  const linked = useSyncExternalStore(subscribeToNothing, readLinkedSystem, noLinkedSystem);
+  // A click wins over the link that opened the page; the link wins over the
+  // default. An unknown id falls through to the first system rather than
+  // rendering nothing.
+  const selectedId =
+    chosen ??
+    (projects.some((project) => project.id === linked) ? linked : null) ??
+    projects[0]?.id;
+
+  // The URL follows the selection so the open system is always the one a copied
+  // link reopens. replaceState keeps it out of history: the rail is one page.
+  function select(id: string) {
+    setChosen(id);
+    const url = new URL(globalThis.location.href);
+    url.searchParams.set(SYSTEM_PARAM, id);
+    globalThis.history.replaceState(null, '', url);
+  }
 
   const selected = useMemo(
     () => projects.find((project) => project.id === selectedId) ?? projects[0],
@@ -61,7 +106,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                   aria-current={current ? 'true' : undefined}
                   aria-controls={panelId}
                   data-testid={`project-${project.id}`}
-                  onClick={() => setSelectedId(project.id)}
+                  onClick={() => select(project.id)}
                 >
                   <span aria-hidden="true" className={styles.railMark} />
                   <span className={styles.railText}>

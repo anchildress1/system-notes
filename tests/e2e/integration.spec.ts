@@ -305,3 +305,32 @@ test.describe('System Notes redesign', () => {
     expect(accessibility.violations).toEqual([]);
   });
 });
+
+test.describe('Deep links', () => {
+  test('opens the system named in the url', async ({ page }) => {
+    await page.goto('/projects?system=save-the-sun');
+
+    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toHaveText(
+      'Save the Sun'
+    );
+    await expect(page.getByTestId('project-save-the-sun')).toHaveAttribute('aria-current', 'true');
+  });
+
+  test('follows the selection so the open system is what a copied link reopens', async ({
+    page,
+  }) => {
+    await page.goto('/projects');
+    await page.getByTestId('project-vestige').click();
+
+    await expect(page).toHaveURL(/\?system=vestige$/);
+  });
+
+  test('falls back to the first system when the url names one that does not exist', async ({
+    page,
+  }) => {
+    await page.goto('/projects?system=not-a-real-system');
+
+    // Rendering nothing, or an error, would make a stale link a broken page.
+    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toBeVisible();
+  });
+});
