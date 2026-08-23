@@ -18,10 +18,10 @@ describe('swatchLightness', () => {
     expect(swatchLightness('oklch(50% 0.06 330)')).toBe(50);
   });
 
-  it('normalises a unitless literal onto the same 0-100 scale', () => {
+  it('normalizes a unitless literal onto the same 0-100 scale', () => {
     // oklch accepts both forms. Read as-is, oklch(0.83 ...) reports a lightness
     // of 0.83 — no error, no failed floor, just a near-black swatch declared
-    // valid. Both spellings of the same colour must agree.
+    // valid. Both spellings of the same color must agree.
     expect(swatchLightness('oklch(0.83 0.15 80)')).toBe(83);
     expect(swatchLightness('oklch(0.155 0.006 265)')).toBeCloseTo(15.5);
     expect(swatchLightness('oklch(0.74 0.055 330)')).toBe(swatchLightness('oklch(74% 0.055 330)'));
@@ -55,7 +55,7 @@ describe('swatchLightness', () => {
     expect(() => swatchLightness('var(--flag)')).toThrow(/Unreviewed swatch token/);
   });
 
-  it('rejects a colour space it cannot reason about', () => {
+  it('rejects a color space it cannot reason about', () => {
     expect(() => swatchLightness('#ff00ff')).toThrow(/Unrecognised swatch/);
     expect(() => swatchLightness('rgb(255 0 255)')).toThrow(/Unrecognised swatch/);
     expect(() => swatchLightness('transparent')).toThrow(/Unrecognised swatch/);
@@ -77,7 +77,7 @@ describe('SWATCH_PALETTE', () => {
   });
 
   it('holds only tokens, never a literal', () => {
-    // A literal cannot follow a theme: it would paint the same colour against a
+    // A literal cannot follow a theme: it would paint the same color against a
     // dark board and a light one, and the light board is where that is fatal.
     for (const swatch of SWATCH_PALETTE) {
       expect(swatch, swatch).toMatch(/^var\(--[\w-]+\)$/);
@@ -86,7 +86,7 @@ describe('SWATCH_PALETTE', () => {
 
   it('keeps the award tone out of the rank palette', () => {
     // As slot 0 it collided with whichever category ranked first, so the awards
-    // and the largest category painted the same colour.
+    // and the largest category painted the same color.
     expect(SWATCH_PALETTE).not.toContain(AWARD_SWATCH);
   });
 
@@ -108,7 +108,7 @@ describe('SWATCH_PALETTE', () => {
 
   it.each(THEMES)('resolves every slot to a distinct %s tone', (theme) => {
     // Distinctness by resolved value, not by token name. Two names pointing at
-    // the same colour pass a string-uniqueness check while painting one board.
+    // the same color pass a string-uniqueness check while painting one board.
     const resolved = SWATCH_PALETTE.map((s) => swatchLightness(s, theme));
     const distinctEnough = resolved.every((l, i) =>
       resolved.every((other, j) => i === j || Math.abs(l - other) >= 4)

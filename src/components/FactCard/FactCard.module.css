@@ -146,7 +146,7 @@
 }
 
 /* Moves into place; never fades in. Starting at opacity 0 meant axe could sample
-   the card mid-animation and read every colour in it as part-transparent — the
+   the card mid-animation and read every color in it as part-transparent — the
    meta line scored 4.02:1 against a background that was itself half the page
    showing through, when the settled pair is 6.28:1. Same reason the exhibits
    reveal animates transform alone. */

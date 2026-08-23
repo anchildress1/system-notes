@@ -24,8 +24,8 @@ import styles from './IndexWorkspace.module.css';
 //
 // Swatches follow a category's rank by size: Algolia returns facets ordered by
 // count, so the largest category takes the most prominent tone. The palette runs
-// pink through paper and grey to near-black rather than one hue's lightness
-// ramp, which is what made every filter read as the same colour.
+// pink through paper and gray to near-black rather than one hue's lightness
+// ramp, which is what made every filter read as the same color.
 //
 // The rank is read from the *unfiltered* facet list, held alongside the board's
 // census. Refining re-sorts the live list by the narrowed counts, and keying off

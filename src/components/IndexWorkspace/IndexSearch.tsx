@@ -117,7 +117,7 @@ export default function IndexSearch({ pulse }: Readonly<{ pulse?: IndexPulse | n
  * Algolia matches facet filters case-insensitively, so a link carrying
  * "System Notes" narrows the results even where the records are filed as
  * "System notes". InstantSearch compares isRefined with a strict string
- * equality, so it treated those as two values: it synthesised a checked entry
+ * equality, so it treated those as two values: it synthesized a checked entry
  * for the refinement with a count of zero, and left the real entry — the one
  * with the count next to it — unchecked. Two boxes for one filter, and the one
  * a reader would click was the wrong one.

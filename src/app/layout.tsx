@@ -78,7 +78,7 @@ export const viewport: Viewport = {
   // The dark --void, matching what the CSS renders before the theme script runs.
   // The script rewrites this tag when it resolves a light theme, because the
   // browser chrome cannot read a custom property and prefers-color-scheme is the
-  // OS preference rather than the choice this site actually honours.
+  // OS preference rather than the choice this site actually honors.
   themeColor: THEME_COLORS.dark,
 };
 

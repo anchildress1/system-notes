@@ -5,7 +5,7 @@
     "what_it_is": "A card generator that reads one public repo's commit history and tells you what you were obsessed with — the 3am streak, the 107-day silence, the return.",
     "why_it_exists": "Proves a model can find something true in a commit history without being allowed to invent it.",
     "long_description": "Snowflake does all of it. An external access integration pulls the repo from inside the warehouse, fifteen SQL views score six storylines and pick exactly one, and a UDF over AI_COMPLETE narrates that single thread — 20 to 140 commit lines, never the whole history. Thirteen SQL checks run before a card exists, so it fails loudly instead of rendering a lie.",
-    "outcome": "Live and generating, capped at 140 commit lines per repo. Nothing to say gets a grey card, not a fabrication. Submitted to the DEV Weekend Challenge: Passion Edition.",
+    "outcome": "Live and generating, capped at 140 commit lines per repo. Nothing to say gets a gray card, not a fabrication. Submitted to the DEV Weekend Challenge: Passion Edition.",
     "status": "Active · Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/commit-chronicles.webp",

@@ -17,7 +17,7 @@ covers all three roles, which took the font payload from 115 KB to 57 KB.
 
 The full license text lives at [`public/fonts/OFL.txt`](../../../public/fonts/OFL.txt), carrying all
 copyright notices. It sits in `public/` deliberately rather than beside these `.woff2` files:
-the fonts are redistributed to every visitor out of `/_next/static`, and OFL §2 requires the licence
+the fonts are redistributed to every visitor out of `/_next/static`, and OFL §2 requires the license
 to travel with them, so the copy has to be served too — it is reachable at `/fonts/OFL.txt`.
 
 ## Refreshing these files
@@ -37,5 +37,5 @@ https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700
 Request them with a modern browser `User-Agent`; Google serves `ttf` to unrecognised clients.
 
 Space Grotesk has a `wght` axis and nothing else — no italic, no slant. Anything that asks for
-`font-style: italic` gets a synthesised oblique, so emphasis is carried by the accent colour
+`font-style: italic` gets a synthesized oblique, so emphasis is carried by the accent color
 instead.

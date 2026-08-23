@@ -23,7 +23,7 @@ export type SwatchTheme = keyof typeof SWATCH_SURFACE_LIGHTNESS;
  * tonal steps cannot stay distinct at this separation.
  *
  * Every entry is a token. A literal cannot follow a theme, so a hardcoded
- * colour here renders identically against both boards.
+ * color here renders identically against both boards.
  */
 export const SWATCH_PALETTE = [
   'var(--k-decision)',
@@ -46,7 +46,7 @@ export const AWARD_SWATCH = 'var(--k-award)';
  *
  * --flag is deliberately absent: it is byte-identical to --k-decision in dark,
  * so a palette holding both would pass a uniqueness check on strings while
- * painting two ranks the same colour.
+ * painting two ranks the same color.
  */
 export const SWATCH_TOKEN_LIGHTNESS: Readonly<
   Record<string, Readonly<Record<SwatchTheme, number>>>
@@ -80,7 +80,7 @@ export function swatchLightness(swatch: string, theme: SwatchTheme = 'dark'): nu
     // oklch takes lightness as either 0-100 with a percent sign or 0-1 without.
     // Reading the unitless form as-is scores oklch(0.83 ...) at a lightness of
     // 0.83, which clears no floor and trips no error — it just quietly reports a
-    // near-black swatch as valid. Normalise rather than trust the caller.
+    // near-black swatch as valid. Normalize rather than trust the caller.
     return literal[2] ? raw : raw * 100;
   }
   throw new Error(`Unrecognised swatch: ${swatch}`);

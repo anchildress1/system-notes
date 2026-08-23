@@ -29,7 +29,7 @@ const SOURCES = [
 ];
 
 // Matches the grayscale treatment ProjectCard applies via CSS, so the placeholder
-// does not flash in colour and desaturate the moment the real image decodes.
+// does not flash in color and desaturate the moment the real image decodes.
 const blurFor = (file) => sharp(file).resize(12).grayscale().webp({ quality: 30 }).toBuffer();
 
 const mtime = async (file) => (await stat(file).catch(() => null))?.mtimeMs ?? Infinity;

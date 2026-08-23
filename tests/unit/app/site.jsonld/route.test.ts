@@ -43,7 +43,7 @@ describe('GET /site.jsonld', () => {
     expect(body.hasPart.map((p: { name: string }) => p.name)).toEqual(['Alpha']);
   });
 
-  it('honours NEXT_PUBLIC_BASE_URL when set', async () => {
+  it('honors NEXT_PUBLIC_BASE_URL when set', async () => {
     process.env.NEXT_PUBLIC_BASE_URL = 'https://staging.example';
     const body = JSON.parse(await (await load()).text());
     expect(body.url).toBe('https://staging.example');
