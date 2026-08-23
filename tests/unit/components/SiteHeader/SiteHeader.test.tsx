@@ -11,15 +11,13 @@ vi.mock('next/navigation', () => ({
 describe('SiteHeader', () => {
   beforeEach(() => {
     navigation.pathname = '/';
+    document.documentElement.removeAttribute('data-theme');
   });
 
   it('renders plain-language navigation and a skip link', () => {
     render(<SiteHeader />);
 
-    expect(screen.getByRole('link', { name: /Ashley Childress.*every choice/i })).toHaveAttribute(
-      'href',
-      '/'
-    );
+    expect(screen.getByRole('link', { name: 'Ashley Childress' })).toHaveAttribute('href', '/');
     expect(screen.getByRole('link', { name: 'Skip to main content' })).toHaveAttribute(
       'href',
       '#main-content'
@@ -50,44 +48,28 @@ describe('SiteHeader', () => {
     expect(screen.getByRole('link', { name: label })).toHaveAttribute('aria-current', 'page');
   });
 
-  it('states the index total and how long ago it last moved', () => {
-    const twoHoursAgo = new Date(Date.now() - 2 * 3_600_000).toISOString();
-
-    render(<SiteHeader pulse={{ total: 279, latestCreatedAt: twoHoursAgo }} />);
-
-    // The client snapshot resolves on the first client render, so the whole
-    // phrase is present immediately rather than arriving a tick later.
-    expect(screen.getByText(/entry № 279 logged 2h ago — the index never closes/)).toBeVisible();
-  });
-
-  it('states the total alone when the newest note carries no date', () => {
-    render(<SiteHeader pulse={{ total: 279, latestCreatedAt: null }} />);
-
-    expect(screen.getByText(/entry № 279 — the index never closes/)).toBeVisible();
-    expect(screen.queryByText(/logged/)).not.toBeInTheDocument();
-  });
-
-  it('groups a large total rather than running the digits together', () => {
-    render(<SiteHeader pulse={{ total: 12345, latestCreatedAt: null }} />);
-
-    expect(screen.getByText(/entry № 12,345/)).toBeVisible();
-  });
-
-  it('falls back to the unnumbered line when the index cannot answer', () => {
-    // The header is furniture on every page including the 404; a failed pulse
-    // must not leave a gap or a zero where a real count belongs.
-    render(<SiteHeader pulse={null} />);
-
-    expect(screen.getByText(/the index never closes/)).toBeVisible();
-    expect(screen.queryByText(/entry №/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/\b0\b/)).not.toBeInTheDocument();
-  });
-
-  it('renders without a pulse prop at all', () => {
+  it('carries the theme control', () => {
     render(<SiteHeader />);
 
-    expect(screen.getByText(/the index never closes/)).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Light theme' })).toBeVisible();
+  });
+
+  it('states nothing about the index it cannot keep current', () => {
+    // The entry count and its age moved to the index itself. The header is on
+    // every route including the 404, and a corpus statistic rendered there was
+    // both a fetch every route paid for and a number with no context around it.
+    render(<SiteHeader />);
+
     expect(screen.queryByText(/entry №/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/never closes/)).not.toBeInTheDocument();
+  });
+
+  it('carries no theme song', () => {
+    // It lives under its own section on the about page, where the writing that
+    // explains it is.
+    render(<SiteHeader />);
+
+    expect(screen.queryByRole('button', { name: /theme song/i })).not.toBeInTheDocument();
   });
 
   it('identifies the blog as a safe external link', () => {

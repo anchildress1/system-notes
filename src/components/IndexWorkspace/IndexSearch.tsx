@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import {
   useClearRefinements,
   useRefinementList,
@@ -8,9 +8,35 @@ import {
   useStats,
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
+import type { IndexPulse } from '@/lib/indexPulse';
+import { relativeAge } from '@/lib/relativeAge';
 import styles from './IndexWorkspace.module.css';
 
-export default function IndexSearch() {
+/** The age depends on the clock, not on a store anything can push to. */
+const subscribeToNothing = () => () => {};
+
+/**
+ * How much is on file and when it last moved.
+ *
+ * The age resolves on the client against the reader's own clock. This page is
+ * statically rendered, so an age computed on the server would be stamped at
+ * build time and then quietly rot.
+ */
+function IndexPulseLine({ pulse }: Readonly<{ pulse: IndexPulse }>) {
+  const age = useSyncExternalStore(
+    subscribeToNothing,
+    () => relativeAge(pulse.latestCreatedAt),
+    () => null
+  );
+
+  return (
+    <p className={styles.pulse}>
+      {pulse.total.toLocaleString()} on file{age ? ` · updated ${age}` : ''}
+    </p>
+  );
+}
+
+export default function IndexSearch({ pulse }: Readonly<{ pulse?: IndexPulse | null }>) {
   const { query, refine: refineQuery } = useSearchBox();
   const { canRefine, refine: clearRefinements } = useClearRefinements();
   const { nbHits, processingTimeMS } = useStats();
@@ -63,6 +89,9 @@ export default function IndexSearch() {
         <p aria-live="polite">
           {nbHits.toLocaleString()} {nbHits === 1 ? 'entry' : 'entries'} · {processingTimeMS}ms
         </p>
+        {/* Corpus facts, not search state: how much is on file and when it last
+            moved. The count above changes with every keystroke; this does not. */}
+        {pulse ? <IndexPulseLine pulse={pulse} /> : null}
         <div className={styles.secondaryFilters} aria-label="Additional note filters">
           <FacetFilter attribute="projects" label="Project" />
           <FacetFilter attribute="tags.lvl0" label="Topic" />

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight } from 'react-icons/fi';
+import ThemeSong from '@/components/ThemeSong/ThemeSong';
 import { profile } from '@/data/profile';
 import { getProjects } from '@/lib/api';
 import { groupProjects } from '@/lib/projectStatus';
@@ -105,12 +106,12 @@ export default function AboutPage() {
 
       <section className={styles.themeSong} aria-labelledby="theme-song-heading">
         <header>
-          <p>The theme song</p>
-          <h2 id="theme-song-heading">Why there is a song in the header.</h2>
-          <p className={styles.themeSongTrack}>
-            <cite>{profile.themeSong.track}</cite> · {profile.themeSong.artist}
-          </p>
+          <h2 id="theme-song-heading">
+            Theme song: <cite>{profile.themeSong.track}</cite>
+          </h2>
+          <p className={styles.themeSongTrack}>{profile.themeSong.artist}</p>
         </header>
+        <ThemeSong />
         <div className={styles.themeSongCopy}>
           {profile.themeSong.paragraphs.map((paragraph) => (
             <p key={paragraph.lead ?? paragraph.body}>

@@ -2,11 +2,11 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import SiteHeader from '@/components/SiteHeader/SiteHeader';
-import { getIndexPulse } from '@/lib/indexPulse';
 import { getProjects } from '@/lib/api';
 import { isValidAppId } from '@/lib/algolia';
 import { buildSiteJsonLd } from '@/lib/siteJsonLd';
 import { SITE_NAME, SOCIAL_IMAGE, SOCIAL_IMAGE_URL } from '@/lib/siteMetadata';
+import { THEME_COLORS, THEME_SCRIPT } from '@/lib/theme';
 import { resolveBaseUrl, serializeJsonLd } from '@/lib/urlSafety';
 import './globals.css';
 
@@ -75,14 +75,14 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  // The sRGB rendering of --void. Kept in sync by hand: the browser chrome
-  // cannot read a custom property, so a stale hex here shows as a differently
-  // coloured bar above the page rather than as any kind of failure.
-  themeColor: '#0b0c0f',
+  // The dark --void, matching what the CSS renders before the theme script runs.
+  // The script rewrites this tag when it resolves a light theme, because the
+  // browser chrome cannot read a custom property and prefers-color-scheme is the
+  // OS preference rather than the choice this site actually honours.
+  themeColor: THEME_COLORS.dark,
 };
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const pulse = await getIndexPulse();
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const jsonLd = buildSiteJsonLd(getProjects(), baseUrl);
 
   return (
@@ -103,9 +103,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
+        {/* Blocking, and first: it stamps data-theme before the first paint so a
+            light reader never sees a dark frame. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
-        <SiteHeader pulse={pulse} />
+        <SiteHeader />
         {children}
         <SiteFooter />
       </body>

@@ -54,7 +54,7 @@
   flex-wrap: wrap;
   align-items: center;
   color: var(--mute);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   gap: 0.875rem;
   letter-spacing: 0.2em;
@@ -112,7 +112,7 @@
   border-radius: 999px;
   background: var(--flag);
   color: var(--flag-ink);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   gap: 0.55rem;
   letter-spacing: 0.1em;
@@ -133,7 +133,7 @@
   border: 1px solid var(--edge);
   border-radius: 999px;
   color: var(--mute);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.03em;
 }
@@ -222,7 +222,7 @@
 .exhibitDetail h3 {
   margin-bottom: 0.875rem;
   color: var(--flag);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;

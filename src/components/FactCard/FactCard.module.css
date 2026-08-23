@@ -18,7 +18,7 @@
   color: var(--mute);
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   gap: 1rem;
   text-transform: lowercase;
 }
@@ -38,7 +38,7 @@
   border: 1px solid var(--flag);
   border-radius: 999px;
   color: var(--flag);
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
 }
 
@@ -64,7 +64,7 @@
 .factLabel {
   color: var(--flag);
   font-family: var(--font-display);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -94,7 +94,7 @@
 .noteData dt,
 .noteData dd {
   font-family: var(--font-display);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
 }
 
 .noteData dt {
@@ -118,7 +118,7 @@
   border-radius: 999px;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.61rem;
+  font-size: 0.75rem;
 }
 
 .actions {
@@ -136,7 +136,7 @@
   gap: 0.4rem;
   color: var(--bone);
   font-family: var(--font-display);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }

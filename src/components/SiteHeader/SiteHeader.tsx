@@ -2,10 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSyncExternalStore } from 'react';
-import ThemeSong from '@/components/ThemeSong/ThemeSong';
-import type { IndexPulse } from '@/lib/indexPulse';
-import { relativeAge } from '@/lib/relativeAge';
+import ThemeToggle from '@/components/ThemeToggle/ThemeToggle';
 import styles from './SiteHeader.module.css';
 
 const destinations = [
@@ -15,9 +12,6 @@ const destinations = [
   { href: '/about', label: 'about me' },
 ] as const;
 
-/** The age depends on the clock, not on a store anything can push to. */
-const subscribeToNothing = () => () => {};
-
 function isCurrentPath(pathname: string, href: string): boolean {
   // A note is a record out of the index, so the index stays marked while reading
   // one. The intake at / owns nothing below it and matches exactly.
@@ -25,16 +19,8 @@ function isCurrentPath(pathname: string, href: string): boolean {
   return pathname === href;
 }
 
-export default function SiteHeader({ pulse }: Readonly<{ pulse?: IndexPulse | null }>) {
+export default function SiteHeader() {
   const pathname = usePathname();
-  // The server snapshot is deliberately null. Most routes are statically
-  // rendered, so an age resolved on the server would be stamped at build time
-  // and then quietly rot; the client resolves it against the reader's clock.
-  const age = useSyncExternalStore(
-    subscribeToNothing,
-    () => relativeAge(pulse?.latestCreatedAt),
-    () => null
-  );
 
   return (
     <header className={styles.header}>
@@ -44,42 +30,32 @@ export default function SiteHeader({ pulse }: Readonly<{ pulse?: IndexPulse | nu
       <div className={styles.inner}>
         <Link className={styles.brand} href="/">
           <span className={styles.wordmark}>Ashley Childress</span>
-          <span className={styles.motto}>every choice I&apos;d defend</span>
         </Link>
-        <div className={styles.rightSide}>
-          <nav className={styles.navigation} aria-label="Primary navigation">
-            {destinations.map(({ href, label }) => {
-              const current = isCurrentPath(pathname, href);
-              return (
-                <Link
-                  key={href}
-                  className={styles.navLink}
-                  href={href}
-                  aria-current={current ? 'page' : undefined}
-                >
-                  {label}
-                </Link>
-              );
-            })}
-            <a
-              className={styles.navLink}
-              href="https://dev.to/anchildress1"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              blog <span aria-hidden="true">↗</span>
-              <span className={styles.srOnly}> (opens in a new tab)</span>
-            </a>
-            <ThemeSong />
-          </nav>
-          <p className={styles.status}>
-            <span aria-hidden="true" />
-            {pulse
-              ? `entry № ${pulse.total.toLocaleString()}${age ? ` logged ${age}` : ''} — `
-              : ''}
-            the index never closes
-          </p>
-        </div>
+        <nav className={styles.navigation} aria-label="Primary navigation">
+          {destinations.map(({ href, label }) => {
+            const current = isCurrentPath(pathname, href);
+            return (
+              <Link
+                key={href}
+                className={styles.navLink}
+                href={href}
+                aria-current={current ? 'page' : undefined}
+              >
+                {label}
+              </Link>
+            );
+          })}
+          <a
+            className={styles.navLink}
+            href="https://dev.to/anchildress1"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            blog <span aria-hidden="true">↗</span>
+            <span className={styles.srOnly}> (opens in a new tab)</span>
+          </a>
+          <ThemeToggle />
+        </nav>
       </div>
     </header>
   );

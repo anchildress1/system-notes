@@ -24,7 +24,7 @@
 .contact > div > p {
   margin-bottom: 1.25rem;
   color: var(--flag);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -46,7 +46,7 @@
 .role {
   margin-top: clamp(2rem, 5vw, 4rem);
   color: var(--soft);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -93,7 +93,7 @@
   align-items: center;
   justify-content: space-between;
   color: var(--soft);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -146,7 +146,7 @@
 
 .proof dt {
   color: var(--mute);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -171,7 +171,7 @@
   align-items: center;
   border-bottom: 1px solid var(--line);
   color: var(--soft);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   grid-template-columns: minmax(8rem, 0.55fr) minmax(0, 1fr);
   gap: 1rem;
 }
@@ -200,7 +200,7 @@
 
 .principles li > span {
   color: var(--flag);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .principles h3 {
@@ -212,7 +212,7 @@
 
 .principles li p {
   color: var(--soft);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .contact nav {
@@ -227,7 +227,7 @@
   justify-content: space-between;
   border-bottom: 1px solid var(--line);
   color: var(--soft);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
 }
 
@@ -293,7 +293,7 @@
   margin-top: 1.25rem;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
 }
 
 .themeSongTrack cite {

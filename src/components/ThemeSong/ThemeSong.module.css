@@ -1,210 +1,140 @@
-.wrapper {
-  position: relative;
-  display: inline-flex;
+.player {
+  margin-top: 1.25rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
   align-items: center;
 }
 
 .toggle {
   display: inline-flex;
-  min-height: 2.25rem;
+  min-height: 2.75rem;
   align-items: center;
-  gap: 0.44rem;
-  padding: 0.3rem 0.75rem;
-  border: 1.5px solid var(--edge);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--soft);
-  font-family: var(--font-display);
+  gap: 0.7rem;
+  padding: 0.8rem 1.4rem;
+  background: var(--flag);
+  color: var(--flag-ink);
+  font-family: var(--font-sans);
   font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    color 0.18s ease,
-    border-color 0.18s ease;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: padding 0.35s var(--ease-out);
 }
 
 .toggle:hover:not(:disabled) {
-  border-color: var(--flag);
-  color: var(--flag);
-}
-
-.toggle[aria-pressed='true'] {
-  border-color: var(--flag);
-  color: var(--flag);
+  padding-inline: 1.75rem;
 }
 
 .toggle:disabled {
+  background: transparent;
+  border: 1px dashed var(--line-strong);
+  color: var(--mute);
   cursor: not-allowed;
-  opacity: 0.55;
 }
 
-/* Anchored to the pill rather than placed in flow: the header row is already
-   tight at narrow widths, and an in-flow panel pushed the status line off. */
-.panel {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
-  z-index: 40;
-  display: grid;
-  width: max-content;
-  min-width: 17.5rem;
-  padding: 0.75rem 0.9rem;
-  border: 1px solid var(--line-strong);
-  border-radius: 0.75rem;
-  background: var(--panel);
-  box-shadow: 0 1rem 2.5rem var(--drop);
-  gap: 0.55rem;
-}
-
-.track {
-  display: grid;
-  gap: 0.15rem;
-}
-
-.trackTitle {
-  color: var(--bone);
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-/* The parental-advisory mark. Small, but it has to be legible rather than
-   decorative, so it keeps a real border and full-contrast ink. */
 .explicit {
-  display: inline-grid;
-  width: 0.95rem;
-  height: 0.95rem;
-  border: 1px solid currentcolor;
+  display: inline-flex;
+  width: 1.05rem;
+  height: 1.05rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid currentColor;
   border-radius: 0.15rem;
-  font-family: var(--font-display);
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   font-weight: 700;
   line-height: 1;
-  place-items: center;
 }
 
-.trackTitle .explicit {
-  margin-left: 0.4rem;
-  vertical-align: middle;
-}
-
-.trackArtist {
+.note {
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
-/* Spread across the full width rather than stretched to it: the bars keep a
-   fixed 3px and the gaps absorb the difference, so a wider panel gets a longer
-   run of the same bar instead of fatter, distorted ones. */
-.waveform {
+.equaliser {
   display: flex;
-  width: 100%;
-  height: 1.35rem;
+  max-width: 21rem;
+  height: 2.75rem;
   align-items: flex-end;
-  justify-content: space-between;
-  gap: 3px;
+  gap: 4px;
+  margin-top: 1.25rem;
+  /* Dimmed rather than hidden while paused: the bars are the visual anchor for
+     the control above them, and removing them makes the section jump on play. */
+  opacity: 0.28;
+  transition: opacity 0.4s ease;
+}
+
+.equaliser[data-playing='true'] {
+  opacity: 1;
 }
 
 .bar {
-  width: 3px;
-  height: 30%;
-  flex: 0 0 3px;
-  border-radius: 999px;
+  flex: 1;
   background: var(--flag);
-  animation: theme-song-pulse 900ms ease-in-out infinite alternate;
+  transform-origin: bottom;
 }
 
-@keyframes theme-song-pulse {
-  from {
-    height: 22%;
-  }
-
-  to {
-    height: 100%;
-  }
+.equaliser[data-playing='true'] .bar {
+  animation-name: theme-song-pulse;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
 .progressRow {
-  display: grid;
+  display: flex;
+  max-width: 21rem;
   align-items: center;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.6rem;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 .progress {
-  width: 100%;
-  height: 0.25rem;
+  flex: 1;
+  height: 0.2rem;
   border: 0;
-  border-radius: 999px;
   appearance: none;
   background: var(--line-strong);
 }
 
 .progress::-webkit-progress-bar {
-  border-radius: 999px;
   background: var(--line-strong);
 }
 
 .progress::-webkit-progress-value {
-  border-radius: 999px;
   background: var(--flag);
 }
 
 .progress::-moz-progress-bar {
-  border-radius: 999px;
   background: var(--flag);
 }
 
 .time {
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.62rem;
-  white-space: nowrap;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
 }
 
-.announce {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* Anchoring to the pill breaks once the nav wraps: at 320px the pill no longer
-   sits flush right, so a panel hung off its right edge started at -88px and ran
-   off the left of the screen. Below this width it spans the viewport instead. */
-@media (max-width: 30rem) {
-  .panel {
-    position: fixed;
-    top: auto;
-    right: 0.75rem;
-    bottom: 0.75rem;
-    left: 0.75rem;
-    width: auto;
-    min-width: 0;
+@keyframes theme-song-pulse {
+  from {
+    transform: scaleY(0.35);
+  }
+  to {
+    transform: scaleY(1);
   }
 }
 
-/* Only a playing track animates. An idle peek shows the shape at rest, so the
-   waveform never implies sound that is not there. */
-.waveform[data-playing='false'] .bar {
-  height: 45%;
-  animation: none;
-}
-
-/* The waveform is the only thing here that moves, and it moves continuously.
-   Holding the bars at a readable height keeps the panel legible without it. */
 @media (prefers-reduced-motion: reduce) {
-  .bar {
-    height: 60%;
+  /* The bars stay at their resting heights rather than freezing mid-scale. */
+  .equaliser[data-playing='true'] .bar {
     animation: none;
   }
 }

@@ -81,23 +81,23 @@ test.describe('mobile interactions', () => {
     );
   });
 
-  test('keeps the theme song panel fully on screen once the nav wraps', async ({ page }) => {
-    // Anchored to the pill, the panel hung off its right edge. At 320px the nav
-    // wraps and the pill is no longer flush right, which put the panel's left
-    // edge at -88px â off the screen, and invisible to a scrollWidth check
-    // because it overflowed leftward.
+  test('keeps the theme song player inside the viewport on the about page', async ({ page }) => {
+    // The player moved out of the header, so the panel that used to hang off the
+    // pill is gone. What matters now is that the control and its equaliser stay
+    // within the page at the width where the layout is tightest.
     for (const width of [320, 390]) {
       await page.setViewportSize({ width, height: 844 });
-      await page.goto('/');
-      await page.getByRole('button', { name: /theme song/i }).click();
+      await page.goto('/about');
 
-      const panel = page.getByText('Twisted Game Songs').locator('..');
-      await expect(panel).toBeVisible();
+      const player = page.getByRole('button', { name: /theme song/i });
+      await expect(player).toBeVisible();
 
-      const box = await panel.boundingBox();
-      expect(box, `no panel at ${width}px`).not.toBeNull();
-      expect(box!.x, `panel starts off-screen at ${width}px`).toBeGreaterThanOrEqual(0);
-      expect(box!.x + box!.width, `panel ends off-screen at ${width}px`).toBeLessThanOrEqual(width);
+      const box = await player.boundingBox();
+      expect(box, `no control at ${width}px`).not.toBeNull();
+      expect(box!.x, `control starts off-screen at ${width}px`).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width, `control ends off-screen at ${width}px`).toBeLessThanOrEqual(
+        width
+      );
     }
   });
 

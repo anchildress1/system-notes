@@ -155,8 +155,8 @@ test.describe('System Notes redesign', () => {
     // the name. The hit area must stay centred on the text it belongs to.
     const geometry = await brand.evaluate((node) => {
       const box = node.getBoundingClientRect();
-      // The motto is display:none under 25rem, and a hidden span reports a
-      // zero rect at the document origin, which would drag the min/max to 0.
+      // Any span hidden at this width reports a zero rect at the document
+      // origin, which would drag the min/max to 0.
       const spans = [...node.querySelectorAll('span')]
         .map((s) => s.getBoundingClientRect())
         .filter((r) => r.height > 0);
@@ -269,17 +269,14 @@ test.describe('System Notes redesign', () => {
     expect(accessibility.violations).toEqual([]);
   });
 
-  test('explains the theme song rather than leaving the header control unexplained', async ({
-    page,
-  }) => {
+  test('plays the theme song under the writing that explains it', async ({ page }) => {
     await page.goto('/about');
-    const section = page
-      .locator('section')
-      .filter({ hasText: 'Why there is a song in the header' });
+    const section = page.locator('section').filter({ hasText: 'Theme song' });
 
-    await expect(section.getByRole('heading', { level: 2 })).toHaveText(
-      'Why there is a song in the header.'
-    );
+    await expect(section.getByRole('heading', { level: 2 })).toContainText('I Build Things');
+    // The control lives here now rather than in the header, beside the prose
+    // that says why the track is on the site at all.
+    await expect(section.getByRole('button', { name: /theme song/i })).toBeVisible();
     await expect(section).toContainText('I Build Things');
     await expect(section).toContainText('Twisted Game Songs');
     // The two claims the note actually makes: where the instinct comes from,

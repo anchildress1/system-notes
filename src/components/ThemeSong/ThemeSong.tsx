@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './ThemeSong.module.css';
 
 export const TRACK_TITLE = 'I Build Things';
@@ -8,14 +8,22 @@ export const TRACK_ARTIST = 'Twisted Game Songs';
 export const TRACK_SRC = '/audio/twisted-game-songs-i-build-things.mp3';
 
 /**
- * Bars in the panel's waveform. Decorative, and hidden from assistive tech.
- * The count is what makes the waveform span the panel: each bar keeps its own
- * fixed width, so widening the run means more bars rather than fatter ones.
+ * The equaliser, as the design draws it: ten bars, each with its own resting
+ * height and its own animation period so the run never pulses in unison.
+ * Decorative, and hidden from assistive tech.
  */
-const WAVEFORM_BARS = Array.from({ length: 22 }, (_, index) => index);
-
-/** Bars per visual wave. The stagger repeats so a long run still reads as motion. */
-const WAVE_PERIOD = 7;
+const BARS = [
+  { height: 38, duration: 1.4, delay: 0 },
+  { height: 72, duration: 1.1, delay: 0.12 },
+  { height: 52, duration: 1.7, delay: 0.26 },
+  { height: 96, duration: 1.25, delay: 0.06 },
+  { height: 44, duration: 1.55, delay: 0.34 },
+  { height: 80, duration: 1.05, delay: 0.2 },
+  { height: 30, duration: 1.45, delay: 0.44 },
+  { height: 64, duration: 1.2, delay: 0.3 },
+  { height: 48, duration: 1.65, delay: 0.16 },
+  { height: 88, duration: 1.15, delay: 0.4 },
+] as const;
 
 /**
  * Formats a media time for display.
@@ -31,12 +39,12 @@ export function formatTime(seconds: number): string {
 }
 
 /**
- * The header's theme-song control: a pill that starts and stops playback, and
- * a panel that expands beside it with the track and its progress.
+ * The theme-song player on the about page: one control, a status line, and a
+ * decorative equaliser that runs only while the track does.
  *
- * The pill reports `aria-pressed` from the audio element's own events rather
+ * The control reports `aria-pressed` from the audio element's own events rather
  * than from the click, so a playback that never starts — autoplay refused, file
- * missing — cannot leave the control claiming to be on.
+ * missing — cannot leave it claiming to be on.
  */
 export default function ThemeSong() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -44,13 +52,8 @@ export default function ThemeSong() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const panelId = useId();
-  // The panel is a peek at the track, not a status readout, so it follows the
-  // pointer rather than playback. Focus opens it too, and Escape closes it,
-  // because hover-only content strands keyboard users (WCAG 2.1.1, 1.4.13).
-  const [isPeeking, setIsPeeking] = useState(false);
 
-  // Pausing on unmount stops audio outliving the header across a route change.
+  // Pausing on unmount stops audio outliving the page across a route change.
   useEffect(() => {
     const audio = audioRef.current;
     return () => audio?.pause();
@@ -73,80 +76,76 @@ export default function ThemeSong() {
   }
 
   const progress = duration > 0 ? Math.min(100, Math.max(0, (currentTime / duration) * 100)) : 0;
-  // The advisory is part of the control's name, not just the panel's: the panel
-  // only exists once the track is already playing, which is too late to warn.
+  // The advisory is part of the control's name: someone deciding whether to
+  // press it needs the warning before the track starts, not after.
   const label = hasError
     ? 'Theme song unavailable'
-    : `${isPlaying ? 'Stop' : 'Play'} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. ` +
+    : `${isPlaying ? 'Pause' : 'Play'} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. ` +
       'Explicit content.';
 
+  let note = TRACK_ARTIST;
+  if (hasError) note = 'track unavailable';
+  else if (isPlaying) note = 'now playing';
+
   return (
-    <div
-      className={styles.wrapper}
-      onPointerEnter={() => setIsPeeking(true)}
-      onPointerLeave={() => setIsPeeking(false)}
-      onFocus={() => setIsPeeking(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setIsPeeking(false);
-      }}
-      onKeyDown={(event) => {
-        if (event.key === 'Escape') setIsPeeking(false);
-      }}
-    >
-      <button
-        type="button"
-        className={styles.toggle}
-        aria-pressed={isPlaying}
-        aria-label={label}
-        aria-describedby={isPeeking ? panelId : undefined}
-        disabled={hasError}
-        onClick={toggle}
-      >
-        <span aria-hidden="true">♫</span> theme song
-        {/* Visible before the click, because that is when it is useful. The
-            accessible name carries it in words; this is the seen equivalent. */}
-        <span className={styles.explicit} aria-hidden="true" title="Explicit content">
-          E
+    <div className={styles.player}>
+      <div className={styles.controls}>
+        <button
+          type="button"
+          className={styles.toggle}
+          data-accent="filled"
+          aria-pressed={isPlaying}
+          aria-label={label}
+          disabled={hasError}
+          onClick={toggle}
+        >
+          {isPlaying ? (
+            <svg aria-hidden="true" width="11" height="13" viewBox="0 0 11 13" fill="currentColor">
+              <rect x="0" y="0" width="4" height="13" />
+              <rect x="7" y="0" width="4" height="13" />
+            </svg>
+          ) : (
+            <svg aria-hidden="true" width="11" height="13" viewBox="0 0 11 13" fill="currentColor">
+              <path d="M0 0l11 6.5L0 13z" />
+            </svg>
+          )}
+          {isPlaying ? 'Pause' : 'Play it'}
+          {/* Visible before the press, because that is when it is useful. The
+              accessible name carries it in words; this is the seen equivalent. */}
+          <span className={styles.explicit} aria-hidden="true" title="Explicit content">
+            E
+          </span>
+        </button>
+        <p className={styles.note} aria-live="polite">
+          {note}
+        </p>
+      </div>
+
+      <div className={styles.equaliser} data-playing={isPlaying} aria-hidden="true">
+        {BARS.map((bar) => (
+          <span
+            key={bar.height + bar.delay}
+            className={styles.bar}
+            style={{
+              height: `${bar.height}%`,
+              animationDuration: `${bar.duration}s`,
+              animationDelay: `${bar.delay}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className={styles.progressRow}>
+        <progress
+          className={styles.progress}
+          value={Math.round(progress)}
+          max={100}
+          aria-label="Theme song progress"
+        />
+        <span className={styles.time}>
+          {formatTime(currentTime)} / {formatTime(duration)}
         </span>
-      </button>
-
-      {isPeeking ? (
-        <div className={styles.panel} id={panelId}>
-          <p className={styles.track}>
-            <span className={styles.trackTitle}>
-              {TRACK_TITLE}
-              <span className={styles.explicit} aria-hidden="true">
-                E
-              </span>
-            </span>
-            <span className={styles.trackArtist}>{TRACK_ARTIST} · explicit</span>
-          </p>
-          <div className={styles.waveform} data-playing={isPlaying} aria-hidden="true">
-            {WAVEFORM_BARS.map((bar) => (
-              <span
-                key={bar}
-                className={styles.bar}
-                style={{ animationDelay: `${(bar % WAVE_PERIOD) * 90}ms` }}
-              />
-            ))}
-          </div>
-          <div className={styles.progressRow}>
-            <progress
-              className={styles.progress}
-              value={Math.round(progress)}
-              max={100}
-              aria-label="Theme song progress"
-            />
-            <span className={styles.time}>
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </span>
-          </div>
-        </div>
-      ) : null}
-
-      <p className={styles.announce} aria-live="polite">
-        {hasError ? 'Theme song unavailable' : isPlaying ? 'Theme song playing' : ''}
-      </p>
+      </div>
 
       {/* preload="none" keeps a 9 MB track off every page load; it is fetched
           only once someone asks for it. */}
