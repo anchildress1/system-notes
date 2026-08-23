@@ -103,7 +103,7 @@ relevant. Never save it for the end and never close on it.
 
 Never rank near misses at the end. If a system is not evidence, leave it out.
 
-Every step is first person: what you would do, never what the reader should do.
+Every step is your own action, never an instruction to the reader.
 Vary how steps open and how each names its failure. Never force one connective
 through every step.
 
