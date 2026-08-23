@@ -60,11 +60,6 @@ export default function IntakePage() {
             </li>
           ))}
         </ol>
-        <p className={styles.pipelineNote}>
-          Two of the five stations are not the model&apos;s to skip. Verify drops any citation that
-          is not on file, and Cover turns anything the corpus cannot answer into a stated gap rather
-          than a confident sentence.
-        </p>
       </section>
     </main>
   );

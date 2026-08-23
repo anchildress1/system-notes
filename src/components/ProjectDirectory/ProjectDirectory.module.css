@@ -60,7 +60,7 @@
   display: block;
   overflow: hidden;
   color: var(--soft);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -80,7 +80,7 @@
   margin-top: 0.15rem;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -98,7 +98,7 @@
   margin-bottom: 0.6rem;
   color: var(--flag);
   font-family: var(--font-display);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -108,7 +108,7 @@
   margin-bottom: 0.75rem;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
 }
@@ -200,7 +200,7 @@
   border: 1px solid var(--line-strong);
   color: var(--soft);
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -239,14 +239,14 @@
 
 .stack dt {
   min-width: 0;
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
   font-weight: 500;
 }
 
 .stack dd {
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   text-align: right;
 }
 

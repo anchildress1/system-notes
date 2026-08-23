@@ -25,7 +25,7 @@ const LADDER = [448, 768, 896];
 
 const SOURCES = [
   { dir: 'projects', files: null },
-  { dir: '', files: ['ashley-gen-2.webp'] },
+  { dir: '', files: ['profile-dark.webp', 'profile-light.webp'] },
 ];
 
 // Matches the grayscale treatment ProjectCard applies via CSS, so the placeholder

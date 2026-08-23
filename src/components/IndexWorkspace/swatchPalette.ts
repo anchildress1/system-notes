@@ -26,12 +26,18 @@ export type SwatchTheme = keyof typeof SWATCH_SURFACE_LIGHTNESS;
  * colour here renders identically against both boards.
  */
 export const SWATCH_PALETTE = [
-  'var(--k-award)',
   'var(--k-decision)',
+  'var(--k-other)',
   'var(--k-principle)',
   'var(--k-note)',
-  'var(--k-other)',
 ] as const;
+
+/**
+ * Reserved for the awards category and deliberately outside the rank palette.
+ * While it was slot 0, whichever category happened to rank first took the same
+ * tone as the awards, and two rows of the filing list painted identically.
+ */
+export const AWARD_SWATCH = 'var(--k-award)';
 
 /**
  * Tokens a swatch may reference, with the lightness each resolves to per theme.

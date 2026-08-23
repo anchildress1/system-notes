@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import {
   useClearRefinements,
   useRefinementList,
@@ -111,16 +111,50 @@ export default function IndexSearch({ pulse }: Readonly<{ pulse?: IndexPulse | n
   );
 }
 
-function FacetFilter({ attribute, label }: Readonly<{ attribute: string; label: string }>) {
-  const { items: rawItems, refine } = useRefinementList({ attribute, limit: 40, operator: 'or' });
-  const items = useMemo(() => {
-    const values = new Set<string>();
-    return rawItems.filter((item) => {
-      if (values.has(item.value)) return false;
-      values.add(item.value);
-      return true;
+/**
+ * Collapses facet values that differ only by case into one control.
+ *
+ * Algolia matches facet filters case-insensitively, so a link carrying
+ * "System Notes" narrows the results even where the records are filed as
+ * "System notes". InstantSearch compares isRefined with a strict string
+ * equality, so it treated those as two values: it synthesised a checked entry
+ * for the refinement with a count of zero, and left the real entry — the one
+ * with the count next to it — unchecked. Two boxes for one filter, and the one
+ * a reader would click was the wrong one.
+ *
+ * The merged entry keeps the refined spelling as its value, so refine() toggles
+ * the refinement that actually exists rather than adding a second one.
+ */
+export function mergeFacetItemsByCase<
+  T extends { value: string; label: string; count: number; isRefined: boolean },
+>(items: T[]): T[] {
+  const merged = new Map<string, T>();
+  for (const item of items) {
+    const key = item.value.toLowerCase();
+    const existing = merged.get(key);
+    if (!existing) {
+      merged.set(key, item);
+      continue;
+    }
+    const refined = existing.isRefined ? existing : item;
+    const counted = existing.count >= item.count ? existing : item;
+    merged.set(key, {
+      ...counted,
+      value: existing.isRefined || item.isRefined ? refined.value : counted.value,
+      isRefined: existing.isRefined || item.isRefined,
+      count: Math.max(existing.count, item.count),
     });
-  }, [rawItems]);
+  }
+  return [...merged.values()];
+}
+
+function FacetFilter({ attribute, label }: Readonly<{ attribute: string; label: string }>) {
+  const { items, refine } = useRefinementList({
+    attribute,
+    limit: 40,
+    operator: 'or',
+    transformItems: mergeFacetItemsByCase,
+  });
   const selectedCount = items.filter((item) => item.isRefined).length;
 
   if (items.length === 0) return null;

@@ -196,7 +196,6 @@ describe('IndexWorkspace', () => {
       'Principle',
     ]);
     expect(tiles[346]).toHaveAccessibleName('Read note 347: Ranked note 347');
-    expect(screen.getByText(/5 notes in view · 347 ranked · 347 matches/i)).toBeInTheDocument();
     expect(screen.queryByText(/malformed notes were withheld/i)).not.toBeInTheDocument();
     expect(
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
@@ -315,11 +314,9 @@ describe('IndexWorkspace', () => {
           expect.stringContaining(`Ranked note ${index + 2}`)
         )
       );
-      expect(
-        screen.getByText(
-          `${count} ${count === 1 ? 'note' : 'notes'} in view · ${count} ranked · ${count} ${count === 1 ? 'match' : 'matches'}`
-        )
-      ).toBeInTheDocument();
+      // The queue states its count by what it renders, not by a line of prose
+      // restating it above the cards.
+      expect(screen.queryByText(/notes in view/i)).not.toBeInTheDocument();
     }
   );
 

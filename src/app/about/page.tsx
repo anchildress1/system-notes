@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight } from 'react-icons/fi';
 import ThemeSong from '@/components/ThemeSong/ThemeSong';
+import { blurFor } from '@/lib/imageVariants';
 import { profile } from '@/data/profile';
 import { getProjects } from '@/lib/api';
 import { groupProjects } from '@/lib/projectStatus';
@@ -43,13 +44,24 @@ export default function AboutPage() {
           </div>
         </div>
         <figure className={styles.portrait}>
-          <Image
-            src={profile.portrait.src}
-            alt={profile.portrait.alt}
-            fill
-            priority
-            sizes="(max-width: 768px) 100vw, 36vw"
-          />
+          {/* Both portraits ship; CSS shows the one matching the theme. They are
+              lazy rather than priority on purpose: a display:none image is never
+              in the viewport, so the browser fetches only the visible one. A
+              priority hint would preload both and spend the second download on a
+              picture nobody is looking at. */}
+          {(['dark', 'light'] as const).map((theme) => (
+            <span key={theme} className={styles.portraitFrame} data-theme-image={theme}>
+              <Image
+                src={profile.portrait[theme]}
+                alt={profile.portrait.alt}
+                fill
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL={blurFor(profile.portrait[theme])}
+                sizes="(max-width: 768px) 100vw, 36vw"
+              />
+            </span>
+          ))}
           <figcaption>
             <span>Verified human</span>
             <span>Usually opinionated</span>
@@ -134,7 +146,7 @@ export default function AboutPage() {
               {link.label} <FiArrowUpRight aria-hidden="true" />
             </a>
           ))}
-          <Link href="/">
+          <Link href="/notes">
             Search the index <FiArrowUpRight aria-hidden="true" />
           </Link>
         </nav>

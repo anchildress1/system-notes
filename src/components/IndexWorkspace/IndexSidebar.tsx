@@ -14,7 +14,7 @@ import type { Hit } from 'instantsearch.js';
 import { useClearRefinements, useRefinementList, useSearchBox } from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
 import { fitBoardToWholeRows } from './boardLayout';
-import { SWATCH_PALETTE } from './swatchPalette';
+import { AWARD_SWATCH, SWATCH_PALETTE } from './swatchPalette';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
@@ -37,11 +37,11 @@ import styles from './IndexWorkspace.module.css';
 // within 5.5 lightness points of the background, and that category looked
 // unselectable because filtering it changed nothing a reader could see.
 
-// Awards keep the star and a ring, but the ring is now cut out of a filled
-// tile rather than drawn around an empty one. A transparent tile with a hairline
-// is invisible on a light board — white on white at 10px — and axe never flags
-// it, because a tile is not text. This is the one place a name matters, and it
-// matches on meaning rather than an exact value, so "Awards", "Award", or
+// Awards take a tone of their own, outside the rank palette, and the star in the
+// filing list. They previously drew a ring by way of a border, which on a 14x10
+// tile with border-box ate four pixels of each side and rendered the award
+// visibly smaller than every other tile. This is the one place a name matters,
+// and it matches on meaning rather than an exact value, so "Awards", "Award", or
 // "Awards ★" all keep the treatment.
 function isAwardCategory(value: string | undefined): boolean {
   return /award/i.test(value ?? '');
@@ -51,11 +51,7 @@ function isAwardCategory(value: string | undefined): boolean {
 // current refinement — falls back to its live position rather than going
 // unstyled.
 function swatchStyle(value: string | undefined, rank: number) {
-  if (isAwardCategory(value)) {
-    // border-box is global, so a 2px border on a 14x10 tile cuts the ring out of
-    // the fill rather than growing the tile and breaking the board's grid.
-    return { background: 'var(--k-award)', border: '2px solid var(--void)' };
-  }
+  if (isAwardCategory(value)) return { background: AWARD_SWATCH };
   return { background: SWATCH_PALETTE[rank % SWATCH_PALETTE.length] };
 }
 
@@ -331,7 +327,6 @@ export default function IndexSidebar({
                     style={
                       {
                         '--tile-swatch': swatchByCategory.get(item.category)?.background,
-                        '--tile-border': swatchByCategory.get(item.category)?.border ?? '0',
                         '--tile-opacity': matchedIds.has(item.objectID) ? '1' : '0.13',
                       } as CSSProperties
                     }
@@ -343,7 +338,10 @@ export default function IndexSidebar({
                 );
               })}
             </ol>
-            <small id="note-board-instructions">
+            {/* Kept for the listbox's aria-describedby and hidden from the page.
+                It documents the keyboard model, which is the one audience that
+                cannot see the board and work it out. */}
+            <small id="note-board-instructions" className="visually-hidden">
               one tile per card · click a tile, or use search and the queue below, to read one ·
               arrow keys move one tile, Home and End jump
             </small>

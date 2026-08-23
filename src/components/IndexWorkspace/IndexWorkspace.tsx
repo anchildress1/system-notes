@@ -9,7 +9,6 @@ import {
   useHits,
   useInstantSearch,
   useSearchBox,
-  useStats,
 } from 'react-instantsearch';
 import aa from 'search-insights';
 import 'instantsearch.css/themes/reset.css';
@@ -109,7 +108,6 @@ export default function IndexWorkspace({ pulse }: Readonly<{ pulse?: IndexPulse 
 function IndexExperience({ pulse }: Readonly<{ pulse?: IndexPulse | null }>) {
   const { items, sendEvent } = useHits<FactHitRecord>();
   const { status } = useInstantSearch({ catchError: true });
-  const { nbHits } = useStats();
   const readableItems = useMemo(() => {
     const seenIds = new Set<string>();
     return items.flatMap((item) => {
@@ -154,7 +152,6 @@ function IndexExperience({ pulse }: Readonly<{ pulse?: IndexPulse | null }>) {
         <SearchResults
           rawItemCount={items.length}
           items={rankedItems}
-          nbHits={nbHits}
           status={status}
           readableItemCount={readableItems.length}
           selectedId={selectedId}
@@ -169,7 +166,6 @@ interface SearchResultsProps {
   rawItemCount: number;
   readableItemCount: number;
   items: NonNullable<ReturnType<typeof normalizeFactSearchHit>>[];
-  nbHits: number;
   status: string;
   selectedId?: string;
   onSelect: (id: string) => void;
@@ -179,7 +175,6 @@ function SearchResults({
   rawItemCount,
   readableItemCount,
   items,
-  nbHits,
   status,
   selectedId,
   onSelect,
@@ -201,7 +196,7 @@ function SearchResults({
     <div className={styles.resultArea}>
       <SearchStatus status={status} />
       {rawItemCount !== readableItemCount ? <PartialResultsWarning /> : null}
-      <ResultQueue items={items} nbHits={nbHits} selectedId={selectedId} onSelect={onSelect} />
+      <ResultQueue items={items} selectedId={selectedId} onSelect={onSelect} />
     </div>
   );
 }

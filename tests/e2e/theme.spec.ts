@@ -24,6 +24,14 @@ test.describe('Theme', () => {
           await expect(page.locator('html')).toHaveAttribute('data-theme', scheme);
         });
 
+        test(`shows the ${scheme} portrait on the about page`, async ({ page }) => {
+          await page.goto('/about');
+
+          const shown = page.locator('[data-theme-image]:visible');
+          await expect(shown).toHaveCount(1);
+          await expect(shown).toHaveAttribute('data-theme-image', scheme);
+        });
+
         for (const route of ROUTES) {
           test(`${route} has no accessibility violations in ${scheme}`, async ({ page }) => {
             await page.goto(route);

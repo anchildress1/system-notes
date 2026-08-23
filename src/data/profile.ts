@@ -44,7 +44,11 @@ export const profile = {
   role: 'Senior Software Engineer',
   location: 'Georgia · Appalachian roots · Remote',
   portrait: {
-    src: '/ashley-gen-2.webp',
+    // One portrait per theme. Same subject, same alt — only the artwork's own
+    // ground changes, so describing them differently would be describing the
+    // theme rather than the person.
+    dark: '/profile-dark.webp',
+    light: '/profile-light.webp',
     alt: 'Stylized portrait of Ashley Childress, a red-haired woman wearing glasses',
   },
   introduction: [

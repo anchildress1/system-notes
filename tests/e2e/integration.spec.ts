@@ -254,7 +254,12 @@ test.describe('System Notes redesign', () => {
     await page.goto('/about');
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Forged between');
-    await expect(page.getByAltText(/portrait of Ashley Childress/i)).toBeVisible();
+    // Both portraits ship so the theme can swap them without a fetch; exactly
+    // one is ever displayed, and the other is display:none and so out of the
+    // accessibility tree entirely.
+    const portraits = page.getByAltText(/portrait of Ashley Childress/i);
+    await expect(portraits).toHaveCount(2);
+    await expect(portraits.locator('visible=true')).toHaveCount(1);
     await expect(page.getByText('20', { exact: true })).toBeVisible();
     await expect(page.getByText('14', { exact: true })).toBeVisible();
     await expect(page.getByText('3', { exact: true })).toBeVisible();

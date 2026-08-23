@@ -11,17 +11,11 @@ const VISIBLE_NOTE_LIMIT = 5;
 
 interface ResultQueueProps {
   items: Hit<FactHitRecord>[];
-  nbHits: number;
   selectedId?: string;
   onSelect: (id: string) => void;
 }
 
-export default function ResultQueue({
-  items,
-  nbHits,
-  selectedId,
-  onSelect,
-}: Readonly<ResultQueueProps>) {
+export default function ResultQueue({ items, selectedId, onSelect }: Readonly<ResultQueueProps>) {
   const readerRef = useRef<HTMLDivElement>(null);
   const shouldFocusReader = useRef(false);
   const featuredIndex = Math.max(
@@ -41,17 +35,9 @@ export default function ResultQueue({
     .map((hit, index) => ({ hit, index }))
     .filter(({ hit }) => hit.objectID !== featured.objectID)
     .slice(0, VISIBLE_NOTE_LIMIT - 1);
-  const visibleCount = alternatives.length + 1;
-
   return (
     <section className={styles.results} aria-label="Notes results">
       <h2 className="visually-hidden">Matching notes</h2>
-      <p className={styles.queueStatus}>
-        {visibleCount.toLocaleString()} {visibleCount === 1 ? 'note' : 'notes'} in view ·{' '}
-        {items.length.toLocaleString()} ranked · {nbHits.toLocaleString()}{' '}
-        {nbHits === 1 ? 'match' : 'matches'}
-      </p>
-
       <div className={styles.readingQueue}>
         <div
           ref={readerRef}

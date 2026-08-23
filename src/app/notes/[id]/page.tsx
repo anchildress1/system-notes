@@ -53,7 +53,7 @@ export default async function NotePage({ params }: Readonly<NotePageProps>) {
     <main id="main-content" className={styles.main}>
       <article className={styles.note}>
         <header className={styles.header}>
-          <Link className={styles.backLink} href="/">
+          <Link className={styles.backLink} href="/notes">
             <FiArrowLeft aria-hidden="true" /> Back to index
           </Link>
           <p className={styles.kicker}>{note.category || 'Note'}</p>
@@ -106,7 +106,7 @@ function NoteUnavailable() {
   return (
     <main id="main-content" className={styles.main}>
       <output className={styles.unavailable}>
-        <Link className={styles.backLink} href="/">
+        <Link className={styles.backLink} href="/notes">
           <FiArrowLeft aria-hidden="true" /> Back to index
         </Link>
         <p className={styles.kicker}>Retrieval unavailable</p>

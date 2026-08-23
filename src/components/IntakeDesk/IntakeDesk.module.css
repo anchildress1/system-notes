@@ -44,7 +44,7 @@
   background: var(--flag);
   color: var(--void);
   font-family: var(--font-sans);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -63,7 +63,7 @@
   flex: 1 1 14rem;
   min-width: 0;
   color: var(--mute);
-  font-size: 0.85rem;
+  font-size: 0.9375rem;
   line-height: 1.6;
   text-wrap: pretty;
 }
@@ -75,7 +75,7 @@
 .shelfLabel {
   margin-bottom: 0.7rem;
   color: var(--mute);
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
 }
 
 .seeds {
@@ -94,7 +94,7 @@
   background: transparent;
   color: var(--soft);
   font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
   line-height: 1.45;
   text-align: left;
   transition:

@@ -18,7 +18,7 @@
   background: var(--flag);
   color: var(--flag-ink);
   font-family: var(--font-sans);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -44,7 +44,7 @@
   justify-content: center;
   border: 1px solid currentColor;
   border-radius: 0.15rem;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -52,7 +52,7 @@
 .note {
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -119,7 +119,7 @@
 .time {
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
 }
 

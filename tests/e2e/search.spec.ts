@@ -207,7 +207,6 @@ test.describe('Notes index', () => {
     expect(tileTitles).toEqual(onBoard.map((hit) => hit.title));
     expect(initialQueueTitles).toEqual(hits.slice(1, 5).map((hit) => hit.title));
     expect(tileCategories).toEqual(onBoard.map((hit) => hit.category));
-    await expect(page.getByText(/5 notes in view · 347 ranked · 347 matches/i)).toBeVisible();
 
     const colorSignatures = await tiles.evaluateAll((options) =>
       options.slice(0, 4).map((option) => {
@@ -367,5 +366,124 @@ test.describe('Notes index', () => {
       'aria-activedescendant',
       'note-board-option-0'
     );
+  });
+});
+
+test.describe('Refinement visibility', () => {
+  test('shows a refined project as selected even when Algolia omits it from the facet list', async ({
+    page,
+  }) => {
+    // Algolia returns at most `limit` facet values, ordered by count, so a
+    // project with few notes can be filtered on without ever appearing in the
+    // list. The refinement still applies — the results narrow — but the control
+    // that would show it, and let it be undone, was never rendered.
+    await mockAlgoliaSearch(
+      page,
+      [
+        {
+          objectID: 'card:rare:1',
+          title: 'A note from a rarely-filed project',
+          blurb: 'Evidence attached.',
+          fact: 'The complete decision.',
+          category: 'Principle',
+          projects: ['Rare Project'],
+          'tags.lvl0': ['Testing'],
+        },
+      ],
+      {
+        facets: {
+          category: { Principle: 1 },
+          'tags.lvl0': { Testing: 1 },
+          // Every other project outranks it; this one never comes back.
+          projects: { 'Loud Project': 300 },
+        },
+      }
+    );
+    await page.goto('/notes?project=Rare+Project');
+
+    await page
+      .locator('summary')
+      .filter({ hasText: /^Project/ })
+      .click();
+
+    await expect(page.getByRole('checkbox', { name: /Rare Project/ })).toBeChecked();
+  });
+
+  test('carries the project refinement through the click from the exhibits page', async ({
+    page,
+  }) => {
+    const projects = Object.fromEntries(
+      Array.from({ length: 24 }, (_, index) => [`Filler Project ${index + 1}`, 300 - index])
+    );
+    await mockAlgoliaSearch(
+      page,
+      [
+        {
+          objectID: 'card:system-notes:1',
+          title: 'A System Notes decision',
+          blurb: 'Evidence attached.',
+          fact: 'The complete decision.',
+          category: 'Principle',
+          projects: ['System Notes'],
+          'tags.lvl0': ['Testing'],
+        },
+      ],
+      { facets: { category: { Principle: 1 }, 'tags.lvl0': { Testing: 1 }, projects } }
+    );
+
+    await page.goto('/projects');
+    await page.getByTestId('project-system-notes').click();
+    await page
+      .getByRole('article')
+      .getByRole('link', { name: /Decisions from System Notes/ })
+      .click();
+
+    await expect(page).toHaveURL(/project=System(?:\+|%20)Notes#notes-index$/);
+    await page
+      .locator('summary')
+      .filter({ hasText: /^Project/ })
+      .click();
+
+    await expect(page.getByRole('checkbox', { name: /System Notes/ })).toBeChecked();
+  });
+
+  test('selects the facet when the index spells the project with different case', async ({
+    page,
+  }) => {
+    // Algolia matches facet filters case-insensitively, so the results narrow
+    // correctly whatever case the link carries. isRefined is a strict string
+    // compare on the client, so a record filed as "System notes" filters fine
+    // and shows an unchecked box next to it.
+    await mockAlgoliaSearch(
+      page,
+      [
+        {
+          objectID: 'card:system-notes:1',
+          title: 'A System Notes decision',
+          blurb: 'Evidence attached.',
+          fact: 'The complete decision.',
+          category: 'Principle',
+          projects: ['System notes'],
+          'tags.lvl0': ['Testing'],
+        },
+      ],
+      {
+        facets: {
+          category: { Principle: 1 },
+          'tags.lvl0': { Testing: 1 },
+          projects: { 'System notes': 42 },
+        },
+      }
+    );
+    await page.goto('/notes?project=System+Notes');
+
+    await page
+      .locator('summary')
+      .filter({ hasText: /^Project/ })
+      .click();
+
+    const boxes = page.getByRole('checkbox', { name: /System notes/i });
+    await expect(boxes).toHaveCount(1);
+    await expect(boxes).toBeChecked();
   });
 });

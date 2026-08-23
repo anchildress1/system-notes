@@ -24,7 +24,7 @@
 .contact > div > p {
   margin-bottom: 1.25rem;
   color: var(--flag);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -46,7 +46,7 @@
 .role {
   margin-top: clamp(2rem, 5vw, 4rem);
   color: var(--soft);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -56,13 +56,14 @@
   max-width: 50rem;
   margin-top: 1.75rem;
   color: var(--soft);
-  font-size: clamp(0.88rem, 1.2vw, 1.05rem);
+  font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
   gap: 1rem;
 }
 
 .portrait {
   position: relative;
-  aspect-ratio: 4 / 5;
+  /* The source art is square; a 4/5 frame cropped it. */
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border: 1px solid var(--line-strong);
   background: var(--panel-hi);
@@ -76,6 +77,26 @@
   background: linear-gradient(to bottom, transparent 65%, var(--void));
   pointer-events: none;
   content: '';
+}
+
+.portraitFrame {
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+
+/* The dark portrait is the default because the dark theme is: with scripting
+   off no attribute is ever stamped, and the page renders dark. */
+.portraitFrame[data-theme-image='dark'] {
+  display: block;
+}
+
+:global(:root[data-theme='light']) .portraitFrame[data-theme-image='dark'] {
+  display: none;
+}
+
+:global(:root[data-theme='light']) .portraitFrame[data-theme-image='light'] {
+  display: block;
 }
 
 .portrait img {
@@ -93,7 +114,7 @@
   align-items: center;
   justify-content: space-between;
   color: var(--soft);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -146,7 +167,7 @@
 
 .proof dt {
   color: var(--mute);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -171,7 +192,7 @@
   align-items: center;
   border-bottom: 1px solid var(--line);
   color: var(--soft);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   grid-template-columns: minmax(8rem, 0.55fr) minmax(0, 1fr);
   gap: 1rem;
 }
@@ -200,7 +221,7 @@
 
 .principles li > span {
   color: var(--flag);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 .principles h3 {
@@ -212,7 +233,7 @@
 
 .principles li p {
   color: var(--soft);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 .contact nav {
@@ -227,7 +248,7 @@
   justify-content: space-between;
   border-bottom: 1px solid var(--line);
   color: var(--soft);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   text-transform: uppercase;
 }
 
@@ -293,7 +314,7 @@
   margin-top: 1.25rem;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 .themeSongTrack cite {
@@ -310,7 +331,7 @@
 
 .themeSongCopy p {
   color: var(--soft);
-  font-size: 0.98rem;
+  font-size: 1rem;
   line-height: 1.75;
   text-wrap: pretty;
 }

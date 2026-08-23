@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  AWARD_SWATCH,
   SWATCH_MIN_LIGHTNESS_DELTA,
   SWATCH_PALETTE,
   SWATCH_SURFACE_LIGHTNESS,
@@ -80,6 +81,23 @@ describe('SWATCH_PALETTE', () => {
     // dark board and a light one, and the light board is where that is fatal.
     for (const swatch of SWATCH_PALETTE) {
       expect(swatch, swatch).toMatch(/^var\(--[\w-]+\)$/);
+    }
+  });
+
+  it('keeps the award tone out of the rank palette', () => {
+    // As slot 0 it collided with whichever category ranked first, so the awards
+    // and the largest category painted the same colour.
+    expect(SWATCH_PALETTE).not.toContain(AWARD_SWATCH);
+  });
+
+  it.each(THEMES)('keeps the award tone clear of the %s surface as well', (theme) => {
+    expect(swatchClearsSurface(AWARD_SWATCH, theme)).toBe(true);
+  });
+
+  it.each(THEMES)('keeps the award tone distinct from every rank in %s', (theme) => {
+    const award = swatchLightness(AWARD_SWATCH, theme);
+    for (const swatch of SWATCH_PALETTE) {
+      expect(Math.abs(award - swatchLightness(swatch, theme)), swatch).toBeGreaterThanOrEqual(4);
     }
   });
 

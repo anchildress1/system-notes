@@ -11,7 +11,7 @@
 .errorCode {
   margin: 0 0 1.5rem;
   color: #fabb41;
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   letter-spacing: 0.16em;
 }
 
@@ -29,7 +29,7 @@
   max-width: 38rem;
   margin: 2rem 0 0;
   color: #9598a0;
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
 }
 
 .errorAction {
@@ -42,7 +42,7 @@
   color: #1d1100;
   cursor: pointer;
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }

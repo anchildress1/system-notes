@@ -90,7 +90,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     // attributes onto <html> and <body> before React hydrates, which surfaces as
     // "some attributes of the server rendered HTML didn't match". It suppresses
     // one level only, so real mismatches inside the app still report.
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {algoliaPreconnectHost ? (
           <>
