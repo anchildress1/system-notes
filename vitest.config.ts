@@ -7,14 +7,17 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@tests': path.resolve(__dirname, './tests'),
     },
   },
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./src/setupTests.ts'],
-    // Unit tests live in src/; tests/ holds Playwright E2E specs (run separately).
-    include: ['src/**/*.test.{ts,tsx}'],
+    setupFiles: ['./tests/setupTests.ts'],
+    // tests/unit holds Vitest specs; tests/e2e holds Playwright specs, which run
+    // separately. Playwright's default testMatch also matches *.test.ts, so the two
+    // trees must stay in sibling directories rather than one nested inside the other.
+    include: ['tests/unit/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
@@ -26,12 +29,10 @@ export default defineConfig({
         '**/*.json',
         '**/*.test.*',
         'test-env.ts',
-        '**/setupTests.ts',
-        'src/test-utils/**',
+        'tests/**',
         '**/*.css',
         'src/app/**/page.tsx',
         'src/app/layout.tsx',
-        'src/components/SearchPage/SearchPage.tsx',
       ],
       // Floors track a few points under actual so a regression trips them. Raise
       // them when coverage rises; never lower them to make a run pass.
