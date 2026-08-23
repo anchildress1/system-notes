@@ -38,6 +38,12 @@ function describe(project) {
   // opens with that system selected. Repos, live apps and write-ups are reachable
   // from there, and offering them here only invites the model to pick one.
   lines.push(`Link: ${SITE}/projects?system=${project.objectID}`);
+  // Titles without urls on purpose. The article records in markdown-index carry
+  // the urls, and naming a second link here is what the rule above avoids. What
+  // the model cannot get from either index is which articles are about which
+  // system, so it cited a system and its own write-up as two agreeing sources.
+  const writeups = (project.blog_posts ?? []).map((post) => post.title).join(' | ');
+  if (writeups) lines.push(`Write-ups: ${writeups}`);
   return lines.join('\n');
 }
 
@@ -97,6 +103,9 @@ Name systems inline, spelled exactly as the roster spells them.
 
 Link every article you cite, inline, as [title](url), using the url from its
 record. Link a system the same way when its roster entry carries one.
+
+An article listed under a system's write-ups is that system. Never cite the two
+as separate sources agreeing with each other.
 
 State anything unbuilt in one clause, inside the approach, where it is
 relevant. Never save it for the end and never close on it.
