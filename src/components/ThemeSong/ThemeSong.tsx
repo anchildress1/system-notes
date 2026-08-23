@@ -8,9 +8,9 @@ export const TRACK_ARTIST = 'Twisted Game Songs';
 export const TRACK_SRC = '/audio/twisted-game-songs-i-build-things.mp3';
 
 /**
- * The equaliser, as the design draws it: ten bars, each with its own resting
- * height and its own animation period so the run never pulses in unison.
- * Decorative, and hidden from assistive tech.
+ * The equalizer, as the design draws it: ten bars at fixed heights, each with
+ * its own period so the run never pulses in unison. Decorative, and hidden from
+ * assistive tech.
  */
 const BARS = [
   { height: 38, duration: 1.4, delay: 0 },
@@ -26,21 +26,8 @@ const BARS = [
 ] as const;
 
 /**
- * Formats a media time for display.
- *
- * @param seconds Elapsed or total seconds; may be NaN before metadata loads.
- * @returns `m:ss`, or `0:00` when the value is not a usable number.
- */
-export function formatTime(seconds: number): string {
-  if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
-  const minutes = Math.floor(seconds / 60);
-  const remainder = Math.floor(seconds % 60);
-  return `${minutes}:${remainder.toString().padStart(2, '0')}`;
-}
-
-/**
- * The theme-song player on the about page: one control, a status line, and a
- * decorative equaliser that runs only while the track does.
+ * The theme-song player: one control, a status line, and a decorative equalizer
+ * that runs only while the track does.
  *
  * The control reports `aria-pressed` from the audio element's own events rather
  * than from the click, so a playback that never starts — autoplay refused, file
@@ -49,8 +36,6 @@ export function formatTime(seconds: number): string {
 export default function ThemeSong() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Pausing on unmount stops audio outliving the page across a route change.
@@ -75,7 +60,6 @@ export default function ThemeSong() {
     }
   }
 
-  const progress = duration > 0 ? Math.min(100, Math.max(0, (currentTime / duration) * 100)) : 0;
   // The advisory is part of the control's name: someone deciding whether to
   // press it needs the warning before the track starts, not after.
   const label = hasError
@@ -110,18 +94,13 @@ export default function ThemeSong() {
             </svg>
           )}
           {isPlaying ? 'Pause' : 'Play it'}
-          {/* Visible before the press, because that is when it is useful. The
-              accessible name carries it in words; this is the seen equivalent. */}
-          <span className={styles.explicit} aria-hidden="true" title="Explicit content">
-            E
-          </span>
         </button>
         <p className={styles.note} aria-live="polite">
           {note}
         </p>
       </div>
 
-      <div className={styles.equaliser} data-playing={isPlaying} aria-hidden="true">
+      <div className={styles.equalizer} data-playing={isPlaying} aria-hidden="true">
         {BARS.map((bar) => (
           <span
             key={bar.height + bar.delay}
@@ -133,18 +112,6 @@ export default function ThemeSong() {
             }}
           />
         ))}
-      </div>
-
-      <div className={styles.progressRow}>
-        <progress
-          className={styles.progress}
-          value={Math.round(progress)}
-          max={100}
-          aria-label="Theme song progress"
-        />
-        <span className={styles.time}>
-          {formatTime(currentTime)} / {formatTime(duration)}
-        </span>
       </div>
 
       {/* preload="none" keeps a 9 MB track off every page load; it is fetched
@@ -161,8 +128,6 @@ export default function ThemeSong() {
           setIsPlaying(false);
           setHasError(true);
         }}
-        onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
-        onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
       >
         <track kind="captions" src="data:text/vtt," default label="No captions available" />
       </audio>

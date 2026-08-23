@@ -1,15 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import ThemeSong, {
-  formatTime,
-  TRACK_ARTIST,
-  TRACK_SRC,
-  TRACK_TITLE,
-} from '@/components/ThemeSong/ThemeSong';
+import ThemeSong, { TRACK_ARTIST, TRACK_SRC, TRACK_TITLE } from '@/components/ThemeSong/ThemeSong';
 
 /**
  * jsdom implements no media pipeline: play() is absent and readyState never
- * advances. These stubs stand in for the element's own behaviour so the
+ * advances. These stubs stand in for the element's own behavior so the
  * component's reaction to it can be asserted.
  */
 function stubPlayback({ rejectWith }: { rejectWith?: Error } = {}) {
@@ -29,26 +24,6 @@ function stubPlayback({ rejectWith }: { rejectWith?: Error } = {}) {
 const toggle = () => screen.getByRole('button', { name: /theme song/i });
 const audio = () => screen.getByTestId('theme-song-audio') as HTMLAudioElement;
 const note = () => document.querySelector('[aria-live="polite"]') as HTMLElement;
-
-describe('formatTime', () => {
-  it('formats whole and partial minutes', () => {
-    expect(formatTime(0)).toBe('0:00');
-    expect(formatTime(9)).toBe('0:09');
-    expect(formatTime(65)).toBe('1:05');
-    expect(formatTime(600)).toBe('10:00');
-  });
-
-  it('floors fractional seconds rather than rounding past the minute', () => {
-    expect(formatTime(59.9)).toBe('0:59');
-  });
-
-  it('falls back for values a media element can genuinely report', () => {
-    // duration is NaN until metadata loads, and Infinity for a live stream.
-    expect(formatTime(Number.NaN)).toBe('0:00');
-    expect(formatTime(Number.POSITIVE_INFINITY)).toBe('0:00');
-    expect(formatTime(-5)).toBe('0:00');
-  });
-});
 
 describe('ThemeSong', () => {
   beforeEach(() => {
@@ -119,39 +94,16 @@ describe('ThemeSong', () => {
     expect(note()).toHaveTextContent('track unavailable');
   });
 
-  it('runs the equaliser only while the track does, and hides it from readers', () => {
+  it('runs the equalizer only while the track does, and hides it from readers', () => {
     stubPlayback();
     const { container } = render(<ThemeSong />);
-    const equaliser = container.querySelector('[aria-hidden="true"][data-playing]');
+    const equalizer = container.querySelector('[aria-hidden="true"][data-playing]');
 
-    expect(equaliser).toHaveAttribute('data-playing', 'false');
+    expect(equalizer).toHaveAttribute('data-playing', 'false');
 
     fireEvent.click(toggle());
 
-    expect(equaliser).toHaveAttribute('data-playing', 'true');
-  });
-
-  it('holds progress at zero until a duration is known', () => {
-    render(<ThemeSong />);
-    const bar = screen.getByRole('progressbar', { name: 'Theme song progress' });
-
-    // duration is NaN before metadata loads; dividing by it yields NaN.
-    fireEvent.timeUpdate(audio(), { target: { currentTime: 30 } });
-
-    expect(bar).toHaveValue(0);
-  });
-
-  it('clamps progress when currentTime overruns the reported duration', () => {
-    render(<ThemeSong />);
-    const bar = screen.getByRole('progressbar', { name: 'Theme song progress' });
-
-    // duration is getter-only on jsdom's media element, so it has to be defined
-    // rather than assigned through the event's target.
-    Object.defineProperty(audio(), 'duration', { value: 100, configurable: true });
-    fireEvent.loadedMetadata(audio());
-    fireEvent.timeUpdate(audio(), { target: { currentTime: 150 } });
-
-    expect(bar).toHaveValue(100);
+    expect(equalizer).toHaveAttribute('data-playing', 'true');
   });
 
   it('pauses the track when it leaves the page', () => {

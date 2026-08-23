@@ -117,17 +117,16 @@ export default function AboutPage() {
       </section>
 
       <section className={styles.themeSong} aria-labelledby="theme-song-heading">
-        <header>
-          <h2 id="theme-song-heading">
-            Theme song: <cite>{profile.themeSong.track}</cite>
-          </h2>
-          <p className={styles.themeSongTrack}>{profile.themeSong.artist}</p>
-        </header>
+        {/* No artist line: the status beside the control already names them,
+            and the design does not repeat it under the heading. */}
+        <h2 id="theme-song-heading" className={styles.themeSongHeading}>
+          Theme song: &ldquo;{profile.themeSong.track}&rdquo;
+        </h2>
         <ThemeSong />
         <div className={styles.themeSongCopy}>
           {profile.themeSong.paragraphs.map((paragraph) => (
             <p key={paragraph.lead ?? paragraph.body}>
-              {paragraph.lead ? <em>{paragraph.lead}</em> : null}
+              {paragraph.lead ? <strong>{paragraph.lead}</strong> : null}
               {paragraph.lead && paragraph.body ? ' ' : null}
               {paragraph.body}
             </p>
