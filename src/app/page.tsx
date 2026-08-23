@@ -22,11 +22,7 @@ const stations = [
     who: 'deterministic',
     note: 'Checks every cited system exists on file. Invented ones are dropped.',
   },
-  {
-    name: 'Cover',
-    who: 'deterministic',
-    note: 'Any requirement nothing answers becomes a stated gap.',
-  },
+  { name: 'Cover', who: 'agent', note: 'Any requirement nothing answers becomes a stated gap.' },
   { name: 'Assemble', who: 'agent', note: 'Writes the brief from the surviving evidence only.' },
 ] as const;
 

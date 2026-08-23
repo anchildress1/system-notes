@@ -52,11 +52,110 @@
 
 .run:disabled {
   /* Reads as deliberately parked rather than broken: the label stays legible
-     against the surface instead of dropping to a low-contrast grey. */
+     against the surface instead of dropping to a low-contrast gray. */
   background: transparent;
   border: 1px dashed var(--line-strong);
   color: var(--mute);
   cursor: not-allowed;
+}
+
+.hint {
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* The answer spans both columns of the desk rather than sitting under the
+   field: a brief is the page's subject once it exists, not a form's output. */
+.answer {
+  grid-column: 1 / -1;
+  margin-top: clamp(1.5rem, 4vh, 2.75rem);
+  border-top: 1px solid var(--line);
+  padding-top: clamp(1.25rem, 3vh, 2rem);
+}
+
+.briefWorking,
+.briefFailure {
+  display: block;
+  color: var(--mute);
+}
+
+.briefWorkingLabel {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.briefCaret {
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.85rem;
+  margin-left: 0.5rem;
+  background: var(--flag);
+  vertical-align: -0.1rem;
+  animation: intake-blink 1.1s step-end infinite;
+}
+
+.briefFailure p {
+  max-width: 56ch;
+  font-size: 1rem;
+  line-height: 1.68;
+  text-wrap: pretty;
+}
+
+.briefFailureLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.briefFailureLinks a {
+  color: var(--flag);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--flag);
+}
+
+.briefQuestion {
+  max-width: 56ch;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.briefBody {
+  max-width: 62ch;
+  margin-top: 1rem;
+  color: var(--soft);
+  font-size: 1.03rem;
+  line-height: 1.72;
+  text-wrap: pretty;
+}
+
+@keyframes intake-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .briefCaret {
+    animation: none;
+  }
 }
 
 .notice {
@@ -107,4 +206,13 @@
   border-color: var(--flag);
   background: var(--panel-hi);
   color: var(--bone);
+}
+
+.briefLink {
+  color: var(--flag);
+  border-bottom: 1px solid var(--flag);
+}
+
+.briefLink:hover {
+  border-bottom-width: 2px;
 }
