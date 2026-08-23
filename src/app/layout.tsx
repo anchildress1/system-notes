@@ -93,7 +93,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#100b11',
+  // The sRGB rendering of --void. Kept in sync by hand: the browser chrome
+  // cannot read a custom property, so a stale hex here shows as a differently
+  // coloured bar above the page rather than as any kind of failure.
+  themeColor: '#0b0c0f',
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

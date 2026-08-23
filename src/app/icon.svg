@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="350" height="350" viewBox="0 0 350 350" role="img" aria-labelledby="title desc">
   <title id="title">System Notes index mark</title>
   <desc id="desc">A four by four technical index with five bright fuchsia cells.</desc>
-  <rect width="350" height="350" fill="#100b11"/>
-  <rect x="35" y="35" width="280" height="280" fill="none" stroke="#f7f0f5" stroke-opacity=".35" stroke-width="4"/>
-  <g fill="none" stroke="#f7f0f5" stroke-opacity=".24" stroke-width="3">
+  <rect width="350" height="350" fill="#0b0c0f"/>
+  <rect x="35" y="35" width="280" height="280" fill="none" stroke="#f0eee9" stroke-opacity=".35" stroke-width="4"/>
+  <g fill="none" stroke="#f0eee9" stroke-opacity=".24" stroke-width="3">
     <rect x="55" y="55" width="50" height="50"/>
     <rect x="120" y="55" width="50" height="50"/>
     <rect x="185" y="55" width="50" height="50"/>
@@ -21,7 +21,7 @@
     <rect x="185" y="250" width="50" height="45"/>
     <rect x="250" y="250" width="45" height="45"/>
   </g>
-  <g fill="#ff3d9a">
+  <g fill="#fabb41">
     <rect x="55" y="55" width="50" height="50"/>
     <rect x="185" y="55" width="50" height="50"/>
     <rect x="120" y="120" width="50" height="50"/>

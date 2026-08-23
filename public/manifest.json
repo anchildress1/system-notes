@@ -4,8 +4,8 @@
   "description": "Engineering decisions, projects, and failure-tested working rules—indexed and searchable.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#100b11",
-  "theme_color": "#100b11",
+  "background_color": "#0b0c0f",
+  "theme_color": "#0b0c0f",
   "orientation": "portrait-primary",
   "icons": [
     {
