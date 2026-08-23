@@ -23,7 +23,7 @@
 }
 
 .message h1 {
-  font-family: var(--font-editorial);
+  font-family: var(--font-display);
   font-size: clamp(4rem, 9vw, 8.5rem);
   font-weight: 400;
   letter-spacing: -0.06em;
@@ -71,9 +71,9 @@
 
 .marker {
   color: transparent;
-  font-family: var(--font-editorial);
+  font-family: var(--font-display);
   font-size: clamp(9rem, 25vw, 25rem);
-  font-style: italic;
+  font-style: normal;
   line-height: 0.7;
   -webkit-text-stroke: 1px var(--line-strong);
 }

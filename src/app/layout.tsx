@@ -10,26 +10,6 @@ import { SITE_NAME, SOCIAL_IMAGE, SOCIAL_IMAGE_URL } from '@/lib/siteMetadata';
 import { resolveBaseUrl, serializeJsonLd } from '@/lib/urlSafety';
 import './globals.css';
 
-const editorial = localFont({
-  src: [
-    { path: './fonts/InstrumentSerif-Regular.woff2', weight: '400', style: 'normal' },
-    { path: './fonts/InstrumentSerif-Italic.woff2', weight: '400', style: 'italic' },
-  ],
-  variable: '--font-editorial',
-  display: 'swap',
-  preload: true,
-  fallback: ['Georgia', 'Times New Roman', 'serif'],
-});
-
-const mono = localFont({
-  src: './fonts/FragmentMono-Regular.woff2',
-  variable: '--font-mono',
-  weight: '400',
-  display: 'swap',
-  preload: true,
-  fallback: ['ui-monospace', 'SFMono-Regular', 'monospace'],
-});
-
 // Body and UI copy.
 const sans = localFont({
   src: './fonts/Archivo-Variable.woff2',
@@ -40,14 +20,16 @@ const sans = localFont({
   fallback: ['system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
 });
 
-// Wordmark and headline weight only — never body copy.
+// Everything Archivo is not: wordmark, headlines, and every piece of metadata
+// the site used to set in a monospace or a serif. One variable cut covers all
+// three, which is why three families could leave.
 const display = localFont({
-  src: './fonts/Syne-Variable.woff2',
+  src: './fonts/SpaceGrotesk-Variable.woff2',
   variable: '--font-display',
-  weight: '700 800',
+  weight: '300 700',
   display: 'swap',
-  preload: false,
-  fallback: ['system-ui', 'sans-serif'],
+  preload: true,
+  fallback: ['ui-monospace', 'SFMono-Regular', 'system-ui', 'sans-serif'],
 });
 
 const baseUrl = resolveBaseUrl();
@@ -122,10 +104,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
       </head>
-      <body
-        className={`${sans.variable} ${mono.variable} ${display.variable} ${editorial.variable}`}
-        suppressHydrationWarning
-      >
+      <body className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
         <SiteHeader pulse={pulse} />
         {children}
         <SiteFooter />

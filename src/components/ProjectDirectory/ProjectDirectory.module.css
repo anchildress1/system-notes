@@ -97,9 +97,9 @@
   max-width: 34ch;
   margin-top: 1.25rem;
   color: var(--flag);
-  font-family: var(--font-editorial);
+  font-family: var(--font-display);
   font-size: clamp(1.3rem, 2vw, 1.7rem);
-  font-style: italic;
+  font-style: normal;
   line-height: 1.4;
   text-wrap: pretty;
 }
@@ -305,9 +305,9 @@
 .archiveCount {
   max-width: 32ch;
   color: var(--mute);
-  font-family: var(--font-editorial);
+  font-family: var(--font-display);
   font-size: clamp(1.2rem, 1.9vw, 1.55rem);
-  font-style: italic;
+  font-style: normal;
   line-height: 1.45;
 }
 
