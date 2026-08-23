@@ -47,7 +47,7 @@ describe('NotePage', () => {
     expect(screen.getByText('Failure paths')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'System Notes' })).toHaveAttribute(
       'href',
-      '/?project=System+Notes#notes-index'
+      '/notes?project=System+Notes#notes-index'
     );
     expect(screen.getByRole('link', { name: /View evidence/i })).toHaveAttribute('href', note.url);
   });

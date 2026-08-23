@@ -80,7 +80,7 @@ export function createSearchRouting(indexName: string) {
 
 export function getProjectNotesURL(projectTitle: string): string {
   const title = projectTitle.trim();
-  if (!title) return '/#notes-index';
+  if (!title) return '/notes#notes-index';
   const params = new URLSearchParams({ project: title });
-  return `/?${params.toString()}#notes-index`;
+  return `/notes?${params.toString()}#notes-index`;
 }

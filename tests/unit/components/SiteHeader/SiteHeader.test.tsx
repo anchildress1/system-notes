@@ -24,15 +24,24 @@ describe('SiteHeader', () => {
       'href',
       '#main-content'
     );
-    expect(screen.getByRole('link', { name: 'the index' })).toHaveAttribute('aria-current', 'page');
-    expect(screen.getByRole('link', { name: 'exhibits' })).toHaveAttribute('href', '/projects');
-    expect(screen.getByRole('link', { name: 'about' })).toHaveAttribute('href', '/about');
+    expect(screen.getByRole('link', { name: 'ask me a question' })).toHaveAttribute(
+      'aria-current',
+      'page'
+    );
+    expect(screen.getByRole('link', { name: 'how I decide' })).toHaveAttribute('href', '/notes');
+    expect(screen.getByRole('link', { name: 'what I’ve shipped' })).toHaveAttribute(
+      'href',
+      '/projects'
+    );
+    expect(screen.getByRole('link', { name: 'about me' })).toHaveAttribute('href', '/about');
   });
 
   it.each([
-    ['/projects', 'exhibits'],
-    ['/about', 'about'],
-    ['/notes/card:test:1', 'the index'],
+    ['/projects', 'what I’ve shipped'],
+    ['/about', 'about me'],
+    ['/notes', 'how I decide'],
+    // A note is a record pulled out of the index, so the index keeps the mark.
+    ['/notes/card:test:1', 'how I decide'],
   ])('marks %s as the %s navigation surface', (pathname, label) => {
     navigation.pathname = pathname;
 

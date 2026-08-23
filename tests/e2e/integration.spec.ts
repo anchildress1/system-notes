@@ -17,7 +17,7 @@ test.describe('System Notes redesign', () => {
         'tags.lvl0': ['Testing'],
       },
     ]);
-    await page.goto('/');
+    await page.goto('/notes');
 
     await expect(page).toHaveTitle("Index | Ashley's System Notes");
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('System Notes Index');
@@ -100,7 +100,7 @@ test.describe('System Notes redesign', () => {
         'tags.lvl0': { Testing: 347 },
       },
     });
-    await page.goto('/');
+    await page.goto('/notes');
     await page.getByRole('article').waitFor();
     await page.evaluate(() => document.fonts.ready);
 
@@ -147,7 +147,7 @@ test.describe('System Notes redesign', () => {
 
   test('keeps the brand link tight around its own text', async ({ page }) => {
     await page.goto('/');
-    // Two links in the header point at "/" — the brand and the index nav item.
+    // Two links in the header point at "/" — the brand and the intake nav item.
     const brand = page.getByRole('link', { name: /Ashley Childress/ });
 
     // A min-height taller than the text, with the spans baseline-aligned, put
@@ -212,7 +212,7 @@ test.describe('System Notes redesign', () => {
     await expect(project.getByRole('heading', { name: 'Outcome' })).toBeVisible();
     await expect(
       project.getByRole('link', { name: /cards filed under this exhibit/i })
-    ).toHaveAttribute('href', '/?project=System+Notes#notes-index');
+    ).toHaveAttribute('href', '/notes?project=System+Notes#notes-index');
 
     const accessibility = await new AxeBuilder({ page }).analyze();
     expect(accessibility.violations).toEqual([]);

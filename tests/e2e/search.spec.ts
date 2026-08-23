@@ -20,7 +20,7 @@ const buildHit = (overrides: Partial<MockAlgoliaHit> = {}): MockAlgoliaHit => ({
 test.describe('Notes index', () => {
   test('renders the search surface and mocked note on the canonical route', async ({ page }) => {
     await mockAlgoliaSearch(page, [buildHit()]);
-    await page.goto('/');
+    await page.goto('/notes');
 
     await expect(page.getByRole('searchbox', { name: 'Search the notes index' })).toBeVisible();
     await expect(page.getByRole('region', { name: 'Notes results' })).toContainText(
@@ -34,7 +34,7 @@ test.describe('Notes index', () => {
       buildHit(),
       buildHit({ objectID: 'card:test:2', title: 'Second decision' }),
     ]);
-    await page.goto('/');
+    await page.goto('/notes');
     const initialURL = page.url();
 
     const queueRow = page.locator('[data-ranked-queue]').getByRole('button').first();
@@ -54,7 +54,7 @@ test.describe('Notes index', () => {
     page,
   }) => {
     await mockAlgoliaSearch(page, [buildHit()]);
-    await page.goto('/');
+    await page.goto('/notes');
     const initialURL = page.url();
     const card = page.getByRole('article').filter({ hasText: 'Failure is useful data' });
 
@@ -80,7 +80,7 @@ test.describe('Notes index', () => {
       buildHit(),
       buildHit({ objectID: 'card:test:2', title: 'Second decision', category: 'Architecture' }),
     ]);
-    await page.goto('/');
+    await page.goto('/notes');
     const board = page.getByRole('listbox', { name: 'Top ranked notes' });
     const secondTile = page.getByRole('option', { name: 'Read note 2: Second decision' });
     const reducedTileMotion = () =>
@@ -99,7 +99,7 @@ test.describe('Notes index', () => {
 
   test('syncs the query through InstantSearch routing', async ({ page }) => {
     await mockAlgoliaSearch(page, [buildHit()]);
-    await page.goto('/');
+    await page.goto('/notes');
 
     await page.getByRole('searchbox', { name: 'Search the notes index' }).fill('failure');
 
@@ -108,7 +108,7 @@ test.describe('Notes index', () => {
 
   test('renders the designed no-results state', async ({ page }) => {
     await mockAlgoliaSearch(page, []);
-    await page.goto('/?q=missing');
+    await page.goto('/notes?q=missing');
 
     await expect(page.getByRole('heading', { name: 'No notes match that.' })).toBeVisible();
     await expect(page.getByText(/literal, not psychic/i)).toBeVisible();
@@ -117,7 +117,7 @@ test.describe('Notes index', () => {
 
   test('selects and clears project filters with native checkboxes', async ({ page }) => {
     await mockAlgoliaSearch(page, [buildHit()]);
-    await page.goto('/');
+    await page.goto('/notes');
     await expect(page.getByRole('heading', { name: 'Failure is useful data' })).toBeVisible();
 
     await page.getByText('Project', { exact: true }).click();
@@ -136,7 +136,7 @@ test.describe('Notes index', () => {
       buildHit(),
       buildHit({ objectID: 'card:test:2', title: 'Second' }),
     ]);
-    await page.goto('/');
+    await page.goto('/notes');
     await expect(page.getByRole('heading', { name: 'Failure is useful data' })).toBeVisible();
 
     const widths = await page.evaluate(() => ({
@@ -163,7 +163,7 @@ test.describe('Notes index', () => {
         if (limit) requestedLimits.push(limit);
       },
     });
-    await page.goto('/');
+    await page.goto('/notes');
     const initialURL = page.url();
     const board = page.getByRole('listbox', { name: 'Top ranked notes' });
     const tiles = board.getByRole('option');
@@ -304,7 +304,7 @@ test.describe('Notes index', () => {
       })
     );
     await mockAlgoliaSearch(page, hits);
-    await page.goto('/');
+    await page.goto('/notes');
     const board = page.getByRole('listbox', { name: 'Top ranked notes' });
     await expect(board.getByRole('option').first()).toBeVisible();
 
@@ -360,7 +360,7 @@ test.describe('Notes index', () => {
     ]);
     // Selection lives in the workspace, not the URL. A stale ?note link is inert
     // rather than authoritative, so the reader opens on the top-ranked note.
-    await page.goto('/?note=card%3Atest%3A2');
+    await page.goto('/notes?note=card%3Atest%3A2');
 
     await expect(page.getByRole('article')).toContainText('First decision');
     await expect(page.getByRole('listbox', { name: 'Top ranked notes' })).toHaveAttribute(

@@ -12,7 +12,7 @@ for (const viewport of viewports) {
   test.describe(`${viewport.width}px responsive layout`, () => {
     test.use({ viewport });
 
-    for (const path of ['/', '/projects', '/about']) {
+    for (const path of ['/', '/notes', '/projects', '/about']) {
       test(`${path} has no horizontal overflow`, async ({ page }) => {
         await page.goto(path);
 
@@ -24,7 +24,7 @@ for (const viewport of viewports) {
       });
 
       // Desktop-only axe runs miss the violations that only exist once the
-      // layout reflows — reflow itself, target size, and anything the narrow
+      // layout reflows â reflow itself, target size, and anything the narrow
       // composition reorders or overlaps.
       test(`${path} has no accessibility violations`, async ({ page, browserName }) => {
         await page.goto(path);
@@ -34,7 +34,7 @@ for (const viewport of viewports) {
           // Every colour here is authored in oklch, which WebKit reports back
           // as lab(). axe-core mis-reads that: it scored the header's
           // theme-song pill at 4.18:1 when the pixels WebKit actually paints
-          // are #beb3bd on #0c050c — 9.95:1. The colour axe reports is the real
+          // are #beb3bd on #0c050c â 9.95:1. The colour axe reports is the real
           // one scaled by ~0.626 on every channel, which is a parser artefact
           // rather than anything the page renders. Contrast still runs on
           // Chromium at these same viewports, so the rule keeps its coverage;
@@ -55,15 +55,16 @@ test.describe('mobile interactions', () => {
     await page.goto('/');
     const nav = page.getByRole('navigation', { name: 'Primary navigation' });
 
-    await expect(nav.getByRole('link', { name: 'the index' })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'exhibits' })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'about' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'ask me a question' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'how I decide' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'what I’ve shipped' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'about me' })).toBeVisible();
     await expect(nav.getByRole('link', { name: /blog/i })).toBeVisible();
   });
 
   test('stacks the filing rail above retrieval without horizontal drift', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/');
+    await page.goto('/notes');
     const sidebar = page.getByRole('region', { name: /Browse notes by type/i });
     const search = page.getByRole('searchbox', { name: 'Search the notes index' });
 
@@ -83,7 +84,7 @@ test.describe('mobile interactions', () => {
   test('keeps the theme song panel fully on screen once the nav wraps', async ({ page }) => {
     // Anchored to the pill, the panel hung off its right edge. At 320px the nav
     // wraps and the pill is no longer flush right, which put the panel's left
-    // edge at -88px — off the screen, and invisible to a scrollWidth check
+    // edge at -88px â off the screen, and invisible to a scrollWidth check
     // because it overflowed leftward.
     for (const width of [320, 390]) {
       await page.setViewportSize({ width, height: 844 });

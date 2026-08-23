@@ -109,8 +109,8 @@ describe('search routing', () => {
 
   it('builds project cross-links and rejects blank titles', () => {
     expect(getProjectNotesURL(' Commit Chronicles ')).toBe(
-      '/?project=Commit+Chronicles#notes-index'
+      '/notes?project=Commit+Chronicles#notes-index'
     );
-    expect(getProjectNotesURL(' ')).toBe('/#notes-index');
+    expect(getProjectNotesURL(' ')).toBe('/notes#notes-index');
   });
 });

@@ -10,7 +10,10 @@ describe('NotFoundPage', () => {
     expect(
       screen.getByRole('heading', { name: /This trail ends without a note/i })
     ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Search the index/i })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: /Search the index/i })).toHaveAttribute(
+      'href',
+      '/notes'
+    );
     expect(screen.getByRole('link', { name: /Browse projects/i })).toHaveAttribute(
       'href',
       '/projects'

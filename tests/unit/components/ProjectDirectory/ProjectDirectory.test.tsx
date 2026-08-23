@@ -125,7 +125,7 @@ describe('ProjectDirectory', () => {
     expect(within(entry).getByRole('heading', { name: 'Outcome' })).toBeInTheDocument();
     expect(
       within(entry).getByRole('link', { name: /cards filed under this exhibit/i })
-    ).toHaveAttribute('href', '/?project=Test+Project#notes-index');
+    ).toHaveAttribute('href', '/notes?project=Test+Project#notes-index');
   });
 
   it('points the toggle at the panel it controls', () => {

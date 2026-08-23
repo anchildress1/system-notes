@@ -9,16 +9,19 @@ import { relativeAge } from '@/lib/relativeAge';
 import styles from './SiteHeader.module.css';
 
 const destinations = [
-  { href: '/', label: 'the index' },
-  { href: '/projects', label: 'exhibits' },
-  { href: '/about', label: 'about' },
+  { href: '/', label: 'ask me a question' },
+  { href: '/projects', label: 'what I’ve shipped' },
+  { href: '/notes', label: 'how I decide' },
+  { href: '/about', label: 'about me' },
 ] as const;
 
 /** The age depends on the clock, not on a store anything can push to. */
 const subscribeToNothing = () => () => {};
 
 function isCurrentPath(pathname: string, href: string): boolean {
-  if (href === '/') return pathname === '/' || pathname.startsWith('/notes/');
+  // A note is a record out of the index, so the index stays marked while reading
+  // one. The intake at / owns nothing below it and matches exactly.
+  if (href === '/notes') return pathname === '/notes' || pathname.startsWith('/notes/');
   return pathname === href;
 }
 

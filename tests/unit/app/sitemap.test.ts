@@ -14,6 +14,7 @@ describe('sitemap', () => {
     const sitemap = (await import('@/app/sitemap')).default();
     expect(sitemap.map((entry) => entry.url)).toEqual([
       'https://staging.example/',
+      'https://staging.example/notes',
       'https://staging.example/projects',
       'https://staging.example/about',
     ]);

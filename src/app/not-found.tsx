@@ -15,7 +15,7 @@ export default function NotFoundPage() {
           fictional.
         </p>
         <nav aria-label="Not found options">
-          <Link href="/">
+          <Link href="/notes">
             <FiArrowLeft aria-hidden="true" /> Search the index
           </Link>
           <Link href="/projects">
