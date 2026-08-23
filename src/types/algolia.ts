@@ -3,7 +3,8 @@ import type { BaseHit } from 'instantsearch.js';
 export interface FactHitRecord extends BaseHit {
   objectID: string;
   title: string;
-  blurb: string;
+  /** Being retired from the index; every read falls back to the fact body. */
+  blurb?: string;
   fact: string;
   content?: string;
   'tags.lvl0'?: string[];
