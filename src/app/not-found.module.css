@@ -16,7 +16,7 @@
 
 .code {
   margin-bottom: 1.5rem;
-  color: var(--neon-bright);
+  color: var(--flag);
   font-size: 0.75rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -32,14 +32,14 @@
 
 .message h1 em {
   display: block;
-  color: var(--neon);
+  color: var(--flag);
   font-weight: 400;
 }
 
 .message > p:not(.code) {
   max-width: 43rem;
   margin-top: 2rem;
-  color: var(--ink-soft);
+  color: var(--soft);
 }
 
 .message nav {
@@ -61,12 +61,12 @@
 }
 
 .message nav a:first-child {
-  border-color: var(--neon);
+  border-color: var(--flag);
 }
 
 .message nav a:hover {
-  border-color: var(--neon-bright);
-  color: var(--neon-bright);
+  border-color: var(--flag);
+  color: var(--flag);
 }
 
 .marker {

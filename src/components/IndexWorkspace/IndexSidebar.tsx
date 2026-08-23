@@ -31,14 +31,18 @@ import styles from './IndexWorkspace.module.css';
 // census. Refining re-sorts the live list by the narrowed counts, and keying off
 // that repainted most of the board the moment a filter was applied, so the
 // census could no longer be read as "the same board, with matches lit".
-// The ramp stops at 50% lightness; swatchPalette.ts carries the floor and the
-// reason. It used to run down to --void-soft, 5.5 lightness points off the
-// board's own background, and that category looked unselectable because
-// filtering it changed nothing a reader could see.
+// Every slot stays a fixed distance from the board's own surface; swatchPalette.ts
+// carries the separation and the reason, and inverts it for a light board where
+// a swatch has to be darker rather than lighter. The ramp used to run down to
+// within 5.5 lightness points of the background, and that category looked
+// unselectable because filtering it changed nothing a reader could see.
 
-// Awards keep the hollow outline and the star they have always had. This is the
-// one place a name matters, and it matches on meaning rather than an exact
-// value, so "Awards", "Award", or "Awards ★" all keep the treatment.
+// Awards keep the star and a ring, but the ring is now cut out of a filled
+// tile rather than drawn around an empty one. A transparent tile with a hairline
+// is invisible on a light board — white on white at 10px — and axe never flags
+// it, because a tile is not text. This is the one place a name matters, and it
+// matches on meaning rather than an exact value, so "Awards", "Award", or
+// "Awards ★" all keep the treatment.
 function isAwardCategory(value: string | undefined): boolean {
   return /award/i.test(value ?? '');
 }
@@ -48,7 +52,9 @@ function isAwardCategory(value: string | undefined): boolean {
 // unstyled.
 function swatchStyle(value: string | undefined, rank: number) {
   if (isAwardCategory(value)) {
-    return { background: 'transparent', border: '1px solid var(--neon)' };
+    // border-box is global, so a 2px border on a 14x10 tile cuts the ring out of
+    // the fill rather than growing the tile and breaking the board's grid.
+    return { background: 'var(--k-award)', border: '2px solid var(--void)' };
   }
   return { background: SWATCH_PALETTE[rank % SWATCH_PALETTE.length] };
 }

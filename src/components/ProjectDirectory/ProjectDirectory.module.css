@@ -53,7 +53,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  color: var(--exhibit-ink-muted);
+  color: var(--mute);
   font-size: 0.75rem;
   font-weight: 500;
   gap: 0.875rem;
@@ -62,7 +62,7 @@
 }
 
 .exhibitLetter {
-  color: var(--exhibit-accent);
+  color: var(--flag);
   font-family: var(--font-display);
   font-size: 0.94rem;
   font-weight: 800;
@@ -70,7 +70,7 @@
 }
 
 .metaDash {
-  color: oklch(45% 0.02 45);
+  color: var(--mute);
 }
 
 .exhibitText h2 {
@@ -86,7 +86,7 @@
 .exhibitWhat {
   max-width: 38ch;
   margin-top: 1.375rem;
-  color: var(--exhibit-ink-soft);
+  color: var(--soft);
   font-size: 1.25rem;
   line-height: 1.65;
   text-wrap: pretty;
@@ -96,7 +96,7 @@
 .exhibitPurpose {
   max-width: 34ch;
   margin-top: 1.25rem;
-  color: var(--exhibit-accent);
+  color: var(--flag);
   font-family: var(--font-editorial);
   font-size: clamp(1.3rem, 2vw, 1.7rem);
   font-style: italic;
@@ -110,8 +110,8 @@
   margin-top: 1.5rem;
   padding: 0.55rem 1.125rem;
   border-radius: 999px;
-  background: var(--exhibit-accent-deep);
-  color: oklch(98% 0.01 80);
+  background: var(--flag);
+  color: var(--flag-ink);
   font-size: 0.75rem;
   font-weight: 600;
   gap: 0.55rem;
@@ -130,9 +130,9 @@
 
 .stack li {
   padding: 0.375rem 0.875rem;
-  border: 1px solid oklch(36% 0.02 45);
+  border: 1px solid var(--edge);
   border-radius: 999px;
-  color: var(--exhibit-ink-muted);
+  color: var(--mute);
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.03em;
@@ -152,8 +152,8 @@
   padding: 0.875rem 1.625rem;
   border: 0;
   border-radius: 999px;
-  background: var(--exhibit-ink);
-  color: var(--exhibit-void);
+  background: var(--bone);
+  color: var(--void);
   cursor: pointer;
   font-family: inherit;
   font-size: 0.84rem;
@@ -163,23 +163,23 @@
 
 .argue:hover {
   padding-inline: 2rem;
-  background: var(--exhibit-accent);
+  background: var(--flag);
 }
 
 .exhibitLink {
   display: inline-flex;
   align-items: center;
   padding-bottom: 0.2rem;
-  border-bottom: 1px solid oklch(50% 0.07 82);
-  color: var(--exhibit-accent);
+  border-bottom: 1px solid var(--flag);
+  color: var(--flag);
   gap: 0.3rem;
   text-decoration: none;
   transition: border-color 0.3s ease;
 }
 
 .exhibitLink:hover {
-  border-color: var(--exhibit-accent);
-  color: var(--exhibit-ink);
+  border-color: var(--flag);
+  color: var(--bone);
 }
 
 .exhibitMedia img {
@@ -205,7 +205,7 @@
 .mediaGlow {
   position: absolute;
   inset: -7% -5% -9% -7%;
-  background: radial-gradient(70% 70% at 40% 30%, oklch(46% 0.1 80 / 0.45), transparent 70%);
+  background: radial-gradient(70% 70% at 40% 30%, var(--flag-soft), transparent 70%);
   filter: blur(26px);
 }
 
@@ -213,7 +213,7 @@
   display: grid;
   padding: clamp(1.875rem, 3.6vw, 3.25rem);
   border-radius: 2.125rem;
-  background: var(--exhibit-deep);
+  background: var(--panel);
   gap: 2.25rem 3.5rem;
   grid-column: 1 / -1;
   grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr));
@@ -221,7 +221,7 @@
 
 .exhibitDetail h3 {
   margin-bottom: 0.875rem;
-  color: var(--exhibit-accent);
+  color: var(--flag);
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.2em;
@@ -229,7 +229,7 @@
 }
 
 .exhibitDetail p {
-  color: var(--exhibit-ink-soft);
+  color: var(--soft);
   font-size: 1.125rem;
   line-height: 1.75;
   text-wrap: pretty;
@@ -242,12 +242,12 @@
 }
 
 .detailCards a {
-  color: var(--exhibit-accent);
+  color: var(--flag);
   text-decoration: none;
 }
 
 .detailCards a:hover {
-  color: var(--exhibit-ink);
+  color: var(--bone);
 }
 
 .postList {
@@ -261,7 +261,7 @@
 .postList a {
   display: inline-flex;
   align-items: baseline;
-  color: var(--exhibit-ink-muted);
+  color: var(--mute);
   font-size: 0.82rem;
   gap: 0.3rem;
   line-height: 1.55;
@@ -270,7 +270,7 @@
 }
 
 .postList a:hover {
-  color: var(--exhibit-accent);
+  color: var(--flag);
 }
 
 .archive {
@@ -285,10 +285,10 @@
 
 .archiveToggle {
   padding: 1.125rem 2.125rem;
-  border: 1px solid var(--exhibit-accent);
+  border: 1px solid var(--flag);
   border-radius: 999px;
   background: transparent;
-  color: var(--exhibit-accent);
+  color: var(--flag);
   cursor: pointer;
   font-family: inherit;
   font-size: 0.875rem;
@@ -298,13 +298,13 @@
 
 .archiveToggle:hover {
   padding-inline: 2.625rem;
-  background: var(--exhibit-accent);
-  color: var(--exhibit-void);
+  background: var(--flag);
+  color: var(--void);
 }
 
 .archiveCount {
   max-width: 32ch;
-  color: var(--exhibit-ink-muted);
+  color: var(--mute);
   font-family: var(--font-editorial);
   font-size: clamp(1.2rem, 1.9vw, 1.55rem);
   font-style: italic;

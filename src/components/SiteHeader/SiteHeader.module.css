@@ -8,7 +8,7 @@
      legibility: scrolled content read through the bar, and compositing against
      whatever happened to be behind it dropped the nav below the 4.5:1 contrast
      floor. An opaque bar also makes the blur redundant, so it goes too. */
-  background: oklch(13% 0.024 330);
+  background: var(--void);
 }
 
 .inner {
@@ -28,8 +28,8 @@
   top: 0.75rem;
   left: 0.75rem;
   padding: 0.75rem 1rem;
-  background: var(--paper);
-  color: var(--paper-ink);
+  background: var(--flag);
+  color: var(--flag-ink);
   font-size: 0.75rem;
   transform: translateY(-180%);
 }
@@ -50,7 +50,7 @@
 }
 
 .wordmark {
-  color: var(--ink);
+  color: var(--bone);
   font-family: var(--font-display);
   font-size: 1.0625rem;
   font-weight: 800;
@@ -62,7 +62,7 @@
    the wordmark's Syne. The motto, the nav, and the status line were all still
    in the body sans left over from the previous chrome. */
 .motto {
-  color: var(--neon);
+  color: var(--flag);
   font-family: var(--font-mono);
   font-size: 0.69rem;
   letter-spacing: 0.01em;
@@ -94,7 +94,7 @@
   min-height: 2.25rem;
   align-items: center;
   border-bottom: 1.5px solid transparent;
-  color: var(--ink-soft);
+  color: var(--soft);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
@@ -106,12 +106,12 @@
 }
 
 .navLink:hover {
-  color: var(--neon);
+  color: var(--flag);
 }
 
 .navLink[aria-current='page'] {
-  border-color: var(--neon);
-  color: var(--ink);
+  border-color: var(--flag);
+  color: var(--bone);
 }
 
 .navLink[aria-current='page']::before {
@@ -121,7 +121,7 @@
 .status {
   display: flex;
   align-items: center;
-  color: var(--ink-muted);
+  color: var(--mute);
   font-family: var(--font-mono);
   font-size: 0.66rem;
   gap: 0.4rem;
@@ -131,7 +131,7 @@
   width: 0.34rem;
   height: 0.34rem;
   border-radius: 50%;
-  background: var(--neon);
+  background: var(--flag);
   animation: status-pulse 3.2s ease-in-out infinite;
 }
 

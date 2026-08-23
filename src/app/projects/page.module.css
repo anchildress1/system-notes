@@ -1,24 +1,16 @@
-/* The exhibits room runs warm. The design gives this page its own palette —
-   a warmer void and a yellow accent against the index's pink — so the tokens
-   are scoped here rather than swapped globally, and every other surface keeps
-   the colours it already had. */
+/* The warm palette this page used to scope to itself is now the site's own. Its
+   accent was byte-identical to --flag, which is to say the exhibits room was
+   already prototyping the theme the rest of the site has since adopted. Nothing
+   here needs tokens of its own any more. */
 .main {
-  --exhibit-void: oklch(17% 0.016 45);
-  --exhibit-deep: oklch(22.5% 0.02 40);
-  --exhibit-ink: oklch(96% 0.006 70);
-  --exhibit-ink-soft: oklch(79% 0.014 55);
-  --exhibit-ink-muted: oklch(63% 0.016 50);
-  --exhibit-accent: oklch(83% 0.15 80);
-  --exhibit-accent-deep: oklch(52% 0.12 76);
-
   min-height: 100svh;
-  background: var(--exhibit-void);
-  color: var(--exhibit-ink);
+  background: var(--void);
+  color: var(--bone);
   overflow-x: clip;
 }
 
 .main :focus-visible {
-  outline: 2px solid var(--exhibit-accent);
+  outline: 2px solid var(--flag);
   outline-offset: 4px;
 }
 
@@ -31,7 +23,7 @@
 
 .kicker {
   margin-bottom: 1.375rem;
-  color: var(--exhibit-accent);
+  color: var(--flag);
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.24em;
@@ -49,7 +41,7 @@
 }
 
 .hero h1 em {
-  color: var(--exhibit-accent);
+  color: var(--flag);
   font-family: var(--font-editorial);
   font-style: italic;
   font-weight: 400;
@@ -59,7 +51,7 @@
 .claim {
   max-width: 22ch;
   margin-top: 2.125rem;
-  color: var(--exhibit-ink-soft);
+  color: var(--soft);
   font-family: var(--font-editorial);
   font-size: clamp(1.75rem, 3.4vw, 2.875rem);
   font-style: italic;
@@ -70,7 +62,7 @@
 .blurb {
   max-width: 46ch;
   margin-top: 1.625rem;
-  color: var(--exhibit-ink-muted);
+  color: var(--mute);
   font-size: 1.16rem;
   line-height: 1.75;
   text-wrap: pretty;

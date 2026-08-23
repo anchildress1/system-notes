@@ -10,10 +10,10 @@
   align-items: center;
   gap: 0.44rem;
   padding: 0.3rem 0.75rem;
-  border: 1.5px solid oklch(40% 0.03 330);
+  border: 1.5px solid var(--edge);
   border-radius: 999px;
   background: transparent;
-  color: var(--ink-soft);
+  color: var(--soft);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
@@ -24,13 +24,13 @@
 }
 
 .toggle:hover:not(:disabled) {
-  border-color: var(--neon);
-  color: var(--neon-bright);
+  border-color: var(--flag);
+  color: var(--flag);
 }
 
 .toggle[aria-pressed='true'] {
-  border-color: var(--neon);
-  color: var(--neon);
+  border-color: var(--flag);
+  color: var(--flag);
 }
 
 .toggle:disabled {
@@ -51,8 +51,8 @@
   padding: 0.75rem 0.9rem;
   border: 1px solid var(--line-strong);
   border-radius: 0.75rem;
-  background: var(--void-raised);
-  box-shadow: 0 1rem 2.5rem oklch(5% 0.02 330 / 0.55);
+  background: var(--panel);
+  box-shadow: 0 1rem 2.5rem var(--drop);
   gap: 0.55rem;
 }
 
@@ -62,7 +62,7 @@
 }
 
 .trackTitle {
-  color: var(--ink);
+  color: var(--bone);
   font-family: var(--font-sans);
   font-size: 0.82rem;
   font-weight: 700;
@@ -90,7 +90,7 @@
 }
 
 .trackArtist {
-  color: var(--ink-muted);
+  color: var(--mute);
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.12em;
@@ -114,7 +114,7 @@
   height: 30%;
   flex: 0 0 3px;
   border-radius: 999px;
-  background: var(--neon);
+  background: var(--flag);
   animation: theme-song-pulse 900ms ease-in-out infinite alternate;
 }
 
@@ -151,16 +151,16 @@
 
 .progress::-webkit-progress-value {
   border-radius: 999px;
-  background: var(--neon);
+  background: var(--flag);
 }
 
 .progress::-moz-progress-bar {
   border-radius: 999px;
-  background: var(--neon);
+  background: var(--flag);
 }
 
 .time {
-  color: var(--ink-muted);
+  color: var(--mute);
   font-family: var(--font-mono);
   font-size: 0.62rem;
   white-space: nowrap;

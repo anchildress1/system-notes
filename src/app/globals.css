@@ -11,6 +11,9 @@
   --flag: oklch(0.83 0.15 80);
   --flag-ink: oklch(0.19 0.04 80);
   --flag-soft: oklch(0.83 0.15 80 / 0.14);
+  /* Strong enough to read as a halo around a 10px tile. --flag-soft is sized
+     for a wash across a whole panel and disappears at that scale. */
+  --flag-glow: oklch(0.83 0.15 80 / 0.52);
   --drop: oklch(0.06 0.01 265 / 0.9);
   --thumb: oklch(0.42 0.01 265);
 
@@ -20,7 +23,7 @@
   --k-decision: oklch(0.83 0.15 80);
   --k-note: oklch(0.66 0.1 74);
   --k-principle: oklch(0.72 0.012 265);
-  --k-other: oklch(0.72 0.09 200);
+  --k-other: oklch(0.78 0.09 200);
 
   /* Hairlines stay translucent rather than resolving to --edge. Roughly thirty
      borders composite over whatever sits behind them, and an opaque token would
@@ -28,18 +31,6 @@
   --line: oklch(0.95 0.008 90 / 0.13);
   --line-strong: oklch(0.95 0.008 90 / 0.28);
 
-  /* Superseded names, aliased so the whole site repaints without touching a
-     component. Phase 2 retires them; nothing new should reference these. */
-  --ink: var(--bone);
-  --ink-soft: var(--soft);
-  --ink-muted: var(--mute);
-  --void-raised: var(--panel);
-  --void-soft: var(--panel-hi);
-  --paper: var(--bone);
-  --paper-ink: var(--void);
-  --neon: var(--flag);
-  --neon-bright: var(--flag);
-  --neon-soft: var(--flag-soft);
   /* next/font re-declares these on <body> with hashed family names; the values
      here are the SSR-time fallback. */
   --font-editorial: Georgia, 'Times New Roman', serif;
@@ -80,7 +71,7 @@ body {
       transparent 50.07%
     ),
     var(--void);
-  color: var(--ink);
+  color: var(--bone);
   font-family: var(--font-sans);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
@@ -100,27 +91,42 @@ body::before {
   content: '';
 }
 
-body::after {
-  position: fixed;
-  z-index: -1;
-  top: -18rem;
-  right: -18rem;
-  width: 42rem;
-  height: 42rem;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--neon-soft), transparent 68%);
-  pointer-events: none;
-  content: '';
-}
+/* The corner glow is gone. It was a 42rem fixed-position painted layer tuned to
+   a magenta accent; in amber it read as a stain rather than a light source, and
+   removing it takes a full-viewport paint off every route. */
 
 ::selection {
-  background: var(--neon);
-  color: var(--void);
+  background: var(--flag);
+  color: var(--flag-ink);
 }
 
 :where(a, button, input, summary):focus-visible {
-  outline: 2px solid var(--neon-bright);
+  outline: 2px solid var(--flag);
   outline-offset: 4px;
+}
+
+/* An accent-filled control cannot wear an accent ring. --bone is the only tone
+   that separates from --flag at every lightness the accent takes. */
+:where(button, a)[data-accent='filled']:focus-visible {
+  outline-color: var(--bone);
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--thumb);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--flag);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumb) transparent;
 }
 
 a {
@@ -169,13 +175,15 @@ main {
   border: 0;
 }
 
+/* Rises into place without fading. An entrance that starts at opacity 0 is
+   readable to axe as text at zero contrast for as long as it runs, which turns
+   every accessibility assertion on the pages using it into a race against the
+   animation. Motion carries the entrance; opacity stays out of it. */
 @keyframes rise-in {
   from {
-    opacity: 0;
     transform: translateY(1.25rem);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
   }
 }

@@ -23,7 +23,7 @@
 .themeSong header > p:first-child,
 .contact > div > p {
   margin-bottom: 1.25rem;
-  color: var(--neon-bright);
+  color: var(--flag);
   font-size: 0.75rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -39,13 +39,13 @@
 
 .hero h1 em {
   display: block;
-  color: var(--neon);
+  color: var(--flag);
   font-weight: 400;
 }
 
 .role {
   margin-top: clamp(2rem, 5vw, 4rem);
-  color: var(--ink-soft);
+  color: var(--soft);
   font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -55,7 +55,7 @@
   display: grid;
   max-width: 50rem;
   margin-top: 1.75rem;
-  color: var(--ink-soft);
+  color: var(--soft);
   font-size: clamp(0.88rem, 1.2vw, 1.05rem);
   gap: 1rem;
 }
@@ -65,7 +65,7 @@
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border: 1px solid var(--line-strong);
-  background: var(--void-soft);
+  background: var(--panel-hi);
   animation: rise-in 650ms 120ms var(--ease-out) both;
 }
 
@@ -92,7 +92,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: var(--ink-soft);
+  color: var(--soft);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -104,7 +104,7 @@
   height: 0.45rem;
   margin-right: 0.5rem;
   border-radius: 50%;
-  background: var(--neon);
+  background: var(--flag);
   content: '';
 }
 
@@ -145,14 +145,14 @@
 }
 
 .proof dt {
-  color: var(--ink-muted);
+  color: var(--mute);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .proof dd {
-  color: var(--neon);
+  color: var(--flag);
   font-family: var(--font-editorial);
   font-size: clamp(4rem, 7vw, 7rem);
   line-height: 0.8;
@@ -170,14 +170,14 @@
   min-height: 3.5rem;
   align-items: center;
   border-bottom: 1px solid var(--line);
-  color: var(--ink-soft);
+  color: var(--soft);
   font-size: 0.75rem;
   grid-template-columns: minmax(8rem, 0.55fr) minmax(0, 1fr);
   gap: 1rem;
 }
 
 .awards li span:last-child {
-  color: var(--ink-muted);
+  color: var(--mute);
 }
 
 .principles ol {
@@ -199,7 +199,7 @@
 }
 
 .principles li > span {
-  color: var(--neon);
+  color: var(--flag);
   font-size: 0.75rem;
 }
 
@@ -211,7 +211,7 @@
 }
 
 .principles li p {
-  color: var(--ink-soft);
+  color: var(--soft);
   font-size: 0.75rem;
 }
 
@@ -226,14 +226,14 @@
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--line);
-  color: var(--ink-soft);
+  color: var(--soft);
   font-size: 0.75rem;
   text-transform: uppercase;
 }
 
 .contact nav a:hover {
   padding-inline: 0.75rem;
-  background: var(--neon);
+  background: var(--flag);
   color: var(--void);
 }
 
@@ -291,13 +291,13 @@
 
 .themeSongTrack {
   margin-top: 1.25rem;
-  color: var(--ink-muted);
+  color: var(--mute);
   font-family: var(--font-mono);
   font-size: 0.72rem;
 }
 
 .themeSongTrack cite {
-  color: var(--ink);
+  color: var(--bone);
   font-style: normal;
   font-weight: 700;
 }
@@ -309,14 +309,14 @@
 }
 
 .themeSongCopy p {
-  color: var(--ink-soft);
+  color: var(--soft);
   font-size: 0.98rem;
   line-height: 1.75;
   text-wrap: pretty;
 }
 
 .themeSongCopy em {
-  color: var(--ink);
+  color: var(--bone);
   font-style: normal;
   font-weight: 700;
 }

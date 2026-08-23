@@ -3,10 +3,10 @@
   min-width: 0;
   min-height: clamp(18rem, 40vh, 28rem);
   padding: clamp(1.25rem, 2.5vw, 1.8rem);
-  border: 1px solid oklch(84% 0.02 330);
+  border: 1px solid var(--edge);
   border-radius: 0.85rem;
-  background: var(--paper);
-  color: var(--paper-ink);
+  background: var(--panel);
+  color: var(--bone);
   flex-direction: column;
   animation: dossier-enter 340ms var(--ease-out) both;
 }
@@ -15,7 +15,7 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  color: oklch(45% 0.025 330);
+  color: var(--mute);
   font-family: var(--font-mono);
   font-size: 0.65rem;
   gap: 1rem;
@@ -34,9 +34,9 @@
 .category {
   flex: 0 0 auto;
   padding: 0.15rem 0.65rem;
-  border: 1px solid oklch(51% 0.24 330);
+  border: 1px solid var(--flag);
   border-radius: 999px;
-  color: oklch(42% 0.2 330);
+  color: var(--flag);
   font-size: 0.6rem;
   text-transform: uppercase;
 }
@@ -61,7 +61,7 @@
 }
 
 .factLabel {
-  color: oklch(42% 0.2 330);
+  color: var(--flag);
   font-family: var(--font-mono);
   font-size: 0.62rem;
   font-weight: 800;
@@ -71,7 +71,7 @@
 
 .fact {
   margin-top: 0.4rem;
-  color: oklch(35% 0.022 330);
+  color: var(--soft);
   font-family: var(--font-mono);
   font-size: clamp(0.72rem, 1.2vw, 0.84rem);
   line-height: 1.7;
@@ -97,7 +97,7 @@
 }
 
 .noteData dt {
-  color: oklch(42% 0.025 330);
+  color: var(--mute);
   text-transform: uppercase;
 }
 
@@ -113,9 +113,9 @@
 
 .tags li {
   padding: 0.2rem 0.55rem;
-  border: 1px solid oklch(18% 0.024 330 / 0.2);
+  border: 1px solid var(--line);
   border-radius: 999px;
-  color: oklch(39% 0.022 330);
+  color: var(--mute);
   font-family: var(--font-mono);
   font-size: 0.61rem;
 }
@@ -124,7 +124,7 @@
   display: flex;
   padding-top: 0.8rem;
   margin-top: 0.8rem;
-  border-top: 1px solid oklch(18% 0.024 330 / 0.18);
+  border-top: 1px solid var(--line);
   gap: 0.75rem;
 }
 
@@ -133,7 +133,7 @@
   min-height: 2.75rem;
   align-items: center;
   gap: 0.4rem;
-  color: var(--paper-ink);
+  color: var(--bone);
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.05em;
@@ -141,12 +141,16 @@
 }
 
 .actions a:hover {
-  color: oklch(51% 0.24 330);
+  color: var(--flag);
 }
 
+/* Moves into place; never fades in. Starting at opacity 0 meant axe could sample
+   the card mid-animation and read every colour in it as part-transparent — the
+   meta line scored 4.02:1 against a background that was itself half the page
+   showing through, when the settled pair is 6.28:1. Same reason the exhibits
+   reveal animates transform alone. */
 @keyframes dossier-enter {
   from {
-    opacity: 0;
     transform: translateY(0.65rem);
   }
 }
