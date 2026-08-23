@@ -1,231 +1,127 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import ProjectDirectory, { exhibitStamp } from '@/components/ProjectDirectory/ProjectDirectory';
 import { mockProject } from '@tests/test-utils/fixtures';
-import ProjectDirectory, {
-  exhibitLabel,
-  exhibitStamp,
-  HIGHLIGHT_COUNT,
-} from '@/components/ProjectDirectory/ProjectDirectory';
 
-/** jsdom has no IntersectionObserver; without one the reveal path differs. */
-function stubObserver() {
-  class StubIntersectionObserver {
-    observe = vi.fn();
-    unobserve = vi.fn();
-    disconnect = vi.fn();
-  }
-  vi.stubGlobal('IntersectionObserver', StubIntersectionObserver);
-}
-
-const build = (count: number) =>
-  Array.from({ length: count }, (_, index) => ({
+const projects = [
+  {
     ...mockProject,
-    id: `p${index}`,
-    title: `Project ${index}`,
-  }));
+    id: 'first-system',
+    title: 'First System',
+    status: 'Active · Deployed',
+    purpose: 'Proves the first thing.',
+    long_description: 'The long account of the first system.',
+    outcome: 'It shipped and stayed shipped.',
+    tech: [{ name: 'TypeScript', role: 'Language' }],
+    app_url: 'https://example.com/app',
+    repo_url: 'https://github.com/example/first',
+  },
+  {
+    ...mockProject,
+    id: 'second-system',
+    title: 'Second System',
+    status: 'Scrapped',
+    purpose: 'Proves the second thing.',
+    long_description: 'The long account of the second system.',
+    outcome: 'A cleanly falsified hypothesis.',
+    tech: [{ name: 'Python', role: 'Rules' }],
+    award: 'Some Award 2026',
+    app_url: undefined,
+    image_url: undefined,
+  },
+];
 
-describe('exhibitLabel', () => {
-  it('letters exhibits from the start of the alphabet', () => {
-    expect(exhibitLabel(0)).toBe('A');
-    expect(exhibitLabel(25)).toBe('Z');
-  });
-
-  it('falls back to a number once the alphabet runs out', () => {
-    expect(exhibitLabel(26)).toBe('27');
-  });
-});
+const rail = () => screen.getByRole('navigation', { name: 'Systems' });
+const detail = () => screen.getByRole('article');
 
 describe('exhibitStamp', () => {
-  it('reads the head of a compound status', () => {
-    expect(exhibitStamp('Active · Deployed')).toBe('in evidence');
-    expect(exhibitStamp('Retired · 2026')).toBe('retired');
+  it.each([
+    ['Active · Deployed', 'in evidence'],
+    ['Deployed', 'in evidence'],
+    ['Scrapped', 'falsified on purpose'],
+    ['Retired', 'retired'],
+    ['Archived', 'archived'],
+    [undefined, 'in evidence'],
+  ])('reduces %s to %s', (status, expected) => {
+    expect(exhibitStamp(status)).toBe(expected);
   });
 
-  it('names a deliberate dead end as one', () => {
-    // "scrapped" is the record saying the experiment answered its question.
-    expect(exhibitStamp('Scrapped')).toBe('falsified on purpose');
-    expect(exhibitStamp('Archived')).toBe('archived');
-  });
-
-  it('is case and space insensitive', () => {
-    expect(exhibitStamp('  RETIRED  ·  x')).toBe('retired');
-  });
-
-  it('treats anything unrecognised as still in evidence', () => {
-    expect(exhibitStamp('')).toBe('in evidence');
-    expect(exhibitStamp(undefined)).toBe('in evidence');
-    expect(exhibitStamp('Something New')).toBe('in evidence');
+  it('reads the qualifier out of a compound status', () => {
+    expect(exhibitStamp('Deployed · now retired')).toBe('retired');
   });
 });
 
 describe('ProjectDirectory', () => {
-  beforeEach(() => {
-    vi.restoreAllMocks();
-    vi.unstubAllGlobals();
+  it('lists every system in the rail, not just a highlighted few', () => {
+    // The archive used to be behind a control. A rail that already scrolls has
+    // no reason to hide half its own contents.
+    render(<ProjectDirectory projects={projects} />);
+
+    expect(within(rail()).getAllByRole('button')).toHaveLength(projects.length);
+    expect(within(rail()).getByText('First System')).toBeVisible();
+    expect(within(rail()).getByText('Second System')).toBeVisible();
   });
 
-  it('shows only the highlights until the archive is opened', () => {
-    stubObserver();
-    render(<ProjectDirectory projects={build(20)} />);
+  it('opens on the first system', () => {
+    render(<ProjectDirectory projects={projects} />);
 
-    expect(screen.getAllByRole('article')).toHaveLength(HIGHLIGHT_COUNT);
-    expect(screen.getByText(/14 more in the archive/)).toBeInTheDocument();
+    expect(within(detail()).getByRole('heading', { level: 2 })).toHaveTextContent('First System');
+    expect(screen.getByTestId('project-first-system')).toHaveAttribute('aria-current', 'true');
   });
 
-  it('opens the whole archive and closes it again', () => {
-    stubObserver();
-    render(<ProjectDirectory projects={build(20)} />);
+  it('swaps the detail pane when another system is chosen', () => {
+    render(<ProjectDirectory projects={projects} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /show all 20 exhibits/i }));
-    expect(screen.getAllByRole('article')).toHaveLength(20);
-    expect(screen.getByText(/Showing everything/)).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('project-second-system'));
 
-    fireEvent.click(screen.getByRole('button', { name: /show only the highlights/i }));
-    expect(screen.getAllByRole('article')).toHaveLength(HIGHLIGHT_COUNT);
+    expect(within(detail()).getByRole('heading', { level: 2 })).toHaveTextContent('Second System');
+    expect(within(detail()).getByText('A cleanly falsified hypothesis.')).toBeVisible();
+    expect(screen.getByTestId('project-second-system')).toHaveAttribute('aria-current', 'true');
+    expect(screen.getByTestId('project-first-system')).not.toHaveAttribute('aria-current');
   });
 
-  it('offers no archive toggle when every exhibit already shows', () => {
-    stubObserver();
-    render(<ProjectDirectory projects={build(3)} />);
+  it('shows the stack as a description list rather than a run of chips', () => {
+    render(<ProjectDirectory projects={projects} />);
 
-    expect(screen.queryByRole('button', { name: /show all/i })).not.toBeInTheDocument();
-    expect(screen.getAllByRole('article')).toHaveLength(3);
+    expect(within(detail()).getByText('TypeScript')).toBeVisible();
+    expect(within(detail()).getByText('Language')).toBeVisible();
   });
 
-  it('states the exhibit, its stamp, and its stack', () => {
-    stubObserver();
-    render(<ProjectDirectory projects={[{ ...mockProject, award: 'Test Award' }]} />);
-    const entry = screen.getByTestId('project-test-project');
+  it('marks an awarded system in the rail and names the award in the detail', () => {
+    render(<ProjectDirectory projects={projects} />);
+    fireEvent.click(screen.getByTestId('project-second-system'));
 
-    expect(within(entry).getByText('A')).toBeInTheDocument();
-    expect(within(entry).getByText('in evidence')).toBeInTheDocument();
-    expect(within(entry).getByRole('heading', { name: 'Test Project' })).toBeInTheDocument();
-    expect(within(entry).getByText('Short description tagline.')).toBeInTheDocument();
-    expect(within(entry).getByText('The core purpose of the project.')).toBeInTheDocument();
-    expect(within(entry).getByText(/Test Award/)).toBeInTheDocument();
-    expect(within(entry).getByRole('list', { name: /Test Project stack/i })).toBeInTheDocument();
+    expect(within(detail()).getByText(/Some Award 2026/)).toBeVisible();
   });
 
-  it('keeps the argument closed until it is asked for', () => {
-    stubObserver();
-    render(<ProjectDirectory projects={[mockProject]} />);
-    const entry = screen.getByTestId('project-test-project');
-    const argue = within(entry).getByRole('button', { name: 'read the argument' });
+  it('cross-links into the index filtered by the open system', () => {
+    render(<ProjectDirectory projects={projects} />);
 
-    expect(argue).toHaveAttribute('aria-expanded', 'false');
-    expect(within(entry).queryByRole('heading', { name: 'Outcome' })).not.toBeInTheDocument();
-
-    fireEvent.click(argue);
-
-    expect(within(entry).getByRole('button', { name: 'close the argument' })).toHaveAttribute(
-      'aria-expanded',
-      'true'
-    );
-    expect(within(entry).getByRole('heading', { name: "How it's built" })).toBeInTheDocument();
-    expect(within(entry).getByRole('heading', { name: 'Outcome' })).toBeInTheDocument();
     expect(
-      within(entry).getByRole('link', { name: /cards filed under this exhibit/i })
-    ).toHaveAttribute('href', '/notes?project=Test+Project#notes-index');
+      within(detail()).getByRole('link', { name: /Decisions from First System/ })
+    ).toHaveAttribute('href', '/notes?project=First+System#notes-index');
   });
 
-  it('points the toggle at the panel it controls', () => {
-    stubObserver();
-    render(<ProjectDirectory projects={[mockProject]} />);
-    const entry = screen.getByTestId('project-test-project');
-    const argue = within(entry).getByRole('button', { name: /the argument/i });
+  it('identifies every outbound link as opening a new tab', () => {
+    render(<ProjectDirectory projects={projects} />);
 
-    fireEvent.click(argue);
-
-    // A dangling aria-controls is worse than none; the panel must exist.
-    const controlled = argue.getAttribute('aria-controls');
-    expect(controlled).toBeTruthy();
-    expect(document.getElementById(controlled!)).toBeInTheDocument();
-  });
-
-  it('files write-ups inside the argument, not the exhibit link row', () => {
-    stubObserver();
-    render(
-      <ProjectDirectory
-        projects={[
-          {
-            ...mockProject,
-            app_url: 'https://example.com',
-            blog_posts: [{ title: 'Build post', url: 'https://dev.to/test/post' }],
-          },
-        ]}
-      />
-    );
-    const entry = screen.getByTestId('project-test-project');
-
-    expect(within(entry).queryByRole('link', { name: /Build post/i })).not.toBeInTheDocument();
-    fireEvent.click(within(entry).getByRole('button', { name: /the argument/i }));
-
-    expect(within(entry).getByRole('link', { name: /Build post/i })).toHaveAttribute(
-      'target',
-      '_blank'
-    );
-    expect(within(entry).getByRole('link', { name: /launch/i })).toHaveAttribute(
-      'href',
-      'https://example.com'
-    );
-  });
-
-  it('alternates which side the exhibit sits on', () => {
-    stubObserver();
-    render(<ProjectDirectory projects={build(3)} />);
-    const articles = screen.getAllByRole('article');
-
-    expect(articles[0]).not.toHaveAttribute('data-flip');
-    expect(articles[1]).toHaveAttribute('data-flip');
-    expect(articles[2]).not.toHaveAttribute('data-flip');
-  });
-
-  it('omits every optional part a project does not have', () => {
-    stubObserver();
-    render(
-      <ProjectDirectory
-        projects={[
-          {
-            ...mockProject,
-            image_url: undefined,
-            purpose: '',
-            long_description: '',
-            outcome: '',
-            tech: [],
-            repo_url: undefined,
-            app_url: undefined,
-            blog_posts: [],
-            award: undefined,
-            status: '',
-          },
-        ]}
-      />
-    );
-    const entry = screen.getByTestId('project-test-project');
-
-    expect(within(entry).queryByRole('img')).not.toBeInTheDocument();
-    expect(within(entry).queryByRole('list', { name: /stack/i })).not.toBeInTheDocument();
-    expect(within(entry).queryByRole('link', { name: /^launch/i })).not.toBeInTheDocument();
-    // A blank status still gets a stamp and says what it does not know.
-    expect(within(entry).getByText('in evidence')).toBeInTheDocument();
-    expect(within(entry).getByText('status unavailable')).toBeInTheDocument();
-  });
-
-  it('reveals every exhibit outright when there is no observer to wait for', () => {
-    // Reduced motion and unsupported browsers must not leave the page blank.
-    vi.stubGlobal('IntersectionObserver', undefined);
-    render(<ProjectDirectory projects={build(2)} />);
-
-    for (const article of screen.getAllByRole('article')) {
-      expect(article).toHaveAttribute('data-revealed', 'true');
+    for (const name of [/Live app/, /Repo/]) {
+      const link = within(detail()).getByRole('link', { name });
+      expect(link).toHaveAttribute('target', '_blank');
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer');
     }
   });
 
-  it('renders nothing for an empty registry', () => {
-    stubObserver();
-    render(<ProjectDirectory projects={[]} />);
+  it('omits a link the project does not carry rather than rendering a dead one', () => {
+    render(<ProjectDirectory projects={projects} />);
+    fireEvent.click(screen.getByTestId('project-second-system'));
 
-    expect(screen.queryAllByRole('article')).toHaveLength(0);
-    expect(screen.queryByRole('button', { name: /show all/i })).not.toBeInTheDocument();
+    expect(within(detail()).queryByRole('link', { name: /Live app/ })).not.toBeInTheDocument();
+  });
+
+  it('renders nothing at all when there are no projects', () => {
+    const { container } = render(<ProjectDirectory projects={[]} />);
+
+    expect(container).toBeEmptyDOMElement();
   });
 });

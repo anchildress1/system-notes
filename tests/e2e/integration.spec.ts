@@ -185,34 +185,28 @@ test.describe('System Notes redesign', () => {
     );
   });
 
-  test('shows the highlights, then the whole archive on request', async ({ page }) => {
+  test('lists every system in the rail with no archive to open', async ({ page }) => {
     await page.goto('/projects');
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Exhibits');
-    // Six highlights carry the page; the rest wait behind one control.
-    await expect(page.getByTestId(/^project-/)).toHaveCount(6);
-    await expect(page.getByText('Echo ESLint', { exact: true })).toHaveCount(0);
-
-    await page.getByRole('button', { name: /show all 20 exhibits/i }).click();
-
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('shipped');
+    // The rail scrolls, so there is nothing left for a show-all control to do.
     await expect(page.getByTestId(/^project-/)).toHaveCount(20);
-    await expect(page.getByText('Echo ESLint', { exact: true })).toBeVisible();
-    await expect(page.getByText(/Showing everything/)).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Systems' })).toContainText('Echo ESLint');
+    await expect(page.getByRole('button', { name: /show all/i })).toHaveCount(0);
   });
 
-  test('expands project evidence inline and links back to filtered notes', async ({ page }) => {
+  test('opens a system in the detail pane and links back to filtered notes', async ({ page }) => {
     await page.goto('/projects');
-    // System Notes is not one of the six highlights, so the archive opens first.
-    await page.getByRole('button', { name: /show all \d+ exhibits/i }).click();
-    const project = page.getByTestId('project-system-notes');
+    await page.getByTestId('project-system-notes').click();
+    const detail = page.getByRole('article');
 
-    await project.getByRole('button', { name: 'read the argument' }).click();
-
-    await expect(project.getByRole('heading', { name: "How it's built" })).toBeVisible();
-    await expect(project.getByRole('heading', { name: 'Outcome' })).toBeVisible();
-    await expect(
-      project.getByRole('link', { name: /cards filed under this exhibit/i })
-    ).toHaveAttribute('href', '/notes?project=System+Notes#notes-index');
+    await expect(detail.getByRole('heading', { level: 2 })).toHaveText('System Notes');
+    await expect(detail.getByRole('heading', { name: 'Outcome' })).toBeVisible();
+    await expect(detail.getByRole('heading', { name: 'Stack' })).toBeVisible();
+    await expect(detail.getByRole('link', { name: /Decisions from System Notes/ })).toHaveAttribute(
+      'href',
+      '/notes?project=System+Notes#notes-index'
+    );
 
     const accessibility = await new AxeBuilder({ page }).analyze();
     expect(accessibility.violations).toEqual([]);
@@ -238,12 +232,12 @@ test.describe('System Notes redesign', () => {
       }
     );
     await page.goto('/projects');
-    // System Notes is not one of the six highlights, so the archive opens first.
-    await page.getByRole('button', { name: /show all \d+ exhibits/i }).click();
-    const project = page.getByTestId('project-system-notes');
+    await page.getByTestId('project-system-notes').click();
 
-    await project.getByRole('button', { name: 'read the argument' }).click();
-    await project.getByRole('link', { name: /cards filed under this exhibit/i }).click();
+    await page
+      .getByRole('article')
+      .getByRole('link', { name: /Decisions from System Notes/ })
+      .click();
 
     await expect(page).toHaveURL(/\/?\?project=System(?:\+|%20)Notes#notes-index$/);
     await page

@@ -19,15 +19,14 @@ export default function ProjectsPage() {
 
   return (
     <main id="main-content" className={styles.main}>
-      <section className={styles.hero}>
-        <p className={styles.kicker}>{projects.length} systems · every choice I&apos;d defend</p>
-        <h1>
-          Exhi<em>bits</em>
+      <section className={styles.hero} aria-labelledby="exhibits-heading">
+        <h1 id="exhibits-heading">
+          What I&apos;ve shipped.
+          <em>Including what I stopped.</em>
         </h1>
-        <p className={styles.claim}>The choices are the argument.</p>
         <p className={styles.blurb}>
-          Shipped systems, each cross-filed with the decisions it produced. The ones that failed on
-          purpose stay in the record.
+          {projects.length} systems, each cross-filed with the decisions it produced. The ones that
+          failed on purpose stay in the record.
         </p>
       </section>
       <ProjectDirectory projects={projects} />
