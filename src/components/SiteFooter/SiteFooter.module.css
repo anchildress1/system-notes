@@ -22,11 +22,16 @@
   gap: 0.7rem;
 }
 
-.mark {
+/* The mark is decoration, so it is drawn rather than rendered as an element.
+   As an aria-hidden span it also sat directly against the byline text, which
+   makes the space between them ambiguous to read and to lint. */
+.byline::before {
+  display: inline-block;
   width: 0.5rem;
   height: 0.5rem;
-  flex: 0 0 auto;
+  margin-right: 0.5rem;
   background: var(--flag);
+  content: '';
 }
 
 .links {
