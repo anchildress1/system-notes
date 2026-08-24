@@ -9,24 +9,6 @@ import { blurFor } from '@/lib/imageVariants';
 import { getProjectNotesURL } from '@/lib/searchRouting';
 import styles from './ProjectDirectory.module.css';
 
-/**
- * Reduces a raw status to the label the rail shows.
- *
- * The qualifier is the informative half. "Active · Deployed" and "Active ·
- * Pre-release" are different claims, and fourteen of the twenty systems are some
- * flavor of Active, so collapsing them to one word stamped nearly the whole rail
- * with the same meaningless label.
- *
- * @param status The project's status string, which may carry a qualifier.
- * @returns A lowercase label, the qualifier where the status carries one.
- */
-export function exhibitStamp(status: string | undefined): string {
-  const value = (status ?? '').trim().toLowerCase();
-  if (!value) return 'unfiled';
-  const qualifier = value.split('·').pop()?.trim();
-  return qualifier || value;
-}
-
 /** Opens one system directly: /projects?system=<id>. */
 export const SYSTEM_PARAM = 'system';
 
@@ -125,7 +107,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                         </span>
                       ) : null}
                     </span>
-                    <span className={styles.railStatus}>{exhibitStamp(project.status)}</span>
+                    <span className={styles.railStatus}>{project.status}</span>
                   </span>
                 </button>
               </li>
@@ -143,7 +125,6 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
             <span aria-hidden="true"> ★</span>
           </p>
         ) : null}
-        <p className={styles.status}>{selected.status}</p>
         <h2 className={styles.name}>{selected.title}</h2>
         <p className={styles.purpose}>{selected.purpose}</p>
 

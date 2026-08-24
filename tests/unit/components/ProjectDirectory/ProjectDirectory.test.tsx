@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import ProjectDirectory, { exhibitStamp } from '@/components/ProjectDirectory/ProjectDirectory';
+import ProjectDirectory from '@/components/ProjectDirectory/ProjectDirectory';
 import { mockProject } from '@tests/test-utils/fixtures';
 
 const projects = [
@@ -33,36 +33,6 @@ const projects = [
 
 const rail = () => screen.getByRole('navigation', { name: 'Systems' });
 const detail = () => screen.getByRole('article');
-
-describe('exhibitStamp', () => {
-  it.each([
-    ['Active · Deployed', 'deployed'],
-    ['Active · Published', 'published'],
-    ['Active · Released', 'released'],
-    ['Active · Pre-release', 'pre-release'],
-    ['Active', 'active'],
-    ['Deployed', 'deployed'],
-    ['Scrapped', 'scrapped'],
-    ['Retired', 'retired'],
-    ['Archived', 'archived'],
-    [undefined, 'unfiled'],
-    ['   ', 'unfiled'],
-  ])('reduces %s to %s', (status, expected) => {
-    expect(exhibitStamp(status)).toBe(expected);
-  });
-
-  it('keeps the qualifier rather than the base word on a compound status', () => {
-    // Every Active variant shares its base word, so the half after the divider
-    // is the only half that says anything.
-    expect(exhibitStamp('Deployed · now retired')).toBe('now retired');
-  });
-
-  it('separates the Active variants instead of stamping them all alike', () => {
-    const actives = ['Active · Deployed', 'Active · Published', 'Active · Pre-release'];
-
-    expect(new Set(actives.map(exhibitStamp)).size).toBe(actives.length);
-  });
-});
 
 describe('ProjectDirectory', () => {
   it('lists every system in the rail, not just a highlighted few', () => {
