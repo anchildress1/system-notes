@@ -10,17 +10,21 @@ import { getProjectNotesURL } from '@/lib/searchRouting';
 import styles from './ProjectDirectory.module.css';
 
 /**
- * Reduces a raw status to the word the rail shows.
+ * Reduces a raw status to the label the rail shows.
+ *
+ * The qualifier is the informative half. "Active · Deployed" and "Active ·
+ * Pre-release" are different claims, and fourteen of the twenty systems are some
+ * flavor of Active, so collapsing them to one word stamped nearly the whole rail
+ * with the same meaningless label.
  *
  * @param status The project's status string, which may carry a qualifier.
- * @returns A single lowercase word.
+ * @returns A lowercase label, the qualifier where the status carries one.
  */
 export function exhibitStamp(status: string | undefined): string {
-  const value = (status ?? '').toLowerCase();
-  if (value.includes('scrapped')) return 'falsified on purpose';
-  if (value.includes('retired')) return 'retired';
-  if (value.includes('archived')) return 'archived';
-  return 'in evidence';
+  const value = (status ?? '').trim().toLowerCase();
+  if (!value) return 'unfiled';
+  const qualifier = value.split('·').pop()?.trim();
+  return qualifier || value;
 }
 
 /** Opens one system directly: /projects?system=<id>. */

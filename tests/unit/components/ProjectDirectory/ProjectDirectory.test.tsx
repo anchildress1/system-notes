@@ -36,18 +36,31 @@ const detail = () => screen.getByRole('article');
 
 describe('exhibitStamp', () => {
   it.each([
-    ['Active · Deployed', 'in evidence'],
-    ['Deployed', 'in evidence'],
-    ['Scrapped', 'falsified on purpose'],
+    ['Active · Deployed', 'deployed'],
+    ['Active · Published', 'published'],
+    ['Active · Released', 'released'],
+    ['Active · Pre-release', 'pre-release'],
+    ['Active', 'active'],
+    ['Deployed', 'deployed'],
+    ['Scrapped', 'scrapped'],
     ['Retired', 'retired'],
     ['Archived', 'archived'],
-    [undefined, 'in evidence'],
+    [undefined, 'unfiled'],
+    ['   ', 'unfiled'],
   ])('reduces %s to %s', (status, expected) => {
     expect(exhibitStamp(status)).toBe(expected);
   });
 
-  it('reads the qualifier out of a compound status', () => {
-    expect(exhibitStamp('Deployed · now retired')).toBe('retired');
+  it('keeps the qualifier rather than the base word on a compound status', () => {
+    // Every Active variant shares its base word, so the half after the divider
+    // is the only half that says anything.
+    expect(exhibitStamp('Deployed · now retired')).toBe('now retired');
+  });
+
+  it('separates the Active variants instead of stamping them all alike', () => {
+    const actives = ['Active · Deployed', 'Active · Published', 'Active · Pre-release'];
+
+    expect(new Set(actives.map(exhibitStamp)).size).toBe(actives.length);
   });
 });
 
