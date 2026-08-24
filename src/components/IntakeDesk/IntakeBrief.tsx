@@ -96,7 +96,10 @@ export default function IntakeBrief({ question, onSettled }: Readonly<BriefProps
   const searchClient = liteClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
 
   return (
-    <InstantSearch searchClient={searchClient} indexName={ALGOLIA_INDEX_NAME}>
+    // insights={false} because no hit is rendered here to click. Left on, the
+    // middleware reaches for search-insights.js on Algolia's CDN, which
+    // script-src 'self' refuses, and warns on the console of every visit.
+    <InstantSearch searchClient={searchClient} indexName={ALGOLIA_INDEX_NAME} insights={false}>
       <Brief question={question} onSettled={onSettled} />
     </InstantSearch>
   );
