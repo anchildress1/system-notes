@@ -1,5 +1,6 @@
 'use client';
 
+import { citesKnownSystem } from '@/lib/systemIds';
 import { isSafeExternalUrl } from '@/lib/urlSafety';
 import styles from './IntakeDesk.module.css';
 
@@ -27,9 +28,11 @@ export function parseBrief(text: string): BriefSegment[] {
     const [whole, label, href] = match;
     const start = match.index ?? 0;
     if (start > cursor) segments.push({ text: text.slice(cursor, start) });
-    // An unsafe or malformed url loses its link and keeps its words: the
-    // citation still reads, it just stops being clickable.
-    segments.push(isSafeExternalUrl(href) ? { text: label!, href } : { text: label! });
+    // An unsafe url, or a project link naming a system that is not on file,
+    // loses its link and keeps its words: the citation still reads, it just
+    // stops being clickable.
+    const followable = isSafeExternalUrl(href) && citesKnownSystem(href);
+    segments.push(followable ? { text: label!, href } : { text: label! });
     cursor = start + whole.length;
   }
   if (cursor < text.length) segments.push({ text: text.slice(cursor) });

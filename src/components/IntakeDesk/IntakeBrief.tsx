@@ -5,7 +5,7 @@ import { liteClient } from 'algoliasearch/lite';
 import { InstantSearch, useChat } from 'react-instantsearch';
 import Link from 'next/link';
 import type { UIMessage } from 'instantsearch.js/es/lib/ai-lite';
-import { ALGOLIA_APP_ID, ALGOLIA_INTAKE_AGENT_ID, ALGOLIA_SEARCH_KEY } from '@/lib/algolia';
+import { ALGOLIA_APP_ID, ALGOLIA_AGENT_ID, ALGOLIA_SEARCH_KEY } from '@/lib/algolia';
 import BriefBody from './BriefBody';
 import { ALGOLIA_INDEX_NAME } from '@/config';
 import styles from './IntakeDesk.module.css';
@@ -37,7 +37,7 @@ export function messageText(message: UIMessage | undefined): string {
  */
 function Brief({ question, onSettled }: Readonly<BriefProps>) {
   const { messages, status, error } = useChat({
-    agentId: ALGOLIA_INTAKE_AGENT_ID,
+    agentId: ALGOLIA_AGENT_ID,
     // The connector otherwise asserts that a chat trigger or AI mode exists.
     // This is an input on a page, not a chat that opens.
     disableTriggerValidation: true,

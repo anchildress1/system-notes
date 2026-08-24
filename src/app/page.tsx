@@ -21,9 +21,9 @@ const stations = [
     note: 'Two indexes and a closed list of every system I have shipped. Nothing else counts as knowledge.',
   },
   {
-    name: 'Names',
+    name: 'Evidence',
     who: 'instruction',
-    note: 'Every system named has to be one on that list. No invented systems, no invented numbers.',
+    note: 'No invented systems, no invented numbers. A number has to come off a note or the list.',
   },
   {
     name: 'Gaps',
@@ -36,9 +36,9 @@ const stations = [
     note: 'A verdict, the approach, something I would refuse, then the evidence.',
   },
   {
-    name: 'Links',
+    name: 'Citations',
     who: 'enforced in code',
-    note: 'Model output is untrusted, so every url is checked before it renders. Unsafe ones keep the words and lose the link.',
+    note: 'Every url is checked before it renders, and a link naming a system I have not shipped is dropped with it. The words stay; the link does not.',
   },
 ] as const;
 

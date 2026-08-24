@@ -20,14 +20,8 @@ export function hasValidAlgoliaCredentials(
   return isValidAppId(appId) && isValidApiKey(apiKey);
 }
 
-/**
- * Agent Studio agent that answers the intake.
- *
- * Its own id rather than the general one: this agent answers in the first person
- * as Ashley and carries the project roster in its prompt, which is not the voice
- * or the context any other agent on the account should inherit.
- */
-export const ALGOLIA_INTAKE_AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_INTAKE_AGENT_ID || '';
+/** Agent Studio agent that answers the intake, configured with both indices. */
+export const ALGOLIA_AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_AGENT_ID || '';
 
 /**
  * Whether the intake has an agent to send a question to.
@@ -38,6 +32,6 @@ export const ALGOLIA_INTAKE_AGENT_ID = process.env.NEXT_PUBLIC_ALGOLIA_INTAKE_AG
  * @param agentId Agent identifier; defaults to the configured one.
  * @returns True when a question can be sent.
  */
-export function hasValidAgentCredentials(agentId: string = ALGOLIA_INTAKE_AGENT_ID): boolean {
+export function hasValidAgentCredentials(agentId: string = ALGOLIA_AGENT_ID): boolean {
   return hasValidAlgoliaCredentials() && agentId.trim().length > 0;
 }
