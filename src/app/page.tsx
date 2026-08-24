@@ -10,20 +10,36 @@ export const metadata: Metadata = buildPageMetadata({
   path: '/',
 });
 
+// One agent call, not a pipeline. The panel used to draw five stages and label
+// one of them deterministic, which described an architecture this page does not
+// run. What is actually true is the split below: four constraints the agent is
+// asked to hold, and one the render enforces whether it holds them or not.
 const stations = [
-  { name: 'Parse', who: 'agent', note: 'Reads the problem and names the requirements.' },
   {
-    name: 'Retrieve',
-    who: 'agent + corpus',
-    note: 'Reads every system on file and names the ones that answer it.',
+    name: 'Sources',
+    who: 'instruction',
+    note: 'Two indexes and a closed list of every system I have shipped. Nothing else counts as knowledge.',
   },
   {
-    name: 'Verify',
-    who: 'deterministic',
-    note: 'Checks every cited system exists on file. Invented ones are dropped.',
+    name: 'Names',
+    who: 'instruction',
+    note: 'Every system named has to be one on that list. No invented systems, no invented numbers.',
   },
-  { name: 'Cover', who: 'agent', note: 'Any requirement nothing answers becomes a stated gap.' },
-  { name: 'Assemble', who: 'agent', note: 'Writes the brief from the surviving evidence only.' },
+  {
+    name: 'Gaps',
+    who: 'instruction',
+    note: 'What I have not built gets said inside the answer, never saved for the end.',
+  },
+  {
+    name: 'Shape',
+    who: 'instruction',
+    note: 'A verdict, the approach, something I would refuse, then the evidence.',
+  },
+  {
+    name: 'Links',
+    who: 'enforced in code',
+    note: 'Model output is untrusted, so every url is checked before it renders. Unsafe ones keep the words and lose the link.',
+  },
 ] as const;
 
 export default function IntakePage() {
@@ -35,17 +51,17 @@ export default function IntakePage() {
           <em className={styles.headingTurn}>I&apos;ll show you how I&apos;d fix it.</em>
         </h1>
         <p className={styles.lede}>
-          Paste a role, or a failure you&apos;re living with. An agent parses it, pulls only from
-          systems I have actually shipped and the decisions behind them, drops anything it
-          can&apos;t source, and hands back a brief. No claim without evidence — that rule is
-          enforced in the pipeline, not promised in a paragraph.
+          Paste a role, or a failure you&apos;re living with. One agent reads it against my decision
+          index, my writing, and a closed list of the systems I have actually shipped, then hands
+          back a brief. Where I have not built the thing, it says so instead of reaching for the
+          nearest project that sounds close.
         </p>
         <IntakeDesk />
       </section>
 
       <section className={styles.pipeline} aria-labelledby="pipeline-heading">
         <h2 id="pipeline-heading" className={styles.pipelineHeading}>
-          What runs when you ask
+          What it is asked to do, and what it is not trusted with
         </h2>
         <ol className={styles.stations}>
           {stations.map(({ name, who, note }) => (
