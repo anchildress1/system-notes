@@ -38,12 +38,3 @@
   font-style: normal;
   font-weight: 400;
 }
-
-.blurb {
-  max-width: 46ch;
-  margin-top: 1.625rem;
-  color: var(--mute);
-  font-size: 1.16rem;
-  line-height: 1.75;
-  text-wrap: pretty;
-}

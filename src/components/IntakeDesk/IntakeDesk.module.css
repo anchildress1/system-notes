@@ -59,14 +59,6 @@
   cursor: not-allowed;
 }
 
-.hint {
-  color: var(--mute);
-  font-family: var(--font-display);
-  font-size: 0.875rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
 /* The answer spans both columns of the desk rather than sitting under the
    field: a brief is the page's subject once it exists, not a form's output. */
 .answer {

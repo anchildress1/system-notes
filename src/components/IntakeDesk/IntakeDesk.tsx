@@ -113,9 +113,7 @@ export default function IntakeDesk() {
           <button type="submit" className={styles.run} data-accent="filled" disabled={!canAsk}>
             Run it
           </button>
-          {canAsk ? (
-            <p className={styles.hint}>answers cite shipped work only</p>
-          ) : (
+          {canAsk ? null : (
             <p id={noticeId} className={styles.notice}>
               The agent is not reachable from here. The index and the exhibits hold the same
               evidence it reads from.
