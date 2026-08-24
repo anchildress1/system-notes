@@ -94,6 +94,9 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
     selected.app_url ? { label: 'Live app', href: selected.app_url } : null,
     selected.repo_url ? { label: 'Repo', href: selected.repo_url } : null,
     ...(selected.blog_posts ?? []).map((post) => ({ label: 'Write-up', href: post.url })),
+    // Labelled apart from the write-ups: someone else announcing a win is
+    // evidence for the award, not an account of how the thing was built.
+    ...(selected.announcements ?? []).map((post) => ({ label: 'Award', href: post.url })),
   ].filter((link): link is { label: string; href: string } => link !== null);
 
   return (

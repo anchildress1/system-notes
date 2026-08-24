@@ -6,7 +6,7 @@
     "why_it_exists": "Proves a model can find something true in a commit history without being allowed to invent it.",
     "long_description": "Snowflake does all of it. An external access integration pulls the repo from inside the warehouse, fifteen SQL views score six storylines and pick exactly one, and a UDF over AI_COMPLETE narrates that single thread — 20 to 140 commit lines, never the whole history. Thirteen SQL checks run before a card exists, so it fails loudly instead of rendering a lie.",
     "outcome": "Live and generating, capped at 140 commit lines per repo. Nothing to say gets a gray card, not a fabrication. Submitted to the DEV Weekend Challenge: Passion Edition.",
-    "status": "Active · Deployed",
+    "status": "Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/commit-chronicles.webp",
     "image_alt": "Commit Chronicles card plotting a repository's commits by date and hour, the night commits solid against a dark canvas",
@@ -54,7 +54,7 @@
     "why_it_exists": "Proves an AI can be a live, fallible opponent without ever being trusted with the truth.",
     "long_description": "A SvelteKit app on Cloud Run where a deterministic engine owns every fact while Gemini interprets Asks, plays the wolf, transcribes speech, and voices both characters — never seeing the secret. Provably winnable every round, keyboard- and screen-reader-complete.",
     "outcome": "A spoken Oracle and wolf, and a debug stream that shows the engine, not Gemini, holding the secret. Took Best Google AI Usage at the June Solstice Game Jam 2026.",
-    "status": "Active · Deployed",
+    "status": "Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/save-the-sun.webp",
     "image_alt": "A rune stone blazing with golden light at sunrise while Sköll, the great wolf, watches from a dark ridge.",
@@ -84,16 +84,18 @@
       {
         "title": "The Oracle and the Wolf — I Made Gemini Lose Like a Kid",
         "url": "https://dev.to/anchildress1/the-oracle-and-the-wolf-i-made-gemini-lose-like-a-kid-3nk5"
-      },
-      {
-        "title": "Congrats to the June Solstice Game Jam Winners",
-        "url": "https://dev.to/devteam/congrats-to-the-june-solstice-game-jam-winners-46c0"
       }
     ],
     "repo_url": "https://github.com/anchildress1/save-the-sun",
     "app_url": "https://savethesun.anchildress1.dev",
     "award": "June Solstice Game Jam 2026 Winner",
-    "order_rank": 20
+    "order_rank": 20,
+    "announcements": [
+      {
+        "title": "Congrats to the June Solstice Game Jam Winners",
+        "url": "https://dev.to/devteam/congrats-to-the-june-solstice-game-jam-winners-46c0"
+      }
+    ]
   },
   {
     "objectID": "unearthed",
@@ -140,15 +142,17 @@
       {
         "title": "Unearthed—The Coal Mine Behind Every Light Switch",
         "url": "https://dev.to/anchildress1/unearthed-the-coal-mine-behind-every-light-switch-234m"
-      },
-      {
-        "title": "Announcing the Winners of the DEV Weekend Challenge: Earth Day Edition",
-        "url": "https://dev.to/devteam/announcing-the-winners-of-the-dev-weekend-challenge-earth-day-edition-1n4"
       }
     ],
     "award": "Earth Day 2026 Winner",
     "repo_url": "https://github.com/anchildress1/unearthed",
-    "order_rank": 30
+    "order_rank": 30,
+    "announcements": [
+      {
+        "title": "Announcing the Winners of the DEV Weekend Challenge: Earth Day Edition",
+        "url": "https://dev.to/devteam/announcing-the-winners-of-the-dev-weekend-challenge-earth-day-edition-1n4"
+      }
+    ]
   },
   {
     "objectID": "carbon-trace",
@@ -157,7 +161,7 @@
     "why_it_exists": "Turns lived experience with gender bias into something you feel, not just read.",
     "long_description": "A framework-free browser experience — vanilla JS coordinating Canvas 2D rendering, PixiJS displacement shaders, and GSAP-timed scene transitions, synced to layered Howler audio cues through every shift in bias, endurance, and becoming.",
     "outcome": "Deployed and live, pairing memoir text with real-time PixiJS/GSAP scene transitions and Howler audio cues. Won WeCoded 2026.",
-    "status": "Active · Deployed",
+    "status": "Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/carbon-trace.webp",
     "image_alt": "Carbon Trace visual experience following a diamond metaphor through pressure, bias, and transformation toward becoming",
@@ -187,16 +191,18 @@
       {
         "title": "Forged Between Coal and Code",
         "url": "https://dev.to/anchildress1/forged-between-coal-and-code-phi"
-      },
-      {
-        "title": "Congrats to the 2026 WeCoded Challenge Winners",
-        "url": "https://dev.to/devteam/congrats-to-the-2026-wecoded-challenge-winners-2pee"
       }
     ],
     "repo_url": "https://github.com/anchildress1/carbon-trace",
     "app_url": "https://carbon-trace.anchildress1.dev",
     "award": "WeCoded 2026 Winner",
-    "order_rank": 40
+    "order_rank": 40,
+    "announcements": [
+      {
+        "title": "Congrats to the 2026 WeCoded Challenge Winners",
+        "url": "https://dev.to/devteam/congrats-to-the-2026-wecoded-challenge-winners-2pee"
+      }
+    ]
   },
   {
     "objectID": "metal-birds-feed",
@@ -247,7 +253,7 @@
     "why_it_exists": "On-device ADHD recall, built so nothing — not even your voice — ever leaves the phone.",
     "long_description": "Gemma 4 E4B takes native audio (no SpeechRecognizer) and streams transcription plus follow-up, then three background lens passes feed a deterministic Kotlin convergence resolver. EmbeddingGemma drives tone-word drift; a sealed NetworkGate and a verifyNoTelemetry Gradle task make privacy a build-time guarantee, not a promise.",
     "outcome": "Gemma 4 Challenge entry. 73% meaningful lens divergence against a 50% bar; 12/12 entries parsed at a 21.2s mean on a Galaxy S24 Ultra.",
-    "status": "Active · Released",
+    "status": "Released",
     "owner": "anchildress1",
     "image_url": "/projects/vestige.webp",
     "image_alt": "Vestige Android brain tracker surfacing sourced behavioral patterns from on-device Gemma 4 analysis",
@@ -295,7 +301,7 @@
     "why_it_exists": "The useful part of a project is usually the constraint, failure, or choice that produced it. This keeps that reasoning attached to the work.",
     "long_description": "A Next.js app with an Algolia-backed decision index, durable note pages, and a complete project directory spanning active systems, retired tools, and deliberate dead ends. Every merge clears CI-enforced coverage and Lighthouse budgets before it ships.",
     "outcome": "Live at anchildress1.dev as a searchable record of engineering work, deployed on Cloud Run behind unit, browser, accessibility, security, and performance gates.",
-    "status": "Active · Deployed",
+    "status": "Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/system-notes.webp",
     "image_alt": "System Notes decision index in a plum-black and neon-fuchsia interface",
@@ -350,7 +356,7 @@
     "why_it_exists": "AI touched that commit. Now the history says so — enforced, not just implied.",
     "long_description": "TypeScript and Python rules plug into commitlint and gitlint, enforcing explicit AI attribution on every commit that touches AI-assisted code. Mechanical and strict by design — a failing git hook, not a policy document nobody reads.",
     "outcome": "Published to npm and PyPI — and dogfooded on this very repo, where commits fail without proper AI attribution. Enforced at commit time, not left to convention.",
-    "status": "Active · Published",
+    "status": "Published",
     "owner": "anchildress1",
     "image_url": "/projects/rai-lint.webp",
     "image_alt": "RAI Lint banner enforcing explicit AI attribution in git commits and workflows",
@@ -396,7 +402,7 @@
     "why_it_exists": "rai-lint makes the footers mandatory. This one reads them back out and puts the number where people can see it.",
     "long_description": "Non-merge commits in the adoption window are scored by footer type — Authored-by at 0.00 through Generated-by at 0.90 — and weighted by source churn, while lockfiles and generated output are excluded. The window opens at the earliest RAI footer, and squash-collapsed history is surfaced as degraded granularity in the job summary instead of being passed off as exact.",
     "outcome": "Implemented and running against its own repository: the JavaScript action scores repository history, rewrites only the marked README block, reports the score window, commit counts, and squash granularity, and ships as a committed Node 24 bundle. The first release and Marketplace listing are still pending.",
-    "status": "Active · Pre-release",
+    "status": "Pre-release",
     "owner": "anchildress1",
     "image_url": "/projects/rai-commit-badge.webp",
     "image_alt": "RAI Commit Badge banner showing an AI attribution score published as a repository badge",
@@ -428,7 +434,7 @@
     "why_it_exists": "Freeform thoughts in, schema-perfect index cards out — no cleanup step.",
     "long_description": "Exposed as an MCP server so any AI client can write directly: an Express API validates every payload against Zod schemas before Postgres ever sees it — enforced at capture time, not cleanup time. Freeform input in, structured System Notes cards out. No exceptions.",
     "outcome": "Deployed and live: any MCP-speaking AI client can write a note that lands in Postgres already schema-valid, with zero manual cleanup pass.",
-    "status": "Active · Deployed",
+    "status": "Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/supascribe-notes.webp",
     "image_alt": "SupaScribe Notes app interface showing structured note card generation powered by AI and Supabase",
@@ -474,7 +480,7 @@
     "why_it_exists": "One shared lint boundary that keeps AI agents inside the lines across every repo.",
     "long_description": "Echo collapses formatting and linting into a single shared config so the same boundaries apply across projects and agents without restating preferences. Built for AI consumers first, humans second.",
     "outcome": "One shared Prettier + ESLint config enforced identically across every repo it's installed in, verified by Node's built-in test runner and SonarCloud.",
-    "status": "Active · Published",
+    "status": "Published",
     "owner": "anchildress1",
     "image_url": "/projects/eslint-config-echo.webp",
     "image_alt": "Echo ESLint configuration banner representing reusable linting boundaries for AI coding agents",
@@ -507,7 +513,7 @@
     "why_it_exists": "Upload cursed code; a dragon files the incident report and smelts it to slag.",
     "long_description": "React 19 and Tailwind front a PixiJS-animated dragon and Howler audio, while an Express API calls Gemini Flash to generate deadpan enterprise incident reports. Each report writes to a real-time Firestore manifest, powering a public leaderboard of P0 disasters.",
     "outcome": "A live, shareable joke product — AI-generated reports, animated remediation, and community escalation in one polished challenge build.",
-    "status": "Active · Deployed",
+    "status": "Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/legacy-smelter.webp",
     "image_alt": "Hotfix the dragon smelting an uploaded legacy-code screenshot into molten slag while generating a structured incident report",
@@ -596,7 +602,7 @@
     "why_it_exists": "A zero-stakes weekend build to see if I could — the only quiz that includes otrovert.",
     "long_description": "A deterministic, fully client-side TypeScript engine scores 35 questions across four axes into five independent fit percentages — the bars don't sum to 100. No backend, no tracking, no persistence. Built with vibes, AI, and a small pile of cited research.",
     "outcome": "A deployed, no-stakes quiz on Cloudflare Pages — five independent \"vert\" scores, cited sources, and zero telemetry.",
-    "status": "Active · Deployed",
+    "status": "Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/multivert-banner.webp",
     "image_alt": "Multivert personality quiz banner with five colored markers along an axis above the wordmark",
@@ -767,7 +773,7 @@
     "what_it_is": "A curated, opinionated set of GitHub Copilot workflows, agents, and patterns that earned their place.",
     "why_it_exists": "The Copilot workflows that survived daily use — not the ones that just sounded clever.",
     "long_description": "Not a neutral list. I build a lot of Copilot tooling locally and most of it dies there; only what survives daily use, frustration, and edge cases ships here. It reflects how I actually work with Copilot, not how the docs say I should.",
-    "outcome": "65 GitHub stars, maintained by a GitHub Copilot–certified author who favors practical utility over volume.",
+    "outcome": "65 GitHub stars, maintained by a GitHub Copilot-certified author who favors practical utility over volume.",
     "status": "Active",
     "owner": "anchildress1",
     "image_url": "/projects/awesome-github-copilot.webp",
@@ -788,10 +794,6 @@
         "url": "https://dev.to/anchildress1/troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o"
       },
       {
-        "title": "Oh I Have Big News—I'm GitHub Copilot Certified!",
-        "url": "https://dev.to/anchildress1/oh-i-have-big-news-guess-what-i-got-yesterday-1jca"
-      },
-      {
         "title": "Everything I Know About GitHub Copilot Instructions",
         "url": "https://dev.to/anchildress1/everything-i-know-about-github-copilot-instructions-from-zero-to-onboarded-for-real-4nb0"
       },
@@ -805,7 +807,13 @@
       }
     ],
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
-    "order_rank": 85
+    "order_rank": 85,
+    "announcements": [
+      {
+        "title": "Oh I Have Big News—I'm GitHub Copilot Certified!",
+        "url": "https://dev.to/anchildress1/oh-i-have-big-news-guess-what-i-got-yesterday-1jca"
+      }
+    ]
   },
   {
     "objectID": "delegate-action",
