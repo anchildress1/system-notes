@@ -3,9 +3,7 @@ import { expect } from '@playwright/test';
 import { mockAlgoliaSearch, test } from './utils';
 
 test.describe('System Notes redesign', () => {
-  test('loads the approved filing workspace without the rejected campaign hero', async ({
-    page,
-  }) => {
+  test('loads the filing workspace under the page head', async ({ page }) => {
     await mockAlgoliaSearch(page, [
       {
         objectID: 'card:system-notes:1',
@@ -20,7 +18,12 @@ test.describe('System Notes redesign', () => {
     await page.goto('/notes');
 
     await expect(page).toHaveTitle("Index | Ashley's System Notes");
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('System Notes Index');
+    // The index used to carry a visually-hidden h1 because heads were rejected on
+    // every route. That decision was reversed: all four routes now open on the
+    // same head, and this route's is the only one whose rhythm is retuned to sit
+    // above a working tool. The 'Every choice' assertion below still stands — the
+    // rejected thing was that campaign's copy, not the existence of a head.
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('How I decide');
     await expect(page.getByRole('region', { name: /Browse notes by type/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /Filed under/i })).toHaveAttribute(
       'aria-expanded',

@@ -14,12 +14,19 @@ export default function IntakePage() {
   return (
     <main id="main-content" className={styles.main}>
       <section className={styles.intake} aria-labelledby="intake-heading">
-        <h1 id="intake-heading" className={styles.heading}>
-          Tell me what&apos;s breaking.{' '}
-          <em className={styles.headingTurn}>I&apos;ll show you how I&apos;d fix it.</em>
-        </h1>
-        <p className={styles.lede}>Paste a role, or a failure you&apos;re living with.</p>
-        <IntakeDesk />
+        <div className="page-head">
+          <p className="page-head-slug">
+            <span>Intake</span>
+            <span>One failure per form</span>
+          </p>
+          <h1 id="intake-heading">
+            Tell me what&rsquo;s breaking.
+            <span>I&rsquo;ll show you how I&rsquo;d fix it.</span>
+          </h1>
+        </div>
+        <div className="page-column">
+          <IntakeDesk />
+        </div>
       </section>
     </main>
   );

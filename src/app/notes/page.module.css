@@ -2,6 +2,25 @@
   min-height: calc(100svh - var(--header-height));
 }
 
+/* Only the rhythm is this page's own. Every other route opens on its head; this
+   one opens on a working tool, so the shared lead would push the board a screen
+   down. The container comes from .page-head so the heading stands on the same
+   axis as the wordmark above it and the byline below it — the workspace beneath
+   runs full bleed, which is a change of layer, not a margin to match. */
+.head {
+  --head-lead: clamp(1.75rem, 5vh, 3.25rem);
+  --head-tail: clamp(1.25rem, 3vh, 2rem);
+}
+
+/* Same face, same italic turn, tuned scale. At the shared display size this
+   headline ran to three lines and broke mid-phrase, and the board it introduces
+   started half a screen down. The other heads open their page; this one has to
+   share the fold with a tool. */
+.head h1 {
+  max-width: 26ch;
+  font-size: clamp(2.4rem, 5.2vw, 4.6rem);
+}
+
 .indexSection {
   min-height: inherit;
 }

@@ -19,12 +19,19 @@ export default function ProjectsPage() {
 
   return (
     <main id="main-content" className={styles.main}>
-      <section className={styles.hero} aria-labelledby="exhibits-heading">
+      <section className={`page-head ${styles.hero}`} aria-labelledby="exhibits-heading">
+        <p className="page-head-slug">
+          <span>Exhibits</span>
+          <span>{projects.length} entered into evidence</span>
+        </p>
         <h1 id="exhibits-heading">
-          What I&apos;ve shipped. <em>Including what I stopped.</em>
+          What I&rsquo;ve shipped.
+          <span>Including what I stopped.</span>
         </h1>
       </section>
-      <ProjectDirectory projects={projects} />
+      <div className="page-column">
+        <ProjectDirectory projects={projects} />
+      </div>
     </main>
   );
 }

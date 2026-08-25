@@ -14,27 +14,8 @@
   outline-offset: 4px;
 }
 
+/* Container and rhythm both come from .page-head. This used to carry its own
+   94rem/6vw column, which put the heading 86px inside the directory below it. */
 .hero {
   position: relative;
-  max-width: 94rem;
-  padding: clamp(3.5rem, 12vh, 9rem) 6vw 0;
-  margin: 0 auto;
-}
-
-.hero h1 {
-  max-width: 22ch;
-  font-family: var(--font-display);
-  font-size: clamp(2.25rem, 5.6vw, 5rem);
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
-  text-wrap: balance;
-}
-
-.hero h1 em {
-  display: block;
-  color: var(--flag);
-  font-family: var(--font-display);
-  font-style: normal;
-  font-weight: 400;
 }

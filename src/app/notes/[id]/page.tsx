@@ -56,7 +56,11 @@ export default async function NotePage({ params }: Readonly<NotePageProps>) {
           <Link className={styles.backLink} href="/notes">
             <FiArrowLeft aria-hidden="true" /> Back to index
           </Link>
-          <p className={styles.kicker}>{note.category || 'Note'}</p>
+          {/* Category only. The metadata list below already states the date,
+              and repeating it in the slug was a second copy of the same fact. */}
+          <p className="page-head-slug">
+            <span>{note.category || 'Note'}</span>
+          </p>
           <h1>{note.title}</h1>
           {note.blurb ? <p className={styles.blurb}>{note.blurb}</p> : null}
         </header>
@@ -109,7 +113,9 @@ function NoteUnavailable() {
         <Link className={styles.backLink} href="/notes">
           <FiArrowLeft aria-hidden="true" /> Back to index
         </Link>
-        <p className={styles.kicker}>Retrieval unavailable</p>
+        <p className="page-head-slug">
+          <span>Retrieval unavailable</span>
+        </p>
         <h1>The note did not answer.</h1>
         <p>
           The address is valid. Its evidence could not be retrieved right now, so nothing was
