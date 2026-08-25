@@ -61,10 +61,9 @@ export default function IndexSearch({ pulse }: Readonly<{ pulse?: IndexPulse | n
 
   return (
     <div className={styles.searchArea}>
+      {/* The `retrieve>` prompt is gone. A console prefix on a search field is a
+          costume, and it was the loudest one on the site. */}
       <label className={styles.searchPill}>
-        <span className={styles.retrieve} aria-hidden="true">
-          retrieve&gt;
-        </span>
         <span className="visually-hidden">Search the notes index</span>
         <input
           ref={inputRef}

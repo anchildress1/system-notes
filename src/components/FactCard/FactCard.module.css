@@ -2,10 +2,15 @@
   display: flex;
   min-width: 0;
   min-height: clamp(18rem, 40vh, 28rem);
-  padding: clamp(1.25rem, 2.5vw, 1.8rem);
-  border: 1px solid var(--edge);
-  border-radius: 0.85rem;
-  background: var(--panel);
+  padding: 0 0 clamp(1.5rem, 3vw, 2.25rem);
+  /* No box and no fill. The queue beneath this is separated by hairlines alone,
+     so a bordered panel here made the entry you are reading the only object on
+     the page still wearing a container — it read as a card sitting on a
+     catalog rather than as the top of one. A single rule under it is the same
+     separator every other entry gets, at the weight the lead entry earns. */
+  border: 0;
+  border-bottom: 1px solid var(--edge);
+  background: transparent;
   color: var(--bone);
   flex-direction: column;
   animation: dossier-enter 340ms var(--ease-out) both;
@@ -18,9 +23,10 @@
   color: var(--mute);
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
-  font-size: 0.875rem;
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
   gap: 1rem;
-  text-transform: lowercase;
+  text-transform: uppercase;
 }
 
 /* min-width:0 is what lets the ellipsis engage: a flex item's automatic
@@ -34,11 +40,11 @@
 
 .category {
   flex: 0 0 auto;
-  padding: 0.15rem 0.65rem;
-  border: 1px solid var(--flag);
-  border-radius: 999px;
+  padding: 0;
+  border: 0;
   color: var(--flag);
-  font-size: 0.875rem;
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
 }
 
@@ -47,11 +53,11 @@
   /* The mockup sets a flat 25px here rather than a fluid display size — the
      reading pane is a card, not a hero. */
   margin-top: 0.75rem;
-  font-family: var(--font-sans);
-  font-size: 1.5625rem;
-  font-weight: 900;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
+  font-family: var(--font-editorial);
+  font-size: clamp(1.7rem, 2.4vw, 2.2rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.14;
   overflow-wrap: anywhere;
   text-wrap: pretty;
 }
@@ -108,17 +114,24 @@
   padding: 0;
   margin-top: auto;
   padding-top: 1rem;
-  gap: 0.4rem;
+  gap: 0.55rem;
   list-style: none;
 }
 
 .tags li {
-  padding: 0.2rem 0.55rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
+  padding: 0;
+  border: 0;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.875rem;
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
+  text-transform: uppercase;
+}
+
+/* Separated by a mark rather than by a capsule each. */
+.tags li + li::before {
+  margin-right: 0.55rem;
+  content: '·';
 }
 
 .actions {

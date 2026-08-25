@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import type { Hit } from 'instantsearch.js';
 import FactCard from '@/components/FactCard/FactCard';
 import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteContent';
@@ -60,12 +60,12 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
             data-ranked-queue
             aria-label="Highest-ranked alternate notes"
           >
-            {alternatives.map(({ hit, index }) => {
+            {alternatives.map(({ hit, index }, rank) => {
               const position = getFactHitPosition(hit, index + 1);
               const project = getNoteProjects(hit)[0] ?? 'System Notes';
               const date = formatNoteDate(hit.created_at);
               return (
-                <li key={hit.objectID}>
+                <li key={hit.objectID} style={{ '--rank': rank } as CSSProperties}>
                   <button
                     type="button"
                     onClick={() => {

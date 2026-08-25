@@ -1,8 +1,8 @@
 .workspace {
   display: grid;
-  width: min(100%, 120rem);
+  /* Fills the column its page gives it rather than the viewport. */
+  width: 100%;
   min-height: calc(100svh - var(--header-height));
-  margin: 0 auto;
   background: var(--void);
   font-family: var(--font-sans);
   grid-template-columns: auto minmax(0, 1fr);
@@ -83,7 +83,7 @@
   width: 1rem;
   height: 0.68rem;
   border-radius: 0.08rem;
-  background: var(--flag);
+  background: var(--flag-vivid);
 }
 
 .categoryName {
@@ -123,7 +123,6 @@
   padding: 0;
   margin-top: 0.5rem;
   border: 1px solid transparent;
-  border-radius: 0.35rem;
   /* Fixed 14px tracks rather than fluid ones: the mockup's tile is 14x10 with a
      4px gutter, and explicit tracks still resolve to a readable column count. */
   grid-template-columns: repeat(auto-fill, 14px);
@@ -232,7 +231,7 @@
 
 .readingPane {
   min-width: 0;
-  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2.5rem) 2rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 2.5vw, 2rem) 2rem;
 }
 
 .searchArea {
@@ -240,32 +239,29 @@
   z-index: 20;
 }
 
+/* One rule, the full width of the pane. The pill was a rounded grey capsule with
+   a console prefix inside it — the single most "developer tool" object on the
+   site. What replaces it is the line you write on. */
 .searchPill {
   display: grid;
   min-height: 3.25rem;
   align-items: center;
-  padding: 0.25rem 0.55rem 0.25rem 1.25rem;
-  border: 1px solid var(--edge);
-  border-radius: 999px;
-  background: var(--panel);
+  padding: 0.25rem 0 0.55rem;
+  border: 0;
+  border-bottom: 1px solid var(--edge);
+  background: transparent;
   color: var(--bone);
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.7rem;
-}
-
-.retrieve {
-  color: var(--flag);
-  font-family: var(--font-display);
-  font-size: 0.9375rem;
-  font-weight: 700;
+  transition: border-color 0.25s var(--ease-out);
 }
 
 /* The ring goes on the pill, not the input: an outline drawn inside the pale
    pill is nearly invisible, and the global :where() focus rule has zero
    specificity so the input's own `outline: 0` was winning outright. */
 .searchPill:has(input:focus-visible) {
-  outline: 2px solid var(--flag);
-  outline-offset: 3px;
+  border-bottom-color: var(--flag);
+  border-bottom-width: 2px;
 }
 
 .searchPill input {
@@ -274,28 +270,29 @@
   outline: 0;
   background: transparent;
   color: var(--bone);
-  font-family: var(--font-display);
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-family: var(--font-editorial);
+  font-size: clamp(1.25rem, 2.4vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .searchPill input::placeholder {
   color: var(--mute);
-  opacity: 0.75;
+  opacity: 0.6;
 }
 
 .searchPill kbd,
 .searchPill button {
-  padding: 0.55rem 0.65rem;
-  border-radius: 999px;
+  padding: 0.4rem 0;
   background: transparent;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.875rem;
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
+  text-transform: uppercase;
 }
 
 .searchPill button:hover {
-  background: var(--panel-hi);
   color: var(--flag);
 }
 
@@ -357,8 +354,8 @@
   margin-left: 0.4rem;
   place-items: center;
   border-radius: 50%;
-  background: var(--flag);
-  color: var(--void);
+  background: var(--flag-vivid);
+  color: var(--flag-ink);
 }
 
 .filterOptions {
@@ -428,7 +425,6 @@
 }
 
 .reader:focus-visible {
-  border-radius: 0.85rem;
   outline: 2px solid var(--flag);
   outline-offset: 0.25rem;
 }
@@ -437,7 +433,8 @@
   display: grid;
   min-width: 0;
   padding: 0;
-  gap: 0.65rem;
+  margin-top: 0.5rem;
+  border-top: 0.5px solid var(--line-strong);
   list-style: none;
 }
 
@@ -445,6 +442,10 @@
   min-width: 0;
 }
 
+/* An exhibition catalog, not a stack of cards. Each entry is separated by a
+   hairline and nothing else — no box, no fill, no border on three other sides.
+   The row indents on hover instead of lighting up, which is how a printed list
+   acknowledges you without becoming a button. */
 .queueList button {
   display: grid;
   /* An implicit `auto` track resolves to max(min-content, …) and can grow past
@@ -452,24 +453,33 @@
      badge in .queueMeta makes that min-content wide enough to do it. */
   grid-template-columns: minmax(0, 1fr);
   width: 100%;
-  min-height: 4.65rem;
   align-content: center;
-  padding: 0.8rem 1.25rem;
-  border: 1px solid var(--line);
-  border-radius: 0.75rem;
-  background: var(--void);
+  padding: 1.15rem 0;
+  border: 0;
+  border-bottom: 0.5px solid var(--line-strong);
+  background: transparent;
   color: var(--bone);
   text-align: left;
   transition:
-    border-color 180ms ease,
-    background 180ms ease,
-    transform 180ms ease;
+    padding-left 260ms var(--ease-out),
+    color 200ms ease,
+    border-color 200ms ease;
 }
 
 .queueList button:hover {
-  border-color: var(--edge);
-  background: var(--panel);
-  transform: translateX(0.2rem);
+  padding-left: 0.9rem;
+  border-bottom-color: var(--flag);
+}
+
+/* Staggered measures. Every entry cut to the same width is a table column; a
+   catalog lets the line length shift down the page. */
+.queueList li:nth-child(odd) .queueTitle {
+  max-width: 46ch;
+}
+
+.queueList li:nth-child(even) .queueTitle {
+  max-width: 38ch;
+  padding-left: clamp(0rem, 2.5vw, 2.5rem);
 }
 
 .queueMeta {
@@ -478,25 +488,39 @@
   justify-content: space-between;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.875rem;
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
   gap: 0.75rem;
-  text-transform: lowercase;
+  text-transform: uppercase;
 }
 
 .queueMeta > span:last-child {
-  padding: 0.12rem 0.55rem;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  font-size: 0.875rem;
+  padding: 0;
+  border: 0;
+  color: var(--flag);
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
   white-space: nowrap;
 }
 
 .queueTitle {
+  display: block;
   margin-top: 0.45rem;
-  font-size: 0.9375rem;
-  font-weight: 800;
-  line-height: 1.25;
+  /* Scaled by rank, because this list IS ranked — it is literally numbered.
+     Every row at one size made a ranked queue read as an unordered table, and
+     the title was set at the same 0.9375rem as its own metadata, so the thing
+     you choose between had no more weight than the date beside it.
+
+     Rank drives the scale rather than an arbitrary index multiplier: the
+     variation then means something a reader can act on, instead of being
+     decoration that happens to look irregular. Floored at 1rem so the tail of
+     the queue never becomes fine print. */
+  font-family: var(--font-editorial);
+  font-size: max(1.05rem, calc(1.65rem - var(--rank, 0) * 0.14rem));
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.14;
   overflow-wrap: anywhere;
   text-wrap: pretty;
 }
@@ -583,11 +607,11 @@
 .emptyState h2 {
   max-width: 48rem;
   margin-top: 0.9rem;
-  font-family: var(--font-sans);
-  font-size: clamp(2.4rem, 7vw, 6rem);
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 0.95;
+  font-family: var(--font-editorial);
+  font-size: clamp(2.3rem, 6.4vw, 5.4rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 
 .unavailable > p:last-child,
