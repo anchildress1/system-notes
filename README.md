@@ -1,4 +1,4 @@
-[![CI](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml/badge.svg)](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml) [![Quality Gate](https://img.shields.io/sonar/alert_status/anchildress1_system-notes?server=https%3A%2F%2Fsonarcloud.io&logo=sonarqubecloud)](https://sonarcloud.io/summary/new_code?id=anchildress1_system-notes) ![License](https://img.shields.io/badge/License-PolyForm%20Shield%201.0.0-blue)
+[![CI](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml/badge.svg)](https://github.com/anchildress1/system-notes/actions/workflows/ci.yml) [![Quality Gate](https://img.shields.io/sonar/alert_status/anchildress1_system-notes?server=https%3A%2F%2Fsonarcloud.io&logo=sonarqubecloud)](https://sonarcloud.io/summary/new_code?id=anchildress1_system-notes) ![License](https://img.shields.io/badge/License-PolyForm%20Shield%201.0.0%20%2B%20supplemental-blue)
 
 <!-- prettier-ignore-start -->
 <!--START_SECTION:rai-badge-->
@@ -94,7 +94,7 @@ Pull requests must:
 
 ## License
 
-System Notes uses the [PolyForm Shield License 1.0.0](./LICENSE). Learn from it, fork it, keep it personal. Do not sell it.
+System Notes uses the [PolyForm Shield License 1.0.0 with supplemental terms](./LICENSE). The supplemental terms narrow the base license: no monetization, no endorsement, and attribution on any substantial reuse. Learn from it, fork it, keep it personal. Do not sell it.
 
 ## Author
 
