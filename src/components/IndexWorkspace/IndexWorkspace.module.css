@@ -276,6 +276,17 @@
   letter-spacing: -0.01em;
 }
 
+/* The field is type="search" for the semantics and the keyboard it gets, but
+   the browser draws its own clear control for that type — which sat next to the
+   one this component renders, two crosses offering the same action, the native
+   one in its own colour. Only ours survives. */
+.searchPill input::-webkit-search-cancel-button,
+.searchPill input::-webkit-search-decoration {
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .searchPill input::placeholder {
   color: var(--mute);
   opacity: 0.6;
@@ -406,9 +417,15 @@
   color: var(--bone);
 }
 
+/* A rule between the query and what it returned. The featured entry lost its
+   box when the page became a catalog, and nothing took over the job of ending
+   the search block — the first record ran straight out of the meta line above
+   it, so the count, the facets and the result read as one run of text. */
 .resultArea {
   position: relative;
   min-width: 0;
+  padding-top: clamp(1rem, 2.5vh, 1.6rem);
+  border-top: 1px solid var(--line-strong);
 }
 
 .readingQueue {
