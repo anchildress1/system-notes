@@ -22,14 +22,18 @@ export type SwatchTheme = keyof typeof SWATCH_SURFACE_LIGHTNESS;
  * rank by size. Slots separate by chroma as well as lightness: five purely
  * tonal steps cannot stay distinct at this separation.
  *
+ * Ordered down the heat ramp declared in globals.css — amber, orange, ember,
+ * steel — so rank reads as temperature. Slot 1 used to be a cyan, the only
+ * cold tone in the system and the one swatch the palette could not justify.
+ *
  * Every entry is a token. A literal cannot follow a theme, so a hardcoded
  * color here renders identically against both boards.
  */
 export const SWATCH_PALETTE = [
   'var(--k-decision)',
+  'var(--k-note)',
   'var(--k-other)',
   'var(--k-principle)',
-  'var(--k-note)',
 ] as const;
 
 /**
@@ -52,11 +56,40 @@ export const SWATCH_TOKEN_LIGHTNESS: Readonly<
   Record<string, Readonly<Record<SwatchTheme, number>>>
 > = {
   '--k-award': { dark: 93, light: 62 },
-  '--k-decision': { dark: 83, light: 58 },
-  '--k-other': { dark: 78, light: 40 },
-  '--k-principle': { dark: 72, light: 52 },
-  '--k-note': { dark: 66, light: 46 },
+  '--k-decision': { dark: 83, light: 53 },
+  '--k-note': { dark: 74, light: 45 },
+  '--k-other': { dark: 65, light: 37 },
+  '--k-principle': { dark: 56, light: 30 },
 };
+
+/**
+ * Assigns every category its swatch, by rank among the categories that actually
+ * draw from the rank palette.
+ *
+ * An award category takes {@link AWARD_SWATCH} and must NOT consume a rank slot.
+ * While it did, five categories over a four-slot palette wrapped the last one
+ * back onto slot 0: Principles and Decisions painted the same color on both
+ * boards, which is indistinguishable from a filter that does nothing.
+ *
+ * @param values Category values in rank order, largest first.
+ * @param isAward Names the categories that take the reserved award tone.
+ * @returns Category value to swatch string, one entry per input value.
+ */
+export function assignSwatches(
+  values: readonly string[],
+  isAward: (value: string) => boolean
+): Map<string, string> {
+  let rank = 0;
+  const assigned = new Map<string, string>();
+  for (const value of values) {
+    if (assigned.has(value)) continue;
+    assigned.set(
+      value,
+      isAward(value) ? AWARD_SWATCH : SWATCH_PALETTE[rank++ % SWATCH_PALETTE.length]!
+    );
+  }
+  return assigned;
+}
 
 /**
  * Resolves a palette entry to its lightness in percent.
@@ -83,7 +116,7 @@ export function swatchLightness(swatch: string, theme: SwatchTheme = 'dark'): nu
     // near-black swatch as valid. Normalize rather than trust the caller.
     return literal[2] ? raw : raw * 100;
   }
-  throw new Error(`Unrecognised swatch: ${swatch}`);
+  throw new Error(`Unrecognized swatch: ${swatch}`);
 }
 
 /**

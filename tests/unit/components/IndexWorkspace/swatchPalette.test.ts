@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   AWARD_SWATCH,
+  assignSwatches,
   SWATCH_MIN_LIGHTNESS_DELTA,
   SWATCH_PALETTE,
   SWATCH_SURFACE_LIGHTNESS,
@@ -30,8 +31,8 @@ describe('swatchLightness', () => {
   it('resolves a reviewed token per theme', () => {
     expect(swatchLightness('var(--k-award)', 'dark')).toBe(93);
     expect(swatchLightness('var(--k-award)', 'light')).toBe(62);
-    expect(swatchLightness('var(--k-note)', 'dark')).toBe(66);
-    expect(swatchLightness('var(--k-note)', 'light')).toBe(46);
+    expect(swatchLightness('var(--k-note)', 'dark')).toBe(74);
+    expect(swatchLightness('var(--k-note)', 'light')).toBe(45);
   });
 
   it('reads the dark board when no theme is named', () => {
@@ -39,7 +40,7 @@ describe('swatchLightness', () => {
   });
 
   it('tolerates whitespace inside the var() call', () => {
-    expect(swatchLightness('var( --k-principle )')).toBe(72);
+    expect(swatchLightness('var( --k-principle )')).toBe(56);
   });
 
   it('reads a fractional lightness', () => {
@@ -56,10 +57,10 @@ describe('swatchLightness', () => {
   });
 
   it('rejects a color space it cannot reason about', () => {
-    expect(() => swatchLightness('#ff00ff')).toThrow(/Unrecognised swatch/);
-    expect(() => swatchLightness('rgb(255 0 255)')).toThrow(/Unrecognised swatch/);
-    expect(() => swatchLightness('transparent')).toThrow(/Unrecognised swatch/);
-    expect(() => swatchLightness('')).toThrow(/Unrecognised swatch/);
+    expect(() => swatchLightness('#ff00ff')).toThrow(/Unrecognized swatch/);
+    expect(() => swatchLightness('rgb(255 0 255)')).toThrow(/Unrecognized swatch/);
+    expect(() => swatchLightness('transparent')).toThrow(/Unrecognized swatch/);
+    expect(() => swatchLightness('')).toThrow(/Unrecognized swatch/);
   });
 });
 
@@ -145,5 +146,59 @@ describe('swatchClearsSurface', () => {
   it('passes the same tone the other way round on each board', () => {
     expect(swatchClearsSurface('oklch(90% 0.02 265)', 'dark')).toBe(true);
     expect(swatchClearsSurface('oklch(20% 0.02 265)', 'light')).toBe(true);
+  });
+});
+
+describe('assignSwatches', () => {
+  const isAward = (value: string) => /award/i.test(value);
+
+  it('walks the rank palette in order', () => {
+    const assigned = assignSwatches(['a', 'b', 'c', 'd'], isAward);
+    expect([...assigned.values()]).toEqual([...SWATCH_PALETTE]);
+  });
+
+  it('gives every award category the reserved tone', () => {
+    const assigned = assignSwatches(['Awards ★', 'Decisions'], isAward);
+    expect(assigned.get('Awards ★')).toBe(AWARD_SWATCH);
+  });
+
+  it('never lets an award consume a rank slot', () => {
+    // The regression: with awards ranked third, the fifth category wrapped back
+    // onto slot 0 and painted identically to the first.
+    const assigned = assignSwatches(
+      ['Decisions', 'Architecture', 'Practice', 'Awards ★', 'Principles'],
+      isAward
+    );
+    expect(assigned.get('Principles')).not.toBe(assigned.get('Decisions'));
+    expect(assigned.get('Principles')).toBe(SWATCH_PALETTE[3]);
+  });
+
+  it('assigns a distinct tone to every category up to the palette size', () => {
+    const assigned = assignSwatches(
+      ['Decisions', 'Architecture', 'Practice', 'Awards ★', 'Principles'],
+      isAward
+    );
+    expect(new Set(assigned.values()).size).toBe(assigned.size);
+  });
+
+  it('wraps only once the rank palette is genuinely exhausted', () => {
+    const values = ['a', 'b', 'c', 'd', 'e'];
+    const assigned = assignSwatches(values, isAward);
+    expect(assigned.get('e')).toBe(assigned.get('a'));
+  });
+
+  it('ignores a repeated category rather than advancing the rank', () => {
+    const assigned = assignSwatches(['a', 'a', 'b'], isAward);
+    expect(assigned.size).toBe(2);
+    expect(assigned.get('b')).toBe(SWATCH_PALETTE[1]);
+  });
+
+  it('returns nothing for an empty ranking', () => {
+    expect(assignSwatches([], isAward).size).toBe(0);
+  });
+
+  it('handles a ranking that is nothing but awards', () => {
+    const assigned = assignSwatches(['Award', 'Awards ★'], isAward);
+    expect([...assigned.values()]).toEqual([AWARD_SWATCH, AWARD_SWATCH]);
   });
 });

@@ -14,7 +14,7 @@ import type { Hit } from 'instantsearch.js';
 import { useClearRefinements, useRefinementList, useSearchBox } from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
 import { fitBoardToWholeRows } from './boardLayout';
-import { AWARD_SWATCH, SWATCH_PALETTE } from './swatchPalette';
+import { assignSwatches } from './swatchPalette';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
@@ -23,9 +23,9 @@ import styles from './IndexWorkspace.module.css';
 // a category name is a data change, not a code change.
 //
 // Swatches follow a category's rank by size: Algolia returns facets ordered by
-// count, so the largest category takes the most prominent tone. The palette runs
-// pink through paper and gray to near-black rather than one hue's lightness
-// ramp, which is what made every filter read as the same color.
+// count, so the largest category takes the hottest tone. The palette runs down a
+// heat ramp — amber, orange, ember, steel — rather than one hue's lightness ramp,
+// which is what made every filter read as the same color.
 //
 // The rank is read from the *unfiltered* facet list, held alongside the board's
 // census. Refining re-sorts the live list by the narrowed counts, and keying off
@@ -45,14 +45,6 @@ import styles from './IndexWorkspace.module.css';
 // "Awards ★" all keep the treatment.
 function isAwardCategory(value: string | undefined): boolean {
   return /award/i.test(value ?? '');
-}
-
-// A category absent from the retained ranking — one that only appears under the
-// current refinement — falls back to its live position rather than going
-// unstyled.
-function swatchStyle(value: string | undefined, rank: number) {
-  if (isAwardCategory(value)) return { background: AWARD_SWATCH };
-  return { background: SWATCH_PALETTE[rank % SWATCH_PALETTE.length] };
 }
 
 interface IndexSidebarProps {
@@ -146,13 +138,20 @@ export default function IndexSidebar({
   }
 
   const categories = useMemo(() => {
-    const rankOf = new Map(ranking.values.map((value, index) => [value, index]));
-    return items.map((item, index) => ({
+    // The retained ranking decides the order; a category absent from it — one
+    // that only appears under the current refinement — is appended rather than
+    // going unstyled. Ranks are then assigned over that whole order at once, so
+    // the award tone never displaces a rank slot.
+    const ordered = [...ranking.values];
+    for (const item of items) if (!ordered.includes(item.value)) ordered.push(item.value);
+    const swatchOf = assignSwatches(ordered, (value) => isAwardCategory(value));
+
+    return items.map((item) => ({
       key: item.value,
       label: isAwardCategory(item.value) ? `${item.label} ★` : item.label,
       count: item.count,
       isRefined: item.isRefined,
-      swatch: swatchStyle(item.value, rankOf.get(item.value) ?? index),
+      swatch: { background: swatchOf.get(item.value) },
     }));
   }, [items, ranking]);
 
