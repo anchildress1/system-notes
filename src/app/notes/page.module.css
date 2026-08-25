@@ -12,15 +12,6 @@
   --head-tail: clamp(1.25rem, 3vh, 2rem);
 }
 
-/* Same face, same italic turn, tuned scale. At the shared display size this
-   headline ran to three lines and broke mid-phrase, and the board it introduces
-   started half a screen down. The other heads open their page; this one has to
-   share the fold with a tool. */
-.head h1 {
-  max-width: 26ch;
-  font-size: clamp(2.4rem, 5.2vw, 4.6rem);
-}
-
 .indexSection {
   min-height: inherit;
 }

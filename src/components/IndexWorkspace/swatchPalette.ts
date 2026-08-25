@@ -22,9 +22,9 @@ export type SwatchTheme = keyof typeof SWATCH_SURFACE_LIGHTNESS;
  * rank by size. Slots separate by chroma as well as lightness: five purely
  * tonal steps cannot stay distinct at this separation.
  *
- * Ordered outward from the accent declared in globals.css — red, rust, oxblood,
- * stone — so the largest category carries the colour the site is marked in and
- * the rest step away from it.
+ * Ordered outward from the mark declared in globals.css — gold, amber, orange,
+ * rust, stone — so the largest category carries the hue the site is marked in
+ * and the rest step away from it.
  *
  * Every entry is a token. A literal cannot follow a theme, so a hardcoded
  * color here renders identically against both boards.
@@ -55,11 +55,11 @@ export const AWARD_SWATCH = 'var(--k-award)';
 export const SWATCH_TOKEN_LIGHTNESS: Readonly<
   Record<string, Readonly<Record<SwatchTheme, number>>>
 > = {
-  '--k-award': { dark: 88, light: 62 },
-  '--k-decision': { dark: 76, light: 54 },
-  '--k-note': { dark: 68, light: 46 },
-  '--k-other': { dark: 60, light: 38 },
-  '--k-principle': { dark: 52, light: 30 },
+  '--k-award': { dark: 93, light: 62 },
+  '--k-decision': { dark: 84, light: 54 },
+  '--k-note': { dark: 74, light: 46 },
+  '--k-other': { dark: 65, light: 38 },
+  '--k-principle': { dark: 56, light: 30 },
 };
 
 /**

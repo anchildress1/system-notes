@@ -20,7 +20,7 @@ export default async function NotesIndexPage() {
         <p className="page-head-slug">
           <span>Index</span>
         </p>
-        <h1>
+        <h1 data-scale="compact">
           How I decide.
           <span>Filed, dated, and searchable.</span>
         </h1>

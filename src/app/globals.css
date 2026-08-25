@@ -13,53 +13,52 @@
   --bone: oklch(0.95 0.008 90);
   --soft: oklch(0.76 0.008 265);
   --mute: oklch(0.68 0.012 265);
-  /* One accent hue, both themes. Dark ran amber and light ran red, which the
-     physics justified but which gave the site two identities depending on a
-     toggle.
+  /* Yellow is a MARKER, not an ink. That distinction is the whole system.
 
-     --flag is ACCENT INK: text, links, headline turns, focus rings. It is the
-     only accent token that still moves between themes, and only in lightness —
-     the light red at L 0.57 scores 3.91:1 on graphite, under AA, so dark lifts
-     it to 0.63 for 4.83:1. Same hue, same character, lit for its ground.
+     Yellow cannot be readable text on paper. At the lightness a light page
+     forces on ink, hue 92 renders 1.74:1 at L 0.80 and does not clear 4.5:1
+     until L 0.55 — by which point its chroma has collapsed to 0.12 and it is
+     olive. Yellow's character IS high lightness, so darkening it to meet
+     contrast destroys the thing that makes it yellow. Every previous attempt to
+     use it as an accent colour died on that, and the site went red instead.
 
-     --flag-vivid is ACCENT SURFACE: fills, marks, glows, the CTA. It carries no
-     text of its own, so nothing drags its lightness down. --flag-ink is what
-     sits ON it, near-white at 4.67:1 — the labels on those fills are 14-15px
-     bold, and bold only counts as large text from 18.66px. Never pair
-     --flag-ink with --flag.
+     As a SURFACE it has no such problem: the same yellow carries dark ink at
+     11.34:1 on either ground. So it stops being a colour text is set in and
+     becomes a colour text is marked with — a highlighter, not a pen. That is
+     also the right metaphor for a site about filed evidence.
 
-     Surface and ink are declared once and never overridden: a mid-red fill
-     needs light text on either ground, so a theme has nothing to say about
-     them. */
-  --flag: oklch(0.63 0.22 29);
-  --flag-vivid: oklch(0.58 0.23 29);
-  --flag-ink: oklch(0.99 0.004 90);
-  --flag-soft: oklch(0.58 0.23 29 / 0.14);
+     --flag-vivid is the mark. --flag-ink is what sits on it. Both are shared,
+     because a yellow fill needs dark ink on paper and on graphite alike.
+
+     --flag is the accent as INK, for the places a mark would be too heavy:
+     fine print, focus rings, hover. It is the one token that still moves,
+     because graphite can carry yellow as ink at 12.75:1 while paper cannot
+     carry it at all — there it is a warm near-black at 9.37:1. */
+  --flag: oklch(0.86 0.16 92);
+  --flag-vivid: oklch(0.86 0.17 92);
+  --flag-ink: oklch(0.22 0.04 70);
+  --flag-soft: oklch(0.86 0.17 92 / 0.16);
   /* Strong enough to read as a halo around a 10px tile. --flag-soft is sized
      for a wash across a whole panel and disappears at that scale. */
-  --flag-glow: oklch(0.58 0.23 29 / 0.45);
+  --flag-glow: oklch(0.86 0.17 92 / 0.5);
   --drop: oklch(0.06 0.01 265 / 0.9);
   --thumb: oklch(0.42 0.01 265);
 
-  /* Anchored on the accent, not merely adjacent to it. The board used to run a
-     gold-to-ember ramp with a blue-grey neutral at the end, which meant the
-     densest block of colour on the site shared no hue with the red everything
-     else is marked in — mustard tiles and a navy tile beside a red accent read
-     as a second palette that wandered in.
+  /* Anchored on the mark. The largest category carries the accent's own hue and
+     the rest step away from it — gold, amber, orange, rust, and a warm stone for
+     the one kind deliberately off the ramp.
 
-     The largest category now takes the accent itself and the rest step away
-     from it in hue and lightness together: red, rust, oxblood, and a warm stone
-     for the one kind deliberately off the ramp. Awards keep the brightest tone
-     because they are the reserved slot, but they move from gold to amber so
-     they sit in the same family.
+     On paper these are DARK tones of that family, not the mark itself, and they
+     have to be: a tile has to clear the board it sits on, and the mark is only
+     1.41:1 against paper. So the light board reads as the mark's shadow rather
+     than the mark — which is the same relationship the ink has to it.
 
-     Every slot clears 3:1 on its board — dark 12.72, 7.41, 6.37, 4.59, 3.53;
-     light 3.45, 5.17, 6.99, 9.82, 12.63. */
-  --k-award: oklch(0.88 0.14 72);
-  --k-decision: oklch(0.76 0.2 29);
-  --k-note: oklch(0.68 0.17 45);
-  --k-other: oklch(0.6 0.15 18);
-  --k-principle: oklch(0.52 0.02 60);
+     Every slot clears 3:1 on its board. */
+  --k-award: oklch(0.93 0.14 98);
+  --k-decision: oklch(0.84 0.16 88);
+  --k-note: oklch(0.74 0.16 62);
+  --k-other: oklch(0.65 0.15 40);
+  --k-principle: oklch(0.56 0.02 70);
 
   /* Hairlines stay translucent rather than resolving to --edge. Roughly thirty
      borders composite over whatever sits behind them, and an opaque token would
@@ -121,29 +120,21 @@
   --bone: oklch(0.22 0.008 265);
   --soft: oklch(0.4 0.008 265);
   --mute: oklch(0.53 0.012 265);
-  /* Ink only — surface and ink are shared, see :root. Near the sRGB red ceiling
-     of oklch(0.628 0.2577 29): renders its full 0.225 chroma unclipped and
-     clears 4.61:1 on the page, 5.00:1 on a white panel, so it is AA at every
-     text size rather than display-only.
-
-     Yellow cannot do this job, and it is worth writing down why. At the
-     lightness a light page forces on ink, hue 85 renders 1.74:1 at L 0.80 and
-     does not clear 4.5:1 until L 0.55 — by which point its chroma has fallen to
-     0.12 and it is olive. Yellow's whole character is high lightness, so
-     darkening it to meet contrast destroys the thing that makes it yellow. On
-     paper it can only live as a SURFACE carrying dark ink, where it reads at
-     11.3:1. That is a different design, not a different value. */
-  --flag: oklch(0.57 0.225 29);
+  /* Ink only; the mark and its ink are shared, see :root. Warm near-black at
+     9.37:1 — dark enough to be unmistakably ink rather than a yellow that
+     failed, and warm enough to belong to the same family as the mark it sits
+     beside. Colour on this page comes from the marks, not from the letters. */
+  --flag: oklch(0.38 0.07 70);
   --drop: oklch(0.55 0.02 265 / 0.22);
   --thumb: oklch(0.8 0.012 265);
 
   /* The same ramp inverted, so a category keeps its identity across a theme
      switch rather than only its rank. */
-  --k-award: oklch(0.62 0.13 70);
-  --k-decision: oklch(0.54 0.2 29);
-  --k-note: oklch(0.46 0.15 45);
-  --k-other: oklch(0.38 0.12 18);
-  --k-principle: oklch(0.3 0.02 60);
+  --k-award: oklch(0.62 0.13 90);
+  --k-decision: oklch(0.54 0.12 80);
+  --k-note: oklch(0.46 0.12 58);
+  --k-other: oklch(0.38 0.11 36);
+  --k-principle: oklch(0.3 0.02 70);
 
   --line: oklch(0.22 0.008 265 / 0.13);
   --line-strong: oklch(0.22 0.008 265 / 0.28);
@@ -208,10 +199,11 @@ body::before {
   outline-offset: 4px;
 }
 
-/* An accent-filled control cannot wear an accent ring. --bone is the only tone
-   that separates from --flag at every lightness the accent takes. */
+/* An accent-filled control cannot wear an accent ring. The ink the mark already
+   carries is the one tone guaranteed to separate from it — --bone would be
+   near-white on yellow in the dark theme. */
 :where(button, a)[data-accent='filled']:focus-visible {
-  outline-color: var(--bone);
+  outline-color: var(--flag-ink);
 }
 
 ::-webkit-scrollbar {
@@ -458,6 +450,17 @@ main {
   letter-spacing: 0.12em;
 }
 
+/* Two scales, both named, and nothing else.
+   The default is a page NAME. Anything that is not one — a head sharing the
+   fold with a working tool, or a document title that can run long — takes
+   data-scale="compact".
+
+   This replaced four separate clamps. There was one shared rule and then a
+   bespoke override per page, each added to solve a local problem (a headline
+   wrapping to three lines, a board pushed below the fold, a note title that ran
+   long) and none of them folded back in. Every exception was defensible on its
+   own; together they rebuilt the inconsistency the shared head existed to
+   remove. A variant has to be named, or it is just drift with a reason. */
 .page-head h1,
 .page-head-title {
   max-width: 18ch;
@@ -479,13 +482,40 @@ main {
   font-style: italic;
 }
 
-/* The turn of the headline: same family, same weight, same size, accent color.
-   Color is the ONLY thing that changes — no italic, no weight shift, no size
-   step. One decision, not the four stacked ones this replaced. */
+.page-head h1[data-scale='compact'],
+.page-head-title[data-scale='compact'] {
+  max-width: 26ch;
+  font-size: clamp(2.4rem, 5.4vw, 5rem);
+}
+
+/* The turn of the headline is MARKED, not coloured.
+
+   Setting it in the accent is what an accent colour is normally for, and it is
+   the move that stops working the moment the accent is yellow. Struck through
+   with the marker instead, it does the same job — one decision, applied once —
+   and it does it identically on paper and on graphite, because the mark carries
+   its own ink.
+
+   width: fit-content so the band is the width of the words rather than the
+   column; box-decoration-break so a turn long enough to wrap gets a band per
+   line rather than one rectangle behind both. */
 .page-head h1 > span,
 .page-head-title > span {
   display: block;
-  color: var(--flag);
+  width: fit-content;
+  padding: 0.04em 0.16em 0.12em;
+  /* The band is inset by its own left padding, which would push the marked line
+     off the axis the line above it stands on. Pulling back by the same amount
+     keeps the letters aligned and lets the mark overhang instead — which is
+     what a stroke drawn by hand does anyway. The extra padding at the foot is
+     for descenders: a mark that cuts through the tail of a "y" reads as a
+     clipping bug rather than as ink. */
+  margin-left: -0.16em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  background: var(--flag-vivid);
+  color: var(--flag-ink);
+  font-style: italic;
 }
 
 @media (max-width: 44rem) {

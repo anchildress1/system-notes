@@ -61,7 +61,9 @@ export default async function NotePage({ params }: Readonly<NotePageProps>) {
           <p className="page-head-slug">
             <span>{note.category || 'Note'}</span>
           </p>
-          <h1>{note.title}</h1>
+          <h1 className="page-head-title" data-scale="compact">
+            {note.title}
+          </h1>
           {note.blurb ? <p className={styles.blurb}>{note.blurb}</p> : null}
         </header>
 
@@ -116,7 +118,7 @@ function NoteUnavailable() {
         <p className="page-head-slug">
           <span>Retrieval unavailable</span>
         </p>
-        <h1>The note did not answer.</h1>
+        <h1 className="page-head-title">The note did not answer.</h1>
         <p>
           The address is valid. Its evidence could not be retrieved right now, so nothing was
           invented to fill the gap.
