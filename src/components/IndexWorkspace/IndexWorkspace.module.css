@@ -434,7 +434,6 @@
   /* Without an explicit track the implicit one resolves to max(min-content),
      which the queue's nowrap meta line pushed to 337px inside a 288px pane. */
   grid-template-columns: minmax(0, 1fr);
-  gap: 0.75rem;
 }
 
 .reader {
@@ -450,8 +449,9 @@
   display: grid;
   min-width: 0;
   padding: 0;
-  margin-top: 0.5rem;
-  border-top: 0.5px solid var(--line-strong);
+  /* No rule of its own. The featured entry already closes with one, and the two
+     sat about 48px apart with nothing between them — which reads as an empty
+     record rather than as a boundary. One separator does the job. */
   list-style: none;
 }
 
