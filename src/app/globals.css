@@ -1,6 +1,11 @@
 :root {
   /* The Intake palette: amber on slate. Neutrals sit on hue 265, the accent on
-     80, so the accent is the only warm thing on the page and never competes. */
+     80, so the accent is the only warm thing on the page and never competes.
+
+     Every chromatic token in this file lives on the ember-to-gold arc, hue 25
+     through 96 — the color a piece of steel passes through as it heats. That is
+     the whole system: warmth is the only hue axis, and cold hues are excluded
+     rather than merely unused. */
   --void: oklch(0.155 0.006 265);
   --panel: oklch(0.2 0.007 265);
   --panel-hi: oklch(0.25 0.008 265);
@@ -8,22 +13,49 @@
   --bone: oklch(0.95 0.008 90);
   --soft: oklch(0.76 0.008 265);
   --mute: oklch(0.68 0.012 265);
-  --flag: oklch(0.83 0.15 80);
+  /* The accent carries two jobs that one color cannot do at once.
+
+     --flag is ACCENT INK: text, links, headline turns, focus rings. It is
+     contrast-bound.
+
+     --flag-vivid is ACCENT SURFACE: fills, marks, glows, the CTA. It carries no
+     text of its own, so nothing drags its lightness down and it can run hotter.
+
+     --flag-ink is what sits ON --flag-vivid. Never pair --flag-ink with --flag.
+
+     A dark ground has room at the top of the ramp, so both accents sit at the
+     white-hot end and land on nearly the same amber. The light theme overrides
+     all four, and the comment there explains why the hue has to move. */
+  --flag: oklch(0.83 0.155 80);
+  --flag-vivid: oklch(0.81 0.16 82);
   --flag-ink: oklch(0.19 0.04 80);
-  --flag-soft: oklch(0.83 0.15 80 / 0.14);
+  --flag-soft: oklch(0.81 0.16 82 / 0.14);
   /* Strong enough to read as a halo around a 10px tile. --flag-soft is sized
      for a wash across a whole panel and disappears at that scale. */
-  --flag-glow: oklch(0.83 0.15 80 / 0.52);
+  --flag-glow: oklch(0.81 0.16 82 / 0.52);
   --drop: oklch(0.06 0.01 265 / 0.9);
   --thumb: oklch(0.42 0.01 265);
 
-  /* Card kinds. Separated by chroma as well as lightness — five purely tonal
-     steps cannot stay distinct above the board's contrast floor. */
+  /* Card kinds, ordered as a heat ramp: gold, amber, orange, ember, then steel.
+     Hue does the separating and lightness descends with it, so the ladder is
+     readable as temperature rather than as five arbitrary tags.
+
+     --k-other used to sit at hue 200 — the one cold tone in a warm system, and
+     the only thing on the board that could not be explained by the palette it
+     belonged to. It reads as a stock accent pairing rather than a decision.
+
+     Dropping it costs discriminability, which is the real reason a cold outlier
+     is tempting on categorical data: neighbouring swatches here separate by only
+     about 1.4:1 in luminance. The arc is therefore spread as wide as warmth
+     allows — 96, 80, 45, 25 — so hue carries what lightness cannot, and
+     --k-principle stays neutral because a principle is the one kind that is
+     deliberately off the ramp. A first pass at 96/80/58/38 was too narrow and
+     collapsed into one ochre on the light board. */
   --k-award: oklch(0.93 0.13 96);
-  --k-decision: oklch(0.83 0.15 80);
-  --k-note: oklch(0.66 0.1 74);
-  --k-principle: oklch(0.72 0.012 265);
-  --k-other: oklch(0.78 0.09 200);
+  --k-decision: oklch(0.83 0.155 80);
+  --k-note: oklch(0.74 0.155 45);
+  --k-other: oklch(0.65 0.17 25);
+  --k-principle: oklch(0.56 0.014 265);
 
   /* Hairlines stay translucent rather than resolving to --edge. Roughly thirty
      borders composite over whatever sits behind them, and an opaque token would
@@ -35,6 +67,14 @@
      here are the SSR-time fallback. */
   --font-sans: Archivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'Space Grotesk', ui-monospace, SFMono-Regular, system-ui, sans-serif;
+  /* Titles only — see layout.tsx. */
+  --font-editorial: 'Bodoni Moda', Georgia, 'Times New Roman', serif;
+
+  /* Editorial fine print: the caption size in an architectural monograph, not a
+     UI label. Reserved for metadata a reader glances at — never for body copy,
+     and never for anything that carries the meaning of a screen on its own. */
+  --fine: 0.6875rem;
+  --fine-tracking: 0.14em;
 
   /* The hairline down the middle of the page. Too faint to derive from --line,
      and it has to invert with the theme or it is a light line on a light page. */
@@ -45,6 +85,20 @@
   --gutter: clamp(1rem, 3vw, 3rem);
   --header-height: 5.25rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* A second curve, deliberately not the first. Everything on a page easing on
+     one identical curve at one identical duration is the machine tell; this one
+     overshoots slightly and settles, so entrances that use it arrive with a
+     different weight to the ones that use --ease-out. */
+  --ease-settle: cubic-bezier(0.34, 1.32, 0.42, 1);
+
+  /* Page-head rhythm, shared so the three heads agree. Asymmetric on purpose:
+     the tail is roughly two thirds of the lead, which reads as a heading that
+     belongs to the section under it rather than one floating between two.
+     The tail is what was missing — every head opened with generous space above
+     and then collided with its own content, which is what made them feel
+     unfinished no matter how the type was set. */
+  --head-lead: clamp(3.25rem, 9vh, 7rem);
+  --head-tail: clamp(2.25rem, 6vh, 4.5rem);
 }
 
 /* Light is keyed on the attribute alone rather than also on prefers-color-scheme.
@@ -63,24 +117,47 @@
   --bone: oklch(0.22 0.008 265);
   --soft: oklch(0.4 0.008 265);
   --mute: oklch(0.53 0.012 265);
-  /* Not the design's 0.58 0.13. That renders 4.04:1 against --void and 4.26:1
-     under --flag-ink, so the accent failed as small text and as a filled button
-     in the same pass. 0.54 is the darkest step that stays inside sRGB at this
-     hue, and it clears 4.77, 5.17 and 5.02 on those three pairs. */
-  --flag: oklch(0.54 0.115 74);
+  /* The accent changes HUE with the theme, and this is the reason.
+
+     A light page forces the accent down to about L 0.52 to clear 4.5:1. Amber
+     cannot survive that: hue 80 runs out of sRGB there and renders a chroma of
+     0.111 however much is asked for — which is the definition of brown. Red
+     does survive it: hue 30 renders the full 0.18 at the same lightness, 62%
+     more chroma, no clipping. Amber is only vivid while it is light; red is
+     vivid while it is dark.
+
+     So the ramp is read at the temperature each ground allows. On graphite the
+     accent sits at the white-hot end (sun amber); on paper it sits at red heat.
+     Same forge, same arc, the point on it that each background can actually
+     render. Chasing one accent hue across both themes is what produced the mud.
+
+     Both sit near the sRGB red ceiling, which is oklch(0.628 0.2577 29): --flag
+     renders a chroma of 0.225 and --flag-vivid 0.23, neither clipped. --flag
+     clears 4.61:1 on the page and 5.00:1 on a white panel.
+
+     --flag-vivid's lightness is set by the label on top of it, not by taste. At
+     L 0.60 it was #ee130f and carried white at 4.32:1 — which fails AA, because
+     the labels that sit on it (RUN IT, the theme-song toggle) are 14-15px bold,
+     and bold only counts as large text from 18.66px. axe caught it. L 0.58
+     carries white at 4.67:1 and gives up 0.01 of chroma to do it. */
+  --flag: oklch(0.57 0.225 29);
+  --flag-vivid: oklch(0.58 0.23 29);
   --flag-ink: oklch(0.99 0.004 90);
-  --flag-soft: oklch(0.54 0.115 74 / 0.14);
-  --flag-glow: oklch(0.54 0.115 74 / 0.42);
+  --flag-soft: oklch(0.58 0.23 29 / 0.12);
+  --flag-glow: oklch(0.58 0.23 29 / 0.42);
   --drop: oklch(0.55 0.02 265 / 0.22);
   --thumb: oklch(0.8 0.012 265);
 
   /* Darker than the board rather than lighter; swatchPalette.ts holds the
-     separation each of these has to keep from a 97.2 surface. */
+     separation each of these has to keep from a 97.2 surface. The ramp is the
+     same one as dark — gold, amber, orange, ember, steel — inverted, so a
+     category keeps its identity across a theme switch instead of only its rank.
+     Each clears 3:1 on the board: 3.38, 4.95, 7.27, 10.37, 12.56. */
   --k-award: oklch(0.62 0.13 88);
-  --k-decision: oklch(0.58 0.13 74);
-  --k-other: oklch(0.4 0.09 200);
-  --k-principle: oklch(0.52 0.012 265);
-  --k-note: oklch(0.46 0.08 68);
+  --k-decision: oklch(0.53 0.12 78);
+  --k-note: oklch(0.45 0.14 45);
+  --k-other: oklch(0.37 0.15 25);
+  --k-principle: oklch(0.3 0.014 265);
 
   --line: oklch(0.22 0.008 265 / 0.13);
   --line-strong: oklch(0.22 0.008 265 / 0.28);
@@ -136,7 +213,7 @@ body::before {
    removing it takes a full-viewport paint off every route. */
 
 ::selection {
-  background: var(--flag);
+  background: var(--flag-vivid);
   color: var(--flag-ink);
 }
 
@@ -161,7 +238,7 @@ body::before {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--flag);
+  background: var(--flag-vivid);
 }
 
 a {
@@ -223,6 +300,69 @@ main {
   }
 }
 
+/* Scroll-driven reveal. Content rises into place as its section enters the
+   viewport, driven by the scroll position itself rather than by an observer and
+   a state flag — no JS, no hydration cost, and it tracks the scrubbing of a
+   scrollbar instead of firing once at a threshold.
+
+   Transform only, never opacity. Text at opacity 0 is text at zero contrast, and
+   axe samples the page mid-animation: the same reason rise-in animates movement
+   alone. That constraint is why this reads as weight shifting rather than as a
+   fade, which is the better effect here anyway.
+
+   Behind @supports so a browser without scroll timelines simply renders the page
+   in place, and behind a motion query so nobody gets moved who asked not to be. */
+@keyframes reveal-rise {
+  from {
+    transform: translateY(2.75rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes portrait-drift {
+  from {
+    transform: translateY(2rem);
+  }
+  to {
+    transform: translateY(-2rem);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 32%;
+    }
+
+    /* Slower and against the scroll, so the portrait sits in a different plane
+       to the copy beside it rather than travelling with it. */
+    .drift {
+      animation: portrait-drift linear both;
+      animation-timeline: view();
+      animation-range: entry cover;
+    }
+  }
+}
+
+/* Staggered entrance for a repeated array. The delay comes off --i, set per item
+   from its own index, so a list arrives one item at a time instead of the whole
+   block moving as one flat plane. Capped so a long list does not make the reader
+   wait on the tail. */
+.stagger-in {
+  animation: rise-in 520ms var(--ease-settle) both;
+  animation-delay: calc(min(var(--i, 0) * 70ms, 560ms));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-in {
+    animation: none;
+  }
+}
+
 @media (max-width: 44rem) {
   :root {
     --header-height: 7.75rem;
@@ -249,5 +389,128 @@ main {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* The page head, shared by every route that opens with one.
+
+   What this replaces: each head used to set its closing clause in the accent
+   color, most of them as an <em>, on top of an accent uppercase letter-spaced
+   kicker. That is four typographic decisions — color, style, weight, tracking —
+   doing the work of one, and it is the single most reliable tell of a generated
+   layout. The hierarchy here is carried by tone and size alone; the accent
+   leaves the type entirely and becomes one small mark on the slug rule, which
+   is a layout decision instead of a paint decision.
+
+   Class names are global rather than a module because three routes share them
+   and none of them owns the pattern. */
+/* The site has two axes and they are not the same thing.
+
+   The FRAME EDGE is full bleed: the footer's rule, the section bands, and the
+   tools (the exhibits directory, the index workspace) all run 0 to viewport.
+
+   The CONTENT AXIS is --gutter, capped at --page-max. The wordmark, every page
+   head, the body copy and the footer's byline all stand on it. On a 1440 screen
+   that is 43px, and the intake page — the one that always looked right — has
+   every one of those on it.
+
+   A head belongs to the frame, not to the tool underneath it. An earlier pass
+   aligned these heads to each tool's INTERNAL gutter (20px, 22px) on the theory
+   that a head should match the thing it introduces. That put the heading on a
+   third axis, on neither the frame nor the content, and left the wordmark above
+   it and the byline below it hanging out to its right. A full-bleed tool under
+   a content-axis head is a deliberate change of layer; a head on its own private
+   axis is just a misalignment. */
+.page-head,
+.page-column {
+  width: min(100%, var(--page-max));
+  padding-inline: var(--gutter);
+  margin-inline: auto;
+}
+
+.page-head {
+  padding-block: var(--head-lead) var(--head-tail);
+}
+
+.page-head-slug {
+  display: flex;
+  align-items: center;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--line-strong);
+  margin-bottom: clamp(1.75rem, 4vh, 3rem);
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  font-weight: 600;
+  letter-spacing: var(--fine-tracking);
+  gap: 0.7rem;
+  text-transform: uppercase;
+}
+
+/* The only accent in the head. A filled bar rather than a colored word: it
+   carries no meaning a screen reader has to recover, and it is the one place a
+   saturated amber sits at full strength in either theme.
+
+   A bar and not a square because --flag-vivid is only 1.63:1 against the light
+   page — deliberately, it is a surface token and owes no contrast — and a hue
+   that faint needs AREA to register. At 8px it disappeared into the paper; at
+   28px it reads as a filing tab in both themes. */
+.page-head-slug::before {
+  width: 1.75rem;
+  height: 0.5rem;
+  flex: 0 0 auto;
+  background: var(--flag-vivid);
+  content: '';
+}
+
+/* span + span, not :last-child: with a single label that selector matched the
+   only span and pushed it to the right edge on its own. */
+.page-head-slug > span + span {
+  margin-left: auto;
+  color: var(--mute);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+}
+
+.page-head h1,
+.page-head-title {
+  max-width: 18ch;
+  font-family: var(--font-editorial);
+  font-size: clamp(2.9rem, 8vw, 7.5rem);
+  font-weight: 500;
+  /* A Didone sets tight but not as tight as a grotesque — its thin strokes need
+     air or the counters fill in at display size. */
+  letter-spacing: -0.02em;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+
+/* The turn of the headline goes italic as well as accent. On a Didone the
+   italic is a genuinely different letterform rather than a slant, so it reads
+   as a change of voice — which is what the second clause is. */
+.page-head h1 > span,
+.page-head-title > span {
+  font-style: italic;
+}
+
+/* The turn of the headline: same family, same weight, same size, accent color.
+   Color is the ONLY thing that changes — no italic, no weight shift, no size
+   step. One decision, not the four stacked ones this replaced. */
+.page-head h1 > span,
+.page-head-title > span {
+  display: block;
+  color: var(--flag);
+}
+
+@media (max-width: 44rem) {
+  .page-head-slug {
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .page-head-slug > span + span {
+    width: 100%;
+    margin-left: 0;
   }
 }
