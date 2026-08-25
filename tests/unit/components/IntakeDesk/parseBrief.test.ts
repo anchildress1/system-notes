@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseBrief } from '@/components/IntakeDesk/BriefBody';
+import { parseBrief, parseBriefStructure } from '@/components/IntakeDesk/BriefBody';
 
 describe('parseBrief', () => {
   it('returns prose untouched when it carries no citation', () => {
@@ -54,5 +54,82 @@ describe('parseBrief', () => {
 
   it('handles an empty paragraph', () => {
     expect(parseBrief('')).toEqual([]);
+  });
+});
+
+describe('parseBriefStructure', () => {
+  const LEAD = 'I have shipped attribution controls, but not a complete ledger.';
+
+  it('reads the opening paragraph as the lead', () => {
+    const blocks = parseBriefStructure(`${LEAD}\n\nSomething else entirely.`);
+
+    expect(blocks[0]).toEqual({ kind: 'lead', text: LEAD });
+  });
+
+  it('numbers signposted steps by position and lifts the ordinal out of the prose', () => {
+    const blocks = parseBriefStructure(
+      [LEAD, 'First, I would define each action.', 'Next, I would scope approval.'].join('\n\n')
+    );
+
+    expect(blocks[1]).toEqual({ kind: 'step', ordinal: 1, text: 'I would define each action.' });
+    expect(blocks[2]).toEqual({ kind: 'step', ordinal: 2, text: 'I would scope approval.' });
+  });
+
+  it('numbers by position, so a repeated signpost cannot desync the count', () => {
+    const blocks = parseBriefStructure(
+      [LEAD, 'Then, I would do one thing.', 'Then, I would do another.'].join('\n\n')
+    );
+
+    expect(blocks.map((b) => (b.kind === 'step' ? b.ordinal : null))).toEqual([null, 1, 2]);
+  });
+
+  it('marks the register shift into what the answer refuses', () => {
+    const counter = 'I would not treat a chat transcript as an authorization record.';
+    const blocks = parseBriefStructure(`${LEAD}\n\n${counter}`);
+
+    expect(blocks[1]).toEqual({ kind: 'counter', text: counter });
+  });
+
+  it('ignores an ordinal that merely starts a sentence', () => {
+    // "Second point." is a sentence that opens with an ordinal, not a step in a
+    // sequence. Treating it as one swallowed the word and rendered "point."
+    const blocks = parseBriefStructure([LEAD, 'Second point.', 'Third point.'].join('\n\n'));
+
+    expect(blocks.map((b) => b.kind)).toEqual(['lead', 'body', 'body']);
+    expect(blocks[1]).toEqual({ kind: 'body', text: 'Second point.' });
+  });
+
+  it('accepts a signpost that runs straight into the first person', () => {
+    const blocks = parseBriefStructure(
+      [LEAD, 'Then I would ship it.', 'Next I would measure it.'].join('\n\n')
+    );
+
+    expect(blocks[1]).toEqual({ kind: 'step', ordinal: 1, text: 'I would ship it.' });
+    expect(blocks[2]).toEqual({ kind: 'step', ordinal: 2, text: 'I would measure it.' });
+  });
+
+  it('leaves a lone signpost as prose rather than numbering a sequence of one', () => {
+    // One "Finally," in an otherwise unstructured answer is a turn of phrase.
+    const blocks = parseBriefStructure(`${LEAD}\n\nFinally, I would ship it.`);
+
+    expect(blocks[1]!.kind).toBe('body');
+    expect(blocks[1]).toEqual({ kind: 'body', text: 'Finally, I would ship it.' });
+  });
+
+  it('renders an unstructured answer exactly as prose', () => {
+    const blocks = parseBriefStructure(`${LEAD}\n\nA plain paragraph.\n\nAnother one.`);
+
+    expect(blocks.map((b) => b.kind)).toEqual(['lead', 'body', 'body']);
+  });
+
+  it('drops blank paragraphs and stray whitespace between blocks', () => {
+    const blocks = parseBriefStructure(`${LEAD}\n\n\n\n   \n\nA real paragraph.`);
+
+    expect(blocks).toHaveLength(2);
+    expect(blocks[1]).toEqual({ kind: 'body', text: 'A real paragraph.' });
+  });
+
+  it('returns nothing for an empty answer', () => {
+    expect(parseBriefStructure('')).toEqual([]);
   });
 });
