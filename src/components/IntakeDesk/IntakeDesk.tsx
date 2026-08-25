@@ -63,7 +63,7 @@ function readSavedBrief(): SavedBrief | null {
 /** Problems a reader can load into the field instead of writing their own. */
 export const SEEDS = [
   'Our AI-generated code passes review and then breaks in production.',
-  'We can’t tell what our agents actually did, or who authorised it.',
+  'We can’t tell what our agents actually did, or who authorized it.',
   'The model hallucinates and we ship it straight to customers.',
 ] as const;
 
@@ -77,12 +77,23 @@ export default function IntakeDesk() {
   const fieldId = useId();
   const noticeId = useId();
 
+  // A question is in flight from the moment it is asked until the brief hands an
+  // answer back. Without this the form stayed fully live under a running
+  // request: the button invited a second click and nothing on the page had
+  // changed, so the only evidence of work was a caption further down.
+  const [inFlight, setInFlight] = useState(false);
+
   const keepBrief = useCallback(
     (answer: string) => {
       if (asked) keep({ question: asked.text, answer });
     },
     [asked]
   );
+
+  // Released on any terminal state, not just a successful answer. Clearing this
+  // only in keepBrief left the form permanently disabled whenever a turn failed
+  // or never came back.
+  const releaseForm = useCallback(() => setInFlight(false), []);
 
   const canAsk = hasValidAgentCredentials();
   const trimmed = problem.trim();
@@ -93,8 +104,14 @@ export default function IntakeDesk() {
         className={styles.compose}
         onSubmit={(event) => {
           event.preventDefault();
-          if (!trimmed || !canAsk) return;
+          if (!trimmed || !canAsk || inFlight) return;
+          setInFlight(true);
           setAsked((previous) => ({ text: trimmed, nonce: (previous?.nonce ?? 0) + 1 }));
+          // The field empties on submit: the question has moved to the brief
+          // below, which quotes it back, so leaving it in the box would offer a
+          // second copy of something already asked. Every state that can end the
+          // turn echoes the question, so the words are never simply lost.
+          setProblem('');
         }}
       >
         <label className="visually-hidden" htmlFor={fieldId}>
@@ -103,15 +120,22 @@ export default function IntakeDesk() {
         <textarea
           id={fieldId}
           className={styles.field}
-          rows={5}
+          rows={2}
           value={problem}
           onChange={(event) => setProblem(event.target.value)}
+          readOnly={inFlight}
           aria-describedby={canAsk ? undefined : noticeId}
           placeholder="e.g. Our AI-generated code passes review and then breaks in production."
         />
         <div className={styles.controls}>
-          <button type="submit" className={styles.run} data-accent="filled" disabled={!canAsk}>
-            Run it
+          <button
+            type="submit"
+            className={styles.run}
+            data-accent="filled"
+            data-working={inFlight || undefined}
+            disabled={!canAsk || inFlight}
+          >
+            {inFlight ? 'Reading…' : 'Run it'}
           </button>
           {canAsk ? null : (
             <p id={noticeId} className={styles.notice}>
@@ -144,6 +168,7 @@ export default function IntakeDesk() {
               key={`${asked.nonce}:${asked.text}`}
               question={asked.text}
               onSettled={keepBrief}
+              onFinished={releaseForm}
             />
           ) : (
             // Restored from a previous view. Rendered directly rather than

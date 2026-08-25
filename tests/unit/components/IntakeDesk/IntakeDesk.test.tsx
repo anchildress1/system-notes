@@ -9,14 +9,24 @@ vi.mock('@/lib/algolia', async (importOriginal) => ({
   hasValidAgentCredentials: () => agent.reachable,
 }));
 
-// The real one pulls in InstantSearch and the agent transport. What matters here
-// is which question reaches it, and how many times.
+// The real one pulls in the agent transport. What matters here is which question
+// reaches it, how many times, and that the desk reacts when a turn ends — so the
+// stub exposes a control that fires onFinished the way a real terminal state does.
 vi.mock('@/components/IntakeDesk/IntakeBriefLoader', () => ({
-  default: ({ question }: { question: string }) => <div data-testid="brief">{question}</div>,
+  default: ({ question, onFinished }: { question: string; onFinished?: () => void }) => (
+    <div data-testid="brief">
+      {question}
+      <button type="button" data-testid="finish" onClick={() => onFinished?.()}>
+        finish
+      </button>
+    </div>
+  ),
 }));
 
 const field = () => screen.getByLabelText('The problem');
 const run = () => screen.getByRole('button', { name: 'Run it' });
+const working = () => screen.getByRole('button', { name: 'Reading…' });
+const finishTurn = () => fireEvent.click(screen.getByTestId('finish'));
 
 describe('IntakeDesk', () => {
   beforeEach(() => {
@@ -28,6 +38,53 @@ describe('IntakeDesk', () => {
 
     expect(field()).toHaveValue('');
     expect(screen.queryByTestId('brief')).not.toBeInTheDocument();
+  });
+
+  it('empties the field on submit, since the brief quotes the question back', () => {
+    render(<IntakeDesk />);
+
+    fireEvent.change(field(), { target: { value: 'Our agents ship unreviewed code.' } });
+    fireEvent.click(run());
+
+    expect(field()).toHaveValue('');
+  });
+
+  it('parks the form while a turn is running', () => {
+    render(<IntakeDesk />);
+
+    fireEvent.change(field(), { target: { value: 'Our agents ship unreviewed code.' } });
+    fireEvent.click(run());
+
+    expect(working()).toBeDisabled();
+    expect(field()).toHaveAttribute('readonly');
+  });
+
+  it('releases the form once the turn ends', () => {
+    render(<IntakeDesk />);
+
+    fireEvent.change(field(), { target: { value: 'Our agents ship unreviewed code.' } });
+    fireEvent.click(run());
+    expect(working()).toBeDisabled();
+
+    // Any terminal state — answered, failed, or timed out — reaches the desk the
+    // same way. A turn that failed used to leave this button disabled for good.
+    finishTurn();
+
+    expect(run()).toBeEnabled();
+    expect(field()).not.toHaveAttribute('readonly');
+  });
+
+  it('takes a second question after the first one ends', () => {
+    render(<IntakeDesk />);
+
+    fireEvent.change(field(), { target: { value: 'First problem.' } });
+    fireEvent.click(run());
+    finishTurn();
+
+    fireEvent.change(field(), { target: { value: 'Second problem.' } });
+    fireEvent.click(run());
+
+    expect(screen.getByTestId('brief')).toHaveTextContent('Second problem.');
   });
 
   it('sends the question on submit', () => {
