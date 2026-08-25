@@ -1,5 +1,10 @@
+/* One object, not three loose parts. Floating a button, a status line and a bar
+   chart directly on the page read as debris beside the bordered, square-cornered
+   panels the rest of the site is built from. */
 .player {
-  margin-top: 1.25rem;
+  padding: clamp(1.1rem, 2.2vw, 1.6rem);
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
 }
 
 .controls {
@@ -15,7 +20,7 @@
   align-items: center;
   gap: 0.7rem;
   padding: 0.8rem 1.4rem;
-  background: var(--flag);
+  background: var(--flag-vivid);
   color: var(--flag-ink);
   font-family: var(--font-sans);
   font-size: 0.875rem;
@@ -47,14 +52,13 @@
 
 .equalizer {
   display: flex;
-  max-width: 21.25rem;
+  max-width: 26rem;
   height: 2.75rem;
   align-items: flex-end;
   gap: 4px;
   margin-top: 1.25rem;
-  /* Dimmed rather than hidden while paused: the bars are the visual anchor for
-     the control above them, and removing them makes the section jump on play. */
-  opacity: 0.28;
+  /* Shown rather than hidden while paused: the bars anchor the control above
+     them, and removing them makes the panel jump on play. */
   transition: opacity 0.4s ease;
 }
 
@@ -62,10 +66,18 @@
   opacity: 1;
 }
 
+/* Neutral at rest, accent while running. Dimming the accent instead produced a
+   washed-out pink — a color that appears nowhere else in the system, so it read
+   as a rendering fault rather than as an idle state. */
 .bar {
   flex: 1;
-  background: var(--flag);
+  background: var(--edge);
   transform-origin: bottom;
+  transition: background 0.4s ease;
+}
+
+.equalizer[data-playing='true'] .bar {
+  background: var(--flag-vivid);
 }
 
 /* The bars keep their heights and pulse in opacity. Animating scale instead

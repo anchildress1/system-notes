@@ -30,7 +30,7 @@
   width: 0.5rem;
   height: 0.5rem;
   margin-right: 0.5rem;
-  background: var(--flag);
+  background: var(--flag-vivid);
   content: '';
 }
 

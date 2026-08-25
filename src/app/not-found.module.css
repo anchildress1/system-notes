@@ -16,24 +16,31 @@
 
 .code {
   margin-bottom: 1.5rem;
-  color: var(--flag);
-  font-size: 0.9375rem;
-  letter-spacing: 0.16em;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
 }
 
+/* Same face, same weight, same italic turn as every other headline on the site.
+   This page kept the pre-serif treatment — a grotesque with a slanted <em> —
+   which made the one screen a reader reaches by accident the only screen that
+   looked like a different site. */
 .message h1 {
-  font-family: var(--font-display);
-  font-size: clamp(4rem, 9vw, 8.5rem);
-  font-weight: 400;
-  letter-spacing: -0.06em;
-  line-height: 0.82;
+  font-family: var(--font-editorial);
+  font-size: clamp(2.9rem, 7.5vw, 7rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+  text-wrap: balance;
 }
 
 .message h1 em {
   display: block;
   color: var(--flag);
-  font-weight: 400;
+  font-style: italic;
+  font-weight: 500;
 }
 
 .message > p:not(.code) {
