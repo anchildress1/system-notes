@@ -13,49 +13,53 @@
   --bone: oklch(0.95 0.008 90);
   --soft: oklch(0.76 0.008 265);
   --mute: oklch(0.68 0.012 265);
-  /* The accent carries two jobs that one color cannot do at once.
+  /* One accent hue, both themes. Dark ran amber and light ran red, which the
+     physics justified but which gave the site two identities depending on a
+     toggle.
 
-     --flag is ACCENT INK: text, links, headline turns, focus rings. It is
-     contrast-bound.
+     --flag is ACCENT INK: text, links, headline turns, focus rings. It is the
+     only accent token that still moves between themes, and only in lightness —
+     the light red at L 0.57 scores 3.91:1 on graphite, under AA, so dark lifts
+     it to 0.63 for 4.83:1. Same hue, same character, lit for its ground.
 
      --flag-vivid is ACCENT SURFACE: fills, marks, glows, the CTA. It carries no
-     text of its own, so nothing drags its lightness down and it can run hotter.
+     text of its own, so nothing drags its lightness down. --flag-ink is what
+     sits ON it, near-white at 4.67:1 — the labels on those fills are 14-15px
+     bold, and bold only counts as large text from 18.66px. Never pair
+     --flag-ink with --flag.
 
-     --flag-ink is what sits ON --flag-vivid. Never pair --flag-ink with --flag.
-
-     A dark ground has room at the top of the ramp, so both accents sit at the
-     white-hot end and land on nearly the same amber. The light theme overrides
-     all four, and the comment there explains why the hue has to move. */
-  --flag: oklch(0.83 0.155 80);
-  --flag-vivid: oklch(0.81 0.16 82);
-  --flag-ink: oklch(0.19 0.04 80);
-  --flag-soft: oklch(0.81 0.16 82 / 0.14);
+     Surface and ink are declared once and never overridden: a mid-red fill
+     needs light text on either ground, so a theme has nothing to say about
+     them. */
+  --flag: oklch(0.63 0.22 29);
+  --flag-vivid: oklch(0.58 0.23 29);
+  --flag-ink: oklch(0.99 0.004 90);
+  --flag-soft: oklch(0.58 0.23 29 / 0.14);
   /* Strong enough to read as a halo around a 10px tile. --flag-soft is sized
      for a wash across a whole panel and disappears at that scale. */
-  --flag-glow: oklch(0.81 0.16 82 / 0.52);
+  --flag-glow: oklch(0.58 0.23 29 / 0.45);
   --drop: oklch(0.06 0.01 265 / 0.9);
   --thumb: oklch(0.42 0.01 265);
 
-  /* Card kinds, ordered as a heat ramp: gold, amber, orange, ember, then steel.
-     Hue does the separating and lightness descends with it, so the ladder is
-     readable as temperature rather than as five arbitrary tags.
+  /* Anchored on the accent, not merely adjacent to it. The board used to run a
+     gold-to-ember ramp with a blue-grey neutral at the end, which meant the
+     densest block of colour on the site shared no hue with the red everything
+     else is marked in — mustard tiles and a navy tile beside a red accent read
+     as a second palette that wandered in.
 
-     --k-other used to sit at hue 200 — the one cold tone in a warm system, and
-     the only thing on the board that could not be explained by the palette it
-     belonged to. It reads as a stock accent pairing rather than a decision.
+     The largest category now takes the accent itself and the rest step away
+     from it in hue and lightness together: red, rust, oxblood, and a warm stone
+     for the one kind deliberately off the ramp. Awards keep the brightest tone
+     because they are the reserved slot, but they move from gold to amber so
+     they sit in the same family.
 
-     Dropping it costs discriminability, which is the real reason a cold outlier
-     is tempting on categorical data: neighbouring swatches here separate by only
-     about 1.4:1 in luminance. The arc is therefore spread as wide as warmth
-     allows — 96, 80, 45, 25 — so hue carries what lightness cannot, and
-     --k-principle stays neutral because a principle is the one kind that is
-     deliberately off the ramp. A first pass at 96/80/58/38 was too narrow and
-     collapsed into one ochre on the light board. */
-  --k-award: oklch(0.93 0.13 96);
-  --k-decision: oklch(0.83 0.155 80);
-  --k-note: oklch(0.74 0.155 45);
-  --k-other: oklch(0.65 0.17 25);
-  --k-principle: oklch(0.56 0.014 265);
+     Every slot clears 3:1 on its board — dark 12.72, 7.41, 6.37, 4.59, 3.53;
+     light 3.45, 5.17, 6.99, 9.82, 12.63. */
+  --k-award: oklch(0.88 0.14 72);
+  --k-decision: oklch(0.76 0.2 29);
+  --k-note: oklch(0.68 0.17 45);
+  --k-other: oklch(0.6 0.15 18);
+  --k-principle: oklch(0.52 0.02 60);
 
   /* Hairlines stay translucent rather than resolving to --edge. Roughly thirty
      borders composite over whatever sits behind them, and an opaque token would
@@ -117,47 +121,29 @@
   --bone: oklch(0.22 0.008 265);
   --soft: oklch(0.4 0.008 265);
   --mute: oklch(0.53 0.012 265);
-  /* The accent changes HUE with the theme, and this is the reason.
+  /* Ink only — surface and ink are shared, see :root. Near the sRGB red ceiling
+     of oklch(0.628 0.2577 29): renders its full 0.225 chroma unclipped and
+     clears 4.61:1 on the page, 5.00:1 on a white panel, so it is AA at every
+     text size rather than display-only.
 
-     A light page forces the accent down to about L 0.52 to clear 4.5:1. Amber
-     cannot survive that: hue 80 runs out of sRGB there and renders a chroma of
-     0.111 however much is asked for — which is the definition of brown. Red
-     does survive it: hue 30 renders the full 0.18 at the same lightness, 62%
-     more chroma, no clipping. Amber is only vivid while it is light; red is
-     vivid while it is dark.
-
-     So the ramp is read at the temperature each ground allows. On graphite the
-     accent sits at the white-hot end (sun amber); on paper it sits at red heat.
-     Same forge, same arc, the point on it that each background can actually
-     render. Chasing one accent hue across both themes is what produced the mud.
-
-     Both sit near the sRGB red ceiling, which is oklch(0.628 0.2577 29): --flag
-     renders a chroma of 0.225 and --flag-vivid 0.23, neither clipped. --flag
-     clears 4.61:1 on the page and 5.00:1 on a white panel.
-
-     --flag-vivid's lightness is set by the label on top of it, not by taste. At
-     L 0.60 it was #ee130f and carried white at 4.32:1 — which fails AA, because
-     the labels that sit on it (RUN IT, the theme-song toggle) are 14-15px bold,
-     and bold only counts as large text from 18.66px. axe caught it. L 0.58
-     carries white at 4.67:1 and gives up 0.01 of chroma to do it. */
+     Yellow cannot do this job, and it is worth writing down why. At the
+     lightness a light page forces on ink, hue 85 renders 1.74:1 at L 0.80 and
+     does not clear 4.5:1 until L 0.55 — by which point its chroma has fallen to
+     0.12 and it is olive. Yellow's whole character is high lightness, so
+     darkening it to meet contrast destroys the thing that makes it yellow. On
+     paper it can only live as a SURFACE carrying dark ink, where it reads at
+     11.3:1. That is a different design, not a different value. */
   --flag: oklch(0.57 0.225 29);
-  --flag-vivid: oklch(0.58 0.23 29);
-  --flag-ink: oklch(0.99 0.004 90);
-  --flag-soft: oklch(0.58 0.23 29 / 0.12);
-  --flag-glow: oklch(0.58 0.23 29 / 0.42);
   --drop: oklch(0.55 0.02 265 / 0.22);
   --thumb: oklch(0.8 0.012 265);
 
-  /* Darker than the board rather than lighter; swatchPalette.ts holds the
-     separation each of these has to keep from a 97.2 surface. The ramp is the
-     same one as dark — gold, amber, orange, ember, steel — inverted, so a
-     category keeps its identity across a theme switch instead of only its rank.
-     Each clears 3:1 on the board: 3.38, 4.95, 7.27, 10.37, 12.56. */
-  --k-award: oklch(0.62 0.13 88);
-  --k-decision: oklch(0.53 0.12 78);
-  --k-note: oklch(0.45 0.14 45);
-  --k-other: oklch(0.37 0.15 25);
-  --k-principle: oklch(0.3 0.014 265);
+  /* The same ramp inverted, so a category keeps its identity across a theme
+     switch rather than only its rank. */
+  --k-award: oklch(0.62 0.13 70);
+  --k-decision: oklch(0.54 0.2 29);
+  --k-note: oklch(0.46 0.15 45);
+  --k-other: oklch(0.38 0.12 18);
+  --k-principle: oklch(0.3 0.02 60);
 
   --line: oklch(0.22 0.008 265 / 0.13);
   --line-strong: oklch(0.22 0.008 265 / 0.28);

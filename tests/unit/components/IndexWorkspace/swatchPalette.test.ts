@@ -29,18 +29,18 @@ describe('swatchLightness', () => {
   });
 
   it('resolves a reviewed token per theme', () => {
-    expect(swatchLightness('var(--k-award)', 'dark')).toBe(93);
+    expect(swatchLightness('var(--k-award)', 'dark')).toBe(88);
     expect(swatchLightness('var(--k-award)', 'light')).toBe(62);
-    expect(swatchLightness('var(--k-note)', 'dark')).toBe(74);
-    expect(swatchLightness('var(--k-note)', 'light')).toBe(45);
+    expect(swatchLightness('var(--k-note)', 'dark')).toBe(68);
+    expect(swatchLightness('var(--k-note)', 'light')).toBe(46);
   });
 
   it('reads the dark board when no theme is named', () => {
-    expect(swatchLightness('var(--k-decision)')).toBe(83);
+    expect(swatchLightness('var(--k-decision)')).toBe(76);
   });
 
   it('tolerates whitespace inside the var() call', () => {
-    expect(swatchLightness('var( --k-principle )')).toBe(56);
+    expect(swatchLightness('var( --k-principle )')).toBe(52);
   });
 
   it('reads a fractional lightness', () => {

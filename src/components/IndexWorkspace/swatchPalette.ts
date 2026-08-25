@@ -22,9 +22,9 @@ export type SwatchTheme = keyof typeof SWATCH_SURFACE_LIGHTNESS;
  * rank by size. Slots separate by chroma as well as lightness: five purely
  * tonal steps cannot stay distinct at this separation.
  *
- * Ordered down the heat ramp declared in globals.css — amber, orange, ember,
- * steel — so rank reads as temperature. Slot 1 used to be a cyan, the only
- * cold tone in the system and the one swatch the palette could not justify.
+ * Ordered outward from the accent declared in globals.css — red, rust, oxblood,
+ * stone — so the largest category carries the colour the site is marked in and
+ * the rest step away from it.
  *
  * Every entry is a token. A literal cannot follow a theme, so a hardcoded
  * color here renders identically against both boards.
@@ -48,18 +48,18 @@ export const AWARD_SWATCH = 'var(--k-award)';
  * Referencing a token outside this map is what let a background-adjacent tone
  * onto the board, so the set is closed rather than advisory.
  *
- * --flag is deliberately absent: it is byte-identical to --k-decision in dark,
- * so a palette holding both would pass a uniqueness check on strings while
- * painting two ranks the same color.
+ * --flag is deliberately absent. It is the accent, and --k-decision is derived
+ * from it, so the two sit close enough that a palette holding both would paint
+ * two ranks all but identically while passing a uniqueness check on strings.
  */
 export const SWATCH_TOKEN_LIGHTNESS: Readonly<
   Record<string, Readonly<Record<SwatchTheme, number>>>
 > = {
-  '--k-award': { dark: 93, light: 62 },
-  '--k-decision': { dark: 83, light: 53 },
-  '--k-note': { dark: 74, light: 45 },
-  '--k-other': { dark: 65, light: 37 },
-  '--k-principle': { dark: 56, light: 30 },
+  '--k-award': { dark: 88, light: 62 },
+  '--k-decision': { dark: 76, light: 54 },
+  '--k-note': { dark: 68, light: 46 },
+  '--k-other': { dark: 60, light: 38 },
+  '--k-principle': { dark: 52, light: 30 },
 };
 
 /**
