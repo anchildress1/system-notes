@@ -146,6 +146,11 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
         <div className={styles.columns}>
           <div className={styles.prose}>
             <p>{selected.long_description}</p>
+          </div>
+
+          {/* Beside the description, not under it. A 56ch measure inside a pane
+              twice that wide left the right half of every case study empty. */}
+          <div className={styles.outcome}>
             <h3>Outcome</h3>
             <p>{selected.outcome}</p>
             <div className={styles.actions}>
@@ -167,19 +172,23 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
               </Link>
             </div>
           </div>
-
-          <div className={styles.stackColumn}>
-            <h3>Stack</h3>
-            <dl className={styles.stack}>
-              {selected.tech.map((item) => (
-                <div key={item.name}>
-                  <dt>{item.name}</dt>
-                  <dd>{item.role}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
         </div>
+
+        {/* Footnotes, at the foot. As a second column of ruled rows beside the
+            prose this was an internal API reference sitting level with the
+            writing; the stack is an apparatus note about how the thing was
+            built, and apparatus belongs under the text it annotates. */}
+        <aside className={styles.stackColumn} aria-label="Stack">
+          <h3>Stack</h3>
+          <dl className={styles.stack}>
+            {selected.tech.map((item) => (
+              <div key={item.name}>
+                <dt>{item.name}</dt>
+                <dd>{item.role}</dd>
+              </div>
+            ))}
+          </dl>
+        </aside>
       </article>
     </div>
   );
