@@ -31,7 +31,9 @@
     "node": ">=24"
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.82",
     "@algolia/client-common": "^5.48.0",
+    "ai": "^7.0.79",
     "algoliasearch": "^5.48.0",
     "instantsearch.css": "^8.9.0",
     "instantsearch.js": "^4.99.0",
