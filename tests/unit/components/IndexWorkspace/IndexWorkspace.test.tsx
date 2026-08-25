@@ -469,7 +469,7 @@ describe('IndexWorkspace', () => {
     await screen.findByText('Failure is data');
     const mystery = screen.getByRole('button', { name: /mystery, 3 notes/i });
 
-    // An unrecognised category is a real filter, not an "other" bucket. Its
+    // An unrecognized category is a real filter, not an "other" bucket. Its
     // board tile falls back to the default swatch rather than disappearing.
     expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(1);
     expect(view.container.querySelector('[data-note-board] [role="option"]')).toHaveAttribute(

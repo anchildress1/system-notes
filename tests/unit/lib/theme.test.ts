@@ -61,7 +61,7 @@ describe('THEME_SCRIPT', () => {
     expect(THEME_SCRIPT).not.toContain('document.body');
   });
 
-  it('carries the storage key and both chrome colours it has to apply', () => {
+  it('carries the storage key and both chrome colors it has to apply', () => {
     expect(THEME_SCRIPT).toContain(JSON.stringify(THEME_STORAGE_KEY));
     expect(THEME_SCRIPT).toContain(THEME_COLORS.light);
     expect(THEME_SCRIPT).toContain(THEME_COLORS.dark);

@@ -40,7 +40,7 @@ describe('ThemeToggle', () => {
     expect(control()).toHaveAttribute('aria-pressed', 'false');
   });
 
-  it('treats an unrecognised attribute value as the default', () => {
+  it('treats an unrecognized attribute value as the default', () => {
     document.documentElement.dataset.theme = 'sepia';
 
     render(<ThemeToggle />);
