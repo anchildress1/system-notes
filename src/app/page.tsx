@@ -17,7 +17,7 @@ export default function IntakePage() {
         <div className="page-head">
           <p className="page-head-slug">
             <span>Intake</span>
-            <span>One failure per form</span>
+            <span>Answers cite shipped work</span>
           </p>
           <h1 id="intake-heading">
             Tell me what&rsquo;s breaking.

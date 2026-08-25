@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import IndexPulseLine from '@/components/IndexWorkspace/IndexPulseLine';
 import IndexWorkspaceLoader from '@/components/IndexWorkspace/IndexWorkspaceLoader';
 import { getIndexPulse } from '@/lib/indexPulse';
 import { buildPageMetadata } from '@/lib/siteMetadata';
@@ -19,6 +20,7 @@ export default async function NotesIndexPage() {
       <div className={`page-head ${styles.head}`}>
         <p className="page-head-slug">
           <span>Index</span>
+          {pulse ? <IndexPulseLine pulse={pulse} /> : null}
         </p>
         <h1 data-scale="compact">
           How I decide.
@@ -30,7 +32,7 @@ export default async function NotesIndexPage() {
         className={`page-column ${styles.indexSection}`}
         aria-label="System Notes index"
       >
-        <IndexWorkspaceLoader pulse={pulse} />
+        <IndexWorkspaceLoader />
       </section>
     </main>
   );
