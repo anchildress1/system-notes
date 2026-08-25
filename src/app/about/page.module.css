@@ -166,7 +166,7 @@
   position: relative;
   display: grid;
   border-top: 0.5px solid var(--line-strong);
-  grid-template-columns: minmax(15rem, 0.75fr) minmax(0, 1.5fr);
+  grid-template-columns: minmax(14rem, 0.62fr) minmax(0, 1.5fr);
   gap: clamp(2rem, 6vw, 7rem);
 }
 
@@ -280,10 +280,13 @@
    footnote marker does, the statement runs at display size, and the reasoning
    sits under it as prose. Each principle is then a block someone wrote rather
    than a row in a table of them. */
+/* The numeral hangs, it does not sit in a column. A track reserved for it made
+   every marker share one hard edge with the statements beside them; pulled into
+   the margin they float in the gutter and the prose keeps a single left edge. */
 .principles li {
-  display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1fr);
-  column-gap: clamp(0.75rem, 1.5vw, 1.5rem);
+  display: block;
+  position: relative;
+  padding-left: 0;
 }
 
 .principles li + li {
@@ -299,14 +302,38 @@
 }
 
 .principles li > span {
+  position: absolute;
+  top: 0.5rem;
   color: var(--flag);
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: var(--fine);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em;
-  /* Sits on the statement's first baseline rather than floating at the top of
-     a centred row. */
-  padding-top: 0.55rem;
+  letter-spacing: var(--fine-tracking);
+}
+
+/* Each marker hangs a different distance into the gutter, so the run reads as
+   three notes set by hand rather than a numbered column. Wide screens only —
+   there is no gutter to hang into on a phone. */
+@media (min-width: 62rem) {
+  .principles li > span {
+    left: -3.25rem;
+  }
+
+  .principles li:nth-child(2) > span {
+    left: -4.5rem;
+  }
+
+  .principles li:nth-child(3) > span {
+    left: -2.5rem;
+  }
+}
+
+@media (max-width: 61.99rem) {
+  .principles li > span {
+    position: static;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
 }
 
 .principles h3 {
@@ -350,6 +377,19 @@
     padding-left 320ms var(--ease-out);
 }
 
+/* A character, not an icon component. The cue that a link leaves the site is
+   worth keeping — dropping it entirely would take the affordance with the
+   artifact — but at this size it can be set rather than drawn. */
+.outbound {
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.8em;
+}
+
+.contact nav a:hover .outbound {
+  color: var(--flag);
+}
+
 /* Steps to the right on hover instead of filling with a block of accent. The
    fill turned every row into a button; a link that moves reads as a link. */
 .contact nav a:hover {
@@ -380,9 +420,6 @@
 }
 
 @media (max-width: 37rem) {
-  .principles li {
-    grid-template-columns: 2rem minmax(0, 1fr);
-  }
 }
 
 .themeSongCopy {

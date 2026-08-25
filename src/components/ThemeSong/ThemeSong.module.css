@@ -1,10 +1,12 @@
-/* One object, not three loose parts. Floating a button, a status line and a bar
-   chart directly on the page read as debris beside the bordered, square-cornered
-   panels the rest of the site is built from. */
+/* No frame. This was a bordered panel when the rest of the site still had them,
+   and it was right then — a button, a status line and a bar chart floating loose
+   read as debris. Since the cards, the queue and the search all lost their
+   containers it is the last framed object on the site, which now reads as a
+   widget dropped onto an editorial page. The parts hold together on a rule and
+   their own alignment instead. */
 .player {
-  padding: clamp(1.1rem, 2.2vw, 1.6rem);
-  border: 1px solid var(--line-strong);
-  background: var(--panel);
+  padding-top: 1.1rem;
+  border-top: 0.5px solid var(--line-strong);
 }
 
 .controls {

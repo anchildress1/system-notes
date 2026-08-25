@@ -2,7 +2,6 @@ import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiArrowUpRight } from 'react-icons/fi';
 import ThemeSong from '@/components/ThemeSong/ThemeSong';
 import { blurFor } from '@/lib/imageVariants';
 import { profile } from '@/data/profile';
@@ -158,11 +157,17 @@ export default function AboutPage() {
         <nav aria-label="Ashley Childress profiles">
           {profile.links.map((link) => (
             <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
-              {link.label} <FiArrowUpRight aria-hidden="true" />
+              {link.label}{' '}
+              <span className={styles.outbound} aria-hidden="true">
+                &#8599;
+              </span>
             </a>
           ))}
           <Link href="/notes">
-            Search the index <FiArrowUpRight aria-hidden="true" />
+            Search the index{' '}
+            <span className={styles.outbound} aria-hidden="true">
+              &#8599;
+            </span>
           </Link>
         </nav>
       </section>
