@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -29,10 +30,16 @@ export default function AboutPage() {
   return (
     <main id="main-content" className={styles.main}>
       <section className={styles.hero} aria-labelledby="about-heading">
+        {/* Outside .heroCopy so the rule spans both columns. Inside the left
+            column it stopped at the portrait's edge, so this page's head rule
+            was the only one on the site narrower than the rules beneath it. */}
+        <p className="page-head-slug">
+          <span>About</span>
+          <span>{profile.name}</span>
+        </p>
         <div className={styles.heroCopy}>
-          <p className={styles.kicker}>About · {profile.name}</p>
-          <h1 id="about-heading">
-            Forged between <em>coal and code.</em>
+          <h1 id="about-heading" className="page-head-title">
+            Forged between <span>coal and code.</span>
           </h1>
           <p className={styles.role}>
             {profile.role} · {profile.location}
@@ -43,7 +50,7 @@ export default function AboutPage() {
             ))}
           </div>
         </div>
-        <figure className={styles.portrait}>
+        <figure className={`drift ${styles.portrait}`}>
           {/* Both portraits ship; CSS shows the one matching the theme. They are
               lazy rather than priority on purpose: a display:none image is never
               in the viewport, so the browser fetches only the visible one. A
@@ -69,9 +76,8 @@ export default function AboutPage() {
         </figure>
       </section>
 
-      <section className={styles.proof} aria-labelledby="proof-heading">
+      <section className={`reveal ${styles.proof}`} aria-labelledby="proof-heading">
         <header>
-          <p>The record</p>
           <h2 id="proof-heading">Claims should have receipts.</h2>
         </header>
         <dl>
@@ -100,43 +106,53 @@ export default function AboutPage() {
         ) : null}
       </section>
 
-      <section className={styles.principles} aria-labelledby="principles-heading">
+      <section className={`reveal ${styles.principles}`} aria-labelledby="principles-heading">
         <header>
-          <p>How I work</p>
           <h2 id="principles-heading">The rules are short on purpose.</h2>
         </header>
         <ol>
           {profile.principles.map((principle, index) => (
-            <li key={principle.title}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <h3>{principle.title}</h3>
-              <p>{principle.body}</p>
+            <li
+              key={principle.title}
+              className="stagger-in"
+              style={{ '--i': index } as CSSProperties}
+            >
+              <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <div>
+                <h3>{principle.title}</h3>
+                <p>{principle.body}</p>
+              </div>
             </li>
           ))}
         </ol>
       </section>
 
-      <section className={styles.themeSong} aria-labelledby="theme-song-heading">
-        {/* No artist line: the status beside the control already names them,
-            and the design does not repeat it under the heading. */}
-        <h2 id="theme-song-heading" className={styles.themeSongHeading}>
-          Theme song: &ldquo;{profile.themeSong.track}&rdquo;
-        </h2>
-        <ThemeSong />
-        <div className={styles.themeSongCopy}>
-          {profile.themeSong.paragraphs.map((paragraph) => (
-            <p key={paragraph.lead ?? paragraph.body}>
-              {paragraph.lead ? <strong>{paragraph.lead}</strong> : null}
-              {paragraph.lead && paragraph.body ? ' ' : null}
-              {paragraph.body}
-            </p>
-          ))}
+      <section className={`reveal ${styles.themeSong}`} aria-labelledby="theme-song-heading">
+        {/* Label left, content right — the same two columns as every other
+            section here. It used to be the one section that ran full width from
+            the far edge, which left the right half of the page empty and made it
+            read as a different page grafted in. */}
+        <header>
+          {/* No artist line: the status beside the control already names them,
+              and the design does not repeat it under the heading. */}
+          <h2 id="theme-song-heading">Theme song: &ldquo;{profile.themeSong.track}&rdquo;</h2>
+        </header>
+        <div>
+          <ThemeSong />
+          <div className={styles.themeSongCopy}>
+            {profile.themeSong.paragraphs.map((paragraph) => (
+              <p key={paragraph.lead ?? paragraph.body}>
+                {paragraph.lead ? <strong>{paragraph.lead}</strong> : null}
+                {paragraph.lead && paragraph.body ? ' ' : null}
+                {paragraph.body}
+              </p>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className={styles.contact} aria-labelledby="contact-heading">
+      <section className={`reveal ${styles.contact}`} aria-labelledby="contact-heading">
         <div>
-          <p>Elsewhere</p>
           <h2 id="contact-heading">Follow the work, not a funnel.</h2>
         </div>
         <nav aria-label="Ashley Childress profiles">
