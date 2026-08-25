@@ -79,9 +79,16 @@
   --fine: 0.6875rem;
   --fine-tracking: 0.14em;
 
-  /* The hairline down the middle of the page. Too faint to derive from --line,
-     and it has to invert with the theme or it is a light line on a light page. */
+  /* The hairline running the height of the page. Too faint to derive from
+     --line, and it has to invert with the theme or it is a light line on a
+     light page.
+
+     Its position is the point: at 50% it was an axis of symmetry, which is the
+     one thing a page built on asymmetry should not hand a reader. 61.8% is the
+     golden section — far enough off centre to read as a decision, and it falls
+     inside the wide right-hand field rather than cutting a column in half. */
   --seam: oklch(0.95 0.008 90 / 0.028);
+  --seam-at: 61.8%;
 
   /* Geometry and easing are theme-independent and belong to both. */
   --page-max: 96rem;
@@ -164,7 +171,13 @@ body {
   min-height: 100vh;
   overflow-x: clip;
   background:
-    linear-gradient(90deg, transparent 0 49.93%, var(--seam) 50%, transparent 50.07%), var(--void);
+    linear-gradient(
+      90deg,
+      transparent 0 calc(var(--seam-at) - 0.07%),
+      var(--seam) var(--seam-at),
+      transparent calc(var(--seam-at) + 0.07%)
+    ),
+    var(--void);
   color: var(--bone);
   font-family: var(--font-sans);
   line-height: 1.55;

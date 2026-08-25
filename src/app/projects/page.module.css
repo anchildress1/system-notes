@@ -2,9 +2,10 @@
    accent was byte-identical to --flag, which is to say the exhibits room was
    already prototyping the theme the rest of the site has since adopted. Nothing
    here needs tokens of its own any more. */
+/* No background of its own. Painting --void here covered the body's seam, which
+   is why this was the one page without it. */
 .main {
   min-height: 100svh;
-  background: var(--void);
   color: var(--bone);
   overflow-x: clip;
 }
