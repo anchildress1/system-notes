@@ -92,7 +92,7 @@ describe('IndexWorkspace', () => {
     // Reaching the last page disables the control that got you there. A disabled
     // element cannot hold focus, so the browser drops it to <body> and a keyboard
     // reader is thrown back to the top of the document mid-task.
-    searchHarness.hits = Array.from({ length: 12 }, (_, index) => ({
+    searchHarness.hits = Array.from({ length: 7 }, (_, index) => ({
       objectID: `card:test:${index + 1}`,
       title: `Ranked note ${index + 1}`,
       fact: `Evidence ${index + 1}`,
@@ -258,9 +258,7 @@ describe('IndexWorkspace', () => {
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
       )
-    ).toEqual(
-      [2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((rank) => expect.stringContaining(`Ranked note ${rank}`))
-    );
+    ).toEqual([2, 3, 4, 5, 6].map((rank) => expect.stringContaining(`Ranked note ${rank}`)));
     expect(boardElement).toHaveAttribute('tabindex', '0');
     expect(tiles.every((tile) => !tile.hasAttribute('tabindex'))).toBe(true);
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
@@ -302,18 +300,14 @@ describe('IndexWorkspace', () => {
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
       )
-    ).toEqual(
-      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rank) => expect.stringContaining(`Ranked note ${rank}`))
-    );
+    ).toEqual([1, 2, 3, 4, 5].map((rank) => expect.stringContaining(`Ranked note ${rank}`)));
     fireEvent.click(board.getByRole('option', { name: 'Ranked note 3, position 3' }));
     expect(screen.getByRole('article')).toHaveTextContent('Ranked note 3');
     expect(
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
       )
-    ).toEqual(
-      [1, 2, 4, 5, 6, 7, 8, 9, 10, 11].map((rank) => expect.stringContaining(`Ranked note ${rank}`))
-    );
+    ).toEqual([1, 2, 4, 5, 6].map((rank) => expect.stringContaining(`Ranked note ${rank}`)));
   });
 
   it('moves by title type-ahead, supports rapid prefixes, and wraps', async () => {
@@ -408,7 +402,7 @@ describe('IndexWorkspace', () => {
     expect(
       board.queryByRole('option', { name: /Ranked note 501, position/i })
     ).not.toBeInTheDocument();
-    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(10);
+    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(5);
   });
 
   it.each([1, 2, 3, 4])(

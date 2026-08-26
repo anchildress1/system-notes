@@ -232,7 +232,7 @@ test.describe('Notes index', () => {
     // ranked list's prefix — never a reordering or a sample of it.
     const onBoard = hits.slice(0, boardShape.tiles);
     expect(tileTitles).toEqual(onBoard.map((hit) => hit.title));
-    expect(initialQueueTitles).toEqual(hits.slice(1, 11).map((hit) => hit.title));
+    expect(initialQueueTitles).toEqual(hits.slice(1, 6).map((hit) => hit.title));
     expect(tileCategories).toEqual(onBoard.map((hit) => hit.category));
 
     await expect(board).toHaveJSProperty('tabIndex', 0);
@@ -286,7 +286,7 @@ test.describe('Notes index', () => {
     const selectedQueueTitles = await page
       .locator('[data-ranked-queue] button')
       .evaluateAll((buttons) => buttons.map((button) => button.children.item(1)?.textContent));
-    expect(selectedQueueTitles).toEqual(hits.slice(0, 10).map((hit) => hit.title));
+    expect(selectedQueueTitles).toEqual(hits.slice(0, 5).map((hit) => hit.title));
     await expect(page.getByRole('list', { name: 'Highest-ranked alternate notes' })).toBeVisible();
     expect(page.url()).toBe(initialURL);
 
@@ -385,12 +385,33 @@ test.describe('Notes index', () => {
     await mockAlgoliaSearch(page, hits);
     await page.goto('/notes');
     const board = page.getByRole('listbox', { name: 'Top ranked notes' });
-    const selected = page.getByRole('option', { name: 'Ranked note 120, position 120' });
+    const tiles = board.getByRole('option');
+
+    // The LAST tile on the wide board, read rather than named: a narrower panel
+    // resolves fewer columns and so holds fewer tiles, which makes the tail the
+    // one selection guaranteed to be trimmed at any density. Naming a fixed rank
+    // pinned the test to a tile size — it broke the moment the grain changed,
+    // without the behaviour under test moving at all.
+    await expect(tiles.first()).toBeVisible();
+    // The board fills in over a couple of renders, so settle on a steady count
+    // before reading the tail — counting too early names tile -1.
+    let wideCount = 0;
+    await expect
+      .poll(async () => {
+        const seen = await tiles.count();
+        const steady = seen > 0 && seen === wideCount;
+        wideCount = seen;
+        return steady;
+      })
+      .toBe(true);
+    const selected = tiles.nth(wideCount - 1);
+    const trimmedId = await selected.getAttribute('data-note-id');
     await selected.click();
     await expect(selected).toHaveAttribute('aria-selected', 'true');
 
     await page.setViewportSize({ width: 320, height: 900 });
-    await expect(selected).toHaveCount(0);
+    await expect.poll(() => tiles.count()).toBeLessThan(wideCount);
+    await expect(board.locator(`[data-note-id="${trimmedId}"]`)).toHaveCount(0);
     await expect(board).not.toHaveAttribute('aria-activedescendant', /.+/);
     await board.focus();
     await board.press('ArrowRight');

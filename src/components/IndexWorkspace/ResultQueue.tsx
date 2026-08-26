@@ -7,8 +7,15 @@ import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteC
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
-/** Alternates shown per page. The reader above holds the featured note. */
-const PAGE_SIZE = 10;
+/**
+ * Alternates shown per page. The reader above holds the featured note, so a page
+ * is one note plus five.
+ *
+ * Five, not ten: .queueTitle scales the type down by rank and floors at 1.05rem,
+ * which rank 5 reaches. A ten-row page spent its back half at the floor, so the
+ * ramp stopped ranking anything and just looked like the text shrinking.
+ */
+const PAGE_SIZE = 5;
 
 interface ResultQueueProps {
   items: Hit<FactHitRecord>[];

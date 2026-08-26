@@ -164,11 +164,14 @@
      space beside every tile and 14px under it, and the board read as a sparse
      scatter.
 
-     The design draws an 18-column census: a ~16px mark on a ~20px stride. This
-     number is the packing floor, not that stride — auto-fill takes as many
-     whole tracks as fit and 1fr spends the rest, so 19 is what lets the
-     eighteenth column in at this panel's width and 20 stops at seventeen. The
-     drawn stride comes out where the design has it either way.
+     This number is the packing floor, not the drawn stride — auto-fill takes as
+     many whole tracks as fit and 1fr spends the rest, so the floor decides the
+     column count and the stride falls out of it. 16 packs 22 columns into this
+     panel, for a ~12px mark on a ~16px stride.
+
+     The mockup's own 18-column, 16-on-20 grain was matched first and read too
+     coarse in place: at that size the census looks like a chart of a few dozen
+     things rather than a plate of a few hundred. Density is the point.
 
      A 24px floor was tried, to clear WCAG 2.5.8 target size on its own, and it
      bought four columns' worth of stride the census was never drawn at. The
@@ -176,7 +179,7 @@
      note on the board is also a full-height row in the result queue beside it —
      and the tiles are not individual tab stops in any case: the listbox is the
      one focusable thing and arrow keys move within it. */
-  --tile-min: 19px;
+  --tile-min: 16px;
   --tile-sep: 4px;
   grid-template-columns: repeat(auto-fill, minmax(var(--tile-min), 1fr));
   gap: 0;
