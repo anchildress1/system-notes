@@ -525,18 +525,6 @@
   border: 0;
   border-bottom: 0.5px solid var(--line-strong);
   /* Set per position below: identical space above and below every record is the
-.notePermalink {
-  composes: marked-link from global;
-  display: inline-flex;
-  width: fit-content;
-  margin-top: 0.8rem;
-  color: var(--soft);
-  font-family: var(--font-display);
-  font-size: var(--fine);
-  letter-spacing: var(--fine-tracking);
-  text-transform: uppercase;
-}
-
      one mechanical rhythm left in the catalog. */
   background: transparent;
   color: var(--bone);

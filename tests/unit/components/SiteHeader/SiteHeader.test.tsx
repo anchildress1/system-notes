@@ -38,8 +38,6 @@ describe('SiteHeader', () => {
     ['/projects', 'what I’ve shipped'],
     ['/about', 'about me'],
     ['/notes', 'how I decide'],
-    // A note is a record pulled out of the index, so the index keeps the mark.
-    ['/notes/card:test:1', 'how I decide'],
   ])('marks %s as the %s navigation surface', (pathname, label) => {
     navigation.pathname = pathname;
 

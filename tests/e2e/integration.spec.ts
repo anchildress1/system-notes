@@ -290,7 +290,7 @@ test.describe('System Notes redesign', () => {
   });
 
   test('renders the designed 404 with a working skip-link target', async ({ page }) => {
-    const response = await page.goto('/notes/not%20valid');
+    const response = await page.goto('/no-such-record');
 
     expect(response?.status()).toBe(404);
     await expect(
