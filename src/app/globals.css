@@ -40,6 +40,21 @@
   /* Ink pools along the foot of a stroke where the felt drags. A yellow over
      the same yellow, so the composite never leaves the band's contrast range. */
   --mark-drag: oklch(0.79 0.19 86 / 0.38);
+
+  /* The second pen. Gold marks WORDS; terracotta marks SECTIONS — the tab on a
+     head, the bullet on the byline. Two pens is the difference between a page
+     that was highlighted and a page that was flooded, and a reader learns which
+     is which without being told. It owes no contrast (it never carries text)
+     but it is dark enough to hold its own on paper, where the gold cannot. */
+  --mark-tab: oklch(0.66 0.19 42);
+
+  /* Drawn, not described. These are MASKS rather than background images so the
+     colour stays a variable — one shape, any pen. preserveAspectRatio='none'
+     lets a single stroke stretch from an 8px byline bullet to a 200px headline
+     band without a second asset, and box-decoration-break gives every wrapped
+     line its own copy. Nothing here is a rectangle. */
+  --stroke-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%23000'/%3E%3C/svg%3E");
+  --stroke-swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0,1.6 C10,0.5 20,2.4 32,1.7 C44,1 52,2.6 64,1.9 C76,1.2 86,0.4 98,1.3 C108,2.1 114,2.2 120,1.6 L120,24.6 C112,25.4 104,23.8 92,24.5 C80,25.2 70,25.8 58,25 C46,24.2 38,22.6 26,23.4 C16,24.1 8,25.2 0,24.6 Z' fill='%23000'/%3E%3C/svg%3E");
   --mark-soft: oklch(0.86 0.17 92 / 0.16);
   /* Strong enough to read as a halo around a 10px tile. --mark-soft is sized
      for a wash across a whole panel and disappears at that scale. */
@@ -441,19 +456,32 @@ main {
   text-transform: uppercase;
 }
 
-/* The only accent in the head. A filled bar rather than a colored word: it
-   carries no meaning a screen reader has to recover, and it is the one place a
-   saturated amber sits at full strength in either theme.
+/* The only accent in the head, and the SECOND pen: gold marks words, terracotta
+   marks sections. It carries no meaning a screen reader has to recover, which is
+   also why it can be a drawn shape rather than a shape with a name — nothing
+   depends on it being legible, only on it being there.
 
-   A bar and not a square because --mark is only 1.63:1 against the light
-   page — deliberately, it is a surface token and owes no contrast — and a hue
-   that faint needs AREA to register. At 8px it disappeared into the paper; at
-   28px it reads as a filing tab in both themes. */
+   The rectangle it replaces was the last honest square on the page. This is the
+   brush stroke instead, tapered and uneven, and because terracotta holds the
+   paper where gold cannot, it no longer needs to be oversized to register. */
 .page-head-slug::before {
-  width: 1.75rem;
-  height: 0.5rem;
+  width: 1.6rem;
+  height: 0.62rem;
   flex: 0 0 auto;
-  background: var(--mark);
+  background: var(--mark-tab);
+  -webkit-mask-image: var(--stroke-brush);
+  mask-image: var(--stroke-brush);
+  /* TILED, and this is the radius lesson again. Stretching one path across the
+     band makes the wobble proportional to the band, so a 1341px headline got a
+     wave so long and shallow it read as a ruler. A pen wobbles by a fixed
+     amount every fixed distance. 4em ties the tile to the type — the wave is
+     the same size relative to the letters at every scale — and repeat-x lays
+     down as many as the run needs. The tile is seamless, so the joins between
+     them are invisible. */
+  -webkit-mask-size: 4em 100%;
+  mask-size: 4em 100%;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
   content: '';
 }
 
@@ -491,7 +519,7 @@ main {
      marked line overflowed upward and painted out the bottom of the line above
      it. Tight leading and a highlighter are not compatible; the band is the
      thing with a fixed height, so the leading is what moves. */
-  line-height: 1.24;
+  line-height: 1.42;
   text-wrap: balance;
 }
 
@@ -527,11 +555,13 @@ main {
 .marked,
 .page-head h1 > span,
 .page-head-title > span {
-  /* Overshoot on the right: a stroke starts clean and runs past where it meant
-     to stop. The heavier foot also keeps the mark off descenders — one cutting
-     the tail of a "y" reads as a clipping bug rather than as ink. Padding is in
-     em because it is spacing around type, and scales with it. */
-  padding: 0.03em 0.26em 0.15em 0.2em;
+  /* Sized to the STROKE, not to taste. --stroke-swipe is solid only between
+     8.8% and 91.5% of its height; the rest is where the drawn edge undulates.
+     These paddings keep every glyph inside that solid core, so no letter ever
+     ends up sitting on the page instead of on the ink — which on the dark theme
+     would put a dark-brown letter on graphite and lose it entirely. Change the
+     path and these change with it. */
+  padding: 0.14em 0.26em 0.22em 0.2em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   color: var(--mark-ink);
@@ -544,13 +574,25 @@ main {
     transparent calc(100% - 7px),
     var(--mark-drag) calc(100% - 7px)
   );
-  /* PIXELS, not em, and this is the whole trick. A pen tip is a fixed physical
-     width: it does not get blunter because the type got bigger. In em these
-     same radii turned a 15px star into a neat chip and a 120px headline into a
-     lozenge — the giveaway that a shape was scaled rather than drawn. Held
-     constant, the star reads as rounded and the headline as very nearly square,
-     which is what one marker does to both. No two corners agree. */
-  border-radius: 11px 3px 8px 4px / 15px 6px 12px 5px;
+  /* The edges are DRAWN. A radius, however uneven, still describes a rectangle
+     with its corners taken off: the top and bottom stay ruler-straight, and at
+     headline size that is the whole tell. The mask replaces them with a path
+     that undulates the entire way across, and being a mask rather than a
+     background image it leaves the colour above as a variable.
+
+     TILED, not stretched — the same lesson the radius taught. One path spread
+     across the band makes the wobble proportional to the band, so a 1300px
+     headline got a wave so long and shallow it read as a ruler. A pen wobbles a
+     fixed amount every fixed distance. 4em ties the tile to the type, so the
+     wave keeps one size relative to the letters at every scale, and repeat-x
+     lays down as many as the run needs. The tile is seamless, so the joins do
+     not show. */
+  -webkit-mask-image: var(--stroke-swipe);
+  mask-image: var(--stroke-swipe);
+  -webkit-mask-size: 4em 100%;
+  mask-size: 4em 100%;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
 }
 
 /* The turn of the headline is MARKED, not coloured.

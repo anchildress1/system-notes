@@ -27,10 +27,16 @@
    makes the space between them ambiguous to read and to lint. */
 .byline::before {
   display: inline-block;
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.9rem;
+  height: 0.4rem;
   margin-right: 0.5rem;
-  background: var(--mark);
+  background: var(--mark-tab);
+  -webkit-mask-image: var(--stroke-brush);
+  mask-image: var(--stroke-brush);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   content: '';
 }
 
