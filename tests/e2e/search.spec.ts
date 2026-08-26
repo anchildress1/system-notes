@@ -349,6 +349,7 @@ test.describe('Notes index', () => {
           const top = Math.round(tile.getBoundingClientRect().top);
           rows.set(top, (rows.get(top) ?? 0) + 1);
         }
+        const last = node.children[node.children.length - 1];
         return {
           tiles: node.children.length,
           rowLengths: [...new Set(rows.values())],
@@ -356,6 +357,10 @@ test.describe('Notes index', () => {
             .getComputedStyle(node)
             .gridTemplateColumns.split(/\s+/)
             .filter(Boolean).length,
+          // How much panel the last column leaves unspent on the right.
+          remainder: last
+            ? node.getBoundingClientRect().right - last.getBoundingClientRect().right
+            : 0,
         };
       });
 
@@ -381,12 +386,19 @@ test.describe('Notes index', () => {
         )
         .toBe(true);
 
-      const { tiles, rowLengths, columns } = settled;
+      const { tiles, rowLengths, columns, remainder } = settled;
       // One distinct row length is the whole point: every row is full.
       expect(rowLengths, `ragged board at ${width}px`).toHaveLength(1);
       expect(rowLengths[0]).toBe(columns);
       expect(tiles).toBeGreaterThan(0);
       expect(tiles).toBeLessThanOrEqual(hits.length);
+      // Full rows are not a rectangle on their own. Fixed 24px tracks kept every
+      // row full while auto-fill dropped the leftover width, so the board sat 22px
+      // short of the panel and stopped squaring up with the rules above it — and
+      // the row check above passed the entire time. Fluid tracks spend the
+      // remainder on the tiles, so only fr rounding may survive — about a pixel,
+      // against the 22 the fixed track dropped.
+      expect(remainder, `board leaves dead panel at ${width}px`).toBeLessThan(2);
     }
   });
 

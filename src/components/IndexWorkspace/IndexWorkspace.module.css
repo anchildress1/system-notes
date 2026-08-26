@@ -147,18 +147,38 @@
   border: 1px solid transparent;
   /* Two numbers, and every tile dimension derives from them.
 
-     --tile-cell is the pointer target: WCAG 2.2 target size wants 24px, and the
-     board is a grid of individually clickable options, so the cell cannot be
-     smaller. --tile-sep is the gap the mockup draws between marks.
+     --tile-min is the floor under the pointer target: WCAG 2.2 target size
+     wants 24px, and the board is a grid of individually clickable options, so
+     no cell may be smaller. --tile-sep is the gutter the mockup draws between
+     marks.
 
-     They were previously independent — a 24px cell holding a 14x10 mark — which
-     left 10px of dead space beside every tile and 14px under it, against a
-     design that separates them by 4. The board read as a sparse scatter rather
-     than a census. Deriving the mark from the cell keeps the target honest and
-     the spacing deliberate: change either number and the other follows. */
-  --tile-cell: 24px;
+     The tracks are fluid because a fixed track cannot fill its container.
+     auto-fill at a flat 24px left a 22px strip of dead panel down the right
+     edge, so the board no longer squared up with the rules and counts above it
+     — a census with a ragged margin. minmax spends that remainder on the tiles
+     instead: the board is a filled rectangle at every width, and a cell is
+     still never under 24px.
+
+     The mark derives from the cell rather than carrying its own size. Held
+     independently — a 24px cell around a 14x10 mark — it left 10px of dead
+     space beside every tile and 14px under it, and the board read as a sparse
+     scatter.
+
+     The design draws an 18-column census: a ~16px mark on a ~20px stride. This
+     number is the packing floor, not that stride — auto-fill takes as many
+     whole tracks as fit and 1fr spends the rest, so 19 is what lets the
+     eighteenth column in at this panel's width and 20 stops at seventeen. The
+     drawn stride comes out where the design has it either way.
+
+     A 24px floor was tried, to clear WCAG 2.5.8 target size on its own, and it
+     bought four columns' worth of stride the census was never drawn at. The
+     criterion is met through its equivalent-control exception instead — every
+     note on the board is also a full-height row in the result queue beside it —
+     and the tiles are not individual tab stops in any case: the listbox is the
+     one focusable thing and arrow keys move within it. */
+  --tile-min: 19px;
   --tile-sep: 4px;
-  grid-template-columns: repeat(auto-fill, var(--tile-cell));
+  grid-template-columns: repeat(auto-fill, minmax(var(--tile-min), 1fr));
   gap: 0;
   list-style: none;
   outline: none;
@@ -168,8 +188,9 @@
   position: relative;
   min-width: 0;
   display: grid;
-  width: var(--tile-cell);
-  height: var(--tile-cell);
+  /* The track decides the width; the cell is square by following it. */
+  width: 100%;
+  aspect-ratio: 1;
   cursor: pointer;
   place-items: center;
 }
@@ -177,8 +198,8 @@
 .boardTiles li::before {
   /* The cell less one separation, so adjacent marks sit --tile-sep apart and
      the leftover space is the gap rather than a void. */
-  width: calc(var(--tile-cell) - var(--tile-sep));
-  height: calc(var(--tile-cell) - var(--tile-sep));
+  width: calc(100% - var(--tile-sep));
+  height: calc(100% - var(--tile-sep));
   border-radius: 2px;
   /* Set per tile from the category's own swatch; --k-other covers a note whose
      category is absent from the current facet list. Every tile is the same size
