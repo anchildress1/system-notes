@@ -276,10 +276,24 @@ html {
   scroll-behavior: smooth;
 }
 
+/* NO min-width, and NO overflow clip. Together those two were a trap.
+
+   min-width: 20rem held the body at 320px however narrow the viewport got, and
+   body's overflow-x: clip PROPAGATES to the viewport — so on a 280px screen the
+   page was 320px wide, 40px of every route sat outside it, and scrollX could not
+   move off 0. That content was not hard to reach; it was unreachable. A 280px
+   viewport is a real device (a folding phone's cover screen) and it is also what
+   a 1280px window looks like at 400% zoom, which WCAG 1.4.10 asks to work.
+
+   The floor was also unnecessary — the layout reflows to 280 and below on its
+   own, so it was buying nothing but the clipping.
+
+   Decorative overhang is still contained, but by `main`, which is a real
+   clipping box rather than one that hands its overflow to the viewport. If
+   anything ever does exceed the viewport, the page scrolls to it instead of
+   pretending it is not there. */
 body {
-  min-width: 20rem;
   min-height: 100vh;
-  overflow-x: clip;
   background:
     linear-gradient(
       90deg,

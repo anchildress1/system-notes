@@ -3,6 +3,11 @@ import { expect } from '@playwright/test';
 import { mockAlgoliaSearch, test } from './utils';
 
 const viewports = [
+  // 280 is a folding phone's cover screen, and it is also what a 1280px window
+  // looks like at 400% zoom — the width WCAG 1.4.10 asks to reflow to. The page
+  // used to hold a 320px floor and clip the overflow, so 40px of every route was
+  // not merely off screen but unreachable: scrollX could not leave 0.
+  { width: 280, height: 720 },
   { width: 320, height: 740 },
   { width: 390, height: 844 },
   { width: 768, height: 1024 },
@@ -16,11 +21,22 @@ for (const viewport of viewports) {
       test(`${path} has no horizontal overflow`, async ({ page }) => {
         await page.goto(path);
 
-        const widths = await page.evaluate(() => ({
-          scroll: document.documentElement.scrollWidth,
-          client: document.documentElement.clientWidth,
-        }));
+        const widths = await page.evaluate(() => {
+          window.scrollTo(9999, window.scrollY);
+          const reached = window.scrollX;
+          window.scrollTo(0, window.scrollY);
+          return {
+            scroll: document.documentElement.scrollWidth,
+            client: document.documentElement.clientWidth,
+            body: Math.round(document.body.getBoundingClientRect().width),
+            reached,
+          };
+        });
         expect(widths.scroll).toBe(widths.client);
+        // Anything past the fold must at least be scrollable to. Clipping
+        // overflow instead of laying it out is how content goes missing.
+        expect(widths.scroll - widths.client - widths.reached).toBeLessThanOrEqual(0);
+        expect(widths.body).toBeLessThanOrEqual(widths.client);
       });
 
       // Desktop-only axe runs miss the violations that only exist once the

@@ -48,8 +48,12 @@
 
 .links {
   display: flex;
+  /* Wraps the row rather than pushing the last link off the page. Four links
+     stopped fitting on one line the moment X was added, and a flex row does not
+     wrap unless told to — so at 280px the last one sat outside the viewport. */
+  flex-wrap: wrap;
   align-items: center;
-  gap: 1.25rem;
+  gap: 0.75rem 1.25rem;
   text-transform: uppercase;
 }
 
@@ -66,8 +70,10 @@
     gap: 1rem;
   }
 
+  /* space-between only while the links still occupy one line; once they wrap it
+     strands a lone link on a row of its own at the far edge. */
   .links {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 }
