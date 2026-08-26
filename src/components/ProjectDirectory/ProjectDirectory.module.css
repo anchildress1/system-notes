@@ -135,11 +135,13 @@
   text-wrap: pretty;
 }
 
+/* Mat, shadow, tilt and tape all come from .taped. This carried a single wide
+   soft shadow and no mat, which is what made the exhibit read as a flat pane
+   cut into the page rather than as a print laid on it. */
 .media {
+  composes: taped from global;
   display: block;
   margin-top: clamp(1.25rem, 3vh, 2.125rem);
-  background: var(--panel-hi);
-  box-shadow: 0 1.875rem 2.875rem -1.625rem var(--drop);
 }
 
 .image {

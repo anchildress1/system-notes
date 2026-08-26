@@ -425,6 +425,91 @@ body::before {
 
    Opposite corners rather than all four, at unequal angles, so the sheet looks
    pinned by someone in a hurry instead of mounted. */
+.taped {
+  position: relative;
+  /* Named, because anything that has to line up with the print rather than with
+     the sheet needs this number and must not restate it. */
+  --mat: 0.5rem;
+  /* Named so the angle has one home. It was -0.45deg, which is a 2.5px corner
+     drop on a 317px print and a 7px one at full width — present in the computed
+     style, absent to the eye. A tilt nobody can see is a tilt nobody asked for.
+     1.2deg drops a corner about 19px across a 900px sheet: still clearly a
+     deliberate half-nudge rather than a crooked layout, but it reads. */
+  --tilt: -1.2deg;
+  padding: var(--mat);
+  background: var(--panel-hi);
+  box-shadow:
+    0 0.15rem 0.4rem -0.15rem var(--drop),
+    0 1.1rem 2.2rem -0.9rem var(--drop);
+  transform: rotate(var(--tilt));
+}
+
+.taped::before,
+.taped::after {
+  position: absolute;
+  z-index: 2;
+  width: 5.5rem;
+  height: 1.4rem;
+  /* Three passes, not two. Tape sits over a photograph as often as over the
+     page, and at 29% it disappeared into a bright frame and read as a smudge.
+     41% still shows what is underneath — which is the only thing that makes it
+     read as tape rather than as a painted bar. */
+  background-image:
+    linear-gradient(var(--mark-soft), var(--mark-soft)),
+    linear-gradient(var(--mark-soft), var(--mark-soft)),
+    linear-gradient(var(--mark-soft), var(--mark-soft));
+  -webkit-mask-image: var(--stroke-swipe);
+  mask-image: var(--stroke-swipe);
+  -webkit-mask-size: 100% 158%;
+  mask-size: 100% 158%;
+  -webkit-mask-position: 0 50%;
+  mask-position: 0 50%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  pointer-events: none;
+  content: '';
+}
+
+/* Pulled onto the sheet rather than hung off its corner: tape holds paper down
+   by covering both, so roughly two thirds of each strip lies on the print. */
+.taped::before {
+  top: -0.5rem;
+  left: -1.05rem;
+  transform: rotate(-27deg);
+}
+
+.taped::after {
+  right: -1.05rem;
+  bottom: -0.5rem;
+  transform: rotate(-21deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .taped {
+    transform: none;
+  }
+}
+
+/* A caption belongs UNDER the print, on the mat, the way it does on a photograph
+   somebody wrote on. It used to be set over the bottom of the portrait, which
+   only worked because a gradient was painted behind it to buy contrast — and
+   that gradient was the reason the portrait could not take this treatment. Move
+   the caption off the picture and the whole special case disappears.
+
+   Lives here rather than in a page module so the next captioned image does not
+   invent its own. */
+.taped figcaption {
+  display: flex;
+  flex-direction: column;
+  padding: 0.85rem 0.35rem 0.3rem;
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  gap: 0.3rem;
+  letter-spacing: var(--fine-tracking);
+  text-transform: uppercase;
+}
+
 .washed {
   transition: background-color 180ms var(--ease-out);
 }
@@ -623,8 +708,19 @@ picture {
   max-width: 100%;
 }
 
+/* Every route clips its own horizontal overflow. body carries overflow-x: clip
+   too, but that value PROPAGATES to the viewport when html is visible — it stops
+   the page scrolling sideways and leaves documentElement.scrollWidth still
+   reporting the overflow, which is what the mobile suite asserts on. A clip here
+   is a real clipping box, so the number matches what the reader sees.
+
+   It used to live in the exhibits module alone, which is why the exhibits page
+   was the only one where a bleeding element did not widen the document. Anything
+   that hangs past its column — a taped print's tape, a rotated sheet, the
+   portrait's negative margin — relies on this. */
 main {
   display: block;
+  overflow-x: clip;
 }
 
 [id] {

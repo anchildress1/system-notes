@@ -58,7 +58,7 @@
 }
 
 /* Breaks its column on the right and sits lower than the copy it accompanies.
-   body carries overflow-x: clip, so the bleed cannot open a horizontal scrollbar.
+   main carries overflow-x: clip, so the bleed cannot widen the document.
    Both offsets are wide-viewport only — an asymmetric composition has no
    responsive safety net, and on a narrow screen there is no room to bleed into. */
 @media (min-width: 62rem) {
@@ -82,29 +82,30 @@
   }
 }
 
+/* The same treatment every other image on the site gets. Nothing here is the
+   portrait's own.
+
+   What this replaces: a radial mask that faded the picture into the page, a
+   gradient painted over its foot so an overlaid caption could be read, and
+   overflow: hidden to keep both inside. Three rules, all of them this page's
+   private idea of what an image looks like, and together they were the argument
+   for why the portrait could not be treated like an image — the mask clips a
+   box-shadow, and overflow: hidden clips the tape. The argument was circular:
+   the exception existed only because of the exception.
+
+   A print is a print. This one is square and has a caption; that is the picture,
+   not the page. */
 .portrait {
+  composes: taped from global;
+}
+
+/* The print itself. In flow rather than absolutely filling the figure, because
+   the caption now sits under it — the figure is the sheet, this is the picture
+   on it. Still position: relative, which <Image fill> needs. */
+.portraitFrame {
   position: relative;
   /* The source art is square; a 4/5 frame cropped it. */
   aspect-ratio: 1 / 1;
-  overflow: hidden;
-  /* No frame. A rectangular card around a portrait is the one element that kept
-     insisting this was a profile template; without it the image belongs to the
-     page. */
-  mask-image: radial-gradient(115% 100% at 50% 35%, #000 55%, transparent 100%);
-}
-
-.portrait::before {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 58%, var(--void));
-  pointer-events: none;
-  content: '';
-}
-
-.portraitFrame {
-  position: absolute;
-  inset: 0;
   display: none;
 }
 
@@ -127,24 +128,10 @@
   filter: saturate(0.8) contrast(1.06);
 }
 
-/* Displaced onto their own lines and pushed apart, rather than sitting on one
-   neat tracking path across the foot of a card. */
-.portrait figcaption {
-  position: absolute;
-  z-index: 2;
-  right: 1rem;
-  bottom: 1.1rem;
-  left: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  color: var(--soft);
-  font-family: var(--font-display);
-  font-size: var(--fine);
-  letter-spacing: var(--fine-tracking);
-  text-transform: uppercase;
-}
-
+/* Set, colour, spacing and placement all come from .taped figcaption. The only
+   thing left that is this caption's own is the displacement below: the second
+   line pushed off the first, rather than the two sitting on one neat tracking
+   path. */
 .portrait figcaption span:last-child {
   margin-left: clamp(1.5rem, 5vw, 4rem);
 }
