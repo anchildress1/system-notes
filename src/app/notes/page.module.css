@@ -5,3 +5,17 @@
 .indexSection {
   min-height: inherit;
 }
+
+/* What the index holds, and when it last moved. It used to ride in the page
+   head's slug; with the slug gone it sits under the headline instead, which is
+   where a standfirst goes anyway — the corpus is a fact about this page, not a
+   label naming it. */
+.pulse {
+  margin-top: clamp(1.25rem, 3vh, 2rem);
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  font-weight: 600;
+  letter-spacing: var(--fine-tracking);
+  text-transform: uppercase;
+}

@@ -32,10 +32,6 @@ export default function AboutPage() {
         {/* Outside .heroCopy so the rule spans both columns. Inside the left
             column it stopped at the portrait's edge, so this page's head rule
             was the only one on the site narrower than the rules beneath it. */}
-        <p className="page-head-slug">
-          <span>About</span>
-          <span>{profile.name}</span>
-        </p>
         <div className={styles.heroCopy}>
           <h1 id="about-heading" className="page-head-title">
             Forged between <span>coal and code.</span>

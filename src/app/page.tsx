@@ -15,10 +15,6 @@ export default function IntakePage() {
     <main id="main-content" className={styles.main}>
       <section className={styles.intake} aria-labelledby="intake-heading">
         <div className="page-head">
-          <p className="page-head-slug">
-            <span>Intake</span>
-            <span>Answers cite shipped work</span>
-          </p>
           <h1 id="intake-heading">
             Tell me what&rsquo;s breaking.
             <br />

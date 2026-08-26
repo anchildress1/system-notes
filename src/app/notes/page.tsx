@@ -18,15 +18,16 @@ export default async function NotesIndexPage() {
   return (
     <main id="main-content" className={styles.main}>
       <div className="page-head">
-        <p className="page-head-slug">
-          <span>Index</span>
-          {pulse ? <IndexPulseLine pulse={pulse} /> : null}
-        </p>
         <h1>
           How I decide.
           <br />
           <span>Filed, dated, and searchable.</span>
         </h1>
+        {pulse ? (
+          <p className={styles.pulse}>
+            <IndexPulseLine pulse={pulse} />
+          </p>
+        ) : null}
       </div>
       <section
         id="notes-index"

@@ -58,6 +58,34 @@
   line-height: 1;
 }
 
+/* The tick that used to open every page head, now standing beside the name once
+   instead of five times. It was the only accent in a head, so a reader met it on
+   arrival and then again at the top of every route; against the wordmark it is
+   the site's mark rather than a section's, which is the job it was always doing.
+
+   Gold, and keylined so it can be. --mark is 1.41:1 against paper — invisible,
+   not merely faint — which is the whole reason this tick used to be drawn in a
+   second colour. drop-shadow traces the alpha the mask leaves behind, so the
+   hairline follows the brush's own wobble rather than boxing it, and it is the
+   same --tile-keyline the board and the focus ring already lean on. On graphite
+   the keyline composites into the header and disappears, so one rule covers both
+   grounds and the gold never has to become something else. */
+.wordmark::before {
+  display: inline-block;
+  width: 1.15rem;
+  height: 0.44rem;
+  margin-right: 0.55rem;
+  background: var(--mark);
+  -webkit-mask-image: var(--stroke-brush);
+  mask-image: var(--stroke-brush);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  filter: drop-shadow(0 0 0.5px var(--tile-keyline)) drop-shadow(0 0 0.5px var(--tile-keyline));
+  content: '';
+}
+
 .navigation {
   display: flex;
   /* Wrap the row rather than the words. At 320px every item was breaking

@@ -20,10 +20,6 @@ export default function ProjectsPage() {
   return (
     <main id="main-content" className={styles.main}>
       <section className={`page-head ${styles.hero}`} aria-labelledby="exhibits-heading">
-        <p className="page-head-slug">
-          <span>Exhibits</span>
-          <span>{projects.length} entered into evidence</span>
-        </p>
         <h1 id="exhibits-heading">
           What I&rsquo;ve shipped.
           <br />

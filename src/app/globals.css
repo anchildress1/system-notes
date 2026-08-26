@@ -558,59 +558,6 @@ main {
   padding-block: var(--head-lead) var(--head-tail);
 }
 
-.page-head-slug {
-  display: flex;
-  align-items: center;
-  padding-bottom: 0.9rem;
-  border-bottom: 1px solid var(--line-strong);
-  margin-bottom: clamp(1.75rem, 4vh, 3rem);
-  color: var(--mute);
-  font-family: var(--font-display);
-  font-size: var(--fine);
-  font-weight: 600;
-  letter-spacing: var(--fine-tracking);
-  gap: 0.7rem;
-  text-transform: uppercase;
-}
-
-/* The only accent in the head, and the SECOND pen: gold marks words, terracotta
-   marks sections. It carries no meaning a screen reader has to recover, which is
-   also why it can be a drawn shape rather than a shape with a name — nothing
-   depends on it being legible, only on it being there.
-
-   The rectangle it replaces was the last honest square on the page. This is the
-   brush stroke instead, tapered and uneven, and because terracotta holds the
-   paper where gold cannot, it no longer needs to be oversized to register. */
-.page-head-slug::before {
-  width: 1.6rem;
-  height: 0.62rem;
-  flex: 0 0 auto;
-  background: var(--mark-tab);
-  -webkit-mask-image: var(--stroke-brush);
-  mask-image: var(--stroke-brush);
-  /* TILED, and this is the radius lesson again. Stretching one path across the
-     band makes the wobble proportional to the band, so a 1341px headline got a
-     wave so long and shallow it read as a ruler. A pen wobbles by a fixed
-     amount every fixed distance. 4em ties the tile to the type — the wave is
-     the same size relative to the letters at every scale — and repeat-x lays
-     down as many as the run needs. The tile is seamless, so the joins between
-     them are invisible. */
-  -webkit-mask-size: 4em 100%;
-  mask-size: 4em 100%;
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-  content: '';
-}
-
-/* span + span, not :last-child: with a single label that selector matched the
-   only span and pushed it to the right edge on its own. */
-.page-head-slug > span + span {
-  margin-left: auto;
-  color: var(--mute);
-  font-weight: 400;
-  letter-spacing: 0.12em;
-}
-
 /* Two scales, both named, and nothing else.
    The default is a page NAME. Anything that is not one — a head sharing the
    fold with a working tool, or a document title that can run long — takes
@@ -739,17 +686,4 @@ main {
      which is what a stroke drawn by hand does anyway. */
   margin-left: -0.2em;
   font-style: italic;
-}
-
-@media (max-width: 44rem) {
-  .page-head-slug {
-    flex-wrap: wrap;
-    font-size: 0.75rem;
-    gap: 0.5rem;
-  }
-
-  .page-head-slug > span + span {
-    width: 100%;
-    margin-left: 0;
-  }
 }

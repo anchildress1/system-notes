@@ -56,11 +56,6 @@ export default async function NotePage({ params }: Readonly<NotePageProps>) {
           <Link className={styles.backLink} href="/notes">
             <FiArrowLeft aria-hidden="true" /> Back to index
           </Link>
-          {/* Category only. The metadata list below already states the date,
-              and repeating it in the slug was a second copy of the same fact. */}
-          <p className="page-head-slug">
-            <span>{note.category || 'Note'}</span>
-          </p>
           <h1 className="page-head-title" data-scale="compact">
             {note.title}
           </h1>
@@ -70,6 +65,15 @@ export default async function NotePage({ params }: Readonly<NotePageProps>) {
         <div className={styles.layout}>
           <aside className={styles.metadata} aria-label="Note details">
             <dl>
+              {/* The category used to sit in the head's slug, which was the only
+                  place on this page that stated it. With the slug gone it joins
+                  the other facts about the record rather than leaving with it. */}
+              {note.category ? (
+                <div>
+                  <dt>Category</dt>
+                  <dd>{note.category}</dd>
+                </div>
+              ) : null}
               {date ? (
                 <div>
                   <dt>Date</dt>
@@ -115,9 +119,6 @@ function NoteUnavailable() {
         <Link className={styles.backLink} href="/notes">
           <FiArrowLeft aria-hidden="true" /> Back to index
         </Link>
-        <p className="page-head-slug">
-          <span>Retrieval unavailable</span>
-        </p>
         <h1 className="page-head-title">The note did not answer.</h1>
         <p>
           The address is valid. Its evidence could not be retrieved right now, so nothing was
