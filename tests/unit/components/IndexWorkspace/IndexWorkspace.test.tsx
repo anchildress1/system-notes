@@ -110,6 +110,28 @@ describe('IndexWorkspace', () => {
     );
   });
 
+  it('drops an empty category and keeps a refined one without a count', async () => {
+    // Narrowing far enough leaves categories the result set cannot contain.
+    // Algolia reports them at zero; one still refined has to survive, because
+    // it is the control that lifts the refinement emptying the page.
+    searchHarness.facets.category = { Decisions: 4, Principles: 0, Retired: 0 };
+    searchHarness.hits[0]!.category = 'Decisions';
+    globalThis.history.replaceState({}, '', '/notes?kind=Principles');
+
+    await renderWorkspace();
+    await screen.findByText('Failure is data');
+
+    expect(screen.getByRole('button', { name: /^Decisions, 4 notes$/i })).toBeInTheDocument();
+    // Zero and unrefined: it can filter nothing, so it is not offered.
+    expect(screen.queryByRole('button', { name: /^Retired,/i })).not.toBeInTheDocument();
+
+    const refined = screen.getByRole('button', { name: /^Principles, no matching notes$/i });
+    expect(refined).toBeInTheDocument();
+    // The sign lifts it; a bare "0" standing where a filter's size belongs does not.
+    expect(refined).not.toHaveTextContent('0');
+    expect(refined).toHaveTextContent('−');
+  });
+
   it('shows every category the index returns as its own filter', async () => {
     // A migration that changes the taxonomy must surface without a code change,
     // so nothing is folded into a fixed set of families or an "other" bucket.

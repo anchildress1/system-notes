@@ -146,14 +146,22 @@ export default function IndexSidebar({
     for (const item of items) if (!ordered.includes(item.value)) ordered.push(item.value);
     const swatchOf = assignSwatches(ordered, (value) => isAwardCategory(value));
 
-    return items.map((item) => ({
-      key: item.value,
-      label: isAwardCategory(item.value) ? `${item.label} ★` : item.label,
-      count: item.count,
-      isRefined: item.isRefined,
-      isAward: isAwardCategory(item.value),
-      swatch: { background: swatchOf.get(item.value) },
-    }));
+    return (
+      items
+        // A category the narrowed set does not contain cannot filter it, so it
+        // is not offered. Algolia already drops those, EXCEPT one it is still
+        // refined by — that one stays, because hiding it would strand the
+        // refinement emptying the page with no control to lift it.
+        .filter((item) => item.count > 0 || item.isRefined)
+        .map((item) => ({
+          key: item.value,
+          label: isAwardCategory(item.value) ? `${item.label} ★` : item.label,
+          count: item.count,
+          isRefined: item.isRefined,
+          isAward: isAwardCategory(item.value),
+          swatch: { background: swatchOf.get(item.value) },
+        }))
+    );
   }, [items, ranking]);
 
   // Tiles take the same tone as their category's filter, matched on the value
@@ -312,7 +320,11 @@ export default function IndexSidebar({
                 className="washed"
                 data-category={category.key}
                 data-selected={category.isRefined || undefined}
-                aria-label={`${category.label}, ${category.count.toLocaleString()} notes`}
+                aria-label={
+                  category.count > 0
+                    ? `${category.label}, ${category.count.toLocaleString()} notes`
+                    : `${category.label}, no matching notes`
+                }
                 aria-pressed={category.isRefined}
                 onClick={() => refine(category.key)}
               >
@@ -327,7 +339,11 @@ export default function IndexSidebar({
                 />
                 <span className={styles.categoryName}>{category.label}</span>
                 <span className={styles.categoryCount}>
-                  {category.count.toLocaleString()} {category.isRefined ? '−' : '+'}
+                  {/* No numeral on a refined category the narrowed set emptied.
+                      A row reading "0 −" is a count of nothing standing where a
+                      filter's size belongs; the sign alone still lifts it. */}
+                  {category.count > 0 ? `${category.count.toLocaleString()} ` : ''}
+                  {category.isRefined ? '−' : '+'}
                 </span>
               </button>
             </li>
