@@ -187,9 +187,15 @@
      belongs to the section under it rather than one floating between two.
      The tail is what was missing — every head opened with generous space above
      and then collided with its own content, which is what made them feel
-     unfinished no matter how the type was set. */
-  --head-lead: clamp(3.25rem, 9vh, 7rem);
-  --head-tail: clamp(2.25rem, 6vh, 4.5rem);
+     unfinished no matter how the type was set.
+
+     Both are keyed to vh, so they are the part of a head that scales with the
+     FOLD rather than with the type. That is why they came down with the display
+     size: at 9vh and 6vh they spent 135px of a 900px viewport on whitespace
+     around a head that was already too tall for it. The two-thirds ratio is the
+     part that matters and it is unchanged. */
+  --head-lead: clamp(2.5rem, 6.5vh, 5rem);
+  --head-tail: clamp(1.75rem, 4.5vh, 3.5rem);
 }
 
 /* Light is keyed on the attribute alone rather than also on prefers-color-scheme.
@@ -573,7 +579,17 @@ main {
 .page-head-title {
   max-width: 18ch;
   font-family: var(--font-editorial);
-  font-size: clamp(2.9rem, 8vw, 7.5rem);
+  /* Sized to leave the fold something to hold. At 8vw this rendered 115px on a
+     1440 screen, and the head that carried it ran to 755px of a 900px viewport
+     on /notes — the search tool it introduces opened entirely below the fold,
+     and the intake's own field was not far behind. The type treatment is
+     untouched: same Didone, same measure, same leading, same marked turn. Only
+     the scale moved, by about a quarter.
+
+     The measure stays in ch, so it shrinks with the type and every line breaks
+     exactly where it broke before. A head that reflows at a new size is a new
+     head; this is the same one, set smaller. */
+  font-size: clamp(2.25rem, 5.8vw, 5.5rem);
   font-weight: 500;
   /* A Didone sets tight but not as tight as a grotesque — its thin strokes need
      air or the counters fill in at display size. */
@@ -598,7 +614,9 @@ main {
 .page-head h1[data-scale='compact'],
 .page-head-title[data-scale='compact'] {
   max-width: 26ch;
-  font-size: clamp(2.4rem, 5.4vw, 5rem);
+  /* Scaled by the same quarter as the default, so the two stay a step apart
+     rather than converging into one size with two names. */
+  font-size: clamp(1.85rem, 4vw, 3.75rem);
 }
 
 /* THE MARK — the single definition of the highlighter.
