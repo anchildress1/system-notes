@@ -21,6 +21,7 @@ export default function IntakePage() {
           </p>
           <h1 id="intake-heading">
             Tell me what&rsquo;s breaking.
+            <br />
             <span>I&rsquo;ll show you how I&rsquo;d fix it.</span>
           </h1>
         </div>

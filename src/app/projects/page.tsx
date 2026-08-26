@@ -26,6 +26,7 @@ export default function ProjectsPage() {
         </p>
         <h1 id="exhibits-heading">
           What I&rsquo;ve shipped.
+          <br />
           <span>Including what I stopped.</span>
         </h1>
       </section>

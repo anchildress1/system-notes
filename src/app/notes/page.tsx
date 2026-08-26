@@ -24,6 +24,7 @@ export default async function NotesIndexPage() {
         </p>
         <h1>
           How I decide.
+          <br />
           <span>Filed, dated, and searchable.</span>
         </h1>
       </div>

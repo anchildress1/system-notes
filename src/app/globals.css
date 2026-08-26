@@ -37,6 +37,9 @@
   --ink-accent: oklch(0.86 0.16 92);
   --mark: oklch(0.86 0.17 92);
   --mark-ink: oklch(0.22 0.04 70);
+  /* Ink pools along the foot of a stroke where the felt drags. A yellow over
+     the same yellow, so the composite never leaves the band's contrast range. */
+  --mark-drag: oklch(0.79 0.19 86 / 0.38);
   --mark-soft: oklch(0.86 0.17 92 / 0.16);
   /* Strong enough to read as a halo around a 10px tile. --mark-soft is sized
      for a wash across a whole panel and disappears at that scale. */
@@ -483,7 +486,12 @@ main {
   /* A Didone sets tight but not as tight as a grotesque — its thin strokes need
      air or the counters fill in at display size. */
   letter-spacing: -0.02em;
-  line-height: 0.94;
+  /* Leading has to clear the mark. A highlighter band is the line box plus its
+     own padding — about 1.2em — so at the 0.94 this head used to set, every
+     marked line overflowed upward and painted out the bottom of the line above
+     it. Tight leading and a highlighter are not compatible; the band is the
+     thing with a fixed height, so the leading is what moves. */
+  line-height: 1.24;
   text-wrap: balance;
 }
 
@@ -519,13 +527,30 @@ main {
 .marked,
 .page-head h1 > span,
 .page-head-title > span {
-  /* Extra padding at the foot is for descenders: a mark that cuts through the
-     tail of a "y" reads as a clipping bug rather than as ink. */
-  padding: 0.04em 0.16em 0.12em;
+  /* Overshoot on the right: a stroke starts clean and runs past where it meant
+     to stop. The heavier foot also keeps the mark off descenders — one cutting
+     the tail of a "y" reads as a clipping bug rather than as ink. Padding is in
+     em because it is spacing around type, and scales with it. */
+  padding: 0.03em 0.26em 0.15em 0.2em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  background: var(--mark);
   color: var(--mark-ink);
+  /* The opaque core. The one layer above it is a yellow at partial alpha over
+     this same yellow, so the band behind the letters never thins and the ink
+     keeps its contrast wherever it falls. */
+  background-color: var(--mark);
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(100% - 7px),
+    var(--mark-drag) calc(100% - 7px)
+  );
+  /* PIXELS, not em, and this is the whole trick. A pen tip is a fixed physical
+     width: it does not get blunter because the type got bigger. In em these
+     same radii turned a 15px star into a neat chip and a 120px headline into a
+     lozenge — the giveaway that a shape was scaled rather than drawn. Held
+     constant, the star reads as rounded and the headline as very nearly square,
+     which is what one marker does to both. No two corners agree. */
+  border-radius: 11px 3px 8px 4px / 15px 6px 12px 5px;
 }
 
 /* The turn of the headline is MARKED, not coloured.
@@ -536,14 +561,21 @@ main {
    and it does it identically on paper and on graphite. */
 .page-head h1 > span,
 .page-head-title > span {
-  display: block;
-  /* fit-content so the band is the width of the words rather than the column. */
-  width: fit-content;
+  /* INLINE, and this matters more than it looks. As a block with fit-content
+     the band hugged the words only while they fit on one line; the moment the
+     turn wrapped, fit-content resolved to the full column and the mark became
+     one rectangle over both lines, painting the empty half of each. Only an
+     inline box fragments, and only fragments let box-decoration-break give
+     every line a band the width of its own words.
+
+     The cost is the half-degree tilt, which CSS ignores on a non-replaced
+     inline box. Lines of differing width carry the hand-made read instead. */
+  display: inline;
   /* The band is inset by its own left padding, which would push the marked line
      off the axis the line above it stands on. Pulling back by the same amount
-     keeps the letters aligned and lets the mark overhang instead — which is
-     what a stroke drawn by hand does anyway. */
-  margin-left: -0.16em;
+     leaves the letters where they were and lets the mark overhang instead —
+     which is what a stroke drawn by hand does anyway. */
+  margin-left: -0.2em;
   font-style: italic;
 }
 
