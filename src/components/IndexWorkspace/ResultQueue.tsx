@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type CSSProperties } from 'react';
 import type { Hit } from 'instantsearch.js';
+import Link from 'next/link';
 import FactCard from '@/components/FactCard/FactCard';
 import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteContent';
 import type { FactHitRecord } from '@/types/algolia';
@@ -52,6 +53,12 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
             hit={featured}
             position={getFactHitPosition(featured, featuredIndex + 1)}
           />
+          <Link
+            className={styles.notePermalink}
+            href={`/notes/${encodeURIComponent(featured.objectID)}`}
+          >
+            Open filed note
+          </Link>
         </div>
 
         {alternatives.length > 0 ? (

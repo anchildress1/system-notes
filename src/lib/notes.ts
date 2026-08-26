@@ -7,6 +7,7 @@ import type { FactHitRecord } from '@/types/algolia';
 
 type UnknownRecord = Record<string, unknown>;
 const NOTE_LOOKUP_DEADLINE_MS = 5_000;
+const SITEMAP_NOTE_LIMIT = 1_000;
 
 export type NoteLookupResult =
   | { status: 'found'; note: FactHitRecord }
@@ -37,6 +38,17 @@ function reportLookupFailure(error: unknown): void {
       ? (error as { status?: unknown }).status
       : undefined;
   console.error('Note lookup failed.', {
+    name: error instanceof Error ? error.name : 'ProviderError',
+    status: typeof status === 'number' ? status : undefined,
+  });
+}
+
+function reportListFailure(error: unknown): void {
+  const status =
+    error && typeof error === 'object' && 'status' in error
+      ? (error as { status?: unknown }).status
+      : undefined;
+  console.error('Note list lookup failed.', {
     name: error instanceof Error ? error.name : 'ProviderError',
     status: typeof status === 'number' ? status : undefined,
   });
@@ -89,5 +101,32 @@ export const getNoteById = cache(async (noteId: string): Promise<NoteLookupResul
     if (isNotFoundError(error)) return { status: 'missing' };
     reportLookupFailure(error);
     return { status: 'unavailable' };
+  }
+});
+
+export const getIndexableNoteIds = cache(async (): Promise<string[]> => {
+  if (!noteClient) return [];
+
+  try {
+    const response = await withLookupDeadline(
+      noteClient.searchSingleIndex<UnknownRecord>({
+        indexName: ALGOLIA_INDEX_NAME,
+        searchParams: {
+          query: '',
+          hitsPerPage: SITEMAP_NOTE_LIMIT,
+          attributesToRetrieve: ['objectID'],
+        },
+      })
+    );
+    const seen = new Set<string>();
+    return response.hits.flatMap((hit) => {
+      const noteId = typeof hit.objectID === 'string' ? hit.objectID : '';
+      if (!isValidNoteId(noteId) || seen.has(noteId)) return [];
+      seen.add(noteId);
+      return [noteId];
+    });
+  } catch (error) {
+    reportListFailure(error);
+    return [];
   }
 });

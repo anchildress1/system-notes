@@ -2,13 +2,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const algoliaHarness = vi.hoisted(() => ({
   getObject: vi.fn(),
+  searchSingleIndex: vi.fn(),
   clientFactory: vi.fn(),
 }));
 
 vi.mock('algoliasearch', () => ({
   algoliasearch: (...args: unknown[]) => {
     algoliaHarness.clientFactory(...args);
-    return { getObject: algoliaHarness.getObject };
+    return {
+      getObject: algoliaHarness.getObject,
+      searchSingleIndex: algoliaHarness.searchSingleIndex,
+    };
   },
 }));
 
@@ -23,6 +27,7 @@ describe('note retrieval', () => {
   beforeEach(() => {
     vi.resetModules();
     algoliaHarness.getObject.mockReset();
+    algoliaHarness.searchSingleIndex.mockReset();
     algoliaHarness.clientFactory.mockReset();
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -159,6 +164,65 @@ describe('note retrieval', () => {
     await expect(getNoteById('card:test:1')).resolves.toEqual({ status: 'unavailable' });
     expect(console.error).toHaveBeenCalledWith('Note lookup returned a malformed record.', {
       objectID: 'card:test:1',
+    });
+  });
+
+  it('lists unique valid note ids with bounded provider work', async () => {
+    algoliaHarness.searchSingleIndex.mockResolvedValue({
+      hits: [
+        { objectID: 'card:test:1' },
+        { objectID: 'card:test:1' },
+        { objectID: '@/lib/secret' },
+        { objectID: 42 },
+        { objectID: 'card:test:2' },
+      ],
+    });
+    const { getIndexableNoteIds } = await importConfiguredNotes();
+
+    await expect(getIndexableNoteIds()).resolves.toEqual(['card:test:1', 'card:test:2']);
+    expect(algoliaHarness.searchSingleIndex).toHaveBeenCalledWith({
+      indexName: 'system-notes',
+      searchParams: {
+        query: '',
+        hitsPerPage: 1_000,
+        attributesToRetrieve: ['objectID'],
+      },
+    });
+  });
+
+  it('returns no indexable ids without provider credentials', async () => {
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', '');
+    vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', '');
+    const { getIndexableNoteIds } = await import('@/lib/notes');
+
+    await expect(getIndexableNoteIds()).resolves.toEqual([]);
+    expect(algoliaHarness.searchSingleIndex).not.toHaveBeenCalled();
+  });
+
+  it('fails the note list closed without leaking provider details', async () => {
+    algoliaHarness.searchSingleIndex.mockRejectedValue(new Error('provider internals'));
+    const { getIndexableNoteIds } = await importConfiguredNotes();
+
+    await expect(getIndexableNoteIds()).resolves.toEqual([]);
+    expect(console.error).toHaveBeenCalledWith('Note list lookup failed.', {
+      name: 'Error',
+      status: undefined,
+    });
+    expect(JSON.stringify(vi.mocked(console.error).mock.calls)).not.toContain('provider internals');
+  });
+
+  it('bounds an index lookup that never settles', async () => {
+    vi.useFakeTimers();
+    algoliaHarness.searchSingleIndex.mockReturnValue(new Promise(() => {}));
+    const { getIndexableNoteIds } = await importConfiguredNotes();
+
+    const lookup = getIndexableNoteIds();
+    await vi.advanceTimersByTimeAsync(5_000);
+
+    await expect(lookup).resolves.toEqual([]);
+    expect(console.error).toHaveBeenCalledWith('Note list lookup failed.', {
+      name: 'Error',
+      status: undefined,
     });
   });
 });
