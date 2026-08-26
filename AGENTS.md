@@ -28,34 +28,39 @@ Canonical instruction source for this repository. Treat this file as authoritati
 - Use Conventional Commits.
 - Include required RAI footer.
 
-## URL State Architecture: Search Page
+## URL State Architecture: Notes Index
 
-### Core rule: InstantSearch owns the URL; FactCard owns local flip state
+### Core rule: InstantSearch owns index state; the workspace owns the selected note
 
-InstantSearch manages all URL serialization (query, facets, page) via its default routing. FactCard does NOT write to the URL — it toggles a local 3D flip in its grid cell and fires Algolia click events.
+`/notes` is the searchable index. InstantSearch serializes query and facets through
+`searchRouting`; `IndexWorkspace` keeps its selected note in local state and fires the
+Algolia click event when that selection changes. Neither writes a note selection to the URL.
 
-There is no deep-link overlay. The card never grows, never modals, never takes over the screen. Both faces live in the same grid slot.
+`/` is the intake. Its question and one-turn agent result are local; a settled brief may
+survive within the current browser session. `/notes/[id]` is a standalone, server-rendered
+record route, not an overlay or a replacement for the index reader.
 
 ### Implementation contracts
 
-| Component                         | Responsibility                                    | Writes to URL       |
-| --------------------------------- | ------------------------------------------------- | ------------------- |
-| `FactCard.openCard` / `closeCard` | Toggle local in-place 3D flip; fire `sendEvent`   | No                  |
-| `searchRouting`                   | Serialize InstantSearch state (query, kind, page) | Search params       |
-| Facet widgets (`KindChips`, etc.) | Refine via InstantSearch hooks                    | Via `searchRouting` |
+| Component                   | Responsibility                                     | Writes to URL       |
+| --------------------------- | -------------------------------------------------- | ------------------- |
+| `IndexWorkspace.selectNote` | Select reader content; send Algolia click event    | No                  |
+| `searchRouting`             | Serialize query and refinements                    | Search params       |
+| Facet widgets               | Refine through InstantSearch hooks                 | Via `searchRouting` |
+| `ProjectDirectory.select`   | Select an exhibit and replace `system` query state | `system` only       |
 
 ### Rules for future changes
 
-- FactCard must NOT call `window.history.pushState`. InstantSearch manages the URL.
-- Do not reintroduce a fact-card overlay, modal, or expand-to-fullscreen behavior. The card flips in place inside its grid cell.
-- Algolia events (`sendEvent`) fire on card open. Never gate events on URL state.
+- Do not write selected-note state to the URL. InstantSearch manages index URL state.
+- Do not introduce an index overlay or modal. The selected note renders in the workspace reader.
+- Algolia events (`sendEvent`) fire when a note is selected. Never gate events on URL state.
 - Do not add custom `createURL` logic that fights InstantSearch's default routing behavior.
 
 ## Test Standards
 
 - **Coverage thresholds**: 95% lines, 92% functions/statements, 85% branches (enforced by `vitest.config.ts`). Floors sit a few points under actual so a regression trips them; do not lower them to make a run pass.
 - Every new component or utility must ship with positive, negative, and edge-case tests.
-- Integration-heavy modules (e.g. `SearchPage.tsx`) are excluded from coverage; test them via E2E instead.
+- Page composition is excluded from coverage; test cross-page behavior via E2E instead.
 - Playwright uses one worker in CI. Do not increase it without a zero-retry stress run across every configured browser project.
 
 ## Validation
@@ -81,7 +86,7 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
   - Lighthouse runs the desktop profile only. Mobile layout and target sizes are asserted in
     `tests/e2e/mobile.spec.ts`, which measures them directly rather than through a score.
 - `errors-in-console` is skipped in the LH configs — the local harness uses dummy Algolia credentials, so unreachable-host network errors are a test artifact, not a defect (same rationale as the pre-existing `uses-http2` skip).
-- Below-the-fold components must be deferred via `IntersectionObserver` or `next/dynamic` (see `SearchPageWrapper.tsx`).
+- Defer browser-only, below-the-fold features with `next/dynamic` or `IntersectionObserver` (for example, `IntakeBriefLoader.tsx`).
 - Prefer `instantsearch.css/themes/reset.css` over `satellite.css` to minimize CSS payload.
 
 ## API Design
@@ -93,7 +98,6 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 ## Shared Utilities
 
 - **`@/lib/algolia.ts`**: Credential validation (`hasValidAlgoliaCredentials`, `isValidAppId`, `isValidApiKey`). Use instead of inline regex checks.
-- **`@/components/icons/`**: Shared SVG icon components (`GitHubIcon`, `DevIcon`, `TrophyIcon`). Use instead of inline SVG.
 - **Icon libraries**: Use `react-icons` for all icons (UI and brand). Prefer `react-icons/fa`, `react-icons/io5`, `react-icons/si`, etc.
 
 ## Documentation

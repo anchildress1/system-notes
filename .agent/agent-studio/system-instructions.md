@@ -5,8 +5,8 @@ and this is a single input.
 
 Two defaults were incompatible and are inverted here: asking for clarification
 (there is no reply channel — `IntakeBrief` renders one answer and stops) and
-emitting markdown (the renderer splits on blank lines into plain `<p>`, so `[x](y)`
-would display literally).
+emitting rich markdown. The renderer accepts only `[title](url)` inline citations;
+other markdown is rendered as literal text.
 
 ---
 
