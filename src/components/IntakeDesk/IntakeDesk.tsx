@@ -62,9 +62,9 @@ function readSavedBrief(): SavedBrief | null {
 
 /** Problems a reader can load into the field instead of writing their own. */
 export const SEEDS = [
-  'Our AI-generated code passes review and then breaks in production.',
-  'We can’t tell what our agents actually did, or who authorized it.',
-  'The model hallucinates and we ship it straight to customers.',
+  'When something breaks, we can’t tell which AI wrote it.',
+  'My seniors are skimming four-hundred-line AI diffs and calling it review.',
+  'Nothing errored. The output was just quietly wrong.',
 ] as const;
 
 export default function IntakeDesk() {
@@ -125,7 +125,7 @@ export default function IntakeDesk() {
           onChange={(event) => setProblem(event.target.value)}
           readOnly={inFlight}
           aria-describedby={canAsk ? undefined : noticeId}
-          placeholder="e.g. Our AI-generated code passes review and then breaks in production."
+          placeholder="e.g. When something breaks, we can’t tell which AI wrote it."
         />
         <div className={styles.controls}>
           <button
