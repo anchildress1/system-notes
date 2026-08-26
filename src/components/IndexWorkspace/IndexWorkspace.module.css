@@ -145,10 +145,20 @@
   padding: 0;
   margin-top: 0.5rem;
   border: 1px solid transparent;
-  /* The drawn mark stays 14x10, but each option owns a non-overlapping 24px
-     pointer cell. Fixed tracks also resolve to a readable column count for the
-     whole-row trim. */
-  grid-template-columns: repeat(auto-fill, 24px);
+  /* Two numbers, and every tile dimension derives from them.
+
+     --tile-cell is the pointer target: WCAG 2.2 target size wants 24px, and the
+     board is a grid of individually clickable options, so the cell cannot be
+     smaller. --tile-sep is the gap the mockup draws between marks.
+
+     They were previously independent — a 24px cell holding a 14x10 mark — which
+     left 10px of dead space beside every tile and 14px under it, against a
+     design that separates them by 4. The board read as a sparse scatter rather
+     than a census. Deriving the mark from the cell keeps the target honest and
+     the spacing deliberate: change either number and the other follows. */
+  --tile-cell: 24px;
+  --tile-sep: 4px;
+  grid-template-columns: repeat(auto-fill, var(--tile-cell));
   gap: 0;
   list-style: none;
   outline: none;
@@ -158,20 +168,22 @@
   position: relative;
   min-width: 0;
   display: grid;
-  width: 24px;
-  height: 24px;
+  width: var(--tile-cell);
+  height: var(--tile-cell);
   cursor: pointer;
   place-items: center;
 }
 
 .boardTiles li::before {
-  width: 14px;
-  height: 10px;
+  /* The cell less one separation, so adjacent marks sit --tile-sep apart and
+     the leftover space is the gap rather than a void. */
+  width: calc(var(--tile-cell) - var(--tile-sep));
+  height: calc(var(--tile-cell) - var(--tile-sep));
   border-radius: 2px;
   /* Set per tile from the category's own swatch; --k-other covers a note whose
-     category is absent from the current facet list. Every tile is the same
-     14x10 — the awards used to carry a border, which under border-box shrank
-     the only tile that was supposed to stand out. */
+     category is absent from the current facet list. Every tile is the same size
+     — the awards used to carry a border, which under border-box shrank the only
+     tile that was supposed to stand out. */
   background: var(--tile-swatch, var(--k-other));
   box-shadow: 0 0 0 1px var(--tile-keyline);
   content: '';

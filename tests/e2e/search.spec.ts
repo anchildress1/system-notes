@@ -242,16 +242,20 @@ test.describe('Notes index', () => {
       })
     );
     expect(new Set(colorSignatures).size).toBe(4);
-    // The visible census mark stays tiny, but the option itself owns a full,
-    // non-overlapping pointer target.
+    // The option owns a full, non-overlapping pointer target, and the mark fills
+    // it apart from the gutter. Asserted as a relationship rather than as two
+    // literals: pinning the cell to 24 and the mark to 14x10 independently is
+    // what left 10px of dead space beside every tile and 14px under it, with
+    // both numbers passing their own assertion the whole time.
     const firstTarget = await tiles.nth(0).boundingBox();
     expect(firstTarget?.width).toBeGreaterThanOrEqual(24);
     expect(firstTarget?.height).toBeGreaterThanOrEqual(24);
     const firstMark = await tiles.nth(0).evaluate((option) => {
       const style = getComputedStyle(option, '::before');
-      return { width: style.width, height: style.height };
+      return { width: parseFloat(style.width), height: parseFloat(style.height) };
     });
-    expect(firstMark).toEqual({ width: '14px', height: '10px' });
+    expect(firstTarget!.width - firstMark.width).toBeCloseTo(4, 1);
+    expect(firstTarget!.height - firstMark.height).toBeCloseTo(4, 1);
 
     await expect(board).toHaveJSProperty('tabIndex', 0);
     await expect(tiles.nth(0)).toHaveJSProperty('tabIndex', -1);
