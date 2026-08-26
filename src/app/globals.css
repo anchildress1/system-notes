@@ -241,12 +241,21 @@
   /* The neutrals turn over for paper: the strongest mark a light board has is
      ink, and the tones climb from there. The gold does NOT turn over — it is
      the same gold as on graphite, kept legible by the keyline rather than by
-     its lightness, which is the whole point of having one. */
+     its lightness, which is the whole point of having one.
+
+     Turning them over is not the same as mirroring their lightness, which is
+     what slot 0 at 0.28 did. Slot 0 is the LARGEST category — around forty per
+     cent of the tiles — so the heaviest ink landed on the biggest block of the
+     board and paper read as one black slab where graphite reads as an airy
+     census. Dark mass on white does not weigh what light mass on black weighs,
+     so the ramp is lifted off the floor rather than reflected across it: the
+     order still climbs from ink, no step is under 0.11 apart, and the keyline
+     carries every boundary the lightness no longer has to. */
   --tile-keyline: oklch(0.3 0.01 265 / 0.75);
-  --k-decision: oklch(0.28 0.008 265);
-  --k-note: oklch(0.52 0.006 265);
+  --k-decision: oklch(0.5 0.008 265);
+  --k-note: oklch(0.62 0.006 265);
   --k-other: oklch(0.86 0.17 92);
-  --k-principle: oklch(0.68 0.006 265);
+  --k-principle: oklch(0.74 0.006 265);
   --k-award: oklch(0.86 0.17 92);
   --drop: oklch(0.55 0.02 265 / 0.22);
   --thumb: oklch(0.8 0.012 265);
