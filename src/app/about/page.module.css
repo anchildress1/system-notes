@@ -14,7 +14,16 @@
   display: grid;
   min-height: calc(100svh - var(--header-height));
   align-items: start;
-  padding-block: clamp(3.5rem, 8vw, 7rem);
+  /* align-items only places an item inside its row; it does not stop the ROWS
+     from growing. With a min-height taller than the content, the two auto rows
+     stretched to absorb the slack and took half of it each — 35px of it landing
+     between the slug and the headline, which is what made this head sit lower
+     than the other three no matter what the padding said. */
+  align-content: start;
+  /* The same rhythm every other head opens on. This padded on vw while
+     --head-lead runs on vh, so at 1440x856 it opened 35px lower than the other
+     three and the head read as this page's own. */
+  padding-block: var(--head-lead) var(--head-tail);
   /* Column gap only. With the slug lifted into its own row this was also
      applying between the rule and the headline, opening 100px of dead space
      under the rule; the slug carries its own margin for that. */

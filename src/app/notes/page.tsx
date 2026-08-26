@@ -17,12 +17,12 @@ export default async function NotesIndexPage() {
 
   return (
     <main id="main-content" className={styles.main}>
-      <div className={`page-head ${styles.head}`}>
+      <div className="page-head">
         <p className="page-head-slug">
           <span>Index</span>
           {pulse ? <IndexPulseLine pulse={pulse} /> : null}
         </p>
-        <h1 data-scale="compact">
+        <h1>
           How I decide.
           <span>Filed, dated, and searchable.</span>
         </h1>
