@@ -53,6 +53,7 @@ export default function ThemeToggle() {
     <button
       type="button"
       className={styles.toggle}
+      data-variant="outline"
       aria-pressed={theme === 'light'}
       aria-label="Light theme"
       onClick={toggle}

@@ -16,31 +16,9 @@
   align-items: center;
 }
 
+/* Shape, fill, hover and disabled state all come from .btn. */
 .toggle {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.8rem 1.4rem;
-  background: var(--mark);
-  color: var(--mark-ink);
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  transition: padding 0.35s var(--ease-out);
-}
-
-.toggle:hover:not(:disabled) {
-  padding-inline: 1.75rem;
-}
-
-.toggle:disabled {
-  background: transparent;
-  border: 1px dashed var(--line-strong);
-  color: var(--mute);
-  cursor: not-allowed;
+  composes: btn from global;
 }
 
 .note {

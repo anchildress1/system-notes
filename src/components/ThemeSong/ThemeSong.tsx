@@ -78,6 +78,7 @@ export default function ThemeSong() {
         <button
           type="button"
           className={styles.toggle}
+          data-variant="filled"
           data-accent="filled"
           aria-pressed={isPlaying}
           aria-label={label}

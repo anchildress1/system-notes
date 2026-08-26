@@ -85,7 +85,11 @@ export default async function NotePage({ params }: Readonly<NotePageProps>) {
                   <dt>Projects</dt>
                   <dd>
                     {note.projects.map((project) => (
-                      <Link key={project} href={getProjectNotesURL(project)}>
+                      <Link
+                        key={project}
+                        className="marked-hover"
+                        href={getProjectNotesURL(project)}
+                      >
                         {project}
                       </Link>
                     ))}

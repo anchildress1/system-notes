@@ -33,6 +33,7 @@
 }
 
 .backLink {
+  composes: marked-hover from global;
   display: inline-flex;
   min-height: 2.75rem;
   align-items: center;
@@ -42,10 +43,6 @@
   gap: 0.5rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.backLink:hover {
-  color: var(--ink-accent);
 }
 
 /* Type comes from .page-head-title. A note title can be a full sentence, so it
@@ -94,10 +91,6 @@
   color: var(--soft);
   font-size: 0.9375rem;
   gap: 0.3rem;
-}
-
-.metadata dd a:hover {
-  color: var(--ink-accent);
 }
 
 .metadata > a {

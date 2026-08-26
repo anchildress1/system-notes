@@ -68,33 +68,18 @@
   margin-top: 0.9rem;
 }
 
+/* Shape, fill and disabled state all come from .btn. This carried its own copy
+   of every one of them, differing from the theme-song button by 2px of padding
+   and 0.02em of tracking. The page's one action is wider than the default. */
 .run {
-  padding: 0.95rem 1.9rem;
-  background: var(--mark);
-  color: var(--mark-ink);
-  font-family: var(--font-sans);
-  font-size: 0.9375rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.run:disabled {
-  /* Reads as deliberately parked rather than broken: the label stays legible
-     against the surface instead of dropping to a low-contrast gray. */
-  background: transparent;
-  border: 1px dashed var(--line-strong);
-  color: var(--mute);
-  cursor: not-allowed;
+  composes: btn from global;
+  padding-inline: 1.9rem;
 }
 
 /* Working is not the same state as unavailable. The accent is kept — the
    control is doing the thing it was pressed for — and only the cursor says it
    will not take a second press. */
 .run[data-working] {
-  background: var(--mark);
-  border: 0;
-  color: var(--mark-ink);
   cursor: progress;
 }
 
@@ -422,7 +407,11 @@
   margin-left: clamp(0rem, 1vw, 1.1rem);
 }
 
+/* .washed, not .marked-hover: a seed wraps to two and three lines, and a band
+   sized to a word would lie across the middle of the block instead of behind
+   any one line of it. A row takes the wash. */
 .seed {
+  composes: washed from global;
   max-width: 34ch;
   /* Overridden per position below. */
   padding: 0 0 0.3rem;
@@ -452,11 +441,6 @@
 
 .seeds li:nth-child(3) .seed {
   max-width: 24ch;
-}
-
-.seed:hover {
-  border-bottom-color: var(--ink-accent);
-  color: var(--bone);
 }
 
 .briefLink {

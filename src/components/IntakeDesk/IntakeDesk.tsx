@@ -131,6 +131,7 @@ export default function IntakeDesk() {
           <button
             type="submit"
             className={styles.run}
+            data-variant="filled"
             data-accent="filled"
             data-working={inFlight || undefined}
             disabled={!canAsk || inFlight}

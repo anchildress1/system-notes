@@ -445,15 +445,12 @@
   font-size: 0.8em;
 }
 
-.contact nav a:hover .outbound {
-  color: var(--ink-accent);
-}
-
-/* Steps to the right on hover instead of filling with a block of accent. The
-   fill turned every row into a button; a link that moves reads as a link. */
+/* Steps to the right AND takes the wash. The step is this row's own idea and it
+   stays — a link that moves reads as a link — but the colour swap that came with
+   it was the site's fifth different answer to "you are hovering this". The wash
+   is the shared one; the motion is the local flourish on top of it. */
 .contact nav a:hover {
   padding-left: 0.85rem;
-  color: var(--ink-accent);
 }
 
 @media (max-width: 55rem) {

@@ -50,7 +50,12 @@ export default function IndexSearch() {
           spellCheck={false}
         />
         {query || canRefine ? (
-          <button type="button" onClick={clear} aria-label="Clear search and filters">
+          <button
+            type="button"
+            className="marked-hover"
+            onClick={clear}
+            aria-label="Clear search and filters"
+          >
             ✕ clear
           </button>
         ) : (
@@ -175,7 +180,7 @@ function FacetFilter({ attribute, label }: Readonly<{ attribute: string; label: 
       </summary>
       <div className={styles.filterOptions}>
         {items.map((item) => (
-          <label key={item.value}>
+          <label key={item.value} className="washed">
             <input type="checkbox" checked={item.isRefined} onChange={() => refine(item.value)} />
             <span>{item.label}</span>
             <small>{item.count}</small>

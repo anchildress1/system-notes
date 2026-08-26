@@ -1,22 +1,12 @@
+/* An icon control is still a control: shape, hover and focus all come from the
+   outline button. Only the square footprint is this component's own. */
 .toggle {
-  display: inline-flex;
+  composes: btn from global;
   min-width: 2.25rem;
   min-height: 2.25rem;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--line-strong);
-  background: transparent;
-  color: var(--soft);
+  padding: 0;
   font-size: 0.9375rem;
   line-height: 1;
-  transition:
-    border-color 160ms ease,
-    color 160ms ease;
-}
-
-.toggle:hover {
-  border-color: var(--ink-accent);
-  color: var(--ink-accent);
 }
 
 /* Both icons ship in the markup; the theme decides which one is shown, so the

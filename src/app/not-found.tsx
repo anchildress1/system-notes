@@ -15,10 +15,10 @@ export default function NotFoundPage() {
           fictional.
         </p>
         <nav aria-label="Not found options">
-          <Link href="/notes">
+          <Link className="marked-hover" href="/notes">
             <FiArrowLeft aria-hidden="true" /> Search the index
           </Link>
-          <Link href="/projects">
+          <Link className="marked-hover" href="/projects">
             Browse projects <FiArrowUpRight aria-hidden="true" />
           </Link>
         </nav>

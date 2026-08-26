@@ -68,6 +68,7 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
                 <li key={hit.objectID} style={{ '--rank': rank } as CSSProperties}>
                   <button
                     type="button"
+                    className="washed"
                     onClick={() => {
                       shouldFocusReader.current = true;
                       onSelect(hit.objectID);

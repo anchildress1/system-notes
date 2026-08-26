@@ -91,7 +91,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
               <li key={project.id}>
                 <button
                   type="button"
-                  className={styles.railItem}
+                  className={`washed ${styles.railItem}`}
                   aria-current={current ? 'true' : undefined}
                   aria-controls={panelId}
                   data-testid={`project-${project.id}`}
@@ -160,6 +160,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                 <a
                   key={link.href}
                   className={styles.action}
+                  data-variant="outline"
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -169,7 +170,11 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                   <span className="visually-hidden"> (opens in a new tab)</span>
                 </a>
               ))}
-              <Link className={styles.crossLink} href={getProjectNotesURL(selected.title)}>
+              <Link
+                className={styles.crossLink}
+                data-variant="filled"
+                href={getProjectNotesURL(selected.title)}
+              >
                 Decisions from {selected.title}
               </Link>
             </div>

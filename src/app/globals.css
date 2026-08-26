@@ -97,6 +97,13 @@
      these carry different pens: gold on the question, grey on the counter. */
   --stroke-brush-y: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 56' preserveAspectRatio='none'%3E%3Cpath d='M10.4,1.2 C5.1,10.5 2.6,21 3.2,33.4 C3.6,42.1 6.1,49 4.3,54.8 L10.1,55.2 C13.9,48.6 12.4,40.2 12.8,31.1 C13.3,20.4 14.7,9.6 12.3,1.4 Z' fill='%23000'/%3E%3C/svg%3E");
   --stroke-swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23000'/%3E%3C/svg%3E");
+  /* The same swipe, pre-inked in the wash rather than left as a mask. A mask on
+     an inline element masks its TEXT as well, so a hover band drawn that way
+     would cut the letters it sits behind; painted as a background image it sits
+     under them and nothing about the text changes. Same duplication caveat as
+     --stroke-brush-inked: #f9cc21 at 0.16 is --mark-soft written out, and it is
+     only safe because neither --mark nor --mark-soft moves with the theme. */
+  --stroke-swipe-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23f9cc21' fill-opacity='0.16'/%3E%3C/svg%3E");
   --mark-soft: oklch(0.86 0.17 92 / 0.16);
   /* Strong enough to read as a halo around a 10px tile. --mark-soft is sized
      for a wash across a whole panel and disappears at that scale. */
@@ -332,6 +339,186 @@ body::before {
 .marked-link:hover,
 .marked-link:focus-visible {
   background-size: 100% 0.42em;
+}
+
+/* ONE HOVER, AT TWO SCALES. Compose these; do not write a hover rule.
+
+   Hover used to be seven different things: a colour swap to the accent, a
+   colour swap plus a border, a colour swap plus a border-bottom, a step to the
+   right, a step plus a border, a fill in --panel, a fill in --panel-hi, and a
+   wash in --mark-soft. Eight, counting the one that did two of them. Every one
+   was locally defensible and together they meant the site had no answer to
+   "what does hovering something look like here?".
+
+   It looks like the highlighter, in the light pen. --mark-soft is 16% gold: it
+   composites over graphite and paper alike, so the text underneath keeps its own
+   ink and its own contrast, and nothing has to change colour to acknowledge a
+   pointer. The wash is the pen the filter list was already using; the rest of
+   the site now uses it too.
+
+   .marked-hover is a WORD — the band is the swipe, the same drawn shape the
+   headline mark carries, grown from nothing.
+   .washed is a ROW — an option, a record, a rail entry. A row is not a word, so
+   the wash is full-bleed rather than stroke-shaped. */
+.marked-hover {
+  background-image: var(--stroke-swipe-soft);
+  /* Centred, so the band opens from the middle of the line out rather than
+     climbing from the baseline. */
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+  background-size: 100% 0;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: background-size 180ms var(--ease-out);
+}
+
+.marked-hover:hover,
+.marked-hover:focus-visible {
+  background-size: 100% 1.6em;
+}
+
+/* THE LIGHT PEN, AT REST. .marked in --mark-soft: the same drawn swipe, laid
+   down once and left there rather than appearing under a pointer.
+
+   For a fact that should read as marked without reading as the loudest thing on
+   its panel — an award credit sitting above a filled button, where two solid
+   gold slabs in one column paint a label as loudly as an action.
+
+   The text keeps its OWN ink rather than taking --mark-ink. A 16% wash is not
+   opaque enough to carry the dark ink the solid mark carries: on graphite that
+   pairing is near-black on near-black. Body ink over a light wash reads on both
+   grounds, which is the whole reason this variant can exist. */
+.washed {
+  transition: background-color 180ms var(--ease-out);
+}
+
+.washed:hover,
+.washed:focus-visible {
+  background-color: var(--mark-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marked-hover,
+  .washed {
+    transition: none;
+  }
+}
+
+/* THE BUTTON. Two variants, one shape, and this is the only place either is
+   written down.
+
+   .run and the theme-song toggle carried byte-identical :disabled blocks in two
+   files, and filled states that differed by 2px of padding, 0.0625rem of size
+   and 0.02em of tracking — differences nobody chose. The exhibits page then had
+   a third thing that was a button everywhere except in being one.
+
+   filled is the page's one action. outline is everything that is a control but
+   not the point of the screen. There is no third variant; if something needs
+   one, it is probably a link. */
+.btn {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.6rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  gap: 0.55rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition:
+    background-color 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    color 180ms var(--ease-out);
+}
+
+/* A filled button is a BLOCK OF HIGHLIGHTER, so it is drawn like one: the same
+   opaque gold under the same two wet-ink gradients under the same swipe, which
+   is what gives it uneven ends and a half-degree tilt instead of four right
+   angles. It is the hero mark at button scale.
+
+   The mask is sized 100% 158%, not 100% 100%. --stroke-swipe draws its ink into
+   the middle 22%-83% of its viewBox — deliberately, so the headline's wrapped
+   lines do not overlap — and at 100% that inset would show only the middle 61%
+   of the button, cropping the label. Scaling to 1/0.61 puts the ink back across
+   the whole face and leaves the drawn edge on the outside where it belongs. */
+.btn[data-variant='filled'] {
+  position: relative;
+  /* The swipe is drawn on a pseudo-element, NOT on the button. A mask applies to
+     everything the element paints, outline and box-shadow included, so masking
+     the button itself silently ate the focus ring — :focus-visible still
+     matched and the outline still computed, it just never reached the screen.
+     Nothing an automated check catches; it only shows up on a Tab key.
+
+     isolation, so the -1 pseudo stays inside the button's own stacking context
+     and paints above the page rather than disappearing behind it. */
+  isolation: isolate;
+  color: var(--mark-ink);
+}
+
+.btn[data-variant='filled']::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-color: var(--mark);
+  background-image:
+    linear-gradient(to bottom, transparent 52%, var(--mark-drag) 74%, transparent 92%),
+    linear-gradient(to bottom, var(--mark-lift) 0 6%, transparent 24%);
+  -webkit-mask-image: var(--stroke-swipe);
+  mask-image: var(--stroke-swipe);
+  -webkit-mask-size: 100% 158%;
+  mask-size: 100% 158%;
+  -webkit-mask-position: 0 50%;
+  mask-position: 0 50%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  content: '';
+}
+
+.btn[data-variant='outline'] {
+  border-color: var(--line-strong);
+  color: var(--soft);
+}
+
+/* The wash is for EMPTY boxes only. On a filled one it reads as a stain: the
+   button is already the gold, so a 16% gold laid over it changes nothing worth
+   seeing, and --mark-drag as a flat background is worse — it carries 0.55 alpha
+   because it is meant to composite over --mark inside the mark's own stack, so
+   as a background it REPLACED the gold with a translucent smear of the page
+   behind it. Layered as one more gradient it does what it says: presses the
+   whole face toward the wet tone the stroke already pools in. */
+.btn[data-variant='filled']:hover:not(:disabled)::before {
+  background-image:
+    linear-gradient(var(--mark-drag), var(--mark-drag)),
+    linear-gradient(to bottom, transparent 52%, var(--mark-drag) 74%, transparent 92%),
+    linear-gradient(to bottom, var(--mark-lift) 0 6%, transparent 24%);
+}
+
+.btn[data-variant='outline']:hover:not(:disabled) {
+  border-color: var(--ink-accent);
+  background-color: var(--mark-soft);
+  color: var(--bone);
+}
+
+/* Reads as deliberately parked rather than broken: the label stays legible
+   against the surface instead of dropping to a low-contrast gray. */
+.btn:disabled {
+  border-color: var(--line-strong);
+  border-style: dashed;
+  background: transparent;
+  color: var(--mute);
+  cursor: not-allowed;
+}
+
+/* The stroke comes off with the fill, or a parked button is a gold block with a
+   dashed border drawn somewhere underneath it. */
+.btn[data-variant='filled']:disabled::before {
+  display: none;
 }
 
 ::selection {

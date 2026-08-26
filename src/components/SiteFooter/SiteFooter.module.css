@@ -59,10 +59,6 @@
   align-items: center;
 }
 
-.links a:hover {
-  color: var(--ink-accent);
-}
-
 @media (max-width: 44rem) {
   .inner {
     align-items: flex-start;

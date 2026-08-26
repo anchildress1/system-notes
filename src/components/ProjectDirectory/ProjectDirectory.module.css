@@ -36,10 +36,6 @@
   transition: background 200ms ease;
 }
 
-.railItem:hover {
-  background: var(--panel);
-}
-
 .railItem[aria-current='true'] {
   background: var(--panel);
 }
@@ -215,34 +211,20 @@
   margin-top: 1.5rem;
 }
 
-.action,
-.crossLink {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0 0.9rem;
-  border: 1px solid var(--line-strong);
-  color: var(--soft);
-  font-family: var(--font-display);
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition:
-    border-color 200ms ease,
-    color 200ms ease;
+/* Both are .btn now. They were a third button declaration — their own shape,
+   their own hover, their own idea of what an accent control looks like — which
+   is how the exhibits page ended up with the only primary action on the site
+   that was an outline while every other one was filled. */
+.action {
+  composes: btn from global;
+  padding-inline: 0.9rem;
 }
 
-.action:hover,
-.crossLink:hover {
-  border-color: var(--ink-accent);
-  color: var(--ink-accent);
-}
-
+/* The page's one action: it is where a reader goes next. Filled, like the
+   intake's run button and the theme song's play button. */
 .crossLink {
-  border-color: var(--ink-accent);
-  color: var(--ink-accent);
+  composes: btn from global;
+  padding-inline: 0.9rem;
 }
 
 .stackColumn {

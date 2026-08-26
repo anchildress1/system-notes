@@ -152,14 +152,20 @@ export default function AboutPage() {
         </div>
         <nav aria-label="Ashley Childress profiles">
           {profile.links.map((link) => (
-            <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
+            <a
+              key={link.href}
+              className="washed"
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {link.label}{' '}
               <span className={styles.outbound} aria-hidden="true">
                 &#8599;
               </span>
             </a>
           ))}
-          <Link href="/notes">
+          <Link className="washed" href="/notes">
             Search the index{' '}
             <span className={styles.outbound} aria-hidden="true">
               &#8599;

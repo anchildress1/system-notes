@@ -257,6 +257,7 @@ export default function IndexSidebar({
             <li key={category.key}>
               <button
                 type="button"
+                className="washed"
                 data-category={category.key}
                 data-selected={category.isRefined || undefined}
                 aria-label={`${category.label}, ${category.count.toLocaleString()} notes`}
