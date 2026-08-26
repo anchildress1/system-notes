@@ -1,5 +1,11 @@
-/** Lightness of the surface a swatch is drawn on, per theme, in percent. */
-export const SWATCH_SURFACE_LIGHTNESS = { dark: 15.5, light: 97.2 } as const;
+/**
+ * Lightness of the surface a swatch is drawn on, per theme, in percent.
+ *
+ * The same on both, because the board is the same dark plate on both — see
+ * --board-plate. A light board would force every tone dark enough to survive
+ * paper, and a tone dark enough to survive paper can never be gold.
+ */
+export const SWATCH_SURFACE_LIGHTNESS = { dark: 15.5, light: 15.5 } as const;
 
 /**
  * How far a swatch must sit from the board's surface, in points of lightness.
@@ -9,9 +15,9 @@ export const SWATCH_SURFACE_LIGHTNESS = { dark: 15.5, light: 97.2 } as const;
  * category changes nothing a reader can see. 34.5 is the separation at which
  * every slot clears 3:1 against the board and 2.9:1 against its dimmed self.
  *
- * This is a distance, not a floor. The original 50 was a floor derived from a
- * dark board alone (50 - 15.5), and it inverts under a light one, where a
- * swatch has to be *darker* than the surface rather than lighter.
+ * This is a distance rather than a floor so it survives the surface changing.
+ * Both themes resolve it identically now, since both boards are the same plate,
+ * but the arithmetic stays honest if that ever stops being true.
  */
 export const SWATCH_MIN_LIGHTNESS_DELTA = 34.5;
 
@@ -22,11 +28,13 @@ export type SwatchTheme = keyof typeof SWATCH_SURFACE_LIGHTNESS;
  * rank by size. Slots separate by chroma as well as lightness: five purely
  * tonal steps cannot stay distinct at this separation.
  *
- * Ordered outward from the darkest end of each theme's arc, so the largest
- * category carries the most saturated tone and the rest step away from it. The
- * two boards tell it in different pigments: gold, amber, orange, rust, stone on
- * graphite; clay, brick, rust, oxblood, stone on paper, where the yellow half
- * of that arc can only ever be mustard.
+ * Three neutrals and an accent, not an arc of hues. The ranking is carried by
+ * tone — the strongest mark the board can make, then a mid grey, then the
+ * accent, then a dim grey — so the board reads as a census in ink with one
+ * category picked out of it. On graphite that reads bone, grey, gold, dim; on
+ * bone, grey, gold, dim — on both themes, because both boards are the same dark
+ * plate. Gold cannot clear a LIGHT board without becoming mustard, so the board
+ * stopped being light rather than the accent stopping being gold.
  *
  * Every entry is a token. A literal cannot follow a theme, so a hardcoded
  * color here renders identically against both boards.
@@ -42,8 +50,25 @@ export const SWATCH_PALETTE = [
  * Reserved for the awards category and deliberately outside the rank palette.
  * While it was slot 0, whichever category happened to rank first took the same
  * tone as the awards, and two rows of the filing list painted identically.
+ *
+ * It resolves to the same pigment as the accent slot and does not collide with
+ * it, because an award is not FILLED — it is a hollow ring, told apart by shape
+ * rather than by tone. The ring is drawn in IndexWorkspace.module.css.
  */
 export const AWARD_SWATCH = 'var(--k-award)';
+
+/**
+ * How an awards tile is told apart from the rank slot it shares a pigment with.
+ *
+ * A ring is separated by SHAPE, so it may resolve to the same tone as a rank
+ * slot without the two painting identically — which is what lets the awards
+ * carry the accent itself rather than a tone invented to avoid it. A fill has
+ * no such licence and must hold a tone of its own.
+ *
+ * The ring is drawn in IndexWorkspace.module.css. Change this to 'fill' there
+ * and the palette owes awards a distinct tone again; the test enforces it.
+ */
+export const AWARD_RENDERING: 'ring' | 'fill' = 'ring';
 
 /**
  * Tokens a swatch may reference, with the lightness each resolves to per theme.
@@ -57,11 +82,11 @@ export const AWARD_SWATCH = 'var(--k-award)';
 export const SWATCH_TOKEN_LIGHTNESS: Readonly<
   Record<string, Readonly<Record<SwatchTheme, number>>>
 > = {
-  '--k-award': { dark: 93, light: 62 },
-  '--k-decision': { dark: 84, light: 54 },
-  '--k-note': { dark: 74, light: 46 },
-  '--k-other': { dark: 65, light: 38 },
-  '--k-principle': { dark: 56, light: 30 },
+  '--k-decision': { dark: 93, light: 93 },
+  '--k-note': { dark: 68, light: 68 },
+  '--k-other': { dark: 86, light: 86 },
+  '--k-principle': { dark: 52, light: 52 },
+  '--k-award': { dark: 86, light: 86 },
 };
 
 /**

@@ -70,21 +70,39 @@
   --drop: oklch(0.06 0.01 265 / 0.9);
   --thumb: oklch(0.42 0.01 265);
 
-  /* Anchored on the mark. The largest category carries the accent's own hue and
-     the rest step away from it — gold, amber, orange, rust, and a warm stone for
-     the one kind deliberately off the ramp.
+  /* The board is a DARK PLATE in both themes, and that is the whole reason the
+     palette below can be gold.
 
-     On paper these are DARK tones of that family, not the mark itself, and they
-     have to be: a tile has to clear the board it sits on, and the mark is only
-     1.41:1 against paper. So the light board reads as the mark's shadow rather
-     than the mark — which is the same relationship the ink has to it.
+     Yellow cannot exist on paper. To clear a light board at all it has to drop
+     to about L 62, and sRGB caps chroma near 0.13 by that lightness — which is
+     #a48100, mustard, the exact colour this site spent a week removing. The
+     choice is a rust board on paper or a dark board in both themes. The board
+     is an instrument, not prose, so it gets to be an object on the page. */
+  --board-plate: oklch(0.155 0.006 265);
 
-     Every slot clears 3:1 on its board. */
-  --k-award: oklch(0.93 0.14 98);
-  --k-decision: oklch(0.84 0.16 88);
-  --k-note: oklch(0.74 0.16 62);
-  --k-other: oklch(0.65 0.15 40);
-  --k-principle: oklch(0.56 0.02 70);
+  /* THREE TONES AND A RING, not five hues. Five saturated steps of one hue arc
+     could be told apart on graphite and turned to mud on paper, where the
+     yellow half of the arc is only ever mustard. Neutral carries the ranking —
+     bone, grey, dim — and the accent takes one slot, so the board reads as a
+     census in ink with the marked category picked out of it.
+
+     The awards tone is the accent again ON PURPOSE. It is never confused with
+     the accent slot because an award tile is not filled at all: it is a hollow
+     ring, told apart by shape. See IndexWorkspace.module.css.
+
+     Slots are rank positions, not the categories their names remember: the
+     largest category takes --k-decision, the next --k-note, and so on. Every
+     slot clears 3:1 against --board-plate, and swatchPalette.ts holds the
+     separation rule and these exact lightness values.
+
+     There is no light-theme override. There used to be, and it was the whole
+     problem: a second set of tones that had to be dark to survive paper, and so
+     could never be the gold this one is. One plate, one palette. */
+  --k-decision: oklch(0.93 0.008 90);
+  --k-note: oklch(0.68 0.006 265);
+  --k-other: oklch(0.86 0.17 92);
+  --k-principle: oklch(0.52 0.006 265);
+  --k-award: oklch(0.86 0.17 92);
 
   /* Hairlines stay translucent rather than resolving to --edge. Roughly thirty
      borders composite over whatever sits behind them, and an opaque token would
@@ -170,18 +188,6 @@
 
   /* The same ramp inverted, so a category keeps its identity across a theme
      switch rather than only its rank. */
-  /* Clay, not mustard. The first two rungs were the worst of it: #a48100 and
-     #936500, painting ~250 board tiles and every filter swatch. The LIGHTNESS
-     of each rung is unchanged and deliberately so — swatchPalette.ts enforces a
-     34.5-point separation from the board surface and encodes these exact
-     values, so only hue and chroma move. The arc now runs clay, brick, rust,
-     oxblood, stone. */
-  --k-award: oklch(0.62 0.16 50);
-  --k-decision: oklch(0.54 0.15 42);
-  --k-note: oklch(0.46 0.14 34);
-  --k-other: oklch(0.38 0.12 27);
-  --k-principle: oklch(0.3 0.02 40);
-
   --line: oklch(0.22 0.008 265 / 0.13);
   --line-strong: oklch(0.22 0.008 265 / 0.28);
   --seam: oklch(0.22 0.008 265 / 0.05);

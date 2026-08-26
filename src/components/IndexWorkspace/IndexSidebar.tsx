@@ -151,6 +151,7 @@ export default function IndexSidebar({
       label: isAwardCategory(item.value) ? `${item.label} ★` : item.label,
       count: item.count,
       isRefined: item.isRefined,
+      isAward: isAwardCategory(item.value),
       swatch: { background: swatchOf.get(item.value) },
     }));
   }, [items, ranking]);
@@ -160,6 +161,13 @@ export default function IndexSidebar({
   // keeps the default tone rather than being reassigned to another category.
   const swatchByCategory = useMemo(
     () => new Map(categories.map((category) => [category.key, category.swatch])),
+    [categories]
+  );
+
+  // An award tile is drawn as a ring rather than a fill, so it needs the flag
+  // and not just the tone — the two resolve to the same pigment.
+  const awardCategories = useMemo(
+    () => new Set(categories.filter((category) => category.isAward).map((c) => c.key)),
     [categories]
   );
 
@@ -257,7 +265,11 @@ export default function IndexSidebar({
               >
                 <span
                   className={styles.categorySwatch}
-                  style={category.swatch}
+                  /* An award draws its ring from CSS. An inline background here
+                     would win over it and fill the chip back in, which is the
+                     one thing the ring exists to avoid. */
+                  style={category.isAward ? undefined : category.swatch}
+                  data-award={category.isAward || undefined}
                   aria-hidden="true"
                 />
                 <span className={styles.categoryName}>{category.label}</span>
@@ -305,6 +317,7 @@ export default function IndexSidebar({
                     role="option"
                     data-note-id={item.objectID}
                     data-category={item.category}
+                    data-award={awardCategories.has(item.category) || undefined}
                     style={
                       {
                         '--tile-swatch': swatchByCategory.get(item.category)?.background,

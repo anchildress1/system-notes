@@ -84,6 +84,27 @@
   height: 0.68rem;
   border-radius: 0.08rem;
   background: var(--mark);
+  /* The chip is a sample of the board, so it carries the board's plate as its
+     edge. On paper that edge is doing real work: a gold chip is only about
+     1.4:1 against cream and would otherwise have no boundary at all. The dark
+     ring gives it one without darkening the sample itself. */
+  box-shadow: 0 0 0 1px var(--board-plate);
+}
+
+/* An award is the one kind told apart by SHAPE: a hollow ring rather than a
+   fill. That is what lets it share the accent's pigment without ever being
+   mistaken for the accent slot.
+
+   outline with a negative offset, not a border. A border under border-box eats
+   into the box and renders the one kind that is supposed to stand out visibly
+   smaller than every other — which is why the ring was dropped the first time.
+   An outline takes no layout space at all, and unlike an inset box-shadow it
+   survives the hover and selected states, which replace box-shadow outright. */
+.categorySwatch[data-award],
+.boardTiles li[data-award]::before {
+  background: transparent;
+  outline: 2px solid var(--k-award);
+  outline-offset: -2px;
 }
 
 .categoryName {
@@ -118,9 +139,13 @@
   text-transform: uppercase;
 }
 
+/* The plate. Tiles are gold, bone and grey in both themes, which is only
+   possible because what they sit on does not change with the theme. */
 .boardTiles {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background: var(--board-plate);
   display: grid;
-  padding: 0;
   margin-top: 0.5rem;
   border: 1px solid transparent;
   /* Fixed 14px tracks rather than fluid ones: the mockup's tile is 14x10 with a

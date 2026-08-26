@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  AWARD_RENDERING,
   AWARD_SWATCH,
   assignSwatches,
   SWATCH_MIN_LIGHTNESS_DELTA,
@@ -28,19 +29,21 @@ describe('swatchLightness', () => {
     expect(swatchLightness('oklch(0.74 0.055 330)')).toBe(swatchLightness('oklch(74% 0.055 330)'));
   });
 
-  it('resolves a reviewed token per theme', () => {
-    expect(swatchLightness('var(--k-award)', 'dark')).toBe(93);
-    expect(swatchLightness('var(--k-award)', 'light')).toBe(62);
-    expect(swatchLightness('var(--k-note)', 'dark')).toBe(74);
-    expect(swatchLightness('var(--k-note)', 'light')).toBe(46);
+  it('resolves a reviewed token to the same tone on either board', () => {
+    // Both boards are the same dark plate, so a token has one tone. The lookup
+    // stays theme-aware because the plate is a decision, not a law.
+    expect(swatchLightness('var(--k-award)', 'dark')).toBe(86);
+    expect(swatchLightness('var(--k-award)', 'light')).toBe(86);
+    expect(swatchLightness('var(--k-note)', 'dark')).toBe(68);
+    expect(swatchLightness('var(--k-note)', 'light')).toBe(68);
   });
 
   it('reads the dark board when no theme is named', () => {
-    expect(swatchLightness('var(--k-decision)')).toBe(84);
+    expect(swatchLightness('var(--k-decision)')).toBe(93);
   });
 
   it('tolerates whitespace inside the var() call', () => {
-    expect(swatchLightness('var( --k-principle )')).toBe(56);
+    expect(swatchLightness('var( --k-principle )')).toBe(52);
   });
 
   it('reads a fractional lightness', () => {
@@ -95,10 +98,14 @@ describe('SWATCH_PALETTE', () => {
     expect(swatchClearsSurface(AWARD_SWATCH, theme)).toBe(true);
   });
 
-  it.each(THEMES)('keeps the award tone distinct from every rank in %s', (theme) => {
+  it.each(THEMES)('separates the award from every rank in %s, by tone or by shape', (theme) => {
     const award = swatchLightness(AWARD_SWATCH, theme);
     for (const swatch of SWATCH_PALETTE) {
-      expect(Math.abs(award - swatchLightness(swatch, theme)), swatch).toBeGreaterThanOrEqual(4);
+      // A ring may share a rank's tone; a fill may not. Awards carry the
+      // accent itself, so the separation is shape — but only while they stay a
+      // ring, which is what this reads rather than assumes.
+      const apartByTone = Math.abs(award - swatchLightness(swatch, theme)) >= 4;
+      expect(apartByTone || AWARD_RENDERING === 'ring', `${swatch} in ${theme}`).toBe(true);
     }
   });
 
@@ -139,13 +146,16 @@ describe('swatchClearsSurface', () => {
   });
 
   it('fails a swatch that sits on top of the light board', () => {
-    // The direction inverts: on a near-white board a pale swatch is the failure.
-    expect(swatchClearsSurface('oklch(90% 0.02 265)', 'light')).toBe(false);
+    // The light board is the same dark plate, so a near-black swatch is the
+    // failure on it — exactly as on the dark one.
+    expect(swatchClearsSurface('oklch(20% 0.02 265)', 'light')).toBe(false);
   });
 
-  it('passes the same tone the other way round on each board', () => {
+  it('judges a tone identically on both boards while they share a plate', () => {
     expect(swatchClearsSurface('oklch(90% 0.02 265)', 'dark')).toBe(true);
-    expect(swatchClearsSurface('oklch(20% 0.02 265)', 'light')).toBe(true);
+    expect(swatchClearsSurface('oklch(90% 0.02 265)', 'light')).toBe(true);
+    expect(swatchClearsSurface('oklch(20% 0.02 265)', 'dark')).toBe(false);
+    expect(swatchClearsSurface('oklch(20% 0.02 265)', 'light')).toBe(false);
   });
 });
 
