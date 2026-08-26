@@ -352,15 +352,6 @@ export default function IndexSidebar({
 
         {boardItems.length > 0 ? (
           <div className={styles.board}>
-            <p>
-              {/* "N of M" only while trimmed, so the board never states a
-                  different total from the number of tiles under it. */}
-              The board — one tile per card ·{' '}
-              {boardItems.length < rankedItems.length
-                ? `${boardItems.length.toLocaleString()} of ${rankedItems.length.toLocaleString()}`
-                : rankedItems.length.toLocaleString()}{' '}
-              <span aria-hidden="true">↑</span>
-            </p>
             <ol
               ref={boardRef}
               className={styles.boardTiles}

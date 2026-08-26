@@ -99,7 +99,6 @@ describe('IndexWorkspace', () => {
       'true'
     );
     expect(screen.getByText('Principle')).toBeInTheDocument();
-    expect(screen.getByText(/^The board — one tile per card · 1/i)).toBeInTheDocument();
     expect(screen.getByRole('option', { name: /Failure is data, position 1/i })).toBeVisible();
     expect(screen.getByText('Project')).toBeInTheDocument();
     expect(screen.getByText('Topic')).toBeInTheDocument();
@@ -709,7 +708,6 @@ describe('IndexWorkspace', () => {
     const board = within(await screen.findByRole('listbox', { name: 'Top ranked notes' }));
     expect(board.getByRole('option', { name: 'Failure is data, position 1' })).toBeVisible();
     expect(board.getByRole('option', { name: 'Actual rank three, position 3' })).toBeVisible();
-    expect(screen.getByText(/The board — one tile per card · 2/i)).toBeInTheDocument();
     expect(document.querySelector('[data-ranked-queue] button')).toHaveTextContent(
       '№ 3 · System Notes'
     );
@@ -907,23 +905,6 @@ describe('board column measurement', () => {
     await screen.findByText('Ranked note 1');
 
     await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
-    // Stating only the total would claim 347 tiles above a board holding fewer.
-    expect(
-      screen.getByText(new RegExp(`one tile per card · ${TRIMMED} of 347`))
-    ).toBeInTheDocument();
-  });
-
-  it('states a bare total when nothing was trimmed away', async () => {
-    installResizeObserver();
-    // 347 notes across 347 columns is one full row, so no tile is dropped.
-    layOutBoard(resolvedTracks(347));
-
-    await renderWorkspace();
-    await screen.findByText('Ranked note 1');
-
-    await waitFor(() => expect(board()?.children).toHaveLength(347));
-    expect(screen.getByText(/one tile per card · 347/)).toBeInTheDocument();
-    expect(screen.queryByText(/347 of 347/)).not.toBeInTheDocument();
   });
 
   it('keeps aria-activedescendant pointing at a tile that exists after trimming', async () => {

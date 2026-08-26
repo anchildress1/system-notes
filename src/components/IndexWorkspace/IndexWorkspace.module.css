@@ -138,15 +138,6 @@
   margin-top: 1.35rem;
 }
 
-.board > p {
-  color: var(--mute);
-  font-family: var(--font-display);
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 .boardTiles {
   display: grid;
   /* An <ol> carries a 40px list indent by default. It used to be zeroed here;
