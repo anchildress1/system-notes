@@ -249,8 +249,8 @@
 
 /* The figures are INK, and the gold is struck under them.
 
-   They used to be set in --ink-accent, which on paper is brick: three red
-   numerals were the loudest thing on the page and the least like the rest of
+   They used to be set in --ink-accent, back when that was a red on paper: three
+   red numerals were the loudest thing on the page and the least like the rest of
    it. Colour is the wrong tool here anyway — a count is a fact, and the site
    marks facts rather than tinting them. So the numeral takes the body's own
    ink and the mark goes underneath it, one stroke per figure, each as wide as

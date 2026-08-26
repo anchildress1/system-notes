@@ -237,9 +237,9 @@
    acts, from the slug mark to the button they pressed to get here. Two neutral
    rules of slightly different weight would have read as the same device. */
 /* The bar beside the echoed question is a STROKE, not a border. A 2px rule in
-   the accent was brick red on paper and perfectly straight, which is the pair
-   of things this section kept getting wrong. Drawn instead, in the same gold
-   the marks are, so the reader's own words are the thing held in the pen. */
+   the accent was a red on paper and perfectly straight, which is the pair of
+   things this section kept getting wrong. Drawn instead, in the same gold the
+   marks are, so the reader's own words are the thing held in the pen. */
 .briefQuestion {
   position: relative;
   display: block;
@@ -319,7 +319,7 @@
 
 /* Marked rather than tinted, for the same reason the receipts figures are: a
    step number is a fact, and the site strikes facts instead of colouring them.
-   In the accent it was three brick numerals down the left of every answer. */
+   In the accent it was three red numerals down the left of every answer. */
 .briefStepMark {
   width: fit-content;
   /* A grid item stretches to its row, and the row here is the whole step — so a

@@ -112,8 +112,8 @@
   /* The same drawn stroke every other mark on the site carries. This was the
      one left behind: a smooth rounded bar with a uniform edge, sitting under a
      page where the headline, the award, the star chips and the section tab had
-     all become brush strokes. It reads as the odd one instantly. Gold, not
-     terracotta, because a nav label is a WORD. */
+     all become brush strokes. It reads as the odd one instantly. Gold, not the
+     pencil, because a nav label is a WORD. */
   background: var(--mark);
   -webkit-mask-image: var(--stroke-brush);
   mask-image: var(--stroke-brush);

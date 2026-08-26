@@ -24,19 +24,25 @@
 
 /* The mark is decoration, so it is drawn rather than rendered as an element.
    As an aria-hidden span it also sat directly against the byline text, which
-   makes the space between them ambiguous to read and to lint. */
+   makes the space between them ambiguous to read and to lint.
+
+   Gold and keylined, the same as the tick beside the wordmark — this and that
+   are the same mark at opposite ends of the page, so they are drawn with the
+   same pen. It used to be the only thing left using --mark-tab once the page
+   heads lost their slugs, which is a token existing for one footer bullet. */
 .byline::before {
   display: inline-block;
   width: 0.9rem;
   height: 0.4rem;
   margin-right: 0.5rem;
-  background: var(--mark-tab);
+  background: var(--mark);
   -webkit-mask-image: var(--stroke-brush);
   mask-image: var(--stroke-brush);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
+  filter: drop-shadow(0 0 0.5px var(--tile-keyline)) drop-shadow(0 0 0.5px var(--tile-keyline));
   content: '';
 }
 

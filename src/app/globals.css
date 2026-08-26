@@ -1,11 +1,16 @@
 :root {
-  /* The Intake palette: amber on slate. Neutrals sit on hue 265, the accent on
-     80, so the accent is the only warm thing on the page and never competes.
+  /* The Intake palette: ONE hue, and it is gold.
 
-     Every chromatic token in this file lives on the ember-to-gold arc, hue 25
-     through 96 — the color a piece of steel passes through as it heats. That is
-     the whole system: warmth is the only hue axis, and cold hues are excluded
-     rather than merely unused. */
+     Every chromatic token in this file sits on hue 92. Not a warm arc, not a
+     band, not a family — one number, and the only variables left are lightness
+     and chroma. Neutrals sit on 265 (or 90 at a chroma too low to read as
+     anything), so the gold is the single thing on any page that has a colour.
+
+     The site had an arc once, hue 25 through 96, and an arc is what let rust in
+     at 40 and brick in at 38. A range admits its own ends; a single hue cannot.
+     If a new token needs a colour, it is hue 92 or it is a neutral. There is no
+     third answer, and no second pen in a second colour — see the note where the
+     second pen used to be defined. */
   --void: oklch(0.155 0.006 265);
   --panel: oklch(0.2 0.007 265);
   --panel-hi: oklch(0.25 0.008 265);
@@ -31,30 +36,48 @@
      because a yellow fill needs dark ink on paper and on graphite alike.
 
      --ink-accent is the accent as INK, for the places a mark would be too heavy:
-     fine print, focus rings, hover. It is the one token that still moves,
-     because graphite can carry yellow as ink at 12.75:1 while paper cannot
-     carry it at all — there it is a warm near-black at 9.37:1. */
-  --ink-accent: oklch(0.86 0.16 92);
+     fine print, focus rings, hover. It is the one token that moves with the
+     theme, and it never holds a value of its own — it points at one of the two
+     above. Graphite carries the gold as ink at 12.74:1, so there it IS the mark.
+     Paper cannot carry it at any lightness that stays yellow, so there it is the
+     mark's own ink instead. Aliases, not third and fourth colours: whatever the
+     accent is on a given ground, it is already on the page beside it. */
   --mark: oklch(0.86 0.17 92);
-  --mark-ink: oklch(0.22 0.04 70);
+  --mark-ink: oklch(0.22 0.045 92);
+  --ink-accent: var(--mark);
   /* A stroke is not one flat colour. Ink pools low where the felt drags and
      thins along the top where it lifts — the smear that makes it read as
      something laid down wet. Both are yellows over the same yellow, so the
-     composite never leaves the band's contrast range. */
-  --mark-drag: oklch(0.78 0.19 86 / 0.55);
-  --mark-lift: oklch(0.93 0.12 97 / 0.5);
+     composite never leaves the band's contrast range.
 
-  /* The second pen. Gold marks WORDS; terracotta marks SECTIONS — the tab on a
-     head, the bullet on the byline. Two pens is the difference between a page
-     that was highlighted and a page that was flooded, and a reader learns which
-     is which without being told. It owes no contrast (it never carries text)
-     but it is dark enough to hold its own on paper, where the gold cannot.
+     Both sit on hue 92 with the mark, and the values below are the ones that fit
+     inside sRGB there. The drag was oklch(0.78 0.19 86): hue 92 has no 0.19 at
+     that lightness, so the browser clipped it for us and landed on #edab00 —
+     hue 76, an orange, painted twice down every marked line. The lift was
+     oklch(0.93 0.12 97), off-hue because hue 92 has no 0.12 at L 0.93 either;
+     dropping to L 0.91 buys the same colour on the right hue (#fedf80 against
+     the old #fee887). The wet read comes from lightness and chroma, never from
+     wandering off the site's one hue — a token that renders as a hue it does not
+     name is the same defect as naming the wrong hue. */
+  --mark-drag: oklch(0.78 0.15 92 / 0.55);
+  --mark-lift: oklch(0.91 0.12 92 / 0.5);
 
-     Rust, not vermilion. The first pass at this was oklch(0.66 0.19 42) — a
-     safety-orange that came out the single most saturated thing on any page,
-     shouting next to the muted label it belongs to. A tab marks its section; it
-     does not announce it. */
-  --mark-tab: oklch(0.55 0.14 40);
+  /* THERE IS NO SECOND PEN. The slot that held one is gone, and this note is
+     what stands in its place, because the slot kept being refilled.
+
+     It existed so a mark that had to survive paper could be drawn in something
+     other than gold — --mark is 1.41:1 against cream, which is invisible rather
+     than faint. Every colour that job attracted was a warm not-gold:
+     oklch(0.66 0.19 42), a safety-orange, then oklch(0.55 0.14 40), which is
+     rust however it is labelled. A token defined as "the accent, but legible
+     here" is a permanent invitation to add a hue.
+
+     A keyline answers the same question without one. drop-shadow traces the
+     alpha a mask leaves behind, so a drawn mark can carry --tile-keyline along
+     its own edge and stay gold on both grounds — the board and the focus ring
+     already work this way. See .wordmark::before and .byline::before.
+
+     If a mark cannot be seen on paper, keyline it. Do not recolour it. */
 
   /* Drawn, not described. These are MASKS rather than background images so the
      colour stays a variable — one shape, any pen. preserveAspectRatio='none'
@@ -86,7 +109,8 @@
      Gold is 1.41:1 against cream. Not low contrast — invisible. The ways out
      were all worse: drop the gold to a lightness that clears the page and it is
      mustard; swing the hue and it is rust; put the board on a black plate and
-     the light theme is just the dark theme wearing a disguise.
+     the light theme is just the dark theme wearing a disguise. Two of those were
+     tried and shipped before the third was.
 
      A keyline is the honest one. The edge does the separating, so the fill is
      free to be a colour rather than a contrast value — which is the same reason
@@ -184,18 +208,22 @@
   --bone: oklch(0.22 0.008 265);
   --soft: oklch(0.4 0.008 265);
   --mute: oklch(0.53 0.012 265);
-  /* Ink only; the mark and its ink are shared, see :root. Warm near-black at
-     9.37:1 — dark enough to be unmistakably ink rather than a yellow that
-     failed, and warm enough to belong to the same family as the mark it sits
-     beside. Colour on this page comes from the marks, not from the letters. */
-  /* Brick, not olive. This was oklch(0.38 0.07 70), which rasterises to
-     #5a3b12 — hue 34, and dull with it. It was described here as a warm
-     near-black and it is nothing of the kind: it is dark mustard, and because
-     this is the accent-as-ink token it was carrying that mustard onto every
-     page at once — step numbers, cross-links, card labels, summaries, focus
-     rings, even the checkbox accent-color. Same lightness job, same 9:1 on
-     paper (9.13 against the old 9.39), none of the olive. */
-  --ink-accent: oklch(0.4 0.15 38);
+  /* The accent as ink on paper is the MARK'S OWN INK — an alias, not a colour.
+
+     This slot has been wrong twice, in both directions, and each time because it
+     was asked to be a yellow that a light page could carry as text. There is no
+     such yellow: oklch(0.38 0.07 70) was dark mustard, and the oklch(0.4 0.15 38)
+     that replaced it was brick, and it put three red numerals down the left of
+     every answer, every set of receipts, every card label and every focus ring
+     on the site. Both were a third colour invented to solve a contrast problem.
+
+     The mark's ink already solves it. It is the tone the site sets ON the gold,
+     so it is guaranteed to belong beside it, it is a hue-92 near-black rather
+     than a red or an olive, and at 15.98:1 on paper it beats both of the colours
+     it replaces. Emphasis on this page is carried by weight against --soft and
+     --mute, which is what the page heads already do — the accent leaves the type
+     and stays in the marks. */
+  --ink-accent: var(--mark-ink);
 
   /* The neutrals turn over for paper: the strongest mark a light board has is
      ink, and the tones climb from there. The gold does NOT turn over — it is
@@ -268,13 +296,14 @@ body::before {
 }
 
 /* The corner glow is gone. It was a 42rem fixed-position painted layer tuned to
-   a magenta accent; in amber it read as a stain rather than a light source, and
+   a magenta accent; in gold it read as a stain rather than a light source, and
    removing it takes a full-viewport paint off every route. */
 
 /* A hyperlink is MARKED, not underlined.
 
    A 1px rule in the accent is the most machine-drawn thing a page can do to a
-   link, and on paper it was brick red on every route. This is the same brush
+   link, and while the paper accent was a red it drew that rule on every route.
+   This is the same brush
    the section tabs and the nav carry, stretched under the words: the text keeps
    the body's own ink, so nothing about it gets less readable, and the stroke
    is what says "link". Pressing harder on hover is the whole hover state.
@@ -306,12 +335,13 @@ body::before {
 
 /* The focus ring is the marker, keylined.
 
-   It used to be a plain 2px accent rectangle, which on paper is brick red — the
-   loudest thing on the page and the least like the rest of it. Gold instead,
+   It used to be a plain 2px accent rectangle, which on the paper accent of the
+   day was the loudest thing on the page and the least like the rest of it. It is
+   gold on both grounds now,
    with the same keyline the tiles use riding either side of it: --mark is
    1.41:1 against paper and WCAG 2.2 wants 3:1 from a focus indicator, so the
    hairline carries the contrast and the gold carries the brand. */
-:where(a, button, input, summary):focus-visible {
+:where(a, button, input, textarea, summary):focus-visible {
   outline: 2px solid var(--mark);
   outline-offset: 2px;
   box-shadow: 0 0 0 5px var(--tile-keyline);
