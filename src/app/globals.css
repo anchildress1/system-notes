@@ -388,6 +388,43 @@ body::before {
    opaque enough to carry the dark ink the solid mark carries: on graphite that
    pairing is near-black on near-black. Body ink over a light wash reads on both
    grounds, which is the whole reason this variant can exist. */
+.marked-soft {
+  width: fit-content;
+  padding: 0.16em 0.34em 0.2em 0.28em;
+  /* The same stroke laid down TWICE. A resting mark has to hold its own against
+     the panel; the hover wash only has to register for as long as a pointer is
+     on it, and 16% gold over near-black is a murky olive rather than a light
+     pen. Two passes composite to 29% — the shade a highlighter leaves where the
+     stroke doubles back — and it costs no second token, so .washed keeps the
+     single-pass value the filter list was tuned with. */
+  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+  /* 158%, for the same reason .btn uses it: --stroke-swipe insets its ink to
+     the middle 61% of the viewBox, so at 100% the band would cover only the
+     middle of the text. */
+  background-size: 100% 158%;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* PAPER, TAPED DOWN. An image on this site is a print someone put on the page,
+   not a pane cut into it.
+
+   Four things do the work, and none of them is a border: a mat of --panel-hi
+   showing as a margin around the print, a two-stop shadow (a tight contact
+   shadow plus a wide ambient one, because a single soft blur reads as a floating
+   card rather than as something resting on a surface), half a degree of tilt,
+   and two strips of tape across opposite corners.
+
+   The tape is --stroke-swipe, not a rectangle — the shape has straight long
+   edges and uneven short ones, which is exactly what a torn piece of tape is.
+   It is drawn in the gold at 29% (--mark-soft twice, the same doubling
+   .marked-soft uses), so it reads as translucent washi rather than as a painted
+   bar, and it is the only pen on the page anyway.
+
+   Opposite corners rather than all four, at unequal angles, so the sheet looks
+   pinned by someone in a hurry instead of mounted. */
 .washed {
   transition: background-color 180ms var(--ease-out);
 }

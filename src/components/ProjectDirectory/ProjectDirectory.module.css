@@ -95,11 +95,14 @@
   animation: rise-in 400ms var(--ease-out) both;
 }
 
+/* The light pen, not the solid one. This was .marked — the full gold slab — and
+   it worked while it was the only gold on the panel. It stopped working when
+   the cross-link below it became a filled button: a credit line and the page's
+   one action were then the same block of colour, and the label read as loud as
+   the thing you are meant to press. Same stroke, lighter pen, hierarchy back. */
 .award {
-  composes: marked from global;
+  composes: marked-soft from global;
   display: flex;
-  /* fit-content so the mark is the width of the award, not of the column. */
-  width: fit-content;
   align-items: center;
   margin-bottom: 0.6rem;
   font-family: var(--font-display);
