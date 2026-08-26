@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { BOARD_MAX_ROWS } from '@/components/IndexWorkspace/boardLayout';
 
 const searchHarness = vi.hoisted(() => ({
   hits: [] as Array<Record<string, unknown>>,
@@ -662,8 +663,8 @@ describe('IndexWorkspace', () => {
 
 describe('board column measurement', () => {
   const COLUMNS = 20;
-  // 347 notes over 20 columns: 17 whole rows, scaled by 2/3 to 11.
-  const TRIMMED = 11 * COLUMNS;
+  // 347 notes over 20 columns needs 18 rows; the board stands BOARD_MAX_ROWS.
+  const TRIMMED = BOARD_MAX_ROWS * COLUMNS;
 
   /**
    * jsdom lays nothing out: every element reports zero client rects and grid
@@ -794,8 +795,8 @@ describe('board column measurement', () => {
     await renderWorkspace();
     await screen.findByText('Ranked note 1');
 
-    // 3 columns, 115 whole rows, scaled to 77.
-    await waitFor(() => expect(board()?.children).toHaveLength(77 * 3));
+    // Three columns parsed out of that whitespace, times the height cap.
+    await waitFor(() => expect(board()?.children).toHaveLength(BOARD_MAX_ROWS * 3));
   });
 
   it('keeps every note when the board is wider than the index is long', async () => {
@@ -819,8 +820,10 @@ describe('board column measurement', () => {
     await screen.findByText('Ranked note 1');
 
     await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
-    // Stating only the census would claim 347 tiles above a board of 220.
-    expect(screen.getByText(/one tile per card · 220 of 347/)).toBeInTheDocument();
+    // Stating only the total would claim 347 tiles above a board holding fewer.
+    expect(
+      screen.getByText(new RegExp(`one tile per card · ${TRIMMED} of 347`))
+    ).toBeInTheDocument();
   });
 
   it('states a bare total when nothing was trimmed away', async () => {
