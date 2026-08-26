@@ -57,7 +57,6 @@
 .field:focus-visible {
   border-bottom-color: var(--ink-accent);
   border-bottom-width: 2px;
-  outline: 0;
 }
 
 .controls {

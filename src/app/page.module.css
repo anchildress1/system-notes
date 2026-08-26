@@ -8,3 +8,14 @@
 .intake {
   display: block;
 }
+
+.proof {
+  max-width: 48rem;
+  margin-bottom: clamp(1.5rem, 4vh, 2.75rem);
+  color: var(--soft);
+  font-size: clamp(0.9375rem, 1.5vw, 1.0625rem);
+}
+
+.proof strong {
+  color: var(--bone);
+}

@@ -827,6 +827,13 @@ main {
   body::before {
     background-size: 2.75rem 2.75rem;
   }
+
+  /* The navigation wraps to its natural height at narrow widths and scrolls
+     away with the page. A fixed header token cannot describe that height, so
+     hash targets reserve only breathing room instead of a guessed obstruction. */
+  [id] {
+    scroll-margin-top: 1.5rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

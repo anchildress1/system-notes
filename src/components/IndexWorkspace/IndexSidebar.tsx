@@ -23,19 +23,18 @@ import styles from './IndexWorkspace.module.css';
 // a category name is a data change, not a code change.
 //
 // Swatches follow a category's rank by size: Algolia returns facets ordered by
-// count, so the largest category takes the hottest tone. The palette runs down a
-// heat ramp — amber, orange, ember, steel — rather than one hue's lightness ramp,
-// which is what made every filter read as the same color.
+// count, so the largest category takes the strongest tone. The palette is a
+// neutral ladder with one yellow slot; rank varies value, never hue.
 //
 // The rank is read from the *unfiltered* facet list, held alongside the board's
 // census. Refining re-sorts the live list by the narrowed counts, and keying off
 // that repainted most of the board the moment a filter was applied, so the
 // census could no longer be read as "the same board, with matches lit".
-// Every slot stays a fixed distance from the board's own surface; swatchPalette.ts
-// carries the separation and the reason, and inverts it for a light board where
-// a swatch has to be darker rather than lighter. The ramp used to run down to
-// within 5.5 lightness points of the background, and that category looked
-// unselectable because filtering it changed nothing a reader could see.
+// Every slot has to stay readable against the board it is drawn on; the tones and
+// the keyline that separates them live in globals.css, beside the --k-* tokens.
+// The ramp used to run down to within 5.5 lightness points of the background, and
+// that category looked unselectable because filtering it changed nothing a reader
+// could see.
 
 // Awards take a tone of their own, outside the rank palette, and the star in the
 // filing list. They previously drew a ring by way of a border, which on a 14x10
@@ -112,6 +111,7 @@ export default function IndexSidebar({
 }: Readonly<IndexSidebarProps>) {
   const [isOpen, setIsOpen] = useState(true);
   const [activation, setActivation] = useState<{ id: string; nonce: number }>();
+  const typeahead = useRef({ value: '', updatedAt: 0 });
   const { items, refine } = useRefinementList({
     attribute: 'category',
     limit: 40,
@@ -202,18 +202,28 @@ export default function IndexSidebar({
 
   function moveBoardSelection(event: KeyboardEvent<HTMLOListElement>) {
     if (boardItems.length === 0) return;
+    if (
+      event.key === 'ArrowRight' ||
+      event.key === 'ArrowDown' ||
+      event.key === 'ArrowLeft' ||
+      event.key === 'ArrowUp' ||
+      event.key === 'Home' ||
+      event.key === 'End'
+    ) {
+      typeahead.current = { value: '', updatedAt: 0 };
+    }
     // Off-board selections start from the first tile rather than from a
     // position the reader never landed on.
-    const currentIndex = Math.max(selectedIndex, 0);
-    let nextIndex: number;
+    const currentIndex = selectedIndex;
+    let nextIndex: number | undefined;
     switch (event.key) {
       case 'ArrowRight':
       case 'ArrowDown':
-        nextIndex = Math.min(currentIndex + 1, boardItems.length - 1);
+        nextIndex = currentIndex >= 0 ? Math.min(currentIndex + 1, boardItems.length - 1) : 0;
         break;
       case 'ArrowLeft':
       case 'ArrowUp':
-        nextIndex = Math.max(currentIndex - 1, 0);
+        nextIndex = currentIndex >= 0 ? Math.max(currentIndex - 1, 0) : 0;
         break;
       case 'Home':
         nextIndex = 0;
@@ -221,10 +231,52 @@ export default function IndexSidebar({
       case 'End':
         nextIndex = boardItems.length - 1;
         break;
-      default:
-        return;
+      default: {
+        if (event.key.length !== 1 || event.altKey || event.ctrlKey || event.metaKey) {
+          return;
+        }
+
+        const now = Date.now();
+        const continuesPrefix =
+          now - typeahead.current.updatedAt <= 700 && typeahead.current.value.length > 0;
+        if (event.key === ' ' && !continuesPrefix) return;
+        const typed = event.key.toLocaleLowerCase();
+        const repeatsOneCharacter =
+          continuesPrefix &&
+          typed !== ' ' &&
+          [...typeahead.current.value].every((character) => character === typed);
+        const value = repeatsOneCharacter
+          ? typed
+          : continuesPrefix
+            ? typeahead.current.value + typed
+            : typed;
+        typeahead.current = { value, updatedAt: now };
+        event.preventDefault();
+
+        if (
+          continuesPrefix &&
+          !repeatsOneCharacter &&
+          selectedIndex >= 0 &&
+          boardItems[selectedIndex]!.title.trim().toLocaleLowerCase().startsWith(value)
+        ) {
+          return;
+        }
+
+        // Search after the current option and wrap. The title is also the first
+        // part of the accessible name, so the spoken and keyboard models agree.
+        const start = selectedIndex >= 0 ? selectedIndex : -1;
+        for (let offset = 1; offset <= boardItems.length; offset += 1) {
+          const candidate = (start + offset) % boardItems.length;
+          if (boardItems[candidate]!.title.trim().toLocaleLowerCase().startsWith(value)) {
+            nextIndex = candidate;
+            break;
+          }
+        }
+        break;
+      }
     }
 
+    if (nextIndex === undefined) return;
     event.preventDefault();
     activateNote(boardItems[nextIndex]!.objectID);
   }
@@ -325,7 +377,7 @@ export default function IndexSidebar({
                       } as CSSProperties
                     }
                     data-activated={item.objectID === activation?.id || undefined}
-                    aria-label={`Read note ${position}: ${item.title}`}
+                    aria-label={`${item.title}, position ${position}`}
                     aria-selected={item.objectID === selectedId}
                     title={`${position}. ${item.title}`}
                   />
@@ -337,7 +389,7 @@ export default function IndexSidebar({
                 cannot see the board and work it out. */}
             <small id="note-board-instructions" className="visually-hidden">
               one tile per card · click a tile, or use search and the queue below, to read one ·
-              arrow keys move one tile, Home and End jump
+              arrow keys move one tile, Home and End jump, and typing a title moves to its match
             </small>
           </div>
         ) : null}

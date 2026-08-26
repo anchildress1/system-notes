@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { runInNewContext } from 'node:vm';
+import { describe, expect, it, vi } from 'vitest';
 import {
   DEFAULT_THEME,
   parseTheme,
@@ -73,6 +74,33 @@ describe('THEME_SCRIPT', () => {
 
   it('reads the system preference when storage has nothing usable', () => {
     expect(THEME_SCRIPT).toContain('prefers-color-scheme: light');
+  });
+
+  it('still applies a light system preference when storage is unavailable', () => {
+    const setDocumentTheme = vi.fn();
+    const setThemeColor = vi.fn();
+    const storageFailure = new DOMException('Storage is unavailable', 'SecurityError');
+
+    expect(() =>
+      runInNewContext(THEME_SCRIPT, {
+        localStorage: {
+          getItem: () => {
+            throw storageFailure;
+          },
+        },
+        matchMedia: (query: string) => ({
+          matches: query === '(prefers-color-scheme: light)',
+        }),
+        document: {
+          documentElement: { setAttribute: setDocumentTheme },
+          querySelector: (selector: string) =>
+            selector === 'meta[name="theme-color"]' ? { setAttribute: setThemeColor } : null,
+        },
+      })
+    ).not.toThrow();
+
+    expect(setDocumentTheme).toHaveBeenCalledWith('data-theme', 'light');
+    expect(setThemeColor).toHaveBeenCalledWith('content', THEME_COLORS.light);
   });
 });
 

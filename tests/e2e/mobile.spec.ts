@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
-import { test } from './utils';
+import { mockAlgoliaSearch, test } from './utils';
 
 const viewports = [
   { width: 320, height: 740 },
@@ -50,6 +50,23 @@ for (const viewport of viewports) {
 }
 
 test.describe('mobile interactions', () => {
+  test('keeps hash targets clear of the mobile header', async ({ page }) => {
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      await mockAlgoliaSearch(page, []);
+      await page.goto('/notes?project=System+Notes#notes-index');
+      const target = page.locator('#notes-index');
+      await expect(target).toBeVisible();
+
+      const clearance = await page.evaluate(() => {
+        const header = document.querySelector('header')!.getBoundingClientRect();
+        const notes = document.querySelector('#notes-index')!.getBoundingClientRect();
+        return notes.top - Math.max(0, header.bottom);
+      });
+      expect(clearance, `hash target is obscured at ${width}px`).toBeGreaterThanOrEqual(0);
+    }
+  });
+
   test('keeps every primary destination visible without a hamburger', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');

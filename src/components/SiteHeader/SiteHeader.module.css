@@ -174,9 +174,14 @@
 }
 
 @media (max-width: 44rem) {
+  .header {
+    position: static;
+    min-height: 0;
+  }
+
   .inner {
     display: flex;
-    min-height: var(--header-height);
+    min-height: 0;
     align-items: stretch;
     flex-direction: column;
     justify-content: center;

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import IntakeDesk from '@/components/IntakeDesk/IntakeDesk';
+import { profile } from '@/data/profile';
 import { buildPageMetadata } from '@/lib/siteMetadata';
 import styles from './page.module.css';
 
@@ -22,6 +24,13 @@ export default function IntakePage() {
           </h1>
         </div>
         <div className="page-column">
+          <p className={styles.proof}>
+            <strong>{profile.role}.</strong> The agent below cites only systems I&rsquo;ve actually
+            shipped.{' '}
+            <Link className="marked-link" href="/projects">
+              See the evidence.
+            </Link>
+          </p>
           <IntakeDesk />
         </div>
       </section>

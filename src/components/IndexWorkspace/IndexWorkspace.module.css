@@ -145,10 +145,11 @@
   padding: 0;
   margin-top: 0.5rem;
   border: 1px solid transparent;
-  /* Fixed 14px tracks rather than fluid ones: the mockup's tile is 14x10 with a
-     4px gutter, and explicit tracks still resolve to a readable column count. */
-  grid-template-columns: repeat(auto-fill, 14px);
-  gap: 4px;
+  /* The drawn mark stays 14x10, but each option owns a non-overlapping 24px
+     pointer cell. Fixed tracks also resolve to a readable column count for the
+     whole-row trim. */
+  grid-template-columns: repeat(auto-fill, 24px);
+  gap: 0;
   list-style: none;
   outline: none;
 }
@@ -157,15 +158,10 @@
   position: relative;
   min-width: 0;
   display: grid;
-  width: 14px;
-  height: 10px;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
   place-items: center;
-  /* On the li rather than on ::before, because ::before paints over its parent
-     and the hover and selected states own its box-shadow outright. From here
-     the keyline rides just outside the tile and survives both. */
-  box-shadow: 0 0 0 1px var(--tile-keyline);
-  border-radius: 2px;
 }
 
 .boardTiles li::before {
@@ -177,7 +173,7 @@
      14x10 — the awards used to carry a border, which under border-box shrank
      the only tile that was supposed to stand out. */
   background: var(--tile-swatch, var(--k-other));
-  box-shadow: 0 0 0 transparent;
+  box-shadow: 0 0 0 1px var(--tile-keyline);
   content: '';
   transition:
     transform 180ms var(--ease-out),
@@ -187,7 +183,9 @@
 
 .boardTiles li:hover::before {
   z-index: 1;
-  box-shadow: 0 0 0.8rem var(--mark-glow);
+  box-shadow:
+    0 0 0 1px var(--tile-keyline),
+    0 0 0.8rem var(--mark-glow);
   transform: scale(1.5);
 }
 
@@ -280,9 +278,8 @@
   transition: border-color 0.25s var(--ease-out);
 }
 
-/* The ring goes on the pill, not the input: an outline drawn inside the pale
-   pill is nearly invisible, and the global :where() focus rule has zero
-   specificity so the input's own `outline: 0` was winning outright. */
+/* The global ring stays on the input; the rule underneath reinforces which
+   writing surface owns that focus without replacing the shared primitive. */
 .searchPill:has(input:focus-visible) {
   border-bottom-color: var(--ink-accent);
   border-bottom-width: 2px;
@@ -291,7 +288,6 @@
 .searchPill input {
   min-width: 0;
   border: 0;
-  outline: 0;
   background: transparent;
   color: var(--bone);
   font-family: var(--font-editorial);
@@ -427,10 +423,6 @@
   align-items: center;
   color: var(--mute);
   gap: 0.3rem;
-}
-
-.algolia:hover {
-  color: var(--bone);
 }
 
 /* A rule between the query and what it returned. The featured entry lost its
@@ -743,6 +735,10 @@
 
   .readingPane {
     padding: 1rem;
+  }
+
+  .reader {
+    scroll-margin-top: 1rem;
   }
 
   .searchPill {

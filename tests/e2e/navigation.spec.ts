@@ -2,6 +2,17 @@ import { expect } from '@playwright/test';
 import { test } from './utils';
 
 test.describe('Primary navigation', () => {
+  test('grounds the intake in shipped work', async ({ page }) => {
+    await page.goto('/');
+
+    await expect(page.getByText('Senior Software Engineer.')).toBeVisible();
+    await expect(page.getByText(/cites only systems I’ve actually shipped/i)).toBeVisible();
+    await expect(page.getByRole('link', { name: 'See the evidence.' })).toHaveAttribute(
+      'href',
+      '/projects'
+    );
+  });
+
   test('moves between the intake, exhibits, index, and about', async ({ page }) => {
     await page.goto('/');
     const nav = page.getByRole('navigation', { name: 'Primary navigation' });

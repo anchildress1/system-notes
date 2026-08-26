@@ -45,7 +45,8 @@ export function resolveTheme(stored: unknown, prefersLight: boolean): Theme {
  * else would surface as a hydration mismatch React cannot be told to ignore.
  */
 export const THEME_SCRIPT = `(function(){try{
-var s=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});
+var s=null;
+try{s=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});}catch(e){}
 var t=(s==='dark'||s==='light')?s:(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
 document.documentElement.setAttribute('data-theme',t);
 var m=document.querySelector('meta[name="theme-color"]');

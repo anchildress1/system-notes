@@ -30,6 +30,7 @@ describe('ThemeToggle', () => {
     render(<ThemeToggle />);
 
     expect(control()).toHaveAttribute('aria-pressed', 'true');
+    expect(control()).toHaveAttribute('data-variant', 'outline');
   });
 
   it('falls back to dark when the document carries no theme yet', () => {

@@ -82,7 +82,7 @@ test.describe('Notes index', () => {
     ]);
     await page.goto('/notes');
     const board = page.getByRole('listbox', { name: 'Top ranked notes' });
-    const secondTile = page.getByRole('option', { name: 'Read note 2: Second decision' });
+    const secondTile = page.getByRole('option', { name: 'Second decision, position 2' });
     const reducedTileMotion = () =>
       secondTile.evaluate((option) => {
         const style = getComputedStyle(option, '::before');
@@ -214,13 +214,13 @@ test.describe('Notes index', () => {
     await expect(tiles.nth(2)).toHaveAttribute('data-category', 'Architecture');
     await expect(tiles.nth(3)).toHaveAttribute('data-category', 'Principle');
     await expect(tiles.nth(boardShape.tiles - 1)).toHaveAccessibleName(
-      `Read note ${boardShape.tiles}: Ranked note ${boardShape.tiles}`
+      `Ranked note ${boardShape.tiles}, position ${boardShape.tiles}`
     );
     await expect(page.getByRole('navigation', { name: 'Notes pagination' })).toHaveCount(0);
     expect(requestedLimits).toContain('500');
 
     const tileTitles = await tiles.evaluateAll((buttons) =>
-      buttons.map((button) => button.getAttribute('aria-label')?.replace(/^Read note \d+: /, ''))
+      buttons.map((button) => button.getAttribute('aria-label')?.replace(/, position \d+$/, ''))
     );
     const tileCategories = await tiles.evaluateAll((buttons) =>
       buttons.map((button) => button.getAttribute('data-category'))
@@ -242,16 +242,16 @@ test.describe('Notes index', () => {
       })
     );
     expect(new Set(colorSignatures).size).toBe(4);
-    // Tiles are a census mark, not a primary control: they are deliberately
-    // smaller than a pointer target so 347 notes read as one composite block.
-    // Every note they stand for stays reachable at full size through the search
-    // box and the ranked queue, and the board itself is fully keyboard-operable
-    // (asserted below), which is what carries the interaction — so this pins the
-    // exact drawn size to catch accidental drift rather than asserting a
-    // touch-target floor the mark is not trying to meet.
+    // The visible census mark stays tiny, but the option itself owns a full,
+    // non-overlapping pointer target.
     const firstTarget = await tiles.nth(0).boundingBox();
-    expect(firstTarget?.width).toBe(14);
-    expect(firstTarget?.height).toBe(10);
+    expect(firstTarget?.width).toBeGreaterThanOrEqual(24);
+    expect(firstTarget?.height).toBeGreaterThanOrEqual(24);
+    const firstMark = await tiles.nth(0).evaluate((option) => {
+      const style = getComputedStyle(option, '::before');
+      return { width: style.width, height: style.height };
+    });
+    expect(firstMark).toEqual({ width: '14px', height: '10px' });
 
     await expect(board).toHaveJSProperty('tabIndex', 0);
     await expect(tiles.nth(0)).toHaveJSProperty('tabIndex', -1);
@@ -276,6 +276,10 @@ test.describe('Notes index', () => {
     );
     await board.press('Home');
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
+    await board.press('r');
+    await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
+    await board.press('Home');
+    await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
     await board.press('a');
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
     await board.press('ArrowRight');
@@ -283,7 +287,7 @@ test.describe('Notes index', () => {
     await page.keyboard.press('Tab');
     await expect(page.getByRole('searchbox', { name: 'Search the notes index' })).toBeFocused();
 
-    const selectedTile = page.getByRole('option', { name: 'Read note 37: Ranked note 37' });
+    const selectedTile = page.getByRole('option', { name: 'Ranked note 37, position 37' });
     await selectedTile.click();
 
     await expect(board).toBeFocused();
@@ -380,6 +384,33 @@ test.describe('Notes index', () => {
       expect(tiles).toBeGreaterThan(0);
       expect(tiles).toBeLessThanOrEqual(hits.length);
     }
+  });
+
+  test('restarts arrows at the first tile when resizing trims the selection away', async ({
+    page,
+  }) => {
+    const hits = Array.from({ length: 347 }, (_, index) =>
+      buildHit({
+        objectID: `card:test:${index + 1}`,
+        title: `Ranked note ${index + 1}`,
+        __position: index + 1,
+      })
+    );
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await mockAlgoliaSearch(page, hits);
+    await page.goto('/notes');
+    const board = page.getByRole('listbox', { name: 'Top ranked notes' });
+    const selected = page.getByRole('option', { name: 'Ranked note 120, position 120' });
+    await selected.click();
+    await expect(selected).toHaveAttribute('aria-selected', 'true');
+
+    await page.setViewportSize({ width: 320, height: 900 });
+    await expect(selected).toHaveCount(0);
+    await expect(board).not.toHaveAttribute('aria-activedescendant', /.+/);
+    await board.focus();
+    await board.press('ArrowRight');
+
+    await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
   });
 
   test('ignores a ?note param and opens the top-ranked note', async ({ page }) => {
