@@ -139,9 +139,6 @@
   height: 10px;
   cursor: pointer;
   place-items: center;
-  /* Non-matching cards stay on the board and recede; the census never shrinks. */
-  opacity: var(--tile-opacity, 1);
-  transition: opacity 0.22s ease;
 }
 
 .boardTiles li::before {

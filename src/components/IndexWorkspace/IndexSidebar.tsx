@@ -163,39 +163,21 @@ export default function IndexSidebar({
     [categories]
   );
 
-  // Every tile is a real note — the board is never padded to fill a row.
+  // Every tile is a real note, and every tile on the board is a MATCH.
   //
-  // The board is a census, not a result list: it keeps rendering the whole
-  // ranked set and recedes the cards that do not match, so filtering shows you
-  // where the answer sits inside the index rather than shrinking the index.
-  // Algolia only returns matches, so the last unfiltered set is held as the
-  // census and the current matches light it.
-  // Adjusted during render rather than in an effect: an effect that calls
-  // setState triggers a cascading render. The key is a primitive, so the
-  // comparison settles after one extra pass instead of looping.
-  const [census, setCensus] = useState<{ key: string; items: Hit<FactHitRecord>[] }>({
-    key: '',
-    items: [],
-  });
-  const unfilteredKey = isNarrowed
-    ? null
-    : `${rankedItems.length}:${rankedItems[0]?.objectID ?? ''}`;
-  if (unfilteredKey !== null && unfilteredKey !== census.key) {
-    setCensus({ key: unfilteredKey, items: rankedItems });
-  }
-  const boardCensus = isNarrowed && census.items.length > 0 ? census.items : rankedItems;
-
-  const matchedIds = useMemo(
-    () => new Set(rankedItems.map((item) => item.objectID)),
-    [rankedItems]
-  );
-
-  // Trimming to whole rows keeps the board a clean rectangle at every width, and
-  // it now applies to the census rather than the result set, so the shape holds
-  // steady while a filter is on instead of reflowing under the reader.
+  // This was a census: it kept the whole ranked set on screen and dropped
+  // non-matching tiles to 0.13 opacity, on the theory that showing where an
+  // answer sits inside the index beats shrinking the index. What it actually
+  // rendered was a grid three-quarters full of grey — indistinguishable from a
+  // disabled control, and nothing in a grid of clickable tiles should ever look
+  // disabled. A tile is relevant and shown, or it is not there.
+  //
+  // The board reflows when a filter narrows it. That is the cost, and it is the
+  // right one: a reflow reads as the index responding, where a wall of dimmed
+  // tiles reads as the interface having broken.
   const boardItems = useMemo(
-    () => fitBoardToWholeRows(boardCensus, boardColumns),
-    [boardCensus, boardColumns]
+    () => fitBoardToWholeRows(rankedItems, boardColumns),
+    [rankedItems, boardColumns]
   );
 
   // -1 when the selected note is ranked below the board's last tile. Collapsing
@@ -293,9 +275,9 @@ export default function IndexSidebar({
               {/* "N of M" only while trimmed, so the board never states a
                   different total from the number of tiles under it. */}
               The board — one tile per card ·{' '}
-              {boardItems.length < boardCensus.length
-                ? `${boardItems.length.toLocaleString()} of ${boardCensus.length.toLocaleString()}`
-                : boardCensus.length.toLocaleString()}{' '}
+              {boardItems.length < rankedItems.length
+                ? `${boardItems.length.toLocaleString()} of ${rankedItems.length.toLocaleString()}`
+                : rankedItems.length.toLocaleString()}{' '}
               <span aria-hidden="true">↑</span>
             </p>
             <ol
@@ -326,7 +308,6 @@ export default function IndexSidebar({
                     style={
                       {
                         '--tile-swatch': swatchByCategory.get(item.category)?.background,
-                        '--tile-opacity': matchedIds.has(item.objectID) ? '1' : '0.13',
                       } as CSSProperties
                     }
                     data-activated={item.objectID === activation?.id || undefined}
