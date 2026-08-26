@@ -276,6 +276,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Theme tokens repaint as one frame. Letting inherited colour transitions run
+   across that swap leaves old-theme text on the new-theme paper. */
+:root[data-theme-switching],
+:root[data-theme-switching] *,
+:root[data-theme-switching] *::before,
+:root[data-theme-switching] *::after {
+  transition: none !important;
+}
+
 /* NO min-width, and NO overflow clip. Together those two were a trap.
 
    min-width: 20rem held the body at 320px however narrow the viewport got, and
@@ -504,6 +513,41 @@ body::before {
   right: -1.05rem;
   bottom: -0.5rem;
   transform: rotate(-21deg);
+}
+
+/* The explicit-content advisory, as a stamp rather than a colour.
+
+   Ink, not gold: hue 92 is the accent and an advisory is not one — it is
+   metadata about the track. --bone on --void inverts with the theme by itself,
+   so the stamp is dark-on-light on paper and light-on-dark on graphite without
+   a rule of its own, and clears roughly 15:1 either way.
+
+   font-size first, then a box in the element's own em — sized the other way
+   round the box resolves against the shrunken font instead of its context and
+   collapses to a quarter of its intended size, clipping the letter inside it.
+
+   aria-hidden at the call site: the control's accessible name already carries
+   the advisory, so a screen reader that announces both hears it twice. */
+.explicit {
+  display: inline-grid;
+  font-size: 0.75rem;
+  width: 1.5em;
+  height: 1.5em;
+  flex: 0 0 auto;
+  border-radius: 0.18em;
+  /* The mark's own two tones, so the stamp belongs to the filled control it sits
+     in rather than being a third colour dropped on top of it. Both are shared
+     tokens that do not move with the theme, so it reads the same on either
+     ground at 11.29:1 — and it still holds up outside a gold context, being a
+     dark stamp with a bright letter punched out of it. */
+  background: var(--mark-ink);
+  color: var(--mark);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1;
+  place-items: center;
 }
 
 /* How a picture sits inside its print, for every image on the site.

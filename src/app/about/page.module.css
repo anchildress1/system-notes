@@ -173,39 +173,6 @@
   padding-block: clamp(3.5rem, 6.5vw, 6.5rem) clamp(3rem, 5vw, 5rem);
 }
 
-/* The explicit-content advisory, as a stamp rather than a colour.
-
-   Ink, not gold: hue 92 is the accent, and an advisory is not one — it is
-   metadata about the track. --bone on --void inverts with the theme by itself,
-   so the stamp is dark-on-light on paper and light-on-dark on graphite without
-   a rule of its own, and clears 15:1 either way.
-
-   Sized in em so it tracks the heading it sits in rather than being a fixed chip
-   beside type that scales from 2.6rem to 5rem. Upright while the heading is not,
-   because a stamp is applied to the page, not set with it. */
-.explicit {
-  display: inline-grid;
-  /* font-size FIRST, then a box measured in the element's own em. Sized the
-     other way round the 0.62em box resolved against the 0.42em font rather than
-     the heading, collapsing to a quarter of its intended size and clipping the
-     letter inside it. */
-  font-size: 0.2em;
-  width: 1.5em;
-  height: 1.5em;
-  border-radius: 0.18em;
-  background: var(--bone);
-  color: var(--void);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-style: normal;
-  letter-spacing: 0;
-  line-height: 1;
-  place-items: center;
-  /* Rides against the cap height of the title rather than its baseline, the way
-     a rating badge sits beside a track name. */
-  vertical-align: 1.9em;
-}
-
 /* Runs past the end of its own column. The grid gap is generous enough that the
    overhang never collides with the content beside it — it just stops the left
    column from reading as a box that the heading was poured into. */
