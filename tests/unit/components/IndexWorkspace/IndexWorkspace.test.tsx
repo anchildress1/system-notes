@@ -202,12 +202,9 @@ describe('IndexWorkspace', () => {
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
       )
-    ).toEqual([
-      expect.stringContaining('Ranked note 2'),
-      expect.stringContaining('Ranked note 3'),
-      expect.stringContaining('Ranked note 4'),
-      expect.stringContaining('Ranked note 5'),
-    ]);
+    ).toEqual(
+      [2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((rank) => expect.stringContaining(`Ranked note ${rank}`))
+    );
     expect(boardElement).toHaveAttribute('tabindex', '0');
     expect(tiles.every((tile) => !tile.hasAttribute('tabindex'))).toBe(true);
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
@@ -249,24 +246,18 @@ describe('IndexWorkspace', () => {
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
       )
-    ).toEqual([
-      expect.stringContaining('Ranked note 1'),
-      expect.stringContaining('Ranked note 2'),
-      expect.stringContaining('Ranked note 3'),
-      expect.stringContaining('Ranked note 4'),
-    ]);
+    ).toEqual(
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rank) => expect.stringContaining(`Ranked note ${rank}`))
+    );
     fireEvent.click(board.getByRole('option', { name: 'Ranked note 3, position 3' }));
     expect(screen.getByRole('article')).toHaveTextContent('Ranked note 3');
     expect(
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
       )
-    ).toEqual([
-      expect.stringContaining('Ranked note 1'),
-      expect.stringContaining('Ranked note 2'),
-      expect.stringContaining('Ranked note 4'),
-      expect.stringContaining('Ranked note 5'),
-    ]);
+    ).toEqual(
+      [1, 2, 4, 5, 6, 7, 8, 9, 10, 11].map((rank) => expect.stringContaining(`Ranked note ${rank}`))
+    );
   });
 
   it('moves by title type-ahead, supports rapid prefixes, and wraps', async () => {
@@ -361,7 +352,7 @@ describe('IndexWorkspace', () => {
     expect(
       board.queryByRole('option', { name: /Ranked note 501, position/i })
     ).not.toBeInTheDocument();
-    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(4);
+    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(10);
   });
 
   it.each([1, 2, 3, 4])(
@@ -722,7 +713,7 @@ describe('IndexWorkspace', () => {
     expect(await screen.findByRole('article')).toHaveTextContent('Unique note 1');
     expect(screen.queryByText('Duplicate should disappear')).not.toBeInTheDocument();
     expect(screen.getAllByRole('option', { name: /Unique note \d+, position/i })).toHaveLength(6);
-    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(4);
+    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(5);
     expect(screen.getByRole('alert')).toHaveTextContent('Some malformed notes were withheld.');
   });
 

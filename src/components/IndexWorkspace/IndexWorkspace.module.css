@@ -541,21 +541,23 @@
   padding-left: 0.9rem;
 }
 
-/* Uneven leading between records, the way a printed catalog breathes. The run
-   is short and fixed, so the positions are set rather than generated. */
-.queueList li:nth-child(1) button {
+/* Uneven leading between records, the way a printed catalog breathes. Four
+   measures that repeat: the run was fixed at 1..4 when the queue held four
+   entries, so a paged run of ten fell back to the flat base padding from the
+   fifth row down and the page went mechanical exactly where it got long. */
+.queueList li:nth-child(4n + 1) button {
   padding-block: 1rem 1.45rem;
 }
 
-.queueList li:nth-child(2) button {
+.queueList li:nth-child(4n + 2) button {
   padding-block: 1.35rem 1.1rem;
 }
 
-.queueList li:nth-child(3) button {
+.queueList li:nth-child(4n + 3) button {
   padding-block: 1.6rem 1.35rem;
 }
 
-.queueList li:nth-child(4) button {
+.queueList li:nth-child(4n) button {
   padding-block: 1.1rem 1.6rem;
 }
 
@@ -613,11 +615,28 @@
   text-wrap: pretty;
 }
 
-.queueFooter {
-  margin-top: 0.75rem;
+/* The pager sits under the run, not beside it: the queue is a column and a
+   control that floats out of that column reads as belonging to the reader
+   above. */
+.queuePager {
+  display: flex;
+  align-items: center;
+  margin-top: 1.1rem;
+  gap: 0.75rem;
+}
+
+.queuePagerButton {
+  composes: btn from global;
+  padding: 0.5rem 0.9rem;
+}
+
+.queuePagerStatus {
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.875rem;
+  font-size: var(--fine);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--fine-tracking);
+  text-transform: uppercase;
 }
 
 .resultWarning {

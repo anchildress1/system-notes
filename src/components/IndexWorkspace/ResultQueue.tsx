@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Hit } from 'instantsearch.js';
 import FactCard from '@/components/FactCard/FactCard';
 import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteContent';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
-const VISIBLE_NOTE_LIMIT = 5;
+/** Alternates shown per page. The reader above holds the featured note. */
+const PAGE_SIZE = 10;
 
 interface ResultQueueProps {
   items: Hit<FactHitRecord>[];
@@ -18,6 +19,7 @@ interface ResultQueueProps {
 export default function ResultQueue({ items, selectedId, onSelect }: Readonly<ResultQueueProps>) {
   const readerRef = useRef<HTMLDivElement>(null);
   const shouldFocusReader = useRef(false);
+  const [pager, setPager] = useState({ page: 0, signature: '' });
   const featuredIndex = Math.max(
     items.findIndex((item) => item.objectID === selectedId),
     0
@@ -30,11 +32,30 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
     readerRef.current?.focus({ preventScroll: true });
   }, [featured?.objectID]);
 
+  // A new result set starts at its own first page. The page is stored WITH the
+  // set it was chosen for and read back only when the two still agree, so a
+  // stale page is ignored rather than corrected: resetting it from an effect
+  // costs a second render pass on every search, and the first pass of that pass
+  // paints the old page.
+  //
+  // Signed by length and lead hit rather than by array identity — useHits hands
+  // back a fresh array every render, so identity alone resets constantly.
+  const resultSignature = `${items.length}:${items[0]?.objectID ?? ''}`;
+  const requestedPage = pager.signature === resultSignature ? pager.page : 0;
+
   if (!featured) return null;
+
   const alternatives = items
     .map((hit, index) => ({ hit, index }))
-    .filter(({ hit }) => hit.objectID !== featured.objectID)
-    .slice(0, VISIBLE_NOTE_LIMIT - 1);
+    .filter(({ hit }) => hit.objectID !== featured.objectID);
+  const pageCount = Math.max(1, Math.ceil(alternatives.length / PAGE_SIZE));
+  // Clamped on read, not corrected in state: selecting a note on the last page
+  // removes it from the alternates and can retire that page mid-render.
+  const currentPage = Math.min(requestedPage, pageCount - 1);
+  const goToPage = (next: number) => setPager({ page: next, signature: resultSignature });
+  const pageStart = currentPage * PAGE_SIZE;
+  const visible = alternatives.slice(pageStart, pageStart + PAGE_SIZE);
+
   return (
     <section className={styles.results} aria-label="Notes results">
       <h2 className="visually-hidden">Matching notes</h2>
@@ -54,13 +75,13 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
           />
         </div>
 
-        {alternatives.length > 0 ? (
+        {visible.length > 0 ? (
           <ol
             className={styles.queueList}
             data-ranked-queue
             aria-label="Highest-ranked alternate notes"
           >
-            {alternatives.map(({ hit, index }, rank) => {
+            {visible.map(({ hit, index }, rank) => {
               const position = getFactHitPosition(hit, index + 1);
               const project = getNoteProjects(hit)[0] ?? 'System Notes';
               const date = formatNoteDate(hit.created_at);
@@ -90,9 +111,31 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
         ) : null}
       </div>
 
-      <p className={styles.queueFooter}>
-        The board and ranking stay put. Choose an alternate or any board tile to read another note.
-      </p>
+      {pageCount > 1 ? (
+        <nav className={styles.queuePager} aria-label="Alternate notes pages">
+          <button
+            type="button"
+            className={styles.queuePagerButton}
+            data-variant="outline"
+            disabled={currentPage === 0}
+            onClick={() => goToPage(currentPage - 1)}
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            className={styles.queuePagerButton}
+            data-variant="outline"
+            disabled={currentPage >= pageCount - 1}
+            onClick={() => goToPage(currentPage + 1)}
+          >
+            Next
+          </button>
+          <p className={styles.queuePagerStatus} aria-live="polite">
+            Page {currentPage + 1} of {pageCount}
+          </p>
+        </nav>
+      ) : null}
     </section>
   );
 }

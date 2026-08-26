@@ -232,7 +232,7 @@ test.describe('Notes index', () => {
     // ranked list's prefix — never a reordering or a sample of it.
     const onBoard = hits.slice(0, boardShape.tiles);
     expect(tileTitles).toEqual(onBoard.map((hit) => hit.title));
-    expect(initialQueueTitles).toEqual(hits.slice(1, 5).map((hit) => hit.title));
+    expect(initialQueueTitles).toEqual(hits.slice(1, 11).map((hit) => hit.title));
     expect(tileCategories).toEqual(onBoard.map((hit) => hit.category));
 
     const colorSignatures = await tiles.evaluateAll((options) =>
@@ -317,7 +317,7 @@ test.describe('Notes index', () => {
     const selectedQueueTitles = await page
       .locator('[data-ranked-queue] button')
       .evaluateAll((buttons) => buttons.map((button) => button.children.item(1)?.textContent));
-    expect(selectedQueueTitles).toEqual(hits.slice(0, 4).map((hit) => hit.title));
+    expect(selectedQueueTitles).toEqual(hits.slice(0, 10).map((hit) => hit.title));
     await expect(page.getByRole('list', { name: 'Highest-ranked alternate notes' })).toBeVisible();
     expect(page.url()).toBe(initialURL);
 
