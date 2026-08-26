@@ -97,6 +97,8 @@
    not the page. */
 .portrait {
   composes: taped from global;
+  /* The source art is square. Only the ratio is this picture's own. */
+  --print-ratio: 1 / 1;
 }
 
 /* The print itself. In flow rather than absolutely filling the figure, because
@@ -104,8 +106,7 @@
    on it. Still position: relative, which <Image fill> needs. */
 .portraitFrame {
   position: relative;
-  /* The source art is square; a 4/5 frame cropped it. */
-  aspect-ratio: 1 / 1;
+  aspect-ratio: var(--print-ratio);
   display: none;
 }
 
@@ -121,11 +122,6 @@
 
 :global(:root[data-theme='light']) .portraitFrame[data-theme-image='light'] {
   display: block;
-}
-
-.portrait img {
-  object-fit: cover;
-  filter: saturate(0.8) contrast(1.06);
 }
 
 /* Set, colour, spacing and placement all come from .taped figcaption. The only

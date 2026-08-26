@@ -436,12 +436,20 @@ body::before {
      1.2deg drops a corner about 19px across a 900px sheet: still clearly a
      deliberate half-nudge rather than a crooked layout, but it reads. */
   --tilt: -1.2deg;
+  /* The shape of the picture, not of the treatment. Instances override the
+     value; nothing overrides the mechanism. */
+  --print-ratio: 2 / 1;
   padding: var(--mat);
   background: var(--panel-hi);
   box-shadow:
     0 0.15rem 0.4rem -0.15rem var(--drop),
     0 1.1rem 2.2rem -0.9rem var(--drop);
-  transform: rotate(var(--tilt));
+  /* The `rotate` property, not `transform`. The portrait also carries .drift,
+     whose keyframes animate transform — and an animation's transform REPLACES
+     the element's own, so the tilt silently vanished on exactly one of the two
+     images. rotate is an independent property and composes with whatever
+     transform an animation applies, so the tilt survives any of them. */
+  rotate: var(--tilt);
 }
 
 .taped::before,
@@ -484,10 +492,28 @@ body::before {
   transform: rotate(-21deg);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .taped {
-    transform: none;
-  }
+/* How a picture sits inside its print, for every image on the site.
+
+   This lived per page and diverged three ways: the exhibit set object-fit
+   contain, the portrait set cover, only the portrait carried a grade, and the
+   two put their aspect ratio in different places. The frame was shared and the
+   picture inside it was not, which is the same defect one level down.
+
+   cover, not contain: a print is filled edge to edge. The ratio is declared once
+   as --print-ratio and only its VALUE varies, because the shape of a picture is
+   a fact about the picture. height: auto is for the intrinsic case and is
+   overridden by the inline style next/image writes for fill, so one rule covers
+   both modes.
+
+   The grade is part of the treatment, not of one photograph. Every print is
+   pulled back the same amount, which is what stops one image reading as a
+   screenshot dropped onto a page of prints. */
+.taped img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  filter: saturate(0.8) contrast(1.06);
 }
 
 /* A caption belongs UNDER the print, on the mat, the way it does on a photograph
