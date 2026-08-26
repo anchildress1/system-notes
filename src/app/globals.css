@@ -129,8 +129,8 @@
 
      Slots are rank positions, not the categories their names remember: the
      largest category takes --k-decision, the next --k-note, and so on.
-     swatchPalette.ts holds the separation rule and these exact lightness
-     values.
+     swatchPalette.ts assigns the ranks; these five lines are the only place the
+     tones themselves are written down.
 
      The neutrals invert between themes because they have to — bone reads on
      graphite and vanishes on paper. The gold does not invert, because the

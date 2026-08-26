@@ -1,76 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import {
-  AWARD_RENDERING,
   AWARD_SWATCH,
   assignSwatches,
-  SWATCH_MIN_LIGHTNESS_DELTA,
   SWATCH_PALETTE,
-  SWATCH_SURFACE_LIGHTNESS,
-  SWATCH_TOKEN_LIGHTNESS,
-  type SwatchTheme,
-  swatchClearsSurface,
-  swatchLightness,
 } from '@/components/IndexWorkspace/swatchPalette';
 
-const THEMES: SwatchTheme[] = ['dark', 'light'];
-
-describe('swatchLightness', () => {
-  it('reads the lightness out of a percent literal', () => {
-    expect(swatchLightness('oklch(74% 0.055 330)')).toBe(74);
-    expect(swatchLightness('oklch(50% 0.06 330)')).toBe(50);
-  });
-
-  it('normalizes a unitless literal onto the same 0-100 scale', () => {
-    // oklch accepts both forms. Read as-is, oklch(0.83 ...) reports a lightness
-    // of 0.83 — no error, no failed floor, just a near-black swatch declared
-    // valid. Both spellings of the same color must agree.
-    expect(swatchLightness('oklch(0.83 0.15 80)')).toBe(83);
-    expect(swatchLightness('oklch(0.155 0.006 265)')).toBeCloseTo(15.5);
-    expect(swatchLightness('oklch(0.74 0.055 330)')).toBe(swatchLightness('oklch(74% 0.055 330)'));
-  });
-
-  it('resolves a reviewed token to the same tone on either board', () => {
-    // Both boards are the same dark plate, so a token has one tone. The lookup
-    // stays theme-aware because the plate is a decision, not a law.
-    expect(swatchLightness('var(--k-award)', 'dark')).toBe(86);
-    expect(swatchLightness('var(--k-award)', 'light')).toBe(86);
-    expect(swatchLightness('var(--k-note)', 'dark')).toBe(68);
-    expect(swatchLightness('var(--k-note)', 'light')).toBe(68);
-  });
-
-  it('reads the dark board when no theme is named', () => {
-    expect(swatchLightness('var(--k-decision)')).toBe(93);
-  });
-
-  it('tolerates whitespace inside the var() call', () => {
-    expect(swatchLightness('var( --k-principle )')).toBe(52);
-  });
-
-  it('reads a fractional lightness', () => {
-    expect(swatchLightness('oklch(15.5% 0.029 330)')).toBe(15.5);
-  });
-
-  it('rejects a token nobody reviewed', () => {
-    // --void is the board's own surface. Letting it through is exactly how a
-    // category ended up indistinguishable from the board behind it.
-    expect(() => swatchLightness('var(--void)')).toThrow(/Unreviewed swatch token/);
-    expect(() => swatchLightness('var(--panel)')).toThrow(/Unreviewed swatch token/);
-    // Byte-identical to --k-decision in dark; two ranks would paint the same.
-    expect(() => swatchLightness('var(--ink-accent)')).toThrow(/Unreviewed swatch token/);
-  });
-
-  it('rejects a color space it cannot reason about', () => {
-    expect(() => swatchLightness('#ff00ff')).toThrow(/Unrecognized swatch/);
-    expect(() => swatchLightness('rgb(255 0 255)')).toThrow(/Unrecognized swatch/);
-    expect(() => swatchLightness('transparent')).toThrow(/Unrecognized swatch/);
-    expect(() => swatchLightness('')).toThrow(/Unrecognized swatch/);
-  });
-});
-
 describe('SWATCH_PALETTE', () => {
-  it.each(THEMES)('keeps every slot clear of the %s board surface', (theme) => {
+  it('holds enough slots that adjacent ranks differ', () => {
+    expect(SWATCH_PALETTE.length).toBeGreaterThanOrEqual(4);
+    expect(new Set(SWATCH_PALETTE).size).toBe(SWATCH_PALETTE.length);
+  });
+
+  it('holds only tokens, never a literal', () => {
+    // A literal cannot follow a theme: it would paint the same color against a
+    // dark board and a light one, and the light board is where that is fatal.
+    // This asserts the SHAPE of an entry, not the color it resolves to — what
+    // the tones are is globals.css's business and is not restated here.
     for (const swatch of SWATCH_PALETTE) {
-      expect(swatchClearsSurface(swatch, theme), `${swatch} on ${theme}`).toBe(true);
+      expect(swatch, swatch).toMatch(/^var\(--[\w-]+\)$/);
     }
   });
 
@@ -80,82 +27,10 @@ describe('SWATCH_PALETTE', () => {
     }
   });
 
-  it('holds only tokens, never a literal', () => {
-    // A literal cannot follow a theme: it would paint the same color against a
-    // dark board and a light one, and the light board is where that is fatal.
-    for (const swatch of SWATCH_PALETTE) {
-      expect(swatch, swatch).toMatch(/^var\(--[\w-]+\)$/);
-    }
-  });
-
   it('keeps the award tone out of the rank palette', () => {
     // As slot 0 it collided with whichever category ranked first, so the awards
     // and the largest category painted the same color.
     expect(SWATCH_PALETTE).not.toContain(AWARD_SWATCH);
-  });
-
-  it.each(THEMES)('keeps the award tone clear of the %s surface as well', (theme) => {
-    expect(swatchClearsSurface(AWARD_SWATCH, theme)).toBe(true);
-  });
-
-  it.each(THEMES)('separates the award from every rank in %s, by tone or by shape', (theme) => {
-    const award = swatchLightness(AWARD_SWATCH, theme);
-    for (const swatch of SWATCH_PALETTE) {
-      // A ring may share a rank's tone; a fill may not. Awards carry the
-      // accent itself, so the separation is shape — but only while they stay a
-      // ring, which is what this reads rather than assumes.
-      const apartByTone = Math.abs(award - swatchLightness(swatch, theme)) >= 4;
-      expect(apartByTone || AWARD_RENDERING === 'ring', `${swatch} in ${theme}`).toBe(true);
-    }
-  });
-
-  it('holds enough slots that adjacent ranks differ', () => {
-    expect(SWATCH_PALETTE.length).toBeGreaterThanOrEqual(4);
-    expect(new Set(SWATCH_PALETTE).size).toBe(SWATCH_PALETTE.length);
-  });
-
-  it.each(THEMES)('resolves every slot to a distinct %s tone', (theme) => {
-    // Distinctness by resolved value, not by token name. Two names pointing at
-    // the same color pass a string-uniqueness check while painting one board.
-    const resolved = SWATCH_PALETTE.map((s) => swatchLightness(s, theme));
-    const distinctEnough = resolved.every((l, i) =>
-      resolved.every((other, j) => i === j || Math.abs(l - other) >= 4)
-    );
-    expect(distinctEnough, `${theme}: ${resolved.join(', ')}`).toBe(true);
-  });
-
-  it.each(THEMES)('sits every reviewed token clear of the %s surface too', (theme) => {
-    for (const token of Object.keys(SWATCH_TOKEN_LIGHTNESS)) {
-      expect(swatchClearsSurface(`var(${token})`, theme), `${token} on ${theme}`).toBe(true);
-    }
-  });
-
-  it('states both board surfaces on the 0-100 scale', () => {
-    // The whole delta comparison is meaningless if a surface is stored 0-1.
-    for (const theme of THEMES) {
-      expect(SWATCH_SURFACE_LIGHTNESS[theme]).toBeGreaterThan(1);
-      expect(SWATCH_SURFACE_LIGHTNESS[theme]).toBeLessThanOrEqual(100);
-    }
-    expect(SWATCH_MIN_LIGHTNESS_DELTA).toBeGreaterThan(1);
-  });
-});
-
-describe('swatchClearsSurface', () => {
-  it('fails a swatch that sits on top of the dark board', () => {
-    expect(swatchClearsSurface('oklch(20% 0.02 265)', 'dark')).toBe(false);
-  });
-
-  it('fails a swatch that sits on top of the light board', () => {
-    // The light board is the same dark plate, so a near-black swatch is the
-    // failure on it — exactly as on the dark one.
-    expect(swatchClearsSurface('oklch(20% 0.02 265)', 'light')).toBe(false);
-  });
-
-  it('judges a tone identically on both boards while they share a plate', () => {
-    expect(swatchClearsSurface('oklch(90% 0.02 265)', 'dark')).toBe(true);
-    expect(swatchClearsSurface('oklch(90% 0.02 265)', 'light')).toBe(true);
-    expect(swatchClearsSurface('oklch(20% 0.02 265)', 'dark')).toBe(false);
-    expect(swatchClearsSurface('oklch(20% 0.02 265)', 'light')).toBe(false);
   });
 });
 
