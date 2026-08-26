@@ -6,6 +6,21 @@ UI_SERVICE="system-notes"
 UI_SOURCE="."
 UI_PORT="3000"
 
+# Env loading comes FIRST, because everything below reads env vars.
+# It used to sit forty lines further down, after REGION, the cleanup settings
+# and PROJECT_ID had already been resolved — so any of those set in .env were
+# read before the file was loaded and silently ignored.
+#
+# PUBLIC keys only. Anything secret belongs in Secret Manager, not here.
+# In CI there is no .env; the workflow exports these directly, and this block
+# is a no-op there.
+if [[ -f ".env" ]]; then
+    set -a
+    # shellcheck disable=SC1091
+    . ".env"
+    set +a
+fi
+
 REGION="${GCP_REGION:-us-east1}"
 ARTIFACT_CLEANUP_ENABLED="${ARTIFACT_CLEANUP_ENABLED:-true}"
 ARTIFACT_CLEANUP_KEEP_COUNT="${ARTIFACT_CLEANUP_KEEP_COUNT:-5}"
@@ -19,9 +34,14 @@ if ! command -v gcloud &> /dev/null; then
     exit 1
 fi
 
+# An explicit GCP_PROJECT_ID wins, because that is how the release workflow
+# targets a project. With none set — the local case — the deploy follows
+# whichever project gcloud is currently signed in to.
 PROJECT_ID="${GCP_PROJECT_ID:-}"
+PROJECT_SOURCE="GCP_PROJECT_ID"
 if [[ -z "$PROJECT_ID" ]]; then
     PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
+    PROJECT_SOURCE="gcloud config (signed-in account)"
 fi
 if [[ "$PROJECT_ID" == "(unset)" ]] || [[ -z "$PROJECT_ID" ]]; then
     echo "Error: No Google Cloud Project ID set." >&2
@@ -34,6 +54,8 @@ echo "$SEPARATOR"
 echo "DEPLOYMENT CONFIGURATIONS"
 echo "$SEPARATOR"
 echo "Project: $PROJECT_ID ($PROJECT_NUMBER)"
+echo "Source:  $PROJECT_SOURCE"
+echo "Account: $(gcloud config get-value account 2>/dev/null)"
 echo "Region:  $REGION"
 echo "UI:      $UI_SERVICE ($UI_SOURCE)"
 echo "Cleanup: ${ARTIFACT_CLEANUP_ENABLED} (keep ${ARTIFACT_CLEANUP_KEEP_COUNT}, delete untagged > ${ARTIFACT_CLEANUP_DELETE_OLDER_THAN})"
@@ -45,15 +67,6 @@ gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com
 
 # Define Service Account
 UI_SA="system-notes-ui@$PROJECT_ID.iam.gserviceaccount.com"
-
-# Env loading (PUBLIC keys are safe for client-side)
-# For sensitive secrets, use Secret Manager instead of env vars
-if [[ -f ".env" ]]; then
-    set -a
-    # shellcheck disable=SC1091
-    . ".env"
-    set +a
-fi
 
 require_env() {
     local name=$1
