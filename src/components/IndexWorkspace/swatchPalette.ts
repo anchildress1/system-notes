@@ -22,9 +22,11 @@ export type SwatchTheme = keyof typeof SWATCH_SURFACE_LIGHTNESS;
  * rank by size. Slots separate by chroma as well as lightness: five purely
  * tonal steps cannot stay distinct at this separation.
  *
- * Ordered outward from the mark declared in globals.css — gold, amber, orange,
- * rust, stone — so the largest category carries the hue the site is marked in
- * and the rest step away from it.
+ * Ordered outward from the darkest end of each theme's arc, so the largest
+ * category carries the most saturated tone and the rest step away from it. The
+ * two boards tell it in different pigments: gold, amber, orange, rust, stone on
+ * graphite; clay, brick, rust, oxblood, stone on paper, where the yellow half
+ * of that arc can only ever be mustard.
  *
  * Every entry is a token. A literal cannot follow a theme, so a hardcoded
  * color here renders identically against both boards.

@@ -157,17 +157,30 @@
      9.37:1 — dark enough to be unmistakably ink rather than a yellow that
      failed, and warm enough to belong to the same family as the mark it sits
      beside. Colour on this page comes from the marks, not from the letters. */
-  --ink-accent: oklch(0.38 0.07 70);
+  /* Brick, not olive. This was oklch(0.38 0.07 70), which rasterises to
+     #5a3b12 — hue 34, and dull with it. It was described here as a warm
+     near-black and it is nothing of the kind: it is dark mustard, and because
+     this is the accent-as-ink token it was carrying that mustard onto every
+     page at once — step numbers, cross-links, card labels, summaries, focus
+     rings, even the checkbox accent-color. Same lightness job, same 9:1 on
+     paper (9.13 against the old 9.39), none of the olive. */
+  --ink-accent: oklch(0.4 0.15 38);
   --drop: oklch(0.55 0.02 265 / 0.22);
   --thumb: oklch(0.8 0.012 265);
 
   /* The same ramp inverted, so a category keeps its identity across a theme
      switch rather than only its rank. */
-  --k-award: oklch(0.62 0.13 90);
-  --k-decision: oklch(0.54 0.12 80);
-  --k-note: oklch(0.46 0.12 58);
-  --k-other: oklch(0.38 0.11 36);
-  --k-principle: oklch(0.3 0.02 70);
+  /* Clay, not mustard. The first two rungs were the worst of it: #a48100 and
+     #936500, painting ~250 board tiles and every filter swatch. The LIGHTNESS
+     of each rung is unchanged and deliberately so — swatchPalette.ts enforces a
+     34.5-point separation from the board surface and encodes these exact
+     values, so only hue and chroma move. The arc now runs clay, brick, rust,
+     oxblood, stone. */
+  --k-award: oklch(0.62 0.16 50);
+  --k-decision: oklch(0.54 0.15 42);
+  --k-note: oklch(0.46 0.14 34);
+  --k-other: oklch(0.38 0.12 27);
+  --k-principle: oklch(0.3 0.02 40);
 
   --line: oklch(0.22 0.008 265 / 0.13);
   --line-strong: oklch(0.22 0.008 265 / 0.28);
