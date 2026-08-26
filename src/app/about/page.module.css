@@ -235,20 +235,57 @@
   font-size: clamp(5.5rem, 11vw, 11rem);
 }
 
+/* The fine print the rest of the site sets its small caps in, rather than a
+   size and a tracking invented here. */
 .proof dt {
-  margin-top: 0.75rem;
+  margin-top: 0.9rem;
   color: var(--mute);
-  font-size: 0.9375rem;
-  letter-spacing: 0.08em;
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  font-weight: 600;
+  letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
 }
 
+/* The figures are INK, and the gold is struck under them.
+
+   They used to be set in --ink-accent, which on paper is brick: three red
+   numerals were the loudest thing on the page and the least like the rest of
+   it. Colour is the wrong tool here anyway — a count is a fact, and the site
+   marks facts rather than tinting them. So the numeral takes the body's own
+   ink and the mark goes underneath it, one stroke per figure, each as wide as
+   the number it belongs to. Three tallies struck on a page, which is what a
+   count of receipts should look like.
+
+   The stroke rides in padding rather than over the glyphs: line-height 0.78 is
+   tighter than the numerals are tall, so the block box ends above their feet
+   and a background pinned to its bottom would cut straight through them. */
 .proof dd {
-  color: var(--ink-accent);
+  width: fit-content;
+  padding-bottom: 0.22em;
+  background-image: var(--stroke-brush-inked);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 0.1em;
+  color: var(--bone);
   font-family: var(--font-editorial);
   font-size: clamp(3rem, 5.5vw, 5.5rem);
   line-height: 0.78;
   letter-spacing: -0.04em;
+}
+
+/* Struck by hand, so no two sit at the same angle. Under a degree each: enough
+   that the row stops reading as a table, not enough to read as a mistake. */
+.proof dl div:nth-child(1) dd {
+  transform: rotate(-0.7deg);
+}
+
+.proof dl div:nth-child(2) dd {
+  transform: rotate(0.5deg);
+}
+
+.proof dl div:nth-child(3) dd {
+  transform: rotate(-1.1deg);
 }
 
 .awards {
@@ -264,7 +301,25 @@
 
 /* Title over credit, not name-in-one-column and award-in-another. Two ruled
    columns read as a spreadsheet of prizes; stacked they read as three things
-   that happened. */
+   that happened.
+
+   The star is the same glyph the exhibits rail hangs on an awarded system, in
+   the same accent, so the two lists agree on what an award looks like. It hangs
+   outside the text column rather than sitting inline, which keeps the titles on
+   one axis however long the star's own metrics are. */
+.awards li {
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.awards li::before {
+  position: absolute;
+  top: 0.08em;
+  left: 0;
+  color: var(--ink-accent);
+  content: '★';
+}
+
 .awards li span:first-child {
   display: block;
   font-family: var(--font-display);
