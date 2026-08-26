@@ -108,9 +108,19 @@
   right: -0.16em;
   bottom: 0;
   left: -0.32em;
-  height: 0.3em;
-  border-radius: 46% 54% 38% 62% / 62% 38% 58% 42%;
+  height: 0.34em;
+  /* The same drawn stroke every other mark on the site carries. This was the
+     one left behind: a smooth rounded bar with a uniform edge, sitting under a
+     page where the headline, the award, the star chips and the section tab had
+     all become brush strokes. It reads as the odd one instantly. Gold, not
+     terracotta, because a nav label is a WORD. */
   background: var(--mark);
+  -webkit-mask-image: var(--stroke-brush);
+  mask-image: var(--stroke-brush);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   opacity: 0;
   /* Drawn left to right, the way the stroke would be. */
   transform: rotate(-1deg) scaleX(0.6);

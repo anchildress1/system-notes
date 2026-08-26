@@ -37,16 +37,24 @@
   --ink-accent: oklch(0.86 0.16 92);
   --mark: oklch(0.86 0.17 92);
   --mark-ink: oklch(0.22 0.04 70);
-  /* Ink pools along the foot of a stroke where the felt drags. A yellow over
-     the same yellow, so the composite never leaves the band's contrast range. */
-  --mark-drag: oklch(0.79 0.19 86 / 0.38);
+  /* A stroke is not one flat colour. Ink pools low where the felt drags and
+     thins along the top where it lifts — the smear that makes it read as
+     something laid down wet. Both are yellows over the same yellow, so the
+     composite never leaves the band's contrast range. */
+  --mark-drag: oklch(0.78 0.19 86 / 0.55);
+  --mark-lift: oklch(0.93 0.12 97 / 0.5);
 
   /* The second pen. Gold marks WORDS; terracotta marks SECTIONS — the tab on a
      head, the bullet on the byline. Two pens is the difference between a page
      that was highlighted and a page that was flooded, and a reader learns which
      is which without being told. It owes no contrast (it never carries text)
-     but it is dark enough to hold its own on paper, where the gold cannot. */
-  --mark-tab: oklch(0.66 0.19 42);
+     but it is dark enough to hold its own on paper, where the gold cannot.
+
+     Rust, not vermilion. The first pass at this was oklch(0.66 0.19 42) — a
+     safety-orange that came out the single most saturated thing on any page,
+     shouting next to the muted label it belongs to. A tab marks its section; it
+     does not announce it. */
+  --mark-tab: oklch(0.55 0.14 40);
 
   /* Drawn, not described. These are MASKS rather than background images so the
      colour stays a variable — one shape, any pen. preserveAspectRatio='none'
@@ -54,7 +62,7 @@
      band without a second asset, and box-decoration-break gives every wrapped
      line its own copy. Nothing here is a rectangle. */
   --stroke-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%23000'/%3E%3C/svg%3E");
-  --stroke-swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0,1.6 C10,0.5 20,2.4 32,1.7 C44,1 52,2.6 64,1.9 C76,1.2 86,0.4 98,1.3 C108,2.1 114,2.2 120,1.6 L120,24.6 C112,25.4 104,23.8 92,24.5 C80,25.2 70,25.8 58,25 C46,24.2 38,22.6 26,23.4 C16,24.1 8,25.2 0,24.6 Z' fill='%23000'/%3E%3C/svg%3E");
+  --stroke-swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23000'/%3E%3C/svg%3E");
   --mark-soft: oklch(0.86 0.17 92 / 0.16);
   /* Strong enough to read as a halo around a 10px tile. --mark-soft is sized
      for a wash across a whole panel and disappears at that scale. */
@@ -555,44 +563,47 @@ main {
 .marked,
 .page-head h1 > span,
 .page-head-title > span {
-  /* Sized to the STROKE, not to taste. --stroke-swipe is solid only between
-     8.8% and 91.5% of its height; the rest is where the drawn edge undulates.
-     These paddings keep every glyph inside that solid core, so no letter ever
-     ends up sitting on the page instead of on the ink — which on the dark theme
-     would put a dark-brown letter on graphite and lose it entirely. Change the
-     path and these change with it. */
-  padding: 0.14em 0.26em 0.22em 0.2em;
+  /* THE STROKE IS INSET INTO THE BOX, and that is what fixes the stacking.
+
+     An inline box is as tall as the font's ascent plus descent, which for this
+     Didone is 1.52em — with padding, a 1.89em band against a 1.42em line. Every
+     wrapped line therefore overlapped the one above by 55px, and the lower
+     stroke painted over the upper one, because CSS paints the fragments of an
+     inline box in document order and offers no way to reverse it.
+
+     Measured, the glyphs only ever occupy 27.6% to 75.8% of that band; the rest
+     is font metrics nothing is drawn in. So --stroke-swipe is drawn into the
+     middle 20%–83% of its viewBox instead of filling it. The visible stroke
+     falls to 1.19em, clears the 1.42em line, and the overlap is gone — each
+     line's stroke reads whole, with roughly 7% of the band as margin around the
+     ink on both sides. The paddings below place the ink inside that window. */
+  padding: 0.15em 0.26em 0.22em 0.2em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   color: var(--mark-ink);
-  /* The opaque core. The one layer above it is a yellow at partial alpha over
+  /* The opaque core. Both layers above it are yellows at partial alpha over
      this same yellow, so the band behind the letters never thins and the ink
      keeps its contrast wherever it falls. */
   background-color: var(--mark);
-  background-image: linear-gradient(
-    to bottom,
-    transparent calc(100% - 7px),
-    var(--mark-drag) calc(100% - 7px)
-  );
-  /* The edges are DRAWN. A radius, however uneven, still describes a rectangle
-     with its corners taken off: the top and bottom stay ruler-straight, and at
-     headline size that is the whole tell. The mask replaces them with a path
-     that undulates the entire way across, and being a mask rather than a
-     background image it leaves the colour above as a variable.
+  background-image:
+    linear-gradient(to bottom, transparent 52%, var(--mark-drag) 74%, transparent 92%),
+    linear-gradient(to bottom, var(--mark-lift) 0 6%, transparent 24%);
+  /* The band is SKEWED, and the skew lives in the path rather than in a
+     transform. A transform would be the obvious way to tilt it, and CSS ignores
+     transforms on non-replaced inline boxes — which is what this has to be for
+     the mark to hug each wrapped line instead of boxing all of them. Drawing
+     the slant into the mask gets the tilt back and keeps the fragmenting, and
+     it does something a rotation could not: every wrapped line gets its own
+     stroke at its own angle, rather than the whole block leaning as one slab.
 
-     TILED, not stretched — the same lesson the radius taught. One path spread
-     across the band makes the wobble proportional to the band, so a 1300px
-     headline got a wave so long and shallow it read as a ruler. A pen wobbles a
-     fixed amount every fixed distance. 4em ties the tile to the type, so the
-     wave keeps one size relative to the letters at every scale, and repeat-x
-     lays down as many as the run needs. The tile is seamless, so the joins do
-     not show. */
+     Stretched, not tiled: a tile cannot carry a continuous slant, it would
+     saw-tooth at every repeat. */
   -webkit-mask-image: var(--stroke-swipe);
   mask-image: var(--stroke-swipe);
-  -webkit-mask-size: 4em 100%;
-  mask-size: 4em 100%;
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 /* The turn of the headline is MARKED, not coloured.
