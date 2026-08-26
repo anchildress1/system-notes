@@ -122,7 +122,9 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
         {selected.award ? (
           <p className={styles.award}>
             {selected.award}
-            <span aria-hidden="true"> ★</span>
+            <span className={styles.awardStar} aria-hidden="true">
+              ★
+            </span>
           </p>
         ) : null}
         <h2 className={styles.name}>{selected.title}</h2>

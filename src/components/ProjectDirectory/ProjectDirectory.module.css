@@ -73,8 +73,12 @@
 }
 
 .railStar {
+  composes: marked from global;
   margin-left: 0.35rem;
-  color: var(--ink-accent);
+  /* One glyph, so the band wants to be a chip rather than a stripe: square it
+     up horizontally and lift the star off the baseline of its own ground. */
+  padding: 0.05em 0.2em;
+  line-height: 1;
 }
 
 .railStatus {
@@ -95,15 +99,21 @@
 }
 
 .award {
+  composes: marked from global;
   display: flex;
+  /* fit-content so the mark is the width of the award, not of the column. */
+  width: fit-content;
   align-items: center;
   margin-bottom: 0.6rem;
-  color: var(--ink-accent);
   font-family: var(--font-display);
   font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+.awardStar {
+  margin-left: 0.4rem;
 }
 
 .name {

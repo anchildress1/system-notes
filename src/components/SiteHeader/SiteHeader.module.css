@@ -74,32 +74,65 @@
 }
 
 .navLink {
+  position: relative;
   display: inline-flex;
   min-height: 2.25rem;
   align-items: center;
-  border-bottom: 1.5px solid transparent;
+  /* Clears the swipe below the descenders. A mark that cuts through the tail of
+     the "j" in "projects" reads as a clipping bug rather than as ink. */
+  padding-bottom: 0.35rem;
   color: var(--soft);
   font-family: var(--font-display);
   font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: 0.01em;
   text-transform: lowercase;
-  transition:
-    border-color 160ms ease,
-    color 160ms ease;
+  transition: color 160ms ease;
 }
 
-.navLink:hover {
-  color: var(--ink-accent);
+/* The current page is SWIPED, not underlined.
+
+   A 1.5px rule spanning the exact width of the word is the most machine-drawn
+   mark on the site — perfectly straight, perfectly flush at both ends. This is
+   the same highlighter the headlines carry, dragged by hand instead: it
+   overhangs twice as far on the left as on the right, sits a degree off true,
+   and every corner of the radius is a different size, so no two edges agree.
+
+   It rides in the padding below the text rather than behind it, so the label
+   keeps its own contrast against the header and the mark never has to carry
+   ink. Colour still marks the current page as well (--bone against --soft), so
+   the swipe is reinforcement, not the only signal. */
+.navLink::after {
+  content: '';
+  position: absolute;
+  right: -0.16em;
+  bottom: 0;
+  left: -0.32em;
+  height: 0.3em;
+  border-radius: 46% 54% 38% 62% / 62% 38% 58% 42%;
+  background: var(--mark);
+  opacity: 0;
+  /* Drawn left to right, the way the stroke would be. */
+  transform: rotate(-1deg) scaleX(0.6);
+  transform-origin: left center;
+  transition:
+    opacity 160ms ease,
+    transform 220ms var(--ease-out);
+}
+
+.navLink:hover::after,
+.navLink:focus-visible::after {
+  opacity: 0.5;
+  transform: rotate(-1deg) scaleX(1);
 }
 
 .navLink[aria-current='page'] {
-  border-color: var(--ink-accent);
   color: var(--bone);
 }
 
-.navLink[aria-current='page']::before {
-  display: none;
+.navLink[aria-current='page']::after {
+  opacity: 1;
+  transform: rotate(-1deg) scaleX(1);
 }
 
 @media (max-width: 44rem) {
@@ -123,10 +156,6 @@
     min-height: 2.5rem;
     font-size: 0.9375rem;
     letter-spacing: 0.08em;
-  }
-
-  .navLink[aria-current='page']::before {
-    display: none;
   }
 }
 
