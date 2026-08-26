@@ -7,16 +7,16 @@
  * if the two ever disagree, so the copy cannot drift unnoticed.
  */
 export const SYSTEM_IDS = [
-  'commit-chronicles',
   'save-the-sun',
   'unearthed',
   'carbon-trace',
   'metal-birds-feed',
   'vestige',
-  'system-notes',
   'rai-lint',
   'rai-commit-badge',
   'supascribe-notes',
+  'system-notes',
+  'commit-chronicles',
   'eslint-config-echo',
   'legacy-smelter',
   'devto-mirror',
