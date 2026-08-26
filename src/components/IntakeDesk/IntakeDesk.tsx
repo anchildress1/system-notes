@@ -136,8 +136,9 @@ export default function IntakeDesk() {
             data-accent="filled"
             data-working={inFlight || undefined}
             disabled={!canAsk || inFlight}
+            aria-busy={inFlight || undefined}
           >
-            {inFlight ? 'Reading…' : 'Run it'}
+            Run it
           </button>
           {canAsk ? null : (
             <p id={noticeId} className={styles.notice}>

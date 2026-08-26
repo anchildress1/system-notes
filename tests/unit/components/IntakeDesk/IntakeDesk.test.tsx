@@ -25,7 +25,6 @@ vi.mock('@/components/IntakeDesk/IntakeBriefLoader', () => ({
 
 const field = () => screen.getByLabelText('The problem');
 const run = () => screen.getByRole('button', { name: 'Run it' });
-const working = () => screen.getByRole('button', { name: 'Reading…' });
 const finishTurn = () => fireEvent.click(screen.getByTestId('finish'));
 
 describe('IntakeDesk', () => {
@@ -55,7 +54,8 @@ describe('IntakeDesk', () => {
     fireEvent.change(field(), { target: { value: 'Our agents ship unreviewed code.' } });
     fireEvent.click(run());
 
-    expect(working()).toBeDisabled();
+    expect(run()).toBeDisabled();
+    expect(run()).toHaveAttribute('aria-busy', 'true');
     expect(field()).toHaveAttribute('readonly');
   });
 
@@ -64,13 +64,14 @@ describe('IntakeDesk', () => {
 
     fireEvent.change(field(), { target: { value: 'Our agents ship unreviewed code.' } });
     fireEvent.click(run());
-    expect(working()).toBeDisabled();
+    expect(run()).toBeDisabled();
 
     // Any terminal state — answered, failed, or timed out — reaches the desk the
     // same way. A turn that failed used to leave this button disabled for good.
     finishTurn();
 
     expect(run()).toBeEnabled();
+    expect(run()).not.toHaveAttribute('aria-busy');
     expect(field()).not.toHaveAttribute('readonly');
   });
 
