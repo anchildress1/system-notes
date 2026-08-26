@@ -78,6 +78,15 @@
   color: var(--ink-accent);
 }
 
+/* Selected is the wash held down. .washed paints only under the pointer, so a
+   refined facet lost its fill the moment the cursor left and the whole state
+   rested on the count's minus sign. Same band, same token — it just does not
+   lift. Nothing new is declared here; a second colour for "selected" is the
+   thing the accent alias exists to prevent. */
+.categoryList button[data-selected] {
+  background-color: var(--mark-soft);
+}
+
 .categorySwatch {
   width: 1rem;
   height: 0.68rem;
