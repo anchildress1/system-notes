@@ -13,6 +13,7 @@ import styles from './ThemeToggle.module.css';
 
 /** Notifies every mounted toggle when one of them changes the theme. */
 const listeners = new Set<() => void>();
+let transitionReleaseFrame: number | undefined;
 
 function subscribe(listener: () => void): () => void {
   listeners.add(listener);
@@ -33,12 +34,25 @@ function serverTheme(): Theme {
   return DEFAULT_THEME;
 }
 
+function swapTheme(theme: Theme): void {
+  const root = document.documentElement;
+  if (transitionReleaseFrame !== undefined) cancelAnimationFrame(transitionReleaseFrame);
+  root.dataset.themeSwitching = '';
+  root.dataset.theme = theme;
+  transitionReleaseFrame = requestAnimationFrame(() => {
+    transitionReleaseFrame = requestAnimationFrame(() => {
+      delete root.dataset.themeSwitching;
+      transitionReleaseFrame = undefined;
+    });
+  });
+}
+
 export default function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, readTheme, serverTheme);
 
   const toggle = useCallback(() => {
     const next: Theme = readTheme() === 'light' ? 'dark' : 'light';
-    document.documentElement.dataset.theme = next;
+    swapTheme(next);
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', THEME_COLORS[next]);
     try {
       localStorage.setItem(THEME_STORAGE_KEY, next);

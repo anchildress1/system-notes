@@ -71,6 +71,25 @@ test.describe('Theme', () => {
       await expect(meta).toHaveAttribute('content', '#f7f6f2');
     });
 
+    test('swaps theme tokens without transitioning through a mixed palette', async ({ page }) => {
+      await page.goto('/');
+
+      const repaint = await page.evaluate(() => {
+        const toggle = document.querySelector<HTMLButtonElement>(
+          'button[aria-label="Light theme"]'
+        );
+        if (!toggle) return null;
+        toggle.click();
+        return {
+          switching: document.documentElement.hasAttribute('data-theme-switching'),
+          transitionDuration: getComputedStyle(toggle).transitionDuration,
+        };
+      });
+
+      expect(repaint).toEqual({ switching: true, transitionDuration: '0s' });
+      await expect.poll(() => page.locator('html').getAttribute('data-theme-switching')).toBeNull();
+    });
+
     test('carries the choice across a navigation', async ({ page }) => {
       await page.goto('/');
       await page.getByRole('button', { name: 'Light theme' }).click();
