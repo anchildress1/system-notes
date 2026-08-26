@@ -353,6 +353,32 @@ test.describe('Deep links', () => {
     );
   });
 
+  test('opens the exhibit behind each recorded win', async ({ page }) => {
+    await page.goto('/about');
+    const wins = page.getByRole('link', { name: /winner/i });
+    await expect(wins.first()).toBeVisible();
+
+    const targets = await wins.evaluateAll((links) =>
+      links.map((link) => link.getAttribute('href'))
+    );
+    // A win with nowhere to check it is the claim this section exists not to
+    // make, so every record has to cite a system the directory actually holds.
+    expect(targets.length).toBeGreaterThan(0);
+    for (const href of targets) {
+      expect(href).toMatch(/^\/projects\?system=[a-z0-9-]+$/);
+    }
+
+    const first = wins.first();
+    const name = await first.textContent();
+    await first.click();
+
+    await expect(page).toHaveURL(targets[0]!);
+    const exhibit = page.getByRole('article').getByRole('heading', { level: 2 });
+    await expect(exhibit).toBeVisible();
+    // The exhibit that opens is the one the win named, not the rail's default.
+    expect(name).toContain((await exhibit.textContent())!.trim());
+  });
+
   test('scrolls a deep-linked system into the visible rail', async ({ page }) => {
     await page.goto('/projects?system=delegate-action');
     const active = page.getByTestId('project-delegate-action');

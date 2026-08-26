@@ -93,8 +93,24 @@ export default function AboutPage() {
           <ul className={styles.awards} aria-label="Recorded project awards">
             {awardedProjects.map((project) => (
               <li key={project.id}>
-                <span>{project.title}</span>
-                <span>{project.award}</span>
+                {/* The whole record is the link, and it goes to the exhibit that
+                    holds the evidence — a win named with nowhere to check it is
+                    the claim this section exists to stop making. */}
+                <Link
+                  className={styles.awardRecord}
+                  href={`/projects?system=${encodeURIComponent(project.id)}`}
+                >
+                  <span className={styles.awardBadge}>
+                    {project.award}
+                    <span aria-hidden="true">★</span>
+                  </span>
+                  <span className={styles.awardProject}>
+                    {project.title}
+                    <span className={styles.awardGo} aria-hidden="true">
+                      &#8594;
+                    </span>
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>

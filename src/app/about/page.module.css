@@ -277,40 +277,70 @@
   margin-top: 1.1rem;
 }
 
-/* Title over credit, not name-in-one-column and award-in-another. Two ruled
-   columns read as a spreadsheet of prizes; stacked they read as three things
-   that happened.
+/* Award over system, not the system's name first. Listing the project first
+   made three wins read as three more entries in the roster; leading with the
+   citation is what says it was won.
 
-   The star is the same glyph the exhibits rail hangs on an awarded system, in
-   the same accent, so the two lists agree on what an award looks like. It hangs
-   outside the text column rather than sitting inline, which keeps the titles on
-   one axis however long the star's own metrics are. */
-.awards li {
-  position: relative;
-  padding-left: 1.5rem;
+   The band and the star are the exhibit's own award treatment, composed from
+   the same primitives rather than a second one invented here, so the two pages
+   agree on what an award looks like. The star moved inline with the citation
+   because that is where the exhibit puts it. */
+.awardRecord {
+  composes: washed from global;
+  display: grid;
+  /* Pulled back by its own padding so the wash bleeds past the text instead of
+     indenting the list away from the rule above it. */
+  padding: 0.7rem 0.85rem;
+  margin-left: -0.85rem;
+  border-radius: 0.15rem;
+  color: inherit;
+  gap: 0.3rem;
+  text-decoration: none;
 }
 
-.awards li::before {
-  position: absolute;
-  top: 0.08em;
-  left: 0;
-  color: var(--ink-accent);
-  content: '★';
+.awardBadge {
+  composes: marked-soft from global;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  gap: 0.4rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-.awards li span:first-child {
-  display: block;
+.awardProject {
+  display: flex;
+  align-items: baseline;
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 500;
+  gap: 0.5rem;
   letter-spacing: -0.015em;
 }
 
-.awards li span:last-child {
-  display: block;
-  margin-top: 0.15rem;
+/* Steps toward the exhibit. Motion only: the row already carries the wash, and
+   a second colour on a hover is the thing globals.css forbids. */
+.awardGo {
   color: var(--mute);
-  font-size: 0.9375rem;
+  transition: transform 180ms var(--ease-out);
+}
+
+.awardRecord:hover .awardGo,
+.awardRecord:focus-visible .awardGo {
+  transform: translateX(0.25rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .awardGo {
+    transition: none;
+  }
+
+  .awardRecord:hover .awardGo,
+  .awardRecord:focus-visible .awardGo {
+    transform: none;
+  }
 }
 
 .principles ol {
