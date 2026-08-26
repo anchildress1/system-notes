@@ -136,7 +136,7 @@ export default function BriefBody({
           disclosure a reader meets after they have already believed something is
           a footnote, not a disclosure. It sits with the question because both are
           metadata about the answer rather than part of it. */}
-      <p className={styles.briefCredit}>An agent wrote this from evidence I&rsquo;ve filed.</p>
+      <p className={styles.briefCredit}>An AI agent wrote this from evidence I&rsquo;ve filed.</p>
       {parseBriefStructure(answer).map((block) => {
         if (block.kind === 'lead') {
           return (

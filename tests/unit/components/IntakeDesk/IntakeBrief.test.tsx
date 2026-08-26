@@ -156,7 +156,7 @@ describe('IntakeBrief', () => {
 
     render(<IntakeBrief question={QUESTION} />);
 
-    expect(screen.getByText(/an agent wrote this from evidence/i)).toBeVisible();
+    expect(screen.getByText(/an ai agent wrote this from evidence/i)).toBeVisible();
   });
 
   it('reports the turn finished once an answer settles', () => {
