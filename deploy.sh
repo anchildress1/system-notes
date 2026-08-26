@@ -82,6 +82,9 @@ require_env "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY"
 
 NEXT_PUBLIC_BASE_URL="${NEXT_PUBLIC_BASE_URL:-https://anchildress1.dev}"
 NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME:-system-notes}"
+# Optional in the app (src/lib/algolia.ts falls back to ''), but it has to reach
+# the build or it is '' in every deployed bundle whether or not .env sets it.
+NEXT_PUBLIC_ALGOLIA_AGENT_ID="${NEXT_PUBLIC_ALGOLIA_AGENT_ID:-}"
 BUILD_TIMEOUT="${BUILD_TIMEOUT:-1200}"
 
 if ! [[ "$BUILD_TIMEOUT" =~ ^[1-9][0-9]*$ ]]; then
@@ -220,7 +223,7 @@ deploy_service() {
     if [[ -n "$dockerfile_path" ]]; then
         submit_build "$source_dir" \
             --config "cloudbuild.yaml" \
-            --substitutions "_IMAGE_URI=$image_uri,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME"
+            --substitutions "_IMAGE_URI=$image_uri,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID"
     else
         submit_build --tag "$image_uri" "$source_dir"
     fi
@@ -283,6 +286,39 @@ UI_ENV_VARS="NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATIO
 UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}"
 UI_ENV_VARS+=",NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}"
 UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME}"
+UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_AGENT_ID=${NEXT_PUBLIC_ALGOLIA_AGENT_ID}"
+
+# Every NEXT_PUBLIC_* the app reads has to reach the build, or it is inlined as
+# undefined and the failure is silent — the page renders, the feature behind the
+# value just does not work. NEXT_PUBLIC_ALGOLIA_AGENT_ID sat unwired through the
+# whole chain exactly that way, so this is a preflight rather than a comment.
+#
+# Reads the source instead of a hand-kept list, so adding a var to the app is
+# what puts it under this check.
+verify_public_env() {
+    local missing=() empty=() name
+    while IFS= read -r name; do
+        [[ -z "$name" ]] && continue
+        if [[ "$UI_ENV_VARS" != *"$name="* ]]; then
+            missing+=("$name")
+        elif [[ -z "${!name-}" ]]; then
+            empty+=("$name")
+        fi
+    done < <(grep -rhoE 'NEXT_PUBLIC_[A-Z0-9_]+' src/ 2>/dev/null | sort -u)
+
+    if ((${#empty[@]})); then
+        echo "Warning: set but empty, will deploy blank: ${empty[*]}" >&2
+    fi
+    if ((${#missing[@]})); then
+        echo "Error: the app reads these and the deploy never passes them:" >&2
+        printf '  - %s\n' "${missing[@]}" >&2
+        echo "Add each to the substitutions, UI_ENV_VARS, cloudbuild.yaml and the Dockerfile." >&2
+        exit 1
+    fi
+    echo "Env preflight: every NEXT_PUBLIC_* the app reads is wired through."
+}
+
+verify_public_env
 
 deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "$UI_ENV_VARS" "Dockerfile"
 
