@@ -417,10 +417,5 @@
 }
 
 .briefLink {
-  color: var(--ink-accent);
-  border-bottom: 1px solid var(--ink-accent);
-}
-
-.briefLink:hover {
-  border-bottom-width: 2px;
+  composes: marked-link from global;
 }
