@@ -236,17 +236,47 @@
    reader's — and on this site the accent is already what marks where the reader
    acts, from the slug mark to the button they pressed to get here. Two neutral
    rules of slightly different weight would have read as the same device. */
+/* The bar beside the echoed question is a STROKE, not a border. A 2px rule in
+   the accent was brick red on paper and perfectly straight, which is the pair
+   of things this section kept getting wrong. Drawn instead, in the same gold
+   the marks are, so the reader's own words are the thing held in the pen. */
 .briefQuestion {
+  position: relative;
   display: block;
   max-width: 56ch;
   padding-left: clamp(0.9rem, 2vw, 1.5rem);
   margin-top: 0.9rem;
-  border-left: 2px solid var(--ink-accent);
   color: var(--mute);
   font-family: var(--font-display);
   font-size: 0.9375rem;
   line-height: 1.5;
   text-wrap: pretty;
+}
+
+.briefQuestion::before,
+.briefCounter::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0.3rem;
+  -webkit-mask-image: var(--stroke-brush-y);
+  mask-image: var(--stroke-brush-y);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  content: '';
+}
+
+.briefQuestion::before {
+  background: var(--mark);
+}
+
+/* The counter argues against the answer, so it is struck in a quieter pen —
+   the same stroke, not the same ink. */
+.briefCounter::before {
+  background: var(--mute);
 }
 
 .briefBody {
@@ -287,8 +317,21 @@
   text-wrap: pretty;
 }
 
+/* Marked rather than tinted, for the same reason the receipts figures are: a
+   step number is a fact, and the site strikes facts instead of colouring them.
+   In the accent it was three brick numerals down the left of every answer. */
 .briefStepMark {
-  color: var(--ink-accent);
+  width: fit-content;
+  /* A grid item stretches to its row, and the row here is the whole step — so a
+     background pinned to the bottom landed four lines below the numeral it
+     belongs to. Hugging the content puts the stroke back under the number. */
+  align-self: start;
+  padding-bottom: 0.34em;
+  background-image: var(--stroke-brush-inked);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 0.16em;
+  color: var(--bone);
   font-family: var(--font-display);
   font-size: var(--fine);
   font-variant-numeric: tabular-nums;
@@ -300,10 +343,10 @@
 /* What the answer argues against. A different register in the writing, so a
    different setting: stepped in behind a rule, at a quieter tone. */
 .briefCounter {
+  position: relative;
   max-width: 58ch;
   padding-left: clamp(0.9rem, 2vw, 1.5rem);
   margin-top: 1.35rem;
-  border-left: 2px solid var(--line-strong);
   color: var(--mute);
   font-size: 0.99rem;
   line-height: 1.7;
