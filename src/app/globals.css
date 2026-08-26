@@ -1019,7 +1019,18 @@ main {
    remove. A variant has to be named, or it is just drift with a reason. */
 .page-head h1,
 .page-head-title {
-  max-width: 18ch;
+  /* 20ch, not 18. The measure has to clear the LONGEST turn on the site, and at
+     18 it cleared three of four: /notes broke "Filed, dated, and searchable."
+     across two line boxes, and because the turn carries the highlighter that is
+     two gold bands with one word orphaned on the second — a broken mark, not a
+     marked clause. It needs 19.5ch; the others set at 957px and 933px against
+     the old 948px cap and do not move at 20, because every head breaks its own
+     lines on an explicit <br> and this only governs wrapping inside one.
+
+     Shrinking that head to data-scale="compact" was tried and reverted: it made
+     the one page whose hero was wrong the only page whose hero was a different
+     size. The measure was the thing that was wrong, and it is shared. */
+  max-width: 20ch;
   font-family: var(--font-editorial);
   /* Sized to leave the fold something to hold. At 8vw this rendered 115px on a
      1440 screen, and the head that carried it ran to 755px of a 900px viewport

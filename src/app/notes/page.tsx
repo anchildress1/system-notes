@@ -18,12 +18,7 @@ export default async function NotesIndexPage() {
   return (
     <main id="main-content" className={styles.main}>
       <div className="page-head">
-        {/* compact, not the default: this head shares the fold with the search
-            tool it introduces, and its turn is the one headline on the site too
-            wide for the default 18ch measure — it broke into two highlighter
-            bands with "searchable." orphaned on the second. Both conditions are
-            exactly what the variant was named for. */}
-        <h1 data-scale="compact">
+        <h1>
           How I decide.
           <br />
           <span>Filed, dated, and searchable.</span>
