@@ -42,6 +42,7 @@ export default function IndexSearch() {
         <input
           ref={inputRef}
           type="search"
+          data-focus="ruled"
           aria-label="Search the notes index"
           value={query}
           onChange={(event) => refineQuery(event.target.value)}

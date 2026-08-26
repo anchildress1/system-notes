@@ -151,6 +151,7 @@ Each value must be the sRGB rendering of the token it stands for. `--mark` is `#
 ### Focus rings
 
 - The global rule in `globals.css` covers `a, button, input, textarea, summary`. Do not add a per-page override for elements it already matches — one did, and the exhibits route was the only one whose ring did not match the site.
+- **An input drawn as a rule rather than a box opts out with `data-focus="ruled"`** and thickens its own rule instead. The intake field and the search pill are deliberately chrome-less, so a 2px ring plus a 5px keyline draws exactly the box they exist not to have. Still compliant: WCAG 2.4.11 asks for an area of at least a 4px line along the component's **shortest** side, and the shortest side of either field is its height — a 2px rule across a far longer width clears it, at well over 3:1 between states. Opt out through the attribute; never with a per-component `outline: 0`, which is what silently regressed when both were removed.
 - Add a `:focus-visible` rule only for a container made focusable with `tabIndex` (`.reader`, `.boardTiles`).
 
 ### When editing a color

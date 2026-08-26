@@ -120,6 +120,7 @@ export default function IntakeDesk() {
         <textarea
           id={fieldId}
           className={styles.field}
+          data-focus="ruled"
           rows={2}
           value={problem}
           onChange={(event) => setProblem(event.target.value)}

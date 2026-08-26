@@ -746,6 +746,28 @@ body::before {
   box-shadow: 0 0 0 5px var(--tile-keyline);
 }
 
+/* An input drawn as a RULE rather than a box opts out of the ring and thickens
+   its own rule instead.
+
+   The intake field and the search pill are both deliberately chrome-less — "a
+   bordered grey well is a form control; a rule under editorial type is a page
+   you write on" — so a 2px ring with a 5px keyline around them draws exactly the
+   box the component exists not to have. Both carried `outline: 0` for that
+   reason and both lost it, so both grew a box.
+
+   Still a compliant indicator: WCAG 2.4.11 asks for an area at least a 4px line
+   along the component's shortest side, and the shortest side of either field is
+   its height — so a 2px rule across a much longer width clears it, at well over
+   3:1 between the focused and unfocused rule.
+
+   An attribute rather than a class, because it is the same opt-in the buttons
+   use for their variants, and one grep finds every field that takes it. */
+input[data-focus='ruled']:focus-visible,
+textarea[data-focus='ruled']:focus-visible {
+  outline: 0;
+  box-shadow: none;
+}
+
 /* An accent-filled control cannot wear an accent ring. The ink the mark already
    carries is the one tone guaranteed to separate from it — --bone would be
    near-white on yellow in the dark theme. */
