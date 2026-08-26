@@ -88,7 +88,7 @@
      edge. On paper that edge is doing real work: a gold chip is only about
      1.4:1 against cream and would otherwise have no boundary at all. The dark
      ring gives it one without darkening the sample itself. */
-  box-shadow: 0 0 0 1px var(--board-plate);
+  box-shadow: 0 0 0 1px var(--tile-keyline);
 }
 
 /* An award is the one kind told apart by SHAPE: a hollow ring rather than a
@@ -139,13 +139,11 @@
   text-transform: uppercase;
 }
 
-/* The plate. Tiles are gold, bone and grey in both themes, which is only
-   possible because what they sit on does not change with the theme. */
 .boardTiles {
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-  background: var(--board-plate);
   display: grid;
+  /* An <ol> carries a 40px list indent by default. It used to be zeroed here;
+     the plate that briefly replaced it is gone, so the reset has to come back. */
+  padding: 0;
   margin-top: 0.5rem;
   border: 1px solid transparent;
   /* Fixed 14px tracks rather than fluid ones: the mockup's tile is 14x10 with a
@@ -164,6 +162,11 @@
   height: 10px;
   cursor: pointer;
   place-items: center;
+  /* On the li rather than on ::before, because ::before paints over its parent
+     and the hover and selected states own its box-shadow outright. From here
+     the keyline rides just outside the tile and survives both. */
+  box-shadow: 0 0 0 1px var(--tile-keyline);
+  border-radius: 2px;
 }
 
 .boardTiles li::before {

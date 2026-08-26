@@ -62,6 +62,12 @@
      band without a second asset, and box-decoration-break gives every wrapped
      line its own copy. Nothing here is a rectangle. */
   --stroke-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%23000'/%3E%3C/svg%3E");
+  /* The same brush, pre-inked. A data URI is its own document and cannot
+     read a custom property, so this is the one place --mark's value is
+     written out rather than referenced. It is safe to duplicate precisely
+     because --mark is the one accent that does NOT change with the theme;
+     if that ever stops being true, this has to become a mask again. */
+  --stroke-brush-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%23f9cc21'/%3E%3C/svg%3E");
   --stroke-swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23000'/%3E%3C/svg%3E");
   --mark-soft: oklch(0.86 0.17 92 / 0.16);
   /* Strong enough to read as a halo around a 10px tile. --mark-soft is sized
@@ -70,15 +76,17 @@
   --drop: oklch(0.06 0.01 265 / 0.9);
   --thumb: oklch(0.42 0.01 265);
 
-  /* The board is a DARK PLATE in both themes, and that is the whole reason the
-     palette below can be gold.
+  /* Every tile carries a hairline, and on paper it is load-bearing.
 
-     Yellow cannot exist on paper. To clear a light board at all it has to drop
-     to about L 62, and sRGB caps chroma near 0.13 by that lightness — which is
-     #a48100, mustard, the exact colour this site spent a week removing. The
-     choice is a rust board on paper or a dark board in both themes. The board
-     is an instrument, not prose, so it gets to be an object on the page. */
-  --board-plate: oklch(0.155 0.006 265);
+     Gold is 1.41:1 against cream. Not low contrast — invisible. The ways out
+     were all worse: drop the gold to a lightness that clears the page and it is
+     mustard; swing the hue and it is rust; put the board on a black plate and
+     the light theme is just the dark theme wearing a disguise.
+
+     A keyline is the honest one. The edge does the separating, so the fill is
+     free to be a colour rather than a contrast value — which is the same reason
+     the filter chips have carried one all along. */
+  --tile-keyline: oklch(0.06 0.01 265 / 0.55);
 
   /* THREE TONES AND A RING, not five hues. Five saturated steps of one hue arc
      could be told apart on graphite and turned to mud on paper, where the
@@ -91,13 +99,13 @@
      ring, told apart by shape. See IndexWorkspace.module.css.
 
      Slots are rank positions, not the categories their names remember: the
-     largest category takes --k-decision, the next --k-note, and so on. Every
-     slot clears 3:1 against --board-plate, and swatchPalette.ts holds the
-     separation rule and these exact lightness values.
+     largest category takes --k-decision, the next --k-note, and so on.
+     swatchPalette.ts holds the separation rule and these exact lightness
+     values.
 
-     There is no light-theme override. There used to be, and it was the whole
-     problem: a second set of tones that had to be dark to survive paper, and so
-     could never be the gold this one is. One plate, one palette. */
+     The neutrals invert between themes because they have to — bone reads on
+     graphite and vanishes on paper. The gold does not invert, because the
+     keyline is what makes it legible rather than its lightness. */
   --k-decision: oklch(0.93 0.008 90);
   --k-note: oklch(0.68 0.006 265);
   --k-other: oklch(0.86 0.17 92);
@@ -183,6 +191,17 @@
      rings, even the checkbox accent-color. Same lightness job, same 9:1 on
      paper (9.13 against the old 9.39), none of the olive. */
   --ink-accent: oklch(0.4 0.15 38);
+
+  /* The neutrals turn over for paper: the strongest mark a light board has is
+     ink, and the tones climb from there. The gold does NOT turn over — it is
+     the same gold as on graphite, kept legible by the keyline rather than by
+     its lightness, which is the whole point of having one. */
+  --tile-keyline: oklch(0.3 0.01 265 / 0.75);
+  --k-decision: oklch(0.28 0.008 265);
+  --k-note: oklch(0.52 0.006 265);
+  --k-other: oklch(0.86 0.17 92);
+  --k-principle: oklch(0.68 0.006 265);
+  --k-award: oklch(0.86 0.17 92);
   --drop: oklch(0.55 0.02 265 / 0.22);
   --thumb: oklch(0.8 0.012 265);
 
@@ -247,14 +266,50 @@ body::before {
    a magenta accent; in amber it read as a stain rather than a light source, and
    removing it takes a full-viewport paint off every route. */
 
+/* A hyperlink is MARKED, not underlined.
+
+   A 1px rule in the accent is the most machine-drawn thing a page can do to a
+   link, and on paper it was brick red on every route. This is the same brush
+   the section tabs and the nav carry, stretched under the words: the text keeps
+   the body's own ink, so nothing about it gets less readable, and the stroke
+   is what says "link". Pressing harder on hover is the whole hover state.
+
+   box-decoration-break so a link that wraps gets a stroke per line rather than
+   one band behind both. */
+.marked-link {
+  padding-bottom: 0.04em;
+  background-image: var(--stroke-brush-inked);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 0.24em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  color: inherit;
+  text-decoration: none;
+  transition: background-size 160ms var(--ease-out);
+}
+
+.marked-link:hover,
+.marked-link:focus-visible {
+  background-size: 100% 0.42em;
+}
+
 ::selection {
   background: var(--mark);
   color: var(--mark-ink);
 }
 
+/* The focus ring is the marker, keylined.
+
+   It used to be a plain 2px accent rectangle, which on paper is brick red — the
+   loudest thing on the page and the least like the rest of it. Gold instead,
+   with the same keyline the tiles use riding either side of it: --mark is
+   1.41:1 against paper and WCAG 2.2 wants 3:1 from a focus indicator, so the
+   hairline carries the contrast and the gold carries the brand. */
 :where(a, button, input, summary):focus-visible {
-  outline: 2px solid var(--ink-accent);
-  outline-offset: 4px;
+  outline: 2px solid var(--mark);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--tile-keyline);
 }
 
 /* An accent-filled control cannot wear an accent ring. The ink the mark already
