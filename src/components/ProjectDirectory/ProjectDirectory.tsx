@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useMemo, useState, useSyncExternalStore } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight } from 'react-icons/fi';
@@ -17,23 +17,23 @@ export const SYSTEM_PARAM = 'system';
  *
  * Read through a store rather than useSearchParams, which would opt this
  * statically rendered page out of static generation for a parameter only a deep
- * link ever carries. Cached so the snapshot stays referentially stable.
+ * link ever carries. The snapshot is a primitive, so React can compare it
+ * directly without a module cache that survives a client-side navigation.
  */
-let linkedSystem: string | null | undefined;
-
 function subscribeToNothing(): () => void {
   return () => {};
 }
 
 function readLinkedSystem(): string | null {
-  if (linkedSystem === undefined) {
-    linkedSystem = new URLSearchParams(globalThis.location.search).get(SYSTEM_PARAM);
-  }
-  return linkedSystem;
+  return new URLSearchParams(globalThis.location.search).get(SYSTEM_PARAM);
 }
 
 function noLinkedSystem(): string | null {
   return null;
+}
+
+function coverSubpixel(delta: number): number {
+  return Math.sign(delta) * Math.ceil(Math.abs(delta));
 }
 
 /**
@@ -47,6 +47,8 @@ function noLinkedSystem(): string | null {
 export default function ProjectDirectory({ projects }: Readonly<{ projects: Project[] }>) {
   const [chosen, setChosen] = useState<string | null>(null);
   const panelId = useId();
+  const railRef = useRef<HTMLElement>(null);
+  const activeItemRef = useRef<HTMLButtonElement>(null);
   const linked = useSyncExternalStore(subscribeToNothing, readLinkedSystem, noLinkedSystem);
   // A click wins over the link that opened the page; the link wins over the
   // default. An unknown id falls through to the first system rather than
@@ -70,6 +72,34 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
     [projects, selectedId]
   );
 
+  useEffect(() => {
+    const rail = railRef.current;
+    const activeItem = activeItemRef.current;
+    if (!rail || !activeItem) return;
+    const railBounds = rail.getBoundingClientRect();
+    const itemBounds = activeItem.getBoundingClientRect();
+    const visibleLeft = Math.max(railBounds.left, 0);
+    const visibleRight = Math.min(railBounds.right, globalThis.innerWidth);
+    const visibleTop = Math.max(railBounds.top, 0);
+    const visibleBottom = Math.min(railBounds.bottom, globalThis.innerHeight);
+    const left = coverSubpixel(
+      visibleLeft >= visibleRight
+        ? 0
+        : itemBounds.left < visibleLeft
+          ? itemBounds.left - visibleLeft
+          : Math.max(0, itemBounds.right - visibleRight)
+    );
+    const top = coverSubpixel(
+      visibleTop >= visibleBottom
+        ? 0
+        : itemBounds.top < visibleTop
+          ? itemBounds.top - visibleTop
+          : Math.max(0, itemBounds.bottom - visibleBottom)
+    );
+    if (left === 0 && top === 0) return;
+    rail.scrollTo({ left: rail.scrollLeft + left, top: rail.scrollTop + top });
+  }, [selected?.id]);
+
   if (!selected) return null;
 
   const links = [
@@ -83,13 +113,14 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
 
   return (
     <div className={styles.corpus}>
-      <nav className={styles.rail} aria-label="Systems">
+      <nav ref={railRef} className={styles.rail} aria-label="Systems">
         <ul>
           {projects.map((project) => {
             const current = project.id === selected.id;
             return (
               <li key={project.id}>
                 <button
+                  ref={current ? activeItemRef : undefined}
                   type="button"
                   className={`washed ${styles.railItem}`}
                   aria-current={current ? 'true' : undefined}

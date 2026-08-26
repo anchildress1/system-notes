@@ -336,4 +336,38 @@ test.describe('Deep links', () => {
     // Rendering nothing, or an error, would make a stale link a broken page.
     await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toBeVisible();
   });
+
+  test('does not reuse an old system after client-side navigation', async ({ page }) => {
+    await page.goto('/projects?system=delegate-action');
+    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toHaveText(
+      'Delegate Action'
+    );
+
+    const nav = page.getByRole('navigation', { name: 'Primary navigation' });
+    await nav.getByRole('link', { name: 'how I decide' }).click();
+    await nav.getByRole('link', { name: 'what I’ve shipped' }).click();
+
+    await expect(page).toHaveURL('/projects');
+    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toHaveText(
+      'Save the Sun'
+    );
+  });
+
+  test('scrolls a deep-linked system into the visible rail', async ({ page }) => {
+    await page.goto('/projects?system=delegate-action');
+    const active = page.getByTestId('project-delegate-action');
+    await expect(active).toHaveAttribute('aria-current', 'true');
+
+    const geometry = await active.evaluate((item) => {
+      const rail = item.closest('nav')!.getBoundingClientRect();
+      const current = item.getBoundingClientRect();
+      return {
+        visibleHorizontally: current.left >= rail.left && current.right <= rail.right,
+        visibleVertically: current.top >= rail.top && current.bottom <= rail.bottom,
+      };
+    });
+
+    expect(geometry.visibleHorizontally).toBe(true);
+    expect(geometry.visibleVertically).toBe(true);
+  });
 });
