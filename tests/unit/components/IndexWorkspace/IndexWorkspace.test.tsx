@@ -88,6 +88,41 @@ describe('IndexWorkspace', () => {
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
   });
 
+  it('keeps focus in the pager when an end control retires', async () => {
+    // Reaching the last page disables the control that got you there. A disabled
+    // element cannot hold focus, so the browser drops it to <body> and a keyboard
+    // reader is thrown back to the top of the document mid-task.
+    searchHarness.hits = Array.from({ length: 12 }, (_, index) => ({
+      objectID: `card:test:${index + 1}`,
+      title: `Ranked note ${index + 1}`,
+      fact: `Evidence ${index + 1}`,
+      category: 'Decisions',
+      projects: ['System Notes'],
+      'tags.lvl0': ['Testing'],
+      __position: index + 1,
+    }));
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    const pager = screen.getByRole('navigation', { name: 'Alternate notes pages' });
+    const next = within(pager).getByRole('button', { name: /next/i });
+    const previous = within(pager).getByRole('button', { name: /previous/i });
+    expect(previous).toBeDisabled();
+
+    next.focus();
+    fireEvent.click(next);
+
+    await waitFor(() => expect(next).toBeDisabled());
+    expect(document.body).not.toHaveFocus();
+    expect(previous).toHaveFocus();
+
+    fireEvent.click(previous);
+
+    await waitFor(() => expect(previous).toBeDisabled());
+    expect(next).toHaveFocus();
+  });
+
   it('renders the approved filing workspace with a capped ranked board', async () => {
     await renderWorkspace();
 

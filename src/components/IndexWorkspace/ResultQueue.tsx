@@ -20,6 +20,10 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
   const readerRef = useRef<HTMLDivElement>(null);
   const shouldFocusReader = useRef(false);
   const [pager, setPager] = useState({ page: 0, signature: '' });
+  const previousRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  /** Which end control moved the page, so focus can be rescued if it retires. */
+  const pressedEnd = useRef<'previous' | 'next' | null>(null);
   const featuredIndex = Math.max(
     items.findIndex((item) => item.objectID === selectedId),
     0
@@ -31,6 +35,20 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
     shouldFocusReader.current = false;
     readerRef.current?.focus({ preventScroll: true });
   }, [featured?.objectID]);
+
+  // Paging to the last page disables the very control that got you there, and a
+  // disabled element cannot hold focus — the browser drops it to <body>, which
+  // returns a keyboard reader to the top of the document mid-task. Focus moves
+  // to the opposite end instead, which is always live: a pager only renders
+  // when there is more than one page, so the two ends are never both retired.
+  useEffect(() => {
+    const pressed = pressedEnd.current;
+    if (!pressed) return;
+    pressedEnd.current = null;
+    const source = pressed === 'previous' ? previousRef.current : nextRef.current;
+    if (!source?.disabled) return;
+    (pressed === 'previous' ? nextRef.current : previousRef.current)?.focus();
+  }, [pager]);
 
   // A new result set starts at its own first page. The page is stored WITH the
   // set it was chosen for and read back only when the two still agree, so a
@@ -115,19 +133,27 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
         <nav className={styles.queuePager} aria-label="Alternate notes pages">
           <button
             type="button"
+            ref={previousRef}
             className={styles.queuePagerButton}
             data-variant="outline"
             disabled={currentPage === 0}
-            onClick={() => goToPage(currentPage - 1)}
+            onClick={() => {
+              pressedEnd.current = 'previous';
+              goToPage(currentPage - 1);
+            }}
           >
             Previous
           </button>
           <button
             type="button"
+            ref={nextRef}
             className={styles.queuePagerButton}
             data-variant="outline"
             disabled={currentPage >= pageCount - 1}
-            onClick={() => goToPage(currentPage + 1)}
+            onClick={() => {
+              pressedEnd.current = 'next';
+              goToPage(currentPage + 1);
+            }}
           >
             Next
           </button>
