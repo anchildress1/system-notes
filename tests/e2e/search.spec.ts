@@ -126,8 +126,35 @@ test.describe('Notes index', () => {
 
     await expect(page).toHaveURL(/project=System(\+|%20)Notes/);
     await page.getByRole('button', { name: 'Clear' }).click();
-    await expect(checkbox).not.toBeChecked();
     await expect(page).not.toHaveURL(/project=/);
+
+    // Clear sits outside the panel, so it also closes it and the checkbox
+    // leaves the DOM. Reopen to prove the refinement is gone from the control
+    // itself and not merely from the URL.
+    await page.getByText('Project', { exact: true }).click();
+    await expect(page.getByRole('checkbox', { name: /System Notes/i })).not.toBeChecked();
+  });
+
+  test('closes an open filter panel when the click lands outside it', async ({ page }) => {
+    await mockAlgoliaSearch(page, [buildHit()]);
+    await page.goto('/notes');
+    await expect(page.getByRole('heading', { name: 'Failure is useful data' })).toBeVisible();
+
+    // Matched on a leading-text regex, not exact text: selecting a facet adds a
+    // count badge to the summary, so `Project` stops matching exactly.
+    const panel = page.locator('details').filter({ hasText: /^Project/ });
+    const summary = panel.locator('summary');
+
+    await summary.click();
+    await expect(panel).toHaveAttribute('open', '');
+
+    // Inside the panel first: checking a box must not dismiss the menu it was
+    // aimed at.
+    await page.getByRole('checkbox', { name: /System Notes/i }).check();
+    await expect(panel).toHaveAttribute('open', '');
+
+    await page.locator('h1').click();
+    await expect(panel).not.toHaveAttribute('open', '');
   });
 
   test('keeps the result grid within the mobile viewport', async ({ page }) => {

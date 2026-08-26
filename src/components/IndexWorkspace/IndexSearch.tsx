@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useClearRefinements,
   useRefinementList,
@@ -126,11 +126,49 @@ function FacetFilter({ attribute, label }: Readonly<{ attribute: string; label: 
     transformItems: mergeFacetItemsByCase,
   });
   const selectedCount = items.filter((item) => item.isRefined).length;
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  /* A native <details> stays open until its own summary is clicked again, which
+     is right for a disclosure in prose and wrong for a filter menu floating over
+     a board: every panel a reader opened stayed open behind the results.
+
+     The listeners are bound only while this panel is open, so a page of filters
+     costs nothing at rest. Left uncontrolled on purpose — the summary toggles
+     the element natively and onToggle reports it back, which avoids React and
+     the browser both trying to own `open`. */
+  useEffect(() => {
+    const details = detailsRef.current;
+    if (!isOpen || !details) return;
+
+    // pointerdown, not click: the panel should be gone by the time the pointer
+    // lifts, and a click on a checkbox inside must not count as "outside".
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (!details.contains(event.target as Node)) details.open = false;
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      details.open = false;
+      // Focus would otherwise be left on a control that no longer exists.
+      details.querySelector('summary')?.focus();
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isOpen]);
 
   if (items.length === 0) return null;
 
   return (
-    <details className={styles.filter}>
+    <details
+      className={styles.filter}
+      ref={detailsRef}
+      onToggle={(event) => setIsOpen(event.currentTarget.open)}
+    >
       <summary>
         {label}
         {selectedCount > 0 ? <span>{selectedCount}</span> : null}

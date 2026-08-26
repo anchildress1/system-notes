@@ -351,6 +351,52 @@ describe('IndexWorkspace', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('closes an open filter when the pointer lands outside it', async () => {
+    await renderWorkspace();
+    await screen.findByText('Failure is data');
+    const details = screen.getByText('Project').closest('details') as HTMLDetailsElement;
+
+    fireEvent.click(screen.getByText('Project'));
+    await waitFor(() => expect(details.open).toBe(true));
+
+    // A pointer INSIDE the panel must not close it, or every checkbox click
+    // would dismiss the menu it was aimed at.
+    fireEvent.pointerDown(screen.getByRole('checkbox', { name: /System Notes/i }));
+    expect(details.open).toBe(true);
+
+    fireEvent.pointerDown(document.body);
+    await waitFor(() => expect(details.open).toBe(false));
+  });
+
+  it('closes an open filter on Escape and returns focus to its summary', async () => {
+    await renderWorkspace();
+    await screen.findByText('Failure is data');
+    const summary = screen.getByText('Project');
+    const details = summary.closest('details') as HTMLDetailsElement;
+
+    fireEvent.click(summary);
+    await waitFor(() => expect(details.open).toBe(true));
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    await waitFor(() => expect(details.open).toBe(false));
+    expect(summary).toHaveFocus();
+  });
+
+  it('leaves a closed filter alone when the pointer lands outside it', async () => {
+    await renderWorkspace();
+    await screen.findByText('Failure is data');
+    const details = screen.getByText('Project').closest('details') as HTMLDetailsElement;
+    expect(details.open).toBe(false);
+
+    // Nothing is bound while the panel is shut, so this must be inert rather
+    // than throwing or reopening anything.
+    fireEvent.pointerDown(document.body);
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    expect(details.open).toBe(false);
+  });
+
   it('collapses the filing rail without removing its category controls', async () => {
     await renderWorkspace();
     await screen.findByText('Failure is data');
