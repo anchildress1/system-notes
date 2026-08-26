@@ -73,12 +73,13 @@
 }
 
 .railStar {
-  composes: marked from global;
   margin-left: 0.35rem;
-  /* One glyph, so the band wants to be a chip rather than a stripe: square it
-     up horizontally and lift the star off the baseline of its own ground. */
-  padding: 0.05em 0.2em;
-  line-height: 1;
+  /* The glyph alone. A marker chip behind a single star put a block of colour
+     beside every awarded row in a list of eleven, which reads as a second
+     column of badges rather than as a mark on a name. The star already carries
+     the meaning; the accent only has to make it visible, and it is the one
+     token that can do that on paper as well as on graphite. */
+  color: var(--ink-accent);
 }
 
 .railStatus {
