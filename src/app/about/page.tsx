@@ -130,7 +130,18 @@ export default function AboutPage() {
         <header>
           {/* No artist line: the status beside the control already names them,
               and the design does not repeat it under the heading. */}
-          <h2 id="theme-song-heading">Theme song: &ldquo;{profile.themeSong.track}&rdquo;</h2>
+          <h2 id="theme-song-heading">
+            Theme song: &ldquo;{profile.themeSong.track}&rdquo;
+            {profile.themeSong.explicit ? (
+              <>
+                {' '}
+                <span className={styles.explicit}>
+                  <span aria-hidden="true">E</span>
+                  <span className="visually-hidden">Explicit lyrics</span>
+                </span>
+              </>
+            ) : null}
+          </h2>
         </header>
         <div>
           <ThemeSong />

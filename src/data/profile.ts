@@ -66,6 +66,7 @@ export const profile = {
   links: [
     { label: 'GitHub', href: 'https://github.com/anchildress1' },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/anchildress1' },
+    { label: 'X', href: 'https://x.com/anchildress1' },
     { label: 'DEV Community', href: 'https://dev.to/anchildress1' },
   ],
   // `lead` is the sentence that carried emphasis in the original copy; it is a
@@ -74,6 +75,11 @@ export const profile = {
   themeSong: {
     track: 'I Build Things',
     artist: 'Twisted Game Songs',
+    // The track carries explicit lyrics. ThemeSong.tsx already says so in the
+    // control's accessible name; this is what puts it on the page for everyone
+    // else, and it is data rather than markup so a different track cannot
+    // inherit the last one's rating.
+    explicit: true,
     paragraphs: themeSongParagraphs,
   },
 } as const;

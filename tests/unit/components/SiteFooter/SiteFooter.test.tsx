@@ -11,6 +11,9 @@ describe('SiteFooter', () => {
     expect(github).toHaveAttribute('href', 'https://github.com/anchildress1');
     expect(github).toHaveAttribute('target', '_blank');
     expect(github).toHaveAttribute('rel', 'noopener noreferrer');
-    expect(screen.getAllByRole('link')).toHaveLength(3);
+    const x = screen.getByRole('link', { name: /^X/ });
+    expect(x).toHaveAttribute('href', 'https://x.com/anchildress1');
+    expect(x).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(screen.getAllByRole('link')).toHaveLength(4);
   });
 });
