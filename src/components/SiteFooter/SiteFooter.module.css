@@ -30,7 +30,7 @@
   width: 0.5rem;
   height: 0.5rem;
   margin-right: 0.5rem;
-  background: var(--flag-vivid);
+  background: var(--mark);
   content: '';
 }
 
@@ -48,7 +48,7 @@
 }
 
 .links a:hover {
-  color: var(--flag);
+  color: var(--ink-accent);
 }
 
 @media (max-width: 44rem) {

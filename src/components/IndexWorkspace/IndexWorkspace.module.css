@@ -75,7 +75,7 @@
 
 .categoryList button:hover .categoryName,
 .categoryList button[data-selected] .categoryName {
-  color: var(--flag);
+  color: var(--ink-accent);
   transform: translateX(0.25rem);
 }
 
@@ -83,7 +83,7 @@
   width: 1rem;
   height: 0.68rem;
   border-radius: 0.08rem;
-  background: var(--flag-vivid);
+  background: var(--mark);
 }
 
 .categoryName {
@@ -163,7 +163,7 @@
 
 .boardTiles li:hover::before {
   z-index: 1;
-  box-shadow: 0 0 0.8rem var(--flag-glow);
+  box-shadow: 0 0 0.8rem var(--mark-glow);
   transform: scale(1.5);
 }
 
@@ -172,10 +172,10 @@
 }
 
 .boardTiles:focus-visible {
-  border-color: var(--flag);
+  border-color: var(--ink-accent);
   box-shadow:
     0 0 0 2px var(--void),
-    0 0 0 4px var(--flag);
+    0 0 0 4px var(--ink-accent);
 }
 
 .boardTiles li[aria-selected='true']::before {
@@ -186,8 +186,8 @@
      The swatch shrinks to leave room for it inside the tile's own cell. */
   box-shadow:
     0 0 0 1.5px var(--panel),
-    0 0 0 3px var(--flag),
-    0 0 0.7rem var(--flag-glow);
+    0 0 0 3px var(--ink-accent),
+    0 0 0.7rem var(--mark-glow);
   transform: scale(0.62);
 }
 
@@ -260,7 +260,7 @@
    pill is nearly invisible, and the global :where() focus rule has zero
    specificity so the input's own `outline: 0` was winning outright. */
 .searchPill:has(input:focus-visible) {
-  border-bottom-color: var(--flag);
+  border-bottom-color: var(--ink-accent);
   border-bottom-width: 2px;
 }
 
@@ -304,7 +304,7 @@
 }
 
 .searchPill button:hover {
-  color: var(--flag);
+  color: var(--ink-accent);
 }
 
 .searchMeta {
@@ -350,7 +350,7 @@
 
 .filter summary::after {
   margin-left: 0.45rem;
-  color: var(--flag);
+  color: var(--ink-accent);
   content: '+';
 }
 
@@ -365,8 +365,8 @@
   margin-left: 0.4rem;
   place-items: center;
   border-radius: 50%;
-  background: var(--flag-vivid);
-  color: var(--flag-ink);
+  background: var(--mark);
+  color: var(--mark-ink);
 }
 
 .filterOptions {
@@ -395,14 +395,14 @@
 }
 
 .filterOptions label:hover {
-  background: var(--flag-soft);
+  background: var(--mark-soft);
   color: var(--bone);
 }
 
 .filterOptions input {
   width: 1rem;
   height: 1rem;
-  accent-color: var(--flag);
+  accent-color: var(--ink-accent);
 }
 
 .algolia {
@@ -441,7 +441,7 @@
 }
 
 .reader:focus-visible {
-  outline: 2px solid var(--flag);
+  outline: 2px solid var(--ink-accent);
   outline-offset: 0.25rem;
 }
 
@@ -487,7 +487,7 @@
 
 .queueList button:hover {
   padding-left: 0.9rem;
-  border-bottom-color: var(--flag);
+  border-bottom-color: var(--ink-accent);
 }
 
 /* Uneven leading between records, the way a printed catalog breathes. The run
@@ -534,7 +534,7 @@
 .queueMeta > span:last-child {
   padding: 0;
   border: 0;
-  color: var(--flag);
+  color: var(--ink-accent);
   font-size: var(--fine);
   letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
@@ -572,7 +572,7 @@
 .resultWarning {
   padding: 0.65rem 0.85rem;
   margin-bottom: 0.75rem;
-  border: 1px solid var(--flag);
+  border: 1px solid var(--ink-accent);
   color: var(--soft);
   font-family: var(--font-display);
   font-size: 0.9375rem;
@@ -584,7 +584,7 @@
   max-width: 100%;
   padding-left: 0.6rem;
   margin-top: 1rem;
-  border-left: 2px solid var(--flag);
+  border-left: 2px solid var(--ink-accent);
   color: var(--soft);
   font-family: var(--font-display);
   font-size: 0.9375rem;
@@ -593,7 +593,7 @@
 }
 
 .failureState strong {
-  color: var(--flag);
+  color: var(--ink-accent);
   font-weight: 800;
 }
 
@@ -602,7 +602,7 @@
   z-index: 5;
   top: -1.45rem;
   right: 0;
-  color: var(--flag);
+  color: var(--ink-accent);
   font-family: var(--font-display);
   font-size: 0.875rem;
 }
@@ -633,7 +633,7 @@
 
 .sectionLabel,
 .emptyState > span {
-  color: var(--flag);
+  color: var(--ink-accent);
   font-family: var(--font-display);
   font-size: 0.9375rem;
   letter-spacing: 0.14em;

@@ -48,7 +48,7 @@ export const AWARD_SWATCH = 'var(--k-award)';
  * Referencing a token outside this map is what let a background-adjacent tone
  * onto the board, so the set is closed rather than advisory.
  *
- * --flag is deliberately absent. It is the accent, and --k-decision is derived
+ * --ink-accent is deliberately absent. It is the accent, and --k-decision is derived
  * from it, so the two sit close enough that a palette holding both would paint
  * two ranks all but identically while passing a uniqueness check on strings.
  */

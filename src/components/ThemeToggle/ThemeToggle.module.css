@@ -15,8 +15,8 @@
 }
 
 .toggle:hover {
-  border-color: var(--flag);
-  color: var(--flag);
+  border-color: var(--ink-accent);
+  color: var(--ink-accent);
 }
 
 /* Both icons ship in the markup; the theme decides which one is shown, so the

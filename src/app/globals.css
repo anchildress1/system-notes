@@ -27,20 +27,20 @@
      becomes a colour text is marked with — a highlighter, not a pen. That is
      also the right metaphor for a site about filed evidence.
 
-     --flag-vivid is the mark. --flag-ink is what sits on it. Both are shared,
+     --mark is the mark. --mark-ink is what sits on it. Both are shared,
      because a yellow fill needs dark ink on paper and on graphite alike.
 
-     --flag is the accent as INK, for the places a mark would be too heavy:
+     --ink-accent is the accent as INK, for the places a mark would be too heavy:
      fine print, focus rings, hover. It is the one token that still moves,
      because graphite can carry yellow as ink at 12.75:1 while paper cannot
      carry it at all — there it is a warm near-black at 9.37:1. */
-  --flag: oklch(0.86 0.16 92);
-  --flag-vivid: oklch(0.86 0.17 92);
-  --flag-ink: oklch(0.22 0.04 70);
-  --flag-soft: oklch(0.86 0.17 92 / 0.16);
-  /* Strong enough to read as a halo around a 10px tile. --flag-soft is sized
+  --ink-accent: oklch(0.86 0.16 92);
+  --mark: oklch(0.86 0.17 92);
+  --mark-ink: oklch(0.22 0.04 70);
+  --mark-soft: oklch(0.86 0.17 92 / 0.16);
+  /* Strong enough to read as a halo around a 10px tile. --mark-soft is sized
      for a wash across a whole panel and disappears at that scale. */
-  --flag-glow: oklch(0.86 0.17 92 / 0.5);
+  --mark-glow: oklch(0.86 0.17 92 / 0.5);
   --drop: oklch(0.06 0.01 265 / 0.9);
   --thumb: oklch(0.42 0.01 265);
 
@@ -131,7 +131,7 @@
      9.37:1 — dark enough to be unmistakably ink rather than a yellow that
      failed, and warm enough to belong to the same family as the mark it sits
      beside. Colour on this page comes from the marks, not from the letters. */
-  --flag: oklch(0.38 0.07 70);
+  --ink-accent: oklch(0.38 0.07 70);
   --drop: oklch(0.55 0.02 265 / 0.22);
   --thumb: oklch(0.8 0.012 265);
 
@@ -203,12 +203,12 @@ body::before {
    removing it takes a full-viewport paint off every route. */
 
 ::selection {
-  background: var(--flag-vivid);
-  color: var(--flag-ink);
+  background: var(--mark);
+  color: var(--mark-ink);
 }
 
 :where(a, button, input, summary):focus-visible {
-  outline: 2px solid var(--flag);
+  outline: 2px solid var(--ink-accent);
   outline-offset: 4px;
 }
 
@@ -216,7 +216,7 @@ body::before {
    carries is the one tone guaranteed to separate from it — --bone would be
    near-white on yellow in the dark theme. */
 :where(button, a)[data-accent='filled']:focus-visible {
-  outline-color: var(--flag-ink);
+  outline-color: var(--mark-ink);
 }
 
 ::-webkit-scrollbar {
@@ -229,7 +229,7 @@ body::before {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--flag-vivid);
+  background: var(--mark);
 }
 
 a {
@@ -442,7 +442,7 @@ main {
    carries no meaning a screen reader has to recover, and it is the one place a
    saturated amber sits at full strength in either theme.
 
-   A bar and not a square because --flag-vivid is only 1.63:1 against the light
+   A bar and not a square because --mark is only 1.63:1 against the light
    page — deliberately, it is a surface token and owes no contrast — and a hue
    that faint needs AREA to register. At 8px it disappeared into the paper; at
    28px it reads as a filing tab in both themes. */
@@ -450,7 +450,7 @@ main {
   width: 1.75rem;
   height: 0.5rem;
   flex: 0 0 auto;
-  background: var(--flag-vivid);
+  background: var(--mark);
   content: '';
 }
 
@@ -501,33 +501,49 @@ main {
   font-size: clamp(2.4rem, 5.4vw, 5rem);
 }
 
+/* THE MARK — the single definition of the highlighter.
+
+   Anything that should read as highlighted composes this one class:
+   `composes: marked from global;` in a CSS module, `class="marked"` in JSX.
+   It is a named global rather than five properties copy-pasted per component
+   so that "what is marked on this site?" is one grep for one word, and so the
+   treatment can only ever change in one place.
+
+   The yellow can only be a ground, never ink — see the token block. As ink on
+   paper it is 1.41:1 and unusable; as a ground under --mark-ink it is 11.34:1
+   on paper and on graphite alike, which is why the mark needs no light/dark
+   variant while every other accent does.
+
+   box-decoration-break so a run long enough to wrap gets a band per line
+   rather than one rectangle behind both. */
+.marked,
+.page-head h1 > span,
+.page-head-title > span {
+  /* Extra padding at the foot is for descenders: a mark that cuts through the
+     tail of a "y" reads as a clipping bug rather than as ink. */
+  padding: 0.04em 0.16em 0.12em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  background: var(--mark);
+  color: var(--mark-ink);
+}
+
 /* The turn of the headline is MARKED, not coloured.
 
    Setting it in the accent is what an accent colour is normally for, and it is
    the move that stops working the moment the accent is yellow. Struck through
    with the marker instead, it does the same job — one decision, applied once —
-   and it does it identically on paper and on graphite, because the mark carries
-   its own ink.
-
-   width: fit-content so the band is the width of the words rather than the
-   column; box-decoration-break so a turn long enough to wrap gets a band per
-   line rather than one rectangle behind both. */
+   and it does it identically on paper and on graphite. */
 .page-head h1 > span,
 .page-head-title > span {
   display: block;
+  /* fit-content so the band is the width of the words rather than the column. */
   width: fit-content;
-  padding: 0.04em 0.16em 0.12em;
   /* The band is inset by its own left padding, which would push the marked line
      off the axis the line above it stands on. Pulling back by the same amount
      keeps the letters aligned and lets the mark overhang instead — which is
-     what a stroke drawn by hand does anyway. The extra padding at the foot is
-     for descenders: a mark that cuts through the tail of a "y" reads as a
-     clipping bug rather than as ink. */
+     what a stroke drawn by hand does anyway. */
   margin-left: -0.16em;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  background: var(--flag-vivid);
-  color: var(--flag-ink);
   font-style: italic;
 }
 

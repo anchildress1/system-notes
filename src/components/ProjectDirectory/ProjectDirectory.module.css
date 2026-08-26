@@ -51,7 +51,7 @@
 }
 
 .railItem[aria-current='true'] .railMark {
-  background: var(--flag-vivid);
+  background: var(--mark);
 }
 
 .railText {
@@ -74,7 +74,7 @@
 
 .railStar {
   margin-left: 0.35rem;
-  color: var(--flag);
+  color: var(--ink-accent);
 }
 
 .railStatus {
@@ -98,7 +98,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 0.6rem;
-  color: var(--flag);
+  color: var(--ink-accent);
   font-family: var(--font-display);
   font-size: 0.9375rem;
   font-weight: 600;
@@ -225,13 +225,13 @@
 
 .action:hover,
 .crossLink:hover {
-  border-color: var(--flag);
-  color: var(--flag);
+  border-color: var(--ink-accent);
+  color: var(--ink-accent);
 }
 
 .crossLink {
-  border-color: var(--flag);
-  color: var(--flag);
+  border-color: var(--ink-accent);
+  color: var(--ink-accent);
 }
 
 .stackColumn {
@@ -309,7 +309,7 @@
   }
 
   .railItem[aria-current='true'] {
-    border-bottom-color: var(--flag);
+    border-bottom-color: var(--ink-accent);
   }
 
   .railMark {

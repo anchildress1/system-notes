@@ -151,7 +151,7 @@
   height: 0.45rem;
   margin-right: 0.5rem;
   border-radius: 50%;
-  background: var(--flag-vivid);
+  background: var(--mark);
   content: '';
 }
 
@@ -235,7 +235,7 @@
 }
 
 .proof dd {
-  color: var(--flag);
+  color: var(--ink-accent);
   font-family: var(--font-editorial);
   font-size: clamp(3rem, 5.5vw, 5.5rem);
   line-height: 0.78;
@@ -304,7 +304,7 @@
 .principles li > span {
   position: absolute;
   top: 0.5rem;
-  color: var(--flag);
+  color: var(--ink-accent);
   font-family: var(--font-display);
   font-size: var(--fine);
   font-variant-numeric: tabular-nums;
@@ -387,14 +387,14 @@
 }
 
 .contact nav a:hover .outbound {
-  color: var(--flag);
+  color: var(--ink-accent);
 }
 
 /* Steps to the right on hover instead of filling with a block of accent. The
    fill turned every row into a button; a link that moves reads as a link. */
 .contact nav a:hover {
   padding-left: 0.85rem;
-  color: var(--flag);
+  color: var(--ink-accent);
 }
 
 @media (max-width: 55rem) {

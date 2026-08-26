@@ -22,8 +22,8 @@
   align-items: center;
   gap: 0.7rem;
   padding: 0.8rem 1.4rem;
-  background: var(--flag-vivid);
-  color: var(--flag-ink);
+  background: var(--mark);
+  color: var(--mark-ink);
   font-family: var(--font-sans);
   font-size: 0.875rem;
   font-weight: 700;
@@ -79,7 +79,7 @@
 }
 
 .equalizer[data-playing='true'] .bar {
-  background: var(--flag-vivid);
+  background: var(--mark);
 }
 
 /* The bars keep their heights and pulse in opacity. Animating scale instead

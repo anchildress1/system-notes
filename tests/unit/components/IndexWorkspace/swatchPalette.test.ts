@@ -53,7 +53,7 @@ describe('swatchLightness', () => {
     expect(() => swatchLightness('var(--void)')).toThrow(/Unreviewed swatch token/);
     expect(() => swatchLightness('var(--panel)')).toThrow(/Unreviewed swatch token/);
     // Byte-identical to --k-decision in dark; two ranks would paint the same.
-    expect(() => swatchLightness('var(--flag)')).toThrow(/Unreviewed swatch token/);
+    expect(() => swatchLightness('var(--ink-accent)')).toThrow(/Unreviewed swatch token/);
   });
 
   it('rejects a color space it cannot reason about', () => {

@@ -28,8 +28,8 @@
   top: 0.75rem;
   left: 0.75rem;
   padding: 0.75rem 1rem;
-  background: var(--flag-vivid);
-  color: var(--flag-ink);
+  background: var(--mark);
+  color: var(--mark-ink);
   font-size: 0.9375rem;
   transform: translateY(-180%);
 }
@@ -90,11 +90,11 @@
 }
 
 .navLink:hover {
-  color: var(--flag);
+  color: var(--ink-accent);
 }
 
 .navLink[aria-current='page'] {
-  border-color: var(--flag);
+  border-color: var(--ink-accent);
   color: var(--bone);
 }
 

@@ -1,5 +1,5 @@
 /* The warm palette this page used to scope to itself is now the site's own. Its
-   accent was byte-identical to --flag, which is to say the exhibits room was
+   accent was byte-identical to --ink-accent, which is to say the exhibits room was
    already prototyping the theme the rest of the site has since adopted. Nothing
    here needs tokens of its own any more. */
 /* No background of its own. Painting --void here covered the body's seam, which
@@ -11,7 +11,7 @@
 }
 
 .main :focus-visible {
-  outline: 2px solid var(--flag);
+  outline: 2px solid var(--ink-accent);
   outline-offset: 4px;
 }
 

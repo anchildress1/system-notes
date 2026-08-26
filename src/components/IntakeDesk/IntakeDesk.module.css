@@ -55,7 +55,7 @@
 }
 
 .field:focus-visible {
-  border-bottom-color: var(--flag);
+  border-bottom-color: var(--ink-accent);
   border-bottom-width: 2px;
   outline: 0;
 }
@@ -70,8 +70,8 @@
 
 .run {
   padding: 0.95rem 1.9rem;
-  background: var(--flag-vivid);
-  color: var(--flag-ink);
+  background: var(--mark);
+  color: var(--mark-ink);
   font-family: var(--font-sans);
   font-size: 0.9375rem;
   font-weight: 700;
@@ -92,9 +92,9 @@
    control is doing the thing it was pressed for — and only the cursor says it
    will not take a second press. */
 .run[data-working] {
-  background: var(--flag-vivid);
+  background: var(--mark);
   border: 0;
-  color: var(--flag-ink);
+  color: var(--mark-ink);
   cursor: progress;
 }
 
@@ -165,7 +165,7 @@
   position: absolute;
   inset-block: 0;
   width: 38%;
-  background: var(--flag-vivid);
+  background: var(--mark);
   animation: intake-sweep 1.5s var(--ease-settle) infinite;
   content: '';
 }
@@ -184,7 +184,7 @@
   width: 0.4rem;
   height: 0.85rem;
   margin-left: 0.5rem;
-  background: var(--flag-vivid);
+  background: var(--mark);
   vertical-align: -0.1rem;
   animation: intake-blink 1.1s step-end infinite;
 }
@@ -204,13 +204,13 @@
 }
 
 .briefFailureLinks a {
-  color: var(--flag);
+  color: var(--ink-accent);
   font-family: var(--font-display);
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  border-bottom: 1px solid var(--flag);
+  border-bottom: 1px solid var(--ink-accent);
 }
 
 /* Sentence case, not the uppercase the other fine print uses: those are labels
@@ -241,7 +241,7 @@
   max-width: 56ch;
   padding-left: clamp(0.9rem, 2vw, 1.5rem);
   margin-top: 0.9rem;
-  border-left: 2px solid var(--flag);
+  border-left: 2px solid var(--ink-accent);
   color: var(--mute);
   font-family: var(--font-display);
   font-size: 0.9375rem;
@@ -288,7 +288,7 @@
 }
 
 .briefStepMark {
-  color: var(--flag);
+  color: var(--ink-accent);
   font-family: var(--font-display);
   font-size: var(--fine);
   font-variant-numeric: tabular-nums;
@@ -412,13 +412,13 @@
 }
 
 .seed:hover {
-  border-bottom-color: var(--flag);
+  border-bottom-color: var(--ink-accent);
   color: var(--bone);
 }
 
 .briefLink {
-  color: var(--flag);
-  border-bottom: 1px solid var(--flag);
+  color: var(--ink-accent);
+  border-bottom: 1px solid var(--ink-accent);
 }
 
 .briefLink:hover {
