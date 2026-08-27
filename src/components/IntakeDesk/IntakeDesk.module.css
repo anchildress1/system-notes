@@ -46,9 +46,18 @@
      sliced in half by the field's own rule. */
   font-size: clamp(1.15rem, 3.1vw, 2.5rem);
   line-height: 1.3;
-  /* Two lines of display type is already a deep field; five rows at this scale
-     pushed the control that submits it off the bottom of the screen. */
-  min-height: 4.2em;
+  /* A cap in rem over a floor in em, because the two constraints run in opposite
+     directions. The placeholder needs MORE lines as the type gets smaller — it
+     wraps to three at 280px and one from 600px up — while an em floor reserves
+     more the larger the type gets. 4.2em was the result of tuning against the
+     small end and it did both things wrong at once: 113px of empty field under
+     a single line of placeholder at 1440px, and at 280px only 74px against the
+     89px three lines actually need, so the last line was cut off by the field's
+     own rule. Measured, both.
+
+     min() takes whichever is smaller, so the field is ~90px at every width:
+     enough for three small lines, never a void under one large one. */
+  min-height: min(4.9em, 5.6rem);
   /* Long input scrolls rather than being cut off with nothing to say so. */
   overflow-y: auto;
   resize: none;
@@ -60,6 +69,16 @@
    placeholder to 3.83:1 and 2.76:1. At the 1.15rem floor this field takes on a
    phone that is body text failing 4.5:1 in both themes, and axe never saw it:
    it does not evaluate ::placeholder colour at all. */
+/* Grows with what is typed instead of scrolling inside a fixed box, so a long
+   problem stays readable while it is being written. min-height stays the floor.
+   Chromium and WebKit only — Firefox 151 does not support it, which is why the
+   floor above has to be correct on its own rather than leaning on this. */
+@supports (field-sizing: content) {
+  .field {
+    field-sizing: content;
+  }
+}
+
 .field::placeholder {
   color: var(--mute);
 }
