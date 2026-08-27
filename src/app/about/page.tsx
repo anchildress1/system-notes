@@ -89,32 +89,76 @@ export default function AboutPage() {
             <dd>{awardedProjects.length}</dd>
           </div>
         </dl>
+        {/* Two record lists under one h2, so each needs naming. The label takes
+            the fine print the figures' own labels are set in rather than a
+            second display heading, which would compete with the h2 that already
+            runs past its column. aria-labelledby rather than a repeated
+            aria-label: a heading beside a list does not name it on its own. */}
         {awardedProjects.length > 0 ? (
-          <ul className={styles.awards} aria-label="Recorded project awards">
-            {awardedProjects.map((project) => (
-              <li key={project.id}>
-                {/* The whole record is the link, and it goes to the exhibit that
-                    holds the evidence — a win named with nowhere to check it is
-                    the claim this section exists to stop making. */}
-                <Link
-                  className={styles.awardRecord}
-                  href={`/projects?system=${encodeURIComponent(project.id)}`}
+          <div className={styles.recordGroup}>
+            <h3 id="awards-label" className={styles.recordLabel}>
+              Awards
+            </h3>
+            <ul className={styles.records} aria-labelledby="awards-label">
+              {awardedProjects.map((project) => (
+                <li key={project.id}>
+                  {/* The whole record is the link, and it goes to the exhibit that
+                      holds the evidence — a win named with nowhere to check it is
+                      the claim this section exists to stop making. */}
+                  <Link
+                    className={styles.record}
+                    href={`/projects?system=${encodeURIComponent(project.id)}`}
+                  >
+                    <span className={styles.recordBadge}>
+                      {project.award}
+                      <span aria-hidden="true">★</span>
+                    </span>
+                    <span className={styles.recordLine}>
+                      {project.title}
+                      <span className={styles.recordGo} aria-hidden="true">
+                        &#8594;
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        <div className={styles.recordGroup}>
+          <h3 id="certifications-label" className={styles.recordLabel}>
+            Certifications
+          </h3>
+          {/* Set as footnotes, not as records. A win is a hero line and takes
+              the band; a certification is a filed fact, so it takes the same
+              serif-over-small-caps pair the exhibits set their stack in and
+              flows in columns rather than stacking. Three two-line award
+              records followed by two more of them made this the tallest
+              section on the site and the least like the rest of it. */}
+          <ul className={styles.credentials} aria-labelledby="certifications-label">
+            {profile.certifications.map((certification) => (
+              <li key={certification.credentialUrl}>
+                <a
+                  className={styles.credential}
+                  href={certification.credentialUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  <span className={styles.awardBadge}>
-                    {project.award}
-                    <span aria-hidden="true">★</span>
-                  </span>
-                  <span className={styles.awardProject}>
-                    {project.title}
-                    <span className={styles.awardGo} aria-hidden="true">
-                      &#8594;
+                  <span className={styles.credentialName}>
+                    {certification.name}
+                    <span className={styles.credentialGo} aria-hidden="true">
+                      &#8599;
                     </span>
                   </span>
-                </Link>
+                  <span className={styles.credentialMeta}>
+                    {certification.issuer} · {certification.issued}
+                  </span>
+                </a>
               </li>
             ))}
           </ul>
-        ) : null}
+        </div>
       </section>
 
       <section className={`reveal ${styles.principles}`} aria-labelledby="principles-heading">

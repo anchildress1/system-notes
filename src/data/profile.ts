@@ -33,6 +33,49 @@ const themeSongParagraphs: readonly ThemeSongParagraph[] = [
   },
 ];
 
+/**
+ * One professional certification and the issuer's own page for checking it.
+ *
+ * `credentialUrl` is not optional. The about page files these under "Claims
+ * should have receipts", and a certification with nowhere to check it is the
+ * exact claim that section exists to stop making.
+ */
+interface Certification {
+  readonly name: string;
+  readonly issuer: string;
+  /** Month and year it was earned, as displayed. */
+  readonly issued: string;
+  /** Must be reachable by a LOGGED-OUT reader. Credly's `/earner/earned/badge/`
+   *  form is the owner's private view and redirects a visitor to a sign-in wall;
+   *  the public form is `/badges/<id>/public_url`. */
+  readonly credentialUrl: string;
+}
+
+// Typed here rather than inferred through `as const`, so the shape is stated
+// once and a new entry cannot quietly drop a field.
+const certifications: readonly Certification[] = [
+  {
+    name: 'Generative AI Leader',
+    issuer: 'Google Cloud',
+    issued: 'October 2025',
+    credentialUrl: 'https://www.credly.com/badges/a1465b7f-94c8-4289-8563-fb25a62c46a7/public_url',
+  },
+  {
+    // "Certified" is part of the name here and not on the Google Cloud entry
+    // above, because without it this reads as the product rather than the
+    // credential. "Generative AI Leader" already reads as one.
+    //
+    // GitHub's own certification, sat and verified through Microsoft Learn —
+    // which is why the receipt is on a microsoft.com domain and reads "Issued
+    // by Microsoft". The certification is GitHub's; the platform is Microsoft's.
+    name: 'GitHub Copilot Certified',
+    issuer: 'GitHub',
+    issued: 'August 2025',
+    credentialUrl:
+      'https://learn.microsoft.com/en-us/users/anchildress1/credentials/1121633cbf5c85c',
+  },
+];
+
 export const profile = {
   name: 'Ashley Childress',
   role: 'Senior Software Engineer',
@@ -77,4 +120,6 @@ export const profile = {
     artist: 'Twisted Game Songs',
     paragraphs: themeSongParagraphs,
   },
+  // Newest first, which is the order a reader checks currency in.
+  certifications,
 } as const;

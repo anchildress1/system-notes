@@ -385,6 +385,36 @@ test.describe('Deep links', () => {
     expect(name).toContain((await exhibit.textContent())!.trim());
   });
 
+  test('cites a checkable receipt behind every certification', async ({ page }) => {
+    await page.goto('/about');
+    const certifications = page.getByRole('list', { name: 'Certifications' });
+    const records = certifications.getByRole('link');
+    await expect(records.first()).toBeVisible();
+
+    const receipts = await records.evaluateAll((links) =>
+      links.map((link) => ({
+        href: link.getAttribute('href'),
+        rel: link.getAttribute('rel'),
+        text: link.textContent ?? '',
+      }))
+    );
+
+    expect(receipts.length).toBeGreaterThan(0);
+    for (const receipt of receipts) {
+      // Off site, on the issuer's own domain. A certification verified by the
+      // page that claims it is not verified.
+      expect(receipt.href).toMatch(/^https:\/\//);
+      expect(new URL(receipt.href!).hostname).not.toContain('localhost');
+      expect(receipt.rel).toContain('noopener');
+      // Credly's `/earner/earned/` form is the owner's private view and sends a
+      // logged-out reader to a sign-in wall.
+      expect(receipt.href).not.toContain('/earner/earned/');
+      // Every record names when it was earned, so a reader can tell a current
+      // credential from a lapsed one without opening the receipt.
+      expect(receipt.text).toMatch(/\b(19|20)\d{2}\b/);
+    }
+  });
+
   test('scrolls a deep-linked system into the visible rail', async ({ page }) => {
     await page.goto('/projects?system=delegate-action');
     const active = page.getByTestId('project-delegate-action');
