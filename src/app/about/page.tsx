@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import ThemeSong from '@/components/ThemeSong/ThemeSong';
+import { BLOG_URL } from '@/config';
 import { blurFor } from '@/lib/imageVariants';
 import { profile } from '@/data/profile';
 import { getProjects } from '@/lib/api';
@@ -210,27 +211,34 @@ export default function AboutPage() {
         <div>
           <h2 id="contact-heading">Follow the work, not a funnel.</h2>
         </div>
-        <nav aria-label="Ashley Childress profiles">
-          {profile.links.map((link) => (
-            <a
-              key={link.href}
-              className="washed"
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {link.label}{' '}
-              <span className={styles.outbound} aria-hidden="true">
-                &#8599;
-              </span>
-            </a>
-          ))}
+        {/* Where the work is, not where the accounts are. This listed the same
+            four profiles the site footer carries, directly above the site
+            footer carrying them — two near-identical rows at the bottom of one
+            page. The footer keeps that row for every route; this section does
+            the thing its heading promises instead.
+
+            Internal destinations take the stepping arrow and the one that
+            leaves takes the outbound one, which is the same distinction the
+            record lists above draw. */}
+        <nav aria-label="Where the work lives">
           <Link className="washed" href="/notes">
             Search the index{' '}
             <span className={styles.outbound} aria-hidden="true">
-              &#8599;
+              &#8594;
             </span>
           </Link>
+          <Link className="washed" href="/projects">
+            See what I&rsquo;ve shipped{' '}
+            <span className={styles.outbound} aria-hidden="true">
+              &#8594;
+            </span>
+          </Link>
+          <a className="washed" href={BLOG_URL} target="_blank" rel="noopener noreferrer">
+            Read the blog{' '}
+            <span className={styles.outbound} aria-hidden="true">
+              &#8599;
+            </span>
+          </a>
         </nav>
       </section>
     </main>

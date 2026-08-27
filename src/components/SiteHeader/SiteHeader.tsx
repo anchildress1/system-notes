@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import ThemeToggle from '@/components/ThemeToggle/ThemeToggle';
+import { BLOG_URL } from '@/config';
 import styles from './SiteHeader.module.css';
 
 const destinations = [
@@ -42,12 +43,7 @@ export default function SiteHeader() {
               </Link>
             );
           })}
-          <a
-            className={styles.navLink}
-            href="https://dev.to/anchildress1"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a className={styles.navLink} href={BLOG_URL} target="_blank" rel="noopener noreferrer">
             blog <span aria-hidden="true">↗</span>
             <span className={styles.srOnly}> (opens in a new tab)</span>
           </a>

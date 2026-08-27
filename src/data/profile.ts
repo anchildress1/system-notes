@@ -1,3 +1,5 @@
+import { BLOG_URL } from '@/config';
+
 /** One paragraph of the theme-song note. `lead` carried emphasis in the copy. */
 interface ThemeSongParagraph {
   readonly lead?: string;
@@ -106,11 +108,16 @@ export const profile = {
       body: 'Tests, scanners, and release gates handle repeatable verification. Judgment stays human.',
     },
   ],
+  /* The site footer's row, and nothing else reads it.
+     It used to be a second, differently-ordered copy of a list SiteFooter also
+     hardcoded, and /about printed one of them directly above the other — two
+     near-identical rows of the same four destinations at the bottom of the
+     page. The footer carries them site-wide now; /about points into the work. */
   links: [
     { label: 'GitHub', href: 'https://github.com/anchildress1' },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/anchildress1' },
+    { label: 'DEV', href: BLOG_URL },
     { label: 'X', href: 'https://x.com/anchildress1' },
-    { label: 'DEV Community', href: 'https://dev.to/anchildress1' },
   ],
   // `lead` is the sentence that carried emphasis in the original copy; it is a
   // separate field rather than inline markup so the data stays free of markup
