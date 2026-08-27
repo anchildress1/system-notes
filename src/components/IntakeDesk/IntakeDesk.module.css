@@ -31,7 +31,13 @@
   width: 100%;
   padding: 0.2rem 0 0.85rem;
   border: 0;
-  border-bottom: 1px solid var(--edge);
+  /* 3px, not a hairline. --edge is 1.66:1 on graphite and 1.44:1 on paper, and
+     a 1px rule at that tone was the only thing on the page saying "this is a
+     field you can type in" — invisible rather than quiet. Thickness does not
+     move a contrast RATIO, so this does not make the boundary conformant to
+     1.4.11 on its own; it makes it perceivable, and the placeholder inside it
+     now carries 4.5:1 of its own. */
+  border-bottom: 3px solid var(--edge);
   background: transparent;
   color: var(--bone);
   font-family: var(--font-editorial);
@@ -58,9 +64,12 @@
   color: var(--mute);
 }
 
+/* Focus has to stay clearly heavier than rest, so it moves up with it. Both the
+   width step and the tone change carry the state; either alone is thinner
+   evidence than this field had before. */
 .field:focus-visible {
   border-bottom-color: var(--ink-accent);
-  border-bottom-width: 2px;
+  border-bottom-width: 5px;
 }
 
 .controls {

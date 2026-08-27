@@ -329,7 +329,8 @@
   align-items: center;
   padding: 0.25rem 0 0.55rem;
   border: 0;
-  border-bottom: 1px solid var(--edge);
+  /* See IntakeDesk .field — same rule, same reason. */
+  border-bottom: 3px solid var(--edge);
   background: transparent;
   color: var(--bone);
   grid-template-columns: minmax(0, 1fr) auto;
@@ -341,7 +342,7 @@
    writing surface owns that focus without replacing the shared primitive. */
 .searchPill:has(input:focus-visible) {
   border-bottom-color: var(--ink-accent);
-  border-bottom-width: 2px;
+  border-bottom-width: 5px;
 }
 
 .searchPill input {

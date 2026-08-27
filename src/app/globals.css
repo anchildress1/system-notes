@@ -776,8 +776,15 @@ body::before {
 
    Still a compliant indicator: WCAG 2.4.11 asks for an area at least a 4px line
    along the component's shortest side, and the shortest side of either field is
-   its height — so a 2px rule across a much longer width clears it, at well over
+   its height — so a 5px rule across a much longer width clears it, at well over
    3:1 between the focused and unfocused rule.
+
+   Both rules were thickened once --edge was measured against the page: 1.66:1
+   on graphite, 1.44:1 on paper. The RESTING rule is the only thing that says a
+   field is there, and a hairline at that tone is invisible rather than quiet.
+   Thickness does not move a contrast ratio, so 1.4.11 is still not satisfied by
+   the boundary alone — the tone was left deliberately, and the placeholder
+   inside carries 4.5:1 of its own.
 
    An attribute rather than a class, because it is the same opt-in the buttons
    use for their variants, and one grep finds every field that takes it. */
