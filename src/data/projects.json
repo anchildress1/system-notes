@@ -277,14 +277,6 @@
     ],
     "blog_posts": [
       {
-        "title": "Is GitHub Copilot Safe? The Fun and Hard Truth About Responsible AI",
-        "url": "https://dev.to/anchildress1/is-github-copilot-safe-the-fun-and-hard-truth-about-responsible-ai-3b95"
-      },
-      {
-        "title": "Did AI Erase Attribution? Your Git History is Missing a Co-Author",
-        "url": "https://dev.to/anchildress1/did-ai-erase-attribution-your-git-history-is-missing-a-co-author-1m2l"
-      },
-      {
         "title": "Signing Your Name on AI-Assisted Commits with RAI Footers",
         "url": "https://dev.to/anchildress1/signing-your-name-on-ai-assisted-commits-with-rai-footers-2b0o"
       }
@@ -405,20 +397,8 @@
     ],
     "blog_posts": [
       {
-        "title": "I Stopped Reviewing Code: A Backend Dev's Experiment with Google Gemini",
-        "url": "https://dev.to/anchildress1/i-stopped-reviewing-code-a-backend-devs-experiment-with-google-gemini-5424"
-      },
-      {
-        "title": "Conversational Retrieval: When Chat Becomes Navigation",
-        "url": "https://dev.to/anchildress1/conversational-retrieval-when-chat-becomes-navigation-2gij"
-      },
-      {
         "title": "From Static Portfolio to Indexed Decisions",
         "url": "https://dev.to/anchildress1/from-static-portfolio-to-indexed-decisions-46bf"
-      },
-      {
-        "title": "My Portfolio Doesn't Live on the Page",
-        "url": "https://dev.to/anchildress1/my-portfolio-doesnt-live-on-the-page-218e"
       }
     ],
     "repo_url": "https://github.com/anchildress1/system-notes",
@@ -758,10 +738,6 @@
       {
         "title": "Underfoot: The Chatpot for Hidden Places and Why I Don't Do Hackathons",
         "url": "https://dev.to/anchildress1/underfoot-the-chatpot-for-hidden-places-and-why-i-dont-do-hackathons-2684"
-      },
-      {
-        "title": "The Hackathon I Swore Off and the Exhaustion That Mostly Compiled",
-        "url": "https://dev.to/anchildress1/the-hackathon-i-swore-off-and-the-exhaustion-that-mostly-compiled-c4l"
       }
     ],
     "repo_url": "https://github.com/anchildress1/underfoot-underground-travel-planner",
@@ -788,24 +764,7 @@
         "role": "Agent Protocols"
       }
     ],
-    "blog_posts": [
-      {
-        "title": "Troubleshooting Production with GitHub Copilot",
-        "url": "https://dev.to/anchildress1/troubleshooting-production-with-github-copilot-the-guide-for-real-humans-and-bots-with-good-taste-253o"
-      },
-      {
-        "title": "Everything I Know About GitHub Copilot Instructions",
-        "url": "https://dev.to/anchildress1/everything-i-know-about-github-copilot-instructions-from-zero-to-onboarded-for-real-4nb0"
-      },
-      {
-        "title": "GitHub Copilot Chat Modes Explained with Personality",
-        "url": "https://dev.to/anchildress1/github-copilot-chat-modes-explained-with-personality-2f4c"
-      },
-      {
-        "title": "Leash not Autopilot: Building Predictable AI Behavior with Copilot Instructions",
-        "url": "https://dev.to/anchildress1/leash-not-autopilot-building-predictable-ai-behavior-with-copilot-instructions-14ip"
-      }
-    ],
+    "blog_posts": [],
     "repo_url": "https://github.com/anchildress1/awesome-github-copilot",
     "order_rank": 85,
     "announcements": [
