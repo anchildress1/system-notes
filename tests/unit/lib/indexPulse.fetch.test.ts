@@ -104,6 +104,31 @@ describe('getIndexPulse', () => {
     );
   });
 
+  it('caches an unavailable pulse to avoid repeating the request timeout', async () => {
+    harness.search.mockRejectedValue(new Error('RetryError'));
+    const { getIndexPulse } = await loadPulse();
+
+    expect(await getIndexPulse()).toBeNull();
+    expect(await getIndexPulse()).toBeNull();
+
+    expect(harness.search).toHaveBeenCalledOnce();
+  });
+
+  it('retries an unavailable pulse after its cache expires', async () => {
+    const start = Date.now();
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(start);
+    harness.search
+      .mockRejectedValueOnce(new Error('RetryError'))
+      .mockResolvedValueOnce({ nbHits: 1, hits: [{ created_at: '2026-08-17T09:00:00Z' }] });
+    const { getIndexPulse, PULSE_TTL_MS } = await loadPulse();
+
+    expect(await getIndexPulse()).toBeNull();
+    clock.mockReturnValue(start + PULSE_TTL_MS + 1);
+
+    expect(await getIndexPulse()).toEqual({ total: 1, latestCreatedAt: '2026-08-17T09:00:00Z' });
+    expect(harness.search).toHaveBeenCalledTimes(2);
+  });
+
   it('gives up rather than holding a page open indefinitely', async () => {
     vi.useFakeTimers();
     harness.search.mockReturnValue(new Promise(() => {}));

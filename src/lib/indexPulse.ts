@@ -24,7 +24,7 @@ const pulseClient = hasValidAlgoliaCredentials()
   ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY)
   : null;
 
-let cached: { at: number; value: IndexPulse } | null = null;
+let cached: { at: number; value: IndexPulse | null } | null = null;
 
 /**
  * Picks the newest usable timestamp out of a set of records.
@@ -97,6 +97,8 @@ export const getIndexPulse = cache(async (): Promise<IndexPulse | null> => {
     console.error('Index pulse lookup failed.', {
       name: error instanceof Error ? error.name : 'ProviderError',
     });
+    // A dynamic route must not make every request wait through the same outage.
+    cached = { at: Date.now(), value: null };
     return null;
   }
 });

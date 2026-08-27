@@ -12,6 +12,10 @@ export const metadata: Metadata = buildPageMetadata({
   path: '/notes',
 });
 
+// The pulse is intentionally fresh at request time; its own five-minute cache
+// prevents repeated index reads without freezing it into the build artifact.
+export const dynamic = 'force-dynamic';
+
 export default async function NotesIndexPage() {
   const pulse = await getIndexPulse();
 
