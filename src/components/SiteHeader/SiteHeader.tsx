@@ -22,7 +22,12 @@ export default function SiteHeader() {
 
   return (
     <header className={styles.header}>
-      <a className={styles.skipLink} href="#main-content">
+      <a
+        className={styles.skipLink}
+        data-variant="filled"
+        data-accent="filled"
+        href="#main-content"
+      >
         Skip to main content
       </a>
       <div className={styles.inner}>

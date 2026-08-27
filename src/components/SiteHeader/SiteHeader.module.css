@@ -22,15 +22,32 @@
   gap: 2rem;
 }
 
+/* The one filled control on the site that was not the .btn primitive: its own
+   padding, its own flat gold, its own square corners. So the first thing a
+   keyboard reader ever saw was a plain rectangle with none of the brush the
+   rest of the site is drawn with — which is exactly what globals.css owning
+   every button exists to prevent.
+
+   Only the footprint stays here. Shape, fill and hover come from .btn, and the
+   translate that parks it off screen composes with the mask on .btn's ::before
+   rather than fighting it — the mask carries the tilt, not a transform. */
 .skipLink {
+  composes: btn from global;
   position: fixed;
   z-index: 1000;
   top: 0.75rem;
   left: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: var(--mark);
-  color: var(--mark-ink);
-  font-size: 0.9375rem;
+  /* .btn sets "SKIP TO MAIN CONTENT" uppercase and tracked out to 0.14em, which
+     measures 275px — and a fixed element that wide sitting 12px from the left
+     edge of a 280px screen is 7px of document nobody can reach, since body's
+     overflow-x: clip propagates to the viewport and it cannot be scrolled to
+     either. The cap makes it wrap to two lines there instead.
+
+     A cap rather than tighter padding, because `composes` puts both class names
+     on the element at equal specificity and the winner is decided by which
+     stylesheet the bundler emits last — .btn's padding shorthand beat a
+     padding-inline here. max-width has no competitor, so it holds either way. */
+  max-width: calc(100vw - 1.5rem);
   transform: translateY(-180%);
 }
 
