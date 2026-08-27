@@ -2,6 +2,12 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
 import { mockAlgoliaSearch, test } from './utils';
 
+// The workspace stacks below IndexWorkspace.module.css's 47.99rem breakpoint and
+// runs two columns above it. Branching on the project NAME instead pinned the
+// desktop assertions to the one project called 'chromium', so every other
+// desktop-width engine silently ran the stacked assertions and failed.
+const STACK_BREAKPOINT_PX = 768;
+
 test.describe('System Notes redesign', () => {
   test('loads the filing workspace under the page head', async ({ page }) => {
     await mockAlgoliaSearch(page, [
@@ -36,8 +42,8 @@ test.describe('System Notes redesign', () => {
     await expect(page.getByRole('heading', { name: /Every choice/i })).toHaveCount(0);
   });
 
-  test('matches the approved desktop filing composition', async ({ page }, testInfo) => {
-    const isDesktop = testInfo.project.name === 'chromium';
+  test('matches the approved desktop filing composition', async ({ page }) => {
+    const isDesktop = (page.viewportSize()?.width ?? 0) >= STACK_BREAKPOINT_PX;
     if (isDesktop) await page.setViewportSize({ width: 1440, height: 720 });
     const featuredHits = [
       {

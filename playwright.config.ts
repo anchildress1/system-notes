@@ -17,6 +17,14 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    // Desktop Safari, not just the phone one. Blink and WebKit disagree at
+    // desktop widths — two columns, a hover state, a focus ring — and none of
+    // that is reachable from an iPhone viewport. CI already installs webkit for
+    // Mobile Safari, so this project costs runtime and no download.
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
