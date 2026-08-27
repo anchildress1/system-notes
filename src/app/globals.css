@@ -801,6 +801,36 @@ textarea[data-focus='ruled']:focus-visible {
   outline-color: var(--mark-ink);
 }
 
+/* THE SITE'S TICK, drawn once.
+
+   It stood beside the wordmark and again beside the footer byline, off two
+   separate declarations that had already drifted three ways: 1.15rem against
+   0.9rem wide, 0.44rem against 0.4rem tall, and 0.55rem against 0.5rem of space
+   after it — and the footer copy sat in a flex row that added its own 0.7rem
+   gap on top of that margin and centred the mark against the text instead of
+   standing it on the baseline. Same mark, two pens, two answers.
+
+   Gold, and keylined so it can be. --mark is 1.41:1 against paper — invisible,
+   not merely faint — which is the whole reason this tick was once drawn in a
+   second colour. drop-shadow traces the alpha the mask leaves behind, so the
+   hairline follows the brush's own wobble rather than boxing it. On graphite the
+   keyline composites into the ground and disappears, so one rule covers both. */
+.tick::before {
+  display: inline-block;
+  width: 1.15rem;
+  height: 0.44rem;
+  margin-right: 0.55rem;
+  background: var(--mark);
+  -webkit-mask-image: var(--stroke-brush);
+  mask-image: var(--stroke-brush);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  filter: drop-shadow(0 0 0.5px var(--tile-keyline)) drop-shadow(0 0 0.5px var(--tile-keyline));
+  content: '';
+}
+
 ::-webkit-scrollbar {
   width: 9px;
   height: 9px;
