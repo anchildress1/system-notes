@@ -10,13 +10,7 @@ export default function SiteFooter() {
         </p>
         <nav className={styles.links} aria-label="External links">
           {profile.links.map(({ label, href }) => (
-            <a
-              key={href}
-              className="marked-hover"
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a key={href} className="swiped" href={href} target="_blank" rel="noopener noreferrer">
               {label} <span aria-hidden="true">↗</span>
             </a>
           ))}

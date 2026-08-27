@@ -92,13 +92,10 @@
 }
 
 .navLink {
-  position: relative;
+  composes: swiped from global;
   display: inline-flex;
   min-height: 2.25rem;
   align-items: center;
-  /* Clears the swipe below the descenders. A mark that cuts through the tail of
-     the "j" in "projects" reads as a clipping bug rather than as ink. */
-  padding-bottom: 0.35rem;
   color: var(--soft);
   font-family: var(--font-display);
   font-size: 0.9375rem;
@@ -108,52 +105,10 @@
   transition: color 160ms ease;
 }
 
-/* The current page is SWIPED, not underlined.
-
-   A 1.5px rule spanning the exact width of the word is the most machine-drawn
-   mark on the site — perfectly straight, perfectly flush at both ends. This is
-   the same highlighter the headlines carry, dragged by hand instead: it
-   overhangs twice as far on the left as on the right, sits a degree off true,
-   and every corner of the radius is a different size, so no two edges agree.
-
-   It rides in the padding below the text rather than behind it, so the label
-   keeps its own contrast against the header and the mark never has to carry
-   ink. Colour still marks the current page as well (--bone against --soft), so
-   the swipe is reinforcement, not the only signal. */
-.navLink::after {
-  content: '';
-  position: absolute;
-  right: -0.16em;
-  bottom: 0;
-  left: -0.32em;
-  height: 0.34em;
-  /* The same drawn stroke every other mark on the site carries. This was the
-     one left behind: a smooth rounded bar with a uniform edge, sitting under a
-     page where the headline, the award, the star chips and the section tab had
-     all become brush strokes. It reads as the odd one instantly. Gold, not the
-     pencil, because a nav label is a WORD. */
-  background: var(--mark);
-  -webkit-mask-image: var(--stroke-brush);
-  mask-image: var(--stroke-brush);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  opacity: 0;
-  /* Drawn left to right, the way the stroke would be. */
-  transform: rotate(-1deg) scaleX(0.6);
-  transform-origin: left center;
-  transition:
-    opacity 160ms ease,
-    transform 220ms var(--ease-out);
-}
-
-.navLink:hover::after,
-.navLink:focus-visible::after {
-  opacity: 0.5;
-  transform: rotate(-1deg) scaleX(1);
-}
-
+/* The current page takes the same stroke all the way up. Hover shows a faded
+   draft of it at half opacity, which .swiped owns; being here is the finished
+   mark. Colour carries the state as well (--bone against --soft), so the swipe
+   is reinforcement rather than the only signal. */
 .navLink[aria-current='page'] {
   color: var(--bone);
 }

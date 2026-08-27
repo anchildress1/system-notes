@@ -412,6 +412,63 @@ body::before {
   background-size: 100% 1.6em;
 }
 
+/* SWIPED. The drawn stroke, laid UNDER a word and grown in from nothing.
+
+   The third hover on the site, and the one that had no primitive: the header
+   nav wrote it inline while the footer's links reached for .marked-hover, so
+   two rows of short word-links at opposite ends of the page answered a pointer
+   with two different gestures — a stroke beneath the word at one end, a band
+   behind it at the other.
+
+   A 1.5px rule spanning the exact width of a word is the most machine-drawn
+   mark a page can carry — perfectly straight, flush at both ends. This is the
+   same highlighter the headlines carry, dragged by hand instead: it overhangs
+   twice as far on the left as on the right, sits a degree off true, and every
+   corner of its radius is a different size, so no two edges agree.
+
+   It rides in the padding BELOW the text rather than behind it, so the label
+   keeps its own contrast against the ground and the mark never has to carry
+   ink. Gold rather than the pencil, because these are WORDS.
+
+   Half opacity while a pointer is on it. A consumer that also marks a current
+   state takes the same stroke to 1 — hovering shows you a faded draft of the
+   mark being there would give you. */
+.swiped {
+  position: relative;
+  /* Clears the stroke below the descenders. A mark that cuts through the tail
+     of the "j" in "projects" reads as a clipping bug rather than as ink. */
+  padding-bottom: 0.35rem;
+}
+
+.swiped::after {
+  position: absolute;
+  right: -0.16em;
+  bottom: 0;
+  left: -0.32em;
+  height: 0.34em;
+  background: var(--mark);
+  -webkit-mask-image: var(--stroke-brush);
+  mask-image: var(--stroke-brush);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  opacity: 0;
+  /* Drawn left to right, the way the stroke would be. */
+  transform: rotate(-1deg) scaleX(0.6);
+  transform-origin: left center;
+  transition:
+    opacity 160ms ease,
+    transform 220ms var(--ease-out);
+  content: '';
+}
+
+.swiped:hover::after,
+.swiped:focus-visible::after {
+  opacity: 0.5;
+  transform: rotate(-1deg) scaleX(1);
+}
+
 /* THE LIGHT PEN, AT REST. .marked in --mark-soft: the same drawn swipe, laid
    down once and left there rather than appearing under a pointer.
 

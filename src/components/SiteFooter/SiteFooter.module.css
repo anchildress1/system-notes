@@ -36,8 +36,13 @@
   text-transform: uppercase;
 }
 
+/* Matched to .navLink, because these are the same object at the other end of
+   the page: a row of short word-links. The stroke .swiped draws sits at the
+   bottom of the padding box, so the box has to hug the text — at 2.75rem the
+   mark hung 12px clear of the words with nothing between. 2.25rem still clears
+   the 24px WCAG 2.5.8 target by half again. */
 .links a {
-  min-height: 2.75rem;
+  min-height: 2.25rem;
   display: inline-flex;
   align-items: center;
 }
