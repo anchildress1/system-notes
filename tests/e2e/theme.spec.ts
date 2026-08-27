@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
-import { test } from './utils';
+import { mockAlgoliaSearch, test } from './utils';
 
 const ROUTES = ['/', '/notes', '/projects', '/about'] as const;
 
@@ -103,6 +103,59 @@ test.describe('Theme', () => {
       await expect(page).toHaveURL('/notes');
 
       await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    });
+  });
+
+  /* Windows High Contrast is what Edge and Chrome render on that platform, and
+     it discards exactly the two properties the board is drawn with: every
+     background-color flattens to Canvas and box-shadow is dropped outright.
+     Measured before the fix: 3 of the 4 tile kinds became invisible holes in the
+     grid that were still clickable, and the selected ring went with them. */
+  test.describe('forced colors', () => {
+    test.skip(
+      ({ browserName }) => browserName !== 'chromium',
+      'only the engine Edge ships emulates forced colors'
+    );
+    test.use({ contextOptions: { forcedColors: 'active' } });
+
+    test('keeps every board tile drawn and the selected one apart', async ({ page }) => {
+      await mockAlgoliaSearch(
+        page,
+        ['Principle', 'Architecture', 'Decision', 'Award'].flatMap((category, kind) =>
+          Array.from({ length: 3 }, (_, index) => ({
+            objectID: `card:${category}:${index}`,
+            title: `${category} note ${index}`,
+            fact: 'The complete decision.',
+            category,
+            projects: ['System Notes'],
+            __position: kind * 3 + index + 1,
+          }))
+        )
+      );
+      await page.goto('/notes');
+      await page.locator('[data-note-board] li').first().waitFor();
+
+      const tiles = await page.evaluate(() =>
+        [...document.querySelectorAll('[data-note-board] li')].map((tile) => {
+          const swatch = getComputedStyle(tile, '::before');
+          return {
+            selected: tile.getAttribute('aria-selected') === 'true',
+            outlineStyle: swatch.outlineStyle,
+            outlineWidth: swatch.outlineWidth,
+          };
+        })
+      );
+
+      expect(tiles.length).toBeGreaterThan(0);
+      // An outline is the only edge forced colors keeps, so every tile has to
+      // carry one. Which colour the system paints it is the reader's business.
+      expect(tiles.filter((tile) => tile.outlineStyle === 'none')).toEqual([]);
+
+      const selected = tiles.find((tile) => tile.selected);
+      expect(selected).toBeDefined();
+      expect(
+        tiles.some((tile) => !tile.selected && tile.outlineWidth !== selected!.outlineWidth)
+      ).toBe(true);
     });
   });
 });

@@ -253,6 +253,29 @@
   animation: board-select 360ms var(--ease-out);
 }
 
+/* Windows High Contrast — Edge, Chrome and Firefox on Windows — forces every
+   background-color to Canvas and drops box-shadow outright, and a tile is
+   nothing but those two. Measured: three of the four kinds rendered as
+   invisible holes in the grid that were still clickable, and the selected ring
+   went with them; only the award kind survived, because it is drawn with an
+   OUTLINE, and an outline is the one edge forced colors keeps.
+
+   So the other kinds borrow the award's mechanism. The keywords below are the
+   reader's own system colors, not palette — a forced-colors block cannot use a
+   token, because the whole point of the mode is that the reader's colors win. */
+@media (forced-colors: active) {
+  .boardTiles li::before,
+  .categorySwatch {
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+  }
+
+  .boardTiles li[aria-selected='true']::before {
+    outline: 3px solid Highlight;
+    outline-offset: 0;
+  }
+}
+
 .board small {
   display: block;
   margin-top: 0.75rem;
