@@ -49,9 +49,13 @@
   transition: border-color 0.25s var(--ease-out);
 }
 
+/* No opacity on top of --mute. --mute is ALREADY the quietest ink the palette
+   has — 6.78:1 on graphite, 4.88:1 on paper — and dimming it to 0.7 took the
+   placeholder to 3.83:1 and 2.76:1. At the 1.15rem floor this field takes on a
+   phone that is body text failing 4.5:1 in both themes, and axe never saw it:
+   it does not evaluate ::placeholder colour at all. */
 .field::placeholder {
   color: var(--mute);
-  opacity: 0.7;
 }
 
 .field:focus-visible {

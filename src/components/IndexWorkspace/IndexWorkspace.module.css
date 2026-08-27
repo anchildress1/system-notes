@@ -366,9 +366,10 @@
   appearance: none;
 }
 
+/* See IntakeDesk .field::placeholder — same fault, one step further down:
+   0.6 put this at 3.11:1 on graphite and 2.33:1 on paper. */
 .searchPill input::placeholder {
   color: var(--mute);
-  opacity: 0.6;
 }
 
 .searchPill kbd,
