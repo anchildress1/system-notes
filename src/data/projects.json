@@ -181,6 +181,10 @@
         "role": "Local Query Store"
       },
       {
+        "name": "Gemini 3.1 Flash Lite",
+        "role": "Registry Localization"
+      },
+      {
         "name": "Cloudflare R2",
         "role": "Snapshot Storage"
       },
@@ -727,7 +731,11 @@
       },
       {
         "name": "React / TypeScript",
-        "role": "The Face"
+        "role": "The Web Face"
+      },
+      {
+        "name": "Flutter / Dart",
+        "role": "The Mobile Face"
       },
       {
         "name": "Supabase",
@@ -799,8 +807,8 @@
         "role": "The Runtime"
       },
       {
-        "name": "GitHub Models",
-        "role": "AI Backend (GPT-4o)"
+        "name": "GitHub Copilot SDK",
+        "role": "The Agent"
       },
       {
         "name": "Node.js",
