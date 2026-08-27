@@ -2,13 +2,12 @@
 
 ## Shape
 
-System Notes is one Next.js application deployed to Cloud Run. It has five public surfaces and one bounded integration route.
+System Notes is one Next.js application deployed to Cloud Run. It has four public surfaces and one bounded integration route.
 
 | Surface            | Responsibility                         | State owner                                             |
 | ------------------ | -------------------------------------- | ------------------------------------------------------- |
 | `/`                | One-turn intake                        | Local form state; settled brief may use session storage |
 | `/notes`           | Searchable notes index                 | InstantSearch owns query and refinements in the URL     |
-| `/notes/[id]`      | Durable full-note view                 | Server-rendered route reads one Algolia record          |
 | `/projects`        | Complete project directory             | Server-rendered project registry                        |
 | `/about`           | Professional record and derived totals | Server-rendered profile and project registry            |
 | `/api/blog/search` | Bounded DEV post aggregation           | In-memory cache with guarded external fetches           |
@@ -24,7 +23,6 @@ The index is the only large client-side surface.
 - `searchRouting` serializes query plus category, project, and topic refinements.
 - `IndexWorkspace` keeps the selected reader note local and sends the Algolia click event on selection.
 - Malformed hits are withheld before the workspace renders them.
-- `/notes/[id]` reads a single record on the server and never becomes an index overlay.
 
 ## Intake boundary
 

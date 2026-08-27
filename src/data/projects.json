@@ -367,7 +367,7 @@
     "name": "System Notes",
     "what_it_is": "An evidence-first engineering portfolio organized around searchable decisions instead of finished-product theater.",
     "why_it_exists": "The useful part of a project is usually the constraint, failure, or choice that produced it. This keeps that reasoning attached to the work.",
-    "long_description": "A Next.js app with an Algolia-backed decision index, durable note pages, and a complete project directory spanning active systems, retired tools, and deliberate dead ends. Every merge clears CI-enforced coverage and Lighthouse budgets before it ships.",
+    "long_description": "A Next.js app with an Algolia-backed decision index and a complete project directory spanning active systems, retired tools, and deliberate dead ends. Every merge clears CI-enforced coverage and Lighthouse budgets before it ships.",
     "outcome": "Live at anchildress1.dev as a searchable record of engineering work, deployed on Cloud Run behind unit, browser, accessibility, security, and performance gates.",
     "status": "Deployed",
     "owner": "anchildress1",

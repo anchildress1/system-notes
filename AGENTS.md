@@ -37,8 +37,7 @@ Canonical instruction source for this repository. Treat this file as authoritati
 Algolia click event when that selection changes. Neither writes a note selection to the URL.
 
 `/` is the intake. Its question and one-turn agent result are local; a settled brief may
-survive within the current browser session. `/notes/[id]` is a standalone, server-rendered
-record route, not an overlay or a replacement for the index reader.
+survive within the current browser session.
 
 ### Implementation contracts
 

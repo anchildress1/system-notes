@@ -18,7 +18,6 @@ A searchable record of Ashley Childress's engineering decisions, constraints, fa
 
 - **Intake**: A one-turn Agent Studio brief at `/`, using filed evidence when valid agent credentials are configured.
 - **Index**: Algolia InstantSearch at `/notes`, with query and facet state in the URL and selection kept in the reader.
-- **Notes**: Durable `/notes/[id]` pages for a single record.
 - **Projects**: One complete directory of current work, retired tools, archived experiments, and deliberate dead ends.
 - **About**: A short professional record backed by counts derived from the project registry.
 - **Machine-readable context**: Structured project data, sitemap output, and `/site.jsonld`.
@@ -58,7 +57,7 @@ Keep these values in a local `.env` file. Any `NEXT_PUBLIC_*` value is shipped t
 
 | Variable                                | Required | Purpose                                                         |
 | --------------------------------------- | -------- | --------------------------------------------------------------- |
-| `NEXT_PUBLIC_ALGOLIA_APPLICATION_ID`    | Yes      | Algolia application queried by the browser and note pages       |
+| `NEXT_PUBLIC_ALGOLIA_APPLICATION_ID`    | Yes      | Algolia application queried by the browser and index            |
 | `NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY`    | Yes      | Search-only API key                                             |
 | `NEXT_PUBLIC_ALGOLIA_AGENT_ID`          | Intake   | Agent Studio agent ID; without it, the intake stays unavailable |
 | `NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME` | No       | Index name; defaults to `system-notes`                          |
