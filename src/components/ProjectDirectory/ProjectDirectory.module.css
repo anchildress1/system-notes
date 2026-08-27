@@ -281,13 +281,23 @@
   }
 
   /* The rail stops being a rail: it scrolls sideways above the detail rather
-     than stacking twenty systems on top of the thing they introduce. */
+     than stacking twenty systems on top of the thing they introduce.
+
+     Full bleed, with the gutter moved from the page onto the strip itself.
+     Inset by the gutter it ended 17px short of the screen on a 390px phone, so
+     the twentieth system was sliced mid-word by nothing — and the rule under it
+     stopped at the same arbitrary line. A strip cut off by the EDGE OF THE
+     SCREEN reads as more this way; one cut off by a margin reads as a layout
+     that miscalculated. scroll-padding keeps the first card on the page's own
+     gutter rather than jammed against the bezel. */
   .rail {
     position: static;
     max-height: none;
     border-right: 0;
     border-bottom: 1px solid var(--line);
-    padding: 0;
+    padding: 0 var(--gutter);
+    margin-inline: calc(var(--gutter) * -1);
+    scroll-padding-inline: var(--gutter);
     overflow-x: auto;
   }
 
