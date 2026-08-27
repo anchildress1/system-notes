@@ -217,6 +217,18 @@
   padding-inline: 0.9rem;
 }
 
+/* Feather draws at stroke-width 2 on a 24 viewBox, which at this size lands
+   near a single hairline — beside a 700-weight label tracked out to 0.14em it
+   read as a different typeface's punctuation rather than as part of the button.
+   The mark is set to the weight of the words it belongs to. A CSS property
+   rather than the icon's own prop: it is a type decision, so it lives with the
+   rest of the button's type. */
+.action svg {
+  width: 0.95em;
+  height: 0.95em;
+  stroke-width: 2.75;
+}
+
 /* The page's one action: it is where a reader goes next. Filled, like the
    intake's run button and the theme song's play button. */
 .crossLink {
