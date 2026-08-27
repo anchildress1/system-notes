@@ -760,8 +760,16 @@
         "role": "The Subject"
       },
       {
-        "name": "MCP",
-        "role": "Agent Protocols"
+        "name": "Markdown",
+        "role": "The Entire Codebase"
+      },
+      {
+        "name": "Agent Skills",
+        "role": "The Portable Format"
+      },
+      {
+        "name": "remark",
+        "role": "The Linter"
       }
     ],
     "blog_posts": [],
