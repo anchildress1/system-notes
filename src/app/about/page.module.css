@@ -566,8 +566,13 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* The hero sets `gap: 0 <column>` — row-gap 0 — which is right while the copy
+     and the portrait are side by side and has never been reconsidered for the
+     stack. Collapsed to one column it left the figure 4px off the last
+     paragraph, touching it, before any animation moved anything. */
   .hero {
     min-height: auto;
+    row-gap: clamp(2.5rem, 8vw, 4rem);
   }
 
   .portrait {

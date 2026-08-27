@@ -1008,9 +1008,17 @@ main {
       animation-timeline: view();
       animation-range: entry 10% cover 32%;
     }
+  }
 
-    /* Slower and against the scroll, so the portrait sits in a different plane
-       to the copy beside it rather than travelling with it. */
+  /* Slower and against the scroll, so the portrait sits in a different plane to
+     the copy BESIDE it rather than travelling with it.
+
+     Two columns only. Below 55rem the portrait stacks UNDER the copy, where
+     there is no beside — and measured there, `entry cover` resolves already
+     complete against a figure that tall, so it produced no motion at any scroll
+     position. All it did was hold the portrait a permanent 2rem higher, which
+     on a row-gap of 0 is 36px of picture sitting on the last paragraph. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 55.01rem) {
     .drift {
       animation: portrait-drift linear both;
       animation-timeline: view();
