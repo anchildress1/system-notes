@@ -170,6 +170,8 @@ submit_build() {
     local interval=15
     local elapsed=0
     local started_at
+    local remaining
+    local sleep_for
     started_at=$(date +%s)
 
     while (( elapsed < timeout )); do
@@ -186,7 +188,12 @@ submit_build() {
                 ;;
             *)
                 echo "Build $build_id: $status — waiting... (${elapsed}s/${timeout}s)"
-                sleep "$interval"
+                remaining=$(( timeout - elapsed ))
+                sleep_for=$interval
+                if (( remaining < interval )); then
+                    sleep_for=$remaining
+                fi
+                sleep "$sleep_for"
                 elapsed=$(( $(date +%s) - started_at ))
                 ;;
         esac

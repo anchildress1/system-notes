@@ -15,7 +15,7 @@ async function writeExecutable(directory: string, name: string, source: string) 
   await chmod(file, 0o755);
 }
 
-async function fakeCloud(statuses = ['SUCCESS']) {
+async function fakeCloud(statuses = ['SUCCESS'], clockAdvance = 15) {
   const directory = await mkdtemp(path.join(tmpdir(), 'system-notes-deploy-'));
   temporaryDirectories.push(directory);
 
@@ -42,6 +42,8 @@ case "$*" in
   "config get-value project") printf '%s\\n' 'test-project' ;;
   "config get-value account") printf '%s\\n' 'test@example.com' ;;
   "projects describe "*) printf '%s\\n' '123456789' ;;
+  "services enable "*) ;;
+  "artifacts repositories describe "*) ;;
   "beta builds submit "*) printf '%s\\n' 'build-123' ;;
   "builds describe "*)
     index=$(cat "$GCLOUD_STATUS_INDEX_FILE")
@@ -49,10 +51,20 @@ case "$*" in
     status=$(sed -n "\${line}p" "$GCLOUD_STATUS_FILE")
     if [[ -z "$status" ]]; then status=$(tail -n 1 "$GCLOUD_STATUS_FILE"); fi
     printf '%s\\n' "$line" > "$GCLOUD_STATUS_INDEX_FILE"
+    if [[ "$status" == '__ERROR__' ]]; then
+      printf '%s\\n' 'fake describe transport failure' >&2
+      exit 17
+    fi
     printf '%s\\n' "$status"
     ;;
+  "run deploy "*) ;;
   "run services describe "*) printf '%s\\n' 'active-revision' ;;
   "run revisions list "*) printf '%s\\n' $'active-revision\\nstale-revision' ;;
+  "run revisions delete "*) ;;
+  *)
+    printf 'Unexpected gcloud command: %s\\n' "$*" >&2
+    exit 64
+    ;;
 esac
 `
   );
@@ -72,11 +84,11 @@ cat "$CLOCK_FILE"
 set -euo pipefail
 printf '%s\\n' "$1" >> "$SLEEP_LOG"
 now=$(cat "$CLOCK_FILE")
-printf '%s\\n' "$((now + $1))" > "$CLOCK_FILE"
+printf '%s\\n' "$((now + $SLEEP_CLOCK_INCREMENT))" > "$CLOCK_FILE"
 `
   );
 
-  return { clock, directory, log, sleepLog, statusFile, statusIndex };
+  return { clock, clockAdvance, directory, log, sleepLog, statusFile, statusIndex };
 }
 
 function deploymentEnv(
@@ -91,6 +103,7 @@ function deploymentEnv(
     GCLOUD_STATUS_FILE: cloud.statusFile,
     GCLOUD_STATUS_INDEX_FILE: cloud.statusIndex,
     SLEEP_LOG: cloud.sleepLog,
+    SLEEP_CLOCK_INCREMENT: String(cloud.clockAdvance),
     GCP_PROJECT_ID: 'test-project',
     NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: 'TESTAPPID1',
     NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: 'test_search_key_valid_length_20',
@@ -158,15 +171,27 @@ describe('deploy script', () => {
     expect(await readFile(cloud.sleepLog, 'utf8')).toBe('15\n15\n');
   });
 
-  it('times out queued builds with the fake clock before deployment', async () => {
-    const cloud = await fakeCloud(['QUEUED']);
+  it('uses elapsed clock time instead of requested sleeps when builds remain queued', async () => {
+    const cloud = await fakeCloud(['QUEUED'], 30);
 
     await expect(runDeploy(deploymentEnv(cloud, { BUILD_TIMEOUT: '30' }))).rejects.toMatchObject({
       stderr: expect.stringContaining('Build build-123 timed out after 30s (status: QUEUED)'),
     });
 
-    expect(await readFile(cloud.statusIndex, 'utf8')).toBe('2\n');
-    expect(await readFile(cloud.sleepLog, 'utf8')).toBe('15\n15\n');
+    expect(await readFile(cloud.statusIndex, 'utf8')).toBe('1\n');
+    expect(await readFile(cloud.sleepLog, 'utf8')).toBe('15\n');
+    expect(await readFile(cloud.log, 'utf8')).not.toContain('run deploy');
+  });
+
+  it('clamps each sleep to the remaining build timeout', async () => {
+    const cloud = await fakeCloud(['QUEUED']);
+
+    await expect(runDeploy(deploymentEnv(cloud, { BUILD_TIMEOUT: '1' }))).rejects.toMatchObject({
+      stderr: expect.stringContaining('Build build-123 timed out after 1s (status: QUEUED)'),
+    });
+
+    expect(await readFile(cloud.statusIndex, 'utf8')).toBe('1\n');
+    expect(await readFile(cloud.sleepLog, 'utf8')).toBe('1\n');
     expect(await readFile(cloud.log, 'utf8')).not.toContain('run deploy');
   });
 
@@ -175,6 +200,17 @@ describe('deploy script', () => {
 
     await expect(runDeploy(deploymentEnv(cloud))).rejects.toMatchObject({
       stderr: expect.stringContaining('build-123 failed: FAILURE'),
+    });
+
+    expect(await readFile(cloud.log, 'utf8')).not.toContain('run deploy');
+    expect(await readFile(cloud.sleepLog, 'utf8')).toBe('');
+  });
+
+  it('stops deployment when build status polling fails', async () => {
+    const cloud = await fakeCloud(['__ERROR__']);
+
+    await expect(runDeploy(deploymentEnv(cloud))).rejects.toMatchObject({
+      stderr: expect.stringContaining('fake describe transport failure'),
     });
 
     expect(await readFile(cloud.log, 'utf8')).not.toContain('run deploy');
