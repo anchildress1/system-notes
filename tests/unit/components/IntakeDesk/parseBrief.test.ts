@@ -7,27 +7,48 @@ describe('parseBrief', () => {
   });
 
   it('resolves a citation into a followable link', () => {
-    expect(parseBrief('See [Forged Between Coal and Code](https://dev.to/a/b) for it.')).toEqual([
+    const href = 'https://dev.to/anchildress1/forged-between-coal-and-code-abc';
+
+    expect(parseBrief(`See [Forged Between Coal and Code](${href}) for it.`)).toEqual([
       { text: 'See ' },
-      { text: 'Forged Between Coal and Code', href: 'https://dev.to/a/b' },
+      { text: 'Forged Between Coal and Code', href },
       { text: ' for it.' },
     ]);
   });
 
   it('keeps several citations in the order they were written', () => {
-    const segments = parseBrief('[One](https://a.example) and [Two](https://b.example)');
+    const segments = parseBrief(
+      '[One](https://dev.to/anchildress1/one) and [Two](https://anchildress1.dev/projects?system=vestige)'
+    );
 
     expect(segments.map((segment) => segment.text)).toEqual(['One', ' and ', 'Two']);
     expect(segments.filter((segment) => segment.href)).toHaveLength(2);
   });
 
-  it('keeps the words and drops the link when the url is not safe to follow', () => {
-    // Model output is shaped partly by indexed content, so a url in it is
-    // untrusted. The citation still reads; it just stops being clickable.
-    for (const href of ['javascript:alert(1)', 'http://example.com', 'data:text/html,x']) {
+  it.each(['javascript:alert(1)', 'http://example.com', 'data:text/html,x'])(
+    'keeps the words and drops the unsafe url %s',
+    (href) => {
+      // Model output is shaped partly by indexed content, so a url in it is
+      // untrusted. The citation still reads; it just stops being clickable.
       const [segment] = parseBrief(`[Click](${href})`);
-      expect(segment, href).toEqual({ text: 'Click' });
+      expect(segment).toEqual({ text: 'Click' });
     }
+  );
+
+  it.each([
+    'https://example.com/phishing',
+    'https://dev.to/someone-else/copied-title',
+    'https://anchildress1.dev/about',
+  ])('drops a safe-looking url outside the published evidence: %s', (href) => {
+    expect(parseBrief(`[Claim](${href})`)).toEqual([{ text: 'Claim' }]);
+  });
+
+  it.each([
+    'https://anchildress1.dev/projects?system=ghost-system',
+    'https://anchildress1.dev/projects',
+    'https://anchildress1.dev/projects?system=vestige&next=https://example.com',
+  ])('drops a malformed project citation: %s', (href) => {
+    expect(parseBrief(`[Claim](${href})`)).toEqual([{ text: 'Claim' }]);
   });
 
   it('drops credentials embedded in a url', () => {
@@ -46,7 +67,9 @@ describe('parseBrief', () => {
 
   it('never yields markup, whatever the answer contains', () => {
     // The whole reason this is parsed rather than injected.
-    const segments = parseBrief('<img src=x onerror=alert(1)> and [ok](https://a.example)');
+    const segments = parseBrief(
+      '<img src=x onerror=alert(1)> and [ok](https://dev.to/anchildress1/ok)'
+    );
 
     expect(segments[0]).toEqual({ text: '<img src=x onerror=alert(1)> and ' });
     expect(segments.every((segment) => typeof segment.text === 'string')).toBe(true);

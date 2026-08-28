@@ -8,6 +8,28 @@ import styles from './IntakeDesk.module.css';
 export type BriefSegment = { text: string; href?: string };
 
 const LINK = /\[([^\]\n]+)\]\((\S+?)\)/g;
+const SITE_ORIGIN = 'https://anchildress1.dev';
+const DEV_ORIGIN = 'https://dev.to';
+
+/** Whether a model-written citation points at evidence this site publishes. */
+function isAllowedCitationUrl(href: string): boolean {
+  if (!isSafeExternalUrl(href)) return false;
+
+  const url = new URL(href);
+  if (url.origin === DEV_ORIGIN) {
+    const path = url.pathname.split('/').filter(Boolean);
+    return path.length === 2 && path[0] === 'anchildress1' && !url.search && !url.hash;
+  }
+
+  return (
+    url.origin === SITE_ORIGIN &&
+    url.pathname.replace(/\/$/, '') === '/projects' &&
+    url.searchParams.size === 1 &&
+    url.searchParams.has('system') &&
+    !url.hash &&
+    citesKnownSystem(href)
+  );
+}
 
 /**
  * Splits an answer into prose and the links written into it.
@@ -28,10 +50,9 @@ export function parseBrief(text: string): BriefSegment[] {
     const [whole, label, href] = match;
     const start = match.index ?? 0;
     if (start > cursor) segments.push({ text: text.slice(cursor, start) });
-    // An unsafe url, or a project link naming a system that is not on file,
-    // loses its link and keeps its words: the citation still reads, it just
-    // stops being clickable.
-    const followable = isSafeExternalUrl(href) && citesKnownSystem(href);
+    // A citation outside the published evidence loses its link and keeps its
+    // words: model output is untrusted even when it happens to be valid HTTPS.
+    const followable = isAllowedCitationUrl(href);
     segments.push(followable ? { text: label!, href } : { text: label! });
     cursor = start + whole.length;
   }
