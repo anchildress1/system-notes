@@ -74,15 +74,27 @@ describe('agent prompt generator', () => {
     { label: 'missing registry', read: async () => Promise.reject(new Error('ENOENT')) },
     { label: 'malformed JSON', read: async () => '{' },
     { label: 'non-array JSON', read: async () => JSON.stringify({}) },
+    { label: 'non-object project', read: async () => JSON.stringify([null]) },
     {
       label: 'malformed project',
       read: async () => JSON.stringify([{ objectID: 'missing-data' }]),
+    },
+    { label: 'non-array tech', read: async () => JSON.stringify([project({ tech: null })]) },
+    { label: 'malformed tech item', read: async () => JSON.stringify([project({ tech: [null] })]) },
+    {
+      label: 'non-array evidence',
+      read: async () => JSON.stringify([project({ blog_posts: {} })]),
     },
     {
       label: 'malformed project evidence',
       read: async () =>
         JSON.stringify([project({ blog_posts: [{ url: 'https://example.test/post' }] })]),
     },
+    {
+      label: 'non-object evidence',
+      read: async () => JSON.stringify([project({ blog_posts: [null] })]),
+    },
+    { label: 'invalid rank', read: async () => JSON.stringify([project({ order_rank: 'first' })]) },
   ])('rejects a $label without producing a prompt', async ({ read }) => {
     await expect(readAgentPrompt('/portfolio', undefined, read)).rejects.toThrow();
   });
