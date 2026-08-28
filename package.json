@@ -18,7 +18,7 @@
     "test": "vitest run --coverage",
     "pretest:watch": "npm run image-variants",
     "test:watch": "vitest",
-    "test:perf": "npm run build && lhci autorun --config=lighthouserc.desktop.json",
+    "test:perf": "npm run build && lhci collect --config=lighthouserc.desktop.json && lhci assert --config=lighthouserc.desktop.json",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml,css}\"",
     "audit": "npm audit --audit-level=high",

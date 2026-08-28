@@ -20,8 +20,20 @@ const profiles = [
     ],
   },
 ] as const;
+const packageJsonPath = path.resolve(process.cwd(), 'package.json');
 
 describe('Lighthouse profiles', () => {
+  it('collects and asserts without publishing test reports or GitHub status', async () => {
+    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as {
+      scripts: Record<string, string>;
+    };
+
+    expect(packageJson.scripts['test:perf']).toContain('lhci collect');
+    expect(packageJson.scripts['test:perf']).toContain('lhci assert');
+    expect(packageJson.scripts['test:perf']).not.toContain('lhci autorun');
+    expect(packageJson.scripts['test:perf']).not.toContain('lhci upload');
+  });
+
   it.each(profiles)('fails console errors in $file', async ({ file, routes }) => {
     const config = JSON.parse(await readFile(path.resolve(process.cwd(), file), 'utf8')) as {
       ci: {
