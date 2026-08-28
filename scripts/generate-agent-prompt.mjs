@@ -14,6 +14,13 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
+const DEFAULT_RUNTIME = {
+  readProjects: readFile,
+  stderr: process.stderr,
+  stdout: process.stdout,
+  writePrompt: writeFile,
+};
+
 export function resolveSiteUrl(value) {
   return value?.replace(/\/$/, '') || 'https://anchildress1.dev';
 }
@@ -121,26 +128,78 @@ ${roster}
 `;
 }
 
+function requiredProjectText(project, key, index) {
+  const value = project[key];
+  if (typeof value !== 'string' || !value.trim()) {
+    throw new TypeError(`projects.json entry ${index} has an invalid ${key}.`);
+  }
+}
+
+function validatePromptProjects(value) {
+  if (!Array.isArray(value)) throw new TypeError('projects.json must contain an array.');
+
+  value.forEach((project, index) => {
+    if (!project || typeof project !== 'object' || Array.isArray(project)) {
+      throw new TypeError(`projects.json entry ${index} must be an object.`);
+    }
+
+    for (const key of [
+      'objectID',
+      'name',
+      'status',
+      'what_it_is',
+      'why_it_exists',
+      'long_description',
+      'outcome',
+    ]) {
+      requiredProjectText(project, key, index);
+    }
+
+    if (!Array.isArray(project.tech)) {
+      throw new TypeError(`projects.json entry ${index} has invalid tech.`);
+    }
+    project.tech.forEach((item) => {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) {
+        throw new TypeError(`projects.json entry ${index} has an invalid tech item.`);
+      }
+      requiredProjectText(item, 'name', index);
+      requiredProjectText(item, 'role', index);
+    });
+
+    if (project.blog_posts !== undefined) {
+      if (!Array.isArray(project.blog_posts)) {
+        throw new TypeError(`projects.json entry ${index} has invalid blog_posts.`);
+      }
+      project.blog_posts.forEach((post) => {
+        if (!post || typeof post !== 'object' || Array.isArray(post)) {
+          throw new TypeError(`projects.json entry ${index} has an invalid blog post.`);
+        }
+        requiredProjectText(post, 'title', index);
+      });
+    }
+    if (project.order_rank !== undefined && !Number.isFinite(project.order_rank)) {
+      throw new TypeError(`projects.json entry ${index} has an invalid order_rank.`);
+    }
+  });
+
+  return value;
+}
+
 export async function readAgentPrompt(
   cwd = process.cwd(),
   site = resolveSiteUrl(),
   readProjects = readFile
 ) {
-  const projects = JSON.parse(
-    await readProjects(path.join(cwd, 'src', 'data', 'projects.json'), 'utf8')
+  const projects = validatePromptProjects(
+    JSON.parse(await readProjects(path.join(cwd, 'src', 'data', 'projects.json'), 'utf8'))
   );
   return { prompt: buildAgentPrompt(projects, site), projectCount: projects.length };
 }
 
-export async function emitAgentPrompt({
-  args = process.argv,
-  cwd = process.cwd(),
-  readProjects = readFile,
-  site = resolveSiteUrl(),
-  stderr = process.stderr,
-  stdout = process.stdout,
-  writePrompt = writeFile,
-} = {}) {
+export async function emitAgentPrompt(
+  { args = process.argv, cwd = process.cwd(), site = resolveSiteUrl() } = {},
+  { readProjects, stderr, stdout, writePrompt } = DEFAULT_RUNTIME
+) {
   const { prompt, projectCount } = await readAgentPrompt(cwd, site, readProjects);
   const outIndex = args.indexOf('--out');
   if (outIndex !== -1 && args[outIndex + 1]) {

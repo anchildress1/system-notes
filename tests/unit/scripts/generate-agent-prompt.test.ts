@@ -58,7 +58,7 @@ describe('agent prompt generator', () => {
     expect(prompt.indexOf('### Alpha')).toBeLessThan(prompt.indexOf('### Later'));
   });
 
-  it('reads a valid registry through an injected filesystem and rejects malformed input', async () => {
+  it('reads a valid registry through an injected filesystem', async () => {
     const readProjects = vi.fn(async () => JSON.stringify([project()]));
 
     await expect(
@@ -68,9 +68,23 @@ describe('agent prompt generator', () => {
       prompt: expect.stringContaining('https://example.test/projects?system=alpha'),
     });
     expect(readProjects).toHaveBeenCalledWith('/portfolio/src/data/projects.json', 'utf8');
-    await expect(readAgentPrompt('/portfolio', undefined, async () => '{')).rejects.toThrow(
-      SyntaxError
-    );
+  });
+
+  it.each([
+    { label: 'missing registry', read: async () => Promise.reject(new Error('ENOENT')) },
+    { label: 'malformed JSON', read: async () => '{' },
+    { label: 'non-array JSON', read: async () => JSON.stringify({}) },
+    {
+      label: 'malformed project',
+      read: async () => JSON.stringify([{ objectID: 'missing-data' }]),
+    },
+    {
+      label: 'malformed project evidence',
+      read: async () =>
+        JSON.stringify([project({ blog_posts: [{ url: 'https://example.test/post' }] })]),
+    },
+  ])('rejects a $label without producing a prompt', async ({ read }) => {
+    await expect(readAgentPrompt('/portfolio', undefined, read)).rejects.toThrow();
   });
 
   it('prints by default and writes only when --out has a filename', async () => {
@@ -79,17 +93,13 @@ describe('agent prompt generator', () => {
     const writePrompt = vi.fn(async () => undefined);
     const readProjects = vi.fn(async () => JSON.stringify([project()]));
 
-    await emitAgentPrompt({ args: ['node', 'script'], readProjects, stdout, stderr, writePrompt });
+    const runtime = { readProjects, stdout, stderr, writePrompt };
+
+    await emitAgentPrompt({ args: ['node', 'script'] }, runtime);
     expect(stdout.write).toHaveBeenCalledWith(expect.stringContaining('### Alpha'));
     expect(writePrompt).not.toHaveBeenCalled();
 
-    await emitAgentPrompt({
-      args: ['node', 'script', '--out', '/tmp/prompt.txt'],
-      readProjects,
-      stderr,
-      stdout,
-      writePrompt,
-    });
+    await emitAgentPrompt({ args: ['node', 'script', '--out', '/tmp/prompt.txt'] }, runtime);
     expect(writePrompt).toHaveBeenCalledWith(
       '/tmp/prompt.txt',
       expect.stringContaining('### Alpha')
@@ -97,5 +107,20 @@ describe('agent prompt generator', () => {
     expect(stderr.write).toHaveBeenCalledWith(
       expect.stringMatching(/^Wrote \d+ characters for 1 systems\n$/)
     );
+  });
+
+  it('does not write a partial prompt after a registry failure', async () => {
+    const stdout = { write: vi.fn() };
+    const stderr = { write: vi.fn() };
+    const writePrompt = vi.fn();
+
+    await expect(
+      emitAgentPrompt(
+        { args: ['node', 'script', '--out', '/tmp/prompt.txt'] },
+        { readProjects: async () => JSON.stringify({}), stdout, stderr, writePrompt }
+      )
+    ).rejects.toThrow('projects.json must contain an array');
+    expect(writePrompt).not.toHaveBeenCalled();
+    expect(stdout.write).not.toHaveBeenCalled();
   });
 });
