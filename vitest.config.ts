@@ -35,9 +35,12 @@ export default defineConfig({
         '**/*.css',
         'src/app/**/page.tsx',
         'src/app/layout.tsx',
+        // Next route adapter: GET is the tested response builder re-exported for
+        // framework discovery; the implementation lives in siteJsonLdResponse.
+        'src/app/site.jsonld/route.ts',
       ],
-      // Floors track a few points under actual so a regression trips them. Raise
-      // them when coverage rises; never lower them to make a run pass.
+      // Floors are release contracts. Raise them when coverage rises; never lower
+      // them to make a run pass.
       thresholds: {
         lines: 97,
         functions: 95,
