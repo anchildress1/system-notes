@@ -13,7 +13,10 @@ const contentSecurityPolicy = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  "frame-ancestors 'none'",
+  // dev.to embeds this site in an iframe on its own origin, so framing cannot be
+  // refused outright. frame-ancestors is the allowlist browsers actually enforce;
+  // X-Frame-Options is deliberately absent below because it cannot express one.
+  "frame-ancestors 'self' https://dev.to",
   "manifest-src 'self'",
 ].join('; ');
 
@@ -22,10 +25,13 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: contentSecurityPolicy,
   },
-  {
-    key: 'X-Frame-Options',
-    value: 'DENY',
-  },
+  // No X-Frame-Options. Its only values are DENY and SAMEORIGIN, both of which
+  // block the dev.to embed, and ALLOW-FROM was never implemented in Chrome and
+  // has been removed from Firefox — there is no spelling of this header that
+  // permits one cross-origin framer. Sending DENY alongside a frame-ancestors
+  // allowlist is also self-contradictory: the CSP directive wins where both are
+  // understood, so the header would only ever break the embed on whatever failed
+  // to read the CSP. Clickjacking protection comes from frame-ancestors above.
   {
     key: 'X-Content-Type-Options',
     value: 'nosniff',
