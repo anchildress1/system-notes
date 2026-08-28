@@ -171,7 +171,6 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
               sizes="(max-width: 60rem) 100vw, 56vw"
               placeholder={blurFor(selected.image_url) ? 'blur' : 'empty'}
               blurDataURL={blurFor(selected.image_url)}
-              className={styles.image}
             />
           </span>
         ) : null}

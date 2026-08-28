@@ -144,11 +144,6 @@
   margin-top: clamp(1.25rem, 3vh, 2.125rem);
 }
 
-/* Only the shape. Fit, sizing and grade come from .taped img. */
-.image {
-  aspect-ratio: var(--print-ratio);
-}
-
 .columns {
   display: grid;
   margin-top: clamp(1.5rem, 3.4vh, 2.5rem);

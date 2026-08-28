@@ -575,6 +575,12 @@ body::before {
    overridden by the inline style next/image writes for fill, so one rule covers
    both modes.
 
+   aspect-ratio belongs here rather than in a page module for the same reason:
+   a module that names the mechanism can drop it and get a print of whatever
+   shape the file happens to be. It is inert on a fill image, whose width and
+   height are both already resolved — that case sizes its own container, which
+   is a fact about <Image fill>, not a second opinion about the ratio.
+
    The grade is part of the treatment, not of one photograph. Every print is
    pulled back the same amount, which is what stops one image reading as a
    screenshot dropped onto a page of prints. */
@@ -582,6 +588,7 @@ body::before {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: var(--print-ratio);
   object-fit: cover;
   filter: saturate(0.8) contrast(1.06);
 }
