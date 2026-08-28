@@ -147,6 +147,7 @@ describe('GET /api/blog/search', () => {
     'https://crawly.checkmarkdevtools.dev.evil.example/posts/pwn',
     'http://crawly.checkmarkdevtools.dev/posts/insecure',
     'https://crawly.checkmarkdevtools.dev:444/posts/port',
+    'https://reader:password@crawly.checkmarkdevtools.dev/posts/private',
     `${HOST}/not-posts/pwn`,
   ])('rejects unallowlisted sitemap URL %s', async (unsafeUrl) => {
     const safeUrl = `${HOST}/posts/safe`;
@@ -200,6 +201,7 @@ describe('GET /api/blog/search', () => {
   it('does not follow redirects from either upstream request', async () => {
     const fetchMock = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       expect(init?.redirect).toBe('manual');
+      expect(init?.signal).toBeInstanceOf(AbortSignal);
       return input.toString() === SITEMAP_URL
         ? response(buildSitemap([`${HOST}/posts/redirect`]))
         : response('', 302, { location: 'https://evil.example/pwn' });
@@ -208,6 +210,28 @@ describe('GET /api/blog/search', () => {
 
     const body = await requestBody();
     expect(body.results).toEqual([]);
+  });
+
+  it('returns an empty result when the sitemap request throws', async () => {
+    const fetchMock = vi.fn(() => Promise.reject(new Error('network unavailable')));
+    vi.stubGlobal('fetch', fetchMock);
+
+    expect(await requestBody()).toMatchObject({ results: [], total: 0, query: null });
+    expect(fetchMock).toHaveBeenCalledWith(SITEMAP_URL, expect.any(Object));
+  });
+
+  it('deduplicates sitemap URLs before fetching and keeps a partial result', async () => {
+    const good = `${HOST}/posts/good`;
+    const bad = `${HOST}/posts/bad`;
+    const fetchMock = mockFetch(buildSitemap([good, good, bad]), (url) =>
+      url === good ? articleHtml({ headline: 'Good', id: url }) : null
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    const body = await requestBody();
+
+    expect(body.results.map((item: { title: string }) => item.title)).toEqual(['Good']);
+    expect(fetchMock.mock.calls.filter(([input]) => input.toString() === good)).toHaveLength(1);
   });
 
   it.each([
@@ -255,6 +279,41 @@ describe('GET /api/blog/search', () => {
 
     const body = await requestBody();
     expect(body.results[0].title).toBe('Graph Post');
+  });
+
+  it('accepts Article type arrays and a string main entity URL', async () => {
+    const postUrl = `${HOST}/posts/type-array`;
+    const publicUrl = 'https://dev.to/anchildress1/type-array';
+    const html = `<script type="application/ld+json">${JSON.stringify({
+      '@type': ['Thing', 'Article'],
+      headline: 'Array Article',
+      mainEntityOfPage: publicUrl,
+    })}</script>`;
+    vi.stubGlobal(
+      'fetch',
+      mockFetch(buildSitemap([postUrl]), () => html)
+    );
+
+    expect((await requestBody()).results[0]).toEqual(
+      expect.objectContaining({ title: 'Array Article', url: publicUrl })
+    );
+  });
+
+  it.each([
+    {
+      label: 'non-article JSON-LD',
+      html: '<script type="application/ld+json">{"@type":"Person"}</script>',
+    },
+    { label: 'missing headline', html: articleHtml({ headline: '' }) },
+    { label: 'non-string headline', html: articleHtml({ headline: ['Title'] }) },
+  ])('rejects $label without failing the response', async ({ html }) => {
+    const postUrl = `${HOST}/posts/invalid-article`;
+    vi.stubGlobal(
+      'fetch',
+      mockFetch(buildSitemap([postUrl]), () => html)
+    );
+
+    expect(await requestBody()).toMatchObject({ results: [], total: 0 });
   });
 
   it.each([
@@ -392,5 +451,32 @@ describe('GET /api/blog/search', () => {
     await Promise.all([first, second]);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('fetches no more than five posts at a time', async () => {
+    const urls = Array.from({ length: 6 }, (_, index) => `${HOST}/posts/${index}`);
+    let activePosts = 0;
+    let peakPosts = 0;
+    let releaseFirstBatch: (() => void) | undefined;
+    const firstBatch = new Promise<void>((resolve) => {
+      releaseFirstBatch = resolve;
+    });
+    const fetchMock = vi.fn(async (input: string | URL | Request) => {
+      const url = input.toString();
+      if (url === SITEMAP_URL) return response(buildSitemap(urls));
+      activePosts += 1;
+      peakPosts = Math.max(peakPosts, activePosts);
+      if (activePosts <= 5) await firstBatch;
+      activePosts -= 1;
+      return response(articleHtml({ id: url }));
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const request = requestBody();
+    await vi.waitFor(() => expect(peakPosts).toBe(5));
+    releaseFirstBatch?.();
+    await request;
+
+    expect(peakPosts).toBe(5);
   });
 });

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildSiteJsonLd } from '@/lib/siteJsonLd';
-import type { Project } from '@/lib/api';
+import { getProjects, type Project } from '@/lib/api';
 
 const base = 'https://example.dev';
 
@@ -58,5 +58,16 @@ describe('buildSiteJsonLd', () => {
     const graph = buildSiteJsonLd([], base);
     expect(graph.url).toBe(base);
     expect(graph.author.sameAs).toContain(base);
+  });
+
+  it('carries the shipped portfolio evidence links into structured data', () => {
+    const projects = getProjects();
+    const graph = buildSiteJsonLd(projects, base);
+    const expectedLinks = projects.flatMap(
+      (project) => project.blog_posts?.map((post) => post.url) ?? []
+    );
+    const actualLinks = graph.hasPart.flatMap((entry) => entry.relatedLink);
+
+    expect(actualLinks).toEqual(expectedLinks);
   });
 });

@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { isValidAppId, isValidApiKey, hasValidAlgoliaCredentials } from '@/lib/algolia';
+import {
+  hasValidAgentCredentials,
+  hasValidAlgoliaCredentials,
+  isValidApiKey,
+  isValidAppId,
+} from '@/lib/algolia';
 
 describe('isValidAppId', () => {
   it('accepts valid 10-char alphanumeric app IDs', () => {
@@ -59,5 +64,15 @@ describe('hasValidAlgoliaCredentials', () => {
 
   it('returns false when both are invalid', () => {
     expect(hasValidAlgoliaCredentials('', '')).toBe(false);
+  });
+});
+
+describe('hasValidAgentCredentials', () => {
+  it('requires valid search credentials and a non-blank agent identifier', () => {
+    expect(hasValidAgentCredentials('agent-123')).toBe(false);
+  });
+
+  it.each(['', '   ', '\n\t'])('rejects a blank agent identifier', (agentId) => {
+    expect(hasValidAgentCredentials(agentId)).toBe(false);
   });
 });
