@@ -79,7 +79,7 @@ Admin and write-scoped keys belong outside this app. Giving one a `NEXT_PUBLIC_`
 
 ## Security
 
-The DEV aggregation route treats the remote sitemap and every linked page as hostile input. It accepts only credential-free same-origin `/posts/` URLs, refuses redirects, and bounds body sizes, URL count, concurrency, and request time. See [`SECURITY_RULES.md`](./SECURITY_RULES.md).
+The application makes no outbound requests to third-party content. Rules for reintroducing any are in [`SECURITY_RULES.md`](./SECURITY_RULES.md).
 
 `gitleaks`, CodeQL, Semgrep, SonarCloud, dependency auditing, and locked-down CI permissions cover the less glamorous ways software can embarrass its owner.
 

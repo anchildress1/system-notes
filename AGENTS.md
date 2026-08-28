@@ -138,12 +138,6 @@ One rule covers both themes — on the dark ground the keyline composites away.
 - Prefer the smallest stylesheet that does the job.
 - Test-only switches that disable network work exist for test and perf runs. Never set one in a real environment.
 
-## API
-
-- The blog search route is **GET only**.
-- It aggregates an external sitemap, extracts structured data, caches in memory, and clamps its own limits.
-- Sitemap and post HTML are untrusted. Apply the untrusted-input rules above and `SECURITY_RULES.md`.
-
 ## Conventions
 
 - Validate Algolia credentials through `@/lib/algolia.ts`, not an inline regex.
