@@ -30,6 +30,7 @@ describe('getIndexPulse', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.unstubAllEnvs();
     vi.restoreAllMocks();
   });
 
@@ -142,6 +143,14 @@ describe('getIndexPulse', () => {
 
   it('never calls the index without credentials', async () => {
     harness.hasCredentials = false;
+    const { getIndexPulse } = await loadPulse();
+
+    expect(await getIndexPulse()).toBeNull();
+    expect(harness.search).not.toHaveBeenCalled();
+  });
+
+  it('does not contact the provider when the test boundary disables the pulse', async () => {
+    vi.stubEnv('INDEX_PULSE_DISABLED', 'true');
     const { getIndexPulse } = await loadPulse();
 
     expect(await getIndexPulse()).toBeNull();

@@ -48,9 +48,10 @@ test-e2e: images
 	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
+	INDEX_PULSE_DISABLED=true \
 	NEXT_PUBLIC_BASE_URL=http://localhost:3002 \
 	npm run build
-	env -u NO_COLOR CI=true npm exec playwright test
+	INDEX_PULSE_DISABLED=true env -u NO_COLOR CI=true npm exec playwright test
 
 test-perf:
 	@echo "🚀 Running Performance tests..."
@@ -58,6 +59,7 @@ test-perf:
 	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
+	INDEX_PULSE_DISABLED=true \
 	NEXT_PUBLIC_BASE_URL=https://anchildress1.dev \
 	env -u NO_COLOR npm run test:perf
 
