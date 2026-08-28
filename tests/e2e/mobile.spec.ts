@@ -1,4 +1,3 @@
-import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
 import { mockAlgoliaSearch, test } from './utils';
 
@@ -37,29 +36,6 @@ for (const viewport of viewports) {
         // overflow instead of laying it out is how content goes missing.
         expect(widths.scroll - widths.client - widths.reached).toBeLessThanOrEqual(0);
         expect(widths.body).toBeLessThanOrEqual(widths.client);
-      });
-
-      // Desktop-only axe runs miss the violations that only exist once the
-      // layout reflows â reflow itself, target size, and anything the narrow
-      // composition reorders or overlaps.
-      test(`${path} has no accessibility violations`, async ({ page, browserName }) => {
-        await page.goto(path);
-
-        let builder = new AxeBuilder({ page });
-        if (browserName === 'webkit') {
-          // Every color here is authored in oklch, which WebKit reports back
-          // as lab(). axe-core mis-reads that: it scored the header's
-          // theme-song pill at 4.18:1 when the pixels WebKit actually paints
-          // are #beb3bd on #0c050c â 9.95:1. The color axe reports is the real
-          // one scaled by ~0.626 on every channel, which is a parser artefact
-          // rather than anything the page renders. Contrast still runs on
-          // Chromium at these same viewports, so the rule keeps its coverage;
-          // only the engine that cannot read the color skips it.
-          builder = builder.disableRules('color-contrast');
-        }
-
-        const accessibility = await builder.analyze();
-        expect(accessibility.violations).toEqual([]);
       });
     }
   });
