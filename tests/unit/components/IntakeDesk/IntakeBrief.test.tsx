@@ -1,5 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { StrictMode } from 'react';
 import IntakeBrief from '@/components/IntakeDesk/IntakeBrief';
 
 type ChatState = {
@@ -93,6 +94,26 @@ describe('IntakeBrief', () => {
     rerender(<IntakeBrief question={QUESTION} />);
 
     expect(captured.sent).toHaveLength(1);
+  });
+
+  it('sends and settles once during Strict Mode effect replay', () => {
+    chat.state = {
+      status: 'ready',
+      messages: [{ id: '1', role: 'assistant', parts: [{ type: 'text', text: 'Done.' }] }],
+    };
+    const onFinished = vi.fn();
+    const onSettled = vi.fn();
+
+    render(
+      <StrictMode>
+        <IntakeBrief question={QUESTION} onFinished={onFinished} onSettled={onSettled} />
+      </StrictMode>
+    );
+
+    expect(captured.sent).toEqual([{ text: QUESTION }]);
+    expect(onSettled).toHaveBeenCalledOnce();
+    expect(onSettled).toHaveBeenCalledWith('Done.');
+    expect(onFinished).toHaveBeenCalledOnce();
   });
 
   it('configures the documented Agent Studio streaming transport', () => {
@@ -276,22 +297,31 @@ describe('IntakeBrief', () => {
     expect(screen.getByText(/could not answer/i)).toBeVisible();
   });
 
-  it('fails a completed turn with no answer and releases the form', () => {
+  it.each([
+    { parts: [{ type: 'text', text: '   ' }] },
+    { parts: [{ type: 'reasoning', text: 'Thinking.' }] },
+  ])('fails a completed turn with no answer and releases the form', ({ parts }) => {
     chat.state = { status: 'submitted', messages: [] };
     const onFinished = vi.fn();
+    const onSettled = vi.fn();
 
-    const view = render(<IntakeBrief question={QUESTION} onFinished={onFinished} />);
+    const view = render(
+      <IntakeBrief question={QUESTION} onFinished={onFinished} onSettled={onSettled} />
+    );
     chat.state = {
       status: 'ready',
-      messages: [{ id: '2', role: 'assistant', parts: [{ type: 'reasoning', text: 'Thinking.' }] }],
+      messages: [{ id: '2', role: 'assistant', parts }],
     };
 
     act(() => finishTurn());
-    view.rerender(<IntakeBrief question={QUESTION} onFinished={onFinished} />);
+    view.rerender(
+      <IntakeBrief question={QUESTION} onFinished={onFinished} onSettled={onSettled} />
+    );
 
     expect(screen.getByText(/could not answer/i)).toBeVisible();
-    expect(screen.queryByText('Thinking.')).not.toBeInTheDocument();
-    expect(onFinished).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText(/reading the evidence/i)).not.toBeInTheDocument();
+    expect(onFinished).toHaveBeenCalledOnce();
+    expect(onSettled).not.toHaveBeenCalled();
   });
 
   it('keeps the initial idle state available before the request starts', () => {
