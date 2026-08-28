@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
+import { THEME_COLORS } from '../../src/lib/theme';
 import { mockAlgoliaSearch, test } from './utils';
 
 const ROUTES = ['/', '/notes', '/projects', '/about'] as const;
@@ -31,11 +32,6 @@ test.describe('Theme', () => {
 
         for (const route of ROUTES) {
           test(`${route} has no accessibility violations in ${scheme}`, async ({ page }) => {
-            // Contrast is the one part of the theme that is engine-independent —
-            // it is custom properties and an attribute — and WebKit cannot be
-            // asked anyway, since it reports oklch back as lab() and axe misreads
-            // it. Everything else in this file is behaviour and runs everywhere.
-            test.skip(test.info().project.name !== 'chromium', 'palette is engine-independent');
             await page.goto(route);
 
             const accessibility = await new AxeBuilder({ page }).analyze();
@@ -69,11 +65,11 @@ test.describe('Theme', () => {
     test('repaints the browser chrome with the page', async ({ page }) => {
       await page.goto('/');
       const meta = page.locator('meta[name="theme-color"]');
-      await expect(meta).toHaveAttribute('content', '#0b0c0f');
+      await expect(meta).toHaveAttribute('content', THEME_COLORS.dark);
 
       await page.getByRole('button', { name: 'Light theme' }).click();
 
-      await expect(meta).toHaveAttribute('content', '#f7f6f2');
+      await expect(meta).toHaveAttribute('content', THEME_COLORS.light);
     });
 
     test('swaps theme tokens without transitioning through a mixed palette', async ({ page }) => {

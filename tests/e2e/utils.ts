@@ -15,6 +15,8 @@ export type MockAlgoliaHit = {
   __position?: number;
 };
 
+const ALGOLIA_SEARCH_ROUTE = /\/1\/indexes\/[^/]+\/queries(?:\?|$)/;
+
 interface MockAlgoliaOptions {
   nbHits?: number;
   facets?: Record<string, Record<string, number>>;
@@ -54,8 +56,8 @@ export async function mockAlgoliaSearch(
   hits: MockAlgoliaHit[],
   options: MockAlgoliaOptions = {}
 ) {
-  await page.unroute('**/*algolia*/**');
-  await page.route('**/*algolia*/**', async (route) => {
+  await page.unroute(ALGOLIA_SEARCH_ROUTE);
+  await page.route(ALGOLIA_SEARCH_ROUTE, async (route) => {
     let requests: Array<Record<string, unknown>> = [{}];
     try {
       const payload = route.request().postDataJSON() as { requests?: unknown[] };
