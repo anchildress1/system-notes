@@ -1,148 +1,65 @@
-Treat this file as authoritative. Where another instruction file disagrees, this one wins.
+Authoritative where any other instruction file disagrees. Everything here is something
+scanning the repo will not tell you.
 
-## Non-negotiables
+## What this repo will not accept
 
-- Build for the long term. No quick fixes, no compatibility kept "just in case".
-- Delete scratch files written for local validation. Never commit them.
-- Conventional Commits, with the RAI footer.
-- `SECURITY_RULES.md` is mandatory policy for any change touching outbound fetches, file loading, or path resolution.
+- No quick fixes, and no compatibility kept "just in case".
+- **No backward compatibility, ever.** Nothing links to this site from anywhere outside it. A route that moves or dies just 404s — never add a redirect, alias, or shim, and delete the tests that guarded the old path in the same commit.
+- Dead code goes, and its tests go with it. Passing tests are not evidence a thing is used; check for a caller.
+- Do not commit scratch files written for local validation.
+- Do not add documentation unless asked.
 
-## Untrusted input
+## Failure modes nothing will catch
 
-Remote content and user-supplied paths are hostile until proven otherwise.
+Each of these has shipped. All of them pass review, typecheck, lint, and CI.
 
-- Follow only same-host, allowlisted URLs. Refuse redirects and credential-bearing hosts.
-- Reject any path containing `..`; resolve to absolute and enforce sandbox containment before use.
-- Allowlist served file types. Deny by default on any validation failure.
-- Cap body size, URL count, concurrency, and timeout on every outbound fetch.
+- **`mask-image` on a focusable element deletes its focus ring.** A mask clips everything the element paints, `outline` and `box-shadow` included. `:focus-visible` still matches and the ring still computes — it just never reaches the screen, and only a Tab key reveals it. Put the masked fill on a `::before` beneath the element and leave the element unmasked.
+- **`overflow-x: clip` on `body` propagates to the viewport.** Sideways scrolling stops, but `scrollWidth` still reports the overflow. Paired with a `min-width` it strands real content where nothing can scroll to it. Clip the content column instead, and never clip to hide content that is real.
+- **An animation's `transform` replaces the element's own.** A tilt set with `transform` silently vanishes wherever an animation also applies one. Use `rotate`; it composes.
+- **Alpha tokens are layers, not backgrounds.** Set as a flat `background` they replace the fill with a translucent smear of whatever sits behind it. Composite them over the fill.
+- **`composes` works only on a simple class selector.** A descendant or element selector fails the build — put the global class in the JSX.
+- **An out-of-gamut `oklch()` is clipped toward a hue nobody chose.** Verify a new value lands inside sRGB before shipping it.
+- **An accessibility rule named in `withRules` reports nothing when it did not run.** Assert the rule ran before asserting no violations, or the check is green without measuring anything.
 
-## URL state
+## Settled decisions
 
-InstantSearch owns index URL state. Components own their own selection.
+Each was tried and reverted. Re-opening one costs a pass and lands back here.
 
-- `searchRouting` serializes query and refinements. Nothing else writes search params.
-- A selected note lives in local state and never reaches the URL.
-- The selected note renders in the workspace reader. No overlay, no modal.
-- Algolia `sendEvent` fires on selection. Never gate an event on URL state.
-- Do not add `createURL` logic that fights InstantSearch's own routing.
+- **One chromatic hue.** No second hue for a state, a warning, an error, or for "the gold is not legible here" — that case gets a keyline, never a recolour. Rust, brick, terracotta, amber, mustard and ochre have each shipped and been reverted.
+- **Gold is a ground, never an ink on paper.** It clears no contrast floor at any lightness that is still yellow. Emphasis on paper is carried by weight, not hue.
+- **An alias token never holds a literal.** Giving one its own value is how the second hue keeps coming back.
+- **Two button variants.** If something needs a third, it is a link.
+- **One image treatment, site-wide.** A second is the defect, not the solution. The shared rule owns fit, sizing, ratio and grade; a page supplies only the ratio's value, because the shape of a picture is a fact about the picture.
+- **A selected note never reaches the URL,** and never opens in an overlay or a modal. It renders in the workspace reader.
+- **No kicker, slug, eyebrow, or label row above an `h1`,** under any name.
+- **The tick marks the site** — the header wordmark and the footer byline. It never marks a section.
 
-## Colour
+## Rules whose reason is not visible in the code
 
-Every colour is declared in `src/app/globals.css`. Declare one nowhere else.
-
-- One chromatic hue. There is no second one — not for a state, a warning, or an error.
-- Neutrals stay near-achromatic.
-- Never reintroduce rust, brick, terracotta, amber, mustard, or ochre. Each has shipped and been reverted, and each arrived through the same argument that **Keyline, never recolour** answers.
-- Verify a new `oklch()` lands inside sRGB. Out-of-gamut values clip toward a hue nobody chose.
-- Board swatch tokens are for the board. They do not travel.
-
-### Gold is a marker, not an ink
-
-- Gold is a **ground** under dark ink. It is never text on paper — it clears no contrast floor at any lightness that is still yellow.
-- Emphasis on paper is carried by weight, not by hue.
-- Compose the shared highlight class. Never re-implement the band.
-
-### Keyline, never recolour
-
-Gold is near-invisible on paper — not faint, invisible. A mark that must survive the light theme gains a keyline; its hue does not change.
-
-- Rectangular fill: a hairline ring behind it.
-- Drawn mark: `drop-shadow`, which traces the mask's own alpha so the hairline follows the stroke instead of boxing it.
-- Focus ring: the outline plus a keyline behind it.
-
-One rule covers both themes — on the dark ground the keyline composites away.
-
-### Aliases and literals
-
-- An alias token points at another token and never holds a literal of its own. Giving one a literal is how a second hue keeps coming back.
-- Hardcoded hex is permitted only where a file cannot read a custom property: a document that replaces the page, a standalone SVG, and the browser-chrome values in `src/lib/theme.ts`. Each must be the sRGB rendering of the token it stands for.
-
-### Editing a colour
-
-- Change the token. Nothing else should need editing.
-- If a second file needs the same edit, that file is wrong — delete its copy rather than syncing it.
-- Comments recording a rejected colour are load-bearing. Keep them, in the past tense.
-
-## Interaction primitives
-
-`globals.css` owns every button, hover, and image treatment. A component sets its own footprint — padding, min-width, gap — and nothing more.
-
-- Compose the primitive. Never restate shape, fill, hover, or disabled state.
-- Grep for the primitive before adding any interactive style.
-- Two button variants. A third is a link.
-- Never write a `:hover` that sets a colour. A component may add motion on top of the shared hover; it may not add a second colour.
-- The wash is for empty boxes. A filled control deepens instead — laying translucent gold over gold reads as a stain.
-- Alpha tokens are **layers, not backgrounds**. Composite them over the fill; set flat, they replace it with a smear of whatever is behind.
-- `composes` works only on a simple class selector. Anything else belongs in the JSX.
-
-### Images
-
-- One image treatment, site-wide. A second one is the defect, not the solution.
-- The picture inside the print is part of the treatment: the shared rule owns fit, sizing, ratio and grade. A page supplies only the ratio's **value**, because the shape of a picture is a fact about the picture. A module that holds the mechanism will drift from it.
-- A print must allow overflow and carry no mask. Either one clips the treatment away.
-- Use `rotate`, never `transform`, for a tilt — an animation's `transform` replaces the element's own, so the tilt silently vanishes wherever an animation is also applied.
-- Captions go under the print. Never overlay one and paint a gradient behind it to buy contrast.
-
-### Focus and overflow
-
-- **Never put `mask-image` on a focusable element.** A mask clips everything the element paints, `outline` and `box-shadow` included, so the focus ring computes and never reaches the screen. No automated check catches this — it only shows on a Tab key. Draw the masked fill on a `::before` beneath the element instead.
-- The global focus rule covers the standard interactive elements. Do not override it per page. Add `:focus-visible` only for a container made focusable with `tabIndex`.
-- A field drawn as a rule rather than a box opts out through its data attribute and thickens its own rule. Never through a per-component `outline: 0`.
-- **Never clip content to hide overflow, and never pair a `min-width` with a clip.** That strands real content outside the viewport where nothing can scroll to it. The narrowest supported width is a real device and is also a wide one at 400% zoom. Clipping is for decorative overhang; real content reflows or it scrolls.
-- Clipping on `body` propagates to the viewport: it stops sideways scrolling but still reports the overflow in `scrollWidth`, which is the number the mobile spec asserts on. Keep the clip on the content column.
-
-### Marks
-
-- Drawn marks are SVG masks held in custom properties, so the colour stays a variable. Add a shape, not a pre-coloured image.
-- A pre-inked mark must match its token exactly.
-- Nothing decorative is a plain rectangle or a 1px rule.
-
-## Page heads
-
-- A page head is the head class plus an `h1`. Nothing else.
-- No kicker, slug, eyebrow, or label row above an `h1`, under any name.
-- The tick marks the **site** — the header wordmark and the footer byline. It never marks a section. It is declared once and composed; two declarations of it drifted four ways before.
-- Two heading scales, both named. Do not add a third.
-- The turn of a headline is a `<span>`, marked and italic. Do not tint it.
-- Facts belong with the page's other facts. Never delete content in order to delete a wrapper.
-
-## Tests
-
-- **Assert logic and structure, never colour.** No hex, `oklch()`, lightness, or contrast ratio mirrored from CSS into a test file. A mirrored value makes every colour change a two-file edit and drifts silently — the guard then passes while asserting a number the stylesheet abandoned.
-- Assert the _shape_ of a style contract, not its value. Which tone a token resolves to is the stylesheet's business.
-- Contrast and colour accessibility are enforced against the rendered page, by axe and the Lighthouse gate. Never re-derive them arithmetically in a unit test. Measuring a **computed** style in the browser is not the same thing and is the right tool where axe has no rule.
-- Mobile axe scans only what the viewport changes; markup does not reflow, so a second full scan restates the answer. A rule named in `withRules` reports nothing when it did not run — assert the rule ran before asserting no violations.
-- **Stub every third-party endpoint at the network boundary, analytics included.** Narrowing a route to one path leaves the others live: an unstubbed host means the suite is talking to a real provider and the behaviour it was meant to prove is unverified.
-- Coverage floors are enforced in `vitest.config.ts` and measured over every module, not only the files a test imported. Raise them when coverage rises; never lower one to make a run pass.
-- Every component and utility ships positive, negative, and edge-case tests.
-- Page composition is excluded from coverage. Cover cross-page behaviour with E2E.
-- One worker, zero retries. A retry turns a flake into a pass and hides it — fix the test.
-- Each browser project owns a slice of the suite, so a check runs on the engine that can answer it and nowhere else. A new spec must be assigned, or it runs on the default engine alone.
-
-## Validation
-
-- Lefthook pre-push runs unit tests, `gitleaks`, and Lighthouse. It does not run E2E, SonarCloud, or Semgrep.
-- Let pre-push run once. Add only the checks it omits.
-- Run SonarCloud and Semgrep explicitly for security, scanner, or repository-wide review work.
-- `strict: true` is enforced. Do not weaken it, and do not add `@ts-ignore` without a justifying comment.
-
-## Performance
-
-- Accessibility, best-practices and SEO gate at 100%. They are deterministic given the same DOM, so a drop is a real regression.
-- Performance is the only timing-dependent category and so the only one carrying headroom. A perfect-score gate measures the runner, not the code.
-- **Never lower a performance floor to make a run pass.** A floor that moves carries the measurement, the reason, and the condition for restoring it — and is restored.
-- Lighthouse runs the desktop profile only. Mobile layout and target sizes are asserted directly in the mobile spec, in pixels, rather than inferred from a score.
+- Colour is declared in exactly one stylesheet. If a second file needs the same colour edit, that file is wrong — delete its copy rather than syncing it.
+- Hardcoded hex is permitted only where a file cannot read a custom property, and must be the sRGB rendering of the token it stands for.
+- Comments recording a rejected colour are load-bearing history. Keep them, in the past tense.
+- Compose the interaction primitives; never restate shape, fill, hover, or disabled state. Grep for the primitive before writing any interactive style.
+- Never write a `:hover` that sets a colour. A component may add motion on top of the shared hover.
+- Drawn marks are SVG masks held in custom properties, so the colour stays a variable. Add a shape, not a pre-coloured image. Nothing decorative is a rectangle or a 1px rule.
+- Do not override the global focus rule per page. A field drawn as a rule rather than a box opts out through its data attribute — never through a per-component `outline: 0`.
+- **Tests assert logic and structure, never colour.** A value mirrored from CSS into a test drifts silently, and the guard then passes while asserting a number the stylesheet abandoned. Contrast is enforced against the rendered page; never re-derive it arithmetically in a unit test. Reading a _computed_ style in a real browser is a different thing, and is the right tool where the accessibility scanner has no rule.
+- **Stub every third-party endpoint at the network boundary, analytics included.** Narrowing a route to one path leaves the others live: the suite then talks to a real provider, and the behaviour it was meant to prove goes unverified.
+- Never lower a coverage or performance floor to make a run pass. A floor that moves carries its measurement, its reason, and the condition for restoring it.
 - A floor already attempted and reverted stays reverted until the bytes behind it are actually shed. Read the recorded measurement before trying again.
+- Lighthouse gates the desktop profile only. Mobile layout and target sizes are measured directly in the mobile spec, in pixels, rather than inferred from a score — a score gate on the index page sat above every value it ever produced.
+- Only accessibility, best-practices and SEO gate at a perfect score; they are deterministic. Performance is timing-dependent, so a perfect-score gate there measures the runner rather than the code.
+- Mobile accessibility scans cover only what the viewport changes. Markup does not reflow, so a second full scan restates the answer.
+- Each browser project owns a slice of the suite. A new spec must be assigned to the engine that can answer it, or it runs on the default engine alone.
+- Let pre-push run once, then add only the checks it omits. Run SonarCloud and Semgrep explicitly for security or repository-wide review work.
 - An audit is skipped only when the harness, not the code, is what fails it. Say which.
-- Defer browser-only, below-the-fold work with `next/dynamic` or `IntersectionObserver`.
-- Prefer the smallest stylesheet that does the job.
-- Test-only switches that disable network work exist for test and perf runs. Never set one in a real environment.
 
 ## Conventions
 
-- Validate Algolia credentials through `@/lib/algolia.ts`, not an inline regex.
-- Every icon comes from `react-icons`. Never hand-draw an SVG icon, and never use a Unicode character as one — a glyph renders as whatever the reader's font stack has, which is not a decision this repo gets to make.
-- Do not add documentation unless asked. Where docs are written for people, they may have a voice.
+- Conventional Commits, with the RAI footer.
+- Every icon comes from `react-icons`. Never hand-draw an SVG icon, and never use a Unicode character as one — a glyph renders as whatever the reader's font stack happens to have, which is not a decision this repo gets to make.
+- Validate Algolia credentials through the shared helper rather than an inline regex.
+- `SECURITY_RULES.md` is mandatory policy for any change touching outbound fetches, file loading, or path resolution. The application currently makes no outbound requests; keep it that way unless asked.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
