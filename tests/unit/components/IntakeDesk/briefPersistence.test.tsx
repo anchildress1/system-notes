@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const BRIEF_KEY = 'system-notes-intake-brief';
 
@@ -29,6 +29,8 @@ describe('brief persistence', () => {
     sessionStorage.clear();
     vi.resetModules();
   });
+
+  afterEach(() => vi.restoreAllMocks());
 
   it('keeps a settled brief so leaving the page does not discard it', async () => {
     const IntakeDesk = await loadDesk();
@@ -79,5 +81,31 @@ describe('brief persistence', () => {
     render(<IntakeDesk />);
 
     expect(screen.queryByRole('region', { name: 'The brief' })).not.toBeInTheDocument();
+  });
+
+  it('keeps the page usable when session storage refuses reads', async () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new DOMException('Blocked', 'SecurityError');
+    });
+    const IntakeDesk = await loadDesk();
+
+    render(<IntakeDesk />);
+
+    expect(screen.getByRole('button', { name: 'Run it' })).toBeEnabled();
+    expect(screen.queryByRole('region', { name: 'The brief' })).not.toBeInTheDocument();
+  });
+
+  it('keeps the settled brief visible when session storage refuses writes', async () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('Blocked', 'SecurityError');
+    });
+    const IntakeDesk = await loadDesk();
+
+    render(<IntakeDesk />);
+    fireEvent.change(screen.getByLabelText('The problem'), { target: { value: 'A problem.' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Run it' }));
+    fireEvent.click(screen.getByTestId('settle'));
+
+    expect(screen.getByTestId('settle')).toBeVisible();
   });
 });

@@ -1,5 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import IntakeBrief from '@/components/IntakeDesk/IntakeBrief';
 
 type ChatState = {
@@ -15,12 +15,20 @@ const captured = vi.hoisted(() => ({
   options: undefined as Record<string, unknown> | undefined,
   sent: [] as Array<{ text: string }>,
   stopped: 0,
+  transport: undefined as Record<string, unknown> | undefined,
+  send: vi.fn(() => Promise.resolve()),
 }));
 
 // The transport is constructed at module scope, so it is stubbed rather than
 // exercised: this suite is about what the component does with a turn, not about
 // how `ai` builds a request.
-vi.mock('ai', () => ({ DefaultChatTransport: class {} }));
+vi.mock('ai', () => ({
+  DefaultChatTransport: class {
+    constructor(options: Record<string, unknown>) {
+      captured.transport = options;
+    }
+  },
+}));
 
 vi.mock('@ai-sdk/react', () => ({
   useChat: (options: Record<string, unknown>) => {
@@ -29,7 +37,7 @@ vi.mock('@ai-sdk/react', () => ({
       ...chat.state,
       sendMessage: (message: { text: string }) => {
         captured.sent.push(message);
-        return Promise.resolve();
+        return captured.send();
       },
       stop: () => {
         captured.stopped += 1;
@@ -65,7 +73,11 @@ describe('IntakeBrief', () => {
     captured.options = undefined;
     captured.sent = [];
     captured.stopped = 0;
+    captured.send.mockReset();
+    captured.send.mockResolvedValue(undefined);
   });
+
+  afterEach(() => vi.useRealTimers());
 
   it('sends the question once, on mount', () => {
     render(<IntakeBrief question={QUESTION} />);
@@ -83,10 +95,17 @@ describe('IntakeBrief', () => {
     expect(captured.sent).toHaveLength(1);
   });
 
-  it('reaches the agent over a transport rather than a search client', () => {
+  it('configures the documented Agent Studio streaming transport', () => {
     render(<IntakeBrief question={QUESTION} />);
 
     expect(captured.options?.transport).toBeDefined();
+    expect(captured.transport).toMatchObject({
+      api: expect.stringContaining('/agent-studio/1/agents/'),
+      headers: {
+        'x-algolia-application-id': expect.any(String),
+        'x-algolia-api-key': expect.any(String),
+      },
+    });
   });
 
   it.each(['submitted', 'streaming'])('renders nothing of the answer while %s', (status) => {
@@ -237,7 +256,7 @@ describe('IntakeBrief', () => {
 
     expect(screen.getByText(/did not answer in time/i)).toBeVisible();
     expect(onFinished).toHaveBeenCalledTimes(1);
-    vi.useRealTimers();
+    expect(captured.stopped).toBe(1);
   });
 
   it('echoes the question on a failed turn, since the field is cleared on submit', () => {
@@ -273,5 +292,19 @@ describe('IntakeBrief', () => {
     expect(screen.getByText(/could not answer/i)).toBeVisible();
     expect(screen.queryByText('Thinking.')).not.toBeInTheDocument();
     expect(onFinished).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the initial idle state available before the request starts', () => {
+    render(<IntakeBrief question={QUESTION} />);
+
+    expect(screen.getByText(/reading the evidence/i)).toBeVisible();
+  });
+
+  it('recovers when sending the question rejects', async () => {
+    captured.send.mockRejectedValueOnce(new Error('network'));
+
+    render(<IntakeBrief question={QUESTION} />);
+
+    expect(await screen.findByText(/could not answer/i)).toBeVisible();
   });
 });

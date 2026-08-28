@@ -93,11 +93,13 @@ interface BriefProps {
  */
 export default function IntakeBrief({ question, onSettled, onFinished }: Readonly<BriefProps>) {
   const [timedOut, setTimedOut] = useState(false);
-  const [completedWithoutAnswer, setCompletedWithoutAnswer] = useState(false);
+  const [sendFailed, setSendFailed] = useState(false);
+  const [emptyCompletion, setEmptyCompletion] = useState(false);
   const { messages, status, error, sendMessage, stop } = useChat({
     transport,
+    onError: () => setSendFailed(true),
     onFinish: ({ message, isAbort, isError }) => {
-      if (!isAbort && !isError && !messageText(message)) setCompletedWithoutAnswer(true);
+      if (!isAbort && !isError && !messageText(message)) setEmptyCompletion(true);
     },
   });
 
@@ -109,13 +111,13 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
   useEffect(() => {
     if (hasSent.current) return;
     hasSent.current = true;
-    void sendMessage({ text: question });
+    void sendMessage({ text: question }).catch(() => setSendFailed(true));
   }, [question, sendMessage]);
 
   const answer = messageText(
     [...messages].reverse().find((message) => message.role === 'assistant')
   );
-  const failed = Boolean(error) || status === 'error' || timedOut || completedWithoutAnswer;
+  const failed = Boolean(error) || status === 'error' || timedOut || sendFailed || emptyCompletion;
   const isWorking = !failed && (status === 'submitted' || status === 'streaming');
 
   // Stop waiting rather than wait forever. The request is aborted so a late
@@ -140,8 +142,11 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
 
   // Hand the settled answer up so it outlives this component. The agent call is
   // not repeatable for free, and leaving the page should not spend another one.
+  const hasSettledAnswer = useRef(false);
   useEffect(() => {
-    if (!isWorking && answer) onSettled?.(answer);
+    if (isWorking || !answer || hasSettledAnswer.current) return;
+    hasSettledAnswer.current = true;
+    onSettled?.(answer);
   }, [answer, isWorking, onSettled]);
 
   if (failed) {
