@@ -176,6 +176,10 @@ submit_build() {
 
     while (( elapsed < timeout )); do
         status=$(gcloud builds describe "$build_id" --project "$PROJECT_ID" --format='value(status)')
+        elapsed=$(( $(date +%s) - started_at ))
+        if (( elapsed >= timeout )); then
+            break
+        fi
         case "$status" in
             SUCCESS)
                 echo "Build $build_id succeeded"

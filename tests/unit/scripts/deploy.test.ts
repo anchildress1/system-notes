@@ -15,7 +15,7 @@ async function writeExecutable(directory: string, name: string, source: string) 
   await chmod(file, 0o755);
 }
 
-async function fakeCloud(statuses = ['SUCCESS'], clockAdvance = 15) {
+async function fakeCloud(statuses = ['SUCCESS'], clockAdvance = 15, describeAdvance = 0) {
   const directory = await mkdtemp(path.join(tmpdir(), 'system-notes-deploy-'));
   temporaryDirectories.push(directory);
 
@@ -55,6 +55,8 @@ case "$*" in
       printf '%s\\n' 'fake describe transport failure' >&2
       exit 17
     fi
+    now=$(cat "$CLOCK_FILE")
+    printf '%s\\n' "$((now + $GCLOUD_DESCRIBE_CLOCK_INCREMENT))" > "$CLOCK_FILE"
     printf '%s\\n' "$status"
     ;;
   "run deploy "*) ;;
@@ -88,7 +90,16 @@ printf '%s\\n' "$((now + $SLEEP_CLOCK_INCREMENT))" > "$CLOCK_FILE"
 `
   );
 
-  return { clock, clockAdvance, directory, log, sleepLog, statusFile, statusIndex };
+  return {
+    clock,
+    clockAdvance,
+    describeAdvance,
+    directory,
+    log,
+    sleepLog,
+    statusFile,
+    statusIndex,
+  };
 }
 
 function deploymentEnv(
@@ -104,6 +115,7 @@ function deploymentEnv(
     GCLOUD_STATUS_INDEX_FILE: cloud.statusIndex,
     SLEEP_LOG: cloud.sleepLog,
     SLEEP_CLOCK_INCREMENT: String(cloud.clockAdvance),
+    GCLOUD_DESCRIBE_CLOCK_INCREMENT: String(cloud.describeAdvance),
     GCP_PROJECT_ID: 'test-project',
     NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: 'TESTAPPID1',
     NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: 'test_search_key_valid_length_20',
@@ -192,6 +204,17 @@ describe('deploy script', () => {
 
     expect(await readFile(cloud.statusIndex, 'utf8')).toBe('1\n');
     expect(await readFile(cloud.sleepLog, 'utf8')).toBe('1\n');
+    expect(await readFile(cloud.log, 'utf8')).not.toContain('run deploy');
+  });
+
+  it('does not sleep past the build deadline after a slow status check', async () => {
+    const cloud = await fakeCloud(['QUEUED'], 15, 2);
+
+    await expect(runDeploy(deploymentEnv(cloud, { BUILD_TIMEOUT: '1' }))).rejects.toMatchObject({
+      stderr: expect.stringContaining('Build build-123 timed out after 1s (status: QUEUED)'),
+    });
+
+    expect(await readFile(cloud.sleepLog, 'utf8')).toBe('');
     expect(await readFile(cloud.log, 'utf8')).not.toContain('run deploy');
   });
 
