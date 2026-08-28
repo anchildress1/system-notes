@@ -31,7 +31,7 @@ The homepage lazily loads the agent transport only after a valid question is sub
 - One question produces one answer; there is no conversational history.
 - A request is stopped after 45 seconds and the form is released on every terminal result.
 - Agent output is parsed into React elements. HTTPS citations may be followed; model output is never injected as HTML.
-- The Agent Studio handoff copy lives under `.agent/agent-studio/`; regenerate its roster prompt after changing `src/data/projects.json`.
+- The Agent Studio handoff copy lives under `.agent/agent-studio/` and is maintained by hand; repaste it after changing `src/data/projects.json`.
 
 ## Data boundary
 
