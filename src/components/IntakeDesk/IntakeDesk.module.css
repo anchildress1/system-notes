@@ -71,8 +71,9 @@
    it does not evaluate ::placeholder colour at all. */
 /* Grows with what is typed instead of scrolling inside a fixed box, so a long
    problem stays readable while it is being written. min-height stays the floor.
-   Chromium and WebKit only — Firefox 151 does not support it, which is why the
-   floor above has to be correct on its own rather than leaning on this. */
+   Progressive enhancement behind @supports: where field-sizing is unsupported
+   the field simply keeps its floor, which is why that floor has to be correct
+   on its own rather than leaning on this. */
 @supports (field-sizing: content) {
   .field {
     field-sizing: content;
