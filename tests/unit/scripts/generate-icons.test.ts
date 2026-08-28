@@ -35,15 +35,15 @@ describe('icon generator', () => {
     expect(sharpFactory).toHaveBeenCalledWith('/icon.svg', { density: 384 });
     expect(chain.resize).toHaveBeenCalledWith(32, 32);
 
-    await generateIcons({
-      fs,
-      icoSizes: [16, 256],
-      log,
-      pngTargets: [{ file: 'src/app/icon.png', size: 512 }],
-      root: '/portfolio',
-      sharpFactory,
-      source: '/portfolio/src/app/icon.svg',
-    });
+    await generateIcons(
+      {
+        icoSizes: [16, 256],
+        pngTargets: [{ file: 'src/app/icon.png', size: 512 }],
+        root: '/portfolio',
+        source: '/portfolio/src/app/icon.svg',
+      },
+      { fs, log, sharpFactory }
+    );
 
     expect(fs.mkdir).toHaveBeenCalledWith('/portfolio/src/app', { recursive: true });
     expect(fs.writeFile).toHaveBeenCalledWith('/portfolio/src/app/icon.png', Buffer.from('png'));

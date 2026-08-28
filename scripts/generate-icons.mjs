@@ -20,6 +20,12 @@ export const PNG_TARGETS = [
   { file: 'src/app/apple-icon.png', size: 180 },
 ];
 
+const DEFAULT_RUNTIME = {
+  fs: { mkdir, writeFile },
+  log: process.stdout,
+  sharpFactory: sharp,
+};
+
 /**
  * Rasterizes the source mark at one edge length.
  *
@@ -64,15 +70,10 @@ export function packIco(entries) {
   return Buffer.concat([header, ...directory, ...entries.map(({ png }) => png)]);
 }
 
-export async function generateIcons({
-  fs = { mkdir, writeFile },
-  log = process.stdout,
-  pngTargets = PNG_TARGETS,
-  root = ROOT,
-  sharpFactory = sharp,
-  source = SOURCE,
-  icoSizes = ICO_SIZES,
-} = {}) {
+export async function generateIcons(
+  { pngTargets = PNG_TARGETS, root = ROOT, source = SOURCE, icoSizes = ICO_SIZES } = {},
+  { fs, log, sharpFactory } = DEFAULT_RUNTIME
+) {
   for (const { file, size } of pngTargets) {
     const out = path.join(root, file);
     await fs.mkdir(path.dirname(out), { recursive: true });
