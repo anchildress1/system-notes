@@ -13,6 +13,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    allowOnly: false,
     setupFiles: ['./tests/setupTests.ts'],
     // tests/unit holds Vitest specs; tests/e2e holds Playwright specs, which run
     // separately. Playwright's default testMatch also matches *.test.ts, so the two
@@ -21,6 +22,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
+      include: ['src/**/*.{ts,tsx}'],
       exclude: [
         'node_modules/**',
         'dist/**',
@@ -38,9 +40,9 @@ export default defineConfig({
       // them when coverage rises; never lower them to make a run pass.
       thresholds: {
         lines: 95,
-        functions: 92,
-        branches: 85,
-        statements: 92,
+        functions: 93,
+        branches: 90,
+        statements: 94,
       },
     },
   },

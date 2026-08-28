@@ -15,7 +15,7 @@
     "lint": "ESLINT_USE_FLAT_CONFIG=true eslint --config eslint.config.mjs .",
     "typecheck": "tsc --noEmit",
     "pretest": "npm run image-variants",
-    "test": "vitest run --coverage --passWithNoTests",
+    "test": "vitest run --coverage",
     "pretest:watch": "npm run image-variants",
     "test:watch": "vitest",
     "test:perf": "npm run build && lhci autorun --config=lighthouserc.desktop.json",
