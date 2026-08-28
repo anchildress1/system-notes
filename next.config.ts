@@ -67,20 +67,6 @@ const nextConfig: NextConfig = {
     // render-blocking stylesheets but takes the HTML from 40 KB to 71 KB gzipped,
     // and mobile LCP went 3.4s -> 4.4-5.2s (score 91-92 -> 80-84).
   },
-  async redirects() {
-    // The index moved off / when the intake took the front door. These carry the
-    // refinement deep links it used to emit — Next forwards the query string to the
-    // destination, and the browser preserves #notes-index across the hop.
-    //
-    // Keyed on the refinement params only. `q` is deliberately absent: the intake
-    // wants ?q= for its own question, so redirecting on it would steal that back.
-    return ['project', 'kind', 'tag'].map((key) => ({
-      source: '/',
-      has: [{ type: 'query' as const, key }],
-      destination: '/notes',
-      permanent: false,
-    }));
-  },
   async headers() {
     return [
       {

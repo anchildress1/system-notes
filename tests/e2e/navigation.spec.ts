@@ -31,22 +31,6 @@ test.describe('Primary navigation', () => {
     await expect(page).toHaveURL('/');
   });
 
-  test('carries an old index deep link across to its new home', async ({ page }) => {
-    // The hash never reaches the server, so its survival is browser behaviour
-    // rather than something the redirect rule can state. Assert it, don't assume it.
-    await page.goto('/?project=System+Notes#notes-index');
-
-    // Next re-encodes the space as %20 on the way through, so assert what it
-    // actually emits rather than the + the old links were written with.
-    await expect(page).toHaveURL('/notes?project=System%20Notes#notes-index');
-  });
-
-  test('leaves the intake its own ?q= rather than redirecting it away', async ({ page }) => {
-    await page.goto('/?q=anything');
-
-    await expect(page).toHaveURL('/?q=anything');
-  });
-
   test('keeps the blog external and exposes profile destinations', async ({ page }) => {
     await page.goto('/');
 
