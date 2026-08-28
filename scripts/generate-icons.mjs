@@ -36,7 +36,7 @@ async function render(size) {
  * @param entries Rendered PNGs paired with the edge length each was drawn at.
  * @returns The encoded ICO.
  */
-function packIco(entries) {
+export function packIco(entries) {
   const header = Buffer.alloc(6);
   header.writeUInt16LE(0, 0); // reserved
   header.writeUInt16LE(1, 2); // type: icon
@@ -61,15 +61,19 @@ function packIco(entries) {
   return Buffer.concat([header, ...directory, ...entries.map(({ png }) => png)]);
 }
 
-for (const { file, size } of PNG_TARGETS) {
-  const out = path.join(ROOT, file);
-  await mkdir(path.dirname(out), { recursive: true });
-  await writeFile(out, await render(size));
-  process.stdout.write(`${file} ${size}x${size}\n`);
+export async function generateIcons() {
+  for (const { file, size } of PNG_TARGETS) {
+    const out = path.join(ROOT, file);
+    await mkdir(path.dirname(out), { recursive: true });
+    await writeFile(out, await render(size));
+    process.stdout.write(`${file} ${size}x${size}\n`);
+  }
+
+  const icoEntries = await Promise.all(
+    ICO_SIZES.map(async (size) => ({ size, png: await render(size) }))
+  );
+  await writeFile(path.join(ROOT, 'public/favicon.ico'), packIco(icoEntries));
+  process.stdout.write(`public/favicon.ico ${ICO_SIZES.join(', ')}\n`);
 }
 
-const icoEntries = await Promise.all(
-  ICO_SIZES.map(async (size) => ({ size, png: await render(size) }))
-);
-await writeFile(path.join(ROOT, 'public/favicon.ico'), packIco(icoEntries));
-process.stdout.write(`public/favicon.ico ${ICO_SIZES.join(', ')}\n`);
+if (import.meta.main) await generateIcons();

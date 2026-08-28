@@ -14,18 +14,18 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const SITE = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '') || 'https://anchildress1.dev';
+export function resolveSiteUrl(value) {
+  return value?.replace(/\/$/, '') || 'https://anchildress1.dev';
+}
 
-const projects = JSON.parse(
-  await readFile(path.join(process.cwd(), 'src', 'data', 'projects.json'), 'utf8')
-);
-
-const ordered = [...projects].sort(
-  (a, b) => (a.order_rank ?? Number.MAX_SAFE_INTEGER) - (b.order_rank ?? Number.MAX_SAFE_INTEGER)
-);
+export function orderProjects(projects) {
+  return [...projects].sort(
+    (a, b) => (a.order_rank ?? Number.MAX_SAFE_INTEGER) - (b.order_rank ?? Number.MAX_SAFE_INTEGER)
+  );
+}
 
 /** One system, as much as the agent needs and nothing it should quote verbatim. */
-function describe(project) {
+export function describeProject(project, site) {
   const lines = [`### ${project.name} — ${project.status}`];
   if (project.award) lines.push(`Award: ${project.award}`);
   lines.push(`What it is: ${project.what_it_is}`);
@@ -37,7 +37,7 @@ function describe(project) {
   // One link, always the same shape: the project's own page on this site, which
   // opens with that system selected. Repos, live apps and write-ups are reachable
   // from there, and offering them here only invites the model to pick one.
-  lines.push(`Link: ${SITE}/projects?system=${project.objectID}`);
+  lines.push(`Link: ${site}/projects?system=${project.objectID}`);
   // Titles without urls on purpose. The article records in markdown-index carry
   // the urls, and naming a second link here is what the rule above avoids. What
   // the model cannot get from either index is which articles are about which
@@ -47,9 +47,11 @@ function describe(project) {
   return lines.join('\n');
 }
 
-const roster = ordered.map(describe).join('\n\n');
+export function buildAgentPrompt(projects, site = resolveSiteUrl()) {
+  const ordered = orderProjects(projects);
+  const roster = ordered.map((project) => describeProject(project, site)).join('\n\n');
 
-const prompt = `Answer in the first person as Ashley Childress, a senior software engineer.
+  return `Answer in the first person as Ashley Childress, a senior software engineer.
 The input is a problem someone is living with. Return how you would approach it
 and whether you have shipped it before.
 
@@ -117,11 +119,22 @@ two steps with the same two words.
 
 ${roster}
 `;
+}
 
-const outIndex = process.argv.indexOf('--out');
-if (outIndex !== -1 && process.argv[outIndex + 1]) {
-  await writeFile(process.argv[outIndex + 1], prompt);
-  console.error(`Wrote ${prompt.length} characters for ${ordered.length} systems`);
-} else {
-  process.stdout.write(prompt);
+export async function readAgentPrompt(cwd = process.cwd(), site = resolveSiteUrl()) {
+  const projects = JSON.parse(
+    await readFile(path.join(cwd, 'src', 'data', 'projects.json'), 'utf8')
+  );
+  return { prompt: buildAgentPrompt(projects, site), projectCount: projects.length };
+}
+
+if (import.meta.main) {
+  const { prompt, projectCount } = await readAgentPrompt();
+  const outIndex = process.argv.indexOf('--out');
+  if (outIndex !== -1 && process.argv[outIndex + 1]) {
+    await writeFile(process.argv[outIndex + 1], prompt);
+    console.error(`Wrote ${prompt.length} characters for ${projectCount} systems`);
+  } else {
+    process.stdout.write(prompt);
+  }
 }
