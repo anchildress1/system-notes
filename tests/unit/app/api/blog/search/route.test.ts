@@ -52,7 +52,10 @@ const requestBody = async (query = '') => {
 
 describe('GET /api/blog/search', () => {
   beforeEach(() => vi.resetModules());
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
 
   it('returns three results by default and reports the total', async () => {
     const urls = ['a', 'b', 'c', 'd'].map((slug) => `${HOST}/posts/${slug}`);
@@ -198,7 +201,8 @@ describe('GET /api/blog/search', () => {
     expect(body.results.map((item: { title: string }) => item.title)).toEqual(['Safe']);
   });
 
-  it('does not follow redirects from either upstream request', async () => {
+  it('does not follow redirects and gives each upstream request the documented deadline', async () => {
+    const timeout = vi.spyOn(AbortSignal, 'timeout').mockReturnValue(new AbortController().signal);
     const fetchMock = vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       expect(init?.redirect).toBe('manual');
       expect(init?.signal).toBeInstanceOf(AbortSignal);
@@ -210,14 +214,26 @@ describe('GET /api/blog/search', () => {
 
     const body = await requestBody();
     expect(body.results).toEqual([]);
+    expect(timeout).toHaveBeenCalledTimes(2);
+    expect(timeout).toHaveBeenNthCalledWith(1, 10_000);
+    expect(timeout).toHaveBeenNthCalledWith(2, 10_000);
   });
 
-  it('returns an empty result when the sitemap request throws', async () => {
-    const fetchMock = vi.fn(() => Promise.reject(new Error('network unavailable')));
+  it.each([
+    { label: 'the sitemap', sitemap: true },
+    { label: 'a post', sitemap: false },
+  ])('returns safe results when $label request times out', async ({ sitemap }) => {
+    const postUrl = `${HOST}/posts/timeout`;
+    const fetchMock = vi.fn((input: string | URL | Request) => {
+      if (input.toString() === SITEMAP_URL && !sitemap) return response(buildSitemap([postUrl]));
+      return Promise.reject(new DOMException('request timed out', 'AbortError'));
+    });
     vi.stubGlobal('fetch', fetchMock);
 
     expect(await requestBody()).toMatchObject({ results: [], total: 0, query: null });
-    expect(fetchMock).toHaveBeenCalledWith(SITEMAP_URL, expect.any(Object));
+    expect(fetchMock.mock.calls.map(([input]) => input.toString())).toEqual(
+      sitemap ? [SITEMAP_URL] : [SITEMAP_URL, postUrl]
+    );
   });
 
   it('deduplicates sitemap URLs before fetching and keeps a partial result', async () => {
