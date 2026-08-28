@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.4](https://github.com/anchildress1/system-notes/compare/v2.5.3...v2.5.4) (2026-08-16)
+
+
+### Bug Fixes
+
+* harden repository security and runtime boundaries ([#116](https://github.com/anchildress1/system-notes/issues/116)) ([d4f6a76](https://github.com/anchildress1/system-notes/commit/d4f6a7656fbad4107d67add5caa6bd5500e7e7da))
+
 ## [2.5.3](https://github.com/anchildress1/system-notes/compare/v2.5.2...v2.5.3) (2026-08-14)
 
 
