@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildSiteJsonLd } from '@/lib/siteJsonLd';
-import { getProjects, type Project } from '@/lib/api';
+import type { Project } from '@/lib/api';
 
 const base = 'https://example.dev';
 
@@ -60,14 +60,25 @@ describe('buildSiteJsonLd', () => {
     expect(graph.author.sameAs).toContain(base);
   });
 
-  it('carries the shipped portfolio evidence links into structured data', () => {
-    const projects = getProjects();
-    const graph = buildSiteJsonLd(projects, base);
-    const expectedLinks = projects.flatMap(
-      (project) => project.blog_posts?.map((post) => post.url) ?? []
+  it('carries every evidence link through to relatedLink, in the order filed', () => {
+    const graph = buildSiteJsonLd(
+      [
+        project({
+          id: 'a',
+          blog_posts: [
+            { title: 'First', url: 'https://dev.to/a/first' },
+            { title: 'Second', url: 'https://dev.to/a/second' },
+          ],
+        }),
+        project({ id: 'b', blog_posts: [] }),
+      ],
+      base
     );
-    const actualLinks = graph.hasPart.flatMap((entry) => entry.relatedLink);
 
-    expect(actualLinks).toEqual(expectedLinks);
+    expect(graph.hasPart[0].relatedLink).toEqual([
+      'https://dev.to/a/first',
+      'https://dev.to/a/second',
+    ]);
+    expect(graph.hasPart[1].relatedLink).toEqual([]);
   });
 });

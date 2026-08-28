@@ -173,10 +173,12 @@ Each value must be the sRGB rendering of the token it stands for. `--mark` is `#
 - **Tests assert logic and structure, never color.** No hex, `oklch()`, lightness number, or contrast ratio mirrored from CSS into a `.ts` or `.test.ts` file. A mirrored value makes every color change a two-file edit and drifts silently when only one is updated — `SWATCH_TOKEN_LIGHTNESS` claimed `--k-decision` was 93 on paper long after `globals.css` set it to 28, and the guard built on it passed the whole time.
 - Assert the _shape_ of a style contract, not its value: `SWATCH_PALETTE` entries match `/^var\(--[\w-]+\)$/` because a literal cannot follow a theme. Which tone the token resolves to is `globals.css`'s business.
 - Contrast and color accessibility are enforced against the rendered page — axe in `tests/e2e/theme.spec.ts` across all four routes in both themes, plus the Lighthouse accessibility gate. Never re-derive them arithmetically in a unit test.
-- **Coverage thresholds**: 95% lines, 92% functions/statements, 85% branches (enforced by `vitest.config.ts`). Floors sit a few points under actual so a regression trips them; do not lower them to make a run pass.
+- **Mobile axe runs only on what the viewport changes.** `tests/e2e/mobile.spec.ts` scans `target-size` and `meta-viewport` and nothing else: the rest of what axe checks is markup, and markup does not reflow, so a second full scan would report every violation twice. Reflow itself (WCAG 1.4.10) is asserted in pixels there, because axe has no rule for it. A rule named in `withRules` reports nothing when it did not run — assert the rule id appears in the results before asserting no violations, or the check is green without measuring anything.
+- **Coverage thresholds**: 97% lines, 95% functions/statements, 90% branches (enforced by `vitest.config.ts`), measured over every module in `src/` and every project-owned script in `scripts/` rather than only the files a test happened to import. Floors sit under actual so a regression trips them; do not lower them to make a run pass.
 - Every new component or utility must ship with positive, negative, and edge-case tests.
 - Page composition is excluded from coverage; test cross-page behavior via E2E instead.
-- Playwright uses one worker in CI. Do not increase it without a zero-retry stress run across every configured browser project.
+- Playwright runs one worker with zero retries, everywhere. A retry turns a flake into a pass and hides it; fix the test instead.
+- Each browser project owns a slice of the suite, so a check runs on the engine that can answer it and nowhere else: Chromium runs everything except `mobile.spec.ts` and `cross-browser.spec.ts`; WebKit runs `cross-browser.spec.ts`; the two phone projects run `mobile.spec.ts`. Adding a spec means deciding which engine it belongs to — an unassigned file runs on Chromium alone.
 
 ## Validation
 
@@ -200,7 +202,8 @@ Each value must be the sRGB rendering of the token it stands for. `--mark` is `#
     measures the runner, not the code.
   - Lighthouse runs the desktop profile only. Mobile layout and target sizes are asserted in
     `tests/e2e/mobile.spec.ts`, which measures them directly rather than through a score.
-- `errors-in-console` is skipped in the LH configs — the local harness uses dummy Algolia credentials, so unreachable-host network errors are a test artifact, not a defect (same rationale as the pre-existing `uses-http2` skip).
+- `errors-in-console` is **enforced**, and the audited routes are `/`, `/projects`, and `/about`. `/notes` is off that list because the dummy Algolia credentials the harness runs on make it log unreachable-host errors that are a test artifact rather than a defect — the console gate and that route cannot both be had. `uses-http2` stays skipped for the same kind of reason.
+- Server-side index calls are switched off for both browser and Lighthouse runs with `INDEX_PULSE_DISABLED=true`, set in the `test-e2e` and `test-perf` Make targets. It exists so a run does not spend the pulse's 3s deadline against a host that is not there; never set it in a real environment.
 - Defer browser-only, below-the-fold features with `next/dynamic` or `IntersectionObserver` (for example, `IntakeBriefLoader.tsx`).
 - Prefer `instantsearch.css/themes/reset.css` over `satellite.css` to minimize CSS payload.
 

@@ -70,7 +70,7 @@ Admin and write-scoped keys belong outside this app. Giving one a `NEXT_PUBLIC_`
 
 - `make ai-checks` runs dependency installation, secret scanning, audit, formatting, linting, type checks, unit coverage, browser integration, and Lighthouse.
 - Unit coverage includes production TypeScript and project-owned generator scripts; floors are 97% lines, 95% functions/statements, and 90% branches.
-- Chromium runs the full mocked-provider browser suite; WebKit runs compatibility checks; mobile Chrome and Safari run responsive checks.
+- Chromium runs the full mocked-provider browser suite; WebKit runs compatibility checks; mobile Chrome and Safari run responsive checks, plus the two accessibility rules whose answer depends on the viewport.
 - Algolia search and Agent Studio are mocked browser-integration boundaries. The suite never claims live-provider validation.
 - Lighthouse samples `/`, `/projects`, and `/about` three times in desktop and mobile profiles. Accessibility, best-practices, and SEO remain 100; desktop performance remains at least 98 and mobile at least 92; unexpected console errors fail the audit.
 - InstantSearch owns query and refinement URL state at `/notes`.

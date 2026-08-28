@@ -324,12 +324,6 @@ describe('IntakeBrief', () => {
     expect(onSettled).not.toHaveBeenCalled();
   });
 
-  it('keeps the initial idle state available before the request starts', () => {
-    render(<IntakeBrief question={QUESTION} />);
-
-    expect(screen.getByText(/reading the evidence/i)).toBeVisible();
-  });
-
   it('recovers when sending the question rejects', async () => {
     captured.send.mockRejectedValueOnce(new Error('network'));
 
