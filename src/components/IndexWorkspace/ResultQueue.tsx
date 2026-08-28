@@ -63,9 +63,9 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
   // costs a second render pass on every search, and the first pass of that pass
   // paints the old page.
   //
-  // Signed by length and lead hit rather than by array identity — useHits hands
-  // back a fresh array every render, so identity alone resets constantly.
-  const resultSignature = `${items.length}:${items[0]?.objectID ?? ''}`;
+  // Signed by the ordered ids rather than by array identity — useHits hands back
+  // a fresh array every render, while equal-sized searches can share a lead hit.
+  const resultSignature = JSON.stringify(items.map((item) => item.objectID));
   const requestedPage = pager.signature === resultSignature ? pager.page : 0;
 
   if (!featured) return null;
