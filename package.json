@@ -28,7 +28,7 @@
   },
   "packageManager": "npm@11.19.0",
   "engines": {
-    "node": ">=24"
+    "node": ">=24.2.0"
   },
   "dependencies": {
     "@ai-sdk/react": "^4.0.82",
