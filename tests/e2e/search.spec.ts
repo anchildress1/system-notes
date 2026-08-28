@@ -29,7 +29,10 @@ test.describe('Notes index', () => {
     await expect(page.getByText(/1 entry · 1ms/i)).toBeVisible();
   });
 
-  test('keeps keyboard focus in the queue while updating the static reader', async ({ page }) => {
+  test('keeps keyboard focus in the queue while updating the static reader', async ({
+    page,
+    insightsEvents,
+  }) => {
     await mockAlgoliaSearch(page, [
       buildHit(),
       buildHit({ objectID: 'card:test:2', title: 'Second decision' }),
@@ -48,6 +51,21 @@ test.describe('Notes index', () => {
       'The complete evidence behind the decision.'
     );
     expect(page.url()).toBe(initialURL);
+
+    // The selection fires the click event and does NOT touch the URL. Both
+    // halves matter: the event is the contract, and gating it on URL state is
+    // the thing the architecture forbids.
+    //
+    // Filtered by name rather than read off the front of the batch: InstantSearch
+    // also sends a view event for the displayed hits on load, so the click is
+    // never the first thing in the array.
+    await expect
+      .poll(() => insightsEvents.filter((event) => event.eventName === 'Note Selected'))
+      .toHaveLength(1);
+    expect(insightsEvents.find((event) => event.eventName === 'Note Selected')).toMatchObject({
+      eventType: 'click',
+      objectIDs: ['card:test:2'],
+    });
   });
 
   test('shows the title, fact, category, project, and evidence links without a flip', async ({
