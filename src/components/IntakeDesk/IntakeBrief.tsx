@@ -92,8 +92,14 @@ interface BriefProps {
  * the page keys this on the question text.
  */
 export default function IntakeBrief({ question, onSettled, onFinished }: Readonly<BriefProps>) {
-  const { messages, status, error, sendMessage, stop } = useChat({ transport });
   const [timedOut, setTimedOut] = useState(false);
+  const [completedWithoutAnswer, setCompletedWithoutAnswer] = useState(false);
+  const { messages, status, error, sendMessage, stop } = useChat({
+    transport,
+    onFinish: ({ message, isAbort, isError }) => {
+      if (!isAbort && !isError && !messageText(message)) setCompletedWithoutAnswer(true);
+    },
+  });
 
   // Sent explicitly, once per mount, rather than by handing the hook an initial
   // message: the send is the thing that was broken, so it is the thing this
@@ -109,7 +115,7 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
   const answer = messageText(
     [...messages].reverse().find((message) => message.role === 'assistant')
   );
-  const failed = Boolean(error) || status === 'error' || timedOut;
+  const failed = Boolean(error) || status === 'error' || timedOut || completedWithoutAnswer;
   const isWorking = !failed && (status === 'submitted' || status === 'streaming');
 
   // Stop waiting rather than wait forever. The request is aborted so a late

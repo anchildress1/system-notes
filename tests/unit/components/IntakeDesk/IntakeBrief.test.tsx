@@ -40,6 +40,25 @@ vi.mock('@ai-sdk/react', () => ({
 
 const QUESTION = 'Our AI-generated code breaks in production.';
 
+function finishTurn(message = chat.state.messages[0]!) {
+  const onFinish = captured.options?.onFinish as
+    | ((event: {
+        message: ChatState['messages'][number];
+        messages: ChatState['messages'];
+        isAbort: boolean;
+        isDisconnect: boolean;
+        isError: boolean;
+      }) => void)
+    | undefined;
+  onFinish?.({
+    message,
+    messages: chat.state.messages,
+    isAbort: false,
+    isDisconnect: false,
+    isError: false,
+  });
+}
+
 describe('IntakeBrief', () => {
   beforeEach(() => {
     chat.state = { messages: [], status: 'ready' };
@@ -97,6 +116,19 @@ describe('IntakeBrief', () => {
 
     expect(screen.getByText('I have shipped that.')).toBeVisible();
     expect(screen.getByText(QUESTION)).toBeVisible();
+  });
+
+  it('keeps a completed text answer settled when the finish callback runs', () => {
+    chat.state = {
+      status: 'ready',
+      messages: [{ id: '2', role: 'assistant', parts: [{ type: 'text', text: 'Done.' }] }],
+    };
+
+    render(<IntakeBrief question={QUESTION} />);
+    act(() => finishTurn());
+
+    expect(screen.getByText('Done.')).toBeVisible();
+    expect(screen.queryByText(/could not answer/i)).not.toBeInTheDocument();
   });
 
   it('splits the answer on blank lines rather than rendering one block', () => {
@@ -225,15 +257,21 @@ describe('IntakeBrief', () => {
     expect(screen.getByText(/could not answer/i)).toBeVisible();
   });
 
-  it('keeps waiting when the turn settles with no text in it', () => {
+  it('fails a completed turn with no answer and releases the form', () => {
+    chat.state = { status: 'submitted', messages: [] };
+    const onFinished = vi.fn();
+
+    const view = render(<IntakeBrief question={QUESTION} onFinished={onFinished} />);
     chat.state = {
       status: 'ready',
       messages: [{ id: '2', role: 'assistant', parts: [{ type: 'reasoning', text: 'Thinking.' }] }],
     };
 
-    render(<IntakeBrief question={QUESTION} />);
+    act(() => finishTurn());
+    view.rerender(<IntakeBrief question={QUESTION} onFinished={onFinished} />);
 
-    expect(screen.getByText(/reading the evidence/i)).toBeVisible();
+    expect(screen.getByText(/could not answer/i)).toBeVisible();
     expect(screen.queryByText('Thinking.')).not.toBeInTheDocument();
+    expect(onFinished).toHaveBeenCalledTimes(1);
   });
 });
