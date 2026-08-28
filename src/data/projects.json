@@ -795,7 +795,7 @@
     "name": "Delegate Action",
     "what_it_is": "A temporary AI coding agent shipped as a GitHub Action.",
     "why_it_exists": "AI-generated PRs under my own credentials, while the platform caught up.",
-    "long_description": "A GitHub Action calling the GitHub Models API (GPT-4o) to draft PRs under my own scoped PAT, with explicit human review before merge and prompt-injection detection built into the pipeline. A deliberate stopgap until Copilot's coding agent supported PAT-based CLI runs in Actions.",
+    "long_description": "A GitHub Action driving the Copilot CLI to draft PRs under my own scoped PAT, with explicit human review before merge and prompt-injection detection built into the pipeline. A deliberate stopgap until Copilot's coding agent supported PAT-based CLI runs in Actions.",
     "outcome": "Outpaced by Copilot's native coding agent before it proved out — a deliberate stopgap that mapped the auth and injection patterns it was built to test.",
     "status": "Scrapped",
     "owner": "anchildress1",
@@ -807,7 +807,7 @@
         "role": "The Runtime"
       },
       {
-        "name": "GitHub Copilot SDK",
+        "name": "GitHub Copilot CLI",
         "role": "The Agent"
       },
       {
