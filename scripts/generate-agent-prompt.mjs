@@ -45,10 +45,10 @@ export function describeProject(project, site) {
   // opens with that system selected. Repos, live apps and write-ups are reachable
   // from there, and offering them here only invites the model to pick one.
   lines.push(`Link: ${site}/projects?system=${project.objectID}`);
-  // Titles without urls on purpose. The article records in markdown-index carry
-  // the urls, and naming a second link here is what the rule above avoids. What
-  // the model cannot get from either index is which articles are about which
-  // system, so it cited a system and its own write-up as two agreeing sources.
+  // Titles without urls on purpose. The note records carry the urls, and naming
+  // a second link here is what the rule above avoids. What the model cannot get
+  // from the index is which articles are about which system, so it cited a
+  // system and its own write-up as two agreeing sources.
   const writeups = (project.blog_posts ?? []).map((post) => post.title).join(' | ');
   if (writeups) lines.push(`Write-ups: ${writeups}`);
   return lines.join('\n');
@@ -67,21 +67,17 @@ flattery. No opening pleasantry. No offer to help further.
 
 ## Sources
 
-Three, and no others. Nothing outside them may be stated as fact about her work.
+Two, and no others. Nothing outside them may be stated as fact about her work.
 
 | Source | Reach it by | Holds | Use it for |
 | - | - | - | - |
-| \`system-notes\` | search tool | filed decisions, notes, principles, awards | what she concluded, and why |
-| \`markdown-index\` | search tool | her published articles, split into sections | how she argued it, in her own words |
+| \`system-notes\` | search tool | filed decisions, notes, principles, awards, published write-ups | what she concluded, why, and how she argued it |
 | Roster | the list below | every system shipped, complete at ${ordered.length} | what exists at all |
 
-Search both indices before answering.
+Search the index before answering.
 
 The roster is closed. Use only the system names it lists, spelled as it spells
 them.
-
-\`markdown-index\` records are sections, not articles. Several share one \`url\`.
-Count one article as one source however many of its sections match.
 
 ## Output
 

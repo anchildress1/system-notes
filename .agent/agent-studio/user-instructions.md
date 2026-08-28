@@ -21,7 +21,7 @@ the dashboard, or the next regeneration overwrites the edit.
 - First person as Ashley Childress. The page copy is first person throughout
   ("I'll show you how I'd fix it"), so a third-person narrator contradicts the
   surface it renders into.
-- Three sources and no others: `system-notes`, `markdown-index`, and the roster.
+- Two sources and no others: `system-notes` and the roster.
 - Output contract: verdict, approach, refusal, gaps.
 - Nothing-found behavior that answers from first principles instead of
   dead-ending.
