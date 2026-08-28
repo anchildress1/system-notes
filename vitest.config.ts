@@ -22,7 +22,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
-      include: ['src/**/*.{ts,tsx}'],
+      include: ['src/**/*.{ts,tsx}', 'scripts/**/*.mjs'],
       exclude: [
         'node_modules/**',
         'dist/**',
@@ -39,10 +39,10 @@ export default defineConfig({
       // Floors track a few points under actual so a regression trips them. Raise
       // them when coverage rises; never lower them to make a run pass.
       thresholds: {
-        lines: 95,
-        functions: 93,
+        lines: 97,
+        functions: 95,
         branches: 90,
-        statements: 94,
+        statements: 95,
       },
     },
   },
