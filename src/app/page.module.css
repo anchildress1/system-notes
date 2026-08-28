@@ -19,3 +19,19 @@
 .proof strong {
   color: var(--bone);
 }
+
+/* "See the evidence." is a phrase, and a phrase that breaks across a line break
+   takes its stroke with it — box-decoration-break gives each fragment its own,
+   so the reader gets two half-underlines and a two-word orphan rather than one
+   link. It landed on the break at every width where the standfirst runs to two
+   lines: 1440px and 2000px, where 1.5vw clamps the type up to 17px, and again
+   around 700px.
+
+   text-wrap: pretty was measured first and changes nothing here, in Chromium,
+   WebKit and Firefox alike — it optimises the last line's length, not a link's
+   integrity. nowrap is safe for this string: 120px against the 248px column a
+   280px screen gives, so it cannot reach the edge. A longer link here could,
+   which is why this sits on the standfirst and not on .marked-link. */
+.proof a {
+  white-space: nowrap;
+}
