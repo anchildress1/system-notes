@@ -48,7 +48,22 @@
      stylesheet the bundler emits last — .btn's padding shorthand beat a
      padding-inline here. max-width has no competitor, so it holds either way. */
   max-width: calc(100vw - 1.5rem);
-  transform: translateY(-180%);
+  /* Parked well clear of the fold, not just past it. At -180% the link sat 29px
+     above the viewport, which an elastic overscroll at the top of the page drags
+     back into view and then snaps away again. */
+  transform: translateY(-320%);
+}
+
+/* SPECIFICITY, NOT PREFERENCE. `.btn[data-variant='filled']` sets
+   `position: relative` at (0,2,0) and beat the `position: fixed` above it at
+   (0,1,0), so this link stayed in flow and scrolled with the document instead of
+   holding still off screen — which is how it came back every time the page
+   reached the top. The element selector takes this to (0,2,1), so it wins on
+   specificity rather than on which stylesheet the bundler happens to emit last.
+   `fixed` establishes a containing block for .btn's ::before exactly as
+   `relative` did, so the swipe still draws against the button. */
+a.skipLink[data-variant='filled'] {
+  position: fixed;
 }
 
 .skipLink:focus {
