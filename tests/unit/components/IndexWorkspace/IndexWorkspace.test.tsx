@@ -115,12 +115,12 @@ describe('IndexWorkspace', () => {
 
     await waitFor(() => expect(next).toBeDisabled());
     expect(document.body).not.toHaveFocus();
-    expect(previous).toHaveFocus();
+    await waitFor(() => expect(previous).toHaveFocus());
 
     fireEvent.click(previous);
 
     await waitFor(() => expect(previous).toBeDisabled());
-    expect(next).toHaveFocus();
+    await waitFor(() => expect(next).toHaveFocus());
   });
 
   it('renders the approved filing workspace with a capped ranked board', async () => {
