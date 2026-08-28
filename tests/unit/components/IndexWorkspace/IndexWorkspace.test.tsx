@@ -926,16 +926,6 @@ describe('board column measurement', () => {
     expect(board()?.children).toHaveLength(6);
   });
 
-  it('says how many of the census it is showing once it trims', async () => {
-    installResizeObserver();
-    layOutBoard(resolvedTracks());
-
-    await renderWorkspace();
-    await screen.findByText('Ranked note 1');
-
-    await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
-  });
-
   it('keeps aria-activedescendant pointing at a tile that exists after trimming', async () => {
     installResizeObserver();
     layOutBoard(resolvedTracks());

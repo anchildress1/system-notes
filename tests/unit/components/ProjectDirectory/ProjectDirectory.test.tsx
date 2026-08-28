@@ -15,6 +15,8 @@ const projects = [
     tech: [{ name: 'TypeScript', role: 'Language' }],
     app_url: 'https://example.com/app',
     repo_url: 'https://github.com/example/first',
+    blog_posts: [{ title: 'Build notes', url: 'https://dev.to/example/build-notes' }],
+    announcements: [{ title: 'Award evidence', url: 'https://dev.to/devteam/award' }],
   },
   {
     ...mockProject,
@@ -138,14 +140,27 @@ describe('ProjectDirectory', () => {
     ).toHaveAttribute('href', '/notes?project=First+System#notes-index');
   });
 
-  it('identifies every outbound link as opening a new tab', () => {
+  it('identifies every outbound evidence link as opening a new tab', () => {
     render(<ProjectDirectory projects={projects} />);
 
-    for (const name of [/Live app/, /Repo/]) {
+    for (const name of [/Live app/, /Repo/, /Write-up/, /Award/]) {
       const link = within(detail()).getByRole('link', { name });
       expect(link).toHaveAttribute('target', '_blank');
       expect(link).toHaveAttribute('rel', 'noopener noreferrer');
     }
+  });
+
+  it('scrolls a selected item into the vertical rail viewport', () => {
+    render(<ProjectDirectory projects={projects} />);
+    scrollTo.mockClear();
+    vi.spyOn(rail(), 'getBoundingClientRect').mockReturnValue(bounds(0, 0, 100, 100));
+    vi.spyOn(screen.getByTestId('project-second-system'), 'getBoundingClientRect').mockReturnValue(
+      bounds(0, 120.2, 40, 40)
+    );
+
+    fireEvent.click(screen.getByTestId('project-second-system'));
+
+    expect(scrollTo).toHaveBeenCalledWith({ left: 0, top: 61 });
   });
 
   it('omits a link the project does not carry rather than rendering a dead one', () => {
