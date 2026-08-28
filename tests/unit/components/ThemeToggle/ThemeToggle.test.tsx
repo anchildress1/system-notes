@@ -89,12 +89,12 @@ describe('ThemeToggle', () => {
     expect(document.documentElement.dataset.theme).toBe('light');
   });
 
-  it('renders both glyphs so the server never has to pick one', () => {
+  it('renders both icons so the server never has to pick one', () => {
     // Choosing in JS would either disagree with the server-rendered markup or
     // flash the wrong icon on first paint; CSS picks by [data-theme] instead.
     const { container } = render(<ThemeToggle />);
 
-    const glyphs = container.querySelectorAll('span[aria-hidden="true"]');
-    expect(glyphs).toHaveLength(2);
+    const icons = container.querySelectorAll('svg[aria-hidden="true"]');
+    expect(icons).toHaveLength(2);
   });
 });

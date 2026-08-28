@@ -19,7 +19,7 @@
   color: var(--flag);
 }
 
-/* Both glyphs ship in the markup; the theme decides which one is shown, so the
+/* Both icons ship in the markup; the theme decides which one is shown, so the
    server can render this without knowing the answer. */
 .sun {
   display: none;

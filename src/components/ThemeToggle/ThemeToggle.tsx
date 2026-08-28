@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useSyncExternalStore } from 'react';
+import { FiMoon, FiSun } from 'react-icons/fi';
 import {
   DEFAULT_THEME,
   parseTheme,
@@ -56,15 +57,11 @@ export default function ThemeToggle() {
       aria-label="Light theme"
       onClick={toggle}
     >
-      {/* Both glyphs are always in the DOM and CSS picks by [data-theme]. Choosing
+      {/* Both icons are always in the DOM and CSS picks by [data-theme]. Choosing
           in JS would either disagree with the server-rendered markup or flash the
           wrong icon on the first paint. */}
-      <span className={styles.sun} aria-hidden="true">
-        ☀
-      </span>
-      <span className={styles.moon} aria-hidden="true">
-        ☾
-      </span>
+      <FiSun className={styles.sun} aria-hidden="true" />
+      <FiMoon className={styles.moon} aria-hidden="true" />
     </button>
   );
 }

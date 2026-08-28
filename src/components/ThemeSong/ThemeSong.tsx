@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { FiPause, FiPlay } from 'react-icons/fi';
 import styles from './ThemeSong.module.css';
 
 export const TRACK_TITLE = 'I Build Things';
@@ -83,15 +84,13 @@ export default function ThemeSong() {
           disabled={hasError}
           onClick={toggle}
         >
+          {/* Feather draws both as outlines; filled is what a transport control
+              reads as at this size, and fill=currentColor solidifies the same
+              shape rather than importing a second icon family for two marks. */}
           {isPlaying ? (
-            <svg aria-hidden="true" width="11" height="13" viewBox="0 0 11 13" fill="currentColor">
-              <rect x="0" y="0" width="4" height="13" />
-              <rect x="7" y="0" width="4" height="13" />
-            </svg>
+            <FiPause aria-hidden="true" fill="currentColor" size={13} />
           ) : (
-            <svg aria-hidden="true" width="11" height="13" viewBox="0 0 11 13" fill="currentColor">
-              <path d="M0 0l11 6.5L0 13z" />
-            </svg>
+            <FiPlay aria-hidden="true" fill="currentColor" size={13} />
           )}
           {isPlaying ? 'Pause' : 'Play it'}
         </button>
