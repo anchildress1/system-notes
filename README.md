@@ -21,7 +21,7 @@ A searchable record of Ashley Childress's engineering decisions, constraints, fa
 - **Projects**: One complete directory of current work, retired tools, archived experiments, and deliberate dead ends.
 - **About**: A short professional record backed by counts derived from the project registry.
 - **Machine-readable context**: Structured project data, sitemap output, and `/site.jsonld`.
-- **Hard gates**: Unit coverage, Playwright, axe, Lighthouse, secret scanning, and dependency auditing.
+- **Hard gates**: Formatting, linting, type checks, unit coverage, Playwright with axe, Lighthouse, secret scanning, and dependency auditing.
 
 ## Stack
 
@@ -68,9 +68,11 @@ Admin and write-scoped keys belong outside this app. Giving one a `NEXT_PUBLIC_`
 
 ## Quality bar
 
-- Accessibility, best-practices, and SEO Lighthouse scores must remain at 100.
-- Desktop performance must remain at or above 98; mobile at or above 92.
-- Unit coverage floors are enforced in `vitest.config.ts`.
+- `make ai-checks` runs dependency installation, secret scanning, audit, formatting, linting, type checks, unit coverage, browser integration, and Lighthouse.
+- Unit coverage includes production TypeScript and project-owned generator scripts; floors are 97% lines, 95% functions/statements, and 90% branches.
+- Chromium runs the full mocked-provider browser suite; WebKit runs compatibility checks; mobile Chrome and Safari run responsive checks.
+- Algolia search and Agent Studio are mocked browser-integration boundaries. The suite never claims live-provider validation.
+- Lighthouse samples `/`, `/projects`, and `/about` three times in desktop and mobile profiles. Accessibility, best-practices, and SEO remain 100; desktop performance remains at least 98 and mobile at least 92; unexpected console errors fail the audit.
 - InstantSearch owns query and refinement URL state at `/notes`.
 - The notes workspace owns selected-reader state and fires Algolia click events on selection.
 - The intake defers its agent transport until a question is submitted.
