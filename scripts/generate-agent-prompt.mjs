@@ -121,20 +121,34 @@ ${roster}
 `;
 }
 
-export async function readAgentPrompt(cwd = process.cwd(), site = resolveSiteUrl()) {
+export async function readAgentPrompt(
+  cwd = process.cwd(),
+  site = resolveSiteUrl(),
+  readProjects = readFile
+) {
   const projects = JSON.parse(
-    await readFile(path.join(cwd, 'src', 'data', 'projects.json'), 'utf8')
+    await readProjects(path.join(cwd, 'src', 'data', 'projects.json'), 'utf8')
   );
   return { prompt: buildAgentPrompt(projects, site), projectCount: projects.length };
 }
 
-if (import.meta.main) {
-  const { prompt, projectCount } = await readAgentPrompt();
-  const outIndex = process.argv.indexOf('--out');
-  if (outIndex !== -1 && process.argv[outIndex + 1]) {
-    await writeFile(process.argv[outIndex + 1], prompt);
-    console.error(`Wrote ${prompt.length} characters for ${projectCount} systems`);
+export async function emitAgentPrompt({
+  args = process.argv,
+  cwd = process.cwd(),
+  readProjects = readFile,
+  site = resolveSiteUrl(),
+  stderr = process.stderr,
+  stdout = process.stdout,
+  writePrompt = writeFile,
+} = {}) {
+  const { prompt, projectCount } = await readAgentPrompt(cwd, site, readProjects);
+  const outIndex = args.indexOf('--out');
+  if (outIndex !== -1 && args[outIndex + 1]) {
+    await writePrompt(args[outIndex + 1], prompt);
+    stderr.write(`Wrote ${prompt.length} characters for ${projectCount} systems\n`);
   } else {
-    process.stdout.write(prompt);
+    stdout.write(prompt);
   }
 }
+
+if (import.meta.main) await emitAgentPrompt();

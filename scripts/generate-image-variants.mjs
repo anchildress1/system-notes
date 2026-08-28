@@ -11,9 +11,6 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
-const PUBLIC_DIR = path.join(process.cwd(), 'public');
-const OUT_FILE = path.join(process.cwd(), 'src', 'data', 'image-manifest.json');
-
 // Rungs derived from the CSS slots the images actually occupy, not round numbers:
 //   448 — desktop 3-up card (the flat `448px` branch of its `sizes`) at 1x
 //   768 — phone card at 2x: a 412px viewport gives a 364px slot, so ~728px
@@ -21,9 +18,9 @@ const OUT_FILE = path.join(process.cwd(), 'src', 'data', 'image-manifest.json');
 // A 1344 rung was measured and dropped: neither the mobile nor the desktop
 // Lighthouse profile ever requested it, and it cost 792 KB of build output to
 // serve only DPR-3 phones, which upscale from 896 imperceptibly.
-const LADDER = [448, 768, 896];
+export const LADDER = [448, 768, 896];
 
-const SOURCES = [
+export const SOURCES = [
   { dir: 'projects', files: null },
   { dir: '', files: ['profile-dark.webp', 'profile-light.webp'] },
 ];
@@ -40,77 +37,116 @@ const SOURCES = [
 // Saturation only. The 6% contrast bump is invisible on a 12px source blown up
 // to fill its slot, and reproducing it here would mean hand-rolling a linear
 // ramp for something nobody can see.
-const blurFor = (file) =>
-  sharp(file).resize(12).modulate({ saturation: 0.8 }).webp({ quality: 30 }).toBuffer();
+export const variantWidths = (sourceWidth, ladder = LADDER) =>
+  [...new Set(ladder.map((width) => Math.min(width, sourceWidth)))].sort((a, b) => a - b);
 
-const mtime = async (file) => (await stat(file).catch(() => null))?.mtimeMs ?? Infinity;
+export const blurFor = (sharpFactory, file) =>
+  sharpFactory(file).resize(12).modulate({ saturation: 0.8 }).webp({ quality: 30 }).toBuffer();
+
+const mtime = async (statFile, file) =>
+  (await statFile(file).catch(() => null))?.mtimeMs ?? Infinity;
 
 // Mtimes alone are not a sufficient cache key: `mv` preserves them, so a renamed or
 // deleted source leaves every survivor older than the manifest and the run gets
 // skipped while the manifest still points at the old name. The key set must match
 // too, or the loader falls through to the unresized original.
-async function isUpToDate(expectedKeys, sourcePaths) {
-  const built = await mtime(OUT_FILE);
+export async function isUpToDate({
+  expectedKeys,
+  sourcePaths,
+  outFile,
+  scriptPath,
+  readManifest,
+  statFile,
+}) {
+  const built = await mtime(statFile, outFile);
   if (built === Infinity) return false;
 
-  const previous = await readFile(OUT_FILE, 'utf8')
+  const previous = await readManifest(outFile, 'utf8')
     .then((raw) => Object.keys(JSON.parse(raw)))
     .catch(() => null);
   if (!previous) return false;
   if (previous.length !== expectedKeys.length) return false;
   if (previous.some((key, i) => key !== expectedKeys[i])) return false;
 
-  const self = fileURLToPath(import.meta.url);
-  const newest = Math.max(...(await Promise.all([...sourcePaths, self].map(mtime))));
+  const newest = Math.max(
+    ...(await Promise.all([...sourcePaths, scriptPath].map((file) => mtime(statFile, file))))
+  );
   return newest !== Infinity && newest <= built;
 }
 
-const publicPathFor = (dir, name) => `${dir ? `/${dir}` : ''}/${name}`;
+export const publicPathFor = (dir, name) => `${dir ? `/${dir}` : ''}/${name}`;
 
-const manifest = {};
-const plan = [];
+export async function generateImageVariants({
+  cwd = process.cwd(),
+  fs = { mkdir, readdir, readFile, rm, stat, writeFile },
+  ladder = LADDER,
+  log = console.log,
+  sharpFactory = sharp,
+  sources = SOURCES,
+  scriptPath = fileURLToPath(import.meta.url),
+} = {}) {
+  const publicDir = path.join(cwd, 'public');
+  const outFile = path.join(cwd, 'src', 'data', 'image-manifest.json');
+  const plan = await Promise.all(
+    sources.map(async ({ dir, files }) => {
+      const srcDir = path.join(publicDir, dir);
+      const names =
+        files ?? (await fs.readdir(srcDir)).filter((file) => file.endsWith('.webp')).sort();
+      return { dir, srcDir, optDir: path.join(srcDir, 'opt'), names };
+    })
+  );
 
-for (const { dir, files } of SOURCES) {
-  const srcDir = path.join(PUBLIC_DIR, dir);
-  const names = files ?? (await readdir(srcDir)).filter((f) => f.endsWith('.webp')).sort();
-  plan.push({ dir, srcDir, optDir: path.join(srcDir, 'opt'), names });
-}
+  // Same order the manifest is written in, so isUpToDate can compare positionally.
+  const expectedKeys = plan.flatMap((entry) =>
+    entry.names.map((name) => publicPathFor(entry.dir, name))
+  );
+  const sourcePaths = plan.flatMap((entry) =>
+    entry.names.map((name) => path.join(entry.srcDir, name))
+  );
 
-// Same order the manifest is written in, so isUpToDate can compare positionally.
-const expectedKeys = plan.flatMap((p) => p.names.map((n) => publicPathFor(p.dir, n)));
-const sourcePaths = plan.flatMap((p) => p.names.map((n) => path.join(p.srcDir, n)));
-
-if (await isUpToDate(expectedKeys, sourcePaths)) {
-  console.log('Image variants already up to date');
-  process.exit(0);
-}
-
-for (const { dir, srcDir, optDir, names } of plan) {
-  // Wipe first so variants of a deleted or renamed source cannot linger.
-  await rm(optDir, { recursive: true, force: true });
-  await mkdir(optDir, { recursive: true });
-
-  for (const name of names) {
-    const srcPath = path.join(srcDir, name);
-    const { width: srcWidth } = await sharp(srcPath).metadata();
-    const base = name.replace(/\.webp$/, '');
-
-    // Clamped so a rung wider than the source never upscales.
-    const widths = [...new Set(LADDER.map((w) => Math.min(w, srcWidth)))].sort((a, b) => a - b);
-
-    for (const w of widths) {
-      const buf = await sharp(srcPath).resize(w).webp({ quality: 72 }).toBuffer();
-      await writeFile(path.join(optDir, `${base}-${w}.webp`), buf);
-    }
-
-    manifest[publicPathFor(dir, name)] = {
-      blur: `data:image/webp;base64,${(await blurFor(srcPath)).toString('base64')}`,
-      widths,
-    };
+  if (
+    await isUpToDate({
+      expectedKeys,
+      sourcePaths,
+      outFile,
+      scriptPath,
+      readManifest: fs.readFile,
+      statFile: fs.stat,
+    })
+  ) {
+    log('Image variants already up to date');
+    return { status: 'current', variants: 0 };
   }
+
+  const manifest = {};
+  for (const { dir, srcDir, optDir, names } of plan) {
+    // Wipe first so variants of a deleted or renamed source cannot linger.
+    await fs.rm(optDir, { recursive: true, force: true });
+    await fs.mkdir(optDir, { recursive: true });
+
+    for (const name of names) {
+      const srcPath = path.join(srcDir, name);
+      const { width: srcWidth } = await sharpFactory(srcPath).metadata();
+      if (!srcWidth) throw new Error(`Missing width metadata for ${srcPath}`);
+      const base = name.replace(/\.webp$/, '');
+      const widths = variantWidths(srcWidth, ladder);
+
+      for (const width of widths) {
+        const buffer = await sharpFactory(srcPath).resize(width).webp({ quality: 72 }).toBuffer();
+        await fs.writeFile(path.join(optDir, `${base}-${width}.webp`), buffer);
+      }
+
+      manifest[publicPathFor(dir, name)] = {
+        blur: `data:image/webp;base64,${(await blurFor(sharpFactory, srcPath)).toString('base64')}`,
+        widths,
+      };
+    }
+  }
+
+  await fs.writeFile(outFile, `${JSON.stringify(manifest, null, 2)}\n`);
+  const variants = Object.values(manifest).reduce((total, entry) => total + entry.widths.length, 0);
+  log(`Wrote ${variants} variants for ${Object.keys(manifest).length} sources`);
+  return { status: 'written', variants };
 }
 
-await writeFile(OUT_FILE, `${JSON.stringify(manifest, null, 2)}\n`);
-
-const total = Object.values(manifest).reduce((n, e) => n + e.widths.length, 0);
-console.log(`Wrote ${total} variants for ${Object.keys(manifest).length} sources`);
+if (import.meta.main) await generateImageVariants();

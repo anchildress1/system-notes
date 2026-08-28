@@ -35,8 +35,10 @@ esac
 }
 
 async function runDeploy(env: Record<string, string>) {
+  const cwd = await mkdtemp(path.join(tmpdir(), 'system-notes-deploy-cwd-'));
+  temporaryDirectories.push(cwd);
   return run('/bin/bash', [deployScript], {
-    cwd: await mkdtemp(path.join(tmpdir(), 'system-notes-deploy-cwd-')),
+    cwd,
     env: { ...process.env, ...env },
   });
 }

@@ -9,13 +9,13 @@ import path from 'node:path';
 import process from 'node:process';
 import sharp from 'sharp';
 
-const ROOT = path.resolve(import.meta.dirname, '..');
-const SOURCE = path.join(ROOT, 'src/app/icon.svg');
+export const ROOT = path.resolve(import.meta.dirname, '..');
+export const SOURCE = path.join(ROOT, 'src/app/icon.svg');
 
 /** Sizes packed into favicon.ico, smallest first. */
-const ICO_SIZES = [16, 32, 48, 64];
+export const ICO_SIZES = [16, 32, 48, 64];
 
-const PNG_TARGETS = [
+export const PNG_TARGETS = [
   { file: 'src/app/icon.png', size: 512 },
   { file: 'src/app/apple-icon.png', size: 180 },
 ];
@@ -26,8 +26,11 @@ const PNG_TARGETS = [
  * @param size Output width and height in pixels.
  * @returns The encoded PNG.
  */
-async function render(size) {
-  return sharp(SOURCE, { density: 384 }).resize(size, size).png({ compressionLevel: 9 }).toBuffer();
+export async function render(size, source = SOURCE, sharpFactory = sharp) {
+  return sharpFactory(source, { density: 384 })
+    .resize(size, size)
+    .png({ compressionLevel: 9 })
+    .toBuffer();
 }
 
 /**
@@ -61,19 +64,27 @@ export function packIco(entries) {
   return Buffer.concat([header, ...directory, ...entries.map(({ png }) => png)]);
 }
 
-export async function generateIcons() {
-  for (const { file, size } of PNG_TARGETS) {
-    const out = path.join(ROOT, file);
-    await mkdir(path.dirname(out), { recursive: true });
-    await writeFile(out, await render(size));
-    process.stdout.write(`${file} ${size}x${size}\n`);
+export async function generateIcons({
+  fs = { mkdir, writeFile },
+  log = process.stdout,
+  pngTargets = PNG_TARGETS,
+  root = ROOT,
+  sharpFactory = sharp,
+  source = SOURCE,
+  icoSizes = ICO_SIZES,
+} = {}) {
+  for (const { file, size } of pngTargets) {
+    const out = path.join(root, file);
+    await fs.mkdir(path.dirname(out), { recursive: true });
+    await fs.writeFile(out, await render(size, source, sharpFactory));
+    log.write(`${file} ${size}x${size}\n`);
   }
 
   const icoEntries = await Promise.all(
-    ICO_SIZES.map(async (size) => ({ size, png: await render(size) }))
+    icoSizes.map(async (size) => ({ size, png: await render(size, source, sharpFactory) }))
   );
-  await writeFile(path.join(ROOT, 'public/favicon.ico'), packIco(icoEntries));
-  process.stdout.write(`public/favicon.ico ${ICO_SIZES.join(', ')}\n`);
+  await fs.writeFile(path.join(root, 'public/favicon.ico'), packIco(icoEntries));
+  log.write(`public/favicon.ico ${icoSizes.join(', ')}\n`);
 }
 
 if (import.meta.main) await generateIcons();
