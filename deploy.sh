@@ -169,6 +169,8 @@ submit_build() {
     local timeout=$BUILD_TIMEOUT
     local interval=15
     local elapsed=0
+    local started_at
+    started_at=$(date +%s)
 
     while (( elapsed < timeout )); do
         status=$(gcloud builds describe "$build_id" --project "$PROJECT_ID" --format='value(status)')
@@ -185,7 +187,7 @@ submit_build() {
             *)
                 echo "Build $build_id: $status — waiting... (${elapsed}s/${timeout}s)"
                 sleep "$interval"
-                (( elapsed += interval ))
+                elapsed=$(( $(date +%s) - started_at ))
                 ;;
         esac
     done
