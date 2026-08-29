@@ -77,6 +77,17 @@ describe('ThemeSong', () => {
     expect(note()).toHaveTextContent(TRACK_ARTIST);
   });
 
+  it('returns to idle when the track ends naturally', () => {
+    stubPlayback();
+    render(<ThemeSong />);
+
+    fireEvent.click(toggle());
+    fireEvent.ended(audio());
+
+    expect(toggle()).toHaveAttribute('aria-pressed', 'false');
+    expect(note()).toHaveTextContent(TRACK_ARTIST);
+  });
+
   it('never claims to be playing when play() is refused', async () => {
     // aria-pressed follows the audio element's own events, not the click, so a
     // refused autoplay cannot leave the control asserting something untrue.

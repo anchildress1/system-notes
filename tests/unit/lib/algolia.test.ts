@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { isValidAppId, isValidApiKey, hasValidAlgoliaCredentials } from '@/lib/algolia';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { hasValidAlgoliaCredentials, isValidApiKey, isValidAppId } from '@/lib/algolia';
 
 describe('isValidAppId', () => {
   it('accepts valid 10-char alphanumeric app IDs', () => {
@@ -59,5 +59,40 @@ describe('hasValidAlgoliaCredentials', () => {
 
   it('returns false when both are invalid', () => {
     expect(hasValidAlgoliaCredentials('', '')).toBe(false);
+  });
+});
+
+// The search credentials are read into module constants at import time, so the
+// environment has to be set before the module is loaded rather than passed in.
+async function agentCheck(appId: string, apiKey: string) {
+  vi.resetModules();
+  vi.stubEnv('NEXT_PUBLIC_ALGOLIA_APPLICATION_ID', appId);
+  vi.stubEnv('NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY', apiKey);
+  return (await import('@/lib/algolia')).hasValidAgentCredentials;
+}
+
+const VALID_APP_ID = 'TESTAPPID1';
+const VALID_KEY = 'test_search_key_valid_length_20';
+
+describe('hasValidAgentCredentials', () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it('accepts an agent id once the search credentials are usable', async () => {
+    expect(await (await agentCheck(VALID_APP_ID, VALID_KEY))('agent-123')).toBe(true);
+  });
+
+  it('refuses an agent id the search credentials cannot reach', async () => {
+    // The agent answers on the application's own Algolia host: an id without
+    // usable search credentials has nowhere to send the question.
+    expect(await (await agentCheck('short', VALID_KEY))('agent-123')).toBe(false);
+    expect(await (await agentCheck(VALID_APP_ID, 'too-short'))('agent-123')).toBe(false);
+  });
+
+  it.each([
+    ['empty', ''],
+    ['spaces', '   '],
+    ['whitespace control characters', '\n\t'],
+  ])('refuses a %s agent id even with usable credentials', async (_label, agentId) => {
+    expect(await (await agentCheck(VALID_APP_ID, VALID_KEY))(agentId)).toBe(false);
   });
 });

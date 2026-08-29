@@ -15,10 +15,10 @@
     "lint": "ESLINT_USE_FLAT_CONFIG=true eslint --config eslint.config.mjs .",
     "typecheck": "tsc --noEmit",
     "pretest": "npm run image-variants",
-    "test": "vitest run --coverage --passWithNoTests",
+    "test": "vitest run --coverage",
     "pretest:watch": "npm run image-variants",
     "test:watch": "vitest",
-    "test:perf": "npm run build && lhci autorun --config=lighthouserc.desktop.json",
+    "test:perf": "npm run build && lhci collect --config=lighthouserc.desktop.json && lhci assert --config=lighthouserc.desktop.json",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml,css}\"",
     "audit": "npm audit --audit-level=high",
@@ -28,7 +28,7 @@
   },
   "packageManager": "npm@11.19.0",
   "engines": {
-    "node": ">=24"
+    "node": ">=26"
   },
   "dependencies": {
     "@ai-sdk/react": "^4.0.82",
@@ -103,7 +103,7 @@
     "@puppeteer/browsers": "^3.2.0"
   },
   "volta": {
-    "node": "24.19.0"
+    "node": "26.8.1"
   },
   "knip": {
     "entry": [

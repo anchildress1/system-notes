@@ -20,9 +20,10 @@ export interface IndexPulse {
   latestCreatedAt: string | null;
 }
 
-const pulseClient = hasValidAlgoliaCredentials()
-  ? algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY)
-  : null;
+const pulseClient =
+  process.env.INDEX_PULSE_DISABLED === 'true' || !hasValidAlgoliaCredentials()
+    ? null
+    : algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
 
 let cached: { at: number; value: IndexPulse | null } | null = null;
 

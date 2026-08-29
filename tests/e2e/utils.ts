@@ -15,6 +15,16 @@ export type MockAlgoliaHit = {
   __position?: number;
 };
 
+const ALGOLIA_SEARCH_ROUTE = /\/1\/indexes\/[^/]+\/queries(?:\?|$)/;
+
+/* Insights is a SEPARATE host from search — https://insights.algolia.io/1/events —
+   so narrowing the search route to /queries left it outside the fake boundary.
+   IndexWorkspace.selectNote calls sendEvent on every selection, which made a
+   note click reach the real provider from an E2E run and left the one event the
+   architecture requires unverified. Matched on the path so the Agent Studio
+   route, which is neither of these, stays untouched. */
+const ALGOLIA_INSIGHTS_ROUTE = /\/1\/events(?:\?|$)/;
+
 interface MockAlgoliaOptions {
   nbHits?: number;
   facets?: Record<string, Record<string, number>>;
@@ -54,8 +64,8 @@ export async function mockAlgoliaSearch(
   hits: MockAlgoliaHit[],
   options: MockAlgoliaOptions = {}
 ) {
-  await page.unroute('**/*algolia*/**');
-  await page.route('**/*algolia*/**', async (route) => {
+  await page.unroute(ALGOLIA_SEARCH_ROUTE);
+  await page.route(ALGOLIA_SEARCH_ROUTE, async (route) => {
     let requests: Array<Record<string, unknown>> = [{}];
     try {
       const payload = route.request().postDataJSON() as { requests?: unknown[] };
@@ -98,6 +108,10 @@ export async function mockAlgoliaSearch(
         hitsPerPage,
         processingTimeMS: 1,
         exhaustiveNbHits: true,
+        // Present on every real response, and what attributes a click back to
+        // the search that produced it. Without one the event still sends, but
+        // as an unattributed click, which is not the shape the site emits.
+        queryID: 'mock-query-id',
         query: params.get('query') ?? '',
         params: params.toString(),
         index: 'system-notes',
@@ -113,9 +127,61 @@ export async function mockAlgoliaSearch(
   });
 }
 
-export const test = base.extend<{ autoMockAlgolia: void }>({
-  autoMockAlgolia: [
+/** One entry of an Insights batch, as the client posts it. */
+export type CapturedInsightsEvent = {
+  eventType?: string;
+  eventName?: string;
+  index?: string;
+  objectIDs?: string[];
+  positions?: number[];
+  queryID?: string;
+};
+
+/**
+ * Intercepts the Insights endpoint and collects what the page tried to send.
+ *
+ * @param page The page to route.
+ * @returns A live array, appended to as events arrive. Read it after the action
+ *   that should have sent one.
+ */
+export async function mockAlgoliaInsights(page: Page): Promise<CapturedInsightsEvent[]> {
+  const events: CapturedInsightsEvent[] = [];
+
+  await page.unroute(ALGOLIA_INSIGHTS_ROUTE);
+  await page.route(ALGOLIA_INSIGHTS_ROUTE, async (route) => {
+    try {
+      const payload = route.request().postDataJSON() as { events?: CapturedInsightsEvent[] };
+      if (Array.isArray(payload?.events)) events.push(...payload.events);
+    } catch {
+      // A body that will not parse is still a request that must not leave the
+      // machine; fulfilling it matters more than recording it.
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ status: 200, message: 'OK' }),
+    });
+  });
+
+  return events;
+}
+
+export const test = base.extend<{
+  autoMockAlgolia: void;
+  insightsEvents: CapturedInsightsEvent[];
+}>({
+  insightsEvents: [
     async ({ page }, use) => {
+      await use(await mockAlgoliaInsights(page));
+    },
+    { scope: 'test' },
+  ],
+  autoMockAlgolia: [
+    // Depends on insightsEvents so the stub is installed for EVERY spec, not
+    // only the ones that assert on it — an unstubbed spec would reach the real
+    // provider the first time anything is selected.
+    async ({ page, insightsEvents }, use) => {
+      void insightsEvents;
       await mockAlgoliaSearch(page, []);
       await use();
     },

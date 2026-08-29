@@ -9,16 +9,22 @@ import path from 'node:path';
 import process from 'node:process';
 import sharp from 'sharp';
 
-const ROOT = path.resolve(import.meta.dirname, '..');
-const SOURCE = path.join(ROOT, 'src/app/icon.svg');
+export const ROOT = path.resolve(import.meta.dirname, '..');
+export const SOURCE = path.join(ROOT, 'src/app/icon.svg');
 
 /** Sizes packed into favicon.ico, smallest first. */
-const ICO_SIZES = [16, 32, 48, 64];
+export const ICO_SIZES = [16, 32, 48, 64];
 
-const PNG_TARGETS = [
+export const PNG_TARGETS = [
   { file: 'src/app/icon.png', size: 512 },
   { file: 'src/app/apple-icon.png', size: 180 },
 ];
+
+const DEFAULT_RUNTIME = {
+  fs: { mkdir, writeFile },
+  log: process.stdout,
+  sharpFactory: sharp,
+};
 
 /**
  * Rasterizes the source mark at one edge length.
@@ -26,8 +32,11 @@ const PNG_TARGETS = [
  * @param size Output width and height in pixels.
  * @returns The encoded PNG.
  */
-async function render(size) {
-  return sharp(SOURCE, { density: 384 }).resize(size, size).png({ compressionLevel: 9 }).toBuffer();
+export async function render(size, source = SOURCE, sharpFactory = sharp) {
+  return sharpFactory(source, { density: 384 })
+    .resize(size, size)
+    .png({ compressionLevel: 9 })
+    .toBuffer();
 }
 
 /**
@@ -36,7 +45,7 @@ async function render(size) {
  * @param entries Rendered PNGs paired with the edge length each was drawn at.
  * @returns The encoded ICO.
  */
-function packIco(entries) {
+export function packIco(entries) {
   const header = Buffer.alloc(6);
   header.writeUInt16LE(0, 0); // reserved
   header.writeUInt16LE(1, 2); // type: icon
@@ -61,15 +70,22 @@ function packIco(entries) {
   return Buffer.concat([header, ...directory, ...entries.map(({ png }) => png)]);
 }
 
-for (const { file, size } of PNG_TARGETS) {
-  const out = path.join(ROOT, file);
-  await mkdir(path.dirname(out), { recursive: true });
-  await writeFile(out, await render(size));
-  process.stdout.write(`${file} ${size}x${size}\n`);
+export async function generateIcons(
+  { pngTargets = PNG_TARGETS, root = ROOT, source = SOURCE, icoSizes = ICO_SIZES } = {},
+  { fs, log, sharpFactory } = DEFAULT_RUNTIME
+) {
+  for (const { file, size } of pngTargets) {
+    const out = path.join(root, file);
+    await fs.mkdir(path.dirname(out), { recursive: true });
+    await fs.writeFile(out, await render(size, source, sharpFactory));
+    log.write(`${file} ${size}x${size}\n`);
+  }
+
+  const icoEntries = await Promise.all(
+    icoSizes.map(async (size) => ({ size, png: await render(size, source, sharpFactory) }))
+  );
+  await fs.writeFile(path.join(root, 'public/favicon.ico'), packIco(icoEntries));
+  log.write(`public/favicon.ico ${icoSizes.join(', ')}\n`);
 }
 
-const icoEntries = await Promise.all(
-  ICO_SIZES.map(async (size) => ({ size, png: await render(size) }))
-);
-await writeFile(path.join(ROOT, 'public/favicon.ico'), packIco(icoEntries));
-process.stdout.write(`public/favicon.ico ${ICO_SIZES.join(', ')}\n`);
+if (import.meta.main) await generateIcons();

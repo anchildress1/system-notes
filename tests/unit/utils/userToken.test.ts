@@ -1,18 +1,19 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-
 describe('getSearchUserToken', () => {
   beforeEach(() => vi.resetModules());
   afterEach(() => vi.unstubAllGlobals());
 
   it('returns one stable UUID for the browser session', async () => {
+    const randomUUID = vi.fn(() => 'b9ac8a0f-f5d4-4f7a-b3de-cf761d2d6f45');
+    vi.stubGlobal('crypto', { randomUUID });
     const { getSearchUserToken } = await import('@/utils/userToken');
 
     const first = getSearchUserToken();
 
-    expect(first).toMatch(UUID_PATTERN);
+    expect(first).toBe('b9ac8a0f-f5d4-4f7a-b3de-cf761d2d6f45');
     expect(getSearchUserToken()).toBe(first);
+    expect(randomUUID).toHaveBeenCalledTimes(1);
   });
 
   it('disables optional analytics when secure UUID generation is unavailable', async () => {

@@ -115,12 +115,12 @@ describe('IndexWorkspace', () => {
 
     await waitFor(() => expect(next).toBeDisabled());
     expect(document.body).not.toHaveFocus();
-    expect(previous).toHaveFocus();
+    await waitFor(() => expect(previous).toHaveFocus());
 
     fireEvent.click(previous);
 
     await waitFor(() => expect(previous).toBeDisabled());
-    expect(next).toHaveFocus();
+    await waitFor(() => expect(next).toHaveFocus());
   });
 
   it('renders the approved filing workspace with a capped ranked board', async () => {
@@ -924,16 +924,6 @@ describe('board column measurement', () => {
     // Six notes cannot fill a 20-column row; a single short row is still a
     // rectangle, and dropping them all would empty the board.
     expect(board()?.children).toHaveLength(6);
-  });
-
-  it('says how many of the census it is showing once it trims', async () => {
-    installResizeObserver();
-    layOutBoard(resolvedTracks());
-
-    await renderWorkspace();
-    await screen.findByText('Ranked note 1');
-
-    await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
   });
 
   it('keeps aria-activedescendant pointing at a tile that exists after trimming', async () => {

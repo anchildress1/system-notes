@@ -14,18 +14,25 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const SITE = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '') || 'https://anchildress1.dev';
+const DEFAULT_RUNTIME = {
+  readProjects: readFile,
+  stderr: process.stderr,
+  stdout: process.stdout,
+  writePrompt: writeFile,
+};
 
-const projects = JSON.parse(
-  await readFile(path.join(process.cwd(), 'src', 'data', 'projects.json'), 'utf8')
-);
+export function resolveSiteUrl(value) {
+  return value?.replace(/\/$/, '') || 'https://anchildress1.dev';
+}
 
-const ordered = [...projects].sort(
-  (a, b) => (a.order_rank ?? Number.MAX_SAFE_INTEGER) - (b.order_rank ?? Number.MAX_SAFE_INTEGER)
-);
+export function orderProjects(projects) {
+  return [...projects].sort(
+    (a, b) => (a.order_rank ?? Number.MAX_SAFE_INTEGER) - (b.order_rank ?? Number.MAX_SAFE_INTEGER)
+  );
+}
 
 /** One system, as much as the agent needs and nothing it should quote verbatim. */
-function describe(project) {
+export function describeProject(project, site) {
   const lines = [`### ${project.name} — ${project.status}`];
   if (project.award) lines.push(`Award: ${project.award}`);
   lines.push(`What it is: ${project.what_it_is}`);
@@ -37,19 +44,21 @@ function describe(project) {
   // One link, always the same shape: the project's own page on this site, which
   // opens with that system selected. Repos, live apps and write-ups are reachable
   // from there, and offering them here only invites the model to pick one.
-  lines.push(`Link: ${SITE}/projects?system=${project.objectID}`);
-  // Titles without urls on purpose. The article records in markdown-index carry
-  // the urls, and naming a second link here is what the rule above avoids. What
-  // the model cannot get from either index is which articles are about which
-  // system, so it cited a system and its own write-up as two agreeing sources.
+  lines.push(`Link: ${site}/projects?system=${project.objectID}`);
+  // Titles without urls on purpose. The note records carry the urls, and naming
+  // a second link here is what the rule above avoids. What the model cannot get
+  // from the index is which articles are about which system, so it cited a
+  // system and its own write-up as two agreeing sources.
   const writeups = (project.blog_posts ?? []).map((post) => post.title).join(' | ');
   if (writeups) lines.push(`Write-ups: ${writeups}`);
   return lines.join('\n');
 }
 
-const roster = ordered.map(describe).join('\n\n');
+export function buildAgentPrompt(projects, site = resolveSiteUrl()) {
+  const ordered = orderProjects(projects);
+  const roster = ordered.map((project) => describeProject(project, site)).join('\n\n');
 
-const prompt = `Answer in the first person as Ashley Childress, a senior software engineer.
+  return `Answer in the first person as Ashley Childress, a senior software engineer.
 The input is a problem someone is living with. Return how you would approach it
 and whether you have shipped it before.
 
@@ -58,21 +67,17 @@ flattery. No opening pleasantry. No offer to help further.
 
 ## Sources
 
-Three, and no others. Nothing outside them may be stated as fact about her work.
+Two, and no others. Nothing outside them may be stated as fact about her work.
 
 | Source | Reach it by | Holds | Use it for |
 | - | - | - | - |
-| \`system-notes\` | search tool | filed decisions, notes, principles, awards | what she concluded, and why |
-| \`markdown-index\` | search tool | her published articles, split into sections | how she argued it, in her own words |
+| \`system-notes\` | search tool | filed decisions, notes, principles, awards, published write-ups | what she concluded, why, and how she argued it |
 | Roster | the list below | every system shipped, complete at ${ordered.length} | what exists at all |
 
-Search both indices before answering.
+Search the index before answering.
 
 The roster is closed. Use only the system names it lists, spelled as it spells
 them.
-
-\`markdown-index\` records are sections, not articles. Several share one \`url\`.
-Count one article as one source however many of its sections match.
 
 ## Output
 
@@ -117,11 +122,88 @@ two steps with the same two words.
 
 ${roster}
 `;
-
-const outIndex = process.argv.indexOf('--out');
-if (outIndex !== -1 && process.argv[outIndex + 1]) {
-  await writeFile(process.argv[outIndex + 1], prompt);
-  console.error(`Wrote ${prompt.length} characters for ${ordered.length} systems`);
-} else {
-  process.stdout.write(prompt);
 }
+
+function requiredProjectText(project, key, index) {
+  const value = project[key];
+  if (typeof value !== 'string' || !value.trim()) {
+    throw new TypeError(`projects.json entry ${index} has an invalid ${key}.`);
+  }
+}
+
+function validatePromptProjects(value) {
+  if (!Array.isArray(value)) throw new TypeError('projects.json must contain an array.');
+
+  value.forEach((project, index) => {
+    if (!project || typeof project !== 'object' || Array.isArray(project)) {
+      throw new TypeError(`projects.json entry ${index} must be an object.`);
+    }
+
+    for (const key of [
+      'objectID',
+      'name',
+      'status',
+      'what_it_is',
+      'why_it_exists',
+      'long_description',
+      'outcome',
+    ]) {
+      requiredProjectText(project, key, index);
+    }
+
+    if (!Array.isArray(project.tech)) {
+      throw new TypeError(`projects.json entry ${index} has invalid tech.`);
+    }
+    project.tech.forEach((item) => {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) {
+        throw new TypeError(`projects.json entry ${index} has an invalid tech item.`);
+      }
+      requiredProjectText(item, 'name', index);
+      requiredProjectText(item, 'role', index);
+    });
+
+    if (project.blog_posts !== undefined) {
+      if (!Array.isArray(project.blog_posts)) {
+        throw new TypeError(`projects.json entry ${index} has invalid blog_posts.`);
+      }
+      project.blog_posts.forEach((post) => {
+        if (!post || typeof post !== 'object' || Array.isArray(post)) {
+          throw new TypeError(`projects.json entry ${index} has an invalid blog post.`);
+        }
+        requiredProjectText(post, 'title', index);
+      });
+    }
+    if (project.order_rank !== undefined && !Number.isFinite(project.order_rank)) {
+      throw new TypeError(`projects.json entry ${index} has an invalid order_rank.`);
+    }
+  });
+
+  return value;
+}
+
+export async function readAgentPrompt(
+  cwd = process.cwd(),
+  site = resolveSiteUrl(),
+  readProjects = readFile
+) {
+  const projects = validatePromptProjects(
+    JSON.parse(await readProjects(path.join(cwd, 'src', 'data', 'projects.json'), 'utf8'))
+  );
+  return { prompt: buildAgentPrompt(projects, site), projectCount: projects.length };
+}
+
+export async function emitAgentPrompt(
+  { args = process.argv, cwd = process.cwd(), site = resolveSiteUrl() } = {},
+  { readProjects, stderr, stdout, writePrompt } = DEFAULT_RUNTIME
+) {
+  const { prompt, projectCount } = await readAgentPrompt(cwd, site, readProjects);
+  const outIndex = args.indexOf('--out');
+  if (outIndex !== -1 && args[outIndex + 1]) {
+    await writePrompt(args[outIndex + 1], prompt);
+    stderr.write(`Wrote ${prompt.length} characters for ${projectCount} systems\n`);
+  } else {
+    stdout.write(prompt);
+  }
+}
+
+if (import.meta.main) await emitAgentPrompt();

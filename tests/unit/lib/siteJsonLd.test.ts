@@ -59,4 +59,26 @@ describe('buildSiteJsonLd', () => {
     expect(graph.url).toBe(base);
     expect(graph.author.sameAs).toContain(base);
   });
+
+  it('carries every evidence link through to relatedLink, in the order filed', () => {
+    const graph = buildSiteJsonLd(
+      [
+        project({
+          id: 'a',
+          blog_posts: [
+            { title: 'First', url: 'https://dev.to/a/first' },
+            { title: 'Second', url: 'https://dev.to/a/second' },
+          ],
+        }),
+        project({ id: 'b', blog_posts: [] }),
+      ],
+      base
+    );
+
+    expect(graph.hasPart[0].relatedLink).toEqual([
+      'https://dev.to/a/first',
+      'https://dev.to/a/second',
+    ]);
+    expect(graph.hasPart[1].relatedLink).toEqual([]);
+  });
 });
