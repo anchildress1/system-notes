@@ -295,14 +295,28 @@
     max-height: none;
     border-right: 0;
     border-bottom: 1px solid var(--line);
-    padding: 0 var(--gutter);
+    padding: 0;
     margin-inline: calc(var(--gutter) * -1);
-    scroll-padding-inline: var(--gutter);
     overflow-x: auto;
+    /* Rest on an item boundary, never mid-name. The active system is revealed by
+       the smallest delta that gets it inside the strip, which parks the scroll at
+       an arbitrary offset and slices whoever is at the leading edge — a sliced
+       word reads as broken text rather than as "more this way". Snapping governs
+       that programmatic scroll too, so the strip cannot come to rest mid-name.
+
+       The trailing item stays part-visible on purpose: that IS the affordance. */
+    scroll-snap-type: x mandatory;
   }
 
+  /* The gutter sits on the LIST, not on the scroll port. As padding on the port
+     it was outside the content box, and a scrolled strip runs THROUGH its own
+     padding — so the previous system stayed visible as a sliced 23px stub in the
+     inset while the snapped one aligned after it. Carried by the list, the inset
+     scrolls away with the content: the first system is inset at rest, and once
+     scrolled the leading edge is the snapped item and nothing sits before it. */
   .rail ul {
     display: flex;
+    padding-inline: var(--gutter);
   }
 
   /* The flex items are the list items, not the button inside them. Without this
@@ -310,6 +324,16 @@
      painted on top of each other as a single unreadable line. */
   .rail ul > li {
     flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  /* The list's leading inset is layout, not a snap position. Without this the
+     first system's snap point sits one gutter in, so a mandatory snap scrolled
+     the inset away at rest and stood the first name against the screen edge.
+     scroll-margin moves the snap area, never the box: the inset stays on screen
+     and the strip still rests at 0. */
+  .rail ul > li:first-child {
+    scroll-margin-inline-start: var(--gutter);
   }
 
   .railItem {
