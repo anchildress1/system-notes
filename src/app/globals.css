@@ -1066,14 +1066,6 @@ main {
   text-wrap: balance;
 }
 
-/* The turn of the headline goes italic as well as accent. On a Didone the
-   italic is a genuinely different letterform rather than a slant, so it reads
-   as a change of voice — which is what the second clause is. */
-.page-head h1 > span,
-.page-head-title > span {
-  font-style: italic;
-}
-
 .page-head h1[data-scale='compact'],
 .page-head-title[data-scale='compact'] {
   max-width: 26ch;
@@ -1151,6 +1143,10 @@ main {
    and it does it identically on paper and on graphite. */
 .page-head h1 > span,
 .page-head-title > span {
+  /* Italic as well as marked. On a Didone the italic is a genuinely different
+     letterform rather than a slant, so it reads as a change of voice — which is
+     what the second clause is. */
+  font-style: italic;
   /* INLINE, and this matters more than it looks. As a block with fit-content
      the band hugged the words only while they fit on one line; the moment the
      turn wrapped, fit-content resolved to the full column and the mark became

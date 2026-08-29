@@ -37,6 +37,28 @@ function coverSubpixel(delta: number): number {
 }
 
 /**
+ * How far one axis of an item sits outside the visible slice of its rail.
+ *
+ * @param start Leading edge of the item on this axis.
+ * @param end Trailing edge of the item on this axis.
+ * @param visibleStart Leading edge of the rail's visible slice.
+ * @param visibleEnd Trailing edge of the rail's visible slice.
+ * @returns A signed scroll delta, negative to reveal the leading edge and
+ *   positive to reveal the trailing one; 0 when the slice has no extent or the
+ *   item already fits.
+ */
+function overflowDelta(
+  start: number,
+  end: number,
+  visibleStart: number,
+  visibleEnd: number
+): number {
+  if (visibleStart >= visibleEnd) return 0;
+  if (start < visibleStart) return start - visibleStart;
+  return Math.max(0, end - visibleEnd);
+}
+
+/**
  * The systems rail and the detail pane beside it.
  *
  * Every project is already on the page, so moving between them is a state change
@@ -83,18 +105,10 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
     const visibleTop = Math.max(railBounds.top, 0);
     const visibleBottom = Math.min(railBounds.bottom, globalThis.innerHeight);
     const left = coverSubpixel(
-      visibleLeft >= visibleRight
-        ? 0
-        : itemBounds.left < visibleLeft
-          ? itemBounds.left - visibleLeft
-          : Math.max(0, itemBounds.right - visibleRight)
+      overflowDelta(itemBounds.left, itemBounds.right, visibleLeft, visibleRight)
     );
     const top = coverSubpixel(
-      visibleTop >= visibleBottom
-        ? 0
-        : itemBounds.top < visibleTop
-          ? itemBounds.top - visibleTop
-          : Math.max(0, itemBounds.bottom - visibleBottom)
+      overflowDelta(itemBounds.top, itemBounds.bottom, visibleTop, visibleBottom)
     );
     if (left === 0 && top === 0) return;
     rail.scrollTo({ left: rail.scrollLeft + left, top: rail.scrollTop + top });

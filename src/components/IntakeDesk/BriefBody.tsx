@@ -7,7 +7,7 @@ import styles from './IntakeDesk.module.css';
 /** One inline citation the agent wrote, or a run of plain prose. */
 export type BriefSegment = { text: string; href?: string };
 
-const LINK = /\[([^\]\n]+)\]\((\S+?)\)/g;
+const LINK = /\[([^\]\n]+)\]\(([^\s)]+)\)/g;
 const SITE_ORIGIN = 'https://anchildress1.dev';
 const DEV_ORIGIN = 'https://dev.to';
 
@@ -132,11 +132,17 @@ export default function BriefBody({
   question,
   answer,
 }: Readonly<{ question: string; answer: string }>) {
-  const inline = (text: string) =>
-    parseBrief(text).map((segment, index) =>
-      segment.href ? (
+  // Keyed on where the segment starts in the paragraph rather than on its place
+  // in the array. Segments tile the source, so the offset is unique, and it does
+  // not shift when an earlier one is split by a citation.
+  const inline = (text: string) => {
+    let at = 0;
+    return parseBrief(text).map((segment) => {
+      const key = at;
+      at += segment.text.length;
+      return segment.href ? (
         <a
-          key={`${segment.href}:${index}`}
+          key={key}
           href={segment.href}
           target="_blank"
           rel="noopener noreferrer"
@@ -146,9 +152,10 @@ export default function BriefBody({
           <span className="visually-hidden"> (opens in a new tab)</span>
         </a>
       ) : (
-        <span key={`text:${index}`}>{segment.text}</span>
-      )
-    );
+        <span key={key}>{segment.text}</span>
+      );
+    });
+  };
 
   return (
     <section className={styles.brief} aria-label="The brief">

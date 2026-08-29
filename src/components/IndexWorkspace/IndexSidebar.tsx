@@ -208,6 +208,51 @@ export default function IndexSidebar({
     onSelect(id);
   }
 
+  /**
+   * Where a printable key should move the selection.
+   *
+   * @param event The keydown that carried the character.
+   * @returns The option index to activate, or undefined to leave the selection
+   *   where it is — which covers a leading space, and a prefix the current
+   *   option already satisfies.
+   */
+  function typeaheadTarget(event: KeyboardEvent<HTMLOListElement>): number | undefined {
+    const now = Date.now();
+    const continuesPrefix =
+      now - typeahead.current.updatedAt <= 700 && typeahead.current.value.length > 0;
+    if (event.key === ' ' && !continuesPrefix) return undefined;
+
+    const typed = event.key.toLocaleLowerCase();
+    // One character pressed repeatedly cycles through options starting with it
+    // rather than searching for a run of that character.
+    const repeatsOneCharacter =
+      continuesPrefix &&
+      typed !== ' ' &&
+      [...typeahead.current.value].every((character) => character === typed);
+    let value = typed;
+    if (continuesPrefix && !repeatsOneCharacter) value = typeahead.current.value + typed;
+    typeahead.current = { value, updatedAt: now };
+    event.preventDefault();
+
+    const settled =
+      continuesPrefix &&
+      !repeatsOneCharacter &&
+      selectedIndex >= 0 &&
+      boardItems[selectedIndex]!.title.trim().toLocaleLowerCase().startsWith(value);
+    if (settled) return undefined;
+
+    // Search after the current option and wrap. The title is also the first
+    // part of the accessible name, so the spoken and keyboard models agree.
+    const start = selectedIndex >= 0 ? selectedIndex : -1;
+    for (let offset = 1; offset <= boardItems.length; offset += 1) {
+      const candidate = (start + offset) % boardItems.length;
+      if (boardItems[candidate]!.title.trim().toLocaleLowerCase().startsWith(value)) {
+        return candidate;
+      }
+    }
+    return undefined;
+  }
+
   function moveBoardSelection(event: KeyboardEvent<HTMLOListElement>) {
     if (boardItems.length === 0) return;
     if (
@@ -243,43 +288,7 @@ export default function IndexSidebar({
         if (event.key.length !== 1 || event.altKey || event.ctrlKey || event.metaKey) {
           return;
         }
-
-        const now = Date.now();
-        const continuesPrefix =
-          now - typeahead.current.updatedAt <= 700 && typeahead.current.value.length > 0;
-        if (event.key === ' ' && !continuesPrefix) return;
-        const typed = event.key.toLocaleLowerCase();
-        const repeatsOneCharacter =
-          continuesPrefix &&
-          typed !== ' ' &&
-          [...typeahead.current.value].every((character) => character === typed);
-        const value = repeatsOneCharacter
-          ? typed
-          : continuesPrefix
-            ? typeahead.current.value + typed
-            : typed;
-        typeahead.current = { value, updatedAt: now };
-        event.preventDefault();
-
-        if (
-          continuesPrefix &&
-          !repeatsOneCharacter &&
-          selectedIndex >= 0 &&
-          boardItems[selectedIndex]!.title.trim().toLocaleLowerCase().startsWith(value)
-        ) {
-          return;
-        }
-
-        // Search after the current option and wrap. The title is also the first
-        // part of the accessible name, so the spoken and keyboard models agree.
-        const start = selectedIndex >= 0 ? selectedIndex : -1;
-        for (let offset = 1; offset <= boardItems.length; offset += 1) {
-          const candidate = (start + offset) % boardItems.length;
-          if (boardItems[candidate]!.title.trim().toLocaleLowerCase().startsWith(value)) {
-            nextIndex = candidate;
-            break;
-          }
-        }
+        nextIndex = typeaheadTarget(event);
         break;
       }
     }

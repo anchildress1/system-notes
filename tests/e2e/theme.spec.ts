@@ -112,10 +112,6 @@ test.describe('Theme', () => {
      Measured before the fix: 3 of the 4 tile kinds became invisible holes in the
      grid that were still clickable, and the selected ring went with them. */
   test.describe('forced colors', () => {
-    test.skip(
-      ({ browserName }) => browserName !== 'chromium',
-      'only the engine Edge ships emulates forced colors'
-    );
     test.use({ contextOptions: { forcedColors: 'active' } });
 
     test('keeps every board tile drawn and the selected one apart', async ({ page }) => {
