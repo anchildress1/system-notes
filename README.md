@@ -34,8 +34,6 @@ A searchable record of Ashley Childress's engineering decisions, constraints, fa
 | Testing     | Vitest, Testing Library, Playwright, axe-core     |
 | Delivery    | Cloud Run, GitHub Actions, Release Please         |
 
-[Read the architecture](./ARCHITECTURE.md).
-
 ## Local development
 
 ```bash
