@@ -1143,10 +1143,6 @@ main {
    and it does it identically on paper and on graphite. */
 .page-head h1 > span,
 .page-head-title > span {
-  /* Italic as well as marked. On a Didone the italic is a genuinely different
-     letterform rather than a slant, so it reads as a change of voice — which is
-     what the second clause is. */
-  font-style: italic;
   /* INLINE, and this matters more than it looks. As a block with fit-content
      the band hugged the words only while they fit on one line; the moment the
      turn wrapped, fit-content resolved to the full column and the mark became
@@ -1162,5 +1158,7 @@ main {
      leaves the letters where they were and lets the mark overhang instead —
      which is what a stroke drawn by hand does anyway. */
   margin-left: -0.2em;
+  /* On a Didone the italic is a genuinely different letterform rather than a
+     slant, so it reads as a change of voice — which is what the turn is. */
   font-style: italic;
 }

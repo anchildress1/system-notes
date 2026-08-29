@@ -7,7 +7,7 @@ import styles from './IntakeDesk.module.css';
 /** One inline citation the agent wrote, or a run of plain prose. */
 export type BriefSegment = { text: string; href?: string };
 
-const LINK = /\[([^\]\n]+)\]\(([^\s)]+)\)/g;
+const LINK = /\[([^[\]\n]+)\]\(([^\s)]+)\)/g;
 const SITE_ORIGIN = 'https://anchildress1.dev';
 const DEV_ORIGIN = 'https://dev.to';
 
