@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Bodoni_Moda } from 'next/font/google';
 import localFont from 'next/font/local';
+import RouteFocus from '@/components/RouteFocus/RouteFocus';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import SiteHeader from '@/components/SiteHeader/SiteHeader';
 import { getProjects } from '@/lib/api';
@@ -132,6 +133,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         suppressHydrationWarning
       >
         <SiteHeader />
+        <RouteFocus />
         {children}
         <SiteFooter />
       </body>

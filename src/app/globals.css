@@ -822,6 +822,19 @@ body::before {
   box-shadow: 0 0 0 5px var(--tile-keyline);
 }
 
+/* The route-change focus target. RouteFocus moves focus to the main landmark
+   after a client-side navigation, so a reader is not left in the header of a page
+   they have already gone from.
+
+   tabindex -1 keeps it out of the tab sequence, so it is only ever focused
+   programmatically and never operated — and 2.4.7 asks for an indicator on the
+   components a reader operates. Without this, Chrome's own ring boxes the entire
+   page the first time a key is pressed after a navigation, which is a louder
+   version of the stranded ring the focus move exists to remove. */
+main:focus {
+  outline: none;
+}
+
 /* An input drawn as a RULE rather than a box opts out of the ring and thickens
    its own rule instead.
 
