@@ -60,17 +60,10 @@ function withDeadline<T>(request: Promise<T>): Promise<T> {
   });
 }
 
-/**
- * Reads the index's total and newest-filed date for the header.
- *
- * The index has no date-sorted replica, so every record is fetched with only
- * `created_at` retrieved — a few hundred one-field objects — and the newest is
- * taken from those. Held for {@link PULSE_TTL_MS} so the header does not query
- * the index once per page view.
- *
- * @returns The pulse, or null when the index cannot answer. Null is a normal
- *   outcome and the header is expected to render without it.
- */
+/* Reads the index's total and newest-filed date for the header.
+
+   The index has no date-sorted replica, so every record is fetched with only
+   `created_at` retrieved and the newest is picked here. */
 export const getIndexPulse = cache(async (): Promise<IndexPulse | null> => {
   if (!pulseClient) return null;
   if (cached && Date.now() - cached.at < PULSE_TTL_MS) return cached.value;

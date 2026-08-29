@@ -12,14 +12,6 @@ interface ThemeSongParagraph {
 const themeSongParagraphs: readonly ThemeSongParagraph[] = [
   { body: 'I’ve called “I Build Things” my theme song since the first time I heard it.' },
   {
-    body:
-      'Most of that is Appalachian ingenuity. I was taught to fix what breaks, reuse what ' +
-      'still works, and take a thing apart just to see how it works. I’ve been dismantling ' +
-      'systems, and occasionally putting them back together, since before I had the word ' +
-      'for them.',
-  },
-  { lead: 'The rest is how I build software.' },
-  {
     lead: 'I design systems by hunting the failure first.',
     body:
       'If a thing can break, I assume it will, and I would rather find it before production ' +
@@ -27,21 +19,12 @@ const themeSongParagraphs: readonly ThemeSongParagraph[] = [
       'hotfix an hour later. If I deployed it, the failure should already have been found, ' +
       'understood, and closed.',
   },
-  {
-    body:
-      'The song lands on both halves of that: the pleasure of building the thing yourself, ' +
-      'and the conviction that breaking it early, loudly, and on purpose is what makes it ' +
-      'ship clean and stay that way.',
-  },
 ];
 
-/**
- * One professional certification and the issuer's own page for checking it.
- *
- * `credentialUrl` is not optional. The about page files these under "Claims
- * should have receipts", and a certification with nowhere to check it is the
- * exact claim that section exists to stop making.
- */
+/* One professional certification and the issuer's own page for checking it.
+
+   `credentialUrl` is not optional: a certification with nowhere to check it is the
+   exact claim the about page's receipts section exists to stop making. */
 interface Certification {
   readonly name: string;
   readonly issuer: string;
@@ -63,13 +46,11 @@ const certifications: readonly Certification[] = [
     credentialUrl: 'https://www.credly.com/badges/a1465b7f-94c8-4289-8563-fb25a62c46a7/public_url',
   },
   {
-    // "Certified" is part of the name here and not on the Google Cloud entry
-    // above, because without it this reads as the product rather than the
-    // credential. "Generative AI Leader" already reads as one.
+    // "Certified" is part of the name here and not on the Google Cloud entry above,
+    // because without it this reads as the product rather than the credential.
     //
-    // GitHub's own certification, sat and verified through Microsoft Learn —
-    // which is why the receipt is on a microsoft.com domain and reads "Issued
-    // by Microsoft". The certification is GitHub's; the platform is Microsoft's.
+    // GitHub's own certification, sat through Microsoft Learn — which is why the
+    // receipt is on a microsoft.com domain and reads "Issued by Microsoft".
     name: 'GitHub Copilot Certified',
     issuer: 'GitHub',
     issued: 'August 2025',
@@ -108,11 +89,7 @@ export const profile = {
       body: 'Tests, scanners, and release gates handle repeatable verification. Judgment stays human.',
     },
   ],
-  /* The site footer's row, and nothing else reads it.
-     It used to be a second, differently-ordered copy of a list SiteFooter also
-     hardcoded, and /about printed one of them directly above the other — two
-     near-identical rows of the same four destinations at the bottom of the
-     page. The footer carries them site-wide now; /about points into the work. */
+  /* The site footer's row, and nothing else reads it. */
   links: [
     { label: 'GitHub', href: 'https://github.com/anchildress1' },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/anchildress1' },

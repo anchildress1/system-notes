@@ -34,16 +34,13 @@ export function resolveTheme(stored: unknown, prefersLight: boolean): Theme {
   return parseTheme(stored) ?? (prefersLight ? 'light' : DEFAULT_THEME);
 }
 
-/**
- * The script that stamps the theme onto `<html>` before the first paint.
- *
- * Runs synchronously in `<head>`, so it must not throw: `localStorage` is a
- * SecurityError in Safari private mode and inside a sandboxed frame, and an
- * uncaught throw in a blocking head script leaves a blank document. It touches
- * `<html>` and the theme-color meta and nothing else — `suppressHydrationWarning`
- * on `<html>` covers exactly one element's own attributes, so writing anywhere
- * else would surface as a hydration mismatch React cannot be told to ignore.
- */
+/* The script that stamps the theme onto `<html>` before the first paint.
+
+   Runs synchronously in `<head>`, so it must not throw: `localStorage` is a
+   SecurityError in Safari private mode and in a sandboxed frame, and an uncaught
+   throw in a blocking head script leaves a blank document. It touches `<html>` and
+   the theme-color meta and nothing else — `suppressHydrationWarning` covers exactly
+   one element's own attributes. */
 export const THEME_SCRIPT = `(function(){try{
 var s=null;
 try{s=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});}catch(e){}

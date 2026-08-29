@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ThemeSong from '@/components/ThemeSong/ThemeSong';
 import { BLOG_URL } from '@/config';
-import { blurFor } from '@/lib/imageVariants';
 import { profile } from '@/data/profile';
 import { getProjects } from '@/lib/api';
 import { groupProjects } from '@/lib/projectStatus';
@@ -47,11 +46,12 @@ export default function AboutPage() {
           </div>
         </div>
         <figure className={`drift ${styles.portrait}`}>
-          {/* Both portraits ship; CSS shows the one matching the theme. They are
-              lazy rather than priority on purpose: a display:none image is never
-              in the viewport, so the browser fetches only the visible one. A
-              priority hint would preload both and spend the second download on a
-              picture nobody is looking at. */}
+          {/* Both portraits ship; CSS shows the one matching the theme, and lazy is what
+              keeps the hidden one from downloading. preload, eager and fetchPriority were
+              each measured here: every one traded load delay for render delay.
+
+              No blur placeholder — Next draws it as an inline Gaussian-blur SVG, and two of
+              them cost 145ms of FCP rasterising a picture about to be replaced. */}
           {(['dark', 'light'] as const).map((theme) => (
             <span key={theme} className={styles.portraitFrame} data-theme-image={theme}>
               <Image
@@ -59,8 +59,6 @@ export default function AboutPage() {
                 alt={profile.portrait.alt}
                 fill
                 loading="lazy"
-                placeholder="blur"
-                blurDataURL={blurFor(profile.portrait[theme])}
                 sizes="(max-width: 768px) 100vw, 36vw"
               />
             </span>
@@ -90,11 +88,8 @@ export default function AboutPage() {
             <dd>{awardedProjects.length}</dd>
           </div>
         </dl>
-        {/* Two record lists under one h2, so each needs naming. The label takes
-            the fine print the figures' own labels are set in rather than a
-            second display heading, which would compete with the h2 that already
-            runs past its column. aria-labelledby rather than a repeated
-            aria-label: a heading beside a list does not name it on its own. */}
+        {/* Two record lists under one h2, so each needs naming. aria-labelledby rather than
+            a repeated aria-label: a heading beside a list does not name it on its own. */}
         {awardedProjects.length > 0 ? (
           <div className={styles.recordGroup}>
             <h3 id="awards-label" className={styles.recordLabel}>
@@ -103,9 +98,7 @@ export default function AboutPage() {
             <ul className={styles.records} aria-labelledby="awards-label">
               {awardedProjects.map((project) => (
                 <li key={project.id}>
-                  {/* The whole record is the link, and it goes to the exhibit that
-                      holds the evidence — a win named with nowhere to check it is
-                      the claim this section exists to stop making. */}
+                  {/* The whole record is the link, and it goes to the exhibit holding the evidence. */}
                   <Link
                     className={styles.record}
                     href={`/projects?system=${encodeURIComponent(project.id)}`}
@@ -131,12 +124,6 @@ export default function AboutPage() {
           <h3 id="certifications-label" className={styles.recordLabel}>
             Certifications
           </h3>
-          {/* Set as footnotes, not as records. A win is a hero line and takes
-              the band; a certification is a filed fact, so it takes the same
-              serif-over-small-caps pair the exhibits set their stack in and
-              flows in columns rather than stacking. Three two-line award
-              records followed by two more of them made this the tallest
-              section on the site and the least like the rest of it. */}
           <ul className={styles.credentials} aria-labelledby="certifications-label">
             {profile.certifications.map((certification) => (
               <li key={certification.credentialUrl}>
@@ -184,10 +171,6 @@ export default function AboutPage() {
       </section>
 
       <section className={`reveal ${styles.themeSong}`} aria-labelledby="theme-song-heading">
-        {/* Label left, content right — the same two columns as every other
-            section here. It used to be the one section that ran full width from
-            the far edge, which left the right half of the page empty and made it
-            read as a different page grafted in. */}
         <header>
           {/* No artist line: the status beside the control already names them,
               and the design does not repeat it under the heading. */}
@@ -211,15 +194,8 @@ export default function AboutPage() {
         <div>
           <h2 id="contact-heading">Follow the work, not a funnel.</h2>
         </div>
-        {/* Where the work is, not where the accounts are. This listed the same
-            four profiles the site footer carries, directly above the site
-            footer carrying them — two near-identical rows at the bottom of one
-            page. The footer keeps that row for every route; this section does
-            the thing its heading promises instead.
-
-            Internal destinations take the stepping arrow and the one that
-            leaves takes the outbound one, which is the same distinction the
-            record lists above draw. */}
+        {/* Where the work is, not where the accounts are — the footer carries the profiles
+            site-wide. */}
         <nav aria-label="Where the work lives">
           <Link className="washed" href="/notes">
             Search the index{' '}

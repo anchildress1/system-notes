@@ -5,28 +5,12 @@
   padding: 0 var(--gutter);
   margin: 0 auto;
 }
-
-/* align-items: start, not center. Centring both columns put the copy block and
-   the portrait on one shared optical axis — the arrangement a generator reaches
-   for because it is the safest. Starting them and then dropping the portrait
-   deliberately (below) puts the two masses off each other's centre line. */
 .hero {
   display: grid;
   min-height: calc(100svh - var(--header-height));
   align-items: start;
-  /* align-items only places an item inside its row; it does not stop the ROWS
-     from growing. With a min-height taller than the content, the two auto rows
-     stretched to absorb the slack and took half of it each — 35px of it landing
-     between the slug and the headline, which is what made this head sit lower
-     than the other three no matter what the padding said. */
   align-content: start;
-  /* The same rhythm every other head opens on. This padded on vw while
-     --head-lead runs on vh, so at 1440x856 it opened 35px lower than the other
-     three and the head read as this page's own. */
   padding-block: var(--head-lead) var(--head-tail);
-  /* Column gap only. With the slug lifted into its own row this was also
-     applying between the rule and the headline, opening 100px of dead space
-     under the rule; the slug carries its own margin for that. */
   gap: 0 clamp(3rem, 7vw, 8rem);
   grid-template-columns: minmax(0, 1fr) minmax(16rem, 28rem);
 }
@@ -57,53 +41,30 @@
   gap: 1rem;
 }
 
-/* Breaks its column on the right and sits lower than the copy it accompanies.
-   main carries overflow-x: clip, so the bleed cannot widen the document.
-   Both offsets are wide-viewport only — an asymmetric composition has no
-   responsive safety net, and on a narrow screen there is no room to bleed into. */
+/* Breaks its column on the right. main carries overflow-x: clip, so the bleed
+   cannot widen the document. Wide viewports only — a narrow screen has no room. */
 @media (min-width: 62rem) {
   .portrait {
     margin-top: clamp(3rem, 9vh, 7rem);
     margin-right: clamp(-3rem, -2vw, -1rem);
-    /* Crosses the rule below it. Block layouts cannot clip, which is exactly why
-       everything in one never overlaps anything else — and why a page built from
-       them reads as assembled rather than composed. The portrait hanging past
-       the divider is the one place this page admits it was arranged by hand. */
     margin-bottom: clamp(-7rem, -9vh, -3.5rem);
     position: relative;
     z-index: 1;
   }
-
-  /* The heading sits behind the portrait where they meet, rather than the two
-     politely avoiding each other. */
   .heroCopy {
     position: relative;
     z-index: 0;
   }
 }
 
-/* The same treatment every other image on the site gets. Nothing here is the
-   portrait's own.
-
-   What this replaces: a radial mask that faded the picture into the page, a
-   gradient painted over its foot so an overlaid caption could be read, and
-   overflow: hidden to keep both inside. Three rules, all of them this page's
-   private idea of what an image looks like, and together they were the argument
-   for why the portrait could not be treated like an image — the mask clips a
-   box-shadow, and overflow: hidden clips the tape. The argument was circular:
-   the exception existed only because of the exception.
-
-   A print is a print. This one is square and has a caption; that is the picture,
-   not the page. */
+/* The same treatment every other image gets. A radial mask, a caption gradient
+   and overflow: hidden used to live here, and each clips something .taped needs:
+   the mask clips the box-shadow, the overflow clips the tape. */
 .portrait {
   composes: taped from global;
   /* The source art is square. Only the ratio is this picture's own. */
   --print-ratio: 1 / 1;
 }
-
-/* The print itself. In flow rather than absolutely filling the figure, because
-   the caption now sits under it — the figure is the sheet, this is the picture
-   on it. Still position: relative, which <Image fill> needs. */
 .portraitFrame {
   position: relative;
   aspect-ratio: var(--print-ratio);
@@ -124,10 +85,8 @@
   display: block;
 }
 
-/* Set, colour, spacing and placement all come from .taped figcaption. The only
-   thing left that is this caption's own is the displacement below: the second
-   line pushed off the first, rather than the two sitting on one neat tracking
-   path. */
+/* Set, colour, spacing and placement come from .taped figcaption. Only the
+   displacement below is this caption's own. */
 .portrait figcaption span:last-child {
   margin-left: clamp(1.5rem, 5vw, 4rem);
 }
@@ -141,11 +100,6 @@
   background: var(--mark);
   content: '';
 }
-
-/* One padding token repeated down a page is a flat scroll: every section
-   arrives on the same beat. The rhythm alternates instead — long, short, long,
-   short — so the page breathes unevenly the way a printed one does. The shared
-   properties stay shared; only the pacing varies. */
 .proof,
 .principles,
 .themeSong,
@@ -159,9 +113,8 @@
 
 .proof {
   padding-block: clamp(4rem, 8vw, 8rem) clamp(3rem, 5vw, 5rem);
-  /* The shared gap is tuned to separate the label COLUMN from the content one,
-     and at 6vw it is far too much air between stacked rows of the same column.
-     Rows get the rhythm the record lists already used as their own margin. */
+  /* The shared gap separates the label COLUMN from the content one; at 6vw it is
+     far too much air between stacked rows of the same column. */
   row-gap: clamp(2.5rem, 5vw, 4rem);
 }
 
@@ -176,10 +129,6 @@
 .contact {
   padding-block: clamp(3.5rem, 6.5vw, 6.5rem) clamp(3rem, 5vw, 5rem);
 }
-
-/* Runs past the end of its own column. The grid gap is generous enough that the
-   overhang never collides with the content beside it — it just stops the left
-   column from reading as a box that the heading was poured into. */
 .proof header h2,
 .principles header h2,
 .themeSong header h2,
@@ -194,10 +143,6 @@
   line-height: 0.98;
   text-wrap: balance;
 }
-
-/* No box. Figures inside bordered cells are a metrics widget, and a row of them
-   is the single thing that made this page read as a dashboard rather than as a
-   profile. The same numbers set as display type, on a baseline, are a claim. */
 .proof dl {
   display: flex;
   flex-wrap: wrap;
@@ -210,15 +155,9 @@
   display: flex;
   flex-direction: column-reverse;
 }
-
-/* The lead figure is the one worth reading, so it is set larger and the other
-   two sit under its baseline rather than beside it as equals. */
 .proof dl div:first-child dd {
   font-size: clamp(5.5rem, 11vw, 11rem);
 }
-
-/* The fine print the rest of the site sets its small caps in, rather than a
-   size and a tracking invented here. */
 .proof dt {
   margin-top: 0.9rem;
   color: var(--mute);
@@ -229,19 +168,9 @@
   text-transform: uppercase;
 }
 
-/* The figures are INK, and the gold is struck under them.
-
-   They used to be set in --ink-accent, back when that was a red on paper: three
-   red numerals were the loudest thing on the page and the least like the rest of
-   it. Colour is the wrong tool here anyway — a count is a fact, and the site
-   marks facts rather than tinting them. So the numeral takes the body's own
-   ink and the mark goes underneath it, one stroke per figure, each as wide as
-   the number it belongs to. Three tallies struck on a page, which is what a
-   count of receipts should look like.
-
-   The stroke rides in padding rather than over the glyphs: line-height 0.78 is
-   tighter than the numerals are tall, so the block box ends above their feet
-   and a background pinned to its bottom would cut straight through them. */
+/* The figures are INK, with the gold struck under them. The stroke rides in
+   padding rather than over the glyphs: line-height 0.78 is tighter than the
+   numerals are tall, so a background pinned to the box bottom would cut them. */
 .proof dd {
   width: fit-content;
   padding-bottom: 0.22em;
@@ -255,9 +184,6 @@
   line-height: 0.78;
   letter-spacing: -0.04em;
 }
-
-/* Struck by hand, so no two sit at the same angle. Under a degree each: enough
-   that the row stops reading as a table, not enough to read as a mistake. */
 .proof dl div:nth-child(1) dd {
   transform: rotate(-0.7deg);
 }
@@ -270,13 +196,8 @@
   transform: rotate(-1.1deg);
 }
 
-/* Names one of the two record lists in the column. The fine print the figures'
-   own labels are set in, not a heading scale — a second display heading here
-   would compete with the h2 that already overruns its column, and these are
-   labels on a list rather than a new claim. */
-/* One grid item per record group. Left as siblings, the label and its own list
-   were two grid rows with the section's row gap between them, which read as a
-   heading stranded above nothing. */
+/* Names one of the two record lists. Fine print rather than a heading scale — a
+   second display heading competes with the h2 that already overruns its column. */
 .recordGroup {
   grid-column: 2;
 }
@@ -296,10 +217,8 @@
   list-style: none;
 }
 
-/* Loose columns, the way the exhibits set their stack — entries break where the
-   measure runs out rather than queueing down one edge. Two credentials stacked
-   as full records added six lines to the tallest section on the page; set as
-   footnotes they take two. */
+/* Loose columns. Two credentials set as full records added six lines to the
+   tallest section on the page; as footnotes they take two. */
 .credentials {
   padding: 0;
   margin-top: 1.1rem;
@@ -343,9 +262,6 @@
   letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
 }
-
-/* Leaves the site, so it steps out rather than along — the same motion rule as
-   the record arrow, on the axis the mark points. */
 .credentialGo {
   color: var(--mute);
   font-size: 0.85em;
@@ -360,19 +276,6 @@
 .records li + li {
   margin-top: 1.1rem;
 }
-
-/* Claim over source, not the source's name first. Listing the project first
-   made three wins read as three more entries in the roster; leading with the
-   citation is what says it was won, and a certification reads the same way —
-   the credential, then who issued it and when.
-
-   One grammar for both lists, so the classes are named for the shape rather
-   than for awards, which were only the first thing to use it.
-
-   The band and the star are the exhibit's own award treatment, composed from
-   the same primitives rather than a second one invented here, so the two pages
-   agree on what an award looks like. The star moved inline with the citation
-   because that is where the exhibit puts it. */
 .record {
   composes: washed from global;
   display: grid;
@@ -408,8 +311,8 @@
   letter-spacing: -0.015em;
 }
 
-/* Steps toward the exhibit. Motion only: the row already carries the wash, and
-   a second colour on a hover is the thing globals.css forbids. */
+/* Motion only. The row already carries the wash, and a second colour on a hover
+   is what globals.css forbids. */
 .recordGo {
   color: var(--mute);
   transition: transform 180ms var(--ease-out);
@@ -439,13 +342,6 @@
   list-style: none;
 }
 
-/* No row borders, no fixed columns. The number hangs in the margin the way a
-   footnote marker does, the statement runs at display size, and the reasoning
-   sits under it as prose. Each principle is then a block someone wrote rather
-   than a row in a table of them. */
-/* The numeral hangs, it does not sit in a column. A track reserved for it made
-   every marker share one hard edge with the statements beside them; pulled into
-   the margin they float in the gutter and the prose keeps a single left edge. */
 .principles li {
   display: block;
   position: relative;
@@ -455,9 +351,6 @@
 .principles li + li {
   margin-top: clamp(2.5rem, 5vw, 4.5rem);
 }
-
-/* Every second one steps in, so the column has a cadence instead of a ruled
-   edge. Wide screens only — there is no room to indent on a phone. */
 @media (min-width: 62rem) {
   .principles li:nth-child(even) {
     margin-left: clamp(1.5rem, 4vw, 4rem);
@@ -473,10 +366,6 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: var(--fine-tracking);
 }
-
-/* Each marker hangs a different distance into the gutter, so the run reads as
-   three notes set by hand rather than a numbered column. Wide screens only —
-   there is no gutter to hang into on a phone. */
 @media (min-width: 62rem) {
   .principles li > span {
     left: -3.25rem;
@@ -527,8 +416,6 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  /* 0.5px, not 1px. An exhibition catalog rules its entries with a hairline;
-     a full pixel at this length reads as a table border. */
   border-bottom: 0.5px solid var(--line-strong);
   color: var(--bone);
   font-family: var(--font-editorial);
@@ -539,20 +426,14 @@
     color 200ms var(--ease-out),
     padding-left 320ms var(--ease-out);
 }
-
-/* A character, not an icon component. The cue that a link leaves the site is
-   worth keeping — dropping it entirely would take the affordance with the
-   artifact — but at this size it can be set rather than drawn. */
 .outbound {
   color: var(--mute);
   font-family: var(--font-display);
   font-size: 0.8em;
 }
 
-/* Steps to the right AND takes the wash. The step is this row's own idea and it
-   stays — a link that moves reads as a link — but the colour swap that came with
-   it was the site's fifth different answer to "you are hovering this". The wash
-   is the shared one; the motion is the local flourish on top of it. */
+/* Motion only, on top of the shared wash. The colour swap that came with the step
+   is what globals.css forbids. */
 .contact nav a:hover {
   padding-left: 0.85rem;
 }
@@ -566,10 +447,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* The hero sets `gap: 0 <column>` — row-gap 0 — which is right while the copy
-     and the portrait are side by side and has never been reconsidered for the
-     stack. Collapsed to one column it left the figure 4px off the last
-     paragraph, touching it, before any animation moved anything. */
+  /* The hero sets row-gap 0, which is right while the copy and portrait are side by
+     side. Collapsed to one column it left the figure touching the last paragraph. */
   .hero {
     min-height: auto;
     row-gap: clamp(2.5rem, 8vw, 4rem);

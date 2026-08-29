@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Bodoni_Moda } from 'next/font/google';
 import localFont from 'next/font/local';
+import RouteFocus from '@/components/RouteFocus/RouteFocus';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import SiteHeader from '@/components/SiteHeader/SiteHeader';
 import { getProjects } from '@/lib/api';
@@ -40,10 +41,12 @@ const display = localFont({
 // serif never touches either, or it stops being a display face and becomes a
 // theme. next/font downloads it at build time and serves it from our own origin,
 // so nothing is requested from Google at runtime and the CSP is untouched.
+// Weight 500 only. Nothing renders this face at 700; a 400 request resolves to
+// the 500 cut. Declaring 700 preloaded two unused files, ~56 KB, on every route.
 const editorial = Bodoni_Moda({
   subsets: ['latin'],
   variable: '--font-editorial',
-  weight: ['500', '700'],
+  weight: ['500'],
   style: ['normal', 'italic'],
   display: 'swap',
   preload: true,
@@ -130,6 +133,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         suppressHydrationWarning
       >
         <SiteHeader />
+        <RouteFocus />
         {children}
         <SiteFooter />
       </body>

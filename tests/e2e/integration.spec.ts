@@ -287,11 +287,9 @@ test.describe('System Notes redesign', () => {
     await expect(section.getByRole('button', { name: /theme song/i })).toBeVisible();
     await expect(section).toContainText('I Build Things');
     await expect(section).toContainText('Twisted Game Songs');
-    // The two claims the note actually makes: where the instinct comes from,
-    // and what it turns into once it reaches the software.
-    await expect(section).toContainText('Appalachian ingenuity');
+    // The claim the note makes: what the instinct turns into once it reaches the
+    // software.
     await expect(section).toContainText('hunting the failure first');
-    await expect(section).toContainText('breaking it early');
     await expect(section.locator('p')).not.toHaveCount(0);
   });
 

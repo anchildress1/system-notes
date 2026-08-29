@@ -79,10 +79,8 @@
 }
 
 /* Selected is the wash held down. .washed paints only under the pointer, so a
-   refined facet lost its fill the moment the cursor left and the whole state
-   rested on the count's minus sign. Same band, same token — it just does not
-   lift. Nothing new is declared here; a second colour for "selected" is the
-   thing the accent alias exists to prevent. */
+   refined facet lost its fill the moment the cursor left. Same band, same token;
+   it just does not lift. */
 .categoryList button[data-selected] {
   background-color: var(--mark-soft);
 }
@@ -92,22 +90,18 @@
   height: 0.68rem;
   border-radius: 0.08rem;
   background: var(--mark);
-  /* The chip is a sample of the board, so it carries the board's plate as its
-     edge. On paper that edge is doing real work: a gold chip is only about
-     1.4:1 against cream and would otherwise have no boundary at all. The dark
-     ring gives it one without darkening the sample itself. */
+  /* The chip is a sample of the board, so it carries the board's plate as its edge.
+     On paper that edge is load-bearing: a gold chip is about 1.4:1 against cream and
+     would otherwise have no boundary at all. */
   box-shadow: 0 0 0 1px var(--tile-keyline);
 }
 
-/* An award is the one kind told apart by SHAPE: a hollow ring rather than a
-   fill. That is what lets it share the accent's pigment without ever being
-   mistaken for the accent slot.
+/* An award is told apart by SHAPE — a hollow ring — which is what lets it share
+   the accent's pigment without being mistaken for the accent slot.
 
    outline with a negative offset, not a border. A border under border-box eats
-   into the box and renders the one kind that is supposed to stand out visibly
-   smaller than every other — which is why the ring was dropped the first time.
-   An outline takes no layout space at all, and unlike an inset box-shadow it
-   survives the hover and selected states, which replace box-shadow outright. */
+   into the box and renders the one kind meant to stand out visibly smaller, and
+   unlike an inset box-shadow an outline survives the hover and selected states. */
 .categorySwatch[data-award],
 .boardTiles li[data-award]::before {
   background: transparent;
@@ -145,40 +139,16 @@
   padding: 0;
   margin-top: 0.5rem;
   border: 1px solid transparent;
-  /* Two numbers, and every tile dimension derives from them.
+  /* Two numbers, and every tile dimension derives from them. --tile-min is the
+     packing floor, not the drawn stride: auto-fill takes as many whole tracks as fit
+     and 1fr spends the remainder, so a fixed track left a 22px dead strip down the
+     right edge where minmax leaves none.
 
-     --tile-min is the floor under the pointer target: WCAG 2.2 target size
-     wants 24px, and the board is a grid of individually clickable options, so
-     no cell may be smaller. --tile-sep is the gutter the mockup draws between
-     marks.
-
-     The tracks are fluid because a fixed track cannot fill its container.
-     auto-fill at a flat 24px left a 22px strip of dead panel down the right
-     edge, so the board no longer squared up with the rules and counts above it
-     — a census with a ragged margin. minmax spends that remainder on the tiles
-     instead: the board is a filled rectangle at every width, and a cell is
-     still never under 24px.
-
-     The mark derives from the cell rather than carrying its own size. Held
-     independently — a 24px cell around a 14x10 mark — it left 10px of dead
-     space beside every tile and 14px under it, and the board read as a sparse
-     scatter.
-
-     This number is the packing floor, not the drawn stride — auto-fill takes as
-     many whole tracks as fit and 1fr spends the rest, so the floor decides the
-     column count and the stride falls out of it. 16 packs 22 columns into this
-     panel, for a ~12px mark on a ~16px stride.
-
-     The mockup's own 18-column, 16-on-20 grain was matched first and read too
-     coarse in place: at that size the census looks like a chart of a few dozen
-     things rather than a plate of a few hundred. Density is the point.
-
-     A 24px floor was tried, to clear WCAG 2.5.8 target size on its own, and it
-     bought four columns' worth of stride the census was never drawn at. The
-     criterion is met through its equivalent-control exception instead — every
-     note on the board is also a full-height row in the result queue beside it —
-     and the tiles are not individual tab stops in any case: the listbox is the
-     one focusable thing and arrow keys move within it. */
+     WCAG 2.5.8 target size is met through its equivalent-control exception — every
+     note on the board is also a full-height row in the queue beside it — and the
+     tiles are not individual tab stops: the listbox is the one focusable thing and
+     arrow keys move within it. A 24px floor was tried and bought four columns' worth
+     of stride the census was never drawn at. */
   --tile-min: 16px;
   --tile-sep: 4px;
   grid-template-columns: repeat(auto-fill, minmax(var(--tile-min), 1fr));
@@ -205,9 +175,7 @@
   height: calc(100% - var(--tile-sep));
   border-radius: 2px;
   /* Set per tile from the category's own swatch; --k-other covers a note whose
-     category is absent from the current facet list. Every tile is the same size
-     — the awards used to carry a border, which under border-box shrank the only
-     tile that was supposed to stand out. */
+     category is absent from the current facet list. Every tile is the same size. */
   background: var(--tile-swatch, var(--k-other));
   box-shadow: 0 0 0 1px var(--tile-keyline);
   content: '';
@@ -238,10 +206,8 @@
 
 .boardTiles li[aria-selected='true']::before {
   /* A ring in the accent, not a brightness filter. brightness() scales what is
-     already there, so it did almost nothing to the darkest swatches and blew
-     out the lightest — the selected tile read as unchanged on exactly the
-     categories that needed the cue most. A ring is the same cue on every tone.
-     The swatch shrinks to leave room for it inside the tile's own cell. */
+     already there, so it did almost nothing to the darkest swatches and blew out the
+     lightest. A ring is the same cue on every tone. */
   box-shadow:
     0 0 0 1.5px var(--panel),
     0 0 0 3px var(--ink-accent),
@@ -253,16 +219,13 @@
   animation: board-select 360ms var(--ease-out);
 }
 
-/* Windows High Contrast — Edge, Chrome and Firefox on Windows — forces every
-   background-color to Canvas and drops box-shadow outright, and a tile is
-   nothing but those two. Measured: three of the four kinds rendered as
-   invisible holes in the grid that were still clickable, and the selected ring
-   went with them; only the award kind survived, because it is drawn with an
-   OUTLINE, and an outline is the one edge forced colors keeps.
+/* Windows High Contrast forces every background-color to Canvas and drops
+   box-shadow outright, and a tile is nothing but those two: three of the four
+   kinds rendered as invisible holes that were still clickable. An OUTLINE is the
+   one edge forced colors keeps, so the other kinds borrow the award's mechanism.
 
-   So the other kinds borrow the award's mechanism. The keywords below are the
-   reader's own system colors, not palette — a forced-colors block cannot use a
-   token, because the whole point of the mode is that the reader's colors win. */
+   The keywords below are the reader's own system colors, not palette — a
+   forced-colors block cannot use a token. */
 @media (forced-colors: active) {
   .boardTiles li::before,
   .categorySwatch {
@@ -320,9 +283,7 @@
   z-index: 20;
 }
 
-/* One rule, the full width of the pane. The pill was a rounded grey capsule with
-   a console prefix inside it — the single most "developer tool" object on the
-   site. What replaces it is the line you write on. */
+/* One rule, the full width of the pane, rather than a bordered capsule. */
 .searchPill {
   display: grid;
   min-height: 3.25rem;
@@ -356,10 +317,9 @@
   letter-spacing: -0.01em;
 }
 
-/* The field is type="search" for the semantics and the keyboard it gets, but
-   the browser draws its own clear control for that type — which sat next to the
-   one this component renders, two crosses offering the same action, the native
-   one in its own colour. Only ours survives. */
+/* type="search" for the semantics and the keyboard it gets, but the browser draws
+   its own clear control for that type — two crosses offering the same action, the
+   native one in its own colour. Only ours survives. */
 .searchPill input::-webkit-search-cancel-button,
 .searchPill input::-webkit-search-decoration {
   display: none;
@@ -485,11 +445,6 @@
   color: var(--mute);
   gap: 0.3rem;
 }
-
-/* A rule between the query and what it returned. The featured entry lost its
-   box when the page became a catalog, and nothing took over the job of ending
-   the search block — the first record ran straight out of the meta line above
-   it, so the count, the facets and the result read as one run of text. */
 .resultArea {
   position: relative;
   min-width: 0;
@@ -518,9 +473,6 @@
   display: grid;
   min-width: 0;
   padding: 0;
-  /* No rule of its own. The featured entry already closes with one, and the two
-     sat about 48px apart with nothing between them — which reads as an empty
-     record rather than as a boundary. One separator does the job. */
   list-style: none;
 }
 
@@ -528,10 +480,8 @@
   min-width: 0;
 }
 
-/* An exhibition catalog, not a stack of cards. Each entry is separated by a
-   hairline and nothing else — no box, no fill, no border on three other sides.
-   The row indents on hover instead of lighting up, which is how a printed list
-   acknowledges you without becoming a button. */
+/* An exhibition catalog, not a stack of cards: a hairline between entries and
+   nothing else. The row indents on hover rather than lighting up. */
 .queueList button {
   display: grid;
   /* An implicit `auto` track resolves to max(min-content, …) and can grow past
@@ -543,8 +493,6 @@
   padding: 1.15rem 0;
   border: 0;
   border-bottom: 0.5px solid var(--line-strong);
-  /* Set per position below: identical space above and below every record is the
-     one mechanical rhythm left in the catalog. */
   background: transparent;
   color: var(--bone);
   text-align: left;
@@ -553,17 +501,12 @@
     color 200ms ease,
     border-color 200ms ease;
 }
-
-/* Steps in, and takes the wash with it. The border colour swap it used to do
-   instead was a sixth hover treatment on a page that already had three. */
 .queueList button:hover {
   padding-left: 0.9rem;
 }
 
-/* Uneven leading between records, the way a printed catalog breathes. Four
-   measures that repeat: the run was fixed at 1..4 when the queue held four
-   entries, so a paged run of ten fell back to the flat base padding from the
-   fifth row down and the page went mechanical exactly where it got long. */
+/* Four measures that repeat, so a paged run of ten does not fall back to flat
+   padding from the fifth row down. */
 .queueList li:nth-child(4n + 1) button {
   padding-block: 1rem 1.45rem;
 }
@@ -579,9 +522,6 @@
 .queueList li:nth-child(4n) button {
   padding-block: 1.1rem 1.6rem;
 }
-
-/* Staggered measures. Every entry cut to the same width is a table column; a
-   catalog lets the line length shift down the page. */
 .queueList li:nth-child(odd) .queueTitle {
   max-width: 46ch;
 }
@@ -616,15 +556,8 @@
 .queueTitle {
   display: block;
   margin-top: 0.45rem;
-  /* Scaled by rank, because this list IS ranked — it is literally numbered.
-     Every row at one size made a ranked queue read as an unordered table, and
-     the title was set at the same 0.9375rem as its own metadata, so the thing
-     you choose between had no more weight than the date beside it.
-
-     Rank drives the scale rather than an arbitrary index multiplier: the
-     variation then means something a reader can act on, instead of being
-     decoration that happens to look irregular. Floored at 1rem so the tail of
-     the queue never becomes fine print. */
+  /* Scaled by rank, because this list is ranked. Floored at 1rem so the tail of the
+     queue never becomes fine print. */
   font-family: var(--font-editorial);
   font-size: max(1.05rem, calc(1.65rem - var(--rank, 0) * 0.14rem));
   font-weight: 500;
@@ -633,10 +566,6 @@
   overflow-wrap: anywhere;
   text-wrap: pretty;
 }
-
-/* The pager sits under the run, not beside it: the queue is a column and a
-   control that floats out of that column reads as belonging to the reader
-   above. */
 .queuePager {
   display: flex;
   align-items: center;

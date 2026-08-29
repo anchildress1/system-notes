@@ -1,5 +1,9 @@
 import '../test-env';
-import '@testing-library/jest-dom';
+// The /vitest entry, not the bare one. Both register the matchers at runtime,
+// but only this one augments Vitest's `Assertion` interface — the bare entry
+// augments Jest's, so every `toBeInTheDocument` was a type error that nothing
+// reported, because tsconfig excluded the tests that would have surfaced it.
+import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 

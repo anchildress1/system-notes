@@ -7,14 +7,11 @@ import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteC
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
-/**
- * Alternates shown per page. The reader above holds the featured note, so a page
- * is one note plus five.
- *
- * Five, not ten: .queueTitle scales the type down by rank and floors at 1.05rem,
- * which rank 5 reaches. A ten-row page spent its back half at the floor, so the
- * ramp stopped ranking anything and just looked like the text shrinking.
- */
+/* Alternates shown per page. The reader above holds the featured note, so a page
+   is one note plus five.
+
+   Five, not ten: .queueTitle scales the type down by rank and floors at 1.05rem,
+   which rank 5 reaches. */
 const PAGE_SIZE = 5;
 
 interface ResultQueueProps {
@@ -57,14 +54,9 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
     (pressed === 'previous' ? nextRef.current : previousRef.current)?.focus();
   }, [pager]);
 
-  // A new result set starts at its own first page. The page is stored WITH the
-  // set it was chosen for and read back only when the two still agree, so a
-  // stale page is ignored rather than corrected: resetting it from an effect
-  // costs a second render pass on every search, and the first pass of that pass
-  // paints the old page.
-  //
-  // Signed by the ordered ids rather than by array identity — useHits hands back
-  // a fresh array every render, while equal-sized searches can share a lead hit.
+  // A new result set starts at its own first page. The page is stored WITH the set it
+  // was chosen for and read back only when the two still agree, so a stale page is
+  // ignored rather than corrected.
   const resultSignature = JSON.stringify(items.map((item) => item.objectID));
   const requestedPage = pager.signature === resultSignature ? pager.page : 0;
 

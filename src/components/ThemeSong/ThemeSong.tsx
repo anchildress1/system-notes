@@ -12,11 +12,8 @@ export const TRACK_SRC = '/audio/twisted-game-songs-i-build-things.mp3';
  *  file cannot inherit this one's rating. */
 export const TRACK_EXPLICIT = true;
 
-/**
- * The equalizer, as the design draws it: ten bars at fixed heights, each with
- * its own period so the run never pulses in unison. Decorative, and hidden from
- * assistive tech.
- */
+/* The equalizer: ten bars at fixed heights, each with its own period so the run
+   never pulses in unison. Decorative, and hidden from assistive tech. */
 const BARS = [
   { height: 38, duration: 1.4, delay: 0 },
   { height: 72, duration: 1.1, delay: 0.12 },
@@ -30,14 +27,11 @@ const BARS = [
   { height: 88, duration: 1.15, delay: 0.4 },
 ] as const;
 
-/**
- * The theme-song player: one control, a status line, and a decorative equalizer
- * that runs only while the track does.
- *
- * The control reports `aria-pressed` from the audio element's own events rather
- * than from the click, so a playback that never starts — autoplay refused, file
- * missing — cannot leave it claiming to be on.
- */
+/* The theme-song player: one control, a status line, and a decorative equalizer
+   that runs only while the track does.
+
+   The control reports `aria-pressed` from the audio element's own events rather
+   than from the click, so the state always matches what is actually playing. */
 export default function ThemeSong() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -90,22 +84,15 @@ export default function ThemeSong() {
           disabled={hasError}
           onClick={toggle}
         >
-          {/* Feather draws both as outlines; filled is what a transport control
-              reads as at this size, and fill=currentColor solidifies the same
-              shape rather than importing a second icon family for two marks. */}
+          {/* Feather draws both as outlines; fill=currentColor solidifies the same shape
+   rather than importing a second icon family for two marks. */}
           {isPlaying ? (
             <FiPause aria-hidden="true" fill="currentColor" size={13} />
           ) : (
             <FiPlay aria-hidden="true" fill="currentColor" size={13} />
           )}
           {isPlaying ? 'Pause' : 'Play it'}
-          {/* Inside the control, beside its own words: the rating belongs to the
-              thing you are about to play, not to the row it sits in.
-
-              aria-hidden, because the button's accessible name already ends in
-              "Explicit content." — both come off TRACK_EXPLICIT, so the stamp
-              and the announcement cannot disagree, and a screen reader is told
-              once rather than twice. */}
+          {/* aria-hidden: the button's accessible name already ends in "Explicit content." */}
           {TRACK_EXPLICIT ? (
             <span className="explicit" aria-hidden="true">
               E

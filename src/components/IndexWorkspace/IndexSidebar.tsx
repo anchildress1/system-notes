@@ -18,30 +18,18 @@ import { assignSwatches } from './swatchPalette';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
-// The index owns the taxonomy. Categories are rendered exactly as Algolia
-// returns them — no grouping, no relabelling, no fallback bucket — so changing
-// a category name is a data change, not a code change.
+// The index owns the taxonomy. Categories render exactly as Algolia returns them
+// — no grouping, no relabelling, no fallback bucket — so changing a category name
+// is a data change, not a code change.
 //
-// Swatches follow a category's rank by size: Algolia returns facets ordered by
-// count, so the largest category takes the strongest tone. The palette is a
-// neutral ladder with one yellow slot; rank varies value, never hue.
-//
-// The rank is read from the *unfiltered* facet list, held alongside the board's
-// census. Refining re-sorts the live list by the narrowed counts, and keying off
-// that repainted most of the board the moment a filter was applied, so the
-// census could no longer be read as "the same board, with matches lit".
-// Every slot has to stay readable against the board it is drawn on; the tones and
-// the keyline that separates them live in globals.css, beside the --k-* tokens.
-// The ramp used to run down to within 5.5 lightness points of the background, and
-// that category looked unselectable because filtering it changed nothing a reader
-// could see.
+// Rank comes from the *unfiltered* facet list, held alongside the board's census.
+// Refining re-sorts the live list by the narrowed counts, and keying off that
+// repainted most of the board the moment a filter was applied, so the census could
+// no longer be read as "the same board, with matches lit".
 
-// Awards take a tone of their own, outside the rank palette, and the star in the
-// filing list. They previously drew a ring by way of a border, which on a 14x10
-// tile with border-box ate four pixels of each side and rendered the award
-// visibly smaller than every other tile. This is the one place a name matters,
-// and it matches on meaning rather than an exact value, so "Awards", "Award", or
-// "Awards ★" all keep the treatment.
+// Awards take a tone outside the rank palette. This is the one place a name
+// matters, and it matches on meaning rather than an exact value, so "Awards",
+// "Award" and "Awards ★" all keep the treatment.
 function isAwardCategory(value: string | undefined): boolean {
   return /award/i.test(value ?? '');
 }
@@ -52,13 +40,11 @@ interface IndexSidebarProps {
   onSelect: (id: string) => void;
 }
 
-/**
- * Number of columns the board's auto-fill grid actually resolved to.
- * Reads the computed track list rather than recomputing the CSS in JS, so the
- * stylesheet stays the single source of truth for tile size and gap.
- * Returns 0 only where grid tracks never resolve at all — jsdom — and callers
- * treat that as "don't trim".
- */
+/* Number of columns the board's auto-fill grid actually resolved to.
+
+   Reads the computed track list rather than recomputing the CSS in JS. Returns 0
+   only where grid tracks never resolve at all — jsdom — and callers treat that as
+   "don't trim". */
 function useResolvedColumnCount(): {
   measureRef: (node: HTMLElement | null) => void;
   columns: number;
@@ -179,18 +165,9 @@ export default function IndexSidebar({
     [categories]
   );
 
-  // Every tile is a real note, and every tile on the board is a MATCH.
-  //
-  // This was a census: it kept the whole ranked set on screen and dropped
-  // non-matching tiles to 0.13 opacity, on the theory that showing where an
-  // answer sits inside the index beats shrinking the index. What it actually
-  // rendered was a grid three-quarters full of grey — indistinguishable from a
-  // disabled control, and nothing in a grid of clickable tiles should ever look
-  // disabled. A tile is relevant and shown, or it is not there.
-  //
-  // The board reflows when a filter narrows it. That is the cost, and it is the
-  // right one: a reflow reads as the index responding, where a wall of dimmed
-  // tiles reads as the interface having broken.
+  // Every tile on the board is a MATCH. Dimming non-matching tiles instead rendered
+  // a grid three-quarters full of grey, indistinguishable from a disabled control.
+  // The board reflows when a filter narrows it, which reads as the index responding.
   const boardItems = useMemo(
     () => fitBoardToWholeRows(rankedItems, boardColumns),
     [rankedItems, boardColumns]
@@ -348,9 +325,8 @@ export default function IndexSidebar({
                 />
                 <span className={styles.categoryName}>{category.label}</span>
                 <span className={styles.categoryCount}>
-                  {/* No numeral on a refined category the narrowed set emptied.
-                      A row reading "0 −" is a count of nothing standing where a
-                      filter's size belongs; the sign alone still lifts it. */}
+                  {/* No numeral on a refined category the narrowed set emptied: "0 −" is a count of
+   nothing standing where a filter's size belongs. The sign alone still lifts it. */}
                   {category.count > 0 ? `${category.count.toLocaleString()} ` : ''}
                   {category.isRefined ? '−' : '+'}
                 </span>
