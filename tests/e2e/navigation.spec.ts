@@ -14,11 +14,21 @@ test.describe('Skip link', () => {
       const header = document.querySelector('header')!;
       const inner = document.querySelector('header > div')!;
       return {
-        clearance: -link.getBoundingClientRect().bottom,
         top: link.getBoundingClientRect().top,
         headerHeight: header.getBoundingClientRect().height,
         innerHeight: inner.getBoundingClientRect().height,
       };
+    });
+
+  // Whether the link answers a hit test over its own box. A clipped element
+  // paints nothing and takes no pointer there, so this is the same question as
+  // "is it on screen" without depending on a scroll offset to express it.
+  const occupiesItsBox = (page: import('@playwright/test').Page) =>
+    page.evaluate(() => {
+      const link = document.querySelector('header a[href="#main-content"]')!;
+      const box = link.getBoundingClientRect();
+      const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+      return hit === link || link.contains(hit);
     });
 
   // `.btn[data-variant='filled']` sets `position: relative` at (0,2,0) and beat
@@ -31,14 +41,23 @@ test.describe('Skip link', () => {
     expect(headerHeight, 'header is taller than its content').toBeLessThanOrEqual(innerHeight + 2);
   });
 
-  // Parked 29px above the fold, an elastic overscroll at the top of the page
-  // dragged it back into view and snapped it away — visible, then gone, every
-  // time the page reached the top.
-  test('parks far enough above the fold to survive an overscroll', async ({ page }) => {
+  // It used to be parked above the fold, where an elastic overscroll rubber-banded
+  // it back into view. Asserting the offset only ever asserted the threshold, so
+  // this asserts what was actually wanted: nothing on screen until focus.
+  test('paints nothing until it takes focus', async ({ page }) => {
     await page.goto('/');
-    const { clearance } = await geometry(page);
 
-    expect(clearance, 'skip link is parked too close to the fold').toBeGreaterThan(64);
+    expect(await occupiesItsBox(page), 'skip link is on screen unfocused').toBe(false);
+  });
+
+  // The same question at the top of the document, which is the only place an
+  // overscroll can happen and the exact case the offset was tuned for.
+  test('stays clipped when the page is scrolled back to the top', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => globalThis.scrollTo(0, 400));
+    await page.evaluate(() => globalThis.scrollTo(0, 0));
+
+    expect(await occupiesItsBox(page), 'skip link reappeared at the top').toBe(false);
   });
 
   test('comes back on screen when it takes focus', async ({ page }) => {
@@ -46,6 +65,7 @@ test.describe('Skip link', () => {
     await skipLink(page).focus();
 
     expect((await geometry(page)).top).toBeGreaterThanOrEqual(0);
+    expect(await occupiesItsBox(page), 'focused skip link is still clipped').toBe(true);
   });
 
   // The reveal above is CSS and runs everywhere. Tab ORDER is asserted on one
