@@ -58,13 +58,9 @@ function overflowDelta(
   return Math.max(0, end - visibleEnd);
 }
 
-/**
- * The systems rail and the detail pane beside it.
- *
- * Every project is already on the page, so moving between them is a state change
- * rather than a navigation. The URL trails that state instead of driving it, so
- * one system can be linked to without the rail becoming a set of routes.
- */
+/* The systems rail and the detail pane beside it. Moving between projects is a
+   state change rather than a navigation; the URL trails that state instead of
+   driving it, so one system can be linked to without the rail becoming routes. */
 
 export default function ProjectDirectory({ projects }: Readonly<{ projects: Project[] }>) {
   const [chosen, setChosen] = useState<string | null>(null);
@@ -225,10 +221,8 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
           </div>
         </div>
 
-        {/* Footnotes, at the foot. As a second column of ruled rows beside the
-            prose this was an internal API reference sitting level with the
-            writing; the stack is an apparatus note about how the thing was
-            built, and apparatus belongs under the text it annotates. */}
+        {/* Footnotes, at the foot. The stack is an apparatus note about how the thing was
+   built, and apparatus belongs under the text it annotates. */}
         <aside className={styles.stackColumn} aria-label="Stack">
           <h3>Stack</h3>
           <dl className={styles.stack}>

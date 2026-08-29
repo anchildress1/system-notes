@@ -1,16 +1,6 @@
 :root {
-  /* The Intake palette: ONE hue, and it is gold.
-
-     Every chromatic token in this file sits on hue 92. Not a warm arc, not a
-     band, not a family — one number, and the only variables left are lightness
-     and chroma. Neutrals sit on 265 (or 90 at a chroma too low to read as
-     anything), so the gold is the single thing on any page that has a colour.
-
-     The site had an arc once, hue 25 through 96, and an arc is what let rust in
-     at 40 and brick in at 38. A range admits its own ends; a single hue cannot.
-     If a new token needs a colour, it is hue 92 or it is a neutral. There is no
-     third answer, and no second pen in a second colour — see the note where the
-     second pen used to be defined. */
+  /* Every chromatic token is hue 92. Neutrals are hue 265, or hue 90 below
+     chroma 0.012. There is no second chromatic hue. */
   --void: oklch(0.155 0.006 265);
   --panel: oklch(0.2 0.007 265);
   --panel-hi: oklch(0.25 0.008 265);
@@ -18,139 +8,69 @@
   --bone: oklch(0.95 0.008 90);
   --soft: oklch(0.76 0.008 265);
   --mute: oklch(0.68 0.012 265);
-  /* Yellow is a MARKER, not an ink. That distinction is the whole system.
-
-     Yellow cannot be readable text on paper. At the lightness a light page
-     forces on ink, hue 92 renders 1.74:1 at L 0.80 and does not clear 4.5:1
-     until L 0.55 — by which point its chroma has collapsed to 0.12 and it is
-     olive. Yellow's character IS high lightness, so darkening it to meet
-     contrast destroys the thing that makes it yellow. Every previous attempt to
-     use it as an accent colour died on that, and the site went red instead.
-
-     As a SURFACE it has no such problem: the same yellow carries dark ink at
-     11.34:1 on either ground. So it stops being a colour text is set in and
-     becomes a colour text is marked with — a highlighter, not a pen. That is
-     also the right metaphor for a site about filed evidence.
-
-     --mark is the mark. --mark-ink is what sits on it. Both are shared,
-     because a yellow fill needs dark ink on paper and on graphite alike.
-
-     --ink-accent is the accent as INK, for the places a mark would be too heavy:
-     fine print, focus rings, hover. It is the one token that moves with the
-     theme, and it never holds a value of its own — it points at one of the two
-     above. Graphite carries the gold as ink at 12.74:1, so there it IS the mark.
-     Paper cannot carry it at any lightness that stays yellow, so there it is the
-     mark's own ink instead. Aliases, not third and fourth colours: whatever the
-     accent is on a given ground, it is already on the page beside it. */
+  /* Gold is a MARKER, never an ink. --mark is the ground; --mark-ink is what
+     sits on it. Both are shared, because a gold fill needs dark ink on either
+     theme. --ink-accent is an alias for one of them and never holds a literal. */
   --mark: oklch(0.86 0.17 92);
   --mark-ink: oklch(0.22 0.045 92);
   --ink-accent: var(--mark);
-  /* A stroke is not one flat colour. Ink pools low where the felt drags and
-     thins along the top where it lifts — the smear that makes it read as
-     something laid down wet. Both are yellows over the same yellow, so the
-     composite never leaves the band's contrast range.
-
-     Both sit on hue 92 with the mark, and the values below are the ones that fit
-     inside sRGB there. The drag was oklch(0.78 0.19 86): hue 92 has no 0.19 at
-     that lightness, so the browser clipped it for us and landed on #edab00 —
-     hue 76, an orange, painted twice down every marked line. The lift was
-     oklch(0.93 0.12 97), off-hue because hue 92 has no 0.12 at L 0.93 either;
-     dropping to L 0.91 buys the same colour on the right hue (#fedf80 against
-     the old #fee887). The wet read comes from lightness and chroma, never from
-     wandering off the site's one hue — a token that renders as a hue it does not
-     name is the same defect as naming the wrong hue. */
+  /* Ink pools low where the felt drags and thins where it lifts. Both are
+     yellows over the same yellow, so the composite never leaves the band's
+     contrast range. Both must resolve inside sRGB at hue 92. */
   --mark-drag: oklch(0.78 0.15 92 / 0.55);
   --mark-lift: oklch(0.91 0.12 92 / 0.5);
 
-  /* THERE IS NO SECOND PEN. The slot that held one is gone, and this note is
-     what stands in its place, because the slot kept being refilled.
+  /* THERE IS NO SECOND PEN. A mark that has to survive paper carries
+     --tile-keyline along its own edge; it is never recoloured. See
+     .wordmark::before and .byline::before. */
 
-     It existed so a mark that had to survive paper could be drawn in something
-     other than gold — --mark is 1.41:1 against cream, which is invisible rather
-     than faint. Every colour that job attracted was a warm not-gold:
-     oklch(0.66 0.19 42), a safety-orange, then oklch(0.55 0.14 40), which is
-     rust however it is labelled. A token defined as "the accent, but legible
-     here" is a permanent invitation to add a hue.
-
-     A keyline answers the same question without one. drop-shadow traces the
-     alpha a mask leaves behind, so a drawn mark can carry --tile-keyline along
-     its own edge and stay gold on both grounds — the board and the focus ring
-     already work this way. See .wordmark::before and .byline::before.
-
-     If a mark cannot be seen on paper, keyline it. Do not recolour it. */
-
-  /* Drawn, not described. These are MASKS rather than background images so the
-     colour stays a variable — one shape, any pen. preserveAspectRatio='none'
-     lets a single stroke stretch from an 8px byline bullet to a 200px headline
-     band without a second asset, and box-decoration-break gives every wrapped
-     line its own copy. Nothing here is a rectangle. */
+  /* Drawn, not described. MASKS rather than background images, so the colour
+     stays a variable. preserveAspectRatio='none' stretches one stroke from an
+     8px byline bullet to a 200px headline band. Nothing here is a rectangle. */
   --stroke-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%23000'/%3E%3C/svg%3E");
-  /* The same brush, pre-inked. A data URI is its own document and cannot
-     read a custom property, so this is the one place --mark's value is
-     written out rather than referenced. It is safe to duplicate precisely
-     because --mark is the one accent that does NOT change with the theme;
-     if that ever stops being true, this has to become a mask again. */
+  /* The same brush, pre-inked. A data URI is its own document and cannot read a
+     custom property, so --mark's value is written out. Safe only because --mark
+     does not change with the theme; if that stops being true, this becomes a mask. */
   --stroke-brush-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%23f9cc21'/%3E%3C/svg%3E");
-  /* The same stroke turned on its side, for the rules that run down a quoted
-     block rather than under a word. Transposed rather than rotated, so it
-     still stretches cleanly to any height. A mask, not an image, because
-     these carry different pens: gold on the question, grey on the counter. */
+  /* The same stroke on its side, for rules that run down a block rather than
+     under a word. Transposed rather than rotated, so it still stretches to any
+     height. A mask, because these carry different pens. */
   --stroke-brush-y: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 56' preserveAspectRatio='none'%3E%3Cpath d='M10.4,1.2 C5.1,10.5 2.6,21 3.2,33.4 C3.6,42.1 6.1,49 4.3,54.8 L10.1,55.2 C13.9,48.6 12.4,40.2 12.8,31.1 C13.3,20.4 14.7,9.6 12.3,1.4 Z' fill='%23000'/%3E%3C/svg%3E");
   --stroke-swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23000'/%3E%3C/svg%3E");
-  /* The same swipe, pre-inked in the wash rather than left as a mask. A mask on
-     an inline element masks its TEXT as well, so a hover band drawn that way
-     would cut the letters it sits behind; painted as a background image it sits
-     under them and nothing about the text changes. Same duplication caveat as
-     --stroke-brush-inked: #f9cc21 at 0.16 is --mark-soft written out, and it is
-     only safe because neither --mark nor --mark-soft moves with the theme. */
+  /* The same swipe, pre-inked. A mask on an inline element masks its TEXT too,
+     so a hover band drawn that way would cut the letters it sits behind; painted
+     as a background it sits under them. Same duplication caveat as above. */
   --stroke-swipe-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23f9cc21' fill-opacity='0.16'/%3E%3C/svg%3E");
   --mark-soft: oklch(0.86 0.17 92 / 0.16);
-  /* Strong enough to read as a halo around a 10px tile. --mark-soft is sized
-     for a wash across a whole panel and disappears at that scale. */
+  /* Sized for a halo around a 10px tile. --mark-soft is a panel-wide wash and
+     disappears at that scale. */
   --mark-glow: oklch(0.86 0.17 92 / 0.5);
   --drop: oklch(0.06 0.01 265 / 0.9);
   --thumb: oklch(0.42 0.01 265);
 
-  /* Every tile carries a hairline, and on paper it is load-bearing.
-
-     Gold is 1.41:1 against cream. Not low contrast — invisible. The ways out
-     were all worse: drop the gold to a lightness that clears the page and it is
-     mustard; swing the hue and it is rust; put the board on a black plate and
-     the light theme is just the dark theme wearing a disguise. Two of those were
-     tried and shipped before the third was.
-
-     A keyline is the honest one. The edge does the separating, so the fill is
-     free to be a colour rather than a contrast value — which is the same reason
-     the filter chips have carried one all along. */
+  /* Gold is 1.41:1 against paper — invisible, not faint. The edge does the
+     separating, so the fill is free to be a colour rather than a contrast value. */
   --tile-keyline: oklch(0.06 0.01 265 / 0.55);
 
-  /* THREE TONES AND A RING, not five hues. Five saturated steps of one hue arc
-     could be told apart on graphite and turned to mud on paper, where the
-     yellow half of the arc is only ever mustard. Neutral carries the ranking —
-     bone, grey, dim — and the accent takes one slot, so the board reads as a
-     census in ink with the marked category picked out of it.
+  /* THREE TONES AND A RING, not five hues. Neutral carries the ranking and the
+     accent takes one slot. The awards tone repeats the accent on purpose: an
+     award tile is a hollow ring, told apart by shape rather than by colour.
 
-     The awards tone is the accent again ON PURPOSE. It is never confused with
-     the accent slot because an award tile is not filled at all: it is a hollow
-     ring, told apart by shape. See IndexWorkspace.module.css.
+     Slots are rank positions, not the categories their names remember — the
+     largest category takes --k-decision, the next --k-note. swatchPalette.ts
+     assigns the ranks; these five lines are the only place the tones live.
 
-     Slots are rank positions, not the categories their names remember: the
-     largest category takes --k-decision, the next --k-note, and so on.
-     swatchPalette.ts assigns the ranks; these five lines are the only place the
-     tones themselves are written down.
-
-     The neutrals invert between themes because they have to — bone reads on
-     graphite and vanishes on paper. The gold does not invert, because the
-     keyline is what makes it legible rather than its lightness. */
+     The neutrals invert between themes; the gold does not, because the keyline
+     is what makes it legible rather than its lightness. */
   --k-decision: oklch(0.93 0.008 90);
   --k-note: oklch(0.68 0.006 265);
   --k-other: oklch(0.86 0.17 92);
   --k-principle: oklch(0.52 0.006 265);
   --k-award: oklch(0.86 0.17 92);
 
-  /* Hairlines stay translucent rather than resolving to --edge. Roughly thirty
-     borders composite over whatever sits behind them, and an opaque token would
-     need every one of them re-tuned by hand. */
+  /* Translucent rather than resolving to --edge: about thirty borders composite
+     over whatever sits behind them, and an opaque token would need every one
+     re-tuned by hand. */
   --line: oklch(0.95 0.008 90 / 0.13);
   --line-strong: oklch(0.95 0.008 90 / 0.28);
 
@@ -161,20 +81,14 @@
   /* Titles only — see layout.tsx. */
   --font-editorial: 'Bodoni Moda', Georgia, 'Times New Roman', serif;
 
-  /* Editorial fine print: the caption size in an architectural monograph, not a
-     UI label. Reserved for metadata a reader glances at — never for body copy,
-     and never for anything that carries the meaning of a screen on its own. */
+  /* Editorial fine print, for metadata a reader glances at. Never body copy, and
+     never anything that carries the meaning of a screen on its own. */
   --fine: 0.6875rem;
   --fine-tracking: 0.14em;
 
-  /* The hairline running the height of the page. Too faint to derive from
-     --line, and it has to invert with the theme or it is a light line on a
-     light page.
-
-     Its position is the point: at 50% it was an axis of symmetry, which is the
-     one thing a page built on asymmetry should not hand a reader. 61.8% is the
-     golden section — far enough off centre to read as a decision, and it falls
-     inside the wide right-hand field rather than cutting a column in half. */
+  /* The hairline running the height of the page. Too faint to derive from --line,
+     and it inverts with the theme. 61.8% rather than 50%: an axis of symmetry is
+     the one thing a page built on asymmetry should not hand a reader. */
   --seam: oklch(0.95 0.008 90 / 0.028);
   --seam-at: 61.8%;
 
@@ -183,33 +97,20 @@
   --gutter: clamp(1rem, 3vw, 3rem);
   --header-height: 5.25rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  /* A second curve, deliberately not the first. Everything on a page easing on
-     one identical curve at one identical duration is the machine tell; this one
-     overshoots slightly and settles, so entrances that use it arrive with a
-     different weight to the ones that use --ease-out. */
+  /* A second curve, deliberately not the first. It overshoots and settles, so
+     entrances using it arrive with a different weight to --ease-out's. */
   --ease-settle: cubic-bezier(0.34, 1.32, 0.42, 1);
 
-  /* Page-head rhythm, shared so the three heads agree. Asymmetric on purpose:
-     the tail is roughly two thirds of the lead, which reads as a heading that
-     belongs to the section under it rather than one floating between two.
-     The tail is what was missing — every head opened with generous space above
-     and then collided with its own content, which is what made them feel
-     unfinished no matter how the type was set.
-
-     Both are keyed to vh, so they are the part of a head that scales with the
-     FOLD rather than with the type. That is why they came down with the display
-     size: at 9vh and 6vh they spent 135px of a 900px viewport on whitespace
-     around a head that was already too tall for it. The two-thirds ratio is the
-     part that matters and it is unchanged. */
+  /* Page-head rhythm, shared so the heads agree. The tail is about two thirds of
+     the lead, which reads as a heading belonging to the section under it. Both
+     are keyed to vh, so they scale with the FOLD rather than with the type. */
   --head-lead: clamp(2.5rem, 6.5vh, 5rem);
   --head-tail: clamp(1.75rem, 4.5vh, 3.5rem);
 }
 
-/* Light is keyed on the attribute alone rather than also on prefers-color-scheme.
-   The inline script in <head> resolves the system preference and stamps the
-   attribute before first paint, so a media query here would only duplicate the
-   whole block to cover a state that never renders. With scripting off everyone
-   gets dark, which is what the site shipped before the toggle existed. */
+/* Keyed on the attribute alone. The head script resolves the system preference
+   and stamps it before first paint, so a media query here would duplicate the
+   block for a state that never renders. With scripting off, everyone gets dark. */
 :root[data-theme='light'] {
   /* Native widgets read this. Leaving it dark under a white page is how a light
      theme ends up with dark native widgets on it. */
@@ -222,38 +123,17 @@
   --soft: oklch(0.4 0.008 265);
   --mute: oklch(0.53 0.012 265);
   /* The accent as ink on paper is the MARK'S OWN INK — an alias, not a colour.
-
-     This slot has been wrong twice, in both directions, and each time because it
-     was asked to be a yellow that a light page could carry as text. There is no
-     such yellow: oklch(0.38 0.07 70) was dark mustard, and the oklch(0.4 0.15 38)
-     that replaced it was brick, and it put three red numerals down the left of
-     every answer, every set of receipts, every card label and every focus ring
-     on the site. Both were a third colour invented to solve a contrast problem.
-
-     The mark's ink already solves it. It is the tone the site sets ON the gold,
-     so it is guaranteed to belong beside it, it is a hue-92 near-black rather
-     than a red or an olive, and at 15.98:1 on paper it beats both of the colours
-     it replaces. Emphasis on this page is carried by weight against --soft and
-     --mute, which is what the page heads already do — the accent leaves the type
-     and stays in the marks. */
+     A hue-92 near-black, 15.98:1 on paper, guaranteed to belong beside the gold.
+     Emphasis here is carried by weight against --soft and --mute. */
   --ink-accent: var(--mark-ink);
 
-  /* The neutrals turn over for paper: the strongest mark a light board has is
-     ink, and the tones climb from there. The gold does NOT turn over — it is
-     the same gold as on graphite, kept legible by the keyline rather than by
-     its lightness, which is the whole point of having one.
+  /* The neutrals turn over for paper; the gold does not, because the keyline
+     keeps it legible rather than its lightness.
 
-     Which slot gets the ink is the part that turns over, not just the values.
-     Slot 0 is the LARGEST category — around forty per cent of the tiles. Giving
-     it the darkest tone put the heaviest ink on the biggest block and paper read
-     as one black slab, because dark mass on white does not weigh what light mass
-     on black weighs. Flattening the whole ramp to fix that was worse: it took
-     the black squares out of the census altogether and left five greys.
-
-     So the ink goes to the SMALLEST slot instead. The big block is the quiet
-     field, the small categories punch dark against it, and the board keeps both
-     its black squares and its variety. Steps stay at least 0.13 apart and the
-     keyline still carries every boundary. */
+     Which slot gets the ink turns over too. The ink goes to the SMALLEST slot:
+     dark mass on white does not weigh what light mass on black weighs, so giving
+     the darkest tone to the largest category read as one black slab. Steps stay
+     at least 0.13 apart and the keyline carries every boundary. */
   --tile-keyline: oklch(0.3 0.01 265 / 0.75);
   --k-decision: oklch(0.72 0.006 265);
   --k-note: oklch(0.55 0.006 265);
@@ -297,22 +177,12 @@ html {
   transition: none !important;
 }
 
-/* NO min-width, and NO overflow clip. Together those two were a trap.
-
-   min-width: 20rem held the body at 320px however narrow the viewport got, and
-   body's overflow-x: clip PROPAGATES to the viewport — so on a 280px screen the
-   page was 320px wide, 40px of every route sat outside it, and scrollX could not
-   move off 0. That content was not hard to reach; it was unreachable. A 280px
-   viewport is a real device (a folding phone's cover screen) and it is also what
-   a 1280px window looks like at 400% zoom, which WCAG 1.4.10 asks to work.
-
-   The floor was also unnecessary — the layout reflows to 280 and below on its
-   own, so it was buying nothing but the clipping.
-
-   Decorative overhang is still contained, but by `main`, which is a real
-   clipping box rather than one that hands its overflow to the viewport. If
-   anything ever does exceed the viewport, the page scrolls to it instead of
-   pretending it is not there. */
+/* NO min-width, and NO overflow clip. Together they were a trap: body's
+   overflow-x: clip PROPAGATES to the viewport, so paired with a min-width the
+   surplus sat outside the viewport and scrollX could not leave 0 — unreachable,
+   not merely off screen. 280px is a real device and is also 1280px at 400%
+   zoom, which WCAG 1.4.10 asks to work. Decorative overhang is contained by
+   `main`, which is a real clipping box. */
 body {
   min-height: 100vh;
   background:
@@ -343,21 +213,10 @@ body::before {
   content: '';
 }
 
-/* The corner glow is gone. It was a 42rem fixed-position painted layer tuned to
-   a magenta accent; in gold it read as a stain rather than a light source, and
-   removing it takes a full-viewport paint off every route. */
-
-/* A hyperlink is MARKED, not underlined.
-
-   A 1px rule in the accent is the most machine-drawn thing a page can do to a
-   link, and while the paper accent was a red it drew that rule on every route.
-   This is the same brush
-   the section tabs and the nav carry, stretched under the words: the text keeps
-   the body's own ink, so nothing about it gets less readable, and the stroke
-   is what says "link". Pressing harder on hover is the whole hover state.
-
-   box-decoration-break so a link that wraps gets a stroke per line rather than
-   one band behind both. */
+/* A hyperlink is MARKED, not underlined: the same brush the nav carries,
+   stretched under the words. The text keeps the body's own ink, so nothing
+   about it gets less readable. box-decoration-break so a link that wraps gets
+   a stroke per line rather than one band behind both. */
 .marked-link {
   padding-bottom: 0.04em;
   background-image: var(--stroke-brush-inked);
@@ -376,25 +235,13 @@ body::before {
   background-size: 100% 0.42em;
 }
 
-/* ONE HOVER, AT TWO SCALES. Compose these; do not write a hover rule.
+/* ONE HOVER, AT TWO SCALES. Compose these; never write a hover that sets a
+   colour. --mark-soft is 16% gold, so it composites over graphite and paper
+   alike and the text underneath keeps its own contrast.
 
-   Hover used to be seven different things: a colour swap to the accent, a
-   colour swap plus a border, a colour swap plus a border-bottom, a step to the
-   right, a step plus a border, a fill in --panel, a fill in --panel-hi, and a
-   wash in --mark-soft. Eight, counting the one that did two of them. Every one
-   was locally defensible and together they meant the site had no answer to
-   "what does hovering something look like here?".
-
-   It looks like the highlighter, in the light pen. --mark-soft is 16% gold: it
-   composites over graphite and paper alike, so the text underneath keeps its own
-   ink and its own contrast, and nothing has to change colour to acknowledge a
-   pointer. The wash is the pen the filter list was already using; the rest of
-   the site now uses it too.
-
-   .marked-hover is a WORD — the band is the swipe, the same drawn shape the
-   headline mark carries, grown from nothing.
-   .washed is a ROW — an option, a record, a rail entry. A row is not a word, so
-   the wash is full-bleed rather than stroke-shaped. */
+   .marked-hover is a WORD — the band is the swipe, grown from nothing.
+   .washed is a ROW — an option, a record, a rail entry — so the wash is
+   full-bleed rather than stroke-shaped. */
 .marked-hover {
   background-image: var(--stroke-swipe-soft);
   /* Centred, so the band opens from the middle of the line out rather than
@@ -414,25 +261,10 @@ body::before {
 
 /* SWIPED. The drawn stroke, laid UNDER a word and grown in from nothing.
 
-   The third hover on the site, and the one that had no primitive: the header
-   nav wrote it inline while the footer's links reached for .marked-hover, so
-   two rows of short word-links at opposite ends of the page answered a pointer
-   with two different gestures — a stroke beneath the word at one end, a band
-   behind it at the other.
-
-   A 1.5px rule spanning the exact width of a word is the most machine-drawn
-   mark a page can carry — perfectly straight, flush at both ends. This is the
-   same highlighter the headlines carry, dragged by hand instead: it overhangs
-   twice as far on the left as on the right, sits a degree off true, and every
-   corner of its radius is a different size, so no two edges agree.
-
    It rides in the padding BELOW the text rather than behind it, so the label
-   keeps its own contrast against the ground and the mark never has to carry
-   ink. Gold rather than the pencil, because these are WORDS.
-
-   Half opacity while a pointer is on it. A consumer that also marks a current
-   state takes the same stroke to 1 — hovering shows you a faded draft of the
-   mark being there would give you. */
+   keeps its own contrast against the ground and the mark never carries ink.
+   Half opacity under a pointer; a consumer that also marks a current state
+   takes the same stroke to 1. */
 .swiped {
   position: relative;
   /* Clears the stroke below the descenders. A mark that cuts through the tail
@@ -469,26 +301,18 @@ body::before {
   transform: rotate(-1deg) scaleX(1);
 }
 
-/* THE LIGHT PEN, AT REST. .marked in --mark-soft: the same drawn swipe, laid
-   down once and left there rather than appearing under a pointer.
+/* THE LIGHT PEN, AT REST. The same swipe laid down once and left there, for a
+   fact that should read as marked without outshouting an action beside it.
 
-   For a fact that should read as marked without reading as the loudest thing on
-   its panel — an award credit sitting above a filled button, where two solid
-   gold slabs in one column paint a label as loudly as an action.
-
-   The text keeps its OWN ink rather than taking --mark-ink. A 16% wash is not
-   opaque enough to carry the dark ink the solid mark carries: on graphite that
-   pairing is near-black on near-black. Body ink over a light wash reads on both
-   grounds, which is the whole reason this variant can exist. */
+   The text keeps its OWN ink rather than taking --mark-ink: a 16% wash is not
+   opaque enough to carry it, and on graphite that pairing is near-black on
+   near-black. */
 .marked-soft {
   width: fit-content;
   padding: 0.16em 0.34em 0.2em 0.28em;
-  /* The same stroke laid down TWICE. A resting mark has to hold its own against
-     the panel; the hover wash only has to register for as long as a pointer is
-     on it, and 16% gold over near-black is a murky olive rather than a light
-     pen. Two passes composite to 29% — the shade a highlighter leaves where the
-     stroke doubles back — and it costs no second token, so .washed keeps the
-     single-pass value the filter list was tuned with. */
+  /* Laid down TWICE. 16% gold over near-black is a murky olive; two passes
+     composite to 29%, the shade a highlighter leaves where a stroke doubles
+     back. .washed keeps the single-pass value the filter list was tuned with. */
   background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
   background-position: 0 50%;
   background-repeat: no-repeat;
@@ -500,33 +324,20 @@ body::before {
   -webkit-box-decoration-break: clone;
 }
 
-/* PAPER, TAPED DOWN. An image on this site is a print someone put on the page,
-   not a pane cut into it.
+/* PAPER, TAPED DOWN. An image here is a print laid on the page: a mat, a
+   two-stop shadow (a tight contact shadow plus a wide ambient one), half a
+   degree of tilt, and two tape strips across opposite corners.
 
-   Four things do the work, and none of them is a border: a mat of --panel-hi
-   showing as a margin around the print, a two-stop shadow (a tight contact
-   shadow plus a wide ambient one, because a single soft blur reads as a floating
-   card rather than as something resting on a surface), half a degree of tilt,
-   and two strips of tape across opposite corners.
-
-   The tape is --stroke-swipe, not a rectangle — the shape has straight long
-   edges and uneven short ones, which is exactly what a torn piece of tape is.
-   It is drawn in the gold at 29% (--mark-soft twice, the same doubling
-   .marked-soft uses), so it reads as translucent washi rather than as a painted
-   bar, and it is the only pen on the page anyway.
-
-   Opposite corners rather than all four, at unequal angles, so the sheet looks
-   pinned by someone in a hurry instead of mounted. */
+   The tape is --stroke-swipe, not a rectangle — straight long edges and uneven
+   short ones is what a torn piece of tape is. Opposite corners at unequal
+   angles, so the sheet reads as pinned rather than mounted. */
 .taped {
   position: relative;
   /* Named, because anything that has to line up with the print rather than with
      the sheet needs this number and must not restate it. */
   --mat: 0.5rem;
-  /* Named so the angle has one home. It was -0.45deg, which is a 2.5px corner
-     drop on a 317px print and a 7px one at full width — present in the computed
-     style, absent to the eye. A tilt nobody can see is a tilt nobody asked for.
-     1.2deg drops a corner about 19px across a 900px sheet: still clearly a
-     deliberate half-nudge rather than a crooked layout, but it reads. */
+  /* Named so the angle has one home. Below about a degree the tilt is present in
+     the computed style and absent to the eye. */
   --tilt: -1.2deg;
   /* The shape of the picture, not of the treatment. Instances override the
      value; nothing overrides the mechanism. */
@@ -536,11 +347,9 @@ body::before {
   box-shadow:
     0 0.15rem 0.4rem -0.15rem var(--drop),
     0 1.1rem 2.2rem -0.9rem var(--drop);
-  /* The `rotate` property, not `transform`. The portrait also carries .drift,
-     whose keyframes animate transform — and an animation's transform REPLACES
-     the element's own, so the tilt silently vanished on exactly one of the two
-     images. rotate is an independent property and composes with whatever
-     transform an animation applies, so the tilt survives any of them. */
+  /* The `rotate` property, NOT `transform`. An animation's transform REPLACES the
+     element's own, so a tilt set with transform silently vanishes wherever an
+     animation also applies one. rotate is independent and composes. */
   rotate: var(--tilt);
 }
 
@@ -550,10 +359,9 @@ body::before {
   z-index: 2;
   width: 5.5rem;
   height: 1.4rem;
-  /* Three passes, not two. Tape sits over a photograph as often as over the
-     page, and at 29% it disappeared into a bright frame and read as a smudge.
-     41% still shows what is underneath — which is the only thing that makes it
-     read as tape rather than as a painted bar. */
+  /* Three passes, not two. Tape sits over a photograph as often as over the page,
+     and at 29% it disappeared into a bright frame. 41% still shows what is
+     underneath, which is what makes it read as tape rather than a painted bar. */
   background-image:
     linear-gradient(var(--mark-soft), var(--mark-soft)),
     linear-gradient(var(--mark-soft), var(--mark-soft)),
@@ -584,19 +392,14 @@ body::before {
   transform: rotate(-21deg);
 }
 
-/* The explicit-content advisory, as a stamp rather than a colour.
+/* The explicit-content advisory, as a stamp rather than a colour. Ink, not
+   gold: an advisory is metadata, not an accent.
 
-   Ink, not gold: hue 92 is the accent and an advisory is not one — it is
-   metadata about the track. --bone on --void inverts with the theme by itself,
-   so the stamp is dark-on-light on paper and light-on-dark on graphite without
-   a rule of its own, and clears roughly 15:1 either way.
-
-   font-size first, then a box in the element's own em — sized the other way
-   round the box resolves against the shrunken font instead of its context and
-   collapses to a quarter of its intended size, clipping the letter inside it.
+   font-size first, then a box in the element's own em. Sized the other way
+   round, the box resolves against the shrunken font and clips the letter.
 
    aria-hidden at the call site: the control's accessible name already carries
-   the advisory, so a screen reader that announces both hears it twice. */
+   the advisory. */
 .explicit {
   display: inline-grid;
   font-size: 0.75rem;
@@ -605,10 +408,8 @@ body::before {
   flex: 0 0 auto;
   border-radius: 0.18em;
   /* The mark's own two tones, so the stamp belongs to the filled control it sits
-     in rather than being a third colour dropped on top of it. Both are shared
-     tokens that do not move with the theme, so it reads the same on either
-     ground at 11.29:1 — and it still holds up outside a gold context, being a
-     dark stamp with a bright letter punched out of it. */
+     in rather than being a third colour dropped on top of it. 11.29:1, and it
+     holds up outside a gold context as a dark stamp with a bright letter in it. */
   background: var(--mark-ink);
   color: var(--mark);
   font-family: var(--font-display);
@@ -619,28 +420,15 @@ body::before {
   place-items: center;
 }
 
-/* How a picture sits inside its print, for every image on the site.
+/* How a picture sits inside its print, for EVERY image on the site.
 
-   This lived per page and diverged three ways: the exhibit set object-fit
-   contain, the portrait set cover, only the portrait carried a grade, and the
-   two put their aspect ratio in different places. The frame was shared and the
-   picture inside it was not, which is the same defect one level down.
+   cover, not contain: a print is filled edge to edge. The ratio is declared
+   once as --print-ratio and only its VALUE varies, because the shape of a
+   picture is a fact about the picture. height: auto is overridden by the inline
+   style next/image writes for fill, so one rule covers both modes.
 
-   cover, not contain: a print is filled edge to edge. The ratio is declared once
-   as --print-ratio and only its VALUE varies, because the shape of a picture is
-   a fact about the picture. height: auto is for the intrinsic case and is
-   overridden by the inline style next/image writes for fill, so one rule covers
-   both modes.
-
-   aspect-ratio belongs here rather than in a page module for the same reason:
-   a module that names the mechanism can drop it and get a print of whatever
-   shape the file happens to be. It is inert on a fill image, whose width and
-   height are both already resolved — that case sizes its own container, which
-   is a fact about <Image fill>, not a second opinion about the ratio.
-
-   The grade is part of the treatment, not of one photograph. Every print is
-   pulled back the same amount, which is what stops one image reading as a
-   screenshot dropped onto a page of prints. */
+   The grade belongs to the treatment, not to one photograph — it is what stops
+   one image reading as a screenshot dropped onto a page of prints. */
 .taped img {
   display: block;
   width: 100%;
@@ -650,14 +438,10 @@ body::before {
   filter: saturate(0.8) contrast(1.06);
 }
 
-/* A caption belongs UNDER the print, on the mat, the way it does on a photograph
-   somebody wrote on. It used to be set over the bottom of the portrait, which
-   only worked because a gradient was painted behind it to buy contrast — and
-   that gradient was the reason the portrait could not take this treatment. Move
-   the caption off the picture and the whole special case disappears.
-
-   Lives here rather than in a page module so the next captioned image does not
-   invent its own. */
+/* A caption goes UNDER the print, on the mat. Never overlay one on a picture
+   and paint a gradient behind it to buy contrast; that gradient is what made
+   the portrait look un-tapeable. Lives here so the next captioned image does
+   not invent its own. */
 .taped figcaption {
   display: flex;
   flex-direction: column;
@@ -686,17 +470,9 @@ body::before {
   }
 }
 
-/* THE BUTTON. Two variants, one shape, and this is the only place either is
-   written down.
-
-   .run and the theme-song toggle carried byte-identical :disabled blocks in two
-   files, and filled states that differed by 2px of padding, 0.0625rem of size
-   and 0.02em of tracking — differences nobody chose. The exhibits page then had
-   a third thing that was a button everywhere except in being one.
-
-   filled is the page's one action. outline is everything that is a control but
-   not the point of the screen. There is no third variant; if something needs
-   one, it is probably a link. */
+/* THE BUTTON. Two variants, one shape, and the only place either is written
+   down. filled is the page's one action; outline is every other control. There
+   is no third variant — if something needs one, it is a link. */
 .btn {
   display: inline-flex;
   min-height: 2.75rem;
@@ -719,26 +495,20 @@ body::before {
     color 180ms var(--ease-out);
 }
 
-/* A filled button is a BLOCK OF HIGHLIGHTER, so it is drawn like one: the same
-   opaque gold under the same two wet-ink gradients under the same swipe, which
-   is what gives it uneven ends and a half-degree tilt instead of four right
-   angles. It is the hero mark at button scale.
+/* A filled button is a BLOCK OF HIGHLIGHTER, drawn like one: the same opaque
+   gold under the same wet-ink gradients under the same swipe.
 
-   The mask is sized 100% 158%, not 100% 100%. --stroke-swipe draws its ink into
-   the middle 22%-83% of its viewBox — deliberately, so the headline's wrapped
-   lines do not overlap — and at 100% that inset would show only the middle 61%
-   of the button, cropping the label. Scaling to 1/0.61 puts the ink back across
-   the whole face and leaves the drawn edge on the outside where it belongs. */
+   The mask is 100% 158%, not 100% 100%. --stroke-swipe insets its ink to the
+   middle 61% of its viewBox, so at 100% the band would crop the label. */
 .btn[data-variant='filled'] {
   position: relative;
-  /* The swipe is drawn on a pseudo-element, NOT on the button. A mask applies to
+  /* The swipe is drawn on a pseudo-element, NOT on the button. A mask clips
      everything the element paints, outline and box-shadow included, so masking
-     the button itself silently ate the focus ring — :focus-visible still
-     matched and the outline still computed, it just never reached the screen.
-     Nothing an automated check catches; it only shows up on a Tab key.
+     the button silently ate the focus ring — :focus-visible still matched and the
+     outline still computed, it just never reached the screen. Only a Tab key
+     reveals it.
 
-     isolation, so the -1 pseudo stays inside the button's own stacking context
-     and paints above the page rather than disappearing behind it. */
+     isolation, so the -1 pseudo stays in the button's own stacking context. */
   isolation: isolate;
   color: var(--mark-ink);
 }
@@ -767,13 +537,11 @@ body::before {
   color: var(--soft);
 }
 
-/* The wash is for EMPTY boxes only. On a filled one it reads as a stain: the
-   button is already the gold, so a 16% gold laid over it changes nothing worth
-   seeing, and --mark-drag as a flat background is worse — it carries 0.55 alpha
-   because it is meant to composite over --mark inside the mark's own stack, so
-   as a background it REPLACED the gold with a translucent smear of the page
-   behind it. Layered as one more gradient it does what it says: presses the
-   whole face toward the wet tone the stroke already pools in. */
+/* The wash is for EMPTY boxes only. A filled button is already the gold, so a
+   16% wash over it reads as a stain — and --mark-drag as a flat background is
+   worse: it carries 0.55 alpha meant to composite over --mark, so it REPLACED
+   the gold with a translucent smear of the page behind it. Layered as one more
+   gradient it presses the face toward the wet tone instead. */
 .btn[data-variant='filled']:hover:not(:disabled)::before {
   background-image:
     linear-gradient(var(--mark-drag), var(--mark-drag)),
@@ -808,14 +576,9 @@ body::before {
   color: var(--mark-ink);
 }
 
-/* The focus ring is the marker, keylined.
-
-   It used to be a plain 2px accent rectangle, which on the paper accent of the
-   day was the loudest thing on the page and the least like the rest of it. It is
-   gold on both grounds now,
-   with the same keyline the tiles use riding either side of it: --mark is
-   1.41:1 against paper and WCAG 2.2 wants 3:1 from a focus indicator, so the
-   hairline carries the contrast and the gold carries the brand. */
+/* The focus ring is the marker, keylined. --mark is 1.41:1 against paper and
+   WCAG 2.2 wants 3:1 from a focus indicator, so the hairline carries the
+   contrast and the gold carries the brand. */
 :where(a, button, input, textarea, summary):focus-visible {
   outline: 2px solid var(--mark);
   outline-offset: 2px;
@@ -836,28 +599,16 @@ main:focus {
 }
 
 /* An input drawn as a RULE rather than a box opts out of the ring and thickens
-   its own rule instead.
+   its own rule instead. The intake field and the search pill are deliberately
+   chrome-less, so a 2px ring plus a 5px keyline draws exactly the box they
+   exist not to have.
 
-   The intake field and the search pill are both deliberately chrome-less — "a
-   bordered grey well is a form control; a rule under editorial type is a page
-   you write on" — so a 2px ring with a 5px keyline around them draws exactly the
-   box the component exists not to have. Both carried `outline: 0` for that
-   reason and both lost it, so both grew a box.
+   Still compliant: WCAG 2.4.11 asks for an area at least a 4px line along the
+   component's SHORTEST side, which for either field is its height — a 5px rule
+   across a far longer width clears it, at well over 3:1 between states.
 
-   Still a compliant indicator: WCAG 2.4.11 asks for an area at least a 4px line
-   along the component's shortest side, and the shortest side of either field is
-   its height — so a 5px rule across a much longer width clears it, at well over
-   3:1 between the focused and unfocused rule.
-
-   Both rules were thickened once --edge was measured against the page: 1.66:1
-   on graphite, 1.44:1 on paper. The RESTING rule is the only thing that says a
-   field is there, and a hairline at that tone is invisible rather than quiet.
-   Thickness does not move a contrast ratio, so 1.4.11 is still not satisfied by
-   the boundary alone — the tone was left deliberately, and the placeholder
-   inside carries 4.5:1 of its own.
-
-   An attribute rather than a class, because it is the same opt-in the buttons
-   use for their variants, and one grep finds every field that takes it. */
+   Opt out through the attribute, never a per-component `outline: 0`, which is
+   what silently regressed when both were removed. */
 input[data-focus='ruled']:focus-visible,
 textarea[data-focus='ruled']:focus-visible {
   outline: 0;
@@ -871,20 +622,10 @@ textarea[data-focus='ruled']:focus-visible {
   outline-color: var(--mark-ink);
 }
 
-/* THE SITE'S TICK, drawn once.
-
-   It stood beside the wordmark and again beside the footer byline, off two
-   separate declarations that had already drifted three ways: 1.15rem against
-   0.9rem wide, 0.44rem against 0.4rem tall, and 0.55rem against 0.5rem of space
-   after it — and the footer copy sat in a flex row that added its own 0.7rem
-   gap on top of that margin and centred the mark against the text instead of
-   standing it on the baseline. Same mark, two pens, two answers.
-
-   Gold, and keylined so it can be. --mark is 1.41:1 against paper — invisible,
-   not merely faint — which is the whole reason this tick was once drawn in a
-   second colour. drop-shadow traces the alpha the mask leaves behind, so the
-   hairline follows the brush's own wobble rather than boxing it. On graphite the
-   keyline composites into the ground and disappears, so one rule covers both. */
+/* THE SITE'S TICK, drawn once. Gold, and keylined so it can be: drop-shadow
+   traces the alpha the mask leaves behind, so the hairline follows the brush's
+   own edge rather than boxing it. On graphite it composites into the ground and
+   disappears, so one rule covers both themes. */
 .tick::before {
   display: inline-block;
   width: 1.15rem;
@@ -940,16 +681,11 @@ picture {
   max-width: 100%;
 }
 
-/* Every route clips its own horizontal overflow. body carries overflow-x: clip
-   too, but that value PROPAGATES to the viewport when html is visible — it stops
-   the page scrolling sideways and leaves documentElement.scrollWidth still
-   reporting the overflow, which is what the mobile suite asserts on. A clip here
-   is a real clipping box, so the number matches what the reader sees.
-
-   It used to live in the exhibits module alone, which is why the exhibits page
-   was the only one where a bleeding element did not widen the document. Anything
-   that hangs past its column — a taped print's tape, a rotated sheet, the
-   portrait's negative margin — relies on this. */
+/* Every route clips its own horizontal overflow HERE. body's overflow-x: clip
+   PROPAGATES to the viewport: it stops sideways scrolling but leaves
+   documentElement.scrollWidth still reporting the overflow, which is what the
+   mobile suite asserts on. Anything that hangs past its column — a taped
+   print's tape, a rotated sheet, the portrait's negative margin — relies on this. */
 main {
   display: block;
   overflow-x: clip;
@@ -971,10 +707,9 @@ main {
   border: 0;
 }
 
-/* Rises into place without fading. An entrance that starts at opacity 0 is
-   readable to axe as text at zero contrast for as long as it runs, which turns
-   every accessibility assertion on the pages using it into a race against the
-   animation. Motion carries the entrance; opacity stays out of it. */
+/* Rises into place without fading. An entrance starting at opacity 0 is
+   readable to axe as text at zero contrast for as long as it runs. Motion
+   carries the entrance; opacity stays out of it. */
 @keyframes rise-in {
   from {
     transform: translateY(1.25rem);
@@ -984,18 +719,12 @@ main {
   }
 }
 
-/* Scroll-driven reveal. Content rises into place as its section enters the
-   viewport, driven by the scroll position itself rather than by an observer and
-   a state flag — no JS, no hydration cost, and it tracks the scrubbing of a
-   scrollbar instead of firing once at a threshold.
+/* Scroll-driven reveal, tracking scroll position rather than an observer and a
+   state flag — no JS, no hydration cost.
 
-   Transform only, never opacity. Text at opacity 0 is text at zero contrast, and
-   axe samples the page mid-animation: the same reason rise-in animates movement
-   alone. That constraint is why this reads as weight shifting rather than as a
-   fade, which is the better effect here anyway.
-
-   Behind @supports so a browser without scroll timelines simply renders the page
-   in place, and behind a motion query so nobody gets moved who asked not to be. */
+   Transform only, never opacity, for the same reason as rise-in. Behind
+   @supports so a browser without scroll timelines renders the page in place,
+   and behind a motion query. */
 @keyframes reveal-rise {
   from {
     transform: translateY(2.75rem);
@@ -1024,13 +753,9 @@ main {
   }
 
   /* Slower and against the scroll, so the portrait sits in a different plane to
-     the copy BESIDE it rather than travelling with it.
-
-     Two columns only. Below 55rem the portrait stacks UNDER the copy, where
-     there is no beside — and measured there, `entry cover` resolves already
-     complete against a figure that tall, so it produced no motion at any scroll
-     position. All it did was hold the portrait a permanent 2rem higher, which
-     on a row-gap of 0 is 36px of picture sitting on the last paragraph. */
+     the copy BESIDE it. Two columns only: below 55rem it stacks UNDER the copy,
+     where `entry cover` resolves already complete and produced no motion at any
+     scroll position — it only held the portrait a permanent 2rem higher. */
   @media (prefers-reduced-motion: no-preference) and (min-width: 55.01rem) {
     .drift {
       animation: portrait-drift linear both;
@@ -1040,10 +765,8 @@ main {
   }
 }
 
-/* Staggered entrance for a repeated array. The delay comes off --i, set per item
-   from its own index, so a list arrives one item at a time instead of the whole
-   block moving as one flat plane. Capped so a long list does not make the reader
-   wait on the tail. */
+/* Staggered entrance for a repeated array. The delay comes off --i, set per
+   item from its index. Capped so a long list does not make the reader wait. */
 .stagger-in {
   animation: rise-in 520ms var(--ease-settle) both;
   animation-delay: calc(min(var(--i, 0) * 70ms, 560ms));
@@ -1091,35 +814,15 @@ main {
   }
 }
 
-/* The page head, shared by every route that opens with one.
-
-   What this replaces: each head used to set its closing clause in the accent
-   color, most of them as an <em>, on top of an accent uppercase letter-spaced
-   kicker. That is four typographic decisions — color, style, weight, tracking —
-   doing the work of one, and it is the single most reliable tell of a generated
-   layout. The hierarchy here is carried by tone and size alone; the accent
-   leaves the type entirely and becomes one small mark on the slug rule, which
-   is a layout decision instead of a paint decision.
-
-   Class names are global rather than a module because three routes share them
+/* Class names are global rather than a module because three routes share them
    and none of them owns the pattern. */
-/* The site has two axes and they are not the same thing.
+/* The site has two axes. The FRAME EDGE is full bleed: the footer's rule, the
+   section bands, the tools. The CONTENT AXIS is --gutter, capped at --page-max,
+   and the wordmark, every page head, the body copy and the byline stand on it.
 
-   The FRAME EDGE is full bleed: the footer's rule, the section bands, and the
-   tools (the exhibits directory, the index workspace) all run 0 to viewport.
-
-   The CONTENT AXIS is --gutter, capped at --page-max. The wordmark, every page
-   head, the body copy and the footer's byline all stand on it. On a 1440 screen
-   that is 43px, and the intake page — the one that always looked right — has
-   every one of those on it.
-
-   A head belongs to the frame, not to the tool underneath it. An earlier pass
-   aligned these heads to each tool's INTERNAL gutter (20px, 22px) on the theory
-   that a head should match the thing it introduces. That put the heading on a
-   third axis, on neither the frame nor the content, and left the wordmark above
-   it and the byline below it hanging out to its right. A full-bleed tool under
-   a content-axis head is a deliberate change of layer; a head on its own private
-   axis is just a misalignment. */
+   A head belongs to the frame, not to the tool underneath it. Aligning a head
+   to a tool's INTERNAL gutter puts it on a third axis and leaves the wordmark
+   above and the byline below hanging out to its right. */
 .page-head,
 .page-column {
   width: min(100%, var(--page-max));
@@ -1131,52 +834,28 @@ main {
   padding-block: var(--head-lead) var(--head-tail);
 }
 
-/* Two scales, both named, and nothing else.
-   The default is a page NAME. Anything that is not one — a head sharing the
-   fold with a working tool, or a document title that can run long — takes
-   data-scale="compact".
-
-   This replaced four separate clamps. There was one shared rule and then a
-   bespoke override per page, each added to solve a local problem (a headline
-   wrapping to three lines, a board pushed below the fold, a note title that ran
-   long) and none of them folded back in. Every exception was defensible on its
-   own; together they rebuilt the inconsistency the shared head existed to
-   remove. A variant has to be named, or it is just drift with a reason. */
+/* Two scales, both named, and nothing else. The default is a page NAME; a head
+   sharing the fold with a working tool, or a title that can run long, takes
+   data-scale='compact'. Do not add a third — a variant has to be named, or it
+   is drift with a reason. */
 .page-head h1,
 .page-head-title {
-  /* 20ch, not 18. The measure has to clear the LONGEST turn on the site, and at
-     18 it cleared three of four: /notes broke "Filed, dated, and searchable."
-     across two line boxes, and because the turn carries the highlighter that is
-     two gold bands with one word orphaned on the second — a broken mark, not a
-     marked clause. It needs 19.5ch; the others set at 957px and 933px against
-     the old 948px cap and do not move at 20, because every head breaks its own
-     lines on an explicit <br> and this only governs wrapping inside one.
-
-     Shrinking that head to data-scale="compact" was tried and reverted: it made
-     the one page whose hero was wrong the only page whose hero was a different
-     size. The measure was the thing that was wrong, and it is shared. */
+  /* 20ch, not 18. The measure has to clear the LONGEST turn on the site, which
+     needs 19.5ch. Below that the turn breaks across two line boxes, and since it
+     carries the highlighter that is two gold bands with a word orphaned on the
+     second — a broken mark, not a marked clause. */
   max-width: 20ch;
   font-family: var(--font-editorial);
-  /* Sized to leave the fold something to hold. At 8vw this rendered 115px on a
-     1440 screen, and the head that carried it ran to 755px of a 900px viewport
-     on /notes — the search tool it introduces opened entirely below the fold,
-     and the intake's own field was not far behind. The type treatment is
-     untouched: same Didone, same measure, same leading, same marked turn. Only
-     the scale moved, by about a quarter.
-
-     The measure stays in ch, so it shrinks with the type and every line breaks
-     exactly where it broke before. A head that reflows at a new size is a new
-     head; this is the same one, set smaller. */
+  /* Sized to leave the fold something to hold. The measure stays in ch, so it
+     shrinks with the type and every line breaks exactly where it did before. */
   font-size: clamp(2.25rem, 5.8vw, 5.5rem);
   font-weight: 500;
   /* A Didone sets tight but not as tight as a grotesque — its thin strokes need
      air or the counters fill in at display size. */
   letter-spacing: -0.02em;
-  /* Leading has to clear the mark. A highlighter band is the line box plus its
-     own padding — about 1.2em — so at the 0.94 this head used to set, every
-     marked line overflowed upward and painted out the bottom of the line above
-     it. Tight leading and a highlighter are not compatible; the band is the
-     thing with a fixed height, so the leading is what moves. */
+  /* Leading has to clear the mark. A highlighter band is the line box plus its own
+     padding, about 1.2em, so tighter leading made every marked line overflow
+     upward into the line above. The band has the fixed height; the leading moves. */
   line-height: 1.42;
   text-wrap: balance;
 }
@@ -1189,38 +868,23 @@ main {
   font-size: clamp(1.85rem, 4vw, 3.75rem);
 }
 
-/* THE MARK — the single definition of the highlighter.
+/* THE MARK — the single definition of the highlighter. Compose this one class;
+   never re-implement the band. The yellow is a ground only: 11.34:1 under
+   --mark-ink on either theme, which is why it needs no light/dark variant.
 
-   Anything that should read as highlighted composes this one class:
-   `composes: marked from global;` in a CSS module, `class="marked"` in JSX.
-   It is a named global rather than five properties copy-pasted per component
-   so that "what is marked on this site?" is one grep for one word, and so the
-   treatment can only ever change in one place.
-
-   The yellow can only be a ground, never ink — see the token block. As ink on
-   paper it is 1.41:1 and unusable; as a ground under --mark-ink it is 11.34:1
-   on paper and on graphite alike, which is why the mark needs no light/dark
-   variant while every other accent does.
-
-   box-decoration-break so a run long enough to wrap gets a band per line
-   rather than one rectangle behind both. */
+   box-decoration-break so a run long enough to wrap gets a band per line. */
 .marked,
 .page-head h1 > span,
 .page-head-title > span {
   /* THE STROKE IS INSET INTO THE BOX, and that is what fixes the stacking.
 
-     An inline box is as tall as the font's ascent plus descent, which for this
-     Didone is 1.52em — with padding, a 1.89em band against a 1.42em line. Every
-     wrapped line therefore overlapped the one above by 55px, and the lower
-     stroke painted over the upper one, because CSS paints the fragments of an
-     inline box in document order and offers no way to reverse it.
+     An inline box is as tall as the font's ascent plus descent — 1.52em for this
+     Didone, against a 1.42em line — so wrapped lines overlapped and the lower
+     stroke painted over the upper one, which CSS offers no way to reverse.
 
-     Measured, the glyphs only ever occupy 27.6% to 75.8% of that band; the rest
-     is font metrics nothing is drawn in. So --stroke-swipe is drawn into the
-     middle 20%–83% of its viewBox instead of filling it. The visible stroke
-     falls to 1.19em, clears the 1.42em line, and the overlap is gone — each
-     line's stroke reads whole, with roughly 7% of the band as margin around the
-     ink on both sides. The paddings below place the ink inside that window. */
+     The glyphs only ever occupy 27.6% to 75.8% of that band, so --stroke-swipe is
+     drawn into the middle 20%-83% of its viewBox instead of filling it. The
+     visible stroke falls to 1.19em and clears the line. */
   padding: 0.15em 0.26em 0.22em 0.2em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
@@ -1232,16 +896,12 @@ main {
   background-image:
     linear-gradient(to bottom, transparent 52%, var(--mark-drag) 74%, transparent 92%),
     linear-gradient(to bottom, var(--mark-lift) 0 6%, transparent 24%);
-  /* The band is SKEWED, and the skew lives in the path rather than in a
-     transform. A transform would be the obvious way to tilt it, and CSS ignores
-     transforms on non-replaced inline boxes — which is what this has to be for
-     the mark to hug each wrapped line instead of boxing all of them. Drawing
-     the slant into the mask gets the tilt back and keeps the fragmenting, and
-     it does something a rotation could not: every wrapped line gets its own
-     stroke at its own angle, rather than the whole block leaning as one slab.
+  /* The band is SKEWED, and the skew lives in the PATH rather than in a transform.
+     CSS ignores transforms on non-replaced inline boxes, and inline is what lets
+     the mark hug each wrapped line. Drawing the slant into the mask keeps both,
+     and gives every wrapped line its own angle rather than leaning as one slab.
 
-     Stretched, not tiled: a tile cannot carry a continuous slant, it would
-     saw-tooth at every repeat. */
+     Stretched, not tiled: a tile would saw-tooth at every repeat. */
   -webkit-mask-image: var(--stroke-swipe);
   mask-image: var(--stroke-swipe);
   -webkit-mask-size: 100% 100%;
@@ -1250,23 +910,16 @@ main {
   mask-repeat: no-repeat;
 }
 
-/* The turn of the headline is MARKED, not coloured.
-
-   Setting it in the accent is what an accent colour is normally for, and it is
-   the move that stops working the moment the accent is yellow. Struck through
-   with the marker instead, it does the same job — one decision, applied once —
-   and it does it identically on paper and on graphite. */
+/* The turn of the headline is MARKED, not coloured. Setting it in the accent is
+   the move that stops working the moment the accent is yellow; the marker does
+   the same job identically on paper and on graphite. */
 .page-head h1 > span,
 .page-head-title > span {
-  /* INLINE, and this matters more than it looks. As a block with fit-content
-     the band hugged the words only while they fit on one line; the moment the
-     turn wrapped, fit-content resolved to the full column and the mark became
-     one rectangle over both lines, painting the empty half of each. Only an
-     inline box fragments, and only fragments let box-decoration-break give
-     every line a band the width of its own words.
-
-     The cost is the half-degree tilt, which CSS ignores on a non-replaced
-     inline box. Lines of differing width carry the hand-made read instead. */
+  /* INLINE, and this matters more than it looks. As a block with fit-content the
+     band hugged the words only while they fit on one line; once the turn wrapped,
+     fit-content resolved to the full column and the mark became one rectangle
+     over both lines. Only an inline box fragments, and only fragments let
+     box-decoration-break give every line a band the width of its own words. */
   display: inline;
   /* The band is inset by its own left padding, which would push the marked line
      off the axis the line above it stands on. Pulling back by the same amount

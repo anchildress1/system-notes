@@ -78,9 +78,7 @@ export default function IntakeDesk() {
   const noticeId = useId();
 
   // A question is in flight from the moment it is asked until the brief hands an
-  // answer back. Without this the form stayed fully live under a running
-  // request: the button invited a second click and nothing on the page had
-  // changed, so the only evidence of work was a caption further down.
+  // answer back. Without this the form stayed live under a running request.
   const [inFlight, setInFlight] = useState(false);
 
   const keepBrief = useCallback(
@@ -107,10 +105,8 @@ export default function IntakeDesk() {
           if (!trimmed || !canAsk || inFlight) return;
           setInFlight(true);
           setAsked((previous) => ({ text: trimmed, nonce: (previous?.nonce ?? 0) + 1 }));
-          // The field empties on submit: the question has moved to the brief
-          // below, which quotes it back, so leaving it in the box would offer a
-          // second copy of something already asked. Every state that can end the
-          // turn echoes the question, so the words are never simply lost.
+          // The field empties on submit: the question has moved to the brief below, which
+          // quotes it back.
           setProblem('');
         }}
       >

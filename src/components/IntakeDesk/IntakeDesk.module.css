@@ -1,14 +1,8 @@
-/* Two explicit columns, never auto-fit.
-   auto-fit only collapses tracks that are EMPTY, and .answer spans 1 / -1. So
-   with no answer the tracks resolved to `658px 658px 0px 0px` and the compose
-   box filled half the page; the moment an answer appeared every track was
-   occupied, the row resolved to `310px` four times, and the textarea and the
-   shelf shrank by 348px each. Submitting visibly changed the shape of the form
-   above it. An explicit column count cannot be perturbed by a row that spans. */
-/* One column. The 50/50 split gave a form field and a list of suggestions equal
-   billing, which is a developer tool's idea of balance — the thing you came to
-   do got half a screen and the shortcuts got the other half. The statement runs
-   the width; the shelf is a footnote under it. */
+/* Two explicit columns, never auto-fit. auto-fit only collapses tracks that are
+   EMPTY, and .answer spans 1 / -1: with no answer the tracks resolved to
+   `658px 658px 0px 0px`, and the moment an answer appeared every track was
+   occupied and the textarea shrank by 348px. Submitting visibly changed the shape
+   of the form above it. */
 .desk {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -21,22 +15,19 @@
   min-width: 0;
 }
 
-/* No box. A bordered grey well is a form control; a rule under editorial type is
-   a page you write on. The element is still a real <textarea> — the affordance
-   moves to the rule, the caret and the scale, not to a contenteditable div that
-   would cost the label, the placeholder and reliable paste on a phone. */
+/* No box. The element is still a real <textarea> — the affordance moves to the
+   rule, the caret and the scale. A contenteditable div would cost the label, the
+   placeholder and reliable paste on a phone. */
 .field {
   box-sizing: border-box;
   display: block;
   width: 100%;
   padding: 0.2rem 0 0.85rem;
   border: 0;
-  /* 3px, not a hairline. --edge is 1.66:1 on graphite and 1.44:1 on paper, and
-     a 1px rule at that tone was the only thing on the page saying "this is a
-     field you can type in" — invisible rather than quiet. Thickness does not
-     move a contrast RATIO, so this does not make the boundary conformant to
-     1.4.11 on its own; it makes it perceivable, and the placeholder inside it
-     now carries 4.5:1 of its own. */
+  /* 3px, not a hairline. --edge is 1.66:1 on graphite and 1.44:1 on paper, so a 1px
+     rule at that tone was invisible rather than quiet. Thickness does not move a
+     contrast RATIO, so this makes the boundary perceivable rather than conformant to
+     1.4.11 on its own; the placeholder inside carries 4.5:1. */
   border-bottom: 3px solid var(--edge);
   background: transparent;
   color: var(--bone);
@@ -46,17 +37,10 @@
      sliced in half by the field's own rule. */
   font-size: clamp(1.15rem, 3.1vw, 2.5rem);
   line-height: 1.3;
-  /* A cap in rem over a floor in em, because the two constraints run in opposite
-     directions. The placeholder needs MORE lines as the type gets smaller — it
-     wraps to three at 280px and one from 600px up — while an em floor reserves
-     more the larger the type gets. 4.2em was the result of tuning against the
-     small end and it did both things wrong at once: 113px of empty field under
-     a single line of placeholder at 1440px, and at 280px only 74px against the
-     89px three lines actually need, so the last line was cut off by the field's
-     own rule. Measured, both.
-
-     min() takes whichever is smaller, so the field is ~90px at every width:
-     enough for three small lines, never a void under one large one. */
+  /* A cap in rem over a floor in em, because the constraints run in opposite
+     directions. The placeholder needs MORE lines as the type gets smaller — three at
+     280px, one from 600px up — while an em floor reserves more the larger the type
+     gets. min() takes whichever is smaller, so the field is ~90px at every width. */
   min-height: min(4.9em, 5.6rem);
   /* Long input scrolls rather than being cut off with nothing to say so. */
   overflow-y: auto;
@@ -64,16 +48,13 @@
   transition: border-color 0.25s var(--ease-out);
 }
 
-/* No opacity on top of --mute. --mute is ALREADY the quietest ink the palette
-   has — 6.78:1 on graphite, 4.88:1 on paper — and dimming it to 0.7 took the
-   placeholder to 3.83:1 and 2.76:1. At the 1.15rem floor this field takes on a
-   phone that is body text failing 4.5:1 in both themes, and axe never saw it:
-   it does not evaluate ::placeholder colour at all. */
-/* Grows with what is typed instead of scrolling inside a fixed box, so a long
-   problem stays readable while it is being written. min-height stays the floor.
-   Progressive enhancement behind @supports: where field-sizing is unsupported
-   the field simply keeps its floor, which is why that floor has to be correct
-   on its own rather than leaning on this. */
+/* No opacity on top of --mute, which is already the quietest ink the palette has —
+   6.78:1 on graphite, 4.88:1 on paper. Dimming it to 0.7 took the placeholder to
+   3.83:1 and 2.76:1, and axe never saw it: it does not evaluate ::placeholder
+   colour at all. */
+/* Grows with what is typed instead of scrolling inside a fixed box. Progressive
+   enhancement behind @supports: where field-sizing is unsupported the field keeps
+   its floor, which is why that floor has to be correct on its own. */
 @supports (field-sizing: content) {
   .field {
     field-sizing: content;
@@ -83,10 +64,6 @@
 .field::placeholder {
   color: var(--mute);
 }
-
-/* Focus has to stay clearly heavier than rest, so it moves up with it. Both the
-   width step and the tone change carry the state; either alone is thinner
-   evidence than this field had before. */
 .field:focus-visible {
   border-bottom-color: var(--ink-accent);
   border-bottom-width: 5px;
@@ -100,9 +77,7 @@
   margin-top: 0.9rem;
 }
 
-/* Shape, fill and disabled state all come from .btn. This carried its own copy
-   of every one of them, differing from the theme-song button by 2px of padding
-   and 0.02em of tracking. The page's one action is wider than the default. */
+/* Shape, fill and disabled state all come from .btn. */
 .run {
   composes: btn from global;
   padding-inline: 1.9rem;
@@ -120,19 +95,12 @@
   color: var(--soft);
   cursor: not-allowed;
 }
-
-/* The answer spans both columns of the desk rather than sitting under the
-   field: a brief is the page's subject once it exists, not a form's output. */
 .answer {
   grid-column: 1 / -1;
   margin-top: clamp(1.5rem, 4vh, 2.75rem);
   border-top: 1px solid var(--line);
   padding-top: clamp(1.25rem, 3vh, 2rem);
 }
-
-/* The brief closes with room under it. Its last paragraph used to sit flush
-   against whatever followed, so the answer read as though it had been cut off
-   rather than finished. */
 .brief {
   display: block;
   padding-bottom: clamp(2.5rem, 6vh, 4.5rem);
@@ -166,9 +134,8 @@
   text-transform: uppercase;
 }
 
-/* An indeterminate sweep, not a progress bar. There is no measurable progress
-   to report — the agent answers or it does not — so the motion says "running"
-   and claims nothing about how far along it is. */
+/* An indeterminate sweep, not a progress bar: there is no measurable progress to
+   report, so the motion claims nothing about how far along it is. */
 .briefSweep {
   position: relative;
   display: block;
@@ -230,10 +197,8 @@
   border-bottom: 1px solid var(--ink-accent);
 }
 
-/* Sentence case, not the uppercase the other fine print uses: those are labels
-   naming a region, this is a sentence, and tracked-out capitals make a sentence
-   harder to read for no gain. Sized with the rest of the fine print so it reads
-   as apparatus rather than as the first line of the answer. */
+/* Sentence case, not the uppercase the other fine print uses. Tracked-out capitals
+   make a sentence harder to read for no gain. */
 .briefCredit {
   display: block;
   max-width: 56ch;
@@ -243,20 +208,8 @@
   font-size: var(--fine);
   line-height: 1.5;
 }
-
-/* The reader's own words, quoted back. A blockquote bar says "this is not the
-   answer" without a label having to say it.
-   
-   The bar is the accent, where .briefCounter's is neutral. That is the whole
-   distinction and it is deliberate: the counter is the answer arguing against
-   something, so it belongs to the answer's voice, while this belongs to the
-   reader's — and on this site the accent is already what marks where the reader
-   acts, from the slug mark to the button they pressed to get here. Two neutral
-   rules of slightly different weight would have read as the same device. */
-/* The bar beside the echoed question is a STROKE, not a border. A 2px rule in
-   the accent was a red on paper and perfectly straight, which is the pair of
-   things this section kept getting wrong. Drawn instead, in the same gold the
-   marks are, so the reader's own words are the thing held in the pen. */
+/* A STROKE, not a border — drawn in the same gold the marks are, so the reader's
+   own words are the thing held in the pen. */
 .briefQuestion {
   position: relative;
   display: block;
@@ -289,9 +242,6 @@
 .briefQuestion::before {
   background: var(--mark);
 }
-
-/* The counter argues against the answer, so it is struck in a quieter pen —
-   the same stroke, not the same ink. */
 .briefCounter::before {
   background: var(--mute);
 }
@@ -304,10 +254,6 @@
   line-height: 1.72;
   text-wrap: pretty;
 }
-
-/* The opening block says what is and is not already built — the whole answer's
-   premise. Set as a standfirst, in the display face, so the reader gets the
-   scope before the method. */
 .briefLead {
   max-width: 46ch;
   margin-top: 1.35rem;
@@ -319,10 +265,6 @@
   line-height: 1.24;
   text-wrap: pretty;
 }
-
-/* Steps carry a hanging numeral, the same device the principles use on the
-   about page: the ordinal the agent wrote is lifted out of the sentence and set
-   in the margin instead of read as prose. */
 .briefStep {
   display: grid;
   max-width: 66ch;
@@ -334,14 +276,13 @@
   text-wrap: pretty;
 }
 
-/* Marked rather than tinted, for the same reason the receipts figures are: a
-   step number is a fact, and the site strikes facts instead of colouring them.
-   In the accent it was three red numerals down the left of every answer. */
+/* Marked rather than tinted: a step number is a fact, and this site strikes facts
+   instead of colouring them. */
 .briefStepMark {
   width: fit-content;
   /* A grid item stretches to its row, and the row here is the whole step — so a
-     background pinned to the bottom landed four lines below the numeral it
-     belongs to. Hugging the content puts the stroke back under the number. */
+     background pinned to the bottom landed four lines below the numeral it belongs
+     to. Hugging the content puts the stroke back under the number. */
   align-self: start;
   padding-bottom: 0.34em;
   background-image: var(--stroke-brush-inked);
@@ -356,9 +297,6 @@
   /* Sits on the first line's baseline rather than the top of the grid cell. */
   padding-top: 0.42rem;
 }
-
-/* What the answer argues against. A different register in the writing, so a
-   different setting: stepped in behind a rule, at a quieter tone. */
 .briefCounter {
   position: relative;
   max-width: 58ch;
@@ -415,11 +353,6 @@
   letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
 }
-
-/* Specimen tags. Wide, uneven spacing rather than a ruled column: the gaps are
-   set per position so the row reads as things pinned to a wall, not as three
-   rows of a list. baseline alignment lets them sit on one optical line while
-   wrapping freely. */
 .seeds {
   display: flex;
   flex-wrap: wrap;
@@ -439,9 +372,8 @@
   margin-left: clamp(0rem, 1vw, 1.1rem);
 }
 
-/* .washed, not .marked-hover: a seed wraps to two and three lines, and a band
-   sized to a word would lie across the middle of the block instead of behind
-   any one line of it. A row takes the wash. */
+/* .washed, not .marked-hover: a seed wraps to two and three lines, and a band sized
+   to a word would lie across the middle of the block. A row takes the wash. */
 .seed {
   composes: washed from global;
   max-width: 34ch;
@@ -459,10 +391,6 @@
     border-color 0.25s var(--ease-out),
     color 0.25s var(--ease-out);
 }
-
-/* Uneven measures. Three labels cut to one width read as a control group; the
-   first is given the room its longer sentence wants and the others are pulled
-   in, so the row reads as things pinned up rather than a segmented control. */
 .seeds li:nth-child(1) .seed {
   max-width: 38ch;
 }

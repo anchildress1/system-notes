@@ -70,11 +70,6 @@
 
 .railStar {
   margin-left: 0.35rem;
-  /* The glyph alone. A marker chip behind a single star put a block of colour
-     beside every awarded row in a list of eleven, which reads as a second
-     column of badges rather than as a mark on a name. The star already carries
-     the meaning; the accent only has to make it visible, and it is the one
-     token that can do that on paper as well as on graphite. */
   color: var(--ink-accent);
 }
 
@@ -94,12 +89,6 @@
   padding: clamp(1.6rem, 4vh, 3.25rem) clamp(1.25rem, 4vw, 3.5rem) clamp(3rem, 8vh, 5rem);
   animation: rise-in 400ms var(--ease-out) both;
 }
-
-/* The light pen, not the solid one. This was .marked — the full gold slab — and
-   it worked while it was the only gold on the panel. It stopped working when
-   the cross-link below it became a filled button: a credit line and the page's
-   one action were then the same block of colour, and the label read as loud as
-   the thing you are meant to press. Same stroke, lighter pen, hierarchy back. */
 .award {
   composes: marked-soft from global;
   display: flex;
@@ -135,9 +124,7 @@
   text-wrap: pretty;
 }
 
-/* Mat, shadow, tilt and tape all come from .taped. This carried a single wide
-   soft shadow and no mat, which is what made the exhibit read as a flat pane
-   cut into the page rather than as a print laid on it. */
+/* Mat, shadow, tilt and tape all come from .taped. */
 .media {
   composes: taped from global;
   display: block;
@@ -150,9 +137,6 @@
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(1.75rem, 4vw, 3.5rem);
 }
-
-/* Uneven on purpose: the description carries the argument, the outcome and the
-   links are the shorter column that closes it. */
 @media (min-width: 62rem) {
   .columns {
     grid-template-columns: 1.25fr 0.75fr;
@@ -207,22 +191,14 @@
   gap: 0.6rem;
   margin-top: 1.5rem;
 }
-
-/* Both are .btn now. They were a third button declaration — their own shape,
-   their own hover, their own idea of what an accent control looks like — which
-   is how the exhibits page ended up with the only primary action on the site
-   that was an outline while every other one was filled. */
 .action {
   composes: btn from global;
   padding-inline: 0.9rem;
 }
 
-/* Feather draws at stroke-width 2 on a 24 viewBox, which at this size lands
-   near a single hairline — beside a 700-weight label tracked out to 0.14em it
-   read as a different typeface's punctuation rather than as part of the button.
-   The mark is set to the weight of the words it belongs to. A CSS property
-   rather than the icon's own prop: it is a type decision, so it lives with the
-   rest of the button's type. */
+/* Feather draws at stroke-width 2 on a 24 viewBox, which at this size lands near a
+   hairline — beside a 700-weight label tracked out to 0.14em it read as another
+   typeface's punctuation rather than as part of the button. */
 .action svg {
   width: 0.95em;
   height: 0.95em;
@@ -242,10 +218,6 @@
   margin-top: clamp(2.5rem, 6vh, 4.5rem);
   border-top: 0.5px solid var(--line-strong);
 }
-
-/* Loose columns, not a ruled two-column table. Entries flow and break where the
-   measure runs out, the way footnotes set across a page do — no shared right
-   edge for the roles to line up against, and no rule under every pair. */
 .stack {
   display: block;
   columns: 3 14rem;
@@ -280,16 +252,9 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* The rail stops being a rail: it scrolls sideways above the detail rather
-     than stacking twenty systems on top of the thing they introduce.
-
-     Full bleed, with the gutter moved from the page onto the strip itself.
-     Inset by the gutter it ended 17px short of the screen on a 390px phone, so
-     the twentieth system was sliced mid-word by nothing — and the rule under it
-     stopped at the same arbitrary line. A strip cut off by the EDGE OF THE
-     SCREEN reads as more this way; one cut off by a margin reads as a layout
-     that miscalculated. scroll-padding keeps the first card on the page's own
-     gutter rather than jammed against the bezel. */
+  /* The rail stops being a rail: it scrolls sideways above the detail rather than
+     stacking twenty systems on top of the thing they introduce. Full bleed, with the
+     gutter moved from the page onto the strip itself. */
   .rail {
     position: static;
     max-height: none;
@@ -319,9 +284,9 @@
     padding-inline: var(--gutter);
   }
 
-  /* The flex items are the list items, not the button inside them. Without this
-     each one shrank to about 29px of a 390px row and twenty nowrap labels
-     painted on top of each other as a single unreadable line. */
+  /* The flex items are the list items, not the button inside them. Without this each
+     shrank to about 29px of a 390px row and twenty nowrap labels painted on top of
+     each other as one unreadable line. */
   .rail ul > li {
     flex: 0 0 auto;
     scroll-snap-align: start;

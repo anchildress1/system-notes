@@ -31,18 +31,14 @@ function isAllowedCitationUrl(href: string): boolean {
   );
 }
 
-/**
- * Splits an answer into prose and the links written into it.
- *
- * The agent is asked for `[title](url)` and nothing else, and this resolves that
- * one construct. It is parsed rather than injected: the answer is model output
- * shaped partly by indexed content, so it is untrusted, and handing it to
- * dangerouslySetInnerHTML would make any tag it emitted executable. Parsing
- * yields React elements, which cannot become markup.
- *
- * @param text One paragraph of the answer.
- * @returns Segments in order; `href` is present only on links safe to follow.
- */
+/* Splits an answer into prose and the links written into it.
+
+   Parsed rather than injected: the answer is model output shaped partly by indexed
+   content, so it is untrusted, and dangerouslySetInnerHTML would make any tag it
+   emitted executable. Parsing yields React elements, which cannot become markup.
+
+   @param text One paragraph of the answer.
+   @returns Segments in order; `href` is present only on links safe to follow. */
 export function parseBrief(text: string): BriefSegment[] {
   const segments: BriefSegment[] = [];
   let cursor = 0;
@@ -85,26 +81,9 @@ const COUNTER_OPENER = /^i would not\b/i;
 /** A step run shorter than this is coincidence, not a sequence worth numbering. */
 const MIN_STEPS = 2;
 
-/**
- * Reads the shape of an answer so it can be set as an argument rather than as a
- * wall of identical paragraphs.
- *
- * The structure is not invented: the agent reliably opens with what is and is
- * not already built, walks numbered steps signposted `First,` / `Next,` /
- * `Then,` / `Finally,`, turns to what it would refuse with `I would not`, and
- * closes by synthesising. This reads that shape back out.
- *
- * The ordinal word is lifted out of the sentence into a margin marker rather
- * than deleted — the same words, relocated. Numbering comes from position, not
- * from the word, so a repeated `Next,` cannot desync the count.
- *
- * Everything degrades: fewer than {@link MIN_STEPS} signposted paragraphs means
- * the run was coincidence and every block stays plain prose. An answer with no
- * recognised shape renders exactly as it did before.
- *
- * @param answer The settled answer, paragraphs separated by blank lines.
- * @returns One block per paragraph, in order.
- */
+/* Reads the shape of an answer so it can be set as an argument rather than a wall
+   of identical paragraphs. The structure is not invented — the agent reliably opens
+   with what is and is not already built, then walks the steps. */
 export function parseBriefStructure(answer: string): BriefBlock[] {
   const paragraphs = answer
     .split(/\n{2,}/)
@@ -160,10 +139,8 @@ export default function BriefBody({
   return (
     <section className={styles.brief} aria-label="The brief">
       <p className={styles.briefQuestion}>{question}</p>
-      {/* Placed above the answer, not under it. This is a provenance line, and a
-          disclosure a reader meets after they have already believed something is
-          a footnote, not a disclosure. It sits with the question because both are
-          metadata about the answer rather than part of it. */}
+      {/* Placed above the answer, not under it: a disclosure a reader meets after they
+   have already believed something is a footnote, not a disclosure. */}
       <p className={styles.briefCredit}>An AI agent wrote this from evidence I&rsquo;ve filed.</p>
       {parseBriefStructure(answer).map((block) => {
         if (block.kind === 'lead') {

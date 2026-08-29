@@ -4,10 +4,9 @@
   top: 0;
   min-height: var(--header-height);
   border-bottom: 1px solid var(--line);
-  /* Opaque, not 0.97. Three percent of transparency bought nothing and cost
-     legibility: scrolled content read through the bar, and compositing against
-     whatever happened to be behind it dropped the nav below the 4.5:1 contrast
-     floor. An opaque bar also makes the blur redundant, so it goes too. */
+  /* Opaque, not 0.97. Three percent of transparency cost legibility: scrolled content
+     read through the bar, and compositing against whatever was behind it dropped the
+     nav below 4.5:1. */
   background: var(--void);
 }
 
@@ -21,29 +20,12 @@
   margin: 0 auto;
   gap: 2rem;
 }
-
-/* The one filled control on the site that was not the .btn primitive: its own
-   padding, its own flat gold, its own square corners. So the first thing a
-   keyboard reader ever saw was a plain rectangle with none of the brush the
-   rest of the site is drawn with — which is exactly what globals.css owning
-   every button exists to prevent.
-
-   Only the footprint stays here. Shape, fill and hover come from .btn, and the
-   translate that parks it off screen composes with the mask on .btn's ::before
-   rather than fighting it — the mask carries the tilt, not a transform. */
 .skipLink {
   composes: btn from global;
   z-index: 1000;
-  /* .btn sets "SKIP TO MAIN CONTENT" uppercase and tracked out to 0.14em, which
-     measures 275px — and a fixed element that wide sitting 12px from the left
-     edge of a 280px screen is 7px of document nobody can reach, since body's
-     overflow-x: clip propagates to the viewport and it cannot be scrolled to
-     either. The cap makes it wrap to two lines there instead.
-
-     A cap rather than tighter padding, because `composes` puts both class names
-     on the element at equal specificity and the winner is decided by which
-     stylesheet the bundler emits last — .btn's padding shorthand beat a
-     padding-inline here. max-width has no competitor, so it holds either way. */
+  /* ".btn" sets this uppercase and tracked out to 0.14em, which measures 275px — and
+     a fixed element that wide sitting 12px from the left of a 280px screen is 7px of
+     document nobody can reach. */
   max-width: calc(100vw - 1.5rem);
 }
 
@@ -85,10 +67,9 @@ a.skipLink[data-variant='filled']:focus {
 
 .brand {
   display: inline-flex;
-  /* Padding, not min-height. The two spans align on their baselines, so a
-     min-height taller than the text put every spare pixel below it — a 25px
-     band of invisible, clickable nothing hanging under the name. Symmetric
-     padding reaches the same 44px target with the text in the middle of it. */
+  /* Padding, not min-height. The two spans align on their baselines, so a min-height
+     taller than the text put every spare pixel below it — a 25px band of invisible,
+     clickable nothing hanging under the name. */
   align-items: baseline;
   padding-block: 0.9rem;
   gap: 0.8rem;
@@ -133,10 +114,9 @@ a.skipLink[data-variant='filled']:focus {
   transition: color 160ms ease;
 }
 
-/* The current page takes the same stroke all the way up. Hover shows a faded
-   draft of it at half opacity, which .swiped owns; being here is the finished
-   mark. Colour carries the state as well (--bone against --soft), so the swipe
-   is reinforcement rather than the only signal. */
+/* The current page takes the same stroke all the way up; .swiped owns the half-
+   opacity hover draft. Colour carries the state as well, so the swipe is not the
+   only thing saying which page this is. */
 .navLink[aria-current='page'] {
   color: var(--bone);
 }
