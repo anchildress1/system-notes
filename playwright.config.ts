@@ -24,6 +24,11 @@ export default defineConfig({
     {
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
+      // The theme is CSS custom properties and an attribute, neither of which
+      // varies by engine, so one engine answers for all of them. WebKit is the
+      // one that cannot answer anyway: it reports oklch as lab(), which axe
+      // misreads, so its contrast results would be wrong rather than redundant.
+      testIgnore: /theme\.spec\.ts/,
     },
   ],
   webServer: {

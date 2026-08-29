@@ -4,13 +4,10 @@ import { test } from './utils';
 
 const ROUTES = ['/', '/notes', '/projects', '/about'] as const;
 
-// One project is enough: the theme is CSS custom properties and an attribute,
-// which do not vary by engine. The cross-browser sweep in mobile.spec.ts covers
-// what does. WebKit is also excluded from contrast checks anyway, since it
-// reports oklch as lab() and axe misreads it.
+// WebKit is excluded from this file by testIgnore on the Mobile Safari project
+// rather than by a runtime skip, so the spec never collects there instead of
+// collecting and reporting as skipped. The reason lives with the exclusion.
 test.describe('Theme', () => {
-  test.skip(({ browserName }) => browserName !== 'chromium', 'palette is engine-independent');
-
   test.describe('resolved from the system preference', () => {
     for (const scheme of ['dark', 'light'] as const) {
       test.describe(`${scheme} preference`, () => {
