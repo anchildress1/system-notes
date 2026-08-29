@@ -24,6 +24,10 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+      // Same exclusion as Mobile Safari, for the same reason: WebKit reports
+      // oklch as lab(), which axe misreads, so its contrast verdicts would be
+      // wrong rather than redundant. Adding an engine has to carry this with it.
+      testIgnore: /theme\.spec\.ts/,
     },
     {
       name: 'Mobile Chrome',
