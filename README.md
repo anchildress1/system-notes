@@ -2,9 +2,7 @@
 
 <!-- prettier-ignore-start -->
 <!--START_SECTION:rai-badge-->
-
-![AI attribution](https://img.shields.io/badge/AI%20attribution-69%25%20since%202026--01-C03070?style=flat)
-
+![AI attribution](https://img.shields.io/badge/AI%20attribution-74%25%20since%202026--01-C03070?style=flat)
 <!--END_SECTION:rai-badge-->
 <!-- prettier-ignore-end -->
 
