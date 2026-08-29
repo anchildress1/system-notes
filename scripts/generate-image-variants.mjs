@@ -28,9 +28,20 @@ const SOURCES = [
   { dir: '', files: ['profile-dark.webp', 'profile-light.webp'] },
 ];
 
-// Matches the grayscale treatment ProjectCard applies via CSS, so the placeholder
-// does not flash in color and desaturate the moment the real image decodes.
-const blurFor = (file) => sharp(file).resize(12).grayscale().webp({ quality: 30 }).toBuffer();
+// Matches the grade `.taped img` applies via CSS, so the placeholder does not
+// shift colour the moment the real image decodes.
+//
+// This used to be `.grayscale()`, matching a treatment ProjectCard applied back
+// when images were styled per page. That treatment is gone — every image on the
+// site now composes `.taped`, whose only grade is `saturate(0.8) contrast(1.06)`
+// — so a fully grey placeholder was popping to near-full colour on decode: the
+// exact flash the grayscale existed to prevent, inverted.
+//
+// Saturation only. The 6% contrast bump is invisible on a 12px source blown up
+// to fill its slot, and reproducing it here would mean hand-rolling a linear
+// ramp for something nobody can see.
+const blurFor = (file) =>
+  sharp(file).resize(12).modulate({ saturation: 0.8 }).webp({ quality: 30 }).toBuffer();
 
 const mtime = async (file) => (await stat(file).catch(() => null))?.mtimeMs ?? Infinity;
 

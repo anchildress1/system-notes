@@ -159,6 +159,10 @@
 
 .proof {
   padding-block: clamp(4rem, 8vw, 8rem) clamp(3rem, 5vw, 5rem);
+  /* The shared gap is tuned to separate the label COLUMN from the content one,
+     and at 6vw it is far too much air between stacked rows of the same column.
+     Rows get the rhythm the record lists already used as their own margin. */
+  row-gap: clamp(2.5rem, 5vw, 4rem);
 }
 
 .principles {
@@ -266,26 +270,110 @@
   transform: rotate(-1.1deg);
 }
 
-.awards {
+/* Names one of the two record lists in the column. The fine print the figures'
+   own labels are set in, not a heading scale — a second display heading here
+   would compete with the h2 that already overruns its column, and these are
+   labels on a list rather than a new claim. */
+/* One grid item per record group. Left as siblings, the label and its own list
+   were two grid rows with the section's row gap between them, which read as a
+   heading stranded above nothing. */
+.recordGroup {
   grid-column: 2;
+}
+
+.recordLabel {
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  font-weight: 600;
+  letter-spacing: var(--fine-tracking);
+  text-transform: uppercase;
+}
+
+.records {
   padding: 0;
-  margin-top: clamp(2.5rem, 5vw, 4rem);
+  margin-top: 1.1rem;
   list-style: none;
 }
 
-.awards li + li {
+/* Loose columns, the way the exhibits set their stack — entries break where the
+   measure runs out rather than queueing down one edge. Two credentials stacked
+   as full records added six lines to the tallest section on the page; set as
+   footnotes they take two. */
+.credentials {
+  padding: 0;
+  margin-top: 1.1rem;
+  columns: 2 15rem;
+  column-gap: clamp(1.5rem, 4vw, 3rem);
+  list-style: none;
+}
+
+.credentials li {
+  /* A footnote is never split across a column. */
+  break-inside: avoid;
+}
+
+.credential {
+  composes: washed from global;
+  display: grid;
+  /* Pulled back by its own padding so the wash bleeds past the text rather than
+     indenting the list away from the label above it. */
+  padding: 0.5rem 0.85rem;
+  margin-left: -0.85rem;
+  border-radius: 0.15rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.credentialName {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-editorial);
+  font-size: 1.05rem;
+  font-weight: 500;
+  gap: 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.credentialMeta {
+  margin-top: 0.1rem;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
+  text-transform: uppercase;
+}
+
+/* Leaves the site, so it steps out rather than along — the same motion rule as
+   the record arrow, on the axis the mark points. */
+.credentialGo {
+  color: var(--mute);
+  font-size: 0.85em;
+  transition: transform 180ms var(--ease-out);
+}
+
+.credential:hover .credentialGo,
+.credential:focus-visible .credentialGo {
+  transform: translate(0.15rem, -0.15rem);
+}
+
+.records li + li {
   margin-top: 1.1rem;
 }
 
-/* Award over system, not the system's name first. Listing the project first
+/* Claim over source, not the source's name first. Listing the project first
    made three wins read as three more entries in the roster; leading with the
-   citation is what says it was won.
+   citation is what says it was won, and a certification reads the same way —
+   the credential, then who issued it and when.
+
+   One grammar for both lists, so the classes are named for the shape rather
+   than for awards, which were only the first thing to use it.
 
    The band and the star are the exhibit's own award treatment, composed from
    the same primitives rather than a second one invented here, so the two pages
    agree on what an award looks like. The star moved inline with the citation
    because that is where the exhibit puts it. */
-.awardRecord {
+.record {
   composes: washed from global;
   display: grid;
   /* Pulled back by its own padding so the wash bleeds past the text instead of
@@ -298,7 +386,7 @@
   text-decoration: none;
 }
 
-.awardBadge {
+.recordBadge {
   composes: marked-soft from global;
   display: inline-flex;
   align-items: center;
@@ -310,7 +398,7 @@
   text-transform: uppercase;
 }
 
-.awardProject {
+.recordLine {
   display: flex;
   align-items: baseline;
   font-family: var(--font-display);
@@ -322,23 +410,26 @@
 
 /* Steps toward the exhibit. Motion only: the row already carries the wash, and
    a second colour on a hover is the thing globals.css forbids. */
-.awardGo {
+.recordGo {
   color: var(--mute);
   transition: transform 180ms var(--ease-out);
 }
 
-.awardRecord:hover .awardGo,
-.awardRecord:focus-visible .awardGo {
+.record:hover .recordGo,
+.record:focus-visible .recordGo {
   transform: translateX(0.25rem);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .awardGo {
+  .recordGo,
+  .credentialGo {
     transition: none;
   }
 
-  .awardRecord:hover .awardGo,
-  .awardRecord:focus-visible .awardGo {
+  .record:hover .recordGo,
+  .record:focus-visible .recordGo,
+  .credential:hover .credentialGo,
+  .credential:focus-visible .credentialGo {
     transform: none;
   }
 }
@@ -475,20 +566,22 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* The hero sets `gap: 0 <column>` — row-gap 0 — which is right while the copy
+     and the portrait are side by side and has never been reconsidered for the
+     stack. Collapsed to one column it left the figure 4px off the last
+     paragraph, touching it, before any animation moved anything. */
   .hero {
     min-height: auto;
+    row-gap: clamp(2.5rem, 8vw, 4rem);
   }
 
   .portrait {
     width: min(100%, 32rem);
   }
 
-  .awards {
+  .recordGroup {
     grid-column: auto;
   }
-}
-
-@media (max-width: 37rem) {
 }
 
 .themeSongCopy {

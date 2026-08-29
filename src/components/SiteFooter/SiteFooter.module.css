@@ -16,34 +16,13 @@
   gap: 2rem;
 }
 
-.inner p {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-}
-
-/* The mark is decoration, so it is drawn rather than rendered as an element.
-   As an aria-hidden span it also sat directly against the byline text, which
-   makes the space between them ambiguous to read and to lint.
-
-   Gold and keylined, the same as the tick beside the wordmark — this and that
-   are the same mark at opposite ends of the page, so they are drawn with the
-   same pen. It used to be the only thing left using --mark-tab once the page
-   heads lost their slugs, which is a token existing for one footer bullet. */
-.byline::before {
-  display: inline-block;
-  width: 0.9rem;
-  height: 0.4rem;
-  margin-right: 0.5rem;
-  background: var(--mark);
-  -webkit-mask-image: var(--stroke-brush);
-  mask-image: var(--stroke-brush);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  filter: drop-shadow(0 0 0.5px var(--tile-keyline)) drop-shadow(0 0 0.5px var(--tile-keyline));
-  content: '';
+/* Not a flex row. It was one so a former aria-hidden span could be gapped away
+   from the byline; the mark is a ::before now, which carries its own margin and
+   stands on the text's baseline the way the header's does. Left as flex, the
+   gap stacked on that margin and align-items centred the mark against the line
+   — the whole of why the two ends of the page disagreed. */
+.byline {
+  composes: tick from global;
 }
 
 .links {
@@ -57,8 +36,13 @@
   text-transform: uppercase;
 }
 
+/* Matched to .navLink, because these are the same object at the other end of
+   the page: a row of short word-links. The stroke .swiped draws sits at the
+   bottom of the padding box, so the box has to hug the text — at 2.75rem the
+   mark hung 12px clear of the words with nothing between. 2.25rem still clears
+   the 24px WCAG 2.5.8 target by half again. */
 .links a {
-  min-height: 2.75rem;
+  min-height: 2.25rem;
   display: inline-flex;
   align-items: center;
 }

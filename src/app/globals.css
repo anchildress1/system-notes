@@ -412,6 +412,63 @@ body::before {
   background-size: 100% 1.6em;
 }
 
+/* SWIPED. The drawn stroke, laid UNDER a word and grown in from nothing.
+
+   The third hover on the site, and the one that had no primitive: the header
+   nav wrote it inline while the footer's links reached for .marked-hover, so
+   two rows of short word-links at opposite ends of the page answered a pointer
+   with two different gestures — a stroke beneath the word at one end, a band
+   behind it at the other.
+
+   A 1.5px rule spanning the exact width of a word is the most machine-drawn
+   mark a page can carry — perfectly straight, flush at both ends. This is the
+   same highlighter the headlines carry, dragged by hand instead: it overhangs
+   twice as far on the left as on the right, sits a degree off true, and every
+   corner of its radius is a different size, so no two edges agree.
+
+   It rides in the padding BELOW the text rather than behind it, so the label
+   keeps its own contrast against the ground and the mark never has to carry
+   ink. Gold rather than the pencil, because these are WORDS.
+
+   Half opacity while a pointer is on it. A consumer that also marks a current
+   state takes the same stroke to 1 — hovering shows you a faded draft of the
+   mark being there would give you. */
+.swiped {
+  position: relative;
+  /* Clears the stroke below the descenders. A mark that cuts through the tail
+     of the "j" in "projects" reads as a clipping bug rather than as ink. */
+  padding-bottom: 0.35rem;
+}
+
+.swiped::after {
+  position: absolute;
+  right: -0.16em;
+  bottom: 0;
+  left: -0.32em;
+  height: 0.34em;
+  background: var(--mark);
+  -webkit-mask-image: var(--stroke-brush);
+  mask-image: var(--stroke-brush);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  opacity: 0;
+  /* Drawn left to right, the way the stroke would be. */
+  transform: rotate(-1deg) scaleX(0.6);
+  transform-origin: left center;
+  transition:
+    opacity 160ms ease,
+    transform 220ms var(--ease-out);
+  content: '';
+}
+
+.swiped:hover::after,
+.swiped:focus-visible::after {
+  opacity: 0.5;
+  transform: rotate(-1deg) scaleX(1);
+}
+
 /* THE LIGHT PEN, AT REST. .marked in --mark-soft: the same drawn swipe, laid
    down once and left there rather than appearing under a pointer.
 
@@ -776,8 +833,15 @@ body::before {
 
    Still a compliant indicator: WCAG 2.4.11 asks for an area at least a 4px line
    along the component's shortest side, and the shortest side of either field is
-   its height — so a 2px rule across a much longer width clears it, at well over
+   its height — so a 5px rule across a much longer width clears it, at well over
    3:1 between the focused and unfocused rule.
+
+   Both rules were thickened once --edge was measured against the page: 1.66:1
+   on graphite, 1.44:1 on paper. The RESTING rule is the only thing that says a
+   field is there, and a hairline at that tone is invisible rather than quiet.
+   Thickness does not move a contrast ratio, so 1.4.11 is still not satisfied by
+   the boundary alone — the tone was left deliberately, and the placeholder
+   inside carries 4.5:1 of its own.
 
    An attribute rather than a class, because it is the same opt-in the buttons
    use for their variants, and one grep finds every field that takes it. */
@@ -792,6 +856,36 @@ textarea[data-focus='ruled']:focus-visible {
    near-white on yellow in the dark theme. */
 :where(button, a)[data-accent='filled']:focus-visible {
   outline-color: var(--mark-ink);
+}
+
+/* THE SITE'S TICK, drawn once.
+
+   It stood beside the wordmark and again beside the footer byline, off two
+   separate declarations that had already drifted three ways: 1.15rem against
+   0.9rem wide, 0.44rem against 0.4rem tall, and 0.55rem against 0.5rem of space
+   after it — and the footer copy sat in a flex row that added its own 0.7rem
+   gap on top of that margin and centred the mark against the text instead of
+   standing it on the baseline. Same mark, two pens, two answers.
+
+   Gold, and keylined so it can be. --mark is 1.41:1 against paper — invisible,
+   not merely faint — which is the whole reason this tick was once drawn in a
+   second colour. drop-shadow traces the alpha the mask leaves behind, so the
+   hairline follows the brush's own wobble rather than boxing it. On graphite the
+   keyline composites into the ground and disappears, so one rule covers both. */
+.tick::before {
+  display: inline-block;
+  width: 1.15rem;
+  height: 0.44rem;
+  margin-right: 0.55rem;
+  background: var(--mark);
+  -webkit-mask-image: var(--stroke-brush);
+  mask-image: var(--stroke-brush);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  filter: drop-shadow(0 0 0.5px var(--tile-keyline)) drop-shadow(0 0 0.5px var(--tile-keyline));
+  content: '';
 }
 
 ::-webkit-scrollbar {
@@ -914,9 +1008,17 @@ main {
       animation-timeline: view();
       animation-range: entry 10% cover 32%;
     }
+  }
 
-    /* Slower and against the scroll, so the portrait sits in a different plane
-       to the copy beside it rather than travelling with it. */
+  /* Slower and against the scroll, so the portrait sits in a different plane to
+     the copy BESIDE it rather than travelling with it.
+
+     Two columns only. Below 55rem the portrait stacks UNDER the copy, where
+     there is no beside — and measured there, `entry cover` resolves already
+     complete against a figure that tall, so it produced no motion at any scroll
+     position. All it did was hold the portrait a permanent 2rem higher, which
+     on a row-gap of 0 is 36px of picture sitting on the last paragraph. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 55.01rem) {
     .drift {
       animation: portrait-drift linear both;
       animation-timeline: view();

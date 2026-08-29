@@ -106,6 +106,83 @@ test.describe('Theme', () => {
     });
   });
 
+  /* axe does not evaluate ::placeholder colour — no engine reports it as a
+     rendered node — so the only text on the site it never checked was the text
+     sitting in the two chrome-less fields. Both were dimming --mute with an
+     extra opacity and landing between 2.33:1 and 3.83:1, under a full green
+     board on all four routes in both themes.
+
+     Measured off the rendered page rather than mirrored from CSS: the colour is
+     resolved by painting it to a canvas, which is immune to whichever colour
+     space the engine chooses to report computed values in. Chromium answers in
+     lab() here, and reading those numbers as sRGB is how a contrast check
+     quietly returns nonsense. */
+  test.describe('placeholder contrast', () => {
+    const FIELDS = [
+      { route: '/', selector: '[data-focus="ruled"]' },
+      { route: '/notes', selector: 'input[aria-label="Search the notes index"]' },
+    ] as const;
+
+    for (const scheme of ['dark', 'light'] as const) {
+      for (const field of FIELDS) {
+        test(`${field.route} placeholder clears WCAG in ${scheme}`, async ({ page }) => {
+          await page.emulateMedia({ colorScheme: scheme });
+          await page.goto(field.route);
+          await page.locator(field.selector).waitFor();
+
+          const measured = await page.evaluate((selector) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 1;
+            const context = canvas.getContext('2d', { willReadFrequently: true })!;
+            const toSrgb = (css: string) => {
+              context.clearRect(0, 0, 1, 1);
+              context.fillStyle = '#000';
+              context.fillStyle = css;
+              context.fillRect(0, 0, 1, 1);
+              const [r, g, b, a] = context.getImageData(0, 0, 1, 1).data;
+              return { r, g, b, a: a / 255 };
+            };
+            const luminance = (c: { r: number; g: number; b: number }) => {
+              const channel = (v: number) => {
+                const s = v / 255;
+                return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+              };
+              return 0.2126 * channel(c.r) + 0.7152 * channel(c.g) + 0.0722 * channel(c.b);
+            };
+
+            const input = document.querySelector<HTMLElement>(selector)!;
+            const placeholder = getComputedStyle(input, '::placeholder');
+            const ink = toSrgb(placeholder.color);
+            ink.a *= Number.parseFloat(placeholder.opacity || '1');
+
+            const ground = toSrgb(getComputedStyle(document.documentElement).backgroundColor);
+            const flattened = {
+              r: ink.r * ink.a + ground.r * (1 - ink.a),
+              g: ink.g * ink.a + ground.g * (1 - ink.a),
+              b: ink.b * ink.a + ground.b * (1 - ink.a),
+            };
+
+            const a = luminance(flattened);
+            const b = luminance(ground);
+            return {
+              ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05),
+              fontSize: Number.parseFloat(placeholder.fontSize),
+              weight: Number.parseInt(placeholder.fontWeight, 10) || 400,
+            };
+          }, field.selector);
+
+          // WCAG 1.4.3: 3:1 once type is large (24px, or 18.66px at 700+),
+          // 4.5:1 below that. These fields scale with the viewport and reach
+          // their floor on a phone, so the small-text threshold is the one that
+          // has to hold at the size actually rendered.
+          const large =
+            measured.fontSize >= 24 || (measured.fontSize >= 18.66 && measured.weight >= 700);
+          expect(measured.ratio).toBeGreaterThanOrEqual(large ? 3 : 4.5);
+        });
+      }
+    }
+  });
+
   /* Windows High Contrast is what Edge and Chrome render on that platform, and
      it discards exactly the two properties the board is drawn with: every
      background-color flattens to Canvas and box-shadow is dropped outright.

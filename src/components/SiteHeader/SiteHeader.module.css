@@ -22,16 +22,48 @@
   gap: 2rem;
 }
 
+/* The one filled control on the site that was not the .btn primitive: its own
+   padding, its own flat gold, its own square corners. So the first thing a
+   keyboard reader ever saw was a plain rectangle with none of the brush the
+   rest of the site is drawn with — which is exactly what globals.css owning
+   every button exists to prevent.
+
+   Only the footprint stays here. Shape, fill and hover come from .btn, and the
+   translate that parks it off screen composes with the mask on .btn's ::before
+   rather than fighting it — the mask carries the tilt, not a transform. */
 .skipLink {
+  composes: btn from global;
   position: fixed;
   z-index: 1000;
   top: 0.75rem;
   left: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: var(--mark);
-  color: var(--mark-ink);
-  font-size: 0.9375rem;
-  transform: translateY(-180%);
+  /* .btn sets "SKIP TO MAIN CONTENT" uppercase and tracked out to 0.14em, which
+     measures 275px — and a fixed element that wide sitting 12px from the left
+     edge of a 280px screen is 7px of document nobody can reach, since body's
+     overflow-x: clip propagates to the viewport and it cannot be scrolled to
+     either. The cap makes it wrap to two lines there instead.
+
+     A cap rather than tighter padding, because `composes` puts both class names
+     on the element at equal specificity and the winner is decided by which
+     stylesheet the bundler emits last — .btn's padding shorthand beat a
+     padding-inline here. max-width has no competitor, so it holds either way. */
+  max-width: calc(100vw - 1.5rem);
+  /* Parked well clear of the fold, not just past it. At -180% the link sat 29px
+     above the viewport, which an elastic overscroll at the top of the page drags
+     back into view and then snaps away again. */
+  transform: translateY(-320%);
+}
+
+/* SPECIFICITY, NOT PREFERENCE. `.btn[data-variant='filled']` sets
+   `position: relative` at (0,2,0) and beat the `position: fixed` above it at
+   (0,1,0), so this link stayed in flow and scrolled with the document instead of
+   holding still off screen — which is how it came back every time the page
+   reached the top. The element selector takes this to (0,2,1), so it wins on
+   specificity rather than on which stylesheet the bundler happens to emit last.
+   `fixed` establishes a containing block for .btn's ::before exactly as
+   `relative` did, so the swipe still draws against the button. */
+a.skipLink[data-variant='filled'] {
+  position: fixed;
 }
 
 .skipLink:focus {
@@ -50,40 +82,13 @@
 }
 
 .wordmark {
+  composes: tick from global;
   color: var(--bone);
   font-family: var(--font-display);
   font-size: 1.0625rem;
   font-weight: 800;
   letter-spacing: 0.01em;
   line-height: 1;
-}
-
-/* The tick that used to open every page head, now standing beside the name once
-   instead of five times. It was the only accent in a head, so a reader met it on
-   arrival and then again at the top of every route; against the wordmark it is
-   the site's mark rather than a section's, which is the job it was always doing.
-
-   Gold, and keylined so it can be. --mark is 1.41:1 against paper — invisible,
-   not merely faint — which is the whole reason this tick used to be drawn in a
-   second colour. drop-shadow traces the alpha the mask leaves behind, so the
-   hairline follows the brush's own wobble rather than boxing it, and it is the
-   same --tile-keyline the board and the focus ring already lean on. On graphite
-   the keyline composites into the header and disappears, so one rule covers both
-   grounds and the gold never has to become something else. */
-.wordmark::before {
-  display: inline-block;
-  width: 1.15rem;
-  height: 0.44rem;
-  margin-right: 0.55rem;
-  background: var(--mark);
-  -webkit-mask-image: var(--stroke-brush);
-  mask-image: var(--stroke-brush);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  filter: drop-shadow(0 0 0.5px var(--tile-keyline)) drop-shadow(0 0 0.5px var(--tile-keyline));
-  content: '';
 }
 
 .navigation {
@@ -102,13 +107,10 @@
 }
 
 .navLink {
-  position: relative;
+  composes: swiped from global;
   display: inline-flex;
   min-height: 2.25rem;
   align-items: center;
-  /* Clears the swipe below the descenders. A mark that cuts through the tail of
-     the "j" in "projects" reads as a clipping bug rather than as ink. */
-  padding-bottom: 0.35rem;
   color: var(--soft);
   font-family: var(--font-display);
   font-size: 0.9375rem;
@@ -118,52 +120,10 @@
   transition: color 160ms ease;
 }
 
-/* The current page is SWIPED, not underlined.
-
-   A 1.5px rule spanning the exact width of the word is the most machine-drawn
-   mark on the site — perfectly straight, perfectly flush at both ends. This is
-   the same highlighter the headlines carry, dragged by hand instead: it
-   overhangs twice as far on the left as on the right, sits a degree off true,
-   and every corner of the radius is a different size, so no two edges agree.
-
-   It rides in the padding below the text rather than behind it, so the label
-   keeps its own contrast against the header and the mark never has to carry
-   ink. Colour still marks the current page as well (--bone against --soft), so
-   the swipe is reinforcement, not the only signal. */
-.navLink::after {
-  content: '';
-  position: absolute;
-  right: -0.16em;
-  bottom: 0;
-  left: -0.32em;
-  height: 0.34em;
-  /* The same drawn stroke every other mark on the site carries. This was the
-     one left behind: a smooth rounded bar with a uniform edge, sitting under a
-     page where the headline, the award, the star chips and the section tab had
-     all become brush strokes. It reads as the odd one instantly. Gold, not the
-     pencil, because a nav label is a WORD. */
-  background: var(--mark);
-  -webkit-mask-image: var(--stroke-brush);
-  mask-image: var(--stroke-brush);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  opacity: 0;
-  /* Drawn left to right, the way the stroke would be. */
-  transform: rotate(-1deg) scaleX(0.6);
-  transform-origin: left center;
-  transition:
-    opacity 160ms ease,
-    transform 220ms var(--ease-out);
-}
-
-.navLink:hover::after,
-.navLink:focus-visible::after {
-  opacity: 0.5;
-  transform: rotate(-1deg) scaleX(1);
-}
-
+/* The current page takes the same stroke all the way up. Hover shows a faded
+   draft of it at half opacity, which .swiped owns; being here is the finished
+   mark. Colour carries the state as well (--bone against --soft), so the swipe
+   is reinforcement rather than the only signal. */
 .navLink[aria-current='page'] {
   color: var(--bone);
 }
