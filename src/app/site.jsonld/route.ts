@@ -1,7 +1,7 @@
-import { getSiteJsonLdResponse } from '@/lib/siteJsonLdResponse';
-
 // Prerendered: the payload only changes when projects.json does, and a
 // scale-to-zero instance should not wake to rebuild it for a crawler.
 export const dynamic = 'force-static';
 
-export const GET = getSiteJsonLdResponse;
+// Re-exported rather than imported and reassigned: this file is the adapter
+// Next discovers, and the response builder it points at is what the tests drive.
+export { getSiteJsonLdResponse as GET } from '@/lib/siteJsonLdResponse';
