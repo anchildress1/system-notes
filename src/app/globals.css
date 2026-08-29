@@ -593,8 +593,11 @@ body::before {
    programmatically and never operated — and 2.4.7 asks for an indicator on the
    components a reader operates. Without this, Chrome's own ring boxes the entire
    page the first time a key is pressed after a navigation, which is a louder
-   version of the stranded ring the focus move exists to remove. */
-main:focus {
+   version of the stranded ring the focus move exists to remove.
+
+   Scoped to the id RouteFocus actually targets, not to `main`: a second landmark
+   from a nested layout would otherwise lose its indicator without asking. */
+#main-content:focus {
   outline: none;
 }
 

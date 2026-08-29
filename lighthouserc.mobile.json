@@ -44,7 +44,7 @@
           }
         },
         {
-          "matchingUrlPattern": "^http://localhost:3001/(?!notes$)",
+          "matchingUrlPattern": "^http://localhost:3001/(?!notes([/?#]|$))",
           "assertions": {
             "categories:best-practices": [
               "error",
