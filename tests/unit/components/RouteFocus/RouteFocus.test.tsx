@@ -16,7 +16,7 @@ function runFramesInline() {
     callback(0);
     return 1;
   });
-  vi.spyOn(globalThis, 'cancelAnimationFrame').mockImplementation(() => {});
+  return vi.spyOn(globalThis, 'cancelAnimationFrame').mockImplementation(() => {});
 }
 
 function mountMain(): HTMLElement {
@@ -27,11 +27,13 @@ function mountMain(): HTMLElement {
 }
 
 describe('RouteFocus', () => {
+  let cancelFrame: ReturnType<typeof runFramesInline>;
+
   beforeEach(() => {
     vi.restoreAllMocks();
     navigation.pathname = '/';
     document.body.replaceChildren();
-    runFramesInline();
+    cancelFrame = runFramesInline();
   });
 
   it('moves focus to the main landmark when the route changes', () => {
@@ -44,6 +46,16 @@ describe('RouteFocus', () => {
     expect(main).toHaveFocus();
     // -1 keeps the landmark out of the tab sequence while allowing focus().
     expect(main.tabIndex).toBe(-1);
+  });
+
+  // The skip link points at this landmark; a fragment link to an element that
+  // cannot hold focus only scrolls.
+  it('makes the landmark focusable on first load, before any navigation', () => {
+    const main = mountMain();
+
+    render(<RouteFocus />);
+
+    expect(main.getAttribute('tabindex')).toBe('-1');
   });
 
   it('leaves focus alone on the first render, which is a load rather than a navigation', () => {
@@ -87,11 +99,10 @@ describe('RouteFocus', () => {
     const { rerender, unmount } = render(<RouteFocus />);
     navigation.pathname = '/projects';
     rerender(<RouteFocus />);
-    const cancel = vi.spyOn(globalThis, 'cancelAnimationFrame');
 
     unmount();
 
-    expect(cancel).toHaveBeenCalled();
+    expect(cancelFrame).toHaveBeenCalled();
   });
 
   it('renders nothing', () => {

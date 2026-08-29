@@ -24,6 +24,13 @@ export default function RouteFocus() {
   const isFirstRender = useRef(true);
 
   useEffect(() => {
+    // Make the landmark focusable on every pass, including the first. The skip
+    // link targets it too, and a fragment link to an element that cannot hold
+    // focus only scrolls: activating it left activeElement on <body>, so the
+    // next Tab went to the second nav item instead of into the content.
+    const landmark = document.getElementById('main-content');
+    if (landmark) landmark.tabIndex = -1;
+
     // The first pass is the initial load, not a navigation. Focusing there would
     // take focus off whatever the reader had already reached.
     if (isFirstRender.current) {
