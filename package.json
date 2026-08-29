@@ -41,7 +41,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-icons": "^5.5.0",
-    "react-instantsearch": "^7.23.1",
+    "react-instantsearch": "^7.45.0",
     "search-insights": "^2.17.3"
   },
   "optionalDependencies": {
