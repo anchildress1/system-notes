@@ -12,26 +12,12 @@ interface ThemeSongParagraph {
 const themeSongParagraphs: readonly ThemeSongParagraph[] = [
   { body: 'I’ve called “I Build Things” my theme song since the first time I heard it.' },
   {
-    body:
-      'Most of that is Appalachian ingenuity. I was taught to fix what breaks, reuse what ' +
-      'still works, and take a thing apart just to see how it works. I’ve been dismantling ' +
-      'systems, and occasionally putting them back together, since before I had the word ' +
-      'for them.',
-  },
-  { lead: 'The rest is how I build software.' },
-  {
     lead: 'I design systems by hunting the failure first.',
     body:
       'If a thing can break, I assume it will, and I would rather find it before production ' +
       'does. Nothing irritates me more than shipping a “done” deployment and needing a ' +
       'hotfix an hour later. If I deployed it, the failure should already have been found, ' +
       'understood, and closed.',
-  },
-  {
-    body:
-      'The song lands on both halves of that: the pleasure of building the thing yourself, ' +
-      'and the conviction that breaking it early, loudly, and on purpose is what makes it ' +
-      'ship clean and stay that way.',
   },
 ];
 
