@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ThemeSong from '@/components/ThemeSong/ThemeSong';
 import { BLOG_URL } from '@/config';
-import { blurFor } from '@/lib/imageVariants';
 import { profile } from '@/data/profile';
 import { getProjects } from '@/lib/api';
 import { groupProjects } from '@/lib/projectStatus';
@@ -47,11 +46,14 @@ export default function AboutPage() {
           </div>
         </div>
         <figure className={`drift ${styles.portrait}`}>
-          {/* Both portraits ship; CSS shows the one matching the theme. They are
-              lazy rather than priority on purpose: a display:none image is never
-              in the viewport, so the browser fetches only the visible one. A
-              priority hint would preload both and spend the second download on a
-              picture nobody is looking at. */}
+          {/* Both portraits ship; CSS shows the one matching the theme. Lazy keeps
+              the hidden one from downloading. preload, eager and fetchPriority
+              were each measured here: every one traded load delay for render
+              delay and left LCP where it was.
+
+              No blur placeholder. Next draws it as an inline Gaussian-blur SVG,
+              and two of them cost 145ms of FCP rasterising a picture about to be
+              replaced. */}
           {(['dark', 'light'] as const).map((theme) => (
             <span key={theme} className={styles.portraitFrame} data-theme-image={theme}>
               <Image
@@ -59,8 +61,6 @@ export default function AboutPage() {
                 alt={profile.portrait.alt}
                 fill
                 loading="lazy"
-                placeholder="blur"
-                blurDataURL={blurFor(profile.portrait[theme])}
                 sizes="(max-width: 768px) 100vw, 36vw"
               />
             </span>
