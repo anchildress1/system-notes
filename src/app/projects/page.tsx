@@ -21,8 +21,7 @@ export default function ProjectsPage() {
     <main id="main-content" className={styles.main}>
       <section className={styles.hero} aria-labelledby="exhibits-heading">
         <h1 id="exhibits-heading">
-          What I&apos;ve shipped.
-          <em>Including what I stopped.</em>
+          What I&apos;ve shipped. <em>Including what I stopped.</em>
         </h1>
         <p className={styles.blurb}>
           {projects.length} systems, each cross-filed with the decisions it produced. The ones that

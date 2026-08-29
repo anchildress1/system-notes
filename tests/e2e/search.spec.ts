@@ -329,15 +329,22 @@ test.describe('Notes index', () => {
 
     for (const width of [1440, 1180, 1024, 820, 390, 320]) {
       await page.setViewportSize({ width, height: 900 });
-      // Re-measuring runs off a ResizeObserver, so wait for the board to settle
+      // Re-measuring runs off a ResizeObserver, so poll the board's own shape
       // rather than asserting against the previous width's tile count. Each
       // attempt takes ONE snapshot: reading tiles and columns separately lets
       // the two reads straddle a re-render and report a shape that never was.
+      // The snapshot is kept so the assertions below read the same one the
+      // poll accepted, instead of measuring a seventh time.
       let settled = await shape();
-      for (let attempt = 0; attempt < 25 && !isRectangle(settled); attempt += 1) {
-        await page.waitForTimeout(100);
-        settled = await shape();
-      }
+      await expect
+        .poll(
+          async () => {
+            settled = await shape();
+            return isRectangle(settled);
+          },
+          { timeout: 2500, intervals: [100], message: `board never settled at ${width}px` }
+        )
+        .toBe(true);
 
       const { tiles, rowLengths, columns } = settled;
       // One distinct row length is the whole point: every row is full.

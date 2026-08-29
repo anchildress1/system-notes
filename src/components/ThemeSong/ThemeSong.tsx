@@ -63,10 +63,10 @@ export default function ThemeSong() {
 
   // The advisory is part of the control's name: someone deciding whether to
   // press it needs the warning before the track starts, not after.
+  const action = isPlaying ? 'Pause' : 'Play';
   const label = hasError
     ? 'Theme song unavailable'
-    : `${isPlaying ? 'Pause' : 'Play'} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. ` +
-      'Explicit content.';
+    : `${action} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`;
 
   let note = TRACK_ARTIST;
   if (hasError) note = 'track unavailable';

@@ -53,6 +53,9 @@
    whole block to cover a state that never renders. With scripting off everyone
    gets dark, which is what the site shipped before the toggle existed. */
 :root[data-theme='light'] {
+  /* Native widgets read this. Leaving it dark under a white page is how a light
+     theme ends up with dark native widgets on it. */
+  color-scheme: light;
   --void: oklch(0.972 0.005 90);
   --panel: oklch(1 0 0);
   --panel-hi: oklch(0.945 0.008 90);
@@ -92,19 +95,14 @@
 
 * {
   margin: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumb) transparent;
 }
 
 html {
   background: var(--void);
   color-scheme: dark;
   scroll-behavior: smooth;
-}
-
-/* Form controls, scrollbars and accent-color all render from UA defaults keyed
-   to this. Leaving it dark under a white page is how a light theme ends up with
-   dark native widgets on it. */
-:root[data-theme='light'] {
-  color-scheme: light;
 }
 
 body {
@@ -164,11 +162,6 @@ body::before {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--flag);
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--thumb) transparent;
 }
 
 a {

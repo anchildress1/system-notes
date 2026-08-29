@@ -215,7 +215,7 @@ export default function IndexSidebar({
     if (boardItems.length === 0) return;
     // Off-board selections start from the first tile rather than from a
     // position the reader never landed on.
-    const currentIndex = selectedIndex >= 0 ? selectedIndex : 0;
+    const currentIndex = Math.max(selectedIndex, 0);
     let nextIndex: number;
     switch (event.key) {
       case 'ArrowRight':
