@@ -118,8 +118,6 @@ test.describe('Theme', () => {
      lab() here, and reading those numbers as sRGB is how a contrast check
      quietly returns nonsense. */
   test.describe('placeholder contrast', () => {
-    test.skip(({ browserName }) => browserName !== 'chromium', 'one engine is enough for a colour');
-
     const FIELDS = [
       { route: '/', selector: '[data-focus="ruled"]' },
       { route: '/notes', selector: 'input[aria-label="Search the notes index"]' },

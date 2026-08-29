@@ -28,6 +28,10 @@ export default defineConfig({
       // oklch as lab(), which axe misreads, so its contrast verdicts would be
       // wrong rather than redundant. Adding an engine has to carry this with it.
       testIgnore: /theme\.spec\.ts/,
+      // WebKit only moves focus to a link when the reader has switched that on
+      // in the OS, so tab-order assertions measure a browser preference rather
+      // than this page. Excluded by tag, since it is one test rather than a file.
+      grepInvert: /@keyboard-link/,
     },
     {
       name: 'Mobile Chrome',
@@ -41,6 +45,10 @@ export default defineConfig({
       // one that cannot answer anyway: it reports oklch as lab(), which axe
       // misreads, so its contrast results would be wrong rather than redundant.
       testIgnore: /theme\.spec\.ts/,
+      // WebKit only moves focus to a link when the reader has switched that on
+      // in the OS, so tab-order assertions measure a browser preference rather
+      // than this page. Excluded by tag, since it is one test rather than a file.
+      grepInvert: /@keyboard-link/,
     },
   ],
   webServer: {

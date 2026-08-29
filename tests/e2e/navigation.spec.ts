@@ -51,8 +51,7 @@ test.describe('Skip link', () => {
   // The reveal above is CSS and runs everywhere. Tab ORDER is asserted on one
   // engine because WebKit only moves focus to a link when the reader has turned
   // that on in the OS — a browser preference, not something this page controls.
-  test('is the first thing a Tab reaches', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'WebKit does not tab to links by default');
+  test('is the first thing a Tab reaches', { tag: '@keyboard-link' }, async ({ page }) => {
     await page.goto('/');
 
     await page.keyboard.press('Tab');
