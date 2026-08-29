@@ -1,11 +1,8 @@
-let chatSessionId: string | null = null;
+let searchUserToken: string | null = null;
 
-export function getChatSessionId(): string {
-  if (!chatSessionId) {
-    if (!globalThis.crypto?.randomUUID) {
-      throw new Error('Secure UUID generation is not available.');
-    }
-    chatSessionId = globalThis.crypto.randomUUID();
-  }
-  return chatSessionId;
+export function getSearchUserToken(): string | null {
+  if (searchUserToken) return searchUserToken;
+  if (!globalThis.crypto?.randomUUID) return null;
+  searchUserToken = globalThis.crypto.randomUUID();
+  return searchUserToken;
 }

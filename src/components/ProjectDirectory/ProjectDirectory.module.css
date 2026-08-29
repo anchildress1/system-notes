@@ -1,0 +1,292 @@
+.corpus {
+  display: grid;
+  min-height: calc(100svh - var(--header-height));
+  border-top: 1px solid var(--line);
+  grid-template-columns: minmax(14rem, 18vw) minmax(0, 1fr);
+}
+
+.rail {
+  border-right: 1px solid var(--line);
+  /* The rail scrolls against the detail pane rather than with it, so a long
+     corpus stays reachable without scrolling the reading column back up. */
+  position: sticky;
+  top: var(--header-height);
+  max-height: calc(100svh - var(--header-height));
+  padding: 1rem 0 2.5rem;
+  overflow-y: auto;
+}
+
+.rail ul {
+  padding: 0;
+  list-style: none;
+}
+
+.railItem {
+  display: grid;
+  width: 100%;
+  align-items: center;
+  padding: 0.7rem clamp(0.9rem, 1.6vw, 1.4rem);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  grid-template-columns: 2px minmax(0, 1fr);
+  gap: clamp(0.7rem, 1.2vw, 1rem);
+  transition: background 200ms ease;
+}
+
+.railItem:hover {
+  background: var(--panel);
+}
+
+.railItem[aria-current='true'] {
+  background: var(--panel);
+}
+
+.railMark {
+  align-self: stretch;
+  background: transparent;
+  transition: background 200ms ease;
+}
+
+.railItem[aria-current='true'] .railMark {
+  background: var(--flag);
+}
+
+.railText {
+  min-width: 0;
+}
+
+.railName {
+  display: block;
+  overflow: hidden;
+  color: var(--soft);
+  font-size: 0.9375rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.railItem[aria-current='true'] .railName {
+  color: var(--bone);
+  font-weight: 600;
+}
+
+.railStar {
+  margin-left: 0.35rem;
+  color: var(--flag);
+}
+
+.railStatus {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.detail {
+  min-width: 0;
+  max-width: 68rem;
+  padding: clamp(1.6rem, 4vh, 3.25rem) clamp(1.25rem, 4vw, 3.5rem) clamp(3rem, 8vh, 5rem);
+  animation: rise-in 400ms var(--ease-out) both;
+}
+
+.award {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.6rem;
+  color: var(--flag);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.status {
+  margin-bottom: 0.75rem;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.4vw, 3.9rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+
+.purpose {
+  max-width: 44ch;
+  margin-top: 1rem;
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+  line-height: 1.38;
+  text-wrap: pretty;
+}
+
+.media {
+  display: block;
+  margin-top: clamp(1.25rem, 3vh, 2.125rem);
+  background: var(--panel-hi);
+  box-shadow: 0 1.875rem 2.875rem -1.625rem var(--drop);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+}
+
+.columns {
+  display: grid;
+  margin-top: clamp(1.5rem, 3.4vh, 2.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: clamp(1.5rem, 3.4vw, 3.5rem);
+}
+
+.prose {
+  min-width: 0;
+}
+
+.prose p {
+  max-width: 56ch;
+  color: var(--soft);
+  font-size: 1.03rem;
+  line-height: 1.72;
+  text-wrap: pretty;
+}
+
+.prose h3,
+.stackColumn h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.prose h3 {
+  margin: 1.625rem 0 0.625rem;
+}
+
+.stackColumn h3 {
+  margin-bottom: 0.625rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.action,
+.crossLink {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--line-strong);
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition:
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.action:hover,
+.crossLink:hover {
+  border-color: var(--flag);
+  color: var(--flag);
+}
+
+.crossLink {
+  border-color: var(--flag);
+  color: var(--flag);
+}
+
+.stackColumn {
+  min-width: 0;
+}
+
+.stack {
+  display: grid;
+}
+
+.stack div {
+  display: grid;
+  align-items: baseline;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--line);
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.875rem;
+}
+
+.stack dt {
+  min-width: 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.stack dd {
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  text-align: right;
+}
+
+@media (max-width: 60rem) {
+  .corpus {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The rail stops being a rail: it scrolls sideways above the detail rather
+     than stacking twenty systems on top of the thing they introduce. */
+  .rail {
+    position: static;
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .rail ul {
+    display: flex;
+  }
+
+  .railItem {
+    grid-template-columns: minmax(0, 1fr);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+
+  .railItem[aria-current='true'] {
+    border-bottom-color: var(--flag);
+  }
+
+  .railMark {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail {
+    animation: none;
+  }
+}

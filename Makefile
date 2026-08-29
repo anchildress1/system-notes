@@ -1,4 +1,4 @@
-.PHONY: all setup setup-node dev build deploy clean ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf images
+.PHONY: install dev build deploy clean ai-checks secret-scan test test-e2e format format-check lint typecheck test-perf images
 
 GITLEAKS_IMAGE := ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
 
@@ -8,12 +8,7 @@ GITLEAKS_IMAGE := ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a
 images:
 	@node scripts/generate-image-variants.mjs
 
-all: setup
-
-setup: setup-node
-	@echo "✅ Project setup complete. Run 'make dev' to start."
-
-setup-node:
+install:
 	@echo "📦 Installing Node dependencies..."
 	npm ci --ignore-scripts
 	npm exec lefthook install
@@ -52,7 +47,6 @@ test-e2e: images
 	ANALYZE=false \
 	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
-	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
 	NEXT_PUBLIC_BASE_URL=http://localhost:3002 \
 	npm run build
@@ -63,13 +57,12 @@ test-perf:
 	ANALYZE=false \
 	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
-	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test_agent_id \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
 	NEXT_PUBLIC_BASE_URL=https://anchildress1.dev \
 	env -u NO_COLOR npm run test:perf
 
 ai-checks:
-	$(MAKE) setup
+	$(MAKE) install
 	$(MAKE) secret-scan
 	npm run audit
 	$(MAKE) format-check

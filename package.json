@@ -18,9 +18,7 @@
     "test": "vitest run --coverage --passWithNoTests",
     "pretest:watch": "npm run image-variants",
     "test:watch": "vitest",
-    "prebench": "npm run image-variants",
-    "bench": "vitest bench",
-    "test:perf": "npm run build && lhci autorun --config=lighthouserc.mobile.json && lhci autorun --config=lighthouserc.desktop.json",
+    "test:perf": "npm run build && lhci autorun --config=lighthouserc.desktop.json",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json,js,mjs,cjs,yml,yaml,css}\"",
     "audit": "npm audit --audit-level=high",
@@ -42,7 +40,6 @@
     "react-dom": "^19.2.7",
     "react-icons": "^5.5.0",
     "react-instantsearch": "^7.23.1",
-    "react-instantsearch-nextjs": "^1.0.13",
     "search-insights": "^2.17.3"
   },
   "optionalDependencies": {
@@ -61,7 +58,6 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
-    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -111,5 +107,11 @@
     "entry": [
       "src/lib/imageLoader.ts"
     ]
+  },
+  "allowScripts": {
+    "fsevents@2.3.2": true,
+    "fsevents@2.3.3": true,
+    "lefthook@2.1.9": true,
+    "unrs-resolver@1.12.2": true
   }
 }

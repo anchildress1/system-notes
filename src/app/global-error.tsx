@@ -1,6 +1,5 @@
 'use client';
 
-import Button from '@/components/Button/Button';
 import styles from './global-error.module.css';
 
 export default function GlobalError({
@@ -13,21 +12,16 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body className={styles.errorShell}>
-        <h2 className={styles.errorHeading}>Something went wrong</h2>
+        <p className={styles.errorCode}>SYSTEM / ERROR</p>
+        <h1 className={styles.errorHeading}>The failure path works.</h1>
         <p className={styles.errorMessage}>
           {error.digest
-            ? `An unexpected error occurred (${error.digest}).`
-            : 'An unexpected error occurred.'}
+            ? `The page stopped with reference ${error.digest}.`
+            : 'The page stopped before it could produce a useful result.'}
         </p>
-        <Button
-          variant="secondary"
-          aria-label="Try again"
-          size="sm"
-          className={styles.errorAction}
-          onClick={reset}
-        >
+        <button type="button" className={styles.errorAction} onClick={reset}>
           Try again
-        </Button>
+        </button>
       </body>
     </html>
   );

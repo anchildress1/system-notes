@@ -1,0 +1,743 @@
+.workspace {
+  display: grid;
+  width: min(100%, 120rem);
+  min-height: calc(100svh - var(--header-height));
+  margin: 0 auto;
+  background: var(--void);
+  font-family: var(--font-sans);
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.sidebar {
+  width: min(25rem, 30vw);
+  min-width: 20rem;
+  border-right: 1px solid var(--line);
+  background: var(--void);
+  transition:
+    width 320ms var(--ease-out),
+    min-width 320ms var(--ease-out);
+}
+
+.sidebar[data-open='false'] {
+  width: 4rem;
+  min-width: 4rem;
+}
+
+.sidebarToggle {
+  display: flex;
+  width: 100%;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sidebarToggle:hover {
+  background: var(--panel-hi);
+  color: var(--bone);
+}
+
+.catalog {
+  min-width: 0;
+  padding: 0.5rem 1.25rem 1.5rem;
+  overflow: hidden;
+}
+
+.categoryList {
+  padding: 0;
+  list-style: none;
+}
+
+.categoryList li {
+  border-bottom: 1px solid var(--line);
+}
+
+.categoryList button {
+  display: grid;
+  width: 100%;
+  min-height: 3.35rem;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+  color: var(--bone);
+  text-align: left;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+}
+
+.categoryList button:hover .categoryName,
+.categoryList button[data-selected] .categoryName {
+  color: var(--flag);
+  transform: translateX(0.25rem);
+}
+
+.categorySwatch {
+  width: 1rem;
+  height: 0.68rem;
+  border-radius: 0.08rem;
+  background: var(--flag);
+}
+
+.categoryName {
+  overflow: hidden;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  transition:
+    color 160ms ease,
+    transform 160ms ease;
+  white-space: nowrap;
+}
+
+.categoryCount {
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+
+.board {
+  margin-top: 1.35rem;
+}
+
+.board > p {
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.boardTiles {
+  display: grid;
+  padding: 0;
+  margin-top: 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+  /* Fixed 14px tracks rather than fluid ones: the mockup's tile is 14x10 with a
+     4px gutter, and explicit tracks still resolve to a readable column count. */
+  grid-template-columns: repeat(auto-fill, 14px);
+  gap: 4px;
+  list-style: none;
+  outline: none;
+}
+
+.boardTiles li {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  width: 14px;
+  height: 10px;
+  cursor: pointer;
+  place-items: center;
+  /* Non-matching cards stay on the board and recede; the census never shrinks. */
+  opacity: var(--tile-opacity, 1);
+  transition: opacity 0.22s ease;
+}
+
+.boardTiles li::before {
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+  /* Set per tile from the category's own swatch; --k-other covers a note whose
+     category is absent from the current facet list. Every tile is the same
+     14x10 — the awards used to carry a border, which under border-box shrank
+     the only tile that was supposed to stand out. */
+  background: var(--tile-swatch, var(--k-other));
+  box-shadow: 0 0 0 transparent;
+  content: '';
+  transition:
+    transform 180ms var(--ease-out),
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
+
+.boardTiles li:hover::before {
+  z-index: 1;
+  box-shadow: 0 0 0.8rem var(--flag-glow);
+  transform: scale(1.5);
+}
+
+.boardTiles li:active::before {
+  transform: scale(0.9);
+}
+
+.boardTiles:focus-visible {
+  border-color: var(--flag);
+  box-shadow:
+    0 0 0 2px var(--void),
+    0 0 0 4px var(--flag);
+}
+
+.boardTiles li[aria-selected='true']::before {
+  /* A ring in the accent, not a brightness filter. brightness() scales what is
+     already there, so it did almost nothing to the darkest swatches and blew
+     out the lightest — the selected tile read as unchanged on exactly the
+     categories that needed the cue most. A ring is the same cue on every tone.
+     The swatch shrinks to leave room for it inside the tile's own cell. */
+  box-shadow:
+    0 0 0 1.5px var(--panel),
+    0 0 0 3px var(--flag),
+    0 0 0.7rem var(--flag-glow);
+  transform: scale(0.62);
+}
+
+.boardTiles li[data-activated]::before {
+  animation: board-select 360ms var(--ease-out);
+}
+
+.board small {
+  display: block;
+  margin-top: 0.75rem;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.sidebar[data-open='false'] .sidebarToggle {
+  padding-inline: 0.75rem;
+  justify-content: center;
+}
+
+.sidebar[data-open='false'] .sidebarToggle span:first-child,
+.sidebar[data-open='false'] .categoryName,
+.sidebar[data-open='false'] .board {
+  display: none;
+}
+
+.sidebar[data-open='false'] .catalog {
+  padding-inline: 0.7rem;
+}
+
+.sidebar[data-open='false'] .categoryList button {
+  justify-items: center;
+  grid-template-columns: 1fr;
+  gap: 0.2rem;
+}
+
+.sidebar[data-open='false'] .categoryCount {
+  font-size: 0.875rem;
+}
+
+.readingPane {
+  min-width: 0;
+  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2.5rem) 2rem;
+}
+
+.searchArea {
+  position: relative;
+  z-index: 20;
+}
+
+.searchPill {
+  display: grid;
+  min-height: 3.25rem;
+  align-items: center;
+  padding: 0.25rem 0.55rem 0.25rem 1.25rem;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--bone);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.7rem;
+}
+
+.retrieve {
+  color: var(--flag);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+/* The ring goes on the pill, not the input: an outline drawn inside the pale
+   pill is nearly invisible, and the global :where() focus rule has zero
+   specificity so the input's own `outline: 0` was winning outright. */
+.searchPill:has(input:focus-visible) {
+  outline: 2px solid var(--flag);
+  outline-offset: 3px;
+}
+
+.searchPill input {
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--bone);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.searchPill input::placeholder {
+  color: var(--mute);
+  opacity: 0.75;
+}
+
+.searchPill kbd,
+.searchPill button {
+  padding: 0.55rem 0.65rem;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+}
+
+.searchPill button:hover {
+  background: var(--panel-hi);
+  color: var(--flag);
+}
+
+.searchMeta {
+  display: flex;
+  min-height: 3.2rem;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9375rem;
+  gap: 1rem;
+}
+
+.secondaryFilters {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.filter {
+  position: relative;
+}
+
+.filter summary {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  padding: 0 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.06em;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.filter summary::-webkit-details-marker {
+  display: none;
+}
+
+.filter summary::after {
+  margin-left: 0.45rem;
+  color: var(--flag);
+  content: '+';
+}
+
+.filter[open] summary::after {
+  content: '−';
+}
+
+.filter summary > span {
+  display: grid;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  margin-left: 0.4rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--flag);
+  color: var(--void);
+}
+
+.filterOptions {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  width: min(22rem, calc(100vw - 2 * var(--gutter)));
+  max-height: 20rem;
+  overflow-y: auto;
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  box-shadow: 0 1.2rem 3rem var(--drop);
+}
+
+.filterOptions label {
+  display: grid;
+  min-height: 2.9rem;
+  align-items: center;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--soft);
+  cursor: pointer;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.65rem;
+}
+
+.filterOptions label:hover {
+  background: var(--flag-soft);
+  color: var(--bone);
+}
+
+.filterOptions input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--flag);
+}
+
+.algolia {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  color: var(--mute);
+  gap: 0.3rem;
+}
+
+.algolia:hover {
+  color: var(--bone);
+}
+
+.resultArea {
+  position: relative;
+  min-width: 0;
+}
+
+.readingQueue {
+  display: grid;
+  min-width: 0;
+  /* Without an explicit track the implicit one resolves to max(min-content),
+     which the queue's nowrap meta line pushed to 337px inside a 288px pane. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.reader {
+  scroll-margin-top: calc(var(--header-height) + 1rem);
+}
+
+.reader:focus-visible {
+  border-radius: 0.85rem;
+  outline: 2px solid var(--flag);
+  outline-offset: 0.25rem;
+}
+
+.queueList {
+  display: grid;
+  min-width: 0;
+  padding: 0;
+  gap: 0.65rem;
+  list-style: none;
+}
+
+.queueList li {
+  min-width: 0;
+}
+
+.queueList button {
+  display: grid;
+  /* An implicit `auto` track resolves to max(min-content, …) and can grow past
+     the button's own width, spilling the row off-screen. The nowrap category
+     badge in .queueMeta makes that min-content wide enough to do it. */
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  min-height: 4.65rem;
+  align-content: center;
+  padding: 0.8rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--void);
+  color: var(--bone);
+  text-align: left;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.queueList button:hover {
+  border-color: var(--edge);
+  background: var(--panel);
+  transform: translateX(0.2rem);
+}
+
+.queueMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  gap: 0.75rem;
+  text-transform: lowercase;
+}
+
+.queueMeta > span:last-child {
+  padding: 0.12rem 0.55rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.queueTitle {
+  margin-top: 0.45rem;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.queueFooter {
+  margin-top: 0.75rem;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+}
+
+.resultWarning {
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--flag);
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+}
+
+.failureState {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  padding-left: 0.6rem;
+  margin-top: 1rem;
+  border-left: 2px solid var(--flag);
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  gap: 0.35rem;
+}
+
+.failureState strong {
+  color: var(--flag);
+  font-weight: 800;
+}
+
+.searchStatus {
+  position: absolute;
+  z-index: 5;
+  top: -1.45rem;
+  right: 0;
+  color: var(--flag);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+}
+
+.emptyState,
+.unavailable,
+.loadingShell {
+  display: grid;
+  min-height: calc(100svh - var(--header-height));
+  align-content: center;
+  padding: clamp(2rem, 6vw, 6rem) var(--gutter);
+}
+
+.unavailable,
+.loadingShell {
+  width: min(100%, var(--page-max));
+  margin: 0 auto;
+}
+
+.loadingShell {
+  grid-auto-flow: column;
+  justify-content: space-between;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  text-transform: uppercase;
+}
+
+.sectionLabel,
+.emptyState > span {
+  color: var(--flag);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.unavailable h2,
+.emptyState h2 {
+  max-width: 48rem;
+  margin-top: 0.9rem;
+  font-family: var(--font-sans);
+  font-size: clamp(2.4rem, 7vw, 6rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+
+.unavailable > p:last-child,
+.emptyState p {
+  max-width: 38rem;
+  margin-top: 1.25rem;
+  color: var(--soft);
+}
+
+@keyframes board-select {
+  0% {
+    box-shadow: 0 0 0 transparent;
+    transform: scale(0.72);
+  }
+  65% {
+    transform: scale(1.18);
+  }
+}
+
+@media (max-width: 64rem) {
+  .sidebar {
+    width: 17rem;
+    min-width: 17rem;
+  }
+
+  .catalog {
+    padding-inline: 1rem;
+  }
+
+  .searchMeta {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-block: 0.65rem;
+    gap: 0.45rem;
+  }
+
+  .secondaryFilters {
+    width: 100%;
+  }
+
+  .algolia {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .workspace {
+    display: block;
+  }
+
+  .sidebar,
+  .sidebar[data-open='false'] {
+    width: 100%;
+    min-width: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .sidebar[data-open='false'] .sidebarToggle {
+    padding-inline: 1rem;
+    justify-content: space-between;
+  }
+
+  .sidebar[data-open='false'] .sidebarToggle span:first-child {
+    display: inline;
+  }
+
+  .sidebar[data-open='false'] .catalog {
+    display: none;
+  }
+
+  .catalog {
+    padding: 0.25rem 1rem 1rem;
+  }
+
+  .readingPane {
+    padding: 1rem;
+  }
+
+  .searchPill {
+    padding-left: 0.85rem;
+    gap: 0.5rem;
+  }
+
+  .retrieve {
+    font-size: 0.9375rem;
+  }
+
+  .secondaryFilters {
+    flex-wrap: wrap;
+  }
+
+  .filter {
+    position: static;
+  }
+
+  .filterOptions {
+    top: 100%;
+    right: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .algolia {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .queueMeta {
+    align-items: flex-start;
+  }
+
+  .queueMeta > span:first-child {
+    /* A flex item's automatic minimum size is min-content, and `nowrap` makes
+       that the whole string — so without this the ellipsis never engages and
+       the row pushes wider than its button instead of truncating. */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boardTiles li::before,
+  .boardTiles li:hover::before,
+  .boardTiles li:active::before,
+  .boardTiles li[data-activated]::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 24rem) {
+  .searchPill {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .searchPill kbd,
+  .searchPill button {
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
+}
+
+.pulse {
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}

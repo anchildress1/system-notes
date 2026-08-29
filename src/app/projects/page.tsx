@@ -1,26 +1,34 @@
-import { Metadata } from 'next';
-import Hero from '@/components/Hero/Hero';
-import ProjectGrid from '@/components/ProjectGrid/ProjectGrid';
+import type { Metadata } from 'next';
+import ProjectDirectory from '@/components/ProjectDirectory/ProjectDirectory';
 import { getProjects } from '@/lib/api';
+import { buildPageMetadata } from '@/lib/siteMetadata';
 import styles from './page.module.css';
 
-export const metadata: Metadata = {
-  title: 'Builds',
-  description: 'Explore my portfolio of software systems, tools, and experiments.',
-};
+const pageTitle = 'Exhibits | Ashley Childress';
+const pageDescription =
+  'Shipped systems entered into evidence, each cross-filed with the decisions it produced — including the ones that failed on purpose.';
 
-export default async function Projects() {
-  const projects = await getProjects();
+export const metadata: Metadata = buildPageMetadata({
+  title: pageTitle,
+  description: pageDescription,
+  path: '/projects',
+});
+
+export default function ProjectsPage() {
+  const projects = getProjects();
 
   return (
-    <main className={styles.main} id="main-content">
-      <Hero
-        title="Things I built and broke."
-        titleAccent="I"
-        accentWord="shipped."
-        subtitle="Shipped tools, award-winning builds, and the experiments I scrapped on purpose — wins and write-offs, all on the record."
-      />
-      <ProjectGrid projects={projects} />
+    <main id="main-content" className={styles.main}>
+      <section className={styles.hero} aria-labelledby="exhibits-heading">
+        <h1 id="exhibits-heading">
+          What I&apos;ve shipped. <em>Including what I stopped.</em>
+        </h1>
+        <p className={styles.blurb}>
+          {projects.length} systems, each cross-filed with the decisions it produced. The ones that
+          failed on purpose stay in the record.
+        </p>
+      </section>
+      <ProjectDirectory projects={projects} />
     </main>
   );
 }

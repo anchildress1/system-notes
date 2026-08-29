@@ -1,32 +1,53 @@
 .errorShell {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: grid;
   min-height: 100vh;
-  padding: 2rem;
-  text-align: center;
-  font-family: var(--font-mono);
-  background: var(--bg-base);
-  color: var(--text-secondary);
+  align-content: center;
+  padding: clamp(1.5rem, 5vw, 5rem);
+  background: #0b0c0f;
+  color: #f0eee9;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.errorCode {
+  margin: 0 0 1.5rem;
+  color: #fabb41;
+  font-size: 0.9375rem;
+  letter-spacing: 0.16em;
 }
 
 .errorHeading {
-  font-size: 1.5rem;
-  font-weight: 600;
+  max-width: 70rem;
   margin: 0;
-  margin-bottom: 0.75rem;
-  color: var(--text-primary);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(4rem, 11vw, 10rem);
+  font-weight: 400;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
 }
 
 .errorMessage {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  margin: 0;
-  margin-bottom: 1.5rem;
-  max-width: 32rem;
+  max-width: 38rem;
+  margin: 2rem 0 0;
+  color: #9598a0;
+  font-size: 0.9375rem;
 }
 
 .errorAction {
-  min-width: 112px;
+  width: fit-content;
+  min-height: 3rem;
+  padding: 0 1rem;
+  margin-top: 2rem;
+  border: 0;
+  background: #f0eee9;
+  color: #1d1100;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9375rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.errorAction:focus-visible {
+  outline: 2px solid #fabb41;
+  outline-offset: 4px;
 }

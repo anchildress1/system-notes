@@ -1,0 +1,38 @@
+.toggle {
+  display: inline-flex;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--soft);
+  font-size: 0.9375rem;
+  line-height: 1;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.toggle:hover {
+  border-color: var(--flag);
+  color: var(--flag);
+}
+
+/* Both icons ship in the markup; the theme decides which one is shown, so the
+   server can render this without knowing the answer. */
+.sun {
+  display: none;
+}
+
+.moon {
+  display: inline;
+}
+
+:root[data-theme='light'] .sun {
+  display: inline;
+}
+
+:root[data-theme='light'] .moon {
+  display: none;
+}

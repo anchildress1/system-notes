@@ -1,0 +1,107 @@
+.main {
+  display: grid;
+  width: min(100%, var(--page-max));
+  min-height: calc(100svh - var(--header-height));
+  align-items: center;
+  padding: clamp(4rem, 9vw, 9rem) var(--gutter);
+  margin: 0 auto;
+  gap: clamp(3rem, 8vw, 8rem);
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.message {
+  max-width: 68rem;
+  animation: rise-in 600ms var(--ease-out) both;
+}
+
+.code {
+  margin-bottom: 1.5rem;
+  color: var(--flag);
+  font-size: 0.9375rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.message h1 {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 9vw, 8.5rem);
+  font-weight: 400;
+  letter-spacing: -0.06em;
+  line-height: 0.82;
+}
+
+.message h1 em {
+  display: block;
+  color: var(--flag);
+  font-weight: 400;
+}
+
+.message > p:not(.code) {
+  max-width: 43rem;
+  margin-top: 2rem;
+  color: var(--soft);
+}
+
+.message nav {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 2.5rem;
+  gap: 1rem 2rem;
+}
+
+.message nav a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  border-bottom: 1px solid var(--line-strong);
+  font-size: 0.9375rem;
+  gap: 0.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.message nav a:first-child {
+  border-color: var(--flag);
+}
+
+.message nav a:hover {
+  border-color: var(--flag);
+  color: var(--flag);
+}
+
+.marker {
+  color: transparent;
+  font-family: var(--font-display);
+  font-size: clamp(9rem, 25vw, 25rem);
+  font-style: normal;
+  line-height: 0.7;
+  -webkit-text-stroke: 1px var(--line-strong);
+}
+
+@media (max-width: 64rem) {
+  .main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .marker {
+    position: absolute;
+    z-index: -1;
+    right: 0;
+    opacity: 0.35;
+  }
+}
+
+@media (max-width: 30rem) {
+  .message h1 {
+    font-size: 3.9rem;
+  }
+
+  .message nav {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .message nav a {
+    justify-content: space-between;
+  }
+}

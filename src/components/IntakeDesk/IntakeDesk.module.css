@@ -1,0 +1,110 @@
+.desk {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: clamp(1.25rem, 2.6vw, 2.5rem);
+  align-items: start;
+  margin-top: clamp(1.6rem, 4vh, 2.75rem);
+}
+
+.compose {
+  min-width: 0;
+}
+
+.field {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--line-strong);
+  background: var(--panel-hi);
+  color: var(--bone);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.field::placeholder {
+  color: var(--mute);
+}
+
+.field:focus-visible {
+  border-color: var(--flag);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.1rem;
+  align-items: center;
+  margin-top: 0.9rem;
+}
+
+.run {
+  padding: 0.95rem 1.9rem;
+  background: var(--flag);
+  color: var(--void);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.run:disabled {
+  /* Reads as deliberately parked rather than broken: the label stays legible
+     against the surface instead of dropping to a low-contrast grey. */
+  background: transparent;
+  border: 1px dashed var(--line-strong);
+  color: var(--mute);
+  cursor: not-allowed;
+}
+
+.notice {
+  flex: 1 1 14rem;
+  min-width: 0;
+  color: var(--mute);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.shelf {
+  min-width: 0;
+}
+
+.shelfLabel {
+  margin-bottom: 0.7rem;
+  color: var(--mute);
+  font-size: 0.9375rem;
+}
+
+.seeds {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.seed {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--soft);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  text-align: left;
+  transition:
+    border-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out),
+    background 0.25s var(--ease-out);
+}
+
+.seed:hover {
+  border-color: var(--flag);
+  background: var(--panel-hi);
+  color: var(--bone);
+}

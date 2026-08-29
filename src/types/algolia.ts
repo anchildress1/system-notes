@@ -1,22 +1,16 @@
-import type { Hit, BaseHit } from 'instantsearch.js';
-
-export type SendEventForHits = {
-  (eventType: string, hits: Hit | Hit[], eventName?: string): void;
-  (customPayload: unknown): void;
-};
+import type { BaseHit } from 'instantsearch.js';
 
 export interface FactHitRecord extends BaseHit {
   objectID: string;
   title: string;
-  blurb: string;
+  /** Being retired from the index; every read falls back to the fact body. */
+  blurb?: string;
   fact: string;
   content?: string;
   'tags.lvl0'?: string[];
   'tags.lvl1'?: string[];
   projects: string[];
   category: string;
-  node_type?: string;
-  signal: number;
   url?: string;
   created_at?: string;
 }

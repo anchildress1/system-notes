@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@tests/*": ["./tests/*"]
     }
   },
   "include": [
@@ -36,7 +37,7 @@
     "**/*.test.tsx",
     "**/*.bench.ts",
     "**/*.bench.tsx",
-    "src/setupTests.ts",
+    "tests/setupTests.ts",
     "vitest.config.ts"
   ]
 }

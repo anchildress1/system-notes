@@ -72,12 +72,14 @@ There is no deep-link overlay. The card never grows, never modals, never takes o
 ## Performance / Lighthouse
 
 - **Targets** (enforced pre-push via the lefthook `performance` step → `make test-perf`):
-  - **accessibility, best-practices, SEO: 100%** on both. These are deterministic given the
-    same DOM, so the gate sits exactly at the observed score — a drop is a real regression.
-  - **performance: 98% desktop, 92% mobile.** Performance is the only timing-dependent
-    category, so it is the only one carrying headroom. Desktop sat at `minScore: 1` and failed
-    CI at 0.99 on a slightly slower runner while scoring 100 locally and on a re-run of the
-    same commit; a perfect-score gate measures the runner, not the code.
+  - **accessibility, best-practices, SEO: 100%.** These are deterministic given the same DOM,
+    so the gate sits exactly at the observed score — a drop is a real regression.
+  - **performance: 98%.** Performance is the only timing-dependent category, so it is the only
+    one carrying headroom. It sat at `minScore: 1` and failed CI at 0.99 on a slightly slower
+    runner while scoring 100 locally and on a re-run of the same commit; a perfect-score gate
+    measures the runner, not the code.
+  - Lighthouse runs the desktop profile only. Mobile layout and target sizes are asserted in
+    `tests/e2e/mobile.spec.ts`, which measures them directly rather than through a score.
 - `errors-in-console` is skipped in the LH configs — the local harness uses dummy Algolia credentials, so unreachable-host network errors are a test artifact, not a defect (same rationale as the pre-existing `uses-http2` skip).
 - Below-the-fold components must be deferred via `IntersectionObserver` or `next/dynamic` (see `SearchPageWrapper.tsx`).
 - Prefer `instantsearch.css/themes/reset.css` over `satellite.css` to minimize CSS payload.

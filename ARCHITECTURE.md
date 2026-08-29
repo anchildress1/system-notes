@@ -1,74 +1,55 @@
 # System Architecture
 
-## Overview
+## Shape
 
-System Notes is a single Next.js app that acts as a "digital nervous system" for a portfolio: a sparkly UI up front, Algolia doing the search and AI heavy lifting, and one lonely route handler that scrapes my DEV blog on the side. No separate backend service to keep breathing.
+System Notes is one Next.js application deployed to Cloud Run. It has four public surfaces and one bounded integration route.
 
-## High-Level Design
+| Surface            | Responsibility                         | State owner                                           |
+| ------------------ | -------------------------------------- | ----------------------------------------------------- |
+| `/`                | Searchable notes index                 | InstantSearch owns query, facets, and page in the URL |
+| `/notes/[id]`      | Durable full-note view                 | Server-rendered route reads one Algolia record        |
+| `/projects`        | Complete project directory             | Server-rendered project registry                      |
+| `/about`           | Professional record and derived totals | Server-rendered profile and project registry          |
+| `/api/blog/search` | Bounded DEV post aggregation           | In-memory cache with guarded external fetches         |
 
-```mermaid
-%%{init: {'theme': 'default'}}%%
-graph TD
-    accTitle: System Notes architecture
-    accDescr: A single Next.js app serves the UI and a blog-search route handler. The browser talks to Algolia for search and AI, and the route handler aggregates the DEV blog from an external sitemap behind an SSRF guard.
+There is no application-wide client shell. Pages render on the server until a feature needs browser state.
 
-    classDef frontend stroke:#0284C7,stroke-width:2px;
-    classDef backend stroke:#059669,stroke-width:2px;
-    classDef external stroke:#9333EA,stroke-width:2px;
+## Search boundary
 
-    User([👤 User]) -->|Interacts| Web[Next.js App - UI]:::frontend
+The index is the only large client-side surface.
 
-    subgraph App [📂 Next.js app]
-        direction TB
-        Web -->|/api/blog/search| Route[Route Handler]:::backend
-    end
+- `IndexWorkspaceLoader` defers it until after the page shell.
+- React InstantSearch queries Algolia directly with a search-only key.
+- InstantSearch serializes query, category, project, topic, and page state.
+- Note cards keep flip state inside their grid cell and never write browser history.
+- Opening a card fires the Algolia click event once.
+- Full-note links use a normal route rather than an overlay.
 
-    Web -->|Search and AI| Algolia["🔍 Algolia"]:::external
-    Route -->|SSRF-guarded fetch| Blog["📝 DEV blog sitemap"]:::external
-```
+## Data boundary
 
-## The Stack
+- `src/data/projects.json` is the project registry.
+- `src/data/profile.ts` contains authored profile copy only.
+- Counts and project groupings are derived at render time.
+- Algolia stores the searchable note corpus and supplies individual note records.
+- `/site.jsonld`, the sitemap, and public AI metadata expose machine-readable context.
 
-### 1. The Face
+## External content boundary
 
-- **Framework**: Next.js (React).
-- **Role**: The whole app — UI, client-side logic, search, and the AI chat.
-- **Key Feature**: "More Sparkles," meaning it prioritizes high-fidelity interactions and animations.
+`src/app/api/blog/search/route.ts` is the only route that fetches third-party content.
 
-### 2. Search & AI (Algolia)
+- The sitemap and post HTML are untrusted.
+- URLs must be credential-free, same-origin, and under `/posts/`.
+- Redirects are refused.
+- Sitemap and post bodies are capped at 1 MB and 2 MB.
+- At most 50 URLs are considered, five requests run concurrently, and each request gets 10 seconds.
+- Empty results use a shorter cache lifetime than successful results.
 
-- **Provider**: Algolia via `react-instantsearch`.
-- **Role**: Powers on-page search and the AI chat directly from the browser. InstantSearch owns URL state (query, facets, page).
-- **Key Feature**: No server round-trip for search — the client talks to Algolia.
+The exact invariants live in [`SECURITY_RULES.md`](./SECURITY_RULES.md).
 
-### 3. Blog Aggregation (route handler)
+## Validation boundary
 
-- **Location**: `src/app/api/blog/search/route.ts` (GET only).
-- **Role**: Pulls DEV blog posts from an external sitemap, extracts JSON-LD, caches in memory (15 min; 60s when empty), and filters by `q`/`tag` with a clamped `limit`.
-- **Key Feature**: The sitemap is untrusted input. Fetches accept only credential-free URLs on its exact origin under `/posts/`, refuse redirects, time out after 10 seconds, and cap the sitemap at 1 MB, each post at 2 MB, URLs at 50, and concurrent post fetches at five (see `SECURITY_RULES.md`).
-
-### 4. The Tissue (root configs)
-
-- **Role**: Build and quality tooling (Lefthook, Prettier, gitleaks, Playwright, Lighthouse) lives at the repo root — one app, one place for config.
-
-## Data Flow
-
-1. **Input**: User interacts with the portfolio UI.
-2. **Search / AI**: The browser queries Algolia directly via InstantSearch; results and AI responses render client-side.
-3. **Blog**: The `/api/blog/search` route handler aggregates and caches DEV posts from the external sitemap, serving a filtered slice on request.
-4. **Response**: Everything renders in the Next.js app — no separate backend in the loop.
-
-## Validation Flow
-
-- **Pre-push**: Lefthook runs unit tests, `gitleaks`, and both Lighthouse profiles.
-- **Build and Test CI**: Checks formatting, lint, types, dependencies, unit coverage, E2E, and performance. Playwright installs Chromium, WebKit, and their Linux libraries fresh, then uses one CI worker so a busy runner cannot cosplay as a product defect.
-- **Security and quality**: SonarCloud, Semgrep, and CodeQL inspect pull requests. The token-dependent Sonar scan is skipped for forked and Dependabot pull requests because GitHub does not expose repository secrets to either.
-
-## 🦄 For the Judges
-
-If you're looking for where the effort went, here's the cheat sheet:
-
-- **System-First Design**: This isn't just a static site wrapper. It's a real Next.js app with an SSRF-hardened aggregation route and Algolia-powered search/AI.
-- **Production AI**: The chat isn't a toy — it's wired through Algolia's AI features with real query and event handling, not a bolted-on demo.
-- **Vibe Engineering**: The UI uses custom shader-like effects and animations that are performant and responsive, proving that "professional" doesn't have to mean "boring."
-- **DevOps Maturity**: We treat this like a real product. CI/CD actions, `release-please` automation, `gitleaks` secret scanning, and `lefthook` quality gates are all active.
+- Vitest enforces coverage floors.
+- Playwright covers navigation, filtering, note interaction, responsive layout, and accessibility.
+- Lighthouse gates accessibility, best practices, SEO, and performance.
+- `gitleaks`, `npm audit`, Semgrep, CodeQL, and SonarCloud cover secrets, dependencies, security patterns, and code quality.
+- Lefthook runs the local pre-push subset; CI runs the remote gates.

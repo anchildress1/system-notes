@@ -1,258 +1,201 @@
 :root {
-  /* Base surfaces — Aurora (Modernization Study, Direction B) */
-  --bg-deep: #08070e;
-  --bg-base: #0b0a12;
-  --bg-surface: #15131f;
-  --bg-elevated: #211d31;
-  --bg-input: #120f1c;
+  /* The Intake palette: amber on slate. Neutrals sit on hue 265, the accent on
+     80, so the accent is the only warm thing on the page and never competes. */
+  --void: oklch(0.155 0.006 265);
+  --panel: oklch(0.2 0.007 265);
+  --panel-hi: oklch(0.25 0.008 265);
+  --edge: oklch(0.34 0.01 265);
+  --bone: oklch(0.95 0.008 90);
+  --soft: oklch(0.76 0.008 265);
+  --mute: oklch(0.68 0.012 265);
+  --flag: oklch(0.83 0.15 80);
+  --flag-ink: oklch(0.19 0.04 80);
+  --flag-soft: oklch(0.83 0.15 80 / 0.14);
+  /* Strong enough to read as a halo around a 10px tile. --flag-soft is sized
+     for a wash across a whole panel and disappears at that scale. */
+  --flag-glow: oklch(0.83 0.15 80 / 0.52);
+  --drop: oklch(0.06 0.01 265 / 0.9);
+  --thumb: oklch(0.42 0.01 265);
 
-  /* Text scale — Aurora. dim kept AA-safe (#7c7791 ≈4.6:1) vs spec #4b4660. */
-  --text-primary: #f3f0fb;
-  --text-secondary: #bcb6cf;
-  --text-muted: #867f9b;
-  --text-dim: #7c7791;
+  /* Card kinds. Separated by chroma as well as lightness — five purely tonal
+     steps cannot stay distinct above the board's contrast floor. */
+  --k-award: oklch(0.93 0.13 96);
+  --k-decision: oklch(0.83 0.15 80);
+  --k-note: oklch(0.66 0.1 74);
+  --k-principle: oklch(0.72 0.012 265);
+  --k-other: oklch(0.78 0.09 200);
 
-  /* Accents — Aurora neon (Direction B), softs at 18% */
-  --accent-pink: #ff5fa2;
-  --accent-pink-soft: rgba(255, 95, 162, 0.18);
-  --accent-teal: #2fd6d0;
-  --accent-teal-soft: rgba(47, 214, 208, 0.18);
-  --accent-violet: #b96bff;
-  --accent-violet-soft: rgba(185, 107, 255, 0.18);
-  --accent-gold: #ffb070;
-  --accent-gold-soft: rgba(255, 176, 112, 0.18);
-  --accent-blue: #7d5cff;
-  --accent-blue-soft: rgba(125, 92, 255, 0.18);
+  /* Hairlines stay translucent rather than resolving to --edge. Roughly thirty
+     borders composite over whatever sits behind them, and an opaque token would
+     need every one of them re-tuned by hand. */
+  --line: oklch(0.95 0.008 90 / 0.13);
+  --line-strong: oklch(0.95 0.008 90 / 0.28);
 
-  --accent: var(--accent-violet);
-  --accent-soft: var(--accent-violet-soft);
+  /* next/font re-declares these on <body> with hashed family names; the values
+     here are the SSR-time fallback. */
+  --font-sans: Archivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Space Grotesk', ui-monospace, SFMono-Regular, system-ui, sans-serif;
 
-  /* Neutral interactive tier */
-  --chrome-line: var(--text-primary);
-  --action-primary-bg: linear-gradient(180deg, #fffaff, #f1eef8);
-  --action-primary-bg-hover: linear-gradient(180deg, #ffffff, #f7f3ff);
-  --action-primary-text: #171321;
-  --action-border: color-mix(in srgb, var(--border-strong) 82%, transparent);
-  --action-border-hover: color-mix(in srgb, var(--text-primary) 36%, var(--border-strong));
-  --action-shadow: 0 18px 42px -28px rgba(0, 0, 0, 0.9);
-  --action-shadow-hover: 0 20px 48px -28px rgba(0, 0, 0, 0.94);
+  /* The hairline down the middle of the page. Too faint to derive from --line,
+     and it has to invert with the theme or it is a light line on a light page. */
+  --seam: oklch(0.95 0.008 90 / 0.028);
 
-  /* Semantic aliases */
-  --paper: var(--bg-base);
-  --paper-dim: var(--bg-surface);
-  --paper-deep: var(--bg-deep);
-  --ink: var(--text-primary);
-  --ink-2: var(--text-secondary);
-  --ink-3: var(--text-muted);
-  --ink-4: var(--text-dim);
-
-  --ember: var(--accent-violet);
-  --ember-tint: var(--accent-violet-soft);
-  --ember-soft: rgba(185, 107, 255, 0.06);
-
-  /* Borders and glass — Aurora (Direction B) */
-  --border: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(180, 140, 255, 0.3);
-  --glass-bg: rgba(24, 20, 36, 0.6);
-  --glass-blur: blur(22px);
-
-  /* Raised "current / active" surface. The selected nav item and the music
-     popover share this so an active surface reads identically everywhere.
-     Change here once — never per component. */
-  --surface-active: rgba(255, 255, 255, 0.055);
-
-  /* Opaque equivalent of --surface-active for floating panels and controls
-     (filter dropdowns, the music popover, the corner FABs) so they all read as
-     one raised-surface family. Solid because these float over arbitrary
-     content. Change here once. */
-  --surface-raised: color-mix(in srgb, #ffffff 5.5%, var(--bg-deep));
-  --surface-raised-hover: color-mix(in srgb, #ffffff 9%, var(--bg-deep));
-
-  /* One width for every accent seam / divider line (card seams, hero seam,
-     about bars). Change here once — never per component. */
-  --seam-width: 1px;
-
-  --nebula-1: rgba(255, 95, 162, 0.035);
-  --nebula-2: rgba(47, 214, 208, 0.032);
-  --nebula-3: rgba(125, 92, 255, 0.04);
-
-  --glow: 1.6;
-
-  /* Card system — Aurora (Direction B): translucent violet glass so the
-     accent + ambient read through; back face stays readable. */
-  --card-accent: var(--accent-violet);
-  --card-accent-soft: var(--accent-violet-soft);
-  --card-surface: linear-gradient(160deg, rgba(40, 30, 62, 0.55), rgba(18, 16, 28, 0.7));
-  --card-surface-back:
-    radial-gradient(
-      120% 80% at 0% 0%,
-      color-mix(in srgb, var(--card-accent) 16%, transparent),
-      transparent 55%
-    ),
-    linear-gradient(180deg, var(--bg-elevated), var(--bg-surface));
-  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
-
-  /* One chromatic brand gradient — hero word, winner card seams, the award
-     badge all draw from this. It animates everywhere it's used, so the start
-     stop is moot; no reason for two near-identical gradients. */
-  --gradient-brand: linear-gradient(
-    110deg,
-    var(--accent-pink) 0%,
-    var(--accent-violet) 30%,
-    var(--accent-blue) 50%,
-    var(--accent-teal) 72%,
-    var(--accent-pink) 100%
-  );
-  --gradient-seam-brand: linear-gradient(
-    90deg,
-    var(--accent-violet),
-    var(--accent-teal) 60%,
-    transparent
-  );
-
-  /* Legacy HSL aliases */
-  --color-bg-base: 232 16% 7%;
-  --color-bg-surface: 232 16% 11%;
-  --color-bg-elevated: 232 14% 14%;
-  --color-text-primary: 225 8% 92%;
-  --color-text-secondary: 225 8% 72%;
-  --color-text-muted: 228 7% 45%;
-  --color-border: 0 0% 100% / 0.06;
-  --color-border-subtle: 0 0% 100% / 0.04;
-  --color-border-hover: 273 100% 71%;
-  --color-accent-purple: 273 100% 71%;
-  --color-accent-pink: 336 83% 60%;
-  --color-accent-teal: 177 68% 51%;
-  --color-accent-gold: 23 70% 66%;
-
-  --ais-primary-color-rgb: 185, 107, 255;
-  --ais-primary-color-alpha: 1;
-
-  /* Typography */
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-
-  /* Motion */
-  --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1);
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --ease-morph: cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: 0.1s ease;
-  --transition-base: 0.15s ease;
-  --transition-slow: 0.25s var(--ease-morph);
-
-  /* Spacing */
-  --space-xs: 0.75rem;
-  --space-sm: 1.5rem;
-  --space-md: 3rem;
-  --space-lg: 6rem;
-  --space-xl: 12rem;
-  --page-gutter: max(1.5rem, calc((100% - 1440px) / 2 + 2rem));
-  --section-gap: clamp(2.5rem, 5vw, 4.5rem);
-
-  /* Radius */
-  --r-sm: 6px;
-  --r-md: 12px;
-  --r-lg: 20px;
-  --r-xl: 24px;
-  --r-pill: 999px;
-
-  /* Legacy radius aliases */
-  --radius-sm: var(--r-sm);
-  --radius-md: var(--r-md);
-  --radius-lg: var(--r-lg);
-  --radius-xl: var(--r-xl);
-  --radius-pill: var(--r-pill);
-  --radius-round: 50%;
-
-  /* Shadows */
-  --shadow-card:
-    0 30px 70px -26px rgba(0, 0, 0, 0.8), 0 0 50px -20px rgba(150, 90, 255, 0.35),
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
-  --shadow-bento: 0 2px 0 rgba(255, 255, 255, 0.05);
-  --shadow-deep: 0 38px 90px -34px rgba(0, 0, 0, 0.92), 0 0 54px -36px rgba(181, 101, 245, 0.32);
-  --shadow-fab: 0 18px 42px -22px rgba(0, 0, 0, 0.85);
-  --highlight-top: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
-
-  /* Z-index */
-  --z-background: -1;
-  --z-base: 0;
-  --z-sticky: 100;
-  --z-modal: 1000;
-  --z-overlay: 2000;
-  --z-card-flip: 5000;
-  --z-search-widget: 9000;
-  --z-footer: 9500;
+  /* Geometry and easing are theme-independent and belong to both. */
+  --page-max: 96rem;
+  --gutter: clamp(1rem, 3vw, 3rem);
+  --header-height: 5.25rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Re-declare --card-seam per accent so it resolves against the local card hue. */
-[data-accent='pink'] {
-  --card-accent: var(--accent-pink);
-  --card-accent-soft: var(--accent-pink-soft);
-  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
+/* Light is keyed on the attribute alone rather than also on prefers-color-scheme.
+   The inline script in <head> resolves the system preference and stamps the
+   attribute before first paint, so a media query here would only duplicate the
+   whole block to cover a state that never renders. With scripting off everyone
+   gets dark, which is what the site shipped before the toggle existed. */
+:root[data-theme='light'] {
+  /* Native widgets read this. Leaving it dark under a white page is how a light
+     theme ends up with dark native widgets on it. */
+  color-scheme: light;
+  --void: oklch(0.972 0.005 90);
+  --panel: oklch(1 0 0);
+  --panel-hi: oklch(0.945 0.008 90);
+  --edge: oklch(0.855 0.012 90);
+  --bone: oklch(0.22 0.008 265);
+  --soft: oklch(0.4 0.008 265);
+  --mute: oklch(0.53 0.012 265);
+  /* Not the design's 0.58 0.13. That renders 4.04:1 against --void and 4.26:1
+     under --flag-ink, so the accent failed as small text and as a filled button
+     in the same pass. 0.54 is the darkest step that stays inside sRGB at this
+     hue, and it clears 4.77, 5.17 and 5.02 on those three pairs. */
+  --flag: oklch(0.54 0.115 74);
+  --flag-ink: oklch(0.99 0.004 90);
+  --flag-soft: oklch(0.54 0.115 74 / 0.14);
+  --flag-glow: oklch(0.54 0.115 74 / 0.42);
+  --drop: oklch(0.55 0.02 265 / 0.22);
+  --thumb: oklch(0.8 0.012 265);
+
+  /* Darker than the board rather than lighter; swatchPalette.ts holds the
+     separation each of these has to keep from a 97.2 surface. */
+  --k-award: oklch(0.62 0.13 88);
+  --k-decision: oklch(0.58 0.13 74);
+  --k-other: oklch(0.4 0.09 200);
+  --k-principle: oklch(0.52 0.012 265);
+  --k-note: oklch(0.46 0.08 68);
+
+  --line: oklch(0.22 0.008 265 / 0.13);
+  --line-strong: oklch(0.22 0.008 265 / 0.28);
+  --seam: oklch(0.22 0.008 265 / 0.05);
 }
-[data-accent='violet'] {
-  --card-accent: var(--accent-violet);
-  --card-accent-soft: var(--accent-violet-soft);
-  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
-}
-[data-accent='teal'] {
-  --card-accent: var(--accent-teal);
-  --card-accent-soft: var(--accent-teal-soft);
-  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
-}
-[data-accent='gold'] {
-  --card-accent: var(--accent-gold);
-  --card-accent-soft: color-mix(in srgb, var(--accent-gold) 22%, transparent);
-  --card-seam: linear-gradient(90deg, var(--card-accent), transparent 75%);
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 * {
-  box-sizing: border-box;
   margin: 0;
-  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumb) transparent;
 }
 
 html {
-  background-color: var(--bg-base);
+  background: var(--void);
+  color-scheme: dark;
+  scroll-behavior: smooth;
 }
 
-html,
 body {
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-  -webkit-font-smoothing: antialiased;
+  min-width: 20rem;
   min-height: 100vh;
-  overflow-x: hidden;
-  line-height: 1.6;
+  overflow-x: clip;
+  background:
+    linear-gradient(90deg, transparent 0 49.93%, var(--seam) 50%, transparent 50.07%), var(--void);
+  color: var(--bone);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
 }
 
-body {
-  background-color: transparent;
-}
-
-:where(:focus-visible) {
-  outline: 2px solid var(--chrome-line);
-  outline-offset: 4px;
-  border-radius: var(--r-sm);
-}
-
-.ais-Chat textarea:focus-visible,
-.ais-Chat .ais-ChatPrompt-body:focus-visible {
-  outline: none;
-}
-
-.modal-overlay {
+body::before {
   position: fixed;
+  z-index: -1;
   inset: 0;
-  background: rgba(8, 9, 12, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: var(--z-modal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-md);
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  mask-image: linear-gradient(to bottom, black, transparent 70%);
+  opacity: 0.18;
+  pointer-events: none;
+  content: '';
+}
+
+/* The corner glow is gone. It was a 42rem fixed-position painted layer tuned to
+   a magenta accent; in amber it read as a stain rather than a light source, and
+   removing it takes a full-viewport paint off every route. */
+
+::selection {
+  background: var(--flag);
+  color: var(--flag-ink);
+}
+
+:where(a, button, input, summary):focus-visible {
+  outline: 2px solid var(--flag);
+  outline-offset: 4px;
+}
+
+/* An accent-filled control cannot wear an accent ring. --bone is the only tone
+   that separates from --flag at every lightness the accent takes. */
+:where(button, a)[data-accent='filled']:focus-visible {
+  outline-color: var(--bone);
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--thumb);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--flag);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  color: inherit;
+  font: inherit;
+}
+
+button,
+summary {
+  cursor: pointer;
+}
+
+button {
+  border: 0;
+}
+
+img,
+picture {
+  display: block;
+  max-width: 100%;
+}
+
+main {
+  display: block;
+}
+
+[id] {
+  scroll-margin-top: calc(var(--header-height) + 1.5rem);
 }
 
 .visually-hidden {
@@ -267,213 +210,44 @@ body {
   border: 0;
 }
 
-.card-glass {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-card);
-  border-radius: var(--r-xl);
-}
-
-.algolia-attribution {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  font-weight: 500;
-  text-decoration: none;
-  line-height: 1;
-  transition: color var(--transition-base);
-  font-family: var(--font-mono);
-  letter-spacing: 0.04em;
-}
-
-.algolia-attribution:hover .algolia-hoverable {
-  color: var(--text-primary);
-}
-
-.algolia-prefix {
-  white-space: nowrap;
-  color: var(--text-muted);
-}
-
-.algolia-hoverable {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: color var(--transition-base);
-}
-
-.algolia-name {
-  white-space: nowrap;
-}
-
-.algolia-icon {
-  font-size: 0.875rem;
-  flex-shrink: 0;
-}
-
-/* Shared keyframe for all flowing multi-neon gradient animations
-   (award badge, hero shimmer word). Lives here as a global so CSS
-   modules can reference it by name without re-declaring. */
-@keyframes gradientShimmer {
-  0% {
-    background-position: 0% 50%;
+/* Rises into place without fading. An entrance that starts at opacity 0 is
+   readable to axe as text at zero contrast for as long as it runs, which turns
+   every accessibility assertion on the pages using it into a race against the
+   animation. Motion carries the entrance; opacity stays out of it. */
+@keyframes rise-in {
+  from {
+    transform: translateY(1.25rem);
   }
-  100% {
-    background-position: 200% 50%;
+  to {
+    transform: translateY(0);
   }
 }
 
-/* Slow, flash-free drift for the background hue-washes. */
-@keyframes auroraDrift {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
+@media (max-width: 44rem) {
+  :root {
+    --header-height: 7.75rem;
   }
-  33% {
-    transform: translate3d(3%, -2%, 0) scale(1.06);
-  }
-  66% {
-    transform: translate3d(-2%, 3%, 0) scale(0.97);
-  }
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
 
-/* Status-dot pulse — shared by the header dot and card foot dots. */
-@keyframes pulseDot {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
+  body {
+    background: var(--void);
   }
-  50% {
-    opacity: 0.4;
-    transform: scale(0.85);
-  }
-}
 
-/* The dot also cycles through the neon band as it pulses, so it blinks in
-   different colors instead of staying one teal. */
-@keyframes dotHue {
-  0%,
-  100% {
-    background-color: var(--accent-teal);
-    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-teal);
+  body::before {
+    background-size: 2.75rem 2.75rem;
   }
-  25% {
-    background-color: var(--accent-violet);
-    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-violet);
-  }
-  50% {
-    background-color: var(--accent-pink);
-    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-pink);
-  }
-  75% {
-    background-color: var(--accent-gold);
-    box-shadow: 0 0 calc(8px * var(--glow)) var(--accent-gold);
-  }
-}
-
-/* Global pulse utility. CSS Modules scope animation-name, so a module that
-   references this keyframe never resolves it — every blinking dot uses this
-   one global class instead. Tune the pulse here, once. */
-.pulse-dot {
-  animation:
-    pulseDot 2.4s ease-in-out infinite,
-    dotHue 20s linear infinite;
-}
-
-/* Flowing gradient shimmer — same scoping problem as pulseDot, so these global
-   utilities own it. `.shimmer` animates an element's gradient (award badge);
-   `.shimmer-seam` animates a host's ::before gradient (winner card seams). */
-.shimmer {
-  animation: gradientShimmer 9s linear infinite;
-}
-.shimmer-seam::before {
-  animation: gradientShimmer 9s linear infinite;
-}
-
-/* The bat fills with a live gradient: each stop cycles the neon band on an
-   offset, so the colors flow across the icon instead of sitting static. */
-@keyframes batStopHue {
-  0%,
-  100% {
-    stop-color: var(--accent-teal);
-  }
-  25% {
-    stop-color: var(--accent-blue);
-  }
-  50% {
-    stop-color: var(--accent-violet);
-  }
-  75% {
-    stop-color: var(--accent-pink);
-  }
-}
-#batGradient stop {
-  animation: batStopHue 15s linear infinite;
-}
-#batGradient stop:nth-child(2) {
-  animation-delay: -3.75s;
-}
-#batGradient stop:nth-child(3) {
-  animation-delay: -7.5s;
-}
-#batGradient stop:nth-child(4) {
-  animation-delay: -11.25s;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pulse-dot,
-  .shimmer,
-  .shimmer-seam::before,
-  #batGradient stop {
-    animation: none;
+  html {
+    scroll-behavior: auto;
   }
-}
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  background: none;
-  border: none;
-  font: inherit;
-  cursor: pointer;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: var(--r-pill);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Algolia injects its own stylesheet with !important on these properties,
-   so equal-specificity rules lose — we must escalate to win. */
-.ais-Pagination-link--selected {
-  background-color: transparent !important;
-  border-color: var(--chrome-line) !important;
-  color: var(--text-primary) !important;
-}
-
-::selection {
-  background: var(--text-primary);
-  color: var(--bg-deep);
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,6 +1,49 @@
+/* The warm palette this page used to scope to itself is now the site's own. Its
+   accent was byte-identical to --flag, which is to say the exhibits room was
+   already prototyping the theme the rest of the site has since adopted. Nothing
+   here needs tokens of its own any more. */
 .main {
-  min-height: 100vh;
-  padding-bottom: var(--space-xl);
+  min-height: 100svh;
+  background: var(--void);
+  color: var(--bone);
+  overflow-x: clip;
+}
+
+.main :focus-visible {
+  outline: 2px solid var(--flag);
+  outline-offset: 4px;
+}
+
+.hero {
   position: relative;
-  z-index: 1;
+  max-width: 94rem;
+  padding: clamp(3.5rem, 12vh, 9rem) 6vw 0;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5.6vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.hero h1 em {
+  display: block;
+  color: var(--flag);
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.blurb {
+  max-width: 46ch;
+  margin-top: 1.625rem;
+  color: var(--mute);
+  font-size: 1.16rem;
+  line-height: 1.75;
+  text-wrap: pretty;
 }

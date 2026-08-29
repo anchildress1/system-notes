@@ -16,15 +16,9 @@ jobs:
   sonar:
     if: github.event.pull_request.draft == false || github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     permissions:
       contents: read
-
-    env:
-      NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: 'test_app_id'
-      NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: 'test_search_key'
-      NEXT_PUBLIC_ALGOLIA_AGENT_ID: 'mck_agent_id'
-      NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME: 'my-public-index'
 
     steps:
       - name: Checkout code

@@ -1,10 +1,10 @@
+Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)
 Copyright 2020 The Space Grotesk Project Authors (https://github.com/floriankarsten/space-grotesk)
-Copyright 2022 The Instrument Serif Project Authors (https://github.com/Instrument/instrument-serif)
-Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
-https://openfontlicense.org
+http://scripts.sil.org/OFL
+
 
 -----------------------------------------------------------
 SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007

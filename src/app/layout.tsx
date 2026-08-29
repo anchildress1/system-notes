@@ -1,48 +1,36 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
+import SiteFooter from '@/components/SiteFooter/SiteFooter';
+import SiteHeader from '@/components/SiteHeader/SiteHeader';
+import { getProjects } from '@/lib/api';
+import { isValidAppId } from '@/lib/algolia';
+import { buildSiteJsonLd } from '@/lib/siteJsonLd';
+import { SITE_NAME, SOCIAL_IMAGE, SOCIAL_IMAGE_URL } from '@/lib/siteMetadata';
+import { THEME_COLORS, THEME_SCRIPT } from '@/lib/theme';
+import { resolveBaseUrl, serializeJsonLd } from '@/lib/urlSafety';
 import './globals.css';
 
-// Vendored, not next/font/google: that downloads at build time, so every build
-// depended on reaching fonts.googleapis.com — a fetch that has already failed CI
-// and taken the build with it. Same latin subsets. See ./fonts/LICENSE.md.
-const spaceGrotesk = localFont({
+// Body and UI copy.
+const sans = localFont({
+  src: './fonts/Archivo-Variable.woff2',
+  variable: '--font-sans',
+  weight: '500 900',
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+});
+
+// Everything Archivo is not: wordmark, headlines, and every piece of metadata
+// the site used to set in a monospace or a serif. One variable cut covers all
+// three, which is why three families could leave.
+const display = localFont({
   src: './fonts/SpaceGrotesk-Variable.woff2',
   variable: '--font-display',
   weight: '300 700',
   display: 'swap',
   preload: true,
-  fallback: ['system-ui', 'sans-serif'],
+  fallback: ['ui-monospace', 'SFMono-Regular', 'system-ui', 'sans-serif'],
 });
-
-// Only the display font (the LCP H1) is preloaded. The serif and mono load on
-// demand behind their fallbacks (display: swap) so they don't compete with the
-// LCP font for the initial connection — shaves the hero's render delay.
-const instrumentSerif = localFont({
-  src: [
-    { path: './fonts/InstrumentSerif-Regular.woff2', weight: '400', style: 'normal' },
-    { path: './fonts/InstrumentSerif-Italic.woff2', weight: '400', style: 'italic' },
-  ],
-  variable: '--font-serif',
-  display: 'swap',
-  preload: false,
-  fallback: ['Georgia', 'Times New Roman', 'serif'],
-});
-
-const jetbrainsMono = localFont({
-  src: './fonts/JetBrainsMono-Variable.woff2',
-  variable: '--font-mono',
-  weight: '100 800',
-  display: 'swap',
-  preload: false,
-  fallback: ['ui-monospace', 'monospace'],
-});
-
-import ClientShell from '@/components/ClientShell/ClientShell';
-import Nebula from '@/components/Nebula/Nebula';
-import { getProjects } from '@/lib/api';
-import { buildSiteJsonLd } from '@/lib/siteJsonLd';
-import { isValidAppId } from '@/lib/algolia';
-import { resolveBaseUrl, serializeJsonLd } from '@/lib/urlSafety';
 
 const baseUrl = resolveBaseUrl();
 const algoliaAppId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
@@ -56,84 +44,73 @@ export const metadata: Metadata = {
     template: "%s | Ashley's System Notes",
   },
   description:
-    "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
+    "Ashley Childress's searchable record of engineering decisions, software projects, and the failures that improved both.",
   keywords: [
-    'AI',
-    'Engineering',
-    'Portfolio',
-    'System Notes',
     'Ashley Childress',
-    'Next.js',
-    'React',
-    'Generative AI',
-    'Agents',
+    'Software Engineering',
+    'Systems Architecture',
+    'AI Engineering',
+    'Engineering Portfolio',
   ],
   openGraph: {
     title: "Ashley's System Notes",
     description:
-      "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
+      'Engineering decisions, projects, and failure-tested working rules—indexed and searchable.',
     url: baseUrl,
-    siteName: 'System Notes',
-    images: [
-      {
-        url: '/projects/system-notes.webp',
-        width: 1440,
-        height: 720,
-        alt: 'System Notes interface showing a grid of AI engineering projects and architectural decisions',
-      },
-    ],
+    siteName: SITE_NAME,
+    images: [SOCIAL_IMAGE],
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: "Ashley's System Notes",
-    description:
-      "Ashley Childress's engineering portfolio: A living, queryable index of AI agents, full-stack development projects, and architectural decisions.",
-    images: ['/projects/system-notes.webp'],
+    description: 'Engineering decisions, projects, and failure-tested working rules.',
+    images: [SOCIAL_IMAGE_URL],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
   manifest: '/manifest.json',
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#0e0f13',
+  // The dark --void, matching what the CSS renders before the theme script runs.
+  // The script rewrites this tag when it resolves a light theme, because the
+  // browser chrome cannot read a custom property and prefers-color-scheme is the
+  // OS preference rather than the choice this site actually honors.
+  themeColor: THEME_COLORS.dark,
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const projects = getProjects();
-  const jsonLd = buildSiteJsonLd(projects, baseUrl);
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const jsonLd = buildSiteJsonLd(getProjects(), baseUrl);
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    // Extensions (password managers, contrast and translation tools) write
+    // attributes onto <html> and <body> before React hydrates, which surfaces as
+    // "some attributes of the server rendered HTML didn't match". It suppresses
+    // one level only, so real mismatches inside the app still report.
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        {algoliaPreconnectHost && (
+        {algoliaPreconnectHost ? (
           <>
             <link rel="preconnect" href={algoliaPreconnectHost} crossOrigin="anonymous" />
             <link rel="dns-prefetch" href={algoliaPreconnectHost} />
           </>
-        )}
+        ) : null}
         <link rel="preconnect" href="https://insights.algolia.io" crossOrigin="anonymous" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
+        {/* Blocking, and first: it stamps data-theme before the first paint so a
+            light reader never sees a dark frame. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body
-        className={`${spaceGrotesk.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
-        suppressHydrationWarning
-      >
-        <Nebula />
-        <ClientShell>{children}</ClientShell>
+      <body className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
+        <SiteHeader />
+        {children}
+        <SiteFooter />
       </body>
     </html>
   );
