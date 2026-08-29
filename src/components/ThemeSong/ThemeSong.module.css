@@ -1,5 +1,12 @@
+/* No frame. This was a bordered panel when the rest of the site still had them,
+   and it was right then — a button, a status line and a bar chart floating loose
+   read as debris. Since the cards, the queue and the search all lost their
+   containers it is the last framed object on the site, which now reads as a
+   widget dropped onto an editorial page. The parts hold together on a rule and
+   their own alignment instead. */
 .player {
-  margin-top: 1.25rem;
+  padding-top: 1.1rem;
+  border-top: 0.5px solid var(--line-strong);
 }
 
 .controls {
@@ -9,31 +16,9 @@
   align-items: center;
 }
 
+/* Shape, fill, hover and disabled state all come from .btn. */
 .toggle {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.8rem 1.4rem;
-  background: var(--flag);
-  color: var(--flag-ink);
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  transition: padding 0.35s var(--ease-out);
-}
-
-.toggle:hover:not(:disabled) {
-  padding-inline: 1.75rem;
-}
-
-.toggle:disabled {
-  background: transparent;
-  border: 1px dashed var(--line-strong);
-  color: var(--mute);
-  cursor: not-allowed;
+  composes: btn from global;
 }
 
 .note {
@@ -47,14 +32,13 @@
 
 .equalizer {
   display: flex;
-  max-width: 21.25rem;
+  max-width: 26rem;
   height: 2.75rem;
   align-items: flex-end;
   gap: 4px;
   margin-top: 1.25rem;
-  /* Dimmed rather than hidden while paused: the bars are the visual anchor for
-     the control above them, and removing them makes the section jump on play. */
-  opacity: 0.28;
+  /* Shown rather than hidden while paused: the bars anchor the control above
+     them, and removing them makes the panel jump on play. */
   transition: opacity 0.4s ease;
 }
 
@@ -62,10 +46,18 @@
   opacity: 1;
 }
 
+/* Neutral at rest, accent while running. Dimming the accent instead produced a
+   washed-out pink — a color that appears nowhere else in the system, so it read
+   as a rendering fault rather than as an idle state. */
 .bar {
   flex: 1;
-  background: var(--flag);
+  background: var(--edge);
   transform-origin: bottom;
+  transition: background 0.4s ease;
+}
+
+.equalizer[data-playing='true'] .bar {
+  background: var(--mark);
 }
 
 /* The bars keep their heights and pulse in opacity. Animating scale instead

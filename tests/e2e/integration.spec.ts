@@ -2,10 +2,14 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
 import { mockAlgoliaSearch, test } from './utils';
 
+// The workspace stacks below IndexWorkspace.module.css's 47.99rem breakpoint and
+// runs two columns above it. Branching on the project NAME instead pinned the
+// desktop assertions to the one project called 'chromium', so every other
+// desktop-width engine silently ran the stacked assertions and failed.
+const STACK_BREAKPOINT_PX = 768;
+
 test.describe('System Notes redesign', () => {
-  test('loads the approved filing workspace without the rejected campaign hero', async ({
-    page,
-  }) => {
+  test('loads the filing workspace under the page head', async ({ page }) => {
     await mockAlgoliaSearch(page, [
       {
         objectID: 'card:system-notes:1',
@@ -20,7 +24,12 @@ test.describe('System Notes redesign', () => {
     await page.goto('/notes');
 
     await expect(page).toHaveTitle("Index | Ashley's System Notes");
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('System Notes Index');
+    // The index used to carry a visually-hidden h1 because heads were rejected on
+    // every route. That decision was reversed: all four routes now open on the
+    // same head, and this route's is the only one whose rhythm is retuned to sit
+    // above a working tool. The 'Every choice' assertion below still stands — the
+    // rejected thing was that campaign's copy, not the existence of a head.
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('How I decide');
     await expect(page.getByRole('region', { name: /Browse notes by type/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /Filed under/i })).toHaveAttribute(
       'aria-expanded',
@@ -33,8 +42,8 @@ test.describe('System Notes redesign', () => {
     await expect(page.getByRole('heading', { name: /Every choice/i })).toHaveCount(0);
   });
 
-  test('matches the approved desktop filing composition', async ({ page }, testInfo) => {
-    const isDesktop = testInfo.project.name === 'chromium';
+  test('matches the approved desktop filing composition', async ({ page }) => {
+    const isDesktop = (page.viewportSize()?.width ?? 0) >= STACK_BREAKPOINT_PX;
     if (isDesktop) await page.setViewportSize({ width: 1440, height: 720 });
     const featuredHits = [
       {
@@ -279,15 +288,15 @@ test.describe('System Notes redesign', () => {
     await expect(section).toContainText('I Build Things');
     await expect(section).toContainText('Twisted Game Songs');
     // The two claims the note actually makes: where the instinct comes from,
-    // and that the song is not only a metaphor.
+    // and what it turns into once it reaches the software.
     await expect(section).toContainText('Appalachian ingenuity');
-    await expect(section).toContainText('The song is just fun');
-    await expect(section).toContainText('hunting failure points');
+    await expect(section).toContainText('hunting the failure first');
+    await expect(section).toContainText('breaking it early');
     await expect(section.locator('p')).not.toHaveCount(0);
   });
 
   test('renders the designed 404 with a working skip-link target', async ({ page }) => {
-    const response = await page.goto('/notes/not%20valid');
+    const response = await page.goto('/no-such-record');
 
     expect(response?.status()).toBe(404);
     await expect(
@@ -303,5 +312,94 @@ test.describe('System Notes redesign', () => {
     // The 404 is a designed surface, not a fallback nobody looks at.
     const accessibility = await new AxeBuilder({ page }).analyze();
     expect(accessibility.violations).toEqual([]);
+  });
+});
+
+test.describe('Deep links', () => {
+  test('opens the system named in the url', async ({ page }) => {
+    await page.goto('/projects?system=save-the-sun');
+
+    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toHaveText(
+      'Save the Sun'
+    );
+    await expect(page.getByTestId('project-save-the-sun')).toHaveAttribute('aria-current', 'true');
+  });
+
+  test('follows the selection so the open system is what a copied link reopens', async ({
+    page,
+  }) => {
+    await page.goto('/projects');
+    await page.getByTestId('project-vestige').click();
+
+    await expect(page).toHaveURL(/\?system=vestige$/);
+  });
+
+  test('falls back to the first system when the url names one that does not exist', async ({
+    page,
+  }) => {
+    await page.goto('/projects?system=not-a-real-system');
+
+    // Rendering nothing, or an error, would make a stale link a broken page.
+    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toBeVisible();
+  });
+
+  test('does not reuse an old system after client-side navigation', async ({ page }) => {
+    await page.goto('/projects?system=delegate-action');
+    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toHaveText(
+      'Delegate Action'
+    );
+
+    const nav = page.getByRole('navigation', { name: 'Primary navigation' });
+    await nav.getByRole('link', { name: 'how I decide' }).click();
+    await nav.getByRole('link', { name: 'what I’ve shipped' }).click();
+
+    await expect(page).toHaveURL('/projects');
+    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toHaveText(
+      'Save the Sun'
+    );
+  });
+
+  test('opens the exhibit behind each recorded win', async ({ page }) => {
+    await page.goto('/about');
+    const wins = page.getByRole('link', { name: /winner/i });
+    await expect(wins.first()).toBeVisible();
+
+    const targets = await wins.evaluateAll((links) =>
+      links.map((link) => link.getAttribute('href'))
+    );
+    // A win with nowhere to check it is the claim this section exists not to
+    // make, so every record has to cite a system the directory actually holds.
+    expect(targets.length).toBeGreaterThan(0);
+    for (const href of targets) {
+      expect(href).toMatch(/^\/projects\?system=[a-z0-9-]+$/);
+    }
+
+    const first = wins.first();
+    const name = await first.textContent();
+    await first.click();
+
+    await expect(page).toHaveURL(targets[0]!);
+    const exhibit = page.getByRole('article').getByRole('heading', { level: 2 });
+    await expect(exhibit).toBeVisible();
+    // The exhibit that opens is the one the win named, not the rail's default.
+    expect(name).toContain((await exhibit.textContent())!.trim());
+  });
+
+  test('scrolls a deep-linked system into the visible rail', async ({ page }) => {
+    await page.goto('/projects?system=delegate-action');
+    const active = page.getByTestId('project-delegate-action');
+    await expect(active).toHaveAttribute('aria-current', 'true');
+
+    const geometry = await active.evaluate((item) => {
+      const rail = item.closest('nav')!.getBoundingClientRect();
+      const current = item.getBoundingClientRect();
+      return {
+        visibleHorizontally: current.left >= rail.left && current.right <= rail.right,
+        visibleVertically: current.top >= rail.top && current.bottom <= rail.bottom,
+      };
+    });
+
+    expect(geometry.visibleHorizontally).toBe(true);
+    expect(geometry.visibleVertically).toBe(true);
   });
 });

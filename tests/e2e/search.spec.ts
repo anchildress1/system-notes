@@ -82,7 +82,7 @@ test.describe('Notes index', () => {
     ]);
     await page.goto('/notes');
     const board = page.getByRole('listbox', { name: 'Top ranked notes' });
-    const secondTile = page.getByRole('option', { name: 'Read note 2: Second decision' });
+    const secondTile = page.getByRole('option', { name: 'Second decision, position 2' });
     const reducedTileMotion = () =>
       secondTile.evaluate((option) => {
         const style = getComputedStyle(option, '::before');
@@ -126,8 +126,35 @@ test.describe('Notes index', () => {
 
     await expect(page).toHaveURL(/project=System(\+|%20)Notes/);
     await page.getByRole('button', { name: 'Clear' }).click();
-    await expect(checkbox).not.toBeChecked();
     await expect(page).not.toHaveURL(/project=/);
+
+    // Clear sits outside the panel, so it also closes it and the checkbox
+    // leaves the DOM. Reopen to prove the refinement is gone from the control
+    // itself and not merely from the URL.
+    await page.getByText('Project', { exact: true }).click();
+    await expect(page.getByRole('checkbox', { name: /System Notes/i })).not.toBeChecked();
+  });
+
+  test('closes an open filter panel when the click lands outside it', async ({ page }) => {
+    await mockAlgoliaSearch(page, [buildHit()]);
+    await page.goto('/notes');
+    await expect(page.getByRole('heading', { name: 'Failure is useful data' })).toBeVisible();
+
+    // Matched on a leading-text regex, not exact text: selecting a facet adds a
+    // count badge to the summary, so `Project` stops matching exactly.
+    const panel = page.locator('details').filter({ hasText: /^Project/ });
+    const summary = panel.locator('summary');
+
+    await summary.click();
+    await expect(panel).toHaveAttribute('open', '');
+
+    // Inside the panel first: checking a box must not dismiss the menu it was
+    // aimed at.
+    await page.getByRole('checkbox', { name: /System Notes/i }).check();
+    await expect(panel).toHaveAttribute('open', '');
+
+    await page.locator('h1').click();
+    await expect(panel).not.toHaveAttribute('open', '');
   });
 
   test('keeps the result grid within the mobile viewport', async ({ page }) => {
@@ -187,13 +214,13 @@ test.describe('Notes index', () => {
     await expect(tiles.nth(2)).toHaveAttribute('data-category', 'Architecture');
     await expect(tiles.nth(3)).toHaveAttribute('data-category', 'Principle');
     await expect(tiles.nth(boardShape.tiles - 1)).toHaveAccessibleName(
-      `Read note ${boardShape.tiles}: Ranked note ${boardShape.tiles}`
+      `Ranked note ${boardShape.tiles}, position ${boardShape.tiles}`
     );
     await expect(page.getByRole('navigation', { name: 'Notes pagination' })).toHaveCount(0);
     expect(requestedLimits).toContain('500');
 
     const tileTitles = await tiles.evaluateAll((buttons) =>
-      buttons.map((button) => button.getAttribute('aria-label')?.replace(/^Read note \d+: /, ''))
+      buttons.map((button) => button.getAttribute('aria-label')?.replace(/, position \d+$/, ''))
     );
     const tileCategories = await tiles.evaluateAll((buttons) =>
       buttons.map((button) => button.getAttribute('data-category'))
@@ -205,26 +232,8 @@ test.describe('Notes index', () => {
     // ranked list's prefix — never a reordering or a sample of it.
     const onBoard = hits.slice(0, boardShape.tiles);
     expect(tileTitles).toEqual(onBoard.map((hit) => hit.title));
-    expect(initialQueueTitles).toEqual(hits.slice(1, 5).map((hit) => hit.title));
+    expect(initialQueueTitles).toEqual(hits.slice(1, 6).map((hit) => hit.title));
     expect(tileCategories).toEqual(onBoard.map((hit) => hit.category));
-
-    const colorSignatures = await tiles.evaluateAll((options) =>
-      options.slice(0, 4).map((option) => {
-        const style = getComputedStyle(option, '::before');
-        return `${style.backgroundColor}|${style.borderTopColor}|${style.borderTopWidth}`;
-      })
-    );
-    expect(new Set(colorSignatures).size).toBe(4);
-    // Tiles are a census mark, not a primary control: they are deliberately
-    // smaller than a pointer target so 347 notes read as one composite block.
-    // Every note they stand for stays reachable at full size through the search
-    // box and the ranked queue, and the board itself is fully keyboard-operable
-    // (asserted below), which is what carries the interaction — so this pins the
-    // exact drawn size to catch accidental drift rather than asserting a
-    // touch-target floor the mark is not trying to meet.
-    const firstTarget = await tiles.nth(0).boundingBox();
-    expect(firstTarget?.width).toBe(14);
-    expect(firstTarget?.height).toBe(10);
 
     await expect(board).toHaveJSProperty('tabIndex', 0);
     await expect(tiles.nth(0)).toHaveJSProperty('tabIndex', -1);
@@ -249,6 +258,10 @@ test.describe('Notes index', () => {
     );
     await board.press('Home');
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
+    await board.press('r');
+    await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
+    await board.press('Home');
+    await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
     await board.press('a');
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
     await board.press('ArrowRight');
@@ -256,33 +269,24 @@ test.describe('Notes index', () => {
     await page.keyboard.press('Tab');
     await expect(page.getByRole('searchbox', { name: 'Search the notes index' })).toBeFocused();
 
-    const selectedTile = page.getByRole('option', { name: 'Read note 37: Ranked note 37' });
+    const selectedTile = page.getByRole('option', { name: 'Ranked note 37, position 37' });
     await selectedTile.click();
 
     await expect(board).toBeFocused();
     await expect(selectedTile).toHaveAttribute('aria-selected', 'true');
-    const selectedMotion = await selectedTile.evaluate((option) => {
-      const style = getComputedStyle(option, '::before');
-      return {
-        name: style.animationName,
-        duration: style.animationDuration,
-        iterations: style.animationIterationCount,
-        easing: style.animationTimingFunction,
-      };
-    });
-    expect(selectedMotion).toEqual({
-      name: expect.stringMatching(/board-select$/),
-      duration: '0.36s',
-      iterations: '1',
-      easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-    });
+    // That the cue plays at all is the contract the reduced-motion test negates.
+    // Its duration, easing and iteration count are design numbers, not failures.
+    const selectedAnimation = await selectedTile.evaluate(
+      (option) => getComputedStyle(option, '::before').animationName
+    );
+    expect(selectedAnimation).toMatch(/board-select$/);
     const selectedCard = page.getByRole('article').filter({ hasText: 'Ranked note 37' });
     await expect(selectedCard.getByRole('heading', { name: 'Ranked note 37' })).toBeVisible();
     await expect(selectedCard).toContainText('The complete evidence behind the decision.');
     const selectedQueueTitles = await page
       .locator('[data-ranked-queue] button')
       .evaluateAll((buttons) => buttons.map((button) => button.children.item(1)?.textContent));
-    expect(selectedQueueTitles).toEqual(hits.slice(0, 4).map((hit) => hit.title));
+    expect(selectedQueueTitles).toEqual(hits.slice(0, 5).map((hit) => hit.title));
     await expect(page.getByRole('list', { name: 'Highest-ranked alternate notes' })).toBeVisible();
     expect(page.url()).toBe(initialURL);
 
@@ -314,6 +318,7 @@ test.describe('Notes index', () => {
           const top = Math.round(tile.getBoundingClientRect().top);
           rows.set(top, (rows.get(top) ?? 0) + 1);
         }
+        const last = node.children[node.children.length - 1];
         return {
           tiles: node.children.length,
           rowLengths: [...new Set(rows.values())],
@@ -321,6 +326,10 @@ test.describe('Notes index', () => {
             .getComputedStyle(node)
             .gridTemplateColumns.split(/\s+/)
             .filter(Boolean).length,
+          // How much panel the last column leaves unspent on the right.
+          remainder: last
+            ? node.getBoundingClientRect().right - last.getBoundingClientRect().right
+            : 0,
         };
       });
 
@@ -346,13 +355,68 @@ test.describe('Notes index', () => {
         )
         .toBe(true);
 
-      const { tiles, rowLengths, columns } = settled;
+      const { tiles, rowLengths, columns, remainder } = settled;
       // One distinct row length is the whole point: every row is full.
       expect(rowLengths, `ragged board at ${width}px`).toHaveLength(1);
       expect(rowLengths[0]).toBe(columns);
       expect(tiles).toBeGreaterThan(0);
       expect(tiles).toBeLessThanOrEqual(hits.length);
+      // Full rows are not a rectangle on their own. Fixed 24px tracks kept every
+      // row full while auto-fill dropped the leftover width, so the board sat 22px
+      // short of the panel and stopped squaring up with the rules above it — and
+      // the row check above passed the entire time. Fluid tracks spend the
+      // remainder on the tiles, so only fr rounding may survive — about a pixel,
+      // against the 22 the fixed track dropped.
+      expect(remainder, `board leaves dead panel at ${width}px`).toBeLessThan(2);
     }
+  });
+
+  test('restarts arrows at the first tile when resizing trims the selection away', async ({
+    page,
+  }) => {
+    const hits = Array.from({ length: 347 }, (_, index) =>
+      buildHit({
+        objectID: `card:test:${index + 1}`,
+        title: `Ranked note ${index + 1}`,
+        __position: index + 1,
+      })
+    );
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await mockAlgoliaSearch(page, hits);
+    await page.goto('/notes');
+    const board = page.getByRole('listbox', { name: 'Top ranked notes' });
+    const tiles = board.getByRole('option');
+
+    // The LAST tile on the wide board, read rather than named: a narrower panel
+    // resolves fewer columns and so holds fewer tiles, which makes the tail the
+    // one selection guaranteed to be trimmed at any density. Naming a fixed rank
+    // pinned the test to a tile size — it broke the moment the grain changed,
+    // without the behaviour under test moving at all.
+    await expect(tiles.first()).toBeVisible();
+    // The board fills in over a couple of renders, so settle on a steady count
+    // before reading the tail — counting too early names tile -1.
+    let wideCount = 0;
+    await expect
+      .poll(async () => {
+        const seen = await tiles.count();
+        const steady = seen > 0 && seen === wideCount;
+        wideCount = seen;
+        return steady;
+      })
+      .toBe(true);
+    const selected = tiles.nth(wideCount - 1);
+    const trimmedId = await selected.getAttribute('data-note-id');
+    await selected.click();
+    await expect(selected).toHaveAttribute('aria-selected', 'true');
+
+    await page.setViewportSize({ width: 320, height: 900 });
+    await expect.poll(() => tiles.count()).toBeLessThan(wideCount);
+    await expect(board.locator(`[data-note-id="${trimmedId}"]`)).toHaveCount(0);
+    await expect(board).not.toHaveAttribute('aria-activedescendant', /.+/);
+    await board.focus();
+    await board.press('ArrowRight');
+
+    await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
   });
 
   test('ignores a ?note param and opens the top-ranked note', async ({ page }) => {

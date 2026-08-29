@@ -16,25 +16,16 @@
 
 .code {
   margin-bottom: 1.5rem;
-  color: var(--flag);
-  font-size: 0.9375rem;
-  letter-spacing: 0.16em;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
 }
 
-.message h1 {
-  font-family: var(--font-display);
-  font-size: clamp(4rem, 9vw, 8.5rem);
-  font-weight: 400;
-  letter-spacing: -0.06em;
-  line-height: 0.82;
-}
-
-.message h1 em {
-  display: block;
-  color: var(--flag);
-  font-weight: 400;
-}
+/* Type and the italic turn both come from .page-head-title. This page carried
+   its own clamp and its own mobile step, which is how the site ended up with
+   more heading sizes than it has heads. */
 
 .message > p:not(.code) {
   max-width: 43rem;
@@ -61,12 +52,7 @@
 }
 
 .message nav a:first-child {
-  border-color: var(--flag);
-}
-
-.message nav a:hover {
-  border-color: var(--flag);
-  color: var(--flag);
+  border-color: var(--ink-accent);
 }
 
 .marker {
@@ -92,10 +78,6 @@
 }
 
 @media (max-width: 30rem) {
-  .message h1 {
-    font-size: 3.9rem;
-  }
-
   .message nav {
     align-items: stretch;
     flex-direction: column;

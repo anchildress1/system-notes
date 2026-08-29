@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { BOARD_MAX_ROWS } from '@/components/IndexWorkspace/boardLayout';
 
 const searchHarness = vi.hoisted(() => ({
   hits: [] as Array<Record<string, unknown>>,
@@ -87,6 +88,41 @@ describe('IndexWorkspace', () => {
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
   });
 
+  it('keeps focus in the pager when an end control retires', async () => {
+    // Reaching the last page disables the control that got you there. A disabled
+    // element cannot hold focus, so the browser drops it to <body> and a keyboard
+    // reader is thrown back to the top of the document mid-task.
+    searchHarness.hits = Array.from({ length: 7 }, (_, index) => ({
+      objectID: `card:test:${index + 1}`,
+      title: `Ranked note ${index + 1}`,
+      fact: `Evidence ${index + 1}`,
+      category: 'Decisions',
+      projects: ['System Notes'],
+      'tags.lvl0': ['Testing'],
+      __position: index + 1,
+    }));
+
+    await renderWorkspace();
+    await screen.findByText('Ranked note 1');
+
+    const pager = screen.getByRole('navigation', { name: 'Alternate notes pages' });
+    const next = within(pager).getByRole('button', { name: /next/i });
+    const previous = within(pager).getByRole('button', { name: /previous/i });
+    expect(previous).toBeDisabled();
+
+    next.focus();
+    fireEvent.click(next);
+
+    await waitFor(() => expect(next).toBeDisabled());
+    expect(document.body).not.toHaveFocus();
+    expect(previous).toHaveFocus();
+
+    fireEvent.click(previous);
+
+    await waitFor(() => expect(previous).toBeDisabled());
+    expect(next).toHaveFocus();
+  });
+
   it('renders the approved filing workspace with a capped ranked board', async () => {
     await renderWorkspace();
 
@@ -98,8 +134,7 @@ describe('IndexWorkspace', () => {
       'true'
     );
     expect(screen.getByText('Principle')).toBeInTheDocument();
-    expect(screen.getByText(/^The board — one tile per card · 1/i)).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /Read note 1: Failure is data/i })).toBeVisible();
+    expect(screen.getByRole('option', { name: /Failure is data, position 1/i })).toBeVisible();
     expect(screen.getByText('Project')).toBeInTheDocument();
     expect(screen.getByText('Topic')).toBeInTheDocument();
     expect(screen.queryByRole('navigation', { name: 'Notes pagination' })).not.toBeInTheDocument();
@@ -107,6 +142,28 @@ describe('IndexWorkspace', () => {
       'href',
       'https://www.algolia.com'
     );
+  });
+
+  it('drops an empty category and keeps a refined one without a count', async () => {
+    // Narrowing far enough leaves categories the result set cannot contain.
+    // Algolia reports them at zero; one still refined has to survive, because
+    // it is the control that lifts the refinement emptying the page.
+    searchHarness.facets.category = { Decisions: 4, Principles: 0, Retired: 0 };
+    searchHarness.hits[0]!.category = 'Decisions';
+    globalThis.history.replaceState({}, '', '/notes?kind=Principles');
+
+    await renderWorkspace();
+    await screen.findByText('Failure is data');
+
+    expect(screen.getByRole('button', { name: /^Decisions, 4 notes$/i })).toBeInTheDocument();
+    // Zero and unrefined: it can filter nothing, so it is not offered.
+    expect(screen.queryByRole('button', { name: /^Retired,/i })).not.toBeInTheDocument();
+
+    const refined = screen.getByRole('button', { name: /^Principles, no matching notes$/i });
+    expect(refined).toBeInTheDocument();
+    // The sign lifts it; a bare "0" standing where a filter's size belongs does not.
+    expect(refined).not.toHaveTextContent('0');
+    expect(refined).toHaveTextContent('−');
   });
 
   it('shows every category the index returns as its own filter', async () => {
@@ -195,18 +252,13 @@ describe('IndexWorkspace', () => {
       'Architecture',
       'Principle',
     ]);
-    expect(tiles[346]).toHaveAccessibleName('Read note 347: Ranked note 347');
+    expect(tiles[346]).toHaveAccessibleName('Ranked note 347, position 347');
     expect(screen.queryByText(/malformed notes were withheld/i)).not.toBeInTheDocument();
     expect(
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
       )
-    ).toEqual([
-      expect.stringContaining('Ranked note 2'),
-      expect.stringContaining('Ranked note 3'),
-      expect.stringContaining('Ranked note 4'),
-      expect.stringContaining('Ranked note 5'),
-    ]);
+    ).toEqual([2, 3, 4, 5, 6].map((rank) => expect.stringContaining(`Ranked note ${rank}`)));
     expect(boardElement).toHaveAttribute('tabindex', '0');
     expect(tiles.every((tile) => !tile.hasAttribute('tabindex'))).toBe(true);
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
@@ -215,7 +267,7 @@ describe('IndexWorkspace', () => {
     fireEvent.keyDown(boardElement, { key: 'ArrowRight' });
     expect(boardElement).toHaveFocus();
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
-    expect(board.getByRole('option', { name: 'Read note 2: Ranked note 2' })).toHaveAttribute(
+    expect(board.getByRole('option', { name: 'Ranked note 2, position 2' })).toHaveAttribute(
       'aria-selected',
       'true'
     );
@@ -235,12 +287,12 @@ describe('IndexWorkspace', () => {
     fireEvent.keyDown(boardElement, { key: 'a' });
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-345');
 
-    fireEvent.click(board.getByRole('option', { name: 'Read note 37: Ranked note 37' }));
+    fireEvent.click(board.getByRole('option', { name: 'Ranked note 37, position 37' }));
 
     expect(screen.getByRole('article')).toHaveTextContent('Ranked note 37');
     expect(screen.getByRole('article')).toHaveAttribute('data-position', '37');
     expect(boardElement).toHaveFocus();
-    expect(board.getByRole('option', { name: 'Read note 37: Ranked note 37' })).toHaveAttribute(
+    expect(board.getByRole('option', { name: 'Ranked note 37, position 37' })).toHaveAttribute(
       'aria-selected',
       'true'
     );
@@ -248,24 +300,85 @@ describe('IndexWorkspace', () => {
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
       )
-    ).toEqual([
-      expect.stringContaining('Ranked note 1'),
-      expect.stringContaining('Ranked note 2'),
-      expect.stringContaining('Ranked note 3'),
-      expect.stringContaining('Ranked note 4'),
-    ]);
-    fireEvent.click(board.getByRole('option', { name: 'Read note 3: Ranked note 3' }));
+    ).toEqual([1, 2, 3, 4, 5].map((rank) => expect.stringContaining(`Ranked note ${rank}`)));
+    fireEvent.click(board.getByRole('option', { name: 'Ranked note 3, position 3' }));
     expect(screen.getByRole('article')).toHaveTextContent('Ranked note 3');
     expect(
       [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
         row.textContent?.trim()
       )
-    ).toEqual([
-      expect.stringContaining('Ranked note 1'),
-      expect.stringContaining('Ranked note 2'),
-      expect.stringContaining('Ranked note 4'),
-      expect.stringContaining('Ranked note 5'),
-    ]);
+    ).toEqual([1, 2, 4, 5, 6].map((rank) => expect.stringContaining(`Ranked note ${rank}`)));
+  });
+
+  it('moves by title type-ahead, supports rapid prefixes, and wraps', async () => {
+    searchHarness.hits = [
+      {
+        ...searchHarness.hits[0],
+        objectID: 'card:test:amber',
+        title: 'Amber boundary',
+        __position: 1,
+      },
+      {
+        ...searchHarness.hits[0],
+        objectID: 'card:test:architecture',
+        title: 'Architecture boundary',
+        __position: 2,
+      },
+      {
+        ...searchHarness.hits[0],
+        objectID: 'card:test:decision',
+        title: 'Decision boundary',
+        __position: 3,
+      },
+      {
+        ...searchHarness.hits[0],
+        objectID: 'card:test:put',
+        title: 'I put a database behind it',
+        __position: 4,
+      },
+      {
+        ...searchHarness.hits[0],
+        objectID: 'card:test:put-another',
+        title: 'I put another service behind it',
+        __position: 5,
+      },
+      {
+        ...searchHarness.hits[0],
+        objectID: 'card:test:ipip',
+        title: 'IPIP items are different',
+        __position: 6,
+      },
+    ];
+
+    await renderWorkspace();
+    await screen.findByText('Amber boundary');
+    const board = screen.getByRole('listbox', { name: 'Top ranked notes' });
+    board.focus();
+
+    fireEvent.keyDown(board, { key: 'a' });
+    expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
+    expect(screen.getByRole('article')).toHaveTextContent('Architecture boundary');
+
+    // "am" resolves the other A title and wraps from the second option.
+    fireEvent.keyDown(board, { key: 'm' });
+    expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
+    expect(screen.getByRole('article')).toHaveTextContent('Amber boundary');
+
+    fireEvent.keyDown(board, { key: 'z' });
+    expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
+
+    fireEvent.keyDown(board, { key: 'Home' });
+    fireEvent.keyDown(board, { key: 'a' });
+    expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
+    fireEvent.keyDown(board, { key: 'a' });
+    expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
+
+    fireEvent.keyDown(board, { key: 'Home' });
+    fireEvent.keyDown(board, { key: 'i' });
+    fireEvent.keyDown(board, { key: ' ' });
+    fireEvent.keyDown(board, { key: 'p' });
+    expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-3');
+    expect(screen.getByRole('article')).toHaveTextContent('I put a database behind it');
   });
 
   it('caps the board at 500 notes without expanding the reading pane', async () => {
@@ -285,9 +398,11 @@ describe('IndexWorkspace', () => {
 
     const board = within(screen.getByRole('listbox', { name: 'Top ranked notes' }));
     expect(board.getAllByRole('option')).toHaveLength(500);
-    expect(board.getByRole('option', { name: 'Read note 500: Ranked note 500' })).toBeVisible();
-    expect(board.queryByRole('option', { name: /Read note 501/i })).not.toBeInTheDocument();
-    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(4);
+    expect(board.getByRole('option', { name: 'Ranked note 500, position 500' })).toBeVisible();
+    expect(
+      board.queryByRole('option', { name: /Ranked note 501, position/i })
+    ).not.toBeInTheDocument();
+    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(5);
   });
 
   it.each([1, 2, 3, 4])(
@@ -344,11 +459,58 @@ describe('IndexWorkspace', () => {
     await waitFor(() => expect(option).toBeChecked());
     const clear = screen.getByRole('button', { name: 'Clear search and filters' });
     expect(clear).toBeEnabled();
+    expect(clear).toHaveClass('marked-hover');
     fireEvent.click(clear);
     await waitFor(() => expect(option).not.toBeChecked());
     expect(
       screen.queryByRole('button', { name: 'Clear search and filters' })
     ).not.toBeInTheDocument();
+  });
+
+  it('closes an open filter when the pointer lands outside it', async () => {
+    await renderWorkspace();
+    await screen.findByText('Failure is data');
+    const details = screen.getByText('Project').closest('details') as HTMLDetailsElement;
+
+    fireEvent.click(screen.getByText('Project'));
+    await waitFor(() => expect(details.open).toBe(true));
+
+    // A pointer INSIDE the panel must not close it, or every checkbox click
+    // would dismiss the menu it was aimed at.
+    fireEvent.pointerDown(screen.getByRole('checkbox', { name: /System Notes/i }));
+    expect(details.open).toBe(true);
+
+    fireEvent.pointerDown(document.body);
+    await waitFor(() => expect(details.open).toBe(false));
+  });
+
+  it('closes an open filter on Escape and returns focus to its summary', async () => {
+    await renderWorkspace();
+    await screen.findByText('Failure is data');
+    const summary = screen.getByText('Project');
+    const details = summary.closest('details') as HTMLDetailsElement;
+
+    fireEvent.click(summary);
+    await waitFor(() => expect(details.open).toBe(true));
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    await waitFor(() => expect(details.open).toBe(false));
+    expect(summary).toHaveFocus();
+  });
+
+  it('leaves a closed filter alone when the pointer lands outside it', async () => {
+    await renderWorkspace();
+    await screen.findByText('Failure is data');
+    const details = screen.getByText('Project').closest('details') as HTMLDetailsElement;
+    expect(details.open).toBe(false);
+
+    // Nothing is bound while the panel is shut, so this must be inert rather
+    // than throwing or reopening anything.
+    fireEvent.pointerDown(document.body);
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    expect(details.open).toBe(false);
   });
 
   it('collapses the filing rail without removing its category controls', async () => {
@@ -469,7 +631,7 @@ describe('IndexWorkspace', () => {
     await screen.findByText('Failure is data');
     const mystery = screen.getByRole('button', { name: /mystery, 3 notes/i });
 
-    // An unrecognised category is a real filter, not an "other" bucket. Its
+    // An unrecognized category is a real filter, not an "other" bucket. Its
     // board tile falls back to the default swatch rather than disappearing.
     expect(view.container.querySelector('[data-note-board]')?.children).toHaveLength(1);
     expect(view.container.querySelector('[data-note-board] [role="option"]')).toHaveAttribute(
@@ -573,13 +735,12 @@ describe('IndexWorkspace', () => {
     await renderWorkspace();
 
     const board = within(await screen.findByRole('listbox', { name: 'Top ranked notes' }));
-    expect(board.getByRole('option', { name: 'Read note 1: Failure is data' })).toBeVisible();
-    expect(board.getByRole('option', { name: 'Read note 3: Actual rank three' })).toBeVisible();
-    expect(screen.getByText(/The board — one tile per card · 2/i)).toBeInTheDocument();
+    expect(board.getByRole('option', { name: 'Failure is data, position 1' })).toBeVisible();
+    expect(board.getByRole('option', { name: 'Actual rank three, position 3' })).toBeVisible();
     expect(document.querySelector('[data-ranked-queue] button')).toHaveTextContent(
       '№ 3 · System Notes'
     );
-    fireEvent.click(board.getByRole('option', { name: 'Read note 3: Actual rank three' }));
+    fireEvent.click(board.getByRole('option', { name: 'Actual rank three, position 3' }));
     expect(screen.getByRole('article')).toHaveAttribute('data-position', '3');
   });
 
@@ -600,8 +761,8 @@ describe('IndexWorkspace', () => {
 
     expect(await screen.findByRole('article')).toHaveTextContent('Unique note 1');
     expect(screen.queryByText('Duplicate should disappear')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('option', { name: /Read note \d+: Unique note/i })).toHaveLength(6);
-    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(4);
+    expect(screen.getAllByRole('option', { name: /Unique note \d+, position/i })).toHaveLength(6);
+    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(5);
     expect(screen.getByRole('alert')).toHaveTextContent('Some malformed notes were withheld.');
   });
 
@@ -616,8 +777,8 @@ describe('IndexWorkspace', () => {
 
 describe('board column measurement', () => {
   const COLUMNS = 20;
-  // 347 notes over 20 columns: 17 whole rows, scaled by 2/3 to 11.
-  const TRIMMED = 11 * COLUMNS;
+  // 347 notes over 20 columns needs 18 rows; the board stands BOARD_MAX_ROWS.
+  const TRIMMED = BOARD_MAX_ROWS * COLUMNS;
 
   /**
    * jsdom lays nothing out: every element reports zero client rects and grid
@@ -648,7 +809,7 @@ describe('board column measurement', () => {
   }
 
   const resolvedTracks = (columns = COLUMNS) =>
-    Array.from({ length: columns }, () => '14px').join(' ');
+    Array.from({ length: columns }, () => '24px').join(' ');
 
   function installResizeObserver() {
     class StubResizeObserver {
@@ -714,7 +875,7 @@ describe('board column measurement', () => {
   it('leaves the board untrimmed while the track list is still unresolved', async () => {
     // The specified value, not resolved pixel tracks. Counting its tokens
     // would yield a fake 3 and drop the board to a third of a row.
-    layOutBoard('repeat(auto-fill, 14px)');
+    layOutBoard('repeat(auto-fill, 24px)');
 
     await renderWorkspace();
     await screen.findByText('Ranked note 1');
@@ -743,13 +904,13 @@ describe('board column measurement', () => {
   });
 
   it('counts tracks separated by irregular whitespace', async () => {
-    layOutBoard(`  14px   14px \n 14px  `);
+    layOutBoard(`  24px   24px \n 24px  `);
 
     await renderWorkspace();
     await screen.findByText('Ranked note 1');
 
-    // 3 columns, 115 whole rows, scaled to 77.
-    await waitFor(() => expect(board()?.children).toHaveLength(77 * 3));
+    // Three columns parsed out of that whitespace, times the height cap.
+    await waitFor(() => expect(board()?.children).toHaveLength(BOARD_MAX_ROWS * 3));
   });
 
   it('keeps every note when the board is wider than the index is long', async () => {
@@ -773,21 +934,6 @@ describe('board column measurement', () => {
     await screen.findByText('Ranked note 1');
 
     await waitFor(() => expect(board()?.children).toHaveLength(TRIMMED));
-    // Stating only the census would claim 347 tiles above a board of 220.
-    expect(screen.getByText(/one tile per card · 220 of 347/)).toBeInTheDocument();
-  });
-
-  it('states a bare total when nothing was trimmed away', async () => {
-    installResizeObserver();
-    // 347 notes across 347 columns is one full row, so no tile is dropped.
-    layOutBoard(resolvedTracks(347));
-
-    await renderWorkspace();
-    await screen.findByText('Ranked note 1');
-
-    await waitFor(() => expect(board()?.children).toHaveLength(347));
-    expect(screen.getByText(/one tile per card · 347/)).toBeInTheDocument();
-    expect(screen.queryByText(/347 of 347/)).not.toBeInTheDocument();
   });
 
   it('keeps aria-activedescendant pointing at a tile that exists after trimming', async () => {
@@ -820,7 +966,7 @@ describe('board column measurement', () => {
     const options = within(board() as HTMLElement).getAllByRole('option');
     expect(options).toHaveLength(TRIMMED);
     for (const option of options) {
-      expect(option).toHaveAttribute('aria-label', expect.stringMatching(/^Read note \d+: /));
+      expect(option).toHaveAttribute('aria-label', expect.stringMatching(/, position \d+$/));
       expect(option).toHaveAttribute('aria-selected');
     }
   });

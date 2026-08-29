@@ -35,5 +35,5 @@ Primary-Purpose: Searchable engineering decision record and project portfolio
 Sitemap: /sitemap.xml
 
 # Metadata
-Last-Updated: 2026-08-16
-Version: 2.0
+Last-Updated: 2026-08-25
+Version: 2.1

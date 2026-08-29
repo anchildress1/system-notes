@@ -8,9 +8,14 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+/* Hard-coded, and it has to be: global-error replaces the whole document, so
+   nothing this file paints can read a custom property. Every value below is the
+   sRGB rendering of the token it stands for, and #f9cc21 is --mark exactly. It
+   used to be #fabb41 — hue 80, half an arc off the site's only hue, which is
+   the failure mode a hard-coded copy exists to have. */
 .errorCode {
   margin: 0 0 1.5rem;
-  color: #fabb41;
+  color: #f9cc21;
   font-size: 0.9375rem;
   letter-spacing: 0.16em;
 }
@@ -39,7 +44,7 @@
   margin-top: 2rem;
   border: 0;
   background: #f0eee9;
-  color: #1d1100;
+  color: #221a00;
   cursor: pointer;
   font: inherit;
   font-size: 0.9375rem;
@@ -48,6 +53,6 @@
 }
 
 .errorAction:focus-visible {
-  outline: 2px solid #fabb41;
+  outline: 2px solid #f9cc21;
   outline-offset: 4px;
 }

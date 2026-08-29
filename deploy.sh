@@ -6,6 +6,21 @@ UI_SERVICE="system-notes"
 UI_SOURCE="."
 UI_PORT="3000"
 
+# Env loading comes FIRST, because everything below reads env vars.
+# It used to sit forty lines further down, after REGION, the cleanup settings
+# and PROJECT_ID had already been resolved — so any of those set in .env were
+# read before the file was loaded and silently ignored.
+#
+# PUBLIC keys only. Anything secret belongs in Secret Manager, not here.
+# In CI there is no .env; the workflow exports these directly, and this block
+# is a no-op there.
+if [[ -f ".env" ]]; then
+    set -a
+    # shellcheck disable=SC1091
+    . ".env"
+    set +a
+fi
+
 REGION="${GCP_REGION:-us-east1}"
 ARTIFACT_CLEANUP_ENABLED="${ARTIFACT_CLEANUP_ENABLED:-true}"
 ARTIFACT_CLEANUP_KEEP_COUNT="${ARTIFACT_CLEANUP_KEEP_COUNT:-5}"
@@ -19,9 +34,14 @@ if ! command -v gcloud &> /dev/null; then
     exit 1
 fi
 
+# An explicit GCP_PROJECT_ID wins, because that is how the release workflow
+# targets a project. With none set — the local case — the deploy follows
+# whichever project gcloud is currently signed in to.
 PROJECT_ID="${GCP_PROJECT_ID:-}"
+PROJECT_SOURCE="GCP_PROJECT_ID"
 if [[ -z "$PROJECT_ID" ]]; then
     PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
+    PROJECT_SOURCE="gcloud config (signed-in account)"
 fi
 if [[ "$PROJECT_ID" == "(unset)" ]] || [[ -z "$PROJECT_ID" ]]; then
     echo "Error: No Google Cloud Project ID set." >&2
@@ -34,6 +54,8 @@ echo "$SEPARATOR"
 echo "DEPLOYMENT CONFIGURATIONS"
 echo "$SEPARATOR"
 echo "Project: $PROJECT_ID ($PROJECT_NUMBER)"
+echo "Source:  $PROJECT_SOURCE"
+echo "Account: $(gcloud config get-value account 2>/dev/null)"
 echo "Region:  $REGION"
 echo "UI:      $UI_SERVICE ($UI_SOURCE)"
 echo "Cleanup: ${ARTIFACT_CLEANUP_ENABLED} (keep ${ARTIFACT_CLEANUP_KEEP_COUNT}, delete untagged > ${ARTIFACT_CLEANUP_DELETE_OLDER_THAN})"
@@ -45,15 +67,6 @@ gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com
 
 # Define Service Account
 UI_SA="system-notes-ui@$PROJECT_ID.iam.gserviceaccount.com"
-
-# Env loading (PUBLIC keys are safe for client-side)
-# For sensitive secrets, use Secret Manager instead of env vars
-if [[ -f ".env" ]]; then
-    set -a
-    # shellcheck disable=SC1091
-    . ".env"
-    set +a
-fi
 
 require_env() {
     local name=$1
@@ -69,6 +82,9 @@ require_env "NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY"
 
 NEXT_PUBLIC_BASE_URL="${NEXT_PUBLIC_BASE_URL:-https://anchildress1.dev}"
 NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME="${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME:-system-notes}"
+# Optional in the app (src/lib/algolia.ts falls back to ''), but it has to reach
+# the build or it is '' in every deployed bundle whether or not .env sets it.
+NEXT_PUBLIC_ALGOLIA_AGENT_ID="${NEXT_PUBLIC_ALGOLIA_AGENT_ID:-}"
 BUILD_TIMEOUT="${BUILD_TIMEOUT:-1200}"
 
 if ! [[ "$BUILD_TIMEOUT" =~ ^[1-9][0-9]*$ ]]; then
@@ -207,7 +223,7 @@ deploy_service() {
     if [[ -n "$dockerfile_path" ]]; then
         submit_build "$source_dir" \
             --config "cloudbuild.yaml" \
-            --substitutions "_IMAGE_URI=$image_uri,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME"
+            --substitutions "_IMAGE_URI=$image_uri,_NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=$NEXT_PUBLIC_ALGOLIA_APPLICATION_ID,_NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=$NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,_NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL,_NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=$NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME,_NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID"
     else
         submit_build --tag "$image_uri" "$source_dir"
     fi
@@ -270,6 +286,39 @@ UI_ENV_VARS="NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=${NEXT_PUBLIC_ALGOLIA_APPLICATIO
 UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=${NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}"
 UI_ENV_VARS+=",NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}"
 UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=${NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME}"
+UI_ENV_VARS+=",NEXT_PUBLIC_ALGOLIA_AGENT_ID=${NEXT_PUBLIC_ALGOLIA_AGENT_ID}"
+
+# Every NEXT_PUBLIC_* the app reads has to reach the build, or it is inlined as
+# undefined and the failure is silent — the page renders, the feature behind the
+# value just does not work. NEXT_PUBLIC_ALGOLIA_AGENT_ID sat unwired through the
+# whole chain exactly that way, so this is a preflight rather than a comment.
+#
+# Reads the source instead of a hand-kept list, so adding a var to the app is
+# what puts it under this check.
+verify_public_env() {
+    local missing=() empty=() name
+    while IFS= read -r name; do
+        [[ -z "$name" ]] && continue
+        if [[ "$UI_ENV_VARS" != *"$name="* ]]; then
+            missing+=("$name")
+        elif [[ -z "${!name-}" ]]; then
+            empty+=("$name")
+        fi
+    done < <(grep -rhoE 'NEXT_PUBLIC_[A-Z0-9_]+' src/ 2>/dev/null | sort -u)
+
+    if ((${#empty[@]})); then
+        echo "Warning: set but empty, will deploy blank: ${empty[*]}" >&2
+    fi
+    if ((${#missing[@]})); then
+        echo "Error: the app reads these and the deploy never passes them:" >&2
+        printf '  - %s\n' "${missing[@]}" >&2
+        echo "Add each to the substitutions, UI_ENV_VARS, cloudbuild.yaml and the Dockerfile." >&2
+        exit 1
+    fi
+    echo "Env preflight: every NEXT_PUBLIC_* the app reads is wired through."
+}
+
+verify_public_env
 
 deploy_service "$UI_SERVICE" "." "$UI_PORT" "$UI_SA" "$UI_ENV_VARS" "Dockerfile"
 

@@ -18,7 +18,6 @@ import { normalizeFactSearchHit } from '@/lib/noteContent';
 import { createSearchRouting } from '@/lib/searchRouting';
 import type { FactHitRecord } from '@/types/algolia';
 import { getSearchUserToken } from '@/utils/userToken';
-import type { IndexPulse } from '@/lib/indexPulse';
 import IndexSearch from './IndexSearch';
 import IndexSidebar from './IndexSidebar';
 import ResultQueue from './ResultQueue';
@@ -78,7 +77,7 @@ if (hasCredentials) {
   if (userToken) aa('setUserToken', userToken);
 }
 
-export default function IndexWorkspace({ pulse }: Readonly<{ pulse?: IndexPulse | null }>) {
+export default function IndexWorkspace() {
   const routing = useMemo(() => createSearchRouting(ALGOLIA_INDEX_NAME), []);
 
   if (!searchClient) {
@@ -100,12 +99,12 @@ export default function IndexWorkspace({ pulse }: Readonly<{ pulse?: IndexPulse 
       future={{ preserveSharedStateOnUnmount: true }}
     >
       <Configure hitsPerPage={MAX_BOARD_NOTES} clickAnalytics />
-      <IndexExperience pulse={pulse} />
+      <IndexExperience />
     </InstantSearch>
   );
 }
 
-function IndexExperience({ pulse }: Readonly<{ pulse?: IndexPulse | null }>) {
+function IndexExperience() {
   const { items, sendEvent } = useHits<FactHitRecord>();
   const { status } = useInstantSearch({ catchError: true });
   const readableItems = useMemo(() => {
@@ -148,7 +147,7 @@ function IndexExperience({ pulse }: Readonly<{ pulse?: IndexPulse | null }>) {
     <div className={styles.workspace}>
       <IndexSidebar items={rankedItems} selectedId={selectedId} onSelect={selectNote} />
       <div className={styles.readingPane}>
-        <IndexSearch pulse={pulse} />
+        <IndexSearch />
         <SearchResults
           rawItemCount={items.length}
           items={rankedItems}

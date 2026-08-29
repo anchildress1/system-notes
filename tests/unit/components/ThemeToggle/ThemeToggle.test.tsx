@@ -4,6 +4,14 @@ import ThemeToggle from '@/components/ThemeToggle/ThemeToggle';
 import { THEME_COLORS, THEME_STORAGE_KEY } from '@/lib/theme';
 
 const control = () => screen.getByRole('button', { name: 'Light theme' });
+let frameId = 0;
+let frames = new Map<number, FrameRequestCallback>();
+
+function flushFrame(): void {
+  const pending = [...frames.values()];
+  frames.clear();
+  for (const callback of pending) callback(performance.now());
+}
 
 function themeColorMeta() {
   const meta = document.createElement('meta');
@@ -16,10 +24,22 @@ function themeColorMeta() {
 describe('ThemeToggle', () => {
   beforeEach(() => {
     document.documentElement.removeAttribute('data-theme');
+    document.documentElement.removeAttribute('data-theme-switching');
     localStorage.clear();
+    frameId = 0;
+    frames = new Map();
+    vi.spyOn(globalThis, 'requestAnimationFrame').mockImplementation((callback) => {
+      const id = ++frameId;
+      frames.set(id, callback);
+      return id;
+    });
+    vi.spyOn(globalThis, 'cancelAnimationFrame').mockImplementation((id) => {
+      frames.delete(id);
+    });
   });
 
   afterEach(() => {
+    while (frames.size > 0) flushFrame();
     vi.restoreAllMocks();
     document.head.querySelector('meta[name="theme-color"]')?.remove();
   });
@@ -30,6 +50,7 @@ describe('ThemeToggle', () => {
     render(<ThemeToggle />);
 
     expect(control()).toHaveAttribute('aria-pressed', 'true');
+    expect(control()).toHaveAttribute('data-variant', 'outline');
   });
 
   it('falls back to dark when the document carries no theme yet', () => {
@@ -40,7 +61,7 @@ describe('ThemeToggle', () => {
     expect(control()).toHaveAttribute('aria-pressed', 'false');
   });
 
-  it('treats an unrecognised attribute value as the default', () => {
+  it('treats an unrecognized attribute value as the default', () => {
     document.documentElement.dataset.theme = 'sepia';
 
     render(<ThemeToggle />);
@@ -54,8 +75,27 @@ describe('ThemeToggle', () => {
     fireEvent.click(control());
 
     expect(document.documentElement.dataset.theme).toBe('light');
+    expect(document.documentElement).toHaveAttribute('data-theme-switching');
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('light');
     expect(control()).toHaveAttribute('aria-pressed', 'true');
+
+    flushFrame();
+    expect(document.documentElement).toHaveAttribute('data-theme-switching');
+    flushFrame();
+    expect(document.documentElement).not.toHaveAttribute('data-theme-switching');
+  });
+
+  it('restarts the atomic repaint when toggled twice before the next frame', () => {
+    render(<ThemeToggle />);
+
+    fireEvent.click(control());
+    fireEvent.click(control());
+    expect(frames).toHaveLength(1);
+
+    flushFrame();
+    flushFrame();
+    expect(document.documentElement.dataset.theme).toBe('dark');
+    expect(document.documentElement).not.toHaveAttribute('data-theme-switching');
   });
 
   it('switches back again', () => {

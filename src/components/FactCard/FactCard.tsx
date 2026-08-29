@@ -57,7 +57,7 @@ export default function FactCard({ hit, position = 1 }: Readonly<FactCardProps>)
 
       <div className={styles.actions}>
         {sourceUrl ? (
-          <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
+          <a className="marked-hover" href={sourceUrl} target="_blank" rel="noopener noreferrer">
             {sourceHost === 'dev.to' ? 'Read on DEV' : 'View source'}
             <FiArrowUpRight aria-hidden="true" />
           </a>

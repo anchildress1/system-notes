@@ -19,16 +19,16 @@ export default function ProjectsPage() {
 
   return (
     <main id="main-content" className={styles.main}>
-      <section className={styles.hero} aria-labelledby="exhibits-heading">
+      <section className={`page-head ${styles.hero}`} aria-labelledby="exhibits-heading">
         <h1 id="exhibits-heading">
-          What I&apos;ve shipped. <em>Including what I stopped.</em>
+          What I&rsquo;ve shipped.
+          <br />
+          <span>Including what I stopped.</span>
         </h1>
-        <p className={styles.blurb}>
-          {projects.length} systems, each cross-filed with the decisions it produced. The ones that
-          failed on purpose stay in the record.
-        </p>
       </section>
-      <ProjectDirectory projects={projects} />
+      <div className="page-column">
+        <ProjectDirectory projects={projects} />
+      </div>
     </main>
   );
 }

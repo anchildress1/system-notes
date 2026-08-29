@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import IndexPulseLine from '@/components/IndexWorkspace/IndexPulseLine';
 import IndexWorkspaceLoader from '@/components/IndexWorkspace/IndexWorkspaceLoader';
 import { getIndexPulse } from '@/lib/indexPulse';
 import { buildPageMetadata } from '@/lib/siteMetadata';
@@ -11,14 +12,33 @@ export const metadata: Metadata = buildPageMetadata({
   path: '/notes',
 });
 
+// The pulse is intentionally fresh at request time; its own five-minute cache
+// prevents repeated index reads without freezing it into the build artifact.
+export const dynamic = 'force-dynamic';
+
 export default async function NotesIndexPage() {
   const pulse = await getIndexPulse();
 
   return (
     <main id="main-content" className={styles.main}>
-      <h1 className="visually-hidden">System Notes Index</h1>
-      <section id="notes-index" className={styles.indexSection} aria-label="System Notes index">
-        <IndexWorkspaceLoader pulse={pulse} />
+      <div className="page-head">
+        <h1>
+          How I decide.
+          <br />
+          <span>Filed, dated, and searchable.</span>
+        </h1>
+        {pulse ? (
+          <p className={styles.pulse}>
+            <IndexPulseLine pulse={pulse} />
+          </p>
+        ) : null}
+      </div>
+      <section
+        id="notes-index"
+        className={`page-column ${styles.indexSection}`}
+        aria-label="System Notes index"
+      >
+        <IndexWorkspaceLoader />
       </section>
     </main>
   );

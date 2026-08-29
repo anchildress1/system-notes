@@ -11,31 +11,25 @@ const themeSongParagraphs: readonly ThemeSongParagraph[] = [
   { body: 'I’ve called “I Build Things” my theme song since the first time I heard it.' },
   {
     body:
-      'Part of that is Appalachian ingenuity. I was taught to fix what breaks, reuse what ' +
-      'still works, and take things apart just to understand how they function. I’ve been ' +
-      'dismantling systems and occasionally putting them back together since before I had ' +
-      'the vocabulary to call them systems.',
-  },
-  {
-    body:
-      'Another part is simpler. The song is just fun. It’s catchy, energetic, and it makes ' +
-      'me want to build things. I don’t treat a theme song as a metaphor exercise alone. I ' +
-      'picked this one because it’s motivating, memorable, and genuinely enjoyable.',
+      'Most of that is Appalachian ingenuity. I was taught to fix what breaks, reuse what ' +
+      'still works, and take a thing apart just to see how it works. I’ve been dismantling ' +
+      'systems, and occasionally putting them back together, since before I had the word ' +
+      'for them.',
   },
   { lead: 'The rest is how I build software.' },
   {
-    lead: 'I design systems by actively hunting failure points.',
+    lead: 'I design systems by hunting the failure first.',
     body:
-      'If something can break, I assume it will and I try to find it before production does. ' +
-      'There’s nothing I dislike more than shipping a “done” deployment and immediately ' +
-      'needing a hotfix. If I deployed it, the failure should already have been found, ' +
-      'understood, and addressed.',
+      'If a thing can break, I assume it will, and I would rather find it before production ' +
+      'does. Nothing irritates me more than shipping a “done” deployment and needing a ' +
+      'hotfix an hour later. If I deployed it, the failure should already have been found, ' +
+      'understood, and closed.',
   },
   {
     body:
-      'This song captures that balance. The joy of building something yourself, combined ' +
-      'with the belief that breaking things early, loudly, and intentionally is how you end ' +
-      'up with systems that actually ship clean and stay that way.',
+      'The song lands on both halves of that: the pleasure of building the thing yourself, ' +
+      'and the conviction that breaking it early, loudly, and on purpose is what makes it ' +
+      'ship clean and stay that way.',
   },
 ];
 
@@ -72,6 +66,7 @@ export const profile = {
   links: [
     { label: 'GitHub', href: 'https://github.com/anchildress1' },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/anchildress1' },
+    { label: 'X', href: 'https://x.com/anchildress1' },
     { label: 'DEV Community', href: 'https://dev.to/anchildress1' },
   ],
   // `lead` is the sentence that carried emphasis in the original copy; it is a

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import IntakeDesk from '@/components/IntakeDesk/IntakeDesk';
+import { profile } from '@/data/profile';
 import { buildPageMetadata } from '@/lib/siteMetadata';
 import styles from './page.module.css';
 
@@ -10,56 +12,27 @@ export const metadata: Metadata = buildPageMetadata({
   path: '/',
 });
 
-const stations = [
-  { name: 'Parse', who: 'agent', note: 'Reads the problem and names the requirements.' },
-  {
-    name: 'Retrieve',
-    who: 'agent + corpus',
-    note: 'Reads every system on file and names the ones that answer it.',
-  },
-  {
-    name: 'Verify',
-    who: 'deterministic',
-    note: 'Checks every cited system exists on file. Invented ones are dropped.',
-  },
-  {
-    name: 'Cover',
-    who: 'deterministic',
-    note: 'Any requirement nothing answers becomes a stated gap.',
-  },
-  { name: 'Assemble', who: 'agent', note: 'Writes the brief from the surviving evidence only.' },
-] as const;
-
 export default function IntakePage() {
   return (
     <main id="main-content" className={styles.main}>
       <section className={styles.intake} aria-labelledby="intake-heading">
-        <h1 id="intake-heading" className={styles.heading}>
-          Tell me what&apos;s breaking.{' '}
-          <em className={styles.headingTurn}>I&apos;ll show you how I&apos;d fix it.</em>
-        </h1>
-        <p className={styles.lede}>
-          Paste a role, or a failure you&apos;re living with. An agent parses it, pulls only from
-          systems I have actually shipped and the decisions behind them, drops anything it
-          can&apos;t source, and hands back a brief. No claim without evidence — that rule is
-          enforced in the pipeline, not promised in a paragraph.
-        </p>
-        <IntakeDesk />
-      </section>
-
-      <section className={styles.pipeline} aria-labelledby="pipeline-heading">
-        <h2 id="pipeline-heading" className={styles.pipelineHeading}>
-          What runs when you ask
-        </h2>
-        <ol className={styles.stations}>
-          {stations.map(({ name, who, note }) => (
-            <li key={name} className={styles.station}>
-              <p className={styles.stationName}>{name}</p>
-              <p className={styles.stationNote}>{note}</p>
-              <p className={styles.stationWho}>{who}</p>
-            </li>
-          ))}
-        </ol>
+        <div className="page-head">
+          <h1 id="intake-heading">
+            Tell me what&rsquo;s breaking.
+            <br />
+            <span>I&rsquo;ll show you how I&rsquo;d fix it.</span>
+          </h1>
+        </div>
+        <div className="page-column">
+          <p className={styles.proof}>
+            <strong>{profile.role}.</strong> The agent below cites only systems I&rsquo;ve actually
+            shipped.{' '}
+            <Link className="marked-link" href="/projects">
+              See the evidence.
+            </Link>
+          </p>
+          <IntakeDesk />
+        </div>
       </section>
     </main>
   );

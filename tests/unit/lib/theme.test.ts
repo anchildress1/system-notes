@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { runInNewContext } from 'node:vm';
+import { describe, expect, it, vi } from 'vitest';
 import {
   DEFAULT_THEME,
   parseTheme,
@@ -61,7 +62,7 @@ describe('THEME_SCRIPT', () => {
     expect(THEME_SCRIPT).not.toContain('document.body');
   });
 
-  it('carries the storage key and both chrome colours it has to apply', () => {
+  it('carries the storage key and both chrome colors it has to apply', () => {
     expect(THEME_SCRIPT).toContain(JSON.stringify(THEME_STORAGE_KEY));
     expect(THEME_SCRIPT).toContain(THEME_COLORS.light);
     expect(THEME_SCRIPT).toContain(THEME_COLORS.dark);
@@ -73,6 +74,33 @@ describe('THEME_SCRIPT', () => {
 
   it('reads the system preference when storage has nothing usable', () => {
     expect(THEME_SCRIPT).toContain('prefers-color-scheme: light');
+  });
+
+  it('still applies a light system preference when storage is unavailable', () => {
+    const setDocumentTheme = vi.fn();
+    const setThemeColor = vi.fn();
+    const storageFailure = new DOMException('Storage is unavailable', 'SecurityError');
+
+    expect(() =>
+      runInNewContext(THEME_SCRIPT, {
+        localStorage: {
+          getItem: () => {
+            throw storageFailure;
+          },
+        },
+        matchMedia: (query: string) => ({
+          matches: query === '(prefers-color-scheme: light)',
+        }),
+        document: {
+          documentElement: { setAttribute: setDocumentTheme },
+          querySelector: (selector: string) =>
+            selector === 'meta[name="theme-color"]' ? { setAttribute: setThemeColor } : null,
+        },
+      })
+    ).not.toThrow();
+
+    expect(setDocumentTheme).toHaveBeenCalledWith('data-theme', 'light');
+    expect(setThemeColor).toHaveBeenCalledWith('content', THEME_COLORS.light);
   });
 });
 

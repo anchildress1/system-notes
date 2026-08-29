@@ -1,8 +1,13 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
-import { test } from './utils';
+import { mockAlgoliaSearch, test } from './utils';
 
 const viewports = [
+  // 280 is a folding phone's cover screen, and it is also what a 1280px window
+  // looks like at 400% zoom — the width WCAG 1.4.10 asks to reflow to. The page
+  // used to hold a 320px floor and clip the overflow, so 40px of every route was
+  // not merely off screen but unreachable: scrollX could not leave 0.
+  { width: 280, height: 720 },
   { width: 320, height: 740 },
   { width: 390, height: 844 },
   { width: 768, height: 1024 },
@@ -16,11 +21,22 @@ for (const viewport of viewports) {
       test(`${path} has no horizontal overflow`, async ({ page }) => {
         await page.goto(path);
 
-        const widths = await page.evaluate(() => ({
-          scroll: document.documentElement.scrollWidth,
-          client: document.documentElement.clientWidth,
-        }));
+        const widths = await page.evaluate(() => {
+          window.scrollTo(9999, window.scrollY);
+          const reached = window.scrollX;
+          window.scrollTo(0, window.scrollY);
+          return {
+            scroll: document.documentElement.scrollWidth,
+            client: document.documentElement.clientWidth,
+            body: Math.round(document.body.getBoundingClientRect().width),
+            reached,
+          };
+        });
         expect(widths.scroll).toBe(widths.client);
+        // Anything past the fold must at least be scrollable to. Clipping
+        // overflow instead of laying it out is how content goes missing.
+        expect(widths.scroll - widths.client - widths.reached).toBeLessThanOrEqual(0);
+        expect(widths.body).toBeLessThanOrEqual(widths.client);
       });
 
       // Desktop-only axe runs miss the violations that only exist once the
@@ -31,14 +47,14 @@ for (const viewport of viewports) {
 
         let builder = new AxeBuilder({ page });
         if (browserName === 'webkit') {
-          // Every colour here is authored in oklch, which WebKit reports back
+          // Every color here is authored in oklch, which WebKit reports back
           // as lab(). axe-core mis-reads that: it scored the header's
           // theme-song pill at 4.18:1 when the pixels WebKit actually paints
-          // are #beb3bd on #0c050c â 9.95:1. The colour axe reports is the real
+          // are #beb3bd on #0c050c â 9.95:1. The color axe reports is the real
           // one scaled by ~0.626 on every channel, which is a parser artefact
           // rather than anything the page renders. Contrast still runs on
           // Chromium at these same viewports, so the rule keeps its coverage;
-          // only the engine that cannot read the colour skips it.
+          // only the engine that cannot read the color skips it.
           builder = builder.disableRules('color-contrast');
         }
 
@@ -50,6 +66,23 @@ for (const viewport of viewports) {
 }
 
 test.describe('mobile interactions', () => {
+  test('keeps hash targets clear of the mobile header', async ({ page }) => {
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      await mockAlgoliaSearch(page, []);
+      await page.goto('/notes?project=System+Notes#notes-index');
+      const target = page.locator('#notes-index');
+      await expect(target).toBeVisible();
+
+      const clearance = await page.evaluate(() => {
+        const header = document.querySelector('header')!.getBoundingClientRect();
+        const notes = document.querySelector('#notes-index')!.getBoundingClientRect();
+        return notes.top - Math.max(0, header.bottom);
+      });
+      expect(clearance, `hash target is obscured at ${width}px`).toBeGreaterThanOrEqual(0);
+    }
+  });
+
   test('keeps every primary destination visible without a hamburger', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');

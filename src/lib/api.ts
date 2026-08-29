@@ -26,6 +26,8 @@ export interface Project {
   image_alt?: string;
   owner: string;
   blog_posts?: BlogLink[];
+  /** Award and news posts. Evidence for the award, not writing about the work. */
+  announcements?: BlogLink[];
   award?: string;
   order_rank?: number;
 }
@@ -116,6 +118,7 @@ function parseProject(item: RawProject, index: number): Project {
     image_alt: str(item['image_alt']),
     owner: str(item['owner']) ?? '',
     blog_posts: parseBlogLinks(item['blog_posts'], index),
+    announcements: parseBlogLinks(item['announcements'], index),
     award: str(item['award']),
     order_rank: typeof orderRank === 'number' ? orderRank : 999,
   };

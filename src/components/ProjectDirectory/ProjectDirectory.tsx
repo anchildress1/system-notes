@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight } from 'react-icons/fi';
@@ -9,35 +9,110 @@ import { blurFor } from '@/lib/imageVariants';
 import { getProjectNotesURL } from '@/lib/searchRouting';
 import styles from './ProjectDirectory.module.css';
 
+/** Opens one system directly: /projects?system=<id>. */
+export const SYSTEM_PARAM = 'system';
+
 /**
- * Reduces a raw status to the word the rail shows.
+ * The system named in the URL when the page was opened.
  *
- * @param status The project's status string, which may carry a qualifier.
- * @returns A single lowercase word.
+ * Read through a store rather than useSearchParams, which would opt this
+ * statically rendered page out of static generation for a parameter only a deep
+ * link ever carries. The snapshot is a primitive, so React can compare it
+ * directly without a module cache that survives a client-side navigation.
  */
-export function exhibitStamp(status: string | undefined): string {
-  const value = (status ?? '').toLowerCase();
-  if (value.includes('scrapped')) return 'falsified on purpose';
-  if (value.includes('retired')) return 'retired';
-  if (value.includes('archived')) return 'archived';
-  return 'in evidence';
+function subscribeToNothing(): () => void {
+  return () => {};
+}
+
+function readLinkedSystem(): string | null {
+  return new URLSearchParams(globalThis.location.search).get(SYSTEM_PARAM);
+}
+
+function noLinkedSystem(): string | null {
+  return null;
+}
+
+function coverSubpixel(delta: number): number {
+  return Math.sign(delta) * Math.ceil(Math.abs(delta));
+}
+
+/**
+ * How far one axis of an item sits outside the visible slice of its rail.
+ *
+ * @param start Leading edge of the item on this axis.
+ * @param end Trailing edge of the item on this axis.
+ * @param visibleStart Leading edge of the rail's visible slice.
+ * @param visibleEnd Trailing edge of the rail's visible slice.
+ * @returns A signed scroll delta, negative to reveal the leading edge and
+ *   positive to reveal the trailing one; 0 when the slice has no extent or the
+ *   item already fits.
+ */
+function overflowDelta(
+  start: number,
+  end: number,
+  visibleStart: number,
+  visibleEnd: number
+): number {
+  if (visibleStart >= visibleEnd) return 0;
+  if (start < visibleStart) return start - visibleStart;
+  return Math.max(0, end - visibleEnd);
 }
 
 /**
  * The systems rail and the detail pane beside it.
  *
- * Selection is local. The rail is a list of links to nothing — the page holds
- * every project already, so moving between them is a state change rather than a
- * navigation, and nothing here writes to the URL.
+ * Every project is already on the page, so moving between them is a state change
+ * rather than a navigation. The URL trails that state instead of driving it, so
+ * one system can be linked to without the rail becoming a set of routes.
  */
+
 export default function ProjectDirectory({ projects }: Readonly<{ projects: Project[] }>) {
-  const [selectedId, setSelectedId] = useState(projects[0]?.id);
+  const [chosen, setChosen] = useState<string | null>(null);
   const panelId = useId();
+  const railRef = useRef<HTMLElement>(null);
+  const activeItemRef = useRef<HTMLButtonElement>(null);
+  const linked = useSyncExternalStore(subscribeToNothing, readLinkedSystem, noLinkedSystem);
+  // A click wins over the link that opened the page; the link wins over the
+  // default. An unknown id falls through to the first system rather than
+  // rendering nothing.
+  const selectedId =
+    chosen ??
+    (projects.some((project) => project.id === linked) ? linked : null) ??
+    projects[0]?.id;
+
+  // The URL follows the selection so the open system is always the one a copied
+  // link reopens. replaceState keeps it out of history: the rail is one page.
+  function select(id: string) {
+    setChosen(id);
+    const url = new URL(globalThis.location.href);
+    url.searchParams.set(SYSTEM_PARAM, id);
+    globalThis.history.replaceState(null, '', url);
+  }
 
   const selected = useMemo(
     () => projects.find((project) => project.id === selectedId) ?? projects[0],
     [projects, selectedId]
   );
+
+  useEffect(() => {
+    const rail = railRef.current;
+    const activeItem = activeItemRef.current;
+    if (!rail || !activeItem) return;
+    const railBounds = rail.getBoundingClientRect();
+    const itemBounds = activeItem.getBoundingClientRect();
+    const visibleLeft = Math.max(railBounds.left, 0);
+    const visibleRight = Math.min(railBounds.right, globalThis.innerWidth);
+    const visibleTop = Math.max(railBounds.top, 0);
+    const visibleBottom = Math.min(railBounds.bottom, globalThis.innerHeight);
+    const left = coverSubpixel(
+      overflowDelta(itemBounds.left, itemBounds.right, visibleLeft, visibleRight)
+    );
+    const top = coverSubpixel(
+      overflowDelta(itemBounds.top, itemBounds.bottom, visibleTop, visibleBottom)
+    );
+    if (left === 0 && top === 0) return;
+    rail.scrollTo({ left: rail.scrollLeft + left, top: rail.scrollTop + top });
+  }, [selected?.id]);
 
   if (!selected) return null;
 
@@ -45,23 +120,27 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
     selected.app_url ? { label: 'Live app', href: selected.app_url } : null,
     selected.repo_url ? { label: 'Repo', href: selected.repo_url } : null,
     ...(selected.blog_posts ?? []).map((post) => ({ label: 'Write-up', href: post.url })),
+    // Labelled apart from the write-ups: someone else announcing a win is
+    // evidence for the award, not an account of how the thing was built.
+    ...(selected.announcements ?? []).map((post) => ({ label: 'Award', href: post.url })),
   ].filter((link): link is { label: string; href: string } => link !== null);
 
   return (
     <div className={styles.corpus}>
-      <nav className={styles.rail} aria-label="Systems">
+      <nav ref={railRef} className={styles.rail} aria-label="Systems">
         <ul>
           {projects.map((project) => {
             const current = project.id === selected.id;
             return (
               <li key={project.id}>
                 <button
+                  ref={current ? activeItemRef : undefined}
                   type="button"
-                  className={styles.railItem}
+                  className={`washed ${styles.railItem}`}
                   aria-current={current ? 'true' : undefined}
                   aria-controls={panelId}
                   data-testid={`project-${project.id}`}
-                  onClick={() => setSelectedId(project.id)}
+                  onClick={() => select(project.id)}
                 >
                   <span aria-hidden="true" className={styles.railMark} />
                   <span className={styles.railText}>
@@ -73,7 +152,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                         </span>
                       ) : null}
                     </span>
-                    <span className={styles.railStatus}>{exhibitStamp(project.status)}</span>
+                    <span className={styles.railStatus}>{project.status}</span>
                   </span>
                 </button>
               </li>
@@ -88,10 +167,11 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
         {selected.award ? (
           <p className={styles.award}>
             {selected.award}
-            <span aria-hidden="true"> ★</span>
+            <span className={styles.awardStar} aria-hidden="true">
+              ★
+            </span>
           </p>
         ) : null}
-        <p className={styles.status}>{selected.status}</p>
         <h2 className={styles.name}>{selected.title}</h2>
         <p className={styles.purpose}>{selected.purpose}</p>
 
@@ -105,7 +185,6 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
               sizes="(max-width: 60rem) 100vw, 56vw"
               placeholder={blurFor(selected.image_url) ? 'blur' : 'empty'}
               blurDataURL={blurFor(selected.image_url)}
-              className={styles.image}
             />
           </span>
         ) : null}
@@ -113,6 +192,11 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
         <div className={styles.columns}>
           <div className={styles.prose}>
             <p>{selected.long_description}</p>
+          </div>
+
+          {/* Beside the description, not under it. A 56ch measure inside a pane
+              twice that wide left the right half of every case study empty. */}
+          <div className={styles.outcome}>
             <h3>Outcome</h3>
             <p>{selected.outcome}</p>
             <div className={styles.actions}>
@@ -120,6 +204,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                 <a
                   key={link.href}
                   className={styles.action}
+                  data-variant="outline"
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -129,24 +214,32 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                   <span className="visually-hidden"> (opens in a new tab)</span>
                 </a>
               ))}
-              <Link className={styles.crossLink} href={getProjectNotesURL(selected.title)}>
+              <Link
+                className={styles.crossLink}
+                data-variant="filled"
+                href={getProjectNotesURL(selected.title)}
+              >
                 Decisions from {selected.title}
               </Link>
             </div>
           </div>
-
-          <div className={styles.stackColumn}>
-            <h3>Stack</h3>
-            <dl className={styles.stack}>
-              {selected.tech.map((item) => (
-                <div key={item.name}>
-                  <dt>{item.name}</dt>
-                  <dd>{item.role}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
         </div>
+
+        {/* Footnotes, at the foot. As a second column of ruled rows beside the
+            prose this was an internal API reference sitting level with the
+            writing; the stack is an apparatus note about how the thing was
+            built, and apparatus belongs under the text it annotates. */}
+        <aside className={styles.stackColumn} aria-label="Stack">
+          <h3>Stack</h3>
+          <dl className={styles.stack}>
+            {selected.tech.map((item) => (
+              <div key={item.name}>
+                <dt>{item.name}</dt>
+                <dd>{item.role}</dd>
+              </div>
+            ))}
+          </dl>
+        </aside>
       </article>
     </div>
   );

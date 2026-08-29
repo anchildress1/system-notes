@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useClearRefinements,
   useRefinementList,
@@ -8,35 +8,9 @@ import {
   useStats,
 } from 'react-instantsearch';
 import { SiAlgolia } from 'react-icons/si';
-import type { IndexPulse } from '@/lib/indexPulse';
-import { relativeAge } from '@/lib/relativeAge';
 import styles from './IndexWorkspace.module.css';
 
-/** The age depends on the clock, not on a store anything can push to. */
-const subscribeToNothing = () => () => {};
-
-/**
- * How much is on file and when it last moved.
- *
- * The age resolves on the client against the reader's own clock. This page is
- * statically rendered, so an age computed on the server would be stamped at
- * build time and then quietly rot.
- */
-function IndexPulseLine({ pulse }: Readonly<{ pulse: IndexPulse }>) {
-  const age = useSyncExternalStore(
-    subscribeToNothing,
-    () => relativeAge(pulse.latestCreatedAt),
-    () => null
-  );
-
-  return (
-    <p className={styles.pulse}>
-      {pulse.total.toLocaleString()} on file{age ? ` · updated ${age}` : ''}
-    </p>
-  );
-}
-
-export default function IndexSearch({ pulse }: Readonly<{ pulse?: IndexPulse | null }>) {
+export default function IndexSearch() {
   const { query, refine: refineQuery } = useSearchBox();
   const { canRefine, refine: clearRefinements } = useClearRefinements();
   const { nbHits, processingTimeMS } = useStats();
@@ -61,14 +35,14 @@ export default function IndexSearch({ pulse }: Readonly<{ pulse?: IndexPulse | n
 
   return (
     <div className={styles.searchArea}>
+      {/* The `retrieve>` prompt is gone. A console prefix on a search field is a
+          costume, and it was the loudest one on the site. */}
       <label className={styles.searchPill}>
-        <span className={styles.retrieve} aria-hidden="true">
-          retrieve&gt;
-        </span>
         <span className="visually-hidden">Search the notes index</span>
         <input
           ref={inputRef}
           type="search"
+          data-focus="ruled"
           aria-label="Search the notes index"
           value={query}
           onChange={(event) => refineQuery(event.target.value)}
@@ -77,7 +51,12 @@ export default function IndexSearch({ pulse }: Readonly<{ pulse?: IndexPulse | n
           spellCheck={false}
         />
         {query || canRefine ? (
-          <button type="button" onClick={clear} aria-label="Clear search and filters">
+          <button
+            type="button"
+            className="marked-hover"
+            onClick={clear}
+            aria-label="Clear search and filters"
+          >
             ✕ clear
           </button>
         ) : (
@@ -89,9 +68,6 @@ export default function IndexSearch({ pulse }: Readonly<{ pulse?: IndexPulse | n
         <p aria-live="polite">
           {nbHits.toLocaleString()} {nbHits === 1 ? 'entry' : 'entries'} · {processingTimeMS}ms
         </p>
-        {/* Corpus facts, not search state: how much is on file and when it last
-            moved. The count above changes with every keystroke; this does not. */}
-        {pulse ? <IndexPulseLine pulse={pulse} /> : null}
         <div className={styles.secondaryFilters} aria-label="Additional note filters">
           <FacetFilter attribute="projects" label="Project" />
           <FacetFilter attribute="tags.lvl0" label="Topic" />
@@ -156,18 +132,56 @@ function FacetFilter({ attribute, label }: Readonly<{ attribute: string; label: 
     transformItems: mergeFacetItemsByCase,
   });
   const selectedCount = items.filter((item) => item.isRefined).length;
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  /* A native <details> stays open until its own summary is clicked again, which
+     is right for a disclosure in prose and wrong for a filter menu floating over
+     a board: every panel a reader opened stayed open behind the results.
+
+     The listeners are bound only while this panel is open, so a page of filters
+     costs nothing at rest. Left uncontrolled on purpose — the summary toggles
+     the element natively and onToggle reports it back, which avoids React and
+     the browser both trying to own `open`. */
+  useEffect(() => {
+    const details = detailsRef.current;
+    if (!isOpen || !details) return;
+
+    // pointerdown, not click: the panel should be gone by the time the pointer
+    // lifts, and a click on a checkbox inside must not count as "outside".
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (!details.contains(event.target as Node)) details.open = false;
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      details.open = false;
+      // Focus would otherwise be left on a control that no longer exists.
+      details.querySelector('summary')?.focus();
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isOpen]);
 
   if (items.length === 0) return null;
 
   return (
-    <details className={styles.filter}>
+    <details
+      className={styles.filter}
+      ref={detailsRef}
+      onToggle={(event) => setIsOpen(event.currentTarget.open)}
+    >
       <summary>
         {label}
         {selectedCount > 0 ? <span>{selectedCount}</span> : null}
       </summary>
       <div className={styles.filterOptions}>
         {items.map((item) => (
-          <label key={item.value}>
+          <label key={item.value} className="washed">
             <input type="checkbox" checked={item.isRefined} onChange={() => refine(item.value)} />
             <span>{item.label}</span>
             <small>{item.count}</small>

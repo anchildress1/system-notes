@@ -13,9 +13,6 @@ const destinations = [
 ] as const;
 
 function isCurrentPath(pathname: string, href: string): boolean {
-  // A note is a record out of the index, so the index stays marked while reading
-  // one. The intake at / owns nothing below it and matches exactly.
-  if (href === '/notes') return pathname === '/notes' || pathname.startsWith('/notes/');
   return pathname === href;
 }
 

@@ -7,18 +7,18 @@ export default function NotFoundPage() {
     <main id="main-content" className={styles.main}>
       <section className={styles.message} aria-labelledby="not-found-heading">
         <p className={styles.code}>404 · Record absent</p>
-        <h1 id="not-found-heading">
-          This trail ends <em>without a note.</em>
+        <h1 id="not-found-heading" className="page-head-title">
+          This trail ends <span>without a note.</span>
         </h1>
         <p>
           The address is wrong, the record moved, or the thing never existed. The index remains less
           fictional.
         </p>
         <nav aria-label="Not found options">
-          <Link href="/notes">
+          <Link className="marked-hover" href="/notes">
             <FiArrowLeft aria-hidden="true" /> Search the index
           </Link>
-          <Link href="/projects">
+          <Link className="marked-hover" href="/projects">
             Browse projects <FiArrowUpRight aria-hidden="true" />
           </Link>
         </nav>

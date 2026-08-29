@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import ProjectDirectory, { exhibitStamp } from '@/components/ProjectDirectory/ProjectDirectory';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import ProjectDirectory from '@/components/ProjectDirectory/ProjectDirectory';
 import { mockProject } from '@tests/test-utils/fixtures';
 
 const projects = [
@@ -33,25 +33,36 @@ const projects = [
 
 const rail = () => screen.getByRole('navigation', { name: 'Systems' });
 const detail = () => screen.getByRole('article');
+const scrollTo = vi.fn();
 
-describe('exhibitStamp', () => {
-  it.each([
-    ['Active · Deployed', 'in evidence'],
-    ['Deployed', 'in evidence'],
-    ['Scrapped', 'falsified on purpose'],
-    ['Retired', 'retired'],
-    ['Archived', 'archived'],
-    [undefined, 'in evidence'],
-  ])('reduces %s to %s', (status, expected) => {
-    expect(exhibitStamp(status)).toBe(expected);
-  });
-
-  it('reads the qualifier out of a compound status', () => {
-    expect(exhibitStamp('Deployed · now retired')).toBe('retired');
-  });
-});
+function bounds(x: number, y: number, width: number, height: number): DOMRect {
+  return {
+    x,
+    y,
+    width,
+    height,
+    top: y,
+    right: x + width,
+    bottom: y + height,
+    left: x,
+    toJSON: () => ({}),
+  };
+}
 
 describe('ProjectDirectory', () => {
+  beforeEach(() => {
+    globalThis.history.replaceState(null, '', '/projects');
+    scrollTo.mockReset();
+    Object.defineProperty(HTMLElement.prototype, 'scrollTo', {
+      configurable: true,
+      value: scrollTo,
+    });
+  });
+
+  afterEach(() => {
+    delete (HTMLElement.prototype as Partial<HTMLElement>).scrollTo;
+  });
+
   it('lists every system in the rail, not just a highlighted few', () => {
     // The archive used to be behind a control. A rail that already scrolls has
     // no reason to hide half its own contents.
@@ -67,6 +78,31 @@ describe('ProjectDirectory', () => {
 
     expect(within(detail()).getByRole('heading', { level: 2 })).toHaveTextContent('First System');
     expect(screen.getByTestId('project-first-system')).toHaveAttribute('aria-current', 'true');
+  });
+
+  it('reads a fresh deep link after a client-side remount', () => {
+    globalThis.history.replaceState(null, '', '/projects?system=second-system');
+    const view = render(<ProjectDirectory projects={projects} />);
+    expect(within(detail()).getByRole('heading', { level: 2 })).toHaveTextContent('Second System');
+
+    view.unmount();
+    globalThis.history.replaceState(null, '', '/projects');
+    render(<ProjectDirectory projects={projects} />);
+
+    expect(within(detail()).getByRole('heading', { level: 2 })).toHaveTextContent('First System');
+  });
+
+  it('keeps the active system inside either rail orientation', () => {
+    render(<ProjectDirectory projects={projects} />);
+    scrollTo.mockClear();
+    vi.spyOn(rail(), 'getBoundingClientRect').mockReturnValue(bounds(0, 0, 100, 100));
+    vi.spyOn(screen.getByTestId('project-second-system'), 'getBoundingClientRect').mockReturnValue(
+      bounds(120, 0, 40, 40)
+    );
+
+    fireEvent.click(screen.getByTestId('project-second-system'));
+
+    expect(scrollTo).toHaveBeenCalledWith({ left: 60, top: 0 });
   });
 
   it('swaps the detail pane when another system is chosen', () => {

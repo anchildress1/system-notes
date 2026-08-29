@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Bodoni_Moda } from 'next/font/google';
 import localFont from 'next/font/local';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import SiteHeader from '@/components/SiteHeader/SiteHeader';
@@ -30,6 +31,23 @@ const display = localFont({
   display: 'swap',
   preload: true,
   fallback: ['ui-monospace', 'SFMono-Regular', 'system-ui', 'sans-serif'],
+});
+
+// Titles only. A Didone against Archivo is the whole art direction in one
+// decision: extreme stroke contrast and a real vertical axis read as something
+// an art director set, where a second grotesque reads as a system font stack.
+// Space Grotesk stays on metadata and the wordmark, Archivo stays on body — the
+// serif never touches either, or it stops being a display face and becomes a
+// theme. next/font downloads it at build time and serves it from our own origin,
+// so nothing is requested from Google at runtime and the CSP is untouched.
+const editorial = Bodoni_Moda({
+  subsets: ['latin'],
+  variable: '--font-editorial',
+  weight: ['500', '700'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  preload: true,
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
 });
 
 const baseUrl = resolveBaseUrl();
@@ -107,7 +125,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             light reader never sees a dark frame. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
+      <body
+        className={`${sans.variable} ${display.variable} ${editorial.variable}`}
+        suppressHydrationWarning
+      >
         <SiteHeader />
         {children}
         <SiteFooter />

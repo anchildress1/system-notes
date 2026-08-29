@@ -1,15 +1,33 @@
 .main {
   width: min(100%, var(--page-max));
-  padding: 0 var(--gutter) clamp(6rem, 10vw, 10rem);
+  /* No tail. .contact closes the page with its own; both together left a
+     15rem void above the footer. */
+  padding: 0 var(--gutter);
   margin: 0 auto;
 }
 
+/* align-items: start, not center. Centring both columns put the copy block and
+   the portrait on one shared optical axis — the arrangement a generator reaches
+   for because it is the safest. Starting them and then dropping the portrait
+   deliberately (below) puts the two masses off each other's centre line. */
 .hero {
   display: grid;
   min-height: calc(100svh - var(--header-height));
-  align-items: center;
-  padding-block: clamp(3.5rem, 8vw, 7rem);
-  gap: clamp(3rem, 7vw, 8rem);
+  align-items: start;
+  /* align-items only places an item inside its row; it does not stop the ROWS
+     from growing. With a min-height taller than the content, the two auto rows
+     stretched to absorb the slack and took half of it each — 35px of it landing
+     between the slug and the headline, which is what made this head sit lower
+     than the other three no matter what the padding said. */
+  align-content: start;
+  /* The same rhythm every other head opens on. This padded on vw while
+     --head-lead runs on vh, so at 1440x856 it opened 35px lower than the other
+     three and the head read as this page's own. */
+  padding-block: var(--head-lead) var(--head-tail);
+  /* Column gap only. With the slug lifted into its own row this was also
+     applying between the rule and the headline, opening 100px of dead space
+     under the rule; the slug carries its own margin for that. */
+  gap: 0 clamp(3rem, 7vw, 8rem);
   grid-template-columns: minmax(0, 1fr) minmax(16rem, 28rem);
 }
 
@@ -17,30 +35,10 @@
   animation: rise-in 650ms var(--ease-out) both;
 }
 
-.kicker,
-.proof header > p,
-.principles header > p,
-.contact > div > p {
-  margin-bottom: 1.25rem;
-  color: var(--flag);
-  font-size: 0.9375rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.hero h1 {
-  font-family: var(--font-display);
-  font-size: clamp(4.5rem, 9vw, 9rem);
-  font-weight: 400;
-  letter-spacing: -0.065em;
-  line-height: 0.76;
-}
-
-.hero h1 em {
-  display: block;
-  color: var(--flag);
-  font-weight: 400;
-}
+/* Type comes from .page-head-title in globals.css. This head sits in a centred
+   two-column grid and cannot take .page-head's own padding, so it takes the
+   class that carries only the type — the alternative was a second copy of the
+   size, weight and tracking that silently drifted from the other three heads. */
 
 .role {
   margin-top: clamp(2rem, 5vw, 4rem);
@@ -59,28 +57,56 @@
   gap: 1rem;
 }
 
+/* Breaks its column on the right and sits lower than the copy it accompanies.
+   main carries overflow-x: clip, so the bleed cannot widen the document.
+   Both offsets are wide-viewport only — an asymmetric composition has no
+   responsive safety net, and on a narrow screen there is no room to bleed into. */
+@media (min-width: 62rem) {
+  .portrait {
+    margin-top: clamp(3rem, 9vh, 7rem);
+    margin-right: clamp(-3rem, -2vw, -1rem);
+    /* Crosses the rule below it. Block layouts cannot clip, which is exactly why
+       everything in one never overlaps anything else — and why a page built from
+       them reads as assembled rather than composed. The portrait hanging past
+       the divider is the one place this page admits it was arranged by hand. */
+    margin-bottom: clamp(-7rem, -9vh, -3.5rem);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* The heading sits behind the portrait where they meet, rather than the two
+     politely avoiding each other. */
+  .heroCopy {
+    position: relative;
+    z-index: 0;
+  }
+}
+
+/* The same treatment every other image on the site gets. Nothing here is the
+   portrait's own.
+
+   What this replaces: a radial mask that faded the picture into the page, a
+   gradient painted over its foot so an overlaid caption could be read, and
+   overflow: hidden to keep both inside. Three rules, all of them this page's
+   private idea of what an image looks like, and together they were the argument
+   for why the portrait could not be treated like an image — the mask clips a
+   box-shadow, and overflow: hidden clips the tape. The argument was circular:
+   the exception existed only because of the exception.
+
+   A print is a print. This one is square and has a caption; that is the picture,
+   not the page. */
 .portrait {
-  position: relative;
-  /* The source art is square; a 4/5 frame cropped it. */
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  border: 1px solid var(--line-strong);
-  background: var(--panel-hi);
-  animation: rise-in 650ms 120ms var(--ease-out) both;
+  composes: taped from global;
+  /* The source art is square. Only the ratio is this picture's own. */
+  --print-ratio: 1 / 1;
 }
 
-.portrait::before {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 65%, var(--void));
-  pointer-events: none;
-  content: '';
-}
-
+/* The print itself. In flow rather than absolutely filling the figure, because
+   the caption now sits under it — the figure is the sheet, this is the picture
+   on it. Still position: relative, which <Image fill> needs. */
 .portraitFrame {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  aspect-ratio: var(--print-ratio);
   display: none;
 }
 
@@ -98,24 +124,12 @@
   display: block;
 }
 
-.portrait img {
-  object-fit: cover;
-  filter: saturate(0.8) contrast(1.06);
-}
-
-.portrait figcaption {
-  position: absolute;
-  z-index: 2;
-  right: 1rem;
-  bottom: 1rem;
-  left: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--soft);
-  font-size: 0.9375rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+/* Set, colour, spacing and placement all come from .taped figcaption. The only
+   thing left that is this caption's own is the displacement below: the second
+   line pushed off the first, rather than the two sitting on one neat tracking
+   path. */
+.portrait figcaption span:last-child {
+  margin-left: clamp(1.5rem, 5vw, 4rem);
 }
 
 .portrait figcaption span:first-child::before {
@@ -124,84 +138,209 @@
   height: 0.45rem;
   margin-right: 0.5rem;
   border-radius: 50%;
-  background: var(--flag);
+  background: var(--mark);
   content: '';
 }
 
+/* One padding token repeated down a page is a flat scroll: every section
+   arrives on the same beat. The rhythm alternates instead — long, short, long,
+   short — so the page breathes unevenly the way a printed one does. The shared
+   properties stay shared; only the pacing varies. */
 .proof,
 .principles,
 .themeSong,
 .contact {
+  position: relative;
   display: grid;
-  padding-block: clamp(4rem, 8vw, 8rem);
-  border-top: 1px solid var(--line-strong);
-  grid-template-columns: minmax(15rem, 0.75fr) minmax(0, 1.5fr);
+  border-top: 0.5px solid var(--line-strong);
+  grid-template-columns: minmax(14rem, 0.62fr) minmax(0, 1.5fr);
   gap: clamp(2rem, 6vw, 7rem);
 }
 
-.themeSong {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0;
+.proof {
+  padding-block: clamp(4rem, 8vw, 8rem) clamp(3rem, 5vw, 5rem);
 }
 
+.principles {
+  padding-block: clamp(3rem, 5.5vw, 5.5rem) clamp(4rem, 7vw, 7rem);
+}
+
+.themeSong {
+  padding-block: clamp(4.5rem, 9vw, 9rem) clamp(3rem, 5vw, 5rem);
+}
+
+.contact {
+  padding-block: clamp(3.5rem, 6.5vw, 6.5rem) clamp(3rem, 5vw, 5rem);
+}
+
+/* Runs past the end of its own column. The grid gap is generous enough that the
+   overhang never collides with the content beside it — it just stops the left
+   column from reading as a box that the heading was poured into. */
 .proof header h2,
 .principles header h2,
+.themeSong header h2,
 .contact h2 {
-  font-family: var(--font-display);
-  font-size: clamp(2.7rem, 5vw, 5rem);
-  font-weight: 400;
-  letter-spacing: -0.05em;
-  line-height: 0.9;
+  position: relative;
+  width: max-content;
+  max-width: calc(100% + clamp(0rem, 4vw, 4.5rem));
+  font-family: var(--font-editorial);
+  font-size: clamp(2.6rem, 5vw, 5rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+  text-wrap: balance;
 }
 
+/* No box. Figures inside bordered cells are a metrics widget, and a row of them
+   is the single thing that made this page read as a dashboard rather than as a
+   profile. The same numbers set as display type, on a baseline, are a claim. */
 .proof dl {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: last baseline;
+  column-gap: clamp(2.5rem, 6vw, 6rem);
+  row-gap: 2.5rem;
 }
 
 .proof dl div {
   display: flex;
-  min-height: 12rem;
   flex-direction: column-reverse;
-  justify-content: space-between;
-  padding: 1rem;
-  border: 1px solid var(--line);
 }
 
+/* The lead figure is the one worth reading, so it is set larger and the other
+   two sit under its baseline rather than beside it as equals. */
+.proof dl div:first-child dd {
+  font-size: clamp(5.5rem, 11vw, 11rem);
+}
+
+/* The fine print the rest of the site sets its small caps in, rather than a
+   size and a tracking invented here. */
 .proof dt {
+  margin-top: 0.9rem;
   color: var(--mute);
-  font-size: 0.9375rem;
-  letter-spacing: 0.08em;
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  font-weight: 600;
+  letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
 }
 
+/* The figures are INK, and the gold is struck under them.
+
+   They used to be set in --ink-accent, back when that was a red on paper: three
+   red numerals were the loudest thing on the page and the least like the rest of
+   it. Colour is the wrong tool here anyway — a count is a fact, and the site
+   marks facts rather than tinting them. So the numeral takes the body's own
+   ink and the mark goes underneath it, one stroke per figure, each as wide as
+   the number it belongs to. Three tallies struck on a page, which is what a
+   count of receipts should look like.
+
+   The stroke rides in padding rather than over the glyphs: line-height 0.78 is
+   tighter than the numerals are tall, so the block box ends above their feet
+   and a background pinned to its bottom would cut straight through them. */
 .proof dd {
-  color: var(--flag);
-  font-family: var(--font-display);
-  font-size: clamp(4rem, 7vw, 7rem);
-  line-height: 0.8;
+  width: fit-content;
+  padding-bottom: 0.22em;
+  background-image: var(--stroke-brush-inked);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 0.1em;
+  color: var(--bone);
+  font-family: var(--font-editorial);
+  font-size: clamp(3rem, 5.5vw, 5.5rem);
+  line-height: 0.78;
+  letter-spacing: -0.04em;
+}
+
+/* Struck by hand, so no two sit at the same angle. Under a degree each: enough
+   that the row stops reading as a table, not enough to read as a mistake. */
+.proof dl div:nth-child(1) dd {
+  transform: rotate(-0.7deg);
+}
+
+.proof dl div:nth-child(2) dd {
+  transform: rotate(0.5deg);
+}
+
+.proof dl div:nth-child(3) dd {
+  transform: rotate(-1.1deg);
 }
 
 .awards {
   grid-column: 2;
   padding: 0;
-  border-top: 1px solid var(--line);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
   list-style: none;
 }
 
-.awards li {
-  display: grid;
-  min-height: 3.5rem;
-  align-items: center;
-  border-bottom: 1px solid var(--line);
-  color: var(--soft);
-  font-size: 0.9375rem;
-  grid-template-columns: minmax(8rem, 0.55fr) minmax(0, 1fr);
-  gap: 1rem;
+.awards li + li {
+  margin-top: 1.1rem;
 }
 
-.awards li span:last-child {
+/* Award over system, not the system's name first. Listing the project first
+   made three wins read as three more entries in the roster; leading with the
+   citation is what says it was won.
+
+   The band and the star are the exhibit's own award treatment, composed from
+   the same primitives rather than a second one invented here, so the two pages
+   agree on what an award looks like. The star moved inline with the citation
+   because that is where the exhibit puts it. */
+.awardRecord {
+  composes: washed from global;
+  display: grid;
+  /* Pulled back by its own padding so the wash bleeds past the text instead of
+     indenting the list away from the rule above it. */
+  padding: 0.7rem 0.85rem;
+  margin-left: -0.85rem;
+  border-radius: 0.15rem;
+  color: inherit;
+  gap: 0.3rem;
+  text-decoration: none;
+}
+
+.awardBadge {
+  composes: marked-soft from global;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  gap: 0.4rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.awardProject {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  gap: 0.5rem;
+  letter-spacing: -0.015em;
+}
+
+/* Steps toward the exhibit. Motion only: the row already carries the wash, and
+   a second colour on a hover is the thing globals.css forbids. */
+.awardGo {
   color: var(--mute);
+  transition: transform 180ms var(--ease-out);
+}
+
+.awardRecord:hover .awardGo,
+.awardRecord:focus-visible .awardGo {
+  transform: translateX(0.25rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .awardGo {
+    transition: none;
+  }
+
+  .awardRecord:hover .awardGo,
+  .awardRecord:focus-visible .awardGo {
+    transform: none;
+  }
 }
 
 .principles ol {
@@ -209,56 +348,122 @@
   list-style: none;
 }
 
+/* No row borders, no fixed columns. The number hangs in the margin the way a
+   footnote marker does, the statement runs at display size, and the reasoning
+   sits under it as prose. Each principle is then a block someone wrote rather
+   than a row in a table of them. */
+/* The numeral hangs, it does not sit in a column. A track reserved for it made
+   every marker share one hard edge with the statements beside them; pulled into
+   the margin they float in the gutter and the prose keeps a single left edge. */
 .principles li {
-  display: grid;
-  min-height: 8rem;
-  align-items: center;
-  border-top: 1px solid var(--line);
-  grid-template-columns: 3rem minmax(12rem, 0.8fr) minmax(0, 1.2fr);
-  gap: 1.5rem;
+  display: block;
+  position: relative;
+  padding-left: 0;
 }
 
-.principles li:last-child {
-  border-bottom: 1px solid var(--line);
+.principles li + li {
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+/* Every second one steps in, so the column has a cadence instead of a ruled
+   edge. Wide screens only — there is no room to indent on a phone. */
+@media (min-width: 62rem) {
+  .principles li:nth-child(even) {
+    margin-left: clamp(1.5rem, 4vw, 4rem);
+  }
 }
 
 .principles li > span {
-  color: var(--flag);
-  font-size: 0.9375rem;
+  position: absolute;
+  top: 0.5rem;
+  color: var(--ink-accent);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--fine-tracking);
+}
+
+/* Each marker hangs a different distance into the gutter, so the run reads as
+   three notes set by hand rather than a numbered column. Wide screens only —
+   there is no gutter to hang into on a phone. */
+@media (min-width: 62rem) {
+  .principles li > span {
+    left: -3.25rem;
+  }
+
+  .principles li:nth-child(2) > span {
+    left: -4.5rem;
+  }
+
+  .principles li:nth-child(3) > span {
+    left: -2.5rem;
+  }
+}
+
+@media (max-width: 61.99rem) {
+  .principles li > span {
+    position: static;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
 }
 
 .principles h3 {
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3vw, 3rem);
-  font-weight: 400;
-  letter-spacing: -0.04em;
+  font-family: var(--font-editorial);
+  font-size: clamp(1.8rem, 3.2vw, 3.2rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.06;
+  text-wrap: balance;
 }
 
 .principles li p {
+  max-width: 52ch;
+  margin-top: 0.9rem;
   color: var(--soft);
-  font-size: 0.9375rem;
+  font-size: 1.03rem;
+  line-height: 1.7;
+  text-wrap: pretty;
 }
 
 .contact nav {
   display: grid;
-  border-top: 1px solid var(--line);
 }
 
 .contact nav a {
   display: flex;
-  min-height: 4rem;
-  align-items: center;
+  min-height: 3.75rem;
+  align-items: baseline;
   justify-content: space-between;
-  border-bottom: 1px solid var(--line);
-  color: var(--soft);
-  font-size: 0.9375rem;
-  text-transform: uppercase;
+  gap: 1rem;
+  /* 0.5px, not 1px. An exhibition catalog rules its entries with a hairline;
+     a full pixel at this length reads as a table border. */
+  border-bottom: 0.5px solid var(--line-strong);
+  color: var(--bone);
+  font-family: var(--font-editorial);
+  font-size: clamp(1.35rem, 2.4vw, 2.1rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  transition:
+    color 200ms var(--ease-out),
+    padding-left 320ms var(--ease-out);
 }
 
+/* A character, not an icon component. The cue that a link leaves the site is
+   worth keeping — dropping it entirely would take the affordance with the
+   artifact — but at this size it can be set rather than drawn. */
+.outbound {
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: 0.8em;
+}
+
+/* Steps to the right AND takes the wash. The step is this row's own idea and it
+   stays — a link that moves reads as a link — but the colour swap that came with
+   it was the site's fifth different answer to "you are hovering this". The wash
+   is the shared one; the motion is the local flourish on top of it. */
 .contact nav a:hover {
-  padding-inline: 0.75rem;
-  background: var(--flag);
-  color: var(--void);
+  padding-left: 0.85rem;
 }
 
 @media (max-width: 55rem) {
@@ -284,41 +489,6 @@
 }
 
 @media (max-width: 37rem) {
-  .hero h1 {
-    font-size: clamp(4rem, 20vw, 6.5rem);
-  }
-
-  .proof dl {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .proof dl div {
-    min-height: 8rem;
-  }
-
-  .awards li {
-    align-items: start;
-    padding-block: 0.85rem;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.35rem;
-  }
-
-  .principles li {
-    padding-block: 1.5rem;
-    grid-template-columns: 2rem minmax(0, 1fr);
-  }
-
-  .principles li p {
-    grid-column: 2;
-  }
-}
-
-.themeSongHeading {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 1;
 }
 
 .themeSongCopy {

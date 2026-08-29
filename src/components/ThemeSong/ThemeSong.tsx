@@ -7,6 +7,10 @@ import styles from './ThemeSong.module.css';
 export const TRACK_TITLE = 'I Build Things';
 export const TRACK_ARTIST = 'Twisted Game Songs';
 export const TRACK_SRC = '/audio/twisted-game-songs-i-build-things.mp3';
+/** The track carries explicit lyrics. A fact about the audio, so it lives with
+ *  the rest of the track's metadata rather than in the page copy — a different
+ *  file cannot inherit this one's rating. */
+export const TRACK_EXPLICIT = true;
 
 /**
  * The equalizer, as the design draws it: ten bars at fixed heights, each with
@@ -64,9 +68,10 @@ export default function ThemeSong() {
   // The advisory is part of the control's name: someone deciding whether to
   // press it needs the warning before the track starts, not after.
   const action = isPlaying ? 'Pause' : 'Play';
+  const advisory = TRACK_EXPLICIT ? ' Explicit content.' : '';
   const label = hasError
     ? 'Theme song unavailable'
-    : `${action} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`;
+    : `${action} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}.${advisory}`;
 
   let note = TRACK_ARTIST;
   if (hasError) note = 'track unavailable';
@@ -78,6 +83,7 @@ export default function ThemeSong() {
         <button
           type="button"
           className={styles.toggle}
+          data-variant="filled"
           data-accent="filled"
           aria-pressed={isPlaying}
           aria-label={label}
@@ -93,6 +99,18 @@ export default function ThemeSong() {
             <FiPlay aria-hidden="true" fill="currentColor" size={13} />
           )}
           {isPlaying ? 'Pause' : 'Play it'}
+          {/* Inside the control, beside its own words: the rating belongs to the
+              thing you are about to play, not to the row it sits in.
+
+              aria-hidden, because the button's accessible name already ends in
+              "Explicit content." — both come off TRACK_EXPLICIT, so the stamp
+              and the announcement cannot disagree, and a screen reader is told
+              once rather than twice. */}
+          {TRACK_EXPLICIT ? (
+            <span className="explicit" aria-hidden="true">
+              E
+            </span>
+          ) : null}
         </button>
         <p className={styles.note} aria-live="polite">
           {note}

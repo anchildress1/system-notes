@@ -14,7 +14,7 @@ import type { Hit } from 'instantsearch.js';
 import { useClearRefinements, useRefinementList, useSearchBox } from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
 import { fitBoardToWholeRows } from './boardLayout';
-import { AWARD_SWATCH, SWATCH_PALETTE } from './swatchPalette';
+import { assignSwatches } from './swatchPalette';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
@@ -23,19 +23,18 @@ import styles from './IndexWorkspace.module.css';
 // a category name is a data change, not a code change.
 //
 // Swatches follow a category's rank by size: Algolia returns facets ordered by
-// count, so the largest category takes the most prominent tone. The palette runs
-// pink through paper and gray to near-black rather than one hue's lightness
-// ramp, which is what made every filter read as the same color.
+// count, so the largest category takes the strongest tone. The palette is a
+// neutral ladder with one yellow slot; rank varies value, never hue.
 //
 // The rank is read from the *unfiltered* facet list, held alongside the board's
 // census. Refining re-sorts the live list by the narrowed counts, and keying off
 // that repainted most of the board the moment a filter was applied, so the
 // census could no longer be read as "the same board, with matches lit".
-// Every slot stays a fixed distance from the board's own surface; swatchPalette.ts
-// carries the separation and the reason, and inverts it for a light board where
-// a swatch has to be darker rather than lighter. The ramp used to run down to
-// within 5.5 lightness points of the background, and that category looked
-// unselectable because filtering it changed nothing a reader could see.
+// Every slot has to stay readable against the board it is drawn on; the tones and
+// the keyline that separates them live in globals.css, beside the --k-* tokens.
+// The ramp used to run down to within 5.5 lightness points of the background, and
+// that category looked unselectable because filtering it changed nothing a reader
+// could see.
 
 // Awards take a tone of their own, outside the rank palette, and the star in the
 // filing list. They previously drew a ring by way of a border, which on a 14x10
@@ -45,14 +44,6 @@ import styles from './IndexWorkspace.module.css';
 // "Awards ★" all keep the treatment.
 function isAwardCategory(value: string | undefined): boolean {
   return /award/i.test(value ?? '');
-}
-
-// A category absent from the retained ranking — one that only appears under the
-// current refinement — falls back to its live position rather than going
-// unstyled.
-function swatchStyle(value: string | undefined, rank: number) {
-  if (isAwardCategory(value)) return { background: AWARD_SWATCH };
-  return { background: SWATCH_PALETTE[rank % SWATCH_PALETTE.length] };
 }
 
 interface IndexSidebarProps {
@@ -120,6 +111,7 @@ export default function IndexSidebar({
 }: Readonly<IndexSidebarProps>) {
   const [isOpen, setIsOpen] = useState(true);
   const [activation, setActivation] = useState<{ id: string; nonce: number }>();
+  const typeahead = useRef({ value: '', updatedAt: 0 });
   const { items, refine } = useRefinementList({
     attribute: 'category',
     limit: 40,
@@ -146,14 +138,30 @@ export default function IndexSidebar({
   }
 
   const categories = useMemo(() => {
-    const rankOf = new Map(ranking.values.map((value, index) => [value, index]));
-    return items.map((item, index) => ({
-      key: item.value,
-      label: isAwardCategory(item.value) ? `${item.label} ★` : item.label,
-      count: item.count,
-      isRefined: item.isRefined,
-      swatch: swatchStyle(item.value, rankOf.get(item.value) ?? index),
-    }));
+    // The retained ranking decides the order; a category absent from it — one
+    // that only appears under the current refinement — is appended rather than
+    // going unstyled. Ranks are then assigned over that whole order at once, so
+    // the award tone never displaces a rank slot.
+    const ordered = [...ranking.values];
+    for (const item of items) if (!ordered.includes(item.value)) ordered.push(item.value);
+    const swatchOf = assignSwatches(ordered, (value) => isAwardCategory(value));
+
+    return (
+      items
+        // A category the narrowed set does not contain cannot filter it, so it
+        // is not offered. Algolia already drops those, EXCEPT one it is still
+        // refined by — that one stays, because hiding it would strand the
+        // refinement emptying the page with no control to lift it.
+        .filter((item) => item.count > 0 || item.isRefined)
+        .map((item) => ({
+          key: item.value,
+          label: isAwardCategory(item.value) ? `${item.label} ★` : item.label,
+          count: item.count,
+          isRefined: item.isRefined,
+          isAward: isAwardCategory(item.value),
+          swatch: { background: swatchOf.get(item.value) },
+        }))
+    );
   }, [items, ranking]);
 
   // Tiles take the same tone as their category's filter, matched on the value
@@ -164,39 +172,28 @@ export default function IndexSidebar({
     [categories]
   );
 
-  // Every tile is a real note — the board is never padded to fill a row.
-  //
-  // The board is a census, not a result list: it keeps rendering the whole
-  // ranked set and recedes the cards that do not match, so filtering shows you
-  // where the answer sits inside the index rather than shrinking the index.
-  // Algolia only returns matches, so the last unfiltered set is held as the
-  // census and the current matches light it.
-  // Adjusted during render rather than in an effect: an effect that calls
-  // setState triggers a cascading render. The key is a primitive, so the
-  // comparison settles after one extra pass instead of looping.
-  const [census, setCensus] = useState<{ key: string; items: Hit<FactHitRecord>[] }>({
-    key: '',
-    items: [],
-  });
-  const unfilteredKey = isNarrowed
-    ? null
-    : `${rankedItems.length}:${rankedItems[0]?.objectID ?? ''}`;
-  if (unfilteredKey !== null && unfilteredKey !== census.key) {
-    setCensus({ key: unfilteredKey, items: rankedItems });
-  }
-  const boardCensus = isNarrowed && census.items.length > 0 ? census.items : rankedItems;
-
-  const matchedIds = useMemo(
-    () => new Set(rankedItems.map((item) => item.objectID)),
-    [rankedItems]
+  // An award tile is drawn as a ring rather than a fill, so it needs the flag
+  // and not just the tone — the two resolve to the same pigment.
+  const awardCategories = useMemo(
+    () => new Set(categories.filter((category) => category.isAward).map((c) => c.key)),
+    [categories]
   );
 
-  // Trimming to whole rows keeps the board a clean rectangle at every width, and
-  // it now applies to the census rather than the result set, so the shape holds
-  // steady while a filter is on instead of reflowing under the reader.
+  // Every tile is a real note, and every tile on the board is a MATCH.
+  //
+  // This was a census: it kept the whole ranked set on screen and dropped
+  // non-matching tiles to 0.13 opacity, on the theory that showing where an
+  // answer sits inside the index beats shrinking the index. What it actually
+  // rendered was a grid three-quarters full of grey — indistinguishable from a
+  // disabled control, and nothing in a grid of clickable tiles should ever look
+  // disabled. A tile is relevant and shown, or it is not there.
+  //
+  // The board reflows when a filter narrows it. That is the cost, and it is the
+  // right one: a reflow reads as the index responding, where a wall of dimmed
+  // tiles reads as the interface having broken.
   const boardItems = useMemo(
-    () => fitBoardToWholeRows(boardCensus, boardColumns),
-    [boardCensus, boardColumns]
+    () => fitBoardToWholeRows(rankedItems, boardColumns),
+    [rankedItems, boardColumns]
   );
 
   // -1 when the selected note is ranked below the board's last tile. Collapsing
@@ -211,20 +208,75 @@ export default function IndexSidebar({
     onSelect(id);
   }
 
+  /**
+   * Where a printable key should move the selection.
+   *
+   * @param event The keydown that carried the character.
+   * @returns The option index to activate, or undefined to leave the selection
+   *   where it is — which covers a leading space, and a prefix the current
+   *   option already satisfies.
+   */
+  function typeaheadTarget(event: KeyboardEvent<HTMLOListElement>): number | undefined {
+    const now = Date.now();
+    const continuesPrefix =
+      now - typeahead.current.updatedAt <= 700 && typeahead.current.value.length > 0;
+    if (event.key === ' ' && !continuesPrefix) return undefined;
+
+    const typed = event.key.toLocaleLowerCase();
+    // One character pressed repeatedly cycles through options starting with it
+    // rather than searching for a run of that character.
+    const repeatsOneCharacter =
+      continuesPrefix &&
+      typed !== ' ' &&
+      [...typeahead.current.value].every((character) => character === typed);
+    let value = typed;
+    if (continuesPrefix && !repeatsOneCharacter) value = typeahead.current.value + typed;
+    typeahead.current = { value, updatedAt: now };
+    event.preventDefault();
+
+    const settled =
+      continuesPrefix &&
+      !repeatsOneCharacter &&
+      selectedIndex >= 0 &&
+      boardItems[selectedIndex]!.title.trim().toLocaleLowerCase().startsWith(value);
+    if (settled) return undefined;
+
+    // Search after the current option and wrap. The title is also the first
+    // part of the accessible name, so the spoken and keyboard models agree.
+    const start = selectedIndex >= 0 ? selectedIndex : -1;
+    for (let offset = 1; offset <= boardItems.length; offset += 1) {
+      const candidate = (start + offset) % boardItems.length;
+      if (boardItems[candidate]!.title.trim().toLocaleLowerCase().startsWith(value)) {
+        return candidate;
+      }
+    }
+    return undefined;
+  }
+
   function moveBoardSelection(event: KeyboardEvent<HTMLOListElement>) {
     if (boardItems.length === 0) return;
+    if (
+      event.key === 'ArrowRight' ||
+      event.key === 'ArrowDown' ||
+      event.key === 'ArrowLeft' ||
+      event.key === 'ArrowUp' ||
+      event.key === 'Home' ||
+      event.key === 'End'
+    ) {
+      typeahead.current = { value: '', updatedAt: 0 };
+    }
     // Off-board selections start from the first tile rather than from a
     // position the reader never landed on.
-    const currentIndex = Math.max(selectedIndex, 0);
-    let nextIndex: number;
+    const currentIndex = selectedIndex;
+    let nextIndex: number | undefined;
     switch (event.key) {
       case 'ArrowRight':
       case 'ArrowDown':
-        nextIndex = Math.min(currentIndex + 1, boardItems.length - 1);
+        nextIndex = currentIndex >= 0 ? Math.min(currentIndex + 1, boardItems.length - 1) : 0;
         break;
       case 'ArrowLeft':
       case 'ArrowUp':
-        nextIndex = Math.max(currentIndex - 1, 0);
+        nextIndex = currentIndex >= 0 ? Math.max(currentIndex - 1, 0) : 0;
         break;
       case 'Home':
         nextIndex = 0;
@@ -232,10 +284,16 @@ export default function IndexSidebar({
       case 'End':
         nextIndex = boardItems.length - 1;
         break;
-      default:
-        return;
+      default: {
+        if (event.key.length !== 1 || event.altKey || event.ctrlKey || event.metaKey) {
+          return;
+        }
+        nextIndex = typeaheadTarget(event);
+        break;
+      }
     }
 
+    if (nextIndex === undefined) return;
     event.preventDefault();
     activateNote(boardItems[nextIndex]!.objectID);
   }
@@ -268,20 +326,33 @@ export default function IndexSidebar({
             <li key={category.key}>
               <button
                 type="button"
+                className="washed"
                 data-category={category.key}
                 data-selected={category.isRefined || undefined}
-                aria-label={`${category.label}, ${category.count.toLocaleString()} notes`}
+                aria-label={
+                  category.count > 0
+                    ? `${category.label}, ${category.count.toLocaleString()} notes`
+                    : `${category.label}, no matching notes`
+                }
                 aria-pressed={category.isRefined}
                 onClick={() => refine(category.key)}
               >
                 <span
                   className={styles.categorySwatch}
-                  style={category.swatch}
+                  /* An award draws its ring from CSS. An inline background here
+                     would win over it and fill the chip back in, which is the
+                     one thing the ring exists to avoid. */
+                  style={category.isAward ? undefined : category.swatch}
+                  data-award={category.isAward || undefined}
                   aria-hidden="true"
                 />
                 <span className={styles.categoryName}>{category.label}</span>
                 <span className={styles.categoryCount}>
-                  {category.count.toLocaleString()} {category.isRefined ? '−' : '+'}
+                  {/* No numeral on a refined category the narrowed set emptied.
+                      A row reading "0 −" is a count of nothing standing where a
+                      filter's size belongs; the sign alone still lifts it. */}
+                  {category.count > 0 ? `${category.count.toLocaleString()} ` : ''}
+                  {category.isRefined ? '−' : '+'}
                 </span>
               </button>
             </li>
@@ -290,15 +361,6 @@ export default function IndexSidebar({
 
         {boardItems.length > 0 ? (
           <div className={styles.board}>
-            <p>
-              {/* "N of M" only while trimmed, so the board never states a
-                  different total from the number of tiles under it. */}
-              The board — one tile per card ·{' '}
-              {boardItems.length < boardCensus.length
-                ? `${boardItems.length.toLocaleString()} of ${boardCensus.length.toLocaleString()}`
-                : boardCensus.length.toLocaleString()}{' '}
-              <span aria-hidden="true">↑</span>
-            </p>
             <ol
               ref={boardRef}
               className={styles.boardTiles}
@@ -324,14 +386,14 @@ export default function IndexSidebar({
                     role="option"
                     data-note-id={item.objectID}
                     data-category={item.category}
+                    data-award={awardCategories.has(item.category) || undefined}
                     style={
                       {
                         '--tile-swatch': swatchByCategory.get(item.category)?.background,
-                        '--tile-opacity': matchedIds.has(item.objectID) ? '1' : '0.13',
                       } as CSSProperties
                     }
                     data-activated={item.objectID === activation?.id || undefined}
-                    aria-label={`Read note ${position}: ${item.title}`}
+                    aria-label={`${item.title}, position ${position}`}
                     aria-selected={item.objectID === selectedId}
                     title={`${position}. ${item.title}`}
                   />
@@ -343,7 +405,7 @@ export default function IndexSidebar({
                 cannot see the board and work it out. */}
             <small id="note-board-instructions" className="visually-hidden">
               one tile per card · click a tile, or use search and the queue below, to read one ·
-              arrow keys move one tile, Home and End jump
+              arrow keys move one tile, Home and End jump, and typing a title moves to its match
             </small>
           </div>
         ) : null}

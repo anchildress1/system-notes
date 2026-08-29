@@ -1,28 +1,44 @@
 import { describe, expect, it } from 'vitest';
-import { BOARD_ROW_SCALE, fitBoardToWholeRows } from '@/components/IndexWorkspace/boardLayout';
+import { BOARD_MAX_ROWS, fitBoardToWholeRows } from '@/components/IndexWorkspace/boardLayout';
 
 const notes = (count: number) => Array.from({ length: count }, (_, index) => index + 1);
 
 describe('fitBoardToWholeRows', () => {
-  it('fills whole rows so the board is a rectangle', () => {
-    // 347 notes, 21 columns: 16 natural rows, scaled to 11.
+  it('shows every note that fits, even when the last row is ragged', () => {
+    // The reported bug: 27 awards over 19 columns rendered 19 and captioned it
+    // "19 of 27". One whole row plus a part row is two rows, and the board has
+    // room for nine.
+    expect(fitBoardToWholeRows(notes(27), 19)).toHaveLength(27);
+  });
+
+  it('fills whole rows when the height cap actually bites', () => {
+    // 347 notes over 21 columns needs 17 rows; the board stands 9.
     const fitted = fitBoardToWholeRows(notes(347), 21);
 
-    expect(fitted).toHaveLength(11 * 21);
+    expect(fitted).toHaveLength(BOARD_MAX_ROWS * 21);
     expect(fitted.length % 21).toBe(0);
   });
 
   it('re-fits when the column count changes', () => {
     const items = notes(347);
 
-    // Same notes, narrower board: fewer columns, more rows, still whole.
-    expect(fitBoardToWholeRows(items, 16).length % 16).toBe(0);
-    expect(fitBoardToWholeRows(items, 20).length % 20).toBe(0);
-    expect(fitBoardToWholeRows(items, 21).length % 21).toBe(0);
+    for (const columns of [16, 20, 21]) {
+      expect(fitBoardToWholeRows(items, columns).length % columns).toBe(0);
+    }
+  });
+
+  it('keeps its height steady as a filter narrows the set', () => {
+    // The old scale made height a function of the filter: two thirds of however
+    // many rows the current set needed. A cap is the same board every time.
+    const wide = fitBoardToWholeRows(notes(347), 19).length / 19;
+    const narrow = fitBoardToWholeRows(notes(200), 19).length / 19;
+
+    expect(wide).toBe(BOARD_MAX_ROWS);
+    expect(narrow).toBe(BOARD_MAX_ROWS);
   });
 
   it('keeps rank order and trims from the tail', () => {
-    const fitted = fitBoardToWholeRows(notes(100), 10);
+    const fitted = fitBoardToWholeRows(notes(400), 10);
 
     expect(fitted).toEqual(notes(fitted.length));
     expect(fitted.at(-1)).toBe(fitted.length);
@@ -31,28 +47,18 @@ describe('fitBoardToWholeRows', () => {
   it('returns everything when the column count could not be measured', () => {
     const items = notes(347);
 
-    // 0 is the "unmeasured" signal — a hidden board must not be re-fitted
-    // against a column count that was never resolved.
     expect(fitBoardToWholeRows(items, 0)).toBe(items);
     expect(fitBoardToWholeRows(items, -1)).toBe(items);
   });
 
-  it('returns everything when there is not one full row to square off', () => {
+  it('returns everything when there is not even one full row', () => {
     const items = notes(6);
 
     expect(fitBoardToWholeRows(items, 21)).toBe(items);
   });
 
-  it('keeps a single row rather than emptying the board', () => {
-    // 21 notes over 20 columns: one natural row, and 2/3 of that must not be 0.
-    const fitted = fitBoardToWholeRows(notes(21), 20);
-
-    expect(fitted).toHaveLength(20);
-  });
-
-  it('handles an exact multiple without dropping a whole row to rounding', () => {
-    // 60 notes, 10 columns: 6 natural rows, scaled to 4.
-    expect(fitBoardToWholeRows(notes(60), 10)).toHaveLength(40);
+  it('keeps a single short row rather than emptying the board', () => {
+    expect(fitBoardToWholeRows(notes(21), 20)).toHaveLength(21);
   });
 
   it('never pads beyond the notes it was given', () => {
@@ -65,10 +71,10 @@ describe('fitBoardToWholeRows', () => {
     }
   });
 
-  it('honours an explicit row scale', () => {
-    expect(fitBoardToWholeRows(notes(100), 10, 1)).toHaveLength(100);
-    expect(fitBoardToWholeRows(notes(100), 10, 0.5)).toHaveLength(50);
-    expect(BOARD_ROW_SCALE).toBeCloseTo(2 / 3);
+  it('honours an explicit row cap', () => {
+    expect(fitBoardToWholeRows(notes(100), 10, 10)).toHaveLength(100);
+    expect(fitBoardToWholeRows(notes(100), 10, 5)).toHaveLength(50);
+    expect(BOARD_MAX_ROWS).toBe(9);
   });
 
   it('tolerates an empty index', () => {

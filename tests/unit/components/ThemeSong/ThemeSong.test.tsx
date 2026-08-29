@@ -17,7 +17,7 @@ function stubPlayback({ rejectWith }: { rejectWith?: Error } = {}) {
     this.dispatchEvent(new Event('pause'));
   });
   vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(play);
-  vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(pause);
+  vi.mocked(HTMLMediaElement.prototype.pause).mockImplementation(pause);
   return { play, pause };
 }
 
@@ -28,6 +28,11 @@ const note = () => document.querySelector('[aria-live="polite"]') as HTMLElement
 describe('ThemeSong', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    // Every render owns an audio element, and cleanup pauses it even when a
+    // test never starts playback. jsdom has no media pipeline, so its native
+    // method emits a noisy "not implemented" error unless the boundary is
+    // stubbed for the whole file.
+    vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => undefined);
   });
 
   it('renders an idle, unpressed control naming the artist', () => {

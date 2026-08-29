@@ -1,7 +1,9 @@
+/* Bordered on all sides now that it sits inside the page column instead of
+   running to the viewport edge. */
 .corpus {
   display: grid;
   min-height: calc(100svh - var(--header-height));
-  border-top: 1px solid var(--line);
+  border: 1px solid var(--line);
   grid-template-columns: minmax(14rem, 18vw) minmax(0, 1fr);
 }
 
@@ -34,10 +36,6 @@
   transition: background 200ms ease;
 }
 
-.railItem:hover {
-  background: var(--panel);
-}
-
 .railItem[aria-current='true'] {
   background: var(--panel);
 }
@@ -49,7 +47,7 @@
 }
 
 .railItem[aria-current='true'] .railMark {
-  background: var(--flag);
+  background: var(--mark);
 }
 
 .railText {
@@ -72,7 +70,12 @@
 
 .railStar {
   margin-left: 0.35rem;
-  color: var(--flag);
+  /* The glyph alone. A marker chip behind a single star put a block of colour
+     beside every awarded row in a list of eleven, which reads as a second
+     column of badges rather than as a mark on a name. The star already carries
+     the meaning; the accent only has to make it visible, and it is the one
+     token that can do that on paper as well as on graphite. */
+  color: var(--ink-accent);
 }
 
 .railStatus {
@@ -92,11 +95,16 @@
   animation: rise-in 400ms var(--ease-out) both;
 }
 
+/* The light pen, not the solid one. This was .marked — the full gold slab — and
+   it worked while it was the only gold on the panel. It stopped working when
+   the cross-link below it became a filled button: a credit line and the page's
+   one action were then the same block of colour, and the label read as loud as
+   the thing you are meant to press. Same stroke, lighter pen, hierarchy back. */
 .award {
+  composes: marked-soft from global;
   display: flex;
   align-items: center;
   margin-bottom: 0.6rem;
-  color: var(--flag);
   font-family: var(--font-display);
   font-size: 0.9375rem;
   font-weight: 600;
@@ -104,21 +112,16 @@
   text-transform: uppercase;
 }
 
-.status {
-  margin-bottom: 0.75rem;
-  color: var(--mute);
-  font-family: var(--font-display);
-  font-size: 0.875rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+.awardStar {
+  margin-left: 0.4rem;
 }
 
 .name {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4.4vw, 3.9rem);
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 0.96;
+  font-family: var(--font-editorial);
+  font-size: clamp(2.1rem, 4.6vw, 4.1rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1;
   text-wrap: balance;
 }
 
@@ -132,33 +135,40 @@
   text-wrap: pretty;
 }
 
+/* Mat, shadow, tilt and tape all come from .taped. This carried a single wide
+   soft shadow and no mat, which is what made the exhibit read as a flat pane
+   cut into the page rather than as a print laid on it. */
 .media {
+  composes: taped from global;
   display: block;
   margin-top: clamp(1.25rem, 3vh, 2.125rem);
-  background: var(--panel-hi);
-  box-shadow: 0 1.875rem 2.875rem -1.625rem var(--drop);
-}
-
-.image {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 2 / 1;
-  object-fit: contain;
 }
 
 .columns {
   display: grid;
   margin-top: clamp(1.5rem, 3.4vh, 2.5rem);
-  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
-  gap: clamp(1.5rem, 3.4vw, 3.5rem);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+}
+
+/* Uneven on purpose: the description carries the argument, the outcome and the
+   links are the shorter column that closes it. */
+@media (min-width: 62rem) {
+  .columns {
+    grid-template-columns: 1.25fr 0.75fr;
+  }
+}
+
+.outcome {
+  min-width: 0;
 }
 
 .prose {
   min-width: 0;
 }
 
-.prose p {
+.prose p,
+.outcome p {
   max-width: 56ch;
   color: var(--soft);
   font-size: 1.03rem;
@@ -166,16 +176,24 @@
   text-wrap: pretty;
 }
 
-.prose h3,
+.outcome h3 {
+  font-family: var(--font-editorial);
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
 .stackColumn h3 {
+  color: var(--mute);
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: var(--fine);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: var(--fine-tracking);
+  text-transform: uppercase;
 }
 
 .prose h3 {
-  margin: 1.625rem 0 0.625rem;
+  margin: 0 0 0.625rem;
 }
 
 .stackColumn h3 {
@@ -190,64 +208,59 @@
   margin-top: 1.5rem;
 }
 
-.action,
-.crossLink {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0 0.9rem;
-  border: 1px solid var(--line-strong);
-  color: var(--soft);
-  font-family: var(--font-display);
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition:
-    border-color 200ms ease,
-    color 200ms ease;
+/* Both are .btn now. They were a third button declaration — their own shape,
+   their own hover, their own idea of what an accent control looks like — which
+   is how the exhibits page ended up with the only primary action on the site
+   that was an outline while every other one was filled. */
+.action {
+  composes: btn from global;
+  padding-inline: 0.9rem;
 }
 
-.action:hover,
-.crossLink:hover {
-  border-color: var(--flag);
-  color: var(--flag);
-}
-
+/* The page's one action: it is where a reader goes next. Filled, like the
+   intake's run button and the theme song's play button. */
 .crossLink {
-  border-color: var(--flag);
-  color: var(--flag);
+  composes: btn from global;
+  padding-inline: 0.9rem;
 }
 
 .stackColumn {
   min-width: 0;
+  padding-top: clamp(2rem, 5vh, 3.5rem);
+  margin-top: clamp(2.5rem, 6vh, 4.5rem);
+  border-top: 0.5px solid var(--line-strong);
 }
 
+/* Loose columns, not a ruled two-column table. Entries flow and break where the
+   measure runs out, the way footnotes set across a page do — no shared right
+   edge for the roles to line up against, and no rule under every pair. */
 .stack {
-  display: grid;
+  display: block;
+  columns: 3 14rem;
+  column-gap: clamp(1.5rem, 4vw, 4rem);
 }
 
 .stack div {
-  display: grid;
-  align-items: baseline;
-  padding: 0.7rem 0;
-  border-bottom: 1px solid var(--line);
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.875rem;
+  /* A footnote is never split across a column. */
+  break-inside: avoid;
+  margin-bottom: 1.15rem;
 }
 
 .stack dt {
   min-width: 0;
-  font-size: 0.9375rem;
+  font-family: var(--font-editorial);
+  font-size: 1.05rem;
   font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .stack dd {
+  margin-top: 0.1rem;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.9375rem;
-  text-align: right;
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
+  text-transform: uppercase;
 }
 
 @media (max-width: 60rem) {
@@ -270,14 +283,23 @@
     display: flex;
   }
 
+  /* The flex items are the list items, not the button inside them. Without this
+     each one shrank to about 29px of a 390px row and twenty nowrap labels
+     painted on top of each other as a single unreadable line. */
+  .rail ul > li {
+    flex: 0 0 auto;
+  }
+
   .railItem {
-    grid-template-columns: minmax(0, 1fr);
+    /* auto, not minmax(0, 1fr): the 1fr track resolves against a now
+       content-sized item and collapses the label back to nothing. */
+    grid-template-columns: auto;
     border-bottom: 2px solid transparent;
     white-space: nowrap;
   }
 
   .railItem[aria-current='true'] {
-    border-bottom-color: var(--flag);
+    border-bottom-color: var(--ink-accent);
   }
 
   .railMark {
