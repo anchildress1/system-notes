@@ -45,11 +45,7 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
   // returns a keyboard reader to the top of the document mid-task. Focus moves
   // to the opposite end instead, which is always live: a pager only renders
   // when there is more than one page, so the two ends are never both retired.
-  //
-  // useLayoutEffect, not useEffect: the rescue has to land in the same commit
-  // that disables the control, before the browser paints a frame with focus
-  // already dropped to <body>. A passive effect runs on a later macrotask and
-  // raced that paint under load.
+  // A layout effect, not a passive one, so the rescue lands before the paint it's racing.
   useLayoutEffect(() => {
     const pressed = pressedEnd.current;
     if (!pressed) return;
