@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Hit } from 'instantsearch.js';
 import FactCard from '@/components/FactCard/FactCard';
 import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteContent';
@@ -45,7 +45,12 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
   // returns a keyboard reader to the top of the document mid-task. Focus moves
   // to the opposite end instead, which is always live: a pager only renders
   // when there is more than one page, so the two ends are never both retired.
-  useEffect(() => {
+  //
+  // useLayoutEffect, not useEffect: the rescue has to land in the same commit
+  // that disables the control, before the browser paints a frame with focus
+  // already dropped to <body>. A passive effect runs on a later macrotask and
+  // raced that paint under load.
+  useLayoutEffect(() => {
     const pressed = pressedEnd.current;
     if (!pressed) return;
     pressedEnd.current = null;
