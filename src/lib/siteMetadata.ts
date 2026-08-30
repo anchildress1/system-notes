@@ -16,10 +16,15 @@ export const SOCIAL_IMAGE = {
 interface PageMetadataInput {
   title: string;
   description: string;
-  path: string;
+  /** Omitted for a route with no canonical address of its own, such as the 404. */
+  path?: string;
   type?: 'article' | 'profile' | 'website';
 }
 
+/* Every route builds its social metadata HERE rather than declaring its own.
+   Next merges `openGraph` and `twitter` shallowly, so a route that sets two
+   fields replaces the layout's whole object and silently drops the image,
+   siteName, locale, type and url with it. */
 export function buildPageMetadata({
   title,
   description,
@@ -29,11 +34,11 @@ export function buildPageMetadata({
   return {
     title: { absolute: title },
     description,
-    alternates: { canonical: path },
+    ...(path ? { alternates: { canonical: path } } : {}),
     openGraph: {
       title,
       description,
-      url: path,
+      ...(path ? { url: path } : {}),
       type,
       siteName: SITE_NAME,
       locale: 'en_US',
