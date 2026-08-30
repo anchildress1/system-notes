@@ -79,7 +79,7 @@ describe('buildSiteJsonLd', () => {
 
   it('files each certification as a credential with somewhere to check it', () => {
     const { hasCredential } = buildSiteJsonLd([], base).author;
-    expect(hasCredential.length).toBe(profile.certifications.length);
+    expect(hasCredential).toHaveLength(profile.certifications.length);
     for (const credential of hasCredential) {
       expect(credential.url).toMatch(/^https:\/\//);
       expect(credential.recognizedBy.name.trim()).not.toBe('');
