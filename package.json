@@ -66,7 +66,7 @@
     "@vitejs/plugin-react": "^6.1.0",
     "@vitest/coverage-v8": "^4.1.11",
     "commitlint-plugin-rai": "^1.0.2",
-    "eslint": "^9.0.0",
+    "eslint": "^10.8.1",
     "eslint-config-next": "16.3.2",
     "jsdom": "^30.0.1",
     "lefthook": "^2.1.10",
