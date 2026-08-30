@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 
 export const SITE_NAME = 'System Notes';
-/* JPEG, not the WebP the rest of the site serves. LinkedIn documents JPG, PNG and
-   GIF for og:image and commonly renders no preview at all for WebP — and a link
-   with no card is the one place this site cannot afford to look broken. Same
-   source art at the same 1440x720; a PNG of it was 443 KiB against this 169. */
-export const SOCIAL_IMAGE_URL = '/projects/system-notes.jpg';
+/* The System Notes project card, shared as the site's own. WebP: checked against
+   LinkedIn's Post Inspector, which scrapes it, renders the full card, and
+   re-hosts a transcode on its own CDN. A JPEG duplicate was carried here for a
+   while on the belief that it would not — it does. */
+export const SOCIAL_IMAGE_URL = '/projects/system-notes.webp';
 export const SOCIAL_IMAGE = {
   url: SOCIAL_IMAGE_URL,
   width: 1440,
