@@ -41,4 +41,22 @@ describe('ResultQueue', () => {
     expect(screen.getByText('New note 2')).toBeVisible();
     expect(screen.queryByText('New note 7')).not.toBeInTheDocument();
   });
+
+  it('moves focus to the opposite pager control when the pressed one retires', () => {
+    render(
+      <ResultQueue items={resultSet('Old')} selectedId="card:shared:first" onSelect={vi.fn()} />
+    );
+
+    const next = screen.getByRole('button', { name: 'Next' });
+    const previous = screen.getByRole('button', { name: 'Previous' });
+
+    next.focus();
+    fireEvent.click(next);
+    expect(next).toBeDisabled();
+    expect(previous).toHaveFocus();
+
+    fireEvent.click(previous);
+    expect(previous).toBeDisabled();
+    expect(next).toHaveFocus();
+  });
 });
