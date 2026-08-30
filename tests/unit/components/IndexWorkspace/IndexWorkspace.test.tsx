@@ -289,6 +289,14 @@ describe('IndexWorkspace', () => {
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-346');
     fireEvent.keyDown(boardElement, { key: 'ArrowUp' });
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-345');
+    // Before any letter, so no typeahead prefix is live and this takes the
+    // lone-Space path rather than being absorbed as a prefix character. It moves
+    // nothing, but must still be swallowed: left to the document it scrolled the
+    // page out from under a reader whose focus was on the board.
+    const loneSpace = fireEvent.keyDown(boardElement, { key: ' ' });
+    expect(loneSpace).toBe(false);
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-345');
+
     fireEvent.keyDown(boardElement, { key: 'a' });
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-345');
 
