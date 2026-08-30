@@ -75,12 +75,16 @@ export default function IndexSearch() {
       <div className={styles.searchMeta}>
         {/* Only the hit count is live. processingTimeMS changes on every query even
             when the count does not, so keeping it inside re-announced the whole
-            line on each keystroke carrying nothing new. */}
+            line on each keystroke carrying nothing new.
+
+            The timing is a sibling, not hidden: being outside the region is what
+            stops the re-announcement, and hiding it as well would take the number
+            away from a reader who went looking for it. */}
         <p>
           <span aria-live="polite">
             {nbHits.toLocaleString()} {nbHits === 1 ? 'entry' : 'entries'}
           </span>
-          <span aria-hidden="true"> · {processingTimeMS}ms</span>
+          <span> · {processingTimeMS}ms</span>
         </p>
         <div className={styles.secondaryFilters} aria-label="Additional note filters">
           <FacetFilter attribute="projects" label="Project" />
