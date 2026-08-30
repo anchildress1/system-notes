@@ -78,13 +78,15 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
     <section aria-label="Notes results">
       <h2 className="visually-hidden">Matching notes</h2>
       <div className={styles.readingQueue}>
+        {/* No aria-live here. Choosing a note already moves focus to this element,
+            which announces it; the live region announced it a second time, and
+            aria-atomic re-read the whole card — title, fact, project, date, tags
+            and actions — on every keystroke that changed the top hit. */}
         <div
           ref={readerRef}
           className={styles.reader}
           tabIndex={-1}
           aria-label={`Now reading: ${featured.title}`}
-          aria-live="polite"
-          aria-atomic="true"
         >
           <FactCard
             key={featured.objectID}

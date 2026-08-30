@@ -31,12 +31,16 @@ export function isValidNoteId(value: string): boolean {
   return NOTE_ID_PATTERN.test(value);
 }
 
+/** What a note with no readable body reads as in the workspace. Exported so a
+ *  consumer that must not publish filler can recognise it. */
+export const NOTE_BODY_FALLBACK = 'No detail available.';
+
 export function getNoteBody(note: NoteText): string {
   return (
     usefulString(note.content) ??
     usefulString(note.fact) ??
     usefulString(note.blurb) ??
-    'No detail available.'
+    NOTE_BODY_FALLBACK
   );
 }
 
