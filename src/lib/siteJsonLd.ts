@@ -14,7 +14,7 @@ export function buildSiteJsonLd(projects: Project[], baseUrl: string) {
     '@id': `${baseUrl}/#person`,
     name: profile.name,
     jobTitle: profile.role,
-    email: `mailto:${profile.email}`,
+    email: profile.email,
     url: baseUrl,
     image: new URL(profile.portrait.light, baseUrl).toString(),
     description: profile.introduction[0],
