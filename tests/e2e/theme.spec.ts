@@ -116,7 +116,10 @@ test.describe('Theme', () => {
   test.describe('placeholder contrast', () => {
     const FIELDS = [
       { route: '/', selector: '[data-focus="ruled"]' },
-      { route: '/notes', selector: 'input[aria-label="Search the notes index"]' },
+      // By type, not by aria-label: the field takes its name from a real <label>
+      // now, and this test is about the placeholder's contrast either way. The
+      // name itself is asserted by the getByRole checks in search.spec.ts.
+      { route: '/notes', selector: 'input[type="search"]' },
     ] as const;
 
     for (const scheme of ['dark', 'light'] as const) {

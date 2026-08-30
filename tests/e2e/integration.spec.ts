@@ -120,8 +120,11 @@ test.describe('System Notes redesign', () => {
     // screenshot — which is how the illustration came to be lost.
     const layout = await page.evaluate(() => {
       const sidebar = document.querySelector<HTMLElement>('[aria-label="Browse notes by type"]');
+      // By type: the field is named by a real <label> now rather than an
+      // aria-label. closest('div') resolves to the search pill either way, and
+      // the relationships asserted below hold for the pill as for its wrapper.
       const search = document
-        .querySelector<HTMLInputElement>('[aria-label="Search the notes index"]')
+        .querySelector<HTMLInputElement>('input[type="search"]')
         ?.closest<HTMLElement>('div');
       const board = document.querySelector<HTMLElement>('[data-note-board]');
       const reader = document.querySelector<HTMLElement>('article');
