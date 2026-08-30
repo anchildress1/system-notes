@@ -85,7 +85,7 @@ export default function AboutPage() {
         </figure>
       </section>
 
-      <section className={`reveal ${styles.proof}`} aria-labelledby="proof-heading">
+      <section className={styles.proof} aria-labelledby="proof-heading">
         <header>
           <h2 id="proof-heading">Claims should have receipts.</h2>
         </header>
@@ -157,6 +157,7 @@ export default function AboutPage() {
                   <span className={styles.credentialMeta}>
                     {certification.issuer} · {certification.issued}
                   </span>
+                  <span className="visually-hidden"> (opens in a new tab)</span>
                 </a>
               </li>
             ))}
@@ -164,7 +165,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className={`reveal ${styles.principles}`} aria-labelledby="principles-heading">
+      <section className={styles.principles} aria-labelledby="principles-heading">
         <header>
           <h2 id="principles-heading">The rules are short on purpose.</h2>
         </header>
@@ -185,7 +186,7 @@ export default function AboutPage() {
         </ol>
       </section>
 
-      <section className={`reveal ${styles.themeSong}`} aria-labelledby="theme-song-heading">
+      <section className={styles.themeSong} aria-labelledby="theme-song-heading">
         <header>
           {/* No artist line: the status beside the control already names them,
               and the design does not repeat it under the heading. */}
@@ -205,7 +206,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className={`reveal ${styles.contact}`} aria-labelledby="contact-heading">
+      <section className={styles.contact} aria-labelledby="contact-heading">
         <div>
           <h2 id="contact-heading">Follow the work, not a funnel.</h2>
         </div>
