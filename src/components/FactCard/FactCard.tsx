@@ -60,6 +60,7 @@ export default function FactCard({ hit, position = 1 }: Readonly<FactCardProps>)
           <a className="marked-hover" href={sourceUrl} target="_blank" rel="noopener noreferrer">
             {sourceHost === 'dev.to' ? 'Read on DEV' : 'View source'}
             <FiArrowUpRight aria-hidden="true" />
+            <span className="visually-hidden"> (opens in a new tab)</span>
           </a>
         ) : null}
       </div>
