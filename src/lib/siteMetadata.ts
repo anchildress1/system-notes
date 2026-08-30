@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 
 export const SITE_NAME = 'System Notes';
-export const SOCIAL_IMAGE_URL = '/projects/system-notes.webp';
+/* JPEG, not the WebP the rest of the site serves. LinkedIn documents JPG, PNG and
+   GIF for og:image and commonly renders no preview at all for WebP — and a link
+   with no card is the one place this site cannot afford to look broken. Same
+   source art at the same 1440x720; a PNG of it was 443 KiB against this 169. */
+export const SOCIAL_IMAGE_URL = '/projects/system-notes.jpg';
 export const SOCIAL_IMAGE = {
   url: SOCIAL_IMAGE_URL,
   width: 1440,
