@@ -75,7 +75,7 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
   const visible = alternatives.slice(pageStart, pageStart + PAGE_SIZE);
 
   return (
-    <section className={styles.results} aria-label="Notes results">
+    <section aria-label="Notes results">
       <h2 className="visually-hidden">Matching notes</h2>
       <div className={styles.readingQueue}>
         <div
