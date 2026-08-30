@@ -1,6 +1,22 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FiArrowLeft, FiArrowUpRight } from 'react-icons/fi';
 import styles from './not-found.module.css';
+
+/* Without this the route inherited the layout's title and openGraph wholesale, so
+   a dead link previewed as the home page under the home page's name. The status
+   code carries the SEO signal; this is about what a shared link looks like. */
+export const metadata: Metadata = {
+  title: { absolute: 'Page not found | Ashley’s System Notes' },
+  description: 'That address holds no record.',
+  // No `robots`. Next emits its own `noindex` for this route, and adding one
+  // here just puts a second robots tag on the page — the thing removing the
+  // layout's `index, follow` was meant to stop.
+  openGraph: {
+    title: 'Page not found',
+    description: 'That address holds no record.',
+  },
+};
 
 export default function NotFoundPage() {
   return (
