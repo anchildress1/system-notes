@@ -66,6 +66,7 @@ jobs:
         run: make test-e2e
 
       - name: Run Performance Tests
+        id: perf
         run: make test-perf
 
       - name: Scan Secrets
@@ -81,9 +82,13 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+      # lhci writes .lighthouseci/ itself, so the directory is missing only when
+      # an earlier step failed and the perf step never ran. Uploading anyway
+      # warns that it found no files, on a job that already failed for a
+      # different reason.
       - name: Store Lighthouse Report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: always()
+        if: always() && steps.perf.outcome != 'skipped'
         with:
           name: lighthouse-report
           path: .lighthouseci/
