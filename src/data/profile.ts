@@ -59,10 +59,29 @@ const certifications: readonly Certification[] = [
   },
 ];
 
+/* `core` is the professional practice; `applied` is what the exhibits happen to
+   be built in. Merged into one row, a backend engineer reads as a generalist. */
+interface TrackRecord {
+  readonly since: number;
+  /** Runs inside a sentence, so it carries its own casing and no trailing stop. */
+  readonly summary: string;
+  readonly core: readonly string[];
+  readonly applied: readonly string[];
+}
+
+const trackRecord: TrackRecord = {
+  since: 2014,
+  summary: 'distributed backend systems in Java and Node.js on GCP',
+  core: ['Java', 'Node.js', 'Google Cloud Platform', 'Distributed systems'],
+  applied: ['TypeScript', 'Python', 'Next.js', 'SvelteKit', 'Gemini · Claude · Gemma', 'Cloud Run'],
+};
+
 export const profile = {
   name: 'Ashley Childress',
   role: 'Senior Software Engineer',
   location: 'Georgia · Appalachian roots · Remote',
+  email: 'anchildress1@gmail.com',
+  trackRecord,
   portrait: {
     // One portrait per theme. Same subject, same alt — only the artwork's own
     // ground changes, so describing them differently would be describing the

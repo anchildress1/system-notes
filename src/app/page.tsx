@@ -25,7 +25,8 @@ export default function IntakePage() {
         </div>
         <div className="page-column">
           <p className={styles.proof}>
-            <strong>{profile.role}.</strong> The agent below cites only systems I&rsquo;ve actually
+            <strong>{profile.role}.</strong> I build {profile.trackRecord.summary}, and have since{' '}
+            {profile.trackRecord.since}. The agent below cites only systems I&rsquo;ve actually
             shipped.{' '}
             <Link className="marked-link" href="/projects">
               See the evidence.
