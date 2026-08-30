@@ -197,7 +197,13 @@ export default function IndexSidebar({
     const now = Date.now();
     const continuesPrefix =
       now - typeahead.current.updatedAt <= 700 && typeahead.current.value.length > 0;
-    if (event.key === ' ' && !continuesPrefix) return undefined;
+    if (event.key === ' ' && !continuesPrefix) {
+      // Swallowed rather than merely ignored. Returning without this let the key
+      // reach the document, and a Space on a focused listbox scrolled the page
+      // out from under the reader instead of doing nothing.
+      event.preventDefault();
+      return undefined;
+    }
 
     const typed = event.key.toLocaleLowerCase();
     // One character pressed repeatedly cycles through options starting with it
