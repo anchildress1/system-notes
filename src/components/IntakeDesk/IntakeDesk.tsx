@@ -62,7 +62,7 @@ function readSavedBrief(): SavedBrief | null {
 
 /** Problems a reader can load into the field instead of writing their own. */
 export const SEEDS = [
-  'When something breaks, we can’t tell which AI wrote it.',
+  'We can’t send our data to someone else’s servers. It still has to work.',
   'My seniors are skimming four-hundred-line AI diffs and calling it review.',
   'Nothing errored. The output was just quietly wrong.',
 ] as const;
