@@ -1,9 +1,25 @@
 'use client';
 
-import { useSyncExternalStore, type ReactNode } from 'react';
+import { createContext, useContext, useSyncExternalStore, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
-const IndexWorkspace = dynamic(() => import('./IndexWorkspace'), { ssr: false });
+/* next/dynamic, not lazy + Suspense. Both close the blank gap, but plain lazy
+   loses Next's chunk preloading and cost this route 5 Lighthouse points —
+   measured, median 0.89 against a 0.92 floor. `dynamic`'s `loading` cannot be
+   passed a prop, so the fallback reaches it through context instead. */
+const FallbackContext = createContext<ReactNode>(null);
+
+function Fallback() {
+  return <>{useContext(FallbackContext)}</>;
+}
+
+const IndexWorkspace = dynamic(() => import('./IndexWorkspace'), {
+  ssr: false,
+  // Without this the manifest vanished the moment hydration flipped and the
+  // notes sat in a blank section for the length of the chunk request — and
+  // never came back if it failed.
+  loading: () => <Fallback />,
+});
 
 function subscribeToNothing(): () => void {
   return () => {};
@@ -12,16 +28,20 @@ function subscribeToNothing(): () => void {
 const onClient = () => true;
 const onServer = () => false;
 
-/* Renders the server-rendered manifest until the workspace is on the client.
-
-   Not `dynamic`'s own `loading`, which cannot be handed data from the server:
-   with ssr: false the route emitted a spinner and nothing else, so the corpus
-   was absent from the HTML for every crawler and for anyone without scripting.
-   The manifest IS the fallback, so the two never render together. */
+/**
+ * Renders the server-rendered fallback until the workspace is really on screen.
+ *
+ * @param fallback The manifest, or the loading shell when the index gave nothing.
+ */
 export default function IndexWorkspaceLoader({ fallback }: Readonly<{ fallback: ReactNode }>) {
-  // The store never changes; the two snapshots are the whole point, and reading
-  // them apart is what tells a hydration render from a client one.
+  // The store never changes; reading the two snapshots apart is what tells a
+  // hydration render from a client one, and keeps the workspace off the server.
   const hydrated = useSyncExternalStore(subscribeToNothing, onClient, onServer);
+  if (!hydrated) return fallback;
 
-  return hydrated ? <IndexWorkspace /> : fallback;
+  return (
+    <FallbackContext.Provider value={fallback}>
+      <IndexWorkspace />
+    </FallbackContext.Provider>
+  );
 }

@@ -70,14 +70,28 @@ export const getIndexNotes = cache(async (): Promise<IndexNote[]> => {
 
   try {
     const response = await withNotesDeadline(
-      notesClient.searchSingleIndex({
-        indexName: ALGOLIA_INDEX_NAME,
-        searchParams: {
-          query: '',
-          hitsPerPage: SSR_NOTE_LIMIT,
-          attributesToRetrieve: ['objectID', 'title', 'fact', 'content', 'category', 'created_at'],
+      notesClient.searchSingleIndex(
+        {
+          indexName: ALGOLIA_INDEX_NAME,
+          searchParams: {
+            query: '',
+            hitsPerPage: SSR_NOTE_LIMIT,
+            attributesToRetrieve: [
+              'objectID',
+              'title',
+              'fact',
+              'content',
+              'category',
+              'created_at',
+            ],
+          },
         },
-      })
+        // Bounds the REQUEST, not just the wait on it. Racing a promise leaves the
+        // socket open behind a route that has already given up; the transport's own
+        // timeout is what actually ends it. The outer deadline still guards the
+        // render path, since these bound the connect and read legs separately.
+        { timeouts: { connect: NOTES_DEADLINE_MS, read: NOTES_DEADLINE_MS } }
+      )
     );
     const value = toIndexNotes(response.hits);
     cached = { at: Date.now(), value };

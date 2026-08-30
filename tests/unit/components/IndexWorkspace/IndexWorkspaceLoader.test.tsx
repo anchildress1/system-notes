@@ -4,22 +4,32 @@ import IndexWorkspaceLoader from '@/components/IndexWorkspace/IndexWorkspaceLoad
 
 // The workspace itself pulls in react-instantsearch and a live Algolia client.
 // This suite is about which of the two surfaces renders, not about either one.
-vi.mock('@/components/IndexWorkspace/IndexWorkspace', () => ({
-  default: () => <div data-testid="workspace">The workspace</div>,
-}));
+const resolveWorkspace = vi.hoisted(() => ({ current: () => {} }));
+
+vi.mock('@/components/IndexWorkspace/IndexWorkspace', async () => {
+  // Held until the test releases it, so the window between hydration and the
+  // chunk arriving is a state this suite can actually assert on.
+  await new Promise<void>((resolve) => {
+    resolveWorkspace.current = resolve;
+  });
+  return { default: () => <div data-testid="workspace">The workspace</div> };
+});
 
 describe('IndexWorkspaceLoader', () => {
-  it('hands the workspace to a client that can run it', async () => {
+  it('holds the fallback while the workspace chunk is still downloading', async () => {
+    // Dropping it the moment hydration flips left the notes in a blank section
+    // for the length of the chunk request, and gone for good if it never landed.
     render(<IndexWorkspaceLoader fallback={<p>The filed notes</p>} />);
 
-    expect(await screen.findByTestId('workspace')).toBeVisible();
+    expect(await screen.findByText('The filed notes')).toBeVisible();
+    expect(screen.queryByTestId('workspace')).not.toBeInTheDocument();
   });
 
-  it('drops the fallback once the workspace is up, rather than showing both', async () => {
-    // Two copies of the corpus on one page is the failure the swap prevents.
+  it('swaps to the workspace once the chunk resolves, without showing both', async () => {
     render(<IndexWorkspaceLoader fallback={<p>The filed notes</p>} />);
-    await screen.findByTestId('workspace');
+    resolveWorkspace.current();
 
+    expect(await screen.findByTestId('workspace')).toBeVisible();
     expect(screen.queryByText('The filed notes')).not.toBeInTheDocument();
   });
 });
