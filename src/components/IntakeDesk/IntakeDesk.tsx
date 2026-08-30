@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useId, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import { hasValidAgentCredentials } from '@/lib/algolia';
 import BriefBody from './BriefBody';
 import IntakeBrief from './IntakeBriefLoader';
@@ -81,6 +81,14 @@ export default function IntakeDesk() {
   // answer back. Without this the form stayed live under a running request.
   const [inFlight, setInFlight] = useState(false);
 
+  /* Submitting cleared the field and rendered the brief below the fold, so the
+     only feedback was the field emptying. Honors reduced motion through the
+     global scroll-behavior guard. */
+  const answerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (asked) answerRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [asked]);
+
   const keepBrief = useCallback(
     (answer: string) => {
       if (asked) keep({ question: asked.text, answer });
@@ -159,7 +167,7 @@ export default function IntakeDesk() {
       </div>
 
       {asked || saved ? (
-        <div className={styles.answer}>
+        <div className={styles.answer} ref={answerRef}>
           {asked ? (
             // Keyed so asking again is a fresh turn rather than an append: the
             // agent answers a question, it does not hold a conversation.
