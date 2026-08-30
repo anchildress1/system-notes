@@ -218,6 +218,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
               <Link
                 className={styles.crossLink}
                 data-variant="filled"
+                data-accent="filled"
                 href={getProjectNotesURL(selected.title)}
               >
                 Decisions from {selected.title}
