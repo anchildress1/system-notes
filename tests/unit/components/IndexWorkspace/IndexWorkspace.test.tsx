@@ -128,7 +128,12 @@ describe('IndexWorkspace', () => {
 
     expect(await screen.findByRole('searchbox', { name: 'Search the notes index' })).toBeVisible();
     expect(await screen.findByText('Failure is data')).toBeInTheDocument();
-    expect(screen.getByText(/1 entry · 1ms/i)).toBeInTheDocument();
+    // Split across two elements on purpose: only the count is live. Asserting the
+    // whole line as one string is what would silently put the timing back inside
+    // the region, where it re-announced on every keystroke carrying nothing new.
+    const hitCount = screen.getByText(/1 entry/i);
+    expect(hitCount).toHaveAttribute('aria-live', 'polite');
+    expect(screen.getByText(/1ms/i).closest('[aria-live]')).toBeNull();
     expect(screen.getByRole('button', { name: /Filed under/i })).toHaveAttribute(
       'aria-expanded',
       'true'

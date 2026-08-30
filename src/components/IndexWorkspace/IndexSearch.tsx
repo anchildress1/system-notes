@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import {
   useClearRefinements,
   useRefinementList,
@@ -15,6 +15,7 @@ export default function IndexSearch() {
   const { canRefine, refine: clearRefinements } = useClearRefinements();
   const { nbHits, processingTimeMS } = useStats();
   const inputRef = useRef<HTMLInputElement>(null);
+  const searchId = useId();
 
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
@@ -37,13 +38,20 @@ export default function IndexSearch() {
     <div className={styles.searchArea}>
       {/* The `retrieve>` prompt is gone. A console prefix on a search field is a
           costume, and it was the loudest one on the site. */}
-      <label className={styles.searchPill}>
-        <span className="visually-hidden">Search the notes index</span>
+      {/* A div, not a label. The clear button is a labelable element, so nesting it
+          inside a <label> is an invalid content model and made clicking "clear"
+          also fire the label's forwarding to the input. The name now comes from a
+          real <label> naming only the field, rather than from an aria-label
+          duplicating a visually-hidden span the aria-label already overrode. */}
+      <div className={styles.searchPill}>
+        <label className="visually-hidden" htmlFor={searchId}>
+          Search the notes index
+        </label>
         <input
+          id={searchId}
           ref={inputRef}
           type="search"
           data-focus="ruled"
-          aria-label="Search the notes index"
           value={query}
           onChange={(event) => refineQuery(event.target.value)}
           placeholder="ask the index anything…"
@@ -62,11 +70,17 @@ export default function IndexSearch() {
         ) : (
           <kbd>⌘K</kbd>
         )}
-      </label>
+      </div>
 
       <div className={styles.searchMeta}>
-        <p aria-live="polite">
-          {nbHits.toLocaleString()} {nbHits === 1 ? 'entry' : 'entries'} · {processingTimeMS}ms
+        {/* Only the hit count is live. processingTimeMS changes on every query even
+            when the count does not, so keeping it inside re-announced the whole
+            line on each keystroke carrying nothing new. */}
+        <p>
+          <span aria-live="polite">
+            {nbHits.toLocaleString()} {nbHits === 1 ? 'entry' : 'entries'}
+          </span>
+          <span aria-hidden="true"> · {processingTimeMS}ms</span>
         </p>
         <div className={styles.secondaryFilters} aria-label="Additional note filters">
           <FacetFilter attribute="projects" label="Project" />
@@ -80,6 +94,7 @@ export default function IndexSearch() {
             <span>Powered by</span>
             <SiAlgolia aria-hidden="true" />
             <span>Algolia</span>
+            <span className="visually-hidden"> (opens in a new tab)</span>
           </a>
         </div>
       </div>
