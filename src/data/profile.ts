@@ -73,7 +73,16 @@ const trackRecord: TrackRecord = {
   since: 2014,
   summary: 'distributed backend systems in Java and Node.js on GCP',
   core: ['Java', 'Node.js', 'Google Cloud Platform', 'Distributed systems'],
-  applied: ['TypeScript', 'Python', 'Next.js', 'SvelteKit', 'Gemini · Claude · Gemma', 'Cloud Run'],
+  applied: [
+    'TypeScript',
+    'Python',
+    'Next.js',
+    'SvelteKit',
+    'Gemini',
+    'Claude',
+    'Gemma',
+    'Cloud Run',
+  ],
 };
 
 export const profile = {

@@ -23,6 +23,16 @@ describe('profile track record', () => {
     expect(summary).not.toMatch(/\.$/);
   });
 
+  it('holds one technology per entry, not a pre-joined display string', () => {
+    // Both rows are joined with · for display AND fed to knowsAbout in the
+    // schema graph. An entry carrying its own separator renders a double one and
+    // publishes "Gemini · Claude · Gemma" as a single skill.
+    for (const entry of [...profile.trackRecord.core, ...profile.trackRecord.applied]) {
+      expect(entry).not.toContain('·');
+      expect(entry).not.toContain(',');
+    }
+  });
+
   it('keeps the professional practice apart from what the exhibits used', () => {
     // Merged, a backend engineer reads as a front-end generalist — which is the
     // failure the two rows exist to prevent.
