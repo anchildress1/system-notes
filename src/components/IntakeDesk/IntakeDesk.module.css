@@ -150,7 +150,10 @@
   inset-block: 0;
   width: 38%;
   background: var(--mark);
-  animation: intake-sweep 1.5s var(--ease-settle) infinite;
+  /* linear, not --ease-settle. That curve overshoots past 1 and settles back,
+     which is what an entrance wants; on a loop the bar shot past its end, pulled
+     back, then hard-cut to the start, stuttering every 1.5s for up to 45s. */
+  animation: intake-sweep 1.5s linear infinite;
   content: '';
 }
 
