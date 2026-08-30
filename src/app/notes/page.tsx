@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import IndexPulseLine from '@/components/IndexWorkspace/IndexPulseLine';
+import IndexLoadingShell from '@/components/IndexWorkspace/IndexLoadingShell';
 import IndexWorkspaceLoader from '@/components/IndexWorkspace/IndexWorkspaceLoader';
+import NoteManifest from '@/components/IndexWorkspace/NoteManifest';
+import { getIndexNotes } from '@/lib/indexNotes';
 import { getIndexPulse } from '@/lib/indexPulse';
 import { buildPageMetadata } from '@/lib/siteMetadata';
 import styles from './page.module.css';
@@ -17,7 +20,7 @@ export const metadata: Metadata = buildPageMetadata({
 export const dynamic = 'force-dynamic';
 
 export default async function NotesIndexPage() {
-  const pulse = await getIndexPulse();
+  const [pulse, notes] = await Promise.all([getIndexPulse(), getIndexNotes()]);
 
   return (
     <main id="main-content" className={styles.main}>
@@ -38,7 +41,9 @@ export default async function NotesIndexPage() {
         className={`page-column ${styles.indexSection}`}
         aria-label="System Notes index"
       >
-        <IndexWorkspaceLoader />
+        <IndexWorkspaceLoader
+          fallback={notes.length > 0 ? <NoteManifest notes={notes} /> : <IndexLoadingShell />}
+        />
       </section>
     </main>
   );
