@@ -470,13 +470,25 @@
   font-size: 0.8em;
 }
 
-/* Metadata setting, matching .outbound's siblings. Not uppercased: the local
-   part of an address is case-sensitive and must read as it is typed. */
+/* Metadata setting, but NOT --fine. The other rows end in an arrow, which is
+   decoration; this one ends in the only contact detail on the site, and 11px is
+   not a size to set it at. Not uppercased either: the local part of an address
+   is case-sensitive and has to read as it is typed. */
 .reachAddress {
-  color: var(--mute);
+  color: var(--soft);
   font-family: var(--font-display);
-  font-size: var(--fine);
-  letter-spacing: 0.06em;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+}
+
+/* Under the label rather than beside it once the row cannot hold both. */
+@media (max-width: 30rem) {
+  .contact nav a:has(.reachAddress) {
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 0.25rem;
+  }
 }
 
 /* Motion only, on top of the shared wash. The colour swap that came with the step
