@@ -157,9 +157,16 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
         </ul>
       </nav>
 
+      {/* Stable, and outside the keyed article. A live region announces a MUTATION;
+          the article is remounted on every selection, so the announcement it used
+          to carry never fired. */}
+      <p className="visually-hidden" role="status">
+        {selected.title}
+      </p>
+
       {/* Keyed on the selection so the pane remounts: without it the scroll
           position and the image both carry over from the previous system. */}
-      <article key={selected.id} className={styles.detail} id={panelId} aria-live="polite">
+      <article key={selected.id} className={styles.detail} id={panelId}>
         {selected.award ? (
           <p className={styles.award}>
             {selected.award}
