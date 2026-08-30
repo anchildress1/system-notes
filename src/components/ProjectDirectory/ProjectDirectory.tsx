@@ -159,8 +159,14 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
 
       {/* Stable, and outside the keyed article. A live region announces a MUTATION;
           the article is remounted on every selection, so the announcement it used
-          to carry never fired. */}
-      <output className="visually-hidden">{selected.title}</output>
+          to carry never fired.
+
+          Driven by `chosen` rather than `selected`: getServerSnapshot reports no
+          linked system, so on /projects?system=<id> the hydration render shows the
+          first project and the client snapshot then swaps it. Reading `selected`
+          made that swap a mutation, which spoke a project title over the page-load
+          announcement. `chosen` is only ever set by a click. */}
+      <output className="visually-hidden">{chosen ? selected.title : ''}</output>
 
       {/* Keyed on the selection so the pane remounts: without it the scroll
           position and the image both carry over from the previous system. */}
