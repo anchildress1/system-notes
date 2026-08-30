@@ -722,21 +722,16 @@ main {
   }
 }
 
-/* Scroll-driven reveal, tracking scroll position rather than an observer and a
-   state flag — no JS, no hydration cost.
+/* Scroll-driven, tracking scroll position rather than an observer and a state
+   flag — no JS, no hydration cost.
 
    Transform only, never opacity, for the same reason as rise-in. Behind
    @supports so a browser without scroll timelines renders the page in place,
-   and behind a motion query. */
-@keyframes reveal-rise {
-  from {
-    transform: translateY(2.75rem);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
+   and behind a motion query.
 
+   ONE scroll-driven treatment, and it belongs to the portrait. A general .reveal
+   sat on four consecutive sections of /about, which is the most templated motion
+   available and flattened the one piece here that is art-directed. */
 @keyframes portrait-drift {
   from {
     transform: translateY(2rem);
@@ -747,14 +742,6 @@ main {
 }
 
 @supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .reveal {
-      animation: reveal-rise linear both;
-      animation-timeline: view();
-      animation-range: entry 10% cover 32%;
-    }
-  }
-
   /* Slower and against the scroll, so the portrait sits in a different plane to
      the copy BESIDE it. Two columns only: below 55rem it stacks UNDER the copy,
      where `entry cover` resolves already complete and produced no motion at any
