@@ -25,6 +25,7 @@ export default function AboutPage() {
   const projects = getProjects();
   const groups = groupProjects(projects);
   const awardedProjects = projects.filter((project) => project.award);
+  const { since } = profile.trackRecord;
 
   return (
     <main id="main-content" className={styles.main}>
@@ -44,6 +45,20 @@ export default function AboutPage() {
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+          {/* In the hero: a reader screening for a role gives up before the fourth section. */}
+          <dl className={styles.trackRecord}>
+            <div>
+              <dt>Practice</dt>
+              <dd>
+                {profile.trackRecord.core.join(' · ')}
+                <span className={styles.since}>Shipping production systems since {since}</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Also shipped</dt>
+              <dd>{profile.trackRecord.applied.join(' · ')}</dd>
+            </div>
+          </dl>
         </div>
         <figure className={`drift ${styles.portrait}`}>
           {/* Both portraits ship; CSS shows the one matching the theme, and lazy is what
@@ -214,6 +229,9 @@ export default function AboutPage() {
             <span className={styles.outbound} aria-hidden="true">
               &#8599;
             </span>
+          </a>
+          <a className="washed" href={`mailto:${profile.email}`}>
+            Or just email me <span className={styles.reachAddress}>{profile.email}</span>
           </a>
         </nav>
       </section>

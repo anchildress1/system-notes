@@ -94,6 +94,20 @@ describe('ProjectDirectory', () => {
     expect(within(detail()).getByRole('heading', { level: 2 })).toHaveTextContent('First System');
   });
 
+  it('stays silent on a deep link and speaks only once a system is chosen', () => {
+    // getServerSnapshot reports no linked system, so the hydration render shows
+    // the first project and the client snapshot swaps it. Announcing `selected`
+    // made that swap speak a project title over the page-load announcement.
+    globalThis.history.replaceState(null, '', '/projects?system=second-system');
+    render(<ProjectDirectory projects={projects} />);
+
+    expect(screen.getByRole('status')).toHaveTextContent('');
+
+    fireEvent.click(screen.getByTestId('project-first-system'));
+
+    expect(screen.getByRole('status')).toHaveTextContent('First System');
+  });
+
   it('keeps the active system inside either rail orientation', () => {
     render(<ProjectDirectory projects={projects} />);
     scrollTo.mockClear();

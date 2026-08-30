@@ -39,6 +39,11 @@ class IntersectionObserverMock {
 
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
 
+// jsdom implements no layout, so it ships no scrollIntoView at all. Stubbed here
+// rather than guarded at the call site: the method exists in every real browser,
+// and an optional call in source would be a shim for the test environment.
+Element.prototype.scrollIntoView = vi.fn();
+
 import React from 'react';
 
 vi.mock('next/image', () => ({

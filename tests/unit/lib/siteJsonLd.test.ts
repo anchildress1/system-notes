@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildSiteJsonLd } from '@/lib/siteJsonLd';
+import { profile } from '@/data/profile';
 import type { Project } from '@/lib/api';
 
 const base = 'https://example.dev';
@@ -58,6 +59,31 @@ describe('buildSiteJsonLd', () => {
     const graph = buildSiteJsonLd([], base);
     expect(graph.url).toBe(base);
     expect(graph.author.sameAs).toContain(base);
+  });
+
+  it('publishes every profile a reader is pointed at elsewhere on the site', () => {
+    // sameAs is what ties this domain to the accounts a search engine already
+    // knows. The footer linked LinkedIn while the graph omitted it, so the one
+    // profile a recruiter searches by was the one not claimed.
+    const { sameAs } = buildSiteJsonLd([], base).author;
+    for (const { href } of profile.links) expect(sameAs).toContain(href);
+  });
+
+  it('gives the person a stable id the rest of the graph refers to', () => {
+    // Nested inline in two places, a crawler reads two people rather than one.
+    const graph = buildSiteJsonLd([project()], base);
+    expect(graph.author['@id']).toBe(`${base}/#person`);
+    expect(graph.publisher).toEqual({ '@id': graph.author['@id'] });
+    expect(graph.hasPart[0].author).toEqual({ '@id': graph.author['@id'] });
+  });
+
+  it('files each certification as a credential with somewhere to check it', () => {
+    const { hasCredential } = buildSiteJsonLd([], base).author;
+    expect(hasCredential).toHaveLength(profile.certifications.length);
+    for (const credential of hasCredential) {
+      expect(credential.url).toMatch(/^https:\/\//);
+      expect(credential.recognizedBy.name.trim()).not.toBe('');
+    }
   });
 
   it('carries every evidence link through to relatedLink, in the order filed', () => {
