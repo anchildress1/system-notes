@@ -66,6 +66,7 @@ jobs:
         run: make test-e2e
 
       - name: Run Performance Tests
+        id: perf
         run: make test-perf
 
       - name: Scan Secrets
@@ -81,10 +82,24 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+      # include-hidden-files, because lhci writes to a DOT directory and the
+      # action excludes hidden paths by default — so every file here was being
+      # filtered out and the artifact has always been empty. This is the actual
+      # cause of "No files were found with the provided path".
+      #
+      # The `if` is still worth having: it stops the upload running at all when
+      # an earlier step failed and the perf step never got to write anything.
+      #
+      # Both paths: `lhci collect` clears its output directory, so the mobile run
+      # wipes the desktop results. test:perf copies them aside first, and the two
+      # are uploaded together.
       - name: Store Lighthouse Report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: always()
+        if: always() && steps.perf.outcome != 'skipped'
         with:
           name: lighthouse-report
-          path: .lighthouseci/
+          path: |
+            .lighthouseci/
+            .lighthouseci-desktop/
+          include-hidden-files: true
           retention-days: 30

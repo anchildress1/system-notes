@@ -1,6 +1,24 @@
 User-agent: *
 Allow: /
 
+# A named group replaces the wildcard for that agent rather than adding to it,
+# so each one has to restate Allow. Google-Extended and Applebot-Extended are
+# training opt-outs; naming them here is the opt-in.
+User-agent: ClaudeBot
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: meta-externalagent
+User-agent: CCBot
+User-agent: MistralAI-User
+Allow: /
+
 Sitemap: https://anchildress1.dev/sitemap.xml
 
 # Algolia-Crawler-Verif: 43962F24110CA782

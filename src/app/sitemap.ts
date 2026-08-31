@@ -1,19 +1,16 @@
 import type { MetadataRoute } from 'next';
 import { resolveBaseUrl } from '@/lib/urlSafety';
 
-/* Module scope, so it is stamped once when the route is built rather than once
-   per call. The route prerenders today, which made the two equivalent — but a
-   sitemap that reports "modified now" on every fetch teaches a crawler the date
-   means nothing, and that promise should not rest on the route staying static. */
-const lastModified = new Date();
-
+/* URLs only. One build-time stamp shared by every route claimed all four had
+   changed whenever any deploy shipped, and nothing here carries a real
+   per-route date to replace it with. Google ignores changefreq and priority. */
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = resolveBaseUrl();
 
   return [
-    { url: `${baseUrl}/`, lastModified, changeFrequency: 'weekly', priority: 1 },
-    { url: `${baseUrl}/notes`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${baseUrl}/projects`, lastModified, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${baseUrl}/about`, lastModified, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/` },
+    { url: `${baseUrl}/notes` },
+    { url: `${baseUrl}/projects` },
+    { url: `${baseUrl}/about` },
   ];
 }
