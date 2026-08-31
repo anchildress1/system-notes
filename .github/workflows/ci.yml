@@ -82,10 +82,13 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-      # lhci writes .lighthouseci/ itself, so the directory is missing only when
-      # an earlier step failed and the perf step never ran. Uploading anyway
-      # warns that it found no files, on a job that already failed for a
-      # different reason.
+      # include-hidden-files, because lhci writes to a DOT directory and the
+      # action excludes hidden paths by default — so every file here was being
+      # filtered out and the artifact has always been empty. This is the actual
+      # cause of "No files were found with the provided path".
+      #
+      # The `if` is still worth having: it stops the upload running at all when
+      # an earlier step failed and the perf step never got to write anything.
       #
       # Both paths: `lhci collect` clears its output directory, so the mobile run
       # wipes the desktop results. test:perf copies them aside first, and the two
@@ -98,4 +101,5 @@ jobs:
           path: |
             .lighthouseci/
             .lighthouseci-desktop/
+          include-hidden-files: true
           retention-days: 30
