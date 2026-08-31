@@ -60,11 +60,11 @@ function readSavedBrief(): SavedBrief | null {
   }
 }
 
-/** Problems a reader can load into the field instead of writing their own. */
+/** Questions a reader can load into the field instead of writing their own. */
 export const SEEDS = [
-  'When something breaks, we can’t tell which AI wrote it.',
-  'My seniors are skimming four-hundred-line AI diffs and calling it review.',
-  'Nothing errored. The output was just quietly wrong.',
+  'Can this run somewhere our data never leaves?',
+  'What happens when the search gets slow?',
+  'How do you catch it when the answer is wrong but sounds right?',
 ] as const;
 
 export default function IntakeDesk() {
@@ -142,7 +142,7 @@ export default function IntakeDesk() {
           onChange={(event) => setProblem(event.target.value)}
           readOnly={inFlight}
           aria-describedby={canAsk ? undefined : noticeId}
-          placeholder="e.g. When something breaks, we can’t tell which AI wrote it."
+          placeholder="e.g. Can this run somewhere our data never leaves?"
         />
         <div className={styles.controls}>
           <button
@@ -166,7 +166,7 @@ export default function IntakeDesk() {
       </form>
 
       <div className={styles.shelf}>
-        <p className={styles.shelfLabel}>Or take one off the shelf.</p>
+        <p className={styles.shelfLabel}>Ask about my work</p>
         <ul className={styles.seeds}>
           {SEEDS.map((seed) => (
             <li key={seed}>
