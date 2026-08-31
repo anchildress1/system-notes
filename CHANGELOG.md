@@ -1,5 +1,38 @@
 # Changelog
 
+## [3.0.0](https://github.com/anchildress1/system-notes/compare/v2.5.4...v3.0.0) (2026-08-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* the /api/blog/search endpoint is removed.
+
+### Features
+
+* invite the AI crawlers in, and ask the front page a better question ([#143](https://github.com/anchildress1/system-notes/issues/143)) ([5bcf0ed](https://github.com/anchildress1/system-notes/commit/5bcf0edaa7e0fe813caccedd94bdfff0057dfdb0))
+* make the site legible to a recruiter, not just to a crawler ([#138](https://github.com/anchildress1/system-notes/issues/138)) ([2ecb400](https://github.com/anchildress1/system-notes/commit/2ecb400c7ca321c53d3c0140c40ee0ef219be5c6))
+* **notes:** serve the corpus as text, and stop announcing it twice ([#139](https://github.com/anchildress1/system-notes/issues/139)) ([3ce6921](https://github.com/anchildress1/system-notes/commit/3ce6921ec9297c4e047f6a4120c663e029b51d5b))
+* rebuild the about page and sharpen the site's shared chrome ([#129](https://github.com/anchildress1/system-notes/issues/129)) ([48a7006](https://github.com/anchildress1/system-notes/commit/48a700663e50cb366a04769de569376215b2582a))
+* repaint the site on one token block and move the index to /notes ([#127](https://github.com/anchildress1/system-notes/issues/127)) ([68fa05e](https://github.com/anchildress1/system-notes/commit/68fa05e4996a36b225044188cf0e834d23d2618f))
+* wire the intake to its agent and settle the index board ([#128](https://github.com/anchildress1/system-notes/issues/128)) ([12d982e](https://github.com/anchildress1/system-notes/commit/12d982e8d689e3d6ab2f5231c74faeb07bb05d0e))
+
+
+### Bug Fixes
+
+* clear the audit backlog — a11y, SEO and motion ([#141](https://github.com/anchildress1/system-notes/issues/141)) ([ffa3e84](https://github.com/anchildress1/system-notes/commit/ffa3e8497345e35c8b1647478367d1f3308603c6))
+* **index:** move the pager focus rescue to a layout effect ([#136](https://github.com/anchildress1/system-notes/issues/136)) ([d652ec4](https://github.com/anchildress1/system-notes/commit/d652ec494b6012248a2501955686f1ad1f599104))
+
+
+### Performance Improvements
+
+* gate mobile Lighthouse, and fix three defects desktop could not see ([#133](https://github.com/anchildress1/system-notes/issues/133)) ([f465fc8](https://github.com/anchildress1/system-notes/commit/f465fc8c106b08f546e68f8775c2a759cfa2334c))
+* **images:** encode the variants at effort 6 ([#142](https://github.com/anchildress1/system-notes/issues/142)) ([96878e1](https://github.com/anchildress1/system-notes/commit/96878e1ede3ebd02f0a7348ef5be81d317c02036))
+
+
+### Tests
+
+* enforce coverage across source and tooling, and move to Node 26 ([#130](https://github.com/anchildress1/system-notes/issues/130)) ([35a9de7](https://github.com/anchildress1/system-notes/commit/35a9de7ca4dec3d1c97685559a09c8ccc2929568))
+
 ## [2.5.4](https://github.com/anchildress1/system-notes/compare/v2.5.3...v2.5.4) (2026-08-16)
 
 
