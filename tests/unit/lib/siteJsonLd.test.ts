@@ -55,6 +55,19 @@ describe('buildSiteJsonLd', () => {
     expect(entry.relatedLink).toEqual([]);
   });
 
+  it('claims nothing the registry does not record', () => {
+    // These were constants on every entry, including work filed as Scrapped: a
+    // price and currency for something that was never sold, a platform, and a
+    // category. A crawler cannot tell an invented default from a fact.
+    const graph = buildSiteJsonLd([project({ status: 'Scrapped' })], base);
+    const [entry] = graph.hasPart;
+
+    expect(entry).not.toHaveProperty('offers');
+    expect(entry).not.toHaveProperty('operatingSystem');
+    expect(entry).not.toHaveProperty('applicationCategory');
+    expect(JSON.stringify(graph)).not.toMatch(/price|USD/i);
+  });
+
   it('points the site identity at the supplied base url', () => {
     const graph = buildSiteJsonLd([], base);
     expect(graph.url).toBe(base);
