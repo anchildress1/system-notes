@@ -68,7 +68,7 @@ export const SEEDS = [
 ] as const;
 
 export default function IntakeDesk() {
-  const [problem, setProblem] = useState('');
+  const [question, setQuestion] = useState('');
   // The asked question is held apart from what is being typed: editing the
   // field must not re-send, and re-asking the same words must re-send. The
   // nonce is what makes the second one true.
@@ -112,7 +112,7 @@ export default function IntakeDesk() {
   const releaseForm = useCallback(() => setInFlight(false), []);
 
   const canAsk = hasValidAgentCredentials();
-  const trimmed = problem.trim();
+  const trimmed = question.trim();
 
   return (
     <div className={styles.desk}>
@@ -127,19 +127,19 @@ export default function IntakeDesk() {
           setAsked((previous) => ({ text: trimmed, nonce: (previous?.nonce ?? 0) + 1 }));
           // The field empties on submit: the question has moved to the brief below, which
           // quotes it back.
-          setProblem('');
+          setQuestion('');
         }}
       >
         <label className="visually-hidden" htmlFor={fieldId}>
-          The problem
+          Your question
         </label>
         <textarea
           id={fieldId}
           className={styles.field}
           data-focus="ruled"
           rows={2}
-          value={problem}
-          onChange={(event) => setProblem(event.target.value)}
+          value={question}
+          onChange={(event) => setQuestion(event.target.value)}
           readOnly={inFlight}
           aria-describedby={canAsk ? undefined : noticeId}
           placeholder="e.g. Can this run somewhere our data never leaves?"
@@ -170,7 +170,7 @@ export default function IntakeDesk() {
         <ul className={styles.seeds}>
           {SEEDS.map((seed) => (
             <li key={seed}>
-              <button type="button" className={styles.seed} onClick={() => setProblem(seed)}>
+              <button type="button" className={styles.seed} onClick={() => setQuestion(seed)}>
                 {seed}
               </button>
             </li>
