@@ -86,10 +86,16 @@ jobs:
       # an earlier step failed and the perf step never ran. Uploading anyway
       # warns that it found no files, on a job that already failed for a
       # different reason.
+      #
+      # Both paths: `lhci collect` clears its output directory, so the mobile run
+      # wipes the desktop results. test:perf copies them aside first, and the two
+      # are uploaded together.
       - name: Store Lighthouse Report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always() && steps.perf.outcome != 'skipped'
         with:
           name: lighthouse-report
-          path: .lighthouseci/
+          path: |
+            .lighthouseci/
+            .lighthouseci-desktop/
           retention-days: 30
