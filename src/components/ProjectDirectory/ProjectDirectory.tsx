@@ -59,7 +59,16 @@ const EXHIBITS: readonly ExhibitCopy[] = [
 
 function evidenceLinks(project: Project) {
   return [
-    project.app_url ? { label: 'Live work', href: project.app_url } : null,
+    project.app_url
+      ? {
+          label:
+            project.app_url.startsWith('https://github.com/') &&
+            project.app_url.includes('/releases')
+              ? 'Release'
+              : 'Live site',
+          href: project.app_url,
+        }
+      : null,
     project.repo_url ? { label: 'Repository', href: project.repo_url } : null,
     ...(project.blog_posts ?? []).map((post) => ({ label: 'Writing', href: post.url })),
     ...(project.announcements ?? []).map((post) => ({ label: 'Receipt', href: post.url })),
