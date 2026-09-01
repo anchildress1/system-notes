@@ -89,7 +89,6 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
             style={{ '--i': index } as CSSProperties}
           >
             <header className={styles.heading}>
-              <p className={styles.exhibitNumber}>Exhibit {String(index + 1).padStart(2, '0')}</p>
               <h2>{project.title}</h2>
               {project.award ? <p className={styles.award}>{project.award}</p> : null}
             </header>

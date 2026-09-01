@@ -21,9 +21,7 @@ export default function ProjectsPage() {
     <main id="main-content" className={styles.main}>
       <section className={`page-head ${styles.hero}`} aria-labelledby="exhibits-heading">
         <h1 id="exhibits-heading">
-          Systems should
-          <br />
-          <span>show their work.</span>
+          Systems should <span>show their work.</span>
         </h1>
         <p className={styles.deck}>Seven exhibits in AI, backend systems, and guardrail work.</p>
       </section>

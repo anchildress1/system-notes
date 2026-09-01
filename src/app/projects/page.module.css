@@ -18,6 +18,11 @@
   position: relative;
 }
 
+.hero h1 {
+  width: 66.666%;
+  max-width: none;
+}
+
 .deck {
   max-width: 36ch;
   margin-top: 1.25rem;
@@ -25,4 +30,10 @@
   font-family: var(--font-display);
   font-size: clamp(1rem, 1.6vw, 1.25rem);
   line-height: 1.45;
+}
+
+@media (max-width: 48rem) {
+  .hero h1 {
+    width: 100%;
+  }
 }

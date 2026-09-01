@@ -31,7 +31,6 @@
   grid-area: heading;
 }
 
-.exhibitNumber,
 .materials {
   color: var(--mute);
   font-family: var(--font-display);
@@ -39,10 +38,6 @@
   font-weight: 600;
   letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
-}
-
-.exhibitNumber {
-  margin-bottom: 0.65rem;
 }
 
 .heading h2 {
