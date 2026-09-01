@@ -18,7 +18,7 @@ describe('parseBrief', () => {
 
   it('keeps several citations in the order they were written', () => {
     const segments = parseBrief(
-      '[One](https://dev.to/anchildress1/one) and [Two](https://anchildress1.dev/projects?system=vestige)'
+      '[One](https://dev.to/anchildress1/one) and [Two](https://anchildress1.dev/notes?project=Vestige#notes-index)'
     );
 
     expect(segments.map((segment) => segment.text)).toEqual(['One', ' and ', 'Two']);
@@ -44,9 +44,9 @@ describe('parseBrief', () => {
   });
 
   it.each([
-    'https://anchildress1.dev/projects?system=ghost-system',
-    'https://anchildress1.dev/projects',
-    'https://anchildress1.dev/projects?system=vestige&next=https://example.com',
+    'https://anchildress1.dev/notes?project=Ghost+System#notes-index',
+    'https://anchildress1.dev/notes?project=Vestige',
+    'https://anchildress1.dev/notes?project=Vestige&next=https://example.com#notes-index',
   ])('drops a malformed project citation: %s', (href) => {
     expect(parseBrief(`[Claim](${href})`)).toEqual([{ text: 'Claim' }]);
   });

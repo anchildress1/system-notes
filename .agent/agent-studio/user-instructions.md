@@ -25,3 +25,5 @@ the dashboard, or the next regeneration overwrites the edit.
 - Output contract: verdict, approach, refusal, gaps.
 - Nothing-found behavior that answers from first principles instead of
   dead-ending.
+- Project citations resolve to that project's filtered notes in Algolia; the
+  catalogue is deliberately finite and has no project reader route.

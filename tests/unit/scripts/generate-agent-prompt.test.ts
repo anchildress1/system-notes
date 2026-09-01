@@ -42,7 +42,7 @@ describe('agent prompt generator', () => {
       'https://example.test'
     );
 
-    expect(description).toContain('Link: https://example.test/projects?system=alpha');
+    expect(description).toContain('Link: https://example.test/notes?project=Alpha#notes-index');
     expect(description).not.toContain('Award:');
     expect(description).not.toContain('Stack:');
     expect(description).not.toContain('How it works:');
@@ -65,7 +65,7 @@ describe('agent prompt generator', () => {
       readAgentPrompt('/portfolio', 'https://example.test', readProjects)
     ).resolves.toMatchObject({
       projectCount: 1,
-      prompt: expect.stringContaining('https://example.test/projects?system=alpha'),
+      prompt: expect.stringContaining('https://example.test/notes?project=Alpha#notes-index'),
     });
     expect(readProjects).toHaveBeenCalledWith('/portfolio/src/data/projects.json', 'utf8');
   });

@@ -41,10 +41,10 @@ export function describeProject(project, site) {
   lines.push(`Outcome: ${project.outcome}`);
   const stack = (project.tech ?? []).map((item) => `${item.name} (${item.role})`).join(', ');
   if (stack) lines.push(`Stack: ${stack}`);
-  // One link, always the same shape: the project's own page on this site, which
-  // opens with that system selected. Repos, live apps and write-ups are reachable
-  // from there, and offering them here only invites the model to pick one.
-  lines.push(`Link: ${site}/projects?system=${project.objectID}`);
+  // One link, always the same shape: the project's filed notes. The catalogue is
+  // curated rather than exhaustive, while the index remains the complete evidence
+  // surface for every system in the roster.
+  lines.push(`Link: ${site}/notes?project=${encodeURIComponent(project.name)}#notes-index`);
   // Titles without urls on purpose. The note records carry the urls, and naming
   // a second link here is what the rule above avoids. What the model cannot get
   // from the index is which articles are about which system, so it cited a
@@ -92,7 +92,9 @@ them.
    unknown.
 
 Link every article you cite, inline, as [title](url), using the url from its
-record. Link a system the same way when its roster entry carries one.
+record. A roster Link opens the public notes index filtered to that project.
+Use it only when that project materially supports the answer. It is evidence,
+not a project reader or a claim that the catalogue covers every project.
 
 An article listed under a system's write-ups is that system. Never cite the two
 as separate sources agreeing with each other.
