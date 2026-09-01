@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight } from 'react-icons/fi';
+import rawExhibits from '@/data/exhibits.json';
 import type { Project } from '@/lib/api';
 import { blurFor } from '@/lib/imageVariants';
 import { getProjectNotesURL } from '@/lib/searchRouting';
@@ -16,50 +17,7 @@ type ExhibitCopy = {
 export const EXHIBIT_DECK = 'Seven exhibits in AI, backend systems, and guardrail work.';
 export const EXHIBIT_SUMMARY = `${EXHIBIT_DECK} Each one shows its evidence and failure boundary.`;
 
-export const EXHIBITS: readonly ExhibitCopy[] = [
-  {
-    id: 'save-the-sun',
-    standard: 'The model can speak. It does not get the answer.',
-    evidence:
-      "Gemini reads a player's question, plays the wolf, and voices both characters. The deterministic game engine keeps the rune secret and decides every claim.",
-  },
-  {
-    id: 'vestige',
-    standard: 'A model can observe without getting to diagnose.',
-    evidence:
-      'Gemma runs on the phone. Audio is discarded after inference, the three lens reads stay visible, and patterns cite the entries that earned them.',
-  },
-  {
-    id: 'metal-birds-feed',
-    standard: 'Public data is only useful when its provenance survives the trip.',
-    evidence:
-      'National aircraft registries become a normalized SQLite feed with source attribution intact. An unchanged registry does not redeploy; an ambiguous registration fails closed.',
-  },
-  {
-    id: 'supascribe-notes',
-    standard: 'A model may write a note. It does not get a general database connection.',
-    evidence:
-      'Seven narrow tools, Zod validation before Postgres, revision history on every write, and a batch response that says exactly which cards failed.',
-  },
-  {
-    id: 'rai-lint',
-    standard: 'AI attribution belongs in the commit, not the postmortem.',
-    evidence:
-      'The Node and Python linters reject a commit without an attribution footer and a human sign-off. The record is enforced where the work enters history.',
-  },
-  {
-    id: 'unearthed',
-    standard: 'Natural language still has to respect the read boundary.',
-    evidence:
-      "Federal energy data is served through FastAPI, DuckDB, and R2. Generated SQL is read-only, single-statement, time-bounded, and capped before it can become someone else's incident.",
-  },
-  {
-    id: 'carbon-trace',
-    standard: 'The spectacle still has to make sense with the sound off.',
-    evidence:
-      'A hand-built scene engine keeps audio, Canvas effects, captions, and controls in step. The visual layer is hidden from assistive tech; the DOM tells the story.',
-  },
-];
+export const EXHIBITS: readonly ExhibitCopy[] = rawExhibits;
 
 function evidenceLinks(project: Project) {
   return [

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import exhibits from '@/data/exhibits.json';
 import {
   buildAgentPrompt,
   describeProject,
@@ -6,6 +7,7 @@ import {
   orderProjects,
   readAgentPrompt,
   resolveSiteUrl,
+  selectExhibitProjects,
 } from '../../../scripts/generate-agent-prompt.mjs';
 
 const project = (overrides = {}) => ({
@@ -19,6 +21,11 @@ const project = (overrides = {}) => ({
   tech: [{ name: 'TypeScript', role: 'Language' }],
   ...overrides,
 });
+
+const exhibitProjects = () =>
+  exhibits.map(({ id }, index) =>
+    project({ objectID: id, name: `Exhibit ${index + 1}`, order_rank: index + 1 })
+  );
 
 describe('agent prompt generator', () => {
   it('normalizes the public base URL without removing its origin', () => {
@@ -36,6 +43,15 @@ describe('agent prompt generator', () => {
     expect(ordered.map((item) => item.objectID)).toEqual(['first', 'second', 'unranked']);
   });
 
+  it('selects only the public exhibits in their editorial order', () => {
+    const selected = selectExhibitProjects([
+      ...exhibitProjects().reverse(),
+      project({ objectID: 'inventory-only', name: 'Inventory Only' }),
+    ]);
+
+    expect(selected.map((item) => item.objectID)).toEqual(exhibits.map(({ id }) => id));
+  });
+
   it('describes only supplied evidence and links the selected project on this site', () => {
     const description = describeProject(
       project({ tech: [], long_description: '', award: undefined }),
@@ -48,7 +64,7 @@ describe('agent prompt generator', () => {
     expect(description).not.toContain('How it works:');
   });
 
-  it('builds a roster from every project in rank order', () => {
+  it('builds a roster from the supplied projects in rank order', () => {
     const prompt = buildAgentPrompt(
       [project({ objectID: 'later', name: 'Later', order_rank: 2 }), project({ order_rank: 1 })],
       'https://example.test'
@@ -59,15 +75,33 @@ describe('agent prompt generator', () => {
   });
 
   it('reads a valid registry through an injected filesystem', async () => {
-    const readProjects = vi.fn(async () => JSON.stringify([project()]));
+    const readProjects = vi.fn(async () =>
+      JSON.stringify([
+        ...exhibitProjects(),
+        project({ objectID: 'inventory-only', name: 'Inventory Only', order_rank: 99 }),
+      ])
+    );
 
     await expect(
       readAgentPrompt('/portfolio', 'https://example.test', readProjects)
     ).resolves.toMatchObject({
-      projectCount: 1,
-      prompt: expect.stringContaining('https://example.test/notes?project=Alpha#notes-index'),
+      projectCount: exhibits.length,
+      prompt: expect.stringContaining('https://example.test/notes?project=Exhibit+1#notes-index'),
     });
+    await expect(
+      readAgentPrompt('/portfolio', 'https://example.test', readProjects)
+    ).resolves.toEqual(
+      expect.objectContaining({ prompt: expect.not.stringContaining('Inventory Only') })
+    );
     expect(readProjects).toHaveBeenCalledWith('/portfolio/src/data/projects.json', 'utf8');
+  });
+
+  it('rejects a registry missing a public exhibit', async () => {
+    const readProjects = vi.fn(async () => JSON.stringify(exhibitProjects().slice(1)));
+
+    await expect(readAgentPrompt('/portfolio', undefined, readProjects)).rejects.toThrow(
+      'missing exhibited project save-the-sun'
+    );
   });
 
   it.each([
@@ -103,21 +137,21 @@ describe('agent prompt generator', () => {
     const stdout = { write: vi.fn() };
     const stderr = { write: vi.fn() };
     const writePrompt = vi.fn(async () => undefined);
-    const readProjects = vi.fn(async () => JSON.stringify([project()]));
+    const readProjects = vi.fn(async () => JSON.stringify(exhibitProjects()));
 
     const runtime = { readProjects, stdout, stderr, writePrompt };
 
     await emitAgentPrompt({ args: ['node', 'script'] }, runtime);
-    expect(stdout.write).toHaveBeenCalledWith(expect.stringContaining('### Alpha'));
+    expect(stdout.write).toHaveBeenCalledWith(expect.stringContaining('### Exhibit 1'));
     expect(writePrompt).not.toHaveBeenCalled();
 
     await emitAgentPrompt({ args: ['node', 'script', '--out', '/tmp/prompt.txt'] }, runtime);
     expect(writePrompt).toHaveBeenCalledWith(
       '/tmp/prompt.txt',
-      expect.stringContaining('### Alpha')
+      expect.stringContaining('### Exhibit 1')
     );
     expect(stderr.write).toHaveBeenCalledWith(
-      expect.stringMatching(/^Wrote \d+ characters for 1 systems\n$/)
+      expect.stringMatching(new RegExp(`^Wrote \\d+ characters for ${exhibits.length} systems\\n$`))
     );
   });
 
