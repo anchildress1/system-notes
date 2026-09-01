@@ -5,8 +5,6 @@
 }
 
 .exhibit {
-  --copy-entry: 3.5rem;
-  --media-entry: -4.5rem;
   display: grid;
   align-items: start;
   gap: clamp(1.25rem, 3vw, 3rem);
@@ -19,8 +17,6 @@
 }
 
 .exhibit:nth-child(even) {
-  --copy-entry: -3.5rem;
-  --media-entry: 4.5rem;
   grid-template-areas:
     'media heading'
     'media copy'
@@ -134,12 +130,36 @@
 .references {
   display: flex;
   min-width: 0;
+  position: relative;
   align-items: baseline;
   grid-area: references;
   flex-wrap: nowrap;
   gap: clamp(1rem, 2.5vw, 2.5rem);
   justify-content: space-between;
-  padding-top: clamp(0.5rem, 1vw, 1rem);
+  padding-top: clamp(1.5rem, 2.5vw, 2.5rem);
+}
+
+.references::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 0.3rem;
+  background: var(--mark);
+  -webkit-mask-image: var(--stroke-swipe);
+  mask-image: var(--stroke-swipe);
+  -webkit-mask-position: 0 50%;
+  mask-position: 0 50%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 158%;
+  mask-size: 100% 158%;
+  transform-origin: left center;
+  content: '';
+}
+
+.exhibit:nth-child(even) .references::before {
+  transform-origin: right center;
 }
 
 .reference {
@@ -162,57 +182,111 @@
   stroke-width: 2.5;
 }
 
-@keyframes exhibit-copy-arrival {
+@keyframes print-settle {
   from {
-    translate: var(--copy-entry) 0;
-  }
-
-  to {
-    translate: 0 0;
-  }
-}
-
-@keyframes exhibit-print-arrival {
-  from {
-    scale: 0.94;
-    translate: var(--media-entry) 2rem;
+    scale: 0.985;
+    rotate: 0deg;
+    translate: 0 1.25rem;
   }
 
   to {
     scale: 1;
+    rotate: var(--tilt);
     translate: 0 0;
   }
 }
 
-@keyframes exhibit-links-arrival {
+@keyframes tape-pin {
   from {
-    translate: 0 1.5rem;
+    scale: 0.12 1;
+    translate: 0 -1.25rem;
   }
 
   to {
+    scale: 1 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes evidence-trace {
+  from {
+    scale: 0 1;
+  }
+
+  to {
+    scale: 1 1;
+  }
+}
+
+@keyframes evidence-link-arrival {
+  from {
+    color: var(--mute);
+    translate: 0 0.8rem;
+  }
+
+  to {
+    color: var(--bone);
     translate: 0 0;
   }
 }
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
-    .heading,
-    .copy {
-      animation: exhibit-copy-arrival 1ms linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 32%;
+    .exhibit {
+      view-timeline-name: --evidence-pin;
+      view-timeline-axis: block;
     }
 
     .media {
-      animation: exhibit-print-arrival 1ms linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 36%;
+      animation: print-settle 1ms linear both;
+      animation-timeline: --evidence-pin;
+      animation-range: entry 10% cover 38%;
     }
 
-    .references {
-      animation: exhibit-links-arrival 1ms linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 28%;
+    .media::before,
+    .media::after {
+      animation: tape-pin 1ms linear both;
+      animation-timeline: --evidence-pin;
+    }
+
+    .media::before {
+      animation-range: entry 0% cover 16%;
+    }
+
+    .media::after {
+      animation-range: entry 25% cover 42%;
+    }
+
+    .references::before {
+      animation: evidence-trace 1ms linear both;
+      animation-timeline: --evidence-pin;
+      animation-range: entry 35% cover 55%;
+    }
+
+    .reference {
+      animation: evidence-link-arrival 1ms linear both;
+      animation-timeline: --evidence-pin;
+      animation-range: entry 44% cover 60%;
+    }
+
+    .reference:nth-child(2) {
+      animation-range: entry 47% cover 63%;
+    }
+
+    .reference:nth-child(3) {
+      animation-range: entry 50% cover 66%;
+    }
+
+    .reference:nth-child(4) {
+      animation-range: entry 53% cover 69%;
+    }
+
+    .reference:nth-child(5) {
+      animation-range: entry 56% cover 72%;
+    }
+
+    .reference:nth-child(n + 6) {
+      animation-range: entry 59% cover 75%;
     }
   }
 }

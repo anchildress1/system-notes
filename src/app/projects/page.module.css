@@ -34,14 +34,16 @@
 
 .threshold {
   position: relative;
-  height: clamp(4rem, 8vw, 7rem);
+  height: clamp(8rem, 12vw, 12rem);
   overflow: clip;
 }
 
-.threshold::before,
-.threshold::after {
+.threshold::before {
   position: absolute;
-  height: 1.4rem;
+  top: 50%;
+  left: max(var(--gutter), 14%);
+  width: min(55%, 52rem);
+  height: 0.35rem;
   background: var(--mark);
   -webkit-mask-image: var(--stroke-swipe);
   mask-image: var(--stroke-swipe);
@@ -52,23 +54,9 @@
   -webkit-mask-size: 100% 158%;
   mask-size: 100% 158%;
   transform-origin: left center;
-  animation: threshold-write 900ms var(--ease-settle) both;
+  rotate: -1.1deg;
+  animation: threshold-write 760ms var(--ease-settle) both;
   content: '';
-}
-
-.threshold::before {
-  top: 28%;
-  right: var(--gutter);
-  width: min(68%, 64rem);
-  rotate: -1.4deg;
-}
-
-.threshold::after {
-  bottom: 18%;
-  left: calc(var(--gutter) + 7%);
-  width: min(24%, 22rem);
-  rotate: 2.6deg;
-  animation-delay: 220ms;
 }
 
 @keyframes threshold-write {
@@ -82,8 +70,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .threshold::before,
-  .threshold::after {
+  .threshold::before {
     animation: none;
   }
 }
