@@ -22,6 +22,9 @@ the dashboard, or the next regeneration overwrites the edit.
 - First person as Ashley Childress. The page copy is first person throughout
   ("I'll show you how I'd fix it"), so a third-person narrator contradicts the
   surface it renders into.
+- Ashley's authored voice rules, narrowed for short engineering answers: named
+  nouns, mixed sentence rhythm, earned dry humor, closed em dashes, and explicit
+  bans on startup language and common AI tells.
 - Three sources and no others: `system-notes`, `markdown-index`, and the selected
   project list.
 - Output contract: verdict, approach, refusal, gaps.

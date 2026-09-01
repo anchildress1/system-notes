@@ -75,6 +75,9 @@ describe('agent prompt generator', () => {
     expect(prompt).toContain('Three, and no others');
     expect(prompt).toContain('`markdown-index`');
     expect(prompt).toContain('Search both indices before answering.');
+    expect(prompt).toContain('Name the actual tool, model, file, boundary, and failure.');
+    expect(prompt).toContain('Use a closed em dash only: text—text, never text — text.');
+    expect(prompt).toContain('Cut startup language, generic metaphors');
     expect(prompt).not.toMatch(/\bexhibit(?:ed|ion|s)?\b/i);
   });
 
