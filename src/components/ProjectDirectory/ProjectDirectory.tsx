@@ -12,7 +12,11 @@ type ExhibitCopy = {
   readonly evidence: string;
 };
 
-const EXHIBITS: readonly ExhibitCopy[] = [
+/* Beside the list they count, not in the page that renders them. */
+export const EXHIBIT_DECK = 'Seven exhibits in AI, backend systems, and guardrail work.';
+export const EXHIBIT_SUMMARY = `${EXHIBIT_DECK} Each one shows its evidence and failure boundary.`;
+
+export const EXHIBITS: readonly ExhibitCopy[] = [
   {
     id: 'save-the-sun',
     standard: 'The model can speak. It does not get the answer.',
@@ -70,8 +74,10 @@ function evidenceLinks(project: Project) {
         }
       : null,
     project.repo_url ? { label: 'Repository', href: project.repo_url } : null,
-    ...(project.blog_posts ?? []).map((post) => ({ label: 'Writing', href: post.url })),
-    ...(project.announcements ?? []).map((post) => ({ label: 'Receipt', href: post.url })),
+    ...project.blog_posts.map((post) => ({ label: 'Writing', href: post.url })),
+    // Filed apart from the writing: someone else announcing a win is evidence for
+    // the award, not an account of how the thing was built.
+    ...project.announcements.map((post) => ({ label: 'Receipt', href: post.url })),
   ].filter((link): link is { label: string; href: string } => link !== null);
 }
 
@@ -81,8 +87,6 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
     const project = projectsById.get(copy.id);
     return project ? [{ copy, project }] : [];
   });
-
-  if (exhibits.length === 0) return null;
 
   return (
     <section className={styles.catalogue} aria-label="Selected exhibits">

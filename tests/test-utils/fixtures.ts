@@ -7,13 +7,12 @@ export const mockProject: Project = {
   title: 'Test Project',
   status: 'Active',
   description: 'Short description tagline.',
-  purpose: 'The core purpose of the project.',
-  long_description: 'Long detailed description.',
-  outcome: 'Great outcome.',
   tech: [{ name: 'React', role: 'Frontend' }],
   repo_url: 'https://github.com/test/test-project',
-  owner: 'anchildress1',
   image_url: '/test-image.jpg',
+  blog_posts: [],
+  announcements: [],
+  order_rank: 1,
 };
 
 export type { FactHitRecord } from '@/types/algolia';

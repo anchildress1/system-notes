@@ -16,20 +16,16 @@ export interface Project {
   title: string;
   status: string;
   description: string;
-  purpose: string;
-  long_description: string;
-  outcome: string;
   tech: TechItem[];
   repo_url?: string;
   app_url?: string;
   image_url?: string;
   image_alt?: string;
-  owner: string;
-  blog_posts?: BlogLink[];
+  blog_posts: BlogLink[];
   /** Award and news posts. Evidence for the award, not writing about the work. */
-  announcements?: BlogLink[];
+  announcements: BlogLink[];
   award?: string;
-  order_rank?: number;
+  order_rank: number;
 }
 
 type RawProject = Record<string, unknown>;
@@ -108,15 +104,11 @@ function parseProject(item: RawProject, index: number): Project {
     title: requiredString(item, 'name', index),
     status: str(item['status']) ?? '',
     description: str(item['what_it_is']) ?? '',
-    purpose: str(item['why_it_exists']) ?? '',
-    long_description: str(item['long_description']) ?? '',
-    outcome: str(item['outcome']) ?? '',
     tech: parseTech(item['tech'], index),
     repo_url: externalUrl(item, 'repo_url', index),
     app_url: externalUrl(item, 'app_url', index),
     image_url: imagePath(item, index),
     image_alt: str(item['image_alt']),
-    owner: str(item['owner']) ?? '',
     blog_posts: parseBlogLinks(item['blog_posts'], index),
     announcements: parseBlogLinks(item['announcements'], index),
     award: str(item['award']),
@@ -127,5 +119,5 @@ function parseProject(item: RawProject, index: number): Project {
 export function getProjects(): Project[] {
   return (rawProjects as RawProject[])
     .map((project, index) => parseProject(project, index))
-    .sort((a, b) => (a.order_rank ?? 999) - (b.order_rank ?? 999));
+    .sort((a, b) => a.order_rank - b.order_rank);
 }
