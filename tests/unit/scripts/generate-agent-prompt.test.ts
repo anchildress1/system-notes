@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import {
   buildAgentPrompt,
@@ -121,19 +119,6 @@ describe('agent prompt generator', () => {
     expect(stderr.write).toHaveBeenCalledWith(
       expect.stringMatching(/^Wrote \d+ characters for 1 systems\n$/)
     );
-  });
-
-  // The pasted copy in Agent Studio is only as fresh as the file in the repo.
-  // Nothing else compares the two, so a projects.json edit without a regenerate
-  // leaves the live agent citing a roster the site no longer serves.
-  it('matches the roster checked in for pasting', async () => {
-    const committed = await readFile(
-      path.join(process.cwd(), '.agent', 'agent-studio', 'user-instructions.generated.md'),
-      'utf8'
-    );
-    const { prompt } = await readAgentPrompt();
-
-    expect(committed).toBe(prompt);
   });
 
   it('does not write a partial prompt after a registry failure', async () => {

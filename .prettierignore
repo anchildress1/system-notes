@@ -7,4 +7,3 @@ public
 package-lock.json
 CHANGELOG.md
 src/data/image-manifest.json
-.agent/agent-studio/user-instructions.generated.md
