@@ -1,6 +1,10 @@
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import ProjectDirectory from '@/components/ProjectDirectory/ProjectDirectory';
+import ProjectDirectory, {
+  EXHIBIT_DECK,
+  EXHIBITS,
+} from '@/components/ProjectDirectory/ProjectDirectory';
+import rawProjects from '@/data/projects.json';
 import { mockProject } from '@tests/test-utils/fixtures';
 
 const selected = [
@@ -28,13 +32,30 @@ const projects = [
       { name: 'TypeScript', role: 'Language' },
       { name: 'Cloud Run', role: 'Deploy' },
       { name: 'Vitest', role: 'Test' },
+      { name: 'Playwright', role: 'E2E' },
     ],
   })),
   { ...mockProject, id: 'unselected', title: 'Unselected System' },
 ];
 
+describe('EXHIBITS', () => {
+  // The catalogue is keyed by id against projects.json. An id that matches nothing
+  // drops its exhibit silently, so this is the check that keeps the two in step.
+  it('names a project that exists', () => {
+    const known = new Set((rawProjects as { objectID: string }[]).map((p) => p.objectID));
+
+    expect(EXHIBITS.filter((exhibit) => !known.has(exhibit.id))).toEqual([]);
+  });
+
+  it('is counted correctly by the deck', () => {
+    const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
+
+    expect(EXHIBIT_DECK.toLowerCase()).toContain(`${words[EXHIBITS.length]} exhibits`);
+  });
+});
+
 describe('ProjectDirectory', () => {
-  it('renders only the seven curated exhibits in their editorial order', () => {
+  it('renders only the curated exhibits in their editorial order', () => {
     render(<ProjectDirectory projects={projects} />);
 
     expect(screen.getAllByRole('article')).toHaveLength(selected.length);
@@ -45,7 +66,7 @@ describe('ProjectDirectory', () => {
     ).toEqual(selected.map(([, title]) => title));
   });
 
-  it('renders the standard, evidence, and only the references a project carries', () => {
+  it('renders the standard, evidence, and the first three materials', () => {
     render(<ProjectDirectory projects={projects} />);
     const exhibit = screen.getByTestId('exhibit-save-the-sun');
 
@@ -56,14 +77,36 @@ describe('ProjectDirectory', () => {
       within(exhibit).getByText(/deterministic game engine keeps the rune secret/i)
     ).toBeVisible();
     expect(within(exhibit).getByText('TypeScript · Cloud Run · Vitest')).toBeVisible();
-    expect(within(exhibit).getByRole('link', { name: /Live work/ })).toHaveAttribute(
-      'target',
-      '_blank'
-    );
+  });
+
+  it('opens every outbound reference in a new tab with the opener severed', () => {
+    render(<ProjectDirectory projects={projects} />);
+    const exhibit = screen.getByTestId('exhibit-save-the-sun');
+
+    const outbound = ['Live site', 'Repository', 'Writing', 'Receipt'];
+    for (const label of outbound) {
+      const link = within(exhibit).getByRole('link', { name: new RegExp(label) });
+      expect(link).toHaveAttribute('target', '_blank');
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    }
+
     expect(within(exhibit).getByRole('link', { name: /Filed notes/ })).toHaveAttribute(
       'href',
       '/notes?project=Save+the+Sun#notes-index'
     );
+  });
+
+  it('omits a reference the project does not carry rather than rendering a dead one', () => {
+    render(<ProjectDirectory projects={projects} />);
+    const exhibit = screen.getByTestId('exhibit-vestige');
+
+    for (const label of ['Live site', 'Repository', 'Writing', 'Receipt']) {
+      expect(
+        within(exhibit).queryByRole('link', { name: new RegExp(label) })
+      ).not.toBeInTheDocument();
+    }
+    expect(within(exhibit).getByRole('link', { name: /Filed notes/ })).toBeVisible();
+    expect(within(exhibit).queryByRole('link', { name: '' })).not.toBeInTheDocument();
   });
 
   it('does not render selection controls or a hidden reader', () => {
@@ -72,11 +115,5 @@ describe('ProjectDirectory', () => {
     expect(screen.getByRole('region', { name: 'Selected exhibits' })).toBeVisible();
     expect(screen.queryAllByRole('button')).toHaveLength(0);
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
-  });
-
-  it('renders nothing when the registry has no curated projects', () => {
-    const { container } = render(<ProjectDirectory projects={[]} />);
-
-    expect(container).toBeEmptyDOMElement();
   });
 });

@@ -330,12 +330,18 @@ test.describe('Exhibit anchors', () => {
       expect(href).toMatch(/^\/projects#[a-z0-9-]+$/);
     }
 
-    const first = wins.first();
-    await first.click();
+    // Every one, not just the first. /about awards come from all twenty projects
+    // while only the curated seven emit an anchor, so a win outside the catalogue
+    // lands silently at the top of the page.
+    await page.goto('/projects');
+    for (const href of targets) {
+      const anchor = new URL(href!, 'https://anchildress1.dev').hash;
+      await expect(page.locator(anchor), `no exhibit at ${href}`).toBeVisible();
+    }
 
+    await page.goto('/about');
+    await wins.first().click();
     await expect(page).toHaveURL(targets[0]!);
-    const anchor = new URL(targets[0]!, 'https://anchildress1.dev').hash;
-    await expect(page.locator(anchor)).toBeVisible();
   });
 
   test('cites a checkable receipt behind every certification', async ({ page }) => {

@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
-import ProjectDirectory from '@/components/ProjectDirectory/ProjectDirectory';
+import ProjectDirectory, {
+  EXHIBIT_DECK,
+  EXHIBIT_SUMMARY,
+} from '@/components/ProjectDirectory/ProjectDirectory';
 import { getProjects } from '@/lib/api';
 import { buildPageMetadata } from '@/lib/siteMetadata';
 import styles from './page.module.css';
 
 const pageTitle = 'Exhibits | Ashley Childress';
-const pageDescription =
-  'Seven exhibits in AI, backend systems, and guardrail work. Each one shows its evidence and failure boundary.';
 
 export const metadata: Metadata = buildPageMetadata({
   title: pageTitle,
-  description: pageDescription,
+  description: EXHIBIT_SUMMARY,
   path: '/projects',
 });
 
@@ -25,7 +26,7 @@ export default function ProjectsPage() {
           <br />
           <span>show how the work holds up.</span>
         </h1>
-        <p className={styles.deck}>Seven exhibits in AI, backend systems, and guardrail work.</p>
+        <p className={styles.deck}>{EXHIBIT_DECK}</p>
       </section>
       <div className={`page-column ${styles.exhibition}`}>
         <ProjectDirectory projects={projects} />
