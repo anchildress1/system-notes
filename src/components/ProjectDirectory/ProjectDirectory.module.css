@@ -71,6 +71,18 @@
   --tilt: 1.2deg;
 }
 
+.exhibit:nth-child(odd) .media::before {
+  right: -1.05rem;
+  left: auto;
+  transform: rotate(27deg);
+}
+
+.exhibit:nth-child(odd) .media::after {
+  right: auto;
+  left: -1.05rem;
+  transform: rotate(21deg);
+}
+
 .exhibit:nth-child(even) .media {
   --tilt: -1.2deg;
 }

@@ -28,7 +28,7 @@
 }
 
 .deck {
-  max-width: 36ch;
+  max-width: 48rem;
   margin-top: 1.25rem;
   color: var(--soft);
   font-family: var(--font-display);
