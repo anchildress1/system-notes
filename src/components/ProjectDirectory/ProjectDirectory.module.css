@@ -134,18 +134,21 @@
   align-items: baseline;
   grid-area: references;
   flex-wrap: nowrap;
-  gap: clamp(1rem, 2.5vw, 2.5rem);
-  justify-content: space-between;
-  padding-top: clamp(1.5rem, 2.5vw, 2.5rem);
+  gap: clamp(0.9rem, 1.6vw, 1.5rem);
+  justify-content: flex-start;
+  padding-bottom: clamp(1.75rem, 2.5vw, 2.5rem);
 }
 
 .references::before {
   position: absolute;
-  top: 0;
-  right: 0;
+  bottom: 0;
   left: 0;
+  width: min(68%, 56rem);
   height: 0.3rem;
-  background: var(--mark);
+  background-image:
+    linear-gradient(var(--mark-soft), var(--mark-soft)),
+    linear-gradient(var(--mark-soft), var(--mark-soft)),
+    linear-gradient(var(--mark-soft), var(--mark-soft));
   -webkit-mask-image: var(--stroke-swipe);
   mask-image: var(--stroke-swipe);
   -webkit-mask-position: 0 50%;
@@ -159,6 +162,8 @@
 }
 
 .exhibit:nth-child(even) .references::before {
+  right: 0;
+  left: auto;
   transform-origin: right center;
 }
 
@@ -294,7 +299,6 @@
 @media (max-width: 64rem) {
   .references {
     flex-wrap: wrap;
-    justify-content: flex-start;
   }
 }
 

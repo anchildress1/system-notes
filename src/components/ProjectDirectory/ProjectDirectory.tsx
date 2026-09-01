@@ -120,7 +120,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
               {links.map((link) => (
                 <a
                   key={link.href}
-                  className={`marked-link ${styles.reference}`}
+                  className={`swiped ${styles.reference}`}
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -131,7 +131,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                 </a>
               ))}
               <Link
-                className={`marked-link ${styles.reference}`}
+                className={`swiped ${styles.reference}`}
                 href={getProjectNotesURL(project.title)}
               >
                 Filed notes
