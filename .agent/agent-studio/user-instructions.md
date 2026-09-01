@@ -1,17 +1,19 @@
 Paste into the intake agent's **user instructions** field in Agent Studio.
 
-Generated, not stored. The prompt embeds the full project roster, and a roster
-copied by hand goes stale the first time a project ships — which is the exact
-failure the prompt's own rules exist to prevent.
+The text to paste is `user-instructions.generated.md`, beside this file. It
+embeds the full project roster, so a roster copied by hand goes stale the first
+time a project ships — which is the exact failure the prompt's own rules exist
+to prevent.
 
 ```
-node scripts/generate-agent-prompt.mjs | pbcopy   # to the clipboard
-node scripts/generate-agent-prompt.mjs            # to stdout
-node scripts/generate-agent-prompt.mjs --out FILE # to a file
+node scripts/generate-agent-prompt.mjs --out .agent/agent-studio/user-instructions.generated.md
+node scripts/generate-agent-prompt.mjs | pbcopy   # straight to the clipboard
 ```
 
-Regenerate and repaste whenever `src/data/projects.json` changes. Nothing in CI
-checks that the pasted copy still matches; the two drift silently.
+Regenerate and repaste whenever `src/data/projects.json` changes. The generated
+file is committed so a stale roster shows up as a diff, and
+`generate-agent-prompt.test.ts` fails when it no longer matches the data. Neither
+can tell whether the dashboard was repasted — that step is still yours.
 
 The prose lives in `scripts/generate-agent-prompt.mjs`. Edit it there, never in
 the dashboard, or the next regeneration overwrites the edit.
