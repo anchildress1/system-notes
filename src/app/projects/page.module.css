@@ -19,8 +19,12 @@
 }
 
 .hero h1 {
-  width: 66.666%;
+  width: 100%;
   max-width: none;
+}
+
+.hero h1 > span {
+  font-size: clamp(1em, 8vw, 1.65em);
 }
 
 .deck {
@@ -30,10 +34,4 @@
   font-family: var(--font-display);
   font-size: clamp(1rem, 1.6vw, 1.25rem);
   line-height: 1.45;
-}
-
-@media (max-width: 48rem) {
-  .hero h1 {
-    width: 100%;
-  }
 }
