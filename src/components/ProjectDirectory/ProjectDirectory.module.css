@@ -5,78 +5,77 @@
 }
 
 .exhibit {
+  --exhibit-width: 100%;
+  --exhibit-align: start;
+  --heading-column: 1 / 8;
+  --media-column: 5 / 13;
+  --copy-column: 2 / 7;
+  --media-offset: 0;
   display: grid;
-  width: 96%;
+  width: var(--exhibit-width);
   align-items: start;
   column-gap: clamp(1.25rem, 3vw, 3rem);
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  justify-self: start;
-  row-gap: 1.25rem;
+  justify-self: var(--exhibit-align);
+  row-gap: clamp(0.75rem, 1.8vw, 1.5rem);
   scroll-margin-top: calc(var(--header-height) + 1.5rem);
 }
 
-.exhibit:nth-child(even) {
-  width: 91%;
-  justify-self: end;
+.exhibit:nth-child(2) {
+  --exhibit-width: 91%;
+  --exhibit-align: end;
+  --heading-column: 7 / 13;
+  --media-column: 1 / 9;
+  --copy-column: 8 / 13;
+  --media-offset: 0.75rem;
 }
 
-.exhibit:first-child {
-  width: 100%;
+.exhibit:nth-child(3) {
+  --exhibit-width: 94%;
+  --exhibit-align: center;
+  --heading-column: 2 / 7;
+  --media-column: 4 / 13;
+  --copy-column: 1 / 6;
+  --media-offset: 0;
+}
+
+.exhibit:nth-child(4) {
+  --heading-column: 8 / 13;
+  --media-column: 1 / 10;
+  --copy-column: 7 / 12;
+  --media-offset: 1.25rem;
+}
+
+.exhibit:nth-child(5) {
+  --exhibit-width: 86%;
+  --exhibit-align: center;
+  --heading-column: 1 / 6;
+  --media-column: 3 / 11;
+  --copy-column: 7 / 13;
+  --media-offset: 0.5rem;
+}
+
+.exhibit:nth-child(6) {
+  --exhibit-width: 93%;
+  --heading-column: 6 / 13;
+  --media-column: 1 / 9;
+  --copy-column: 7 / 13;
+  --media-offset: 0;
+}
+
+.exhibit:nth-child(7) {
+  --exhibit-width: 97%;
+  --exhibit-align: end;
+  --heading-column: 1 / 8;
+  --media-column: 4 / 13;
+  --copy-column: 1 / 6;
+  --media-offset: 0.75rem;
 }
 
 .heading {
   z-index: 1;
-  grid-column: 1 / 5;
+  grid-column: var(--heading-column);
   grid-row: 1;
-}
-
-.exhibit:nth-child(2) .heading {
-  grid-column: 9 / 13;
-}
-
-.exhibit:nth-child(3) {
-  width: 88%;
-  justify-self: center;
-}
-
-.exhibit:nth-child(3) .heading {
-  grid-column: 2 / 7;
-}
-
-.exhibit:nth-child(4) {
-  width: 97%;
-  justify-self: start;
-}
-
-.exhibit:nth-child(4) .heading {
-  grid-column: 8 / 13;
-}
-
-.exhibit:nth-child(5) {
-  width: 90%;
-  justify-self: end;
-}
-
-.exhibit:nth-child(5) .heading {
-  grid-column: 1 / 6;
-}
-
-.exhibit:nth-child(6) {
-  width: 94%;
-  justify-self: start;
-}
-
-.exhibit:nth-child(6) .heading {
-  grid-column: 7 / 12;
-}
-
-.exhibit:nth-child(7) {
-  width: 95%;
-  justify-self: center;
-}
-
-.exhibit:nth-child(7) .heading {
-  grid-column: 2 / 7;
 }
 
 .exhibitNumber,
@@ -115,33 +114,10 @@
 }
 
 .media {
-  grid-column: 6 / 13;
-  grid-row: 1 / span 2;
-  margin: 0;
-}
-
-.exhibit:nth-child(2) .media {
-  grid-column: 1 / 8;
-}
-
-.exhibit:nth-child(3) .media {
-  grid-column: 7 / 13;
-}
-
-.exhibit:nth-child(4) .media {
-  grid-column: 1 / 8;
-}
-
-.exhibit:nth-child(5) .media {
-  grid-column: 5 / 11;
-}
-
-.exhibit:nth-child(6) .media {
-  grid-column: 1 / 7;
-}
-
-.exhibit:nth-child(7) .media {
-  grid-column: 6 / 13;
+  z-index: 0;
+  grid-column: var(--media-column);
+  grid-row: 2;
+  margin: var(--media-offset) 0 0;
 }
 
 .media img {
@@ -154,33 +130,9 @@
   display: grid;
   align-content: start;
   gap: 1.1rem;
-  grid-column: 2 / 6;
-  grid-row: 2;
-}
-
-.exhibit:nth-child(2) .copy {
-  grid-column: 8 / 12;
-}
-
-.exhibit:nth-child(3) .copy {
-  grid-column: 1 / 6;
-}
-
-.exhibit:nth-child(4) .copy {
-  grid-column: 9 / 13;
-}
-
-.exhibit:nth-child(5) .copy {
-  grid-column: 8 / 13;
+  grid-column: var(--copy-column);
   grid-row: 3;
-}
-
-.exhibit:nth-child(6) .copy {
-  grid-column: 8 / 13;
-}
-
-.exhibit:nth-child(7) .copy {
-  grid-column: 1 / 6;
+  margin-top: clamp(-0.5rem, -1vw, -1rem);
 }
 
 .standard {
@@ -234,14 +186,7 @@
     gap: clamp(4rem, 11vh, 6rem);
   }
 
-  .exhibit,
-  .exhibit:nth-child(even),
-  .exhibit:first-child,
-  .exhibit:nth-child(3),
-  .exhibit:nth-child(4),
-  .exhibit:nth-child(5),
-  .exhibit:nth-child(6),
-  .exhibit:nth-child(7) {
+  .exhibit:nth-child(n) {
     width: 100%;
     grid-template-columns: minmax(0, 1fr);
     justify-self: stretch;
@@ -252,6 +197,11 @@
   .exhibit:nth-child(n) .copy {
     grid-column: 1 / -1;
     grid-row: auto;
+    margin-top: 0;
+  }
+
+  .exhibit:nth-child(n) .media {
+    margin-top: 0;
   }
 
   .heading h2 {
