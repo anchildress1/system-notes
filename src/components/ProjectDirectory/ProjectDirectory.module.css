@@ -67,6 +67,14 @@
   margin: 0;
 }
 
+.exhibit:nth-child(odd) .media {
+  --tilt: 1.2deg;
+}
+
+.exhibit:nth-child(even) .media {
+  --tilt: -1.2deg;
+}
+
 .media img {
   display: block;
   width: 100%;
