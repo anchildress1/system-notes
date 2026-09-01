@@ -32,45 +32,6 @@
   line-height: 1.45;
 }
 
-.threshold {
-  position: relative;
-  height: clamp(8rem, 12vw, 12rem);
-  overflow: clip;
-}
-
-.threshold::before {
-  position: absolute;
-  top: 50%;
-  left: max(var(--gutter), 14%);
-  width: min(55%, 52rem);
-  height: 0.35rem;
-  background: var(--mark);
-  -webkit-mask-image: var(--stroke-swipe);
-  mask-image: var(--stroke-swipe);
-  -webkit-mask-position: 0 50%;
-  mask-position: 0 50%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 158%;
-  mask-size: 100% 158%;
-  transform-origin: left center;
-  rotate: -1.1deg;
-  animation: threshold-write 760ms var(--ease-settle) both;
-  content: '';
-}
-
-@keyframes threshold-write {
-  from {
-    scale: 0 1;
-  }
-
-  to {
-    scale: 1 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .threshold::before {
-    animation: none;
-  }
+.exhibition {
+  padding-top: clamp(6rem, 10vw, 10rem);
 }

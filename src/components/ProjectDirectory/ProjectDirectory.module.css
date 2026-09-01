@@ -134,41 +134,15 @@
 .references {
   display: flex;
   min-width: 0;
-  position: relative;
   align-items: baseline;
   grid-area: references;
   flex-wrap: nowrap;
   gap: clamp(0.9rem, 1.6vw, 1.5rem);
   justify-content: flex-start;
-  padding-bottom: clamp(1.75rem, 2.5vw, 2.5rem);
 }
 
-.references::before {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: min(68%, 56rem);
-  height: 0.3rem;
-  background-image:
-    linear-gradient(var(--mark-soft), var(--mark-soft)),
-    linear-gradient(var(--mark-soft), var(--mark-soft)),
-    linear-gradient(var(--mark-soft), var(--mark-soft));
-  -webkit-mask-image: var(--stroke-swipe);
-  mask-image: var(--stroke-swipe);
-  -webkit-mask-position: 0 50%;
-  mask-position: 0 50%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 158%;
-  mask-size: 100% 158%;
-  transform-origin: left center;
-  content: '';
-}
-
-.exhibit:nth-child(even) .references::before {
-  right: 0;
-  left: auto;
-  transform-origin: right center;
+.exhibit:nth-child(even) .references {
+  justify-content: flex-end;
 }
 
 .reference {
@@ -266,6 +240,10 @@
       'copy'
       'references';
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .exhibit:nth-child(even) .references {
+    justify-content: flex-start;
   }
 
   .heading h2 {

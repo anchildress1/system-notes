@@ -27,8 +27,7 @@ export default function ProjectsPage() {
         </h1>
         <p className={styles.deck}>Seven exhibits in AI, backend systems, and guardrail work.</p>
       </section>
-      <div className={`page-column ${styles.threshold}`} aria-hidden="true" />
-      <div className="page-column">
+      <div className={`page-column ${styles.exhibition}`}>
         <ProjectDirectory projects={projects} />
       </div>
     </main>
