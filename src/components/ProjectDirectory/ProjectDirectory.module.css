@@ -6,6 +6,7 @@
 
 .exhibit {
   --copy-entry: 3.5rem;
+  --links-entry: 5rem;
   --media-entry: -4.5rem;
   display: grid;
   align-items: start;
@@ -20,6 +21,7 @@
 
 .exhibit:nth-child(even) {
   --copy-entry: -3.5rem;
+  --links-entry: -5rem;
   --media-entry: 4.5rem;
   grid-template-areas:
     'media heading'
@@ -189,7 +191,7 @@
 
 @keyframes exhibit-links-arrival {
   from {
-    translate: 0 1.5rem;
+    translate: var(--links-entry) 1.5rem;
   }
 
   to {
@@ -215,7 +217,7 @@
     .references {
       animation: exhibit-links-arrival 1ms linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 28%;
+      animation-range: entry 0% cover 24%;
     }
   }
 }
