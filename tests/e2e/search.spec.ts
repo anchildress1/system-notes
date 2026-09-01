@@ -498,9 +498,7 @@ test.describe('Refinement visibility', () => {
     await expect(page.getByRole('checkbox', { name: /Rare Project/ })).toBeChecked();
   });
 
-  test('carries the project refinement through the click from the exhibits page', async ({
-    page,
-  }) => {
+  test('carries the project refinement through an exhibit reference', async ({ page }) => {
     const projects = Object.fromEntries(
       Array.from({ length: 24 }, (_, index) => [`Filler Project ${index + 1}`, 300 - index])
     );
@@ -513,7 +511,7 @@ test.describe('Refinement visibility', () => {
           blurb: 'Evidence attached.',
           fact: 'The complete decision.',
           category: 'Principle',
-          projects: ['System Notes'],
+          projects: ['Save the Sun'],
           'tags.lvl0': ['Testing'],
         },
       ],
@@ -521,19 +519,18 @@ test.describe('Refinement visibility', () => {
     );
 
     await page.goto('/projects');
-    await page.getByTestId('project-system-notes').click();
     await page
-      .getByRole('article')
-      .getByRole('link', { name: /Decisions from System Notes/ })
+      .getByTestId('exhibit-save-the-sun')
+      .getByRole('link', { name: /Filed notes/ })
       .click();
 
-    await expect(page).toHaveURL(/project=System(?:\+|%20)Notes#notes-index$/);
+    await expect(page).toHaveURL(/project=Save(?:\+|%20)the(?:\+|%20)Sun#notes-index$/);
     await page
       .locator('summary')
       .filter({ hasText: /^Project/ })
       .click();
 
-    await expect(page.getByRole('checkbox', { name: /System Notes/ })).toBeChecked();
+    await expect(page.getByRole('checkbox', { name: /Save the Sun/ })).toBeChecked();
   });
 
   test('selects the facet when the index spells the project with different case', async ({

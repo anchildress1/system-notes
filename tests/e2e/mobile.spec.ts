@@ -152,14 +152,15 @@ test.describe('mobile interactions', () => {
     }
   });
 
-  test('expands a project into one readable column', async ({ page }) => {
+  test('keeps the seven-exhibit catalogue in one readable column', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/projects');
-    await page.getByTestId('project-system-notes').click();
-    const detail = page.getByRole('article');
 
-    await expect(detail.getByRole('img')).toBeVisible();
-    await expect(detail.getByRole('heading', { name: 'Outcome' })).toBeVisible();
+    await expect(page.getByTestId('exhibit-save-the-sun').getByRole('img')).toBeVisible();
+    await expect(page.getByRole('article')).toHaveCount(7);
+    await expect(
+      page.getByRole('region', { name: 'Selected exhibits' }).getByRole('button')
+    ).toHaveCount(0);
     const widths = await page.evaluate(() => ({
       scroll: document.documentElement.scrollWidth,
       client: document.documentElement.clientWidth,

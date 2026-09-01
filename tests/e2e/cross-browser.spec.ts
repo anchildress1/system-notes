@@ -11,6 +11,6 @@ test.describe('WebKit compatibility', () => {
     await expect(page).toHaveURL('/projects');
     await page.getByRole('button', { name: 'Light theme' }).click();
     await expect(page.locator('html')).not.toHaveAttribute('data-theme', initialTheme ?? '');
-    await expect(page.getByRole('article')).toBeVisible();
+    await expect(page.getByTestId('exhibit-save-the-sun')).toBeVisible();
   });
 });

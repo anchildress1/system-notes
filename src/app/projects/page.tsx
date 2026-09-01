@@ -6,7 +6,7 @@ import styles from './page.module.css';
 
 const pageTitle = 'Exhibits | Ashley Childress';
 const pageDescription =
-  'Shipped systems entered into evidence, each cross-filed with the decisions it produced — including the ones that failed on purpose.';
+  'Seven exhibits in AI, backend systems, and guardrail work. Each one shows its evidence and failure boundary.';
 
 export const metadata: Metadata = buildPageMetadata({
   title: pageTitle,
@@ -21,10 +21,11 @@ export default function ProjectsPage() {
     <main id="main-content" className={styles.main}>
       <section className={`page-head ${styles.hero}`} aria-labelledby="exhibits-heading">
         <h1 id="exhibits-heading">
-          What I&rsquo;ve shipped.
+          Systems should
           <br />
-          <span>Including what I stopped.</span>
+          <span>show their work.</span>
         </h1>
+        <p className={styles.deck}>Seven exhibits in AI, backend systems, and guardrail work.</p>
       </section>
       <div className="page-column">
         <ProjectDirectory projects={projects} />
