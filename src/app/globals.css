@@ -729,9 +729,12 @@ main {
    @supports so a browser without scroll timelines renders the page in place,
    and behind a motion query.
 
-   ONE scroll-driven treatment, and it belongs to the portrait. A general .reveal
-   sat on four consecutive sections of /about, which is the most templated motion
-   available and flattened the one piece here that is art-directed. */
+   Art-directed per composition, never a general .reveal. One treatment repeated
+   down four consecutive sections of /about was the templated version, and it
+   flattened the piece it ran over. What replaced it gives each element role its
+   own range: the portrait drifts against the copy beside it, an exhibit's print,
+   copy and references arrive on three. Each is authored for one layout and does
+   not transfer to another. */
 @keyframes portrait-drift {
   from {
     transform: translateY(2rem);
