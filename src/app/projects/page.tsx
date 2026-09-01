@@ -23,10 +23,11 @@ export default function ProjectsPage() {
         <h1 id="exhibits-heading">
           Systems should
           <br />
-          <span>show their work.</span>
+          <span>show how the work holds up.</span>
         </h1>
         <p className={styles.deck}>Seven exhibits in AI, backend systems, and guardrail work.</p>
       </section>
+      <div className={`page-column ${styles.threshold}`} aria-hidden="true" />
       <div className="page-column">
         <ProjectDirectory projects={projects} />
       </div>

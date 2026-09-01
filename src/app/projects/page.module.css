@@ -23,10 +23,6 @@
   max-width: none;
 }
 
-.hero h1 > span {
-  font-size: clamp(1em, 8vw, 1.65em);
-}
-
 .deck {
   max-width: 48rem;
   margin-top: 1.25rem;
@@ -34,4 +30,60 @@
   font-family: var(--font-display);
   font-size: clamp(1rem, 1.6vw, 1.25rem);
   line-height: 1.45;
+}
+
+.threshold {
+  position: relative;
+  height: clamp(4rem, 8vw, 7rem);
+  overflow: clip;
+}
+
+.threshold::before,
+.threshold::after {
+  position: absolute;
+  height: 1.4rem;
+  background: var(--mark);
+  -webkit-mask-image: var(--stroke-swipe);
+  mask-image: var(--stroke-swipe);
+  -webkit-mask-position: 0 50%;
+  mask-position: 0 50%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 158%;
+  mask-size: 100% 158%;
+  transform-origin: left center;
+  animation: threshold-write 900ms var(--ease-settle) both;
+  content: '';
+}
+
+.threshold::before {
+  top: 28%;
+  right: var(--gutter);
+  width: min(68%, 64rem);
+  rotate: -1.4deg;
+}
+
+.threshold::after {
+  bottom: 18%;
+  left: calc(var(--gutter) + 7%);
+  width: min(24%, 22rem);
+  rotate: 2.6deg;
+  animation-delay: 220ms;
+}
+
+@keyframes threshold-write {
+  from {
+    scale: 0 1;
+  }
+
+  to {
+    scale: 1 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .threshold::before,
+  .threshold::after {
+    animation: none;
+  }
 }

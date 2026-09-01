@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight } from 'react-icons/fi';
@@ -78,15 +77,14 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
 
   return (
     <section className={styles.catalogue} aria-label="Selected exhibits">
-      {exhibits.map(({ copy, project }, index) => {
+      {exhibits.map(({ copy, project }) => {
         const links = evidenceLinks(project);
         return (
           <article
             key={project.id}
             id={project.id}
             data-testid={`exhibit-${project.id}`}
-            className={`${styles.exhibit} stagger-in`}
-            style={{ '--i': index } as CSSProperties}
+            className={styles.exhibit}
           >
             <header className={styles.heading}>
               <h2>{project.title}</h2>
@@ -116,29 +114,30 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                   .map((item) => item.name)
                   .join(' · ')}
               </p>
-              <p className={styles.references}>
-                {links.map((link) => (
-                  <a
-                    key={link.href}
-                    className={`marked-link ${styles.reference}`}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {link.label}
-                    <FiArrowUpRight aria-hidden="true" />
-                    <span className="visually-hidden"> (opens in a new tab)</span>
-                  </a>
-                ))}
-                <Link
-                  className={`marked-link ${styles.reference}`}
-                  href={getProjectNotesURL(project.title)}
-                >
-                  Filed notes
-                  <FiArrowUpRight aria-hidden="true" />
-                </Link>
-              </p>
             </div>
+
+            <footer className={styles.references}>
+              {links.map((link) => (
+                <a
+                  key={link.href}
+                  className={`marked-link ${styles.reference}`}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {link.label}
+                  <FiArrowUpRight aria-hidden="true" />
+                  <span className="visually-hidden"> (opens in a new tab)</span>
+                </a>
+              ))}
+              <Link
+                className={`marked-link ${styles.reference}`}
+                href={getProjectNotesURL(project.title)}
+              >
+                Filed notes
+                <FiArrowUpRight aria-hidden="true" />
+              </Link>
+            </footer>
           </article>
         );
       })}
