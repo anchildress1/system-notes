@@ -6,6 +6,7 @@ import type { Project } from '@/lib/api';
 import { blurFor } from '@/lib/imageVariants';
 import { getProjectNotesURL } from '@/lib/searchRouting';
 import styles from './ProjectDirectory.module.css';
+import { ProjectDirectoryMotion } from './ProjectDirectoryMotion';
 
 type ExhibitCopy = {
   readonly id: string;
@@ -47,7 +48,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
   });
 
   return (
-    <section className={styles.catalogue} aria-label="Selected exhibits">
+    <ProjectDirectoryMotion className={styles.catalogue}>
       {exhibits.map(({ copy, project }) => {
         const links = evidenceLinks(project);
         return (
@@ -57,13 +58,13 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
             data-testid={`exhibit-${project.id}`}
             className={styles.exhibit}
           >
-            <header className={styles.heading}>
+            <header className={styles.heading} data-motion-part="copy">
               <h2>{project.title}</h2>
               {project.award ? <p className={styles.award}>{project.award}</p> : null}
             </header>
 
             {project.image_url ? (
-              <figure className={`taped ${styles.media}`}>
+              <figure className={`taped ${styles.media}`} data-motion-part="media">
                 <Image
                   src={project.image_url}
                   alt={project.image_alt ?? ''}
@@ -76,7 +77,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
               </figure>
             ) : null}
 
-            <div className={styles.copy}>
+            <div className={styles.copy} data-motion-part="copy">
               <p className={styles.standard}>{copy.standard}</p>
               <p className={styles.evidence}>{copy.evidence}</p>
               <p className={styles.materials}>
@@ -87,7 +88,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
               </p>
             </div>
 
-            <footer className={styles.references}>
+            <footer className={styles.references} data-motion-part="references">
               {links.map((link) => (
                 <a
                   key={link.href}
@@ -112,6 +113,6 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
           </article>
         );
       })}
-    </section>
+    </ProjectDirectoryMotion>
   );
 }

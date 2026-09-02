@@ -167,4 +167,21 @@ test.describe('mobile interactions', () => {
     }));
     expect(widths.scroll).toBe(widths.client);
   });
+
+  test('keeps exhibit entrances static in the stacked mobile layout', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/projects');
+
+    const catalogue = page.getByRole('region', { name: 'Selected exhibits' });
+    const parts = page.locator('[data-motion-part]');
+
+    await expect(catalogue).not.toHaveAttribute('data-motion-fallback', 'true');
+    await expect(parts.first()).toBeVisible();
+
+    for (let index = 0; index < (await parts.count()); index += 1) {
+      await expect
+        .poll(() => parts.nth(index).evaluate((element) => getComputedStyle(element).animationName))
+        .toBe('none');
+    }
+  });
 });

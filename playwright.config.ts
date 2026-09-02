@@ -28,6 +28,11 @@ export default defineConfig({
       testMatch: '**/cross-browser.spec.ts',
     },
     {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+      testMatch: '**/cross-browser.spec.ts',
+    },
+    {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
       testMatch: '**/mobile.spec.ts',
