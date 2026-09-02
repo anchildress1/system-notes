@@ -4,7 +4,6 @@ import {
   buildAgentPrompt,
   describeProject,
   emitAgentPrompt,
-  orderProjects,
   readAgentPrompt,
   resolveSiteUrl,
   selectPortfolioProjects,
@@ -33,16 +32,6 @@ describe('agent prompt generator', () => {
     expect(resolveSiteUrl(undefined)).toBe('https://anchildress1.dev');
   });
 
-  it('orders explicit ranks before unranked projects without changing equal-rank order', () => {
-    const ordered = orderProjects([
-      project({ objectID: 'unranked' }),
-      project({ objectID: 'first', order_rank: 1 }),
-      project({ objectID: 'second', order_rank: 1 }),
-    ]);
-
-    expect(ordered.map((item) => item.objectID)).toEqual(['first', 'second', 'unranked']);
-  });
-
   it('selects only the public portfolio projects in their editorial order', () => {
     const selected = selectPortfolioProjects([
       ...portfolioProjects().reverse(),
@@ -64,9 +53,9 @@ describe('agent prompt generator', () => {
     expect(description).not.toContain('How it works:');
   });
 
-  it('builds a roster from the supplied projects in rank order', () => {
+  it('builds a roster in the order it is handed, not by registry rank', () => {
     const prompt = buildAgentPrompt(
-      [project({ objectID: 'later', name: 'Later', order_rank: 2 }), project({ order_rank: 1 })],
+      [project({ order_rank: 9 }), project({ objectID: 'later', name: 'Later', order_rank: 1 })],
       'https://example.test'
     );
 
@@ -146,7 +135,10 @@ describe('agent prompt generator', () => {
     const stdout = { write: vi.fn() };
     const stderr = { write: vi.fn() };
     const writePrompt = vi.fn(async () => undefined);
-    const readProjects = vi.fn(async () => JSON.stringify(portfolioProjects()));
+    // One project the list does not select, so the written count is not the registry's.
+    const readProjects = vi.fn(async () =>
+      JSON.stringify([...portfolioProjects(), project({ objectID: 'inventory-only' })])
+    );
 
     const runtime = { readProjects, stdout, stderr, writePrompt };
 
@@ -160,7 +152,11 @@ describe('agent prompt generator', () => {
       expect.stringContaining('### Selected Project 1')
     );
     expect(stderr.write).toHaveBeenCalledWith(
-      expect.stringMatching(new RegExp(`^Wrote \\d+ characters for ${exhibits.length} systems\\n$`))
+      expect.stringMatching(
+        new RegExp(
+          `^Wrote \\d+ characters for ${exhibits.length} of ${exhibits.length + 1} systems\\n$`
+        )
+      )
     );
   });
 

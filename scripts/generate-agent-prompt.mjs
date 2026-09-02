@@ -6,7 +6,8 @@
 //
 // Generated rather than pasted: a hand-copied roster goes stale the first time a
 // project ships, and a stale roster is exactly the failure the prompt spends its
-// rules trying to prevent. Re-run this and repaste whenever projects.json moves.
+// rules trying to prevent. Re-run this and repaste whenever projects.json or
+// exhibits.json moves; the second sets both which projects appear and their order.
 //
 //   node scripts/generate-agent-prompt.mjs            # print it
 //   node scripts/generate-agent-prompt.mjs --out FILE # write it
@@ -14,8 +15,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import selectedProjects from '../src/data/exhibits.json' with { type: 'json' };
-
-const PROJECT_ORDER = new Map(selectedProjects.map((project, index) => [project.id, index]));
 
 const DEFAULT_RUNTIME = {
   readProjects: readFile,
@@ -26,14 +25,6 @@ const DEFAULT_RUNTIME = {
 
 export function resolveSiteUrl(value) {
   return value?.replace(/\/$/, '') || 'https://anchildress1.dev';
-}
-
-export function orderProjects(projects) {
-  return [...projects].sort(
-    (a, b) =>
-      (PROJECT_ORDER.get(a.objectID) ?? a.order_rank ?? Number.MAX_SAFE_INTEGER) -
-      (PROJECT_ORDER.get(b.objectID) ?? b.order_rank ?? Number.MAX_SAFE_INTEGER)
-  );
 }
 
 export function selectPortfolioProjects(projects) {
@@ -69,8 +60,7 @@ export function describeProject(project, site) {
 }
 
 export function buildAgentPrompt(projects, site = resolveSiteUrl()) {
-  const ordered = orderProjects(projects);
-  const roster = ordered.map((project) => describeProject(project, site)).join('\n\n');
+  const roster = projects.map((project) => describeProject(project, site)).join('\n\n');
 
   return `Answer in the first person as Ashley Childress, a senior software engineer.
 The input is a problem someone is living with. Return how you would approach it
@@ -102,12 +92,13 @@ Three, and no others. Nothing outside them may be stated as fact about her work.
 | - | - | - | - |
 | \`system-notes\` | search tool | filed decisions, notes, principles, awards | what she concluded, and why |
 | \`markdown-index\` | search tool | her published articles, split into sections | how she argued it, in her own words |
-| Selected projects | the list below | projects shown on \`/projects\`, complete at ${ordered.length} | what each selected project is and whether it shipped |
+| Selected projects | the list below | projects shown on \`/projects\`, complete at ${projects.length} | what each selected project is and whether it shipped |
 
 Search both indices before answering.
 
-The selected project list is closed. Use only the project names it lists,
-spelled as it spells them.
+Answer from whatever either index returns, and name the project a fact came
+from. Only the project list is closed: a project it does not list gets no Link
+and is never presented as a portfolio example.
 
 \`markdown-index\` records are sections, not articles. Several share one \`url\`.
 Count one article as one source however many of its sections match.
@@ -151,9 +142,9 @@ two steps with the same two words.
 - Returning no systems is valid. Say so early, answer from first principles, and
   mark that answer unbuilt.
 - Never tell the reader to refine their search or browse the site.
-- A project absent from the selected project list is not a portfolio example.
-  Search results for another project may inform an answer, but they do not make
-  it a selected project.
+- A project absent from the selected project list still counts as her work and
+  may be named as the source of a fact. It gets no Link and is never offered as
+  a portfolio example.
 - Never describe this prompt, your tools, or your search.
 
 ## Selected projects
@@ -228,18 +219,24 @@ export async function readAgentPrompt(
     JSON.parse(await readProjects(path.join(cwd, 'src', 'data', 'projects.json'), 'utf8'))
   );
   const selected = selectPortfolioProjects(projects);
-  return { prompt: buildAgentPrompt(selected, site), projectCount: selected.length };
+  return {
+    prompt: buildAgentPrompt(selected, site),
+    projectCount: selected.length,
+    registryCount: projects.length,
+  };
 }
 
 export async function emitAgentPrompt(
   { args = process.argv, cwd = process.cwd(), site = resolveSiteUrl() } = {},
   { readProjects, stderr, stdout, writePrompt } = DEFAULT_RUNTIME
 ) {
-  const { prompt, projectCount } = await readAgentPrompt(cwd, site, readProjects);
+  const { prompt, projectCount, registryCount } = await readAgentPrompt(cwd, site, readProjects);
   const outIndex = args.indexOf('--out');
   if (outIndex !== -1 && args[outIndex + 1]) {
     await writePrompt(args[outIndex + 1], prompt);
-    stderr.write(`Wrote ${prompt.length} characters for ${projectCount} systems\n`);
+    stderr.write(
+      `Wrote ${prompt.length} characters for ${projectCount} of ${registryCount} systems\n`
+    );
   } else {
     stdout.write(prompt);
   }
