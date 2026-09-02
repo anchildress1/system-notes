@@ -1,5 +1,6 @@
 /**
- * Every system id the roster carries, exactly as the agent is handed them.
+ * Every project name in `projects.json`, not just the seven the agent is handed.
+ * A citation naming an unselected project is still a citation of her work.
  *
  * Held apart from `projects.json` rather than derived from it: the intake renders
  * on the front page, and importing the project data to read twenty ids would ship
