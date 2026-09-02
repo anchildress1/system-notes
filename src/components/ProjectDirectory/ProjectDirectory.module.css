@@ -10,7 +10,8 @@
   --media-entry: -4.5rem;
   display: grid;
   align-items: start;
-  gap: clamp(1.25rem, 3vw, 3rem);
+  column-gap: clamp(1.25rem, 3vw, 3rem);
+  row-gap: 0;
   grid-template-areas:
     'heading media'
     'copy media'
@@ -114,6 +115,7 @@
   align-content: start;
   grid-area: copy;
   gap: 1.1rem;
+  margin-top: clamp(1.25rem, 2vw, 2rem);
 }
 
 .standard {
@@ -148,6 +150,7 @@
   flex-wrap: nowrap;
   gap: clamp(0.9rem, 1.6vw, 1.5rem);
   justify-content: flex-start;
+  margin-top: clamp(0.8rem, 1.4vw, 1.25rem);
 }
 
 .exhibit:nth-child(even) .references {
@@ -251,6 +254,12 @@
       'copy'
       'references';
     grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(1.25rem, 5vw, 2rem);
+  }
+
+  .copy,
+  .references {
+    margin-top: 0;
   }
 
   .exhibit:nth-child(even) .references {
