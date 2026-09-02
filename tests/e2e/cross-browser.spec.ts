@@ -38,10 +38,6 @@ test.describe('project exhibit motion', () => {
 
     if (browserName === 'firefox') {
       await expect(catalogue).toHaveAttribute('data-motion-fallback', 'true');
-
-      for (const part of parts) {
-        await expect(part).toHaveAttribute('data-motion-state', 'waiting');
-      }
     } else {
       await expect(catalogue).not.toHaveAttribute('data-motion-fallback', 'true');
 
@@ -58,10 +54,6 @@ test.describe('project exhibit motion', () => {
         window.scrollTo(0, top - window.innerHeight * 0.45);
       });
 
-      if (browserName === 'firefox') {
-        await expect(part).toHaveAttribute('data-motion-state', 'arrived');
-      }
-
       await expect
         .poll(() =>
           part.evaluate((element) => {
@@ -70,6 +62,36 @@ test.describe('project exhibit motion', () => {
           })
         )
         .toMatch(/^(0px|none)\|(1|none)$/);
+
+      await part.evaluate((element) => {
+        const top = element.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo(0, top - window.innerHeight * 0.82);
+      });
+      await expect
+        .poll(() =>
+          part.evaluate((element) => {
+            const style = getComputedStyle(element);
+            return `${style.translate}|${style.scale}`;
+          })
+        )
+        .not.toMatch(/^(0px|none)\|(1|none)$/);
+      const partialStyle = await part.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return `${style.translate}|${style.scale}`;
+      });
+
+      await part.evaluate((element) => {
+        const top = element.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo(0, top - window.innerHeight * 0.78);
+      });
+      await expect
+        .poll(() =>
+          part.evaluate((element) => {
+            const style = getComputedStyle(element);
+            return `${style.translate}|${style.scale}`;
+          })
+        )
+        .not.toBe(partialStyle);
     }
 
     const media = page.locator('[data-testid^="exhibit-"] [data-motion-part="media"]');

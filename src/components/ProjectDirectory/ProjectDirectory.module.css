@@ -235,31 +235,18 @@
 
 @supports not (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
-    .catalogue[data-motion-fallback='true'] .heading[data-motion-state='waiting'],
-    .catalogue[data-motion-fallback='true'] .copy[data-motion-state='waiting'] {
+    .catalogue[data-motion-fallback='true'] .heading[data-motion-part='copy'],
+    .catalogue[data-motion-fallback='true'] .copy[data-motion-part='copy'] {
       translate: var(--copy-entry) 0;
     }
 
-    .catalogue[data-motion-fallback='true'] .media[data-motion-state='waiting'] {
+    .catalogue[data-motion-fallback='true'] .media[data-motion-part='media'] {
       scale: 0.94;
       translate: var(--media-entry) 2rem;
     }
 
-    .catalogue[data-motion-fallback='true'] .references[data-motion-state='waiting'] {
+    .catalogue[data-motion-fallback='true'] .references[data-motion-part='references'] {
       translate: var(--links-entry) 1.5rem;
-    }
-
-    .catalogue[data-motion-fallback='true'] .heading[data-motion-state='arrived'],
-    .catalogue[data-motion-fallback='true'] .copy[data-motion-state='arrived'] {
-      animation: exhibit-copy-arrival 620ms var(--ease-out) both;
-    }
-
-    .catalogue[data-motion-fallback='true'] .media[data-motion-state='arrived'] {
-      animation: exhibit-media-arrival 760ms var(--ease-out) both;
-    }
-
-    .catalogue[data-motion-fallback='true'] .references[data-motion-state='arrived'] {
-      animation: exhibit-links-arrival 520ms var(--ease-out) both;
     }
   }
 }

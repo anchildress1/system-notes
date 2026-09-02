@@ -4,6 +4,18 @@ import { useEffect, useRef, type ReactNode } from 'react';
 
 const desktopMotionQuery = '(prefers-reduced-motion: no-preference) and (min-width: 48.01rem)';
 const motionPartSelector = '[data-motion-part]';
+const animationDuration = 1000;
+const coverRange = {
+  copy: 0.32,
+  media: 0.36,
+  references: 0.24,
+} as const;
+
+type MotionPart = {
+  animation: Animation;
+  element: HTMLElement;
+  range: number;
+};
 
 type ProjectDirectoryMotionProps = {
   children: ReactNode;
@@ -16,17 +28,13 @@ export function ProjectDirectoryMotion({ children, className }: ProjectDirectory
   useEffect(() => {
     const root = rootRef.current;
 
-    if (
-      !root ||
-      CSS.supports('animation-timeline: view()') ||
-      !('IntersectionObserver' in window)
-    ) {
+    if (!root || CSS.supports('animation-timeline: view()') || !('animate' in Element.prototype)) {
       return;
     }
 
     const motionPreference = window.matchMedia(desktopMotionQuery);
-    const parts = Array.from(root.querySelectorAll<HTMLElement>(motionPartSelector));
-    let observer: IntersectionObserver | undefined;
+    const elements = Array.from(root.querySelectorAll<HTMLElement>(motionPartSelector));
+    let parts: MotionPart[] = [];
     let frame: number | undefined;
 
     const clearFallback = () => {
@@ -35,10 +43,26 @@ export function ProjectDirectoryMotion({ children, className }: ProjectDirectory
         frame = undefined;
       }
 
-      observer?.disconnect();
-      observer = undefined;
+      parts.forEach(({ animation }) => animation.cancel());
+      parts = [];
       delete root.dataset.motionFallback;
-      parts.forEach((part) => delete part.dataset.motionState);
+    };
+
+    const updateFallback = () => {
+      frame = undefined;
+
+      parts.forEach(({ animation, element, range }) => {
+        const bounds = element.getBoundingClientRect();
+        const travel = (window.innerHeight + bounds.height) * range;
+        const progress = Math.min(1, Math.max(0, (window.innerHeight - bounds.top) / travel));
+        animation.currentTime = progress * animationDuration;
+      });
+    };
+
+    const queueUpdate = () => {
+      if (frame === undefined) {
+        frame = window.requestAnimationFrame(updateFallback);
+      }
     };
 
     const configureFallback = () => {
@@ -49,37 +73,34 @@ export function ProjectDirectoryMotion({ children, className }: ProjectDirectory
       }
 
       root.dataset.motionFallback = 'true';
-      observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) {
-              return;
-            }
+      parts = elements.map((element) => {
+        const style = getComputedStyle(element);
+        const animation = element.animate(
+          [
+            {
+              scale: style.scale === 'none' ? '1' : style.scale,
+              translate: style.translate,
+            },
+            { scale: '1', translate: '0px' },
+          ],
+          { duration: animationDuration, easing: 'linear', fill: 'both' }
+        );
+        const part = element.dataset.motionPart as keyof typeof coverRange;
 
-            const part = entry.target as HTMLElement;
-            part.dataset.motionState = 'arrived';
-            observer?.unobserve(part);
-          });
-        },
-        { rootMargin: '0px 0px -8% 0px', threshold: 0.15 }
-      );
-
-      frame = window.requestAnimationFrame(() => {
-        parts.forEach((part) => {
-          if (part.getBoundingClientRect().top < window.innerHeight * 0.92) {
-            return;
-          }
-
-          part.dataset.motionState = 'waiting';
-          observer?.observe(part);
-        });
+        animation.pause();
+        return { animation, element, range: coverRange[part] };
       });
+      updateFallback();
     };
 
     configureFallback();
+    window.addEventListener('scroll', queueUpdate, { passive: true });
+    window.addEventListener('resize', queueUpdate);
     motionPreference.addEventListener('change', configureFallback);
 
     return () => {
+      window.removeEventListener('scroll', queueUpdate);
+      window.removeEventListener('resize', queueUpdate);
       motionPreference.removeEventListener('change', configureFallback);
       clearFallback();
     };
