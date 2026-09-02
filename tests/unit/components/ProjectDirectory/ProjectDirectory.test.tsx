@@ -7,15 +7,12 @@ import ProjectDirectory, {
 import rawProjects from '@/data/projects.json';
 import { mockProject } from '@tests/test-utils/fixtures';
 
-const selected = [
-  ['save-the-sun', 'Save the Sun'],
-  ['vestige', 'Vestige'],
-  ['metal-birds-feed', 'Metal Birds Feed'],
-  ['supascribe-notes', 'SupaScribe Notes'],
-  ['rai-lint', 'RAI Lint'],
-  ['unearthed', 'Unearthed'],
-  ['carbon-trace', 'Carbon Trace'],
-] as const;
+// Derived, not copied: a hardcoded list lets an added exhibit render nowhere
+// while every assertion here still counts the old seven.
+const registry = new Map(
+  (rawProjects as { objectID: string; name: string }[]).map((p) => [p.objectID, p.name])
+);
+const selected = EXHIBITS.map(({ id }) => [id, registry.get(id)!] as const);
 
 const projects = [
   ...selected.map(([id, title], index) => ({

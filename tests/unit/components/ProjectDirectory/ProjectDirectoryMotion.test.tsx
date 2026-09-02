@@ -1,0 +1,109 @@
+import { render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { ProjectDirectoryMotion } from '@/components/ProjectDirectory/ProjectDirectoryMotion';
+
+type FakeAnimation = { cancel: ReturnType<typeof vi.fn>; pause: ReturnType<typeof vi.fn> } & {
+  currentTime: number;
+};
+
+const animations: FakeAnimation[] = [];
+const listeners = new Set<() => void>();
+
+/** jsdom has none of the scroll-timeline surface, so every branch needs a stub. */
+function stubEnvironment({ supportsTimeline = false, prefersMotion = true } = {}) {
+  animations.length = 0;
+  listeners.clear();
+
+  vi.stubGlobal('CSS', { supports: () => supportsTimeline });
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches: prefersMotion && query.includes('no-preference'),
+    addEventListener: (_: string, handler: () => void) => listeners.add(handler),
+    removeEventListener: (_: string, handler: () => void) => listeners.delete(handler),
+  }));
+  vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+    cb(0);
+    return 1;
+  });
+  vi.stubGlobal('cancelAnimationFrame', vi.fn());
+  vi.stubGlobal('innerHeight', 800);
+
+  Element.prototype.animate = vi.fn(() => {
+    const animation = { cancel: vi.fn(), pause: vi.fn(), currentTime: 0 } as FakeAnimation;
+    animations.push(animation);
+    return animation as unknown as Animation;
+  }) as unknown as typeof Element.prototype.animate;
+}
+
+function renderParts() {
+  return render(
+    <ProjectDirectoryMotion className="catalogue">
+      <div data-motion-part="copy" />
+      <div data-motion-part="media" />
+      <div data-motion-part="references" />
+    </ProjectDirectoryMotion>
+  );
+}
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
+
+describe('ProjectDirectoryMotion', () => {
+  it('renders the catalogue region whatever the browser supports', () => {
+    stubEnvironment({ supportsTimeline: true });
+    renderParts();
+
+    expect(screen.getByRole('region', { name: 'Selected exhibits' })).toHaveClass('catalogue');
+  });
+
+  it('stays out of the way where the browser drives the timeline itself', () => {
+    stubEnvironment({ supportsTimeline: true });
+    renderParts();
+
+    expect(screen.getByRole('region')).not.toHaveAttribute('data-motion-fallback');
+    expect(animations).toHaveLength(0);
+  });
+
+  it('drives one paused animation per part where it does not', () => {
+    stubEnvironment();
+    renderParts();
+
+    expect(screen.getByRole('region')).toHaveAttribute('data-motion-fallback', 'true');
+    expect(animations).toHaveLength(3);
+    animations.forEach((animation) => expect(animation.pause).toHaveBeenCalled());
+  });
+
+  it('animates nothing when reduced motion is asked for', () => {
+    stubEnvironment({ prefersMotion: false });
+    renderParts();
+
+    expect(screen.getByRole('region')).not.toHaveAttribute('data-motion-fallback');
+    expect(animations).toHaveLength(0);
+  });
+
+  it('scrubs the animations as the page scrolls', () => {
+    stubEnvironment();
+    renderParts();
+    animations.forEach((animation) => {
+      animation.currentTime = 0;
+    });
+
+    window.dispatchEvent(new Event('scroll'));
+
+    // jsdom reports a zero-height box at the top of a 800px viewport, so every
+    // part reads as fully arrived.
+    animations.forEach((animation) => expect(animation.currentTime).toBeGreaterThan(0));
+  });
+
+  it('cancels its animations and its media listener on unmount', () => {
+    stubEnvironment();
+    const { unmount } = renderParts();
+    const created = [...animations];
+
+    unmount();
+
+    created.forEach((animation) => expect(animation.cancel).toHaveBeenCalled());
+    expect(listeners.size).toBe(0);
+  });
+});
