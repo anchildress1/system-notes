@@ -7,7 +7,14 @@ type FakeAnimation = { cancel: ReturnType<typeof vi.fn>; pause: ReturnType<typeo
 };
 
 const animations: FakeAnimation[] = [];
+const frames: FrameRequestCallback[] = [];
 const listeners = new Set<() => void>();
+
+/** Run whatever requestAnimationFrame has queued, as a real frame would. */
+function flushFrames() {
+  const queued = frames.splice(0);
+  queued.forEach((cb) => cb(0));
+}
 
 /** jsdom has none of the scroll-timeline surface, so every branch needs a stub. */
 function stubEnvironment({ supportsTimeline = false, prefersMotion = true } = {}) {
@@ -20,9 +27,13 @@ function stubEnvironment({ supportsTimeline = false, prefersMotion = true } = {}
     addEventListener: (_: string, handler: () => void) => listeners.add(handler),
     removeEventListener: (_: string, handler: () => void) => listeners.delete(handler),
   }));
+  // Deferred, like the real thing. A synchronous stub runs the callback before
+  // `frame = requestAnimationFrame(...)` assigns, so `frame` never returns to
+  // undefined and every scroll after the first is silently dropped.
+  frames.length = 0;
   vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
-    cb(0);
-    return 1;
+    frames.push(cb);
+    return frames.length;
   });
   vi.stubGlobal('cancelAnimationFrame', vi.fn());
   vi.stubGlobal('innerHeight', 800);
@@ -34,12 +45,18 @@ function stubEnvironment({ supportsTimeline = false, prefersMotion = true } = {}
   }) as unknown as typeof Element.prototype.animate;
 }
 
-function renderParts() {
+// --cover-range stands in for the stylesheet, which jsdom does not apply. The
+// component treats a part without one as not a part at all.
+function renderParts(extra?: React.ReactNode) {
   return render(
     <ProjectDirectoryMotion className="catalogue">
-      <div data-motion-part="copy" />
-      <div data-motion-part="media" />
-      <div data-motion-part="references" />
+      <div data-motion-part="copy" style={{ '--cover-range': '32%' } as React.CSSProperties} />
+      <div data-motion-part="media" style={{ '--cover-range': '36%' } as React.CSSProperties} />
+      <div
+        data-motion-part="references"
+        style={{ '--cover-range': '24%' } as React.CSSProperties}
+      />
+      {extra}
     </ProjectDirectoryMotion>
   );
 }
@@ -82,7 +99,18 @@ describe('ProjectDirectoryMotion', () => {
     expect(animations).toHaveLength(0);
   });
 
-  it('scrubs the animations as the page scrolls', () => {
+  it('skips a part the stylesheet gives no range', () => {
+    stubEnvironment();
+    renderParts(<div data-motion-part="caption" />);
+
+    // Four parts in the markup, three with a range. Scrubbing the fourth would
+    // set currentTime to NaN, which throws and strands every part after it.
+    expect(animations).toHaveLength(3);
+    window.dispatchEvent(new Event('scroll'));
+    expect(flushFrames).not.toThrow();
+  });
+
+  it('scrubs on every scroll, not just the first', () => {
     stubEnvironment();
     renderParts();
     animations.forEach((animation) => {
@@ -90,9 +118,18 @@ describe('ProjectDirectoryMotion', () => {
     });
 
     window.dispatchEvent(new Event('scroll'));
-
+    flushFrames();
     // jsdom reports a zero-height box at the top of a 800px viewport, so every
     // part reads as fully arrived.
+    animations.forEach((animation) => expect(animation.currentTime).toBeGreaterThan(0));
+
+    // The second one proves the frame handle was released. A stub that ran the
+    // callback synchronously left it set and dropped everything after the first.
+    animations.forEach((animation) => {
+      animation.currentTime = 0;
+    });
+    window.dispatchEvent(new Event('scroll'));
+    flushFrames();
     animations.forEach((animation) => expect(animation.currentTime).toBeGreaterThan(0));
   });
 

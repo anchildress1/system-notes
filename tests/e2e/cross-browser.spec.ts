@@ -18,10 +18,7 @@ test.describe('WebKit compatibility', () => {
 test.describe('project exhibit motion', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test('animates every exhibit layer in supported desktop engines', async ({
-    browserName,
-    page,
-  }) => {
+  test('animates every exhibit layer in supported desktop engines', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto('/projects');
 
@@ -36,7 +33,12 @@ test.describe('project exhibit motion', () => {
 
     await expect(exhibit).toBeVisible();
 
-    if (browserName === 'firefox') {
+    // The component keys off the feature, not the engine. Branching on the
+    // browser name instead would fail a correct implementation the day Firefox
+    // ships scroll timelines, and blame the wrong thing if WebKit regressed.
+    const hasScrollTimeline = await page.evaluate(() => CSS.supports('animation-timeline: view()'));
+
+    if (!hasScrollTimeline) {
       await expect(catalogue).toHaveAttribute('data-motion-fallback', 'true');
     } else {
       await expect(catalogue).not.toHaveAttribute('data-motion-fallback', 'true');
