@@ -210,25 +210,42 @@
   }
 }
 
+/* How far each part travels, as a share of the viewport. Declared outside the
+   @supports blocks because both readers need it: animation-range below, and
+   ProjectDirectoryMotion on engines with no scroll timeline. One value, or the
+   two drift and only one engine changes. */
+.heading,
+.copy {
+  --cover-range: 32%;
+}
+
+.media {
+  --cover-range: 36%;
+}
+
+.references {
+  --cover-range: 24%;
+}
+
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
     .heading,
     .copy {
       animation: exhibit-copy-arrival 1ms linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 32%;
+      animation-range: entry 0% cover var(--cover-range);
     }
 
     .media {
       animation: exhibit-print-arrival 1ms linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 36%;
+      animation-range: entry 0% cover var(--cover-range);
     }
 
     .references {
       animation: exhibit-links-arrival 1ms linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 24%;
+      animation-range: entry 0% cover var(--cover-range);
     }
   }
 }

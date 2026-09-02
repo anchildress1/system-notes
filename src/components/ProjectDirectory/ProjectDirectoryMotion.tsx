@@ -5,11 +5,6 @@ import { useEffect, useRef, type ReactNode } from 'react';
 const desktopMotionQuery = '(prefers-reduced-motion: no-preference) and (min-width: 48.01rem)';
 const motionPartSelector = '[data-motion-part]';
 const animationDuration = 1000;
-const coverRange = {
-  copy: 0.32,
-  media: 0.36,
-  references: 0.24,
-} as const;
 
 type MotionPart = {
   animation: Animation;
@@ -33,7 +28,6 @@ export function ProjectDirectoryMotion({ children, className }: ProjectDirectory
     }
 
     const motionPreference = window.matchMedia(desktopMotionQuery);
-    const elements = Array.from(root.querySelectorAll<HTMLElement>(motionPartSelector));
     let parts: MotionPart[] = [];
     let frame: number | undefined;
 
@@ -73,8 +67,13 @@ export function ProjectDirectoryMotion({ children, className }: ProjectDirectory
       }
 
       root.dataset.motionFallback = 'true';
-      parts = elements.map((element) => {
+      const elements = Array.from(root.querySelectorAll<HTMLElement>(motionPartSelector));
+      parts = elements.flatMap((element) => {
         const style = getComputedStyle(element);
+        // The stylesheet owns the range. Without one there is nothing to scrub
+        // against, and a NaN currentTime throws and strands every later part.
+        const range = Number.parseFloat(style.getPropertyValue('--cover-range')) / 100;
+        if (!Number.isFinite(range) || range <= 0) return [];
         const animation = element.animate(
           [
             {
@@ -85,10 +84,9 @@ export function ProjectDirectoryMotion({ children, className }: ProjectDirectory
           ],
           { duration: animationDuration, easing: 'linear', fill: 'both' }
         );
-        const part = element.dataset.motionPart as keyof typeof coverRange;
 
         animation.pause();
-        return { animation, element, range: coverRange[part] };
+        return [{ animation, element, range }];
       });
       updateFallback();
     };
