@@ -3,9 +3,9 @@
  * A citation naming an unselected project is still a citation of her work.
  *
  * Held apart from `projects.json` rather than derived from it: the intake renders
- * on the front page, and importing the project data to read twenty ids would ship
- * every `long_description` into that bundle with them. `systemIds.test.ts` fails
- * if the two ever disagree, so the copy cannot drift unnoticed.
+ * on the front page, and importing the project data to read twenty names would
+ * ship every `long_description` into that bundle with them. `systemIds.test.ts`
+ * fails if the two ever disagree, so the copy cannot drift unnoticed.
  */
 export const PROJECT_NAMES = [
   'Save the Sun',
