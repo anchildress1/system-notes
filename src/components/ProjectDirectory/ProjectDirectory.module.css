@@ -12,10 +12,13 @@
   align-items: start;
   column-gap: clamp(1.25rem, 3vw, 3rem);
   row-gap: 0;
+  /* The references belong to the copy, so they sit in its column rather than
+     spanning the exhibit. Spanning, they ran to the article's edge while the copy
+     stopped at its measure — 151px short of them at every width. */
   grid-template-areas:
     'heading media'
     'copy media'
-    'references references';
+    'references .';
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   scroll-margin-top: calc(var(--header-height) + 1.5rem);
 }
@@ -27,7 +30,7 @@
   grid-template-areas:
     'media heading'
     'media copy'
-    'references references';
+    '. references';
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
 }
 
@@ -153,6 +156,8 @@
      as a footer misaligned with its column rather than as motion. Measured: 24
      leaves 9.7px worst case across the seven, 20 and below land on the column. */
   --cover-range: 18%;
+  /* The evidence measure, so the row of links ends where the copy above it does. */
+  max-width: 48ch;
   display: flex;
   min-width: 0;
   align-items: baseline;
