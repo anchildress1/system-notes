@@ -152,7 +152,6 @@
   grid-area: references;
   flex-wrap: nowrap;
   gap: clamp(0.9rem, 1.6vw, 1.5rem);
-  justify-content: flex-start;
   margin-top: clamp(0.8rem, 1.4vw, 1.25rem);
 }
 
@@ -162,7 +161,6 @@
 .exhibit:nth-child(even) .references {
   justify-self: end;
   margin-inline-end: max(0px, calc(100% - 48ch));
-  justify-content: flex-end;
 }
 
 .reference {
@@ -275,22 +273,21 @@
     row-gap: clamp(1.25rem, 5vw, 2rem);
   }
 
-  .copy,
-  .references {
+  .copy {
     margin-top: 0;
-  }
-
-  .exhibit:nth-child(even) .references {
-    justify-self: start;
-    margin-inline-end: 0;
-    justify-content: flex-start;
   }
 
   /* One column: there is no print to run under, so the row is bound by the column
      and wraps instead of overflowing it. */
   .references {
     width: auto;
+    margin-top: 0;
     flex-wrap: wrap;
+  }
+
+  .exhibit:nth-child(even) .references {
+    justify-self: start;
+    margin-inline-end: 0;
   }
 
   .heading h2 {

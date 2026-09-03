@@ -11,6 +11,11 @@ const viewports = [
   { width: 320, height: 740 },
   { width: 390, height: 844 },
   { width: 768, height: 1024 },
+  // 900 is the band nothing else reaches: 768 is exactly 48rem and lands in the
+  // single-column block, and cross-browser runs desktop widths. The two-column
+  // layout at its narrowest went unmeasured, and that is where the exhibit links
+  // were silently clipped rather than overflowing where it would have shown.
+  { width: 900, height: 1024 },
 ] as const;
 
 for (const viewport of viewports) {
