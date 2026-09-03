@@ -156,8 +156,11 @@
      as a footer misaligned with its column rather than as motion. Measured: 24
      leaves 9.7px worst case across the seven, 20 and below land on the column. */
   --cover-range: 18%;
-  /* The evidence measure, so the row of links ends where the copy above it does. */
-  max-width: 48ch;
+  /* Sized to its labels and free to run under the print, so a fifth link does not
+     wrap. The edge that matters is the one beside the copy; see the even rule. */
+  width: max-content;
+  max-width: 100%;
+  justify-self: start;
   display: flex;
   min-width: 0;
   align-items: baseline;
@@ -168,7 +171,12 @@
   margin-top: clamp(0.8rem, 1.4vw, 1.25rem);
 }
 
+/* The row sits in the copy's column, so 100% is that column. Pulling its end in
+   by whatever the column has over the copy's measure lands the last link on the
+   copy's right edge, while the row itself runs left under the print. */
 .exhibit:nth-child(even) .references {
+  justify-self: end;
+  margin-inline-end: max(0px, calc(100% - 48ch));
   justify-content: flex-end;
 }
 
@@ -182,7 +190,7 @@
   font-size: var(--fine);
   font-weight: 600;
   letter-spacing: var(--fine-tracking);
-  overflow-wrap: anywhere;
+  white-space: nowrap;
   text-transform: uppercase;
 }
 
@@ -192,6 +200,19 @@
   width: 0.9em;
   height: 0.9em;
   stroke-width: 2.5;
+}
+
+/* Drives --tape-progress, which .taped's pseudo-elements read to place the tape.
+   Here rather than in globals because CSS Modules scope keyframe names, so the
+   rule below could not reach a global one. */
+@keyframes tape-stick {
+  from {
+    --tape-progress: 0;
+  }
+
+  to {
+    --tape-progress: 1;
+  }
 }
 
 @keyframes exhibit-copy-arrival {
@@ -239,10 +260,19 @@
       animation-range: entry 0% cover 32%;
     }
 
+    /* Two on the figure: its own arrival, and the tape's roll. The roll is here
+       rather than on .taped because both land on this element and a second
+       `animation` declaration in the other stylesheet would replace this one. It
+       runs longer because a strip of tape clears its own view progress well
+       before the sheet does. */
     .media {
-      animation: exhibit-print-arrival 1ms linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 36%;
+      animation:
+        exhibit-print-arrival 1ms linear both,
+        tape-stick 1ms linear both;
+      animation-timeline: view(), view();
+      animation-range:
+        entry 0% cover 36%,
+        entry 0% cover 70%;
     }
 
     .references {
@@ -271,12 +301,6 @@
   }
 }
 
-@media (max-width: 64rem) {
-  .references {
-    flex-wrap: wrap;
-  }
-}
-
 @media (max-width: 48rem) {
   .catalogue {
     gap: clamp(4rem, 11vh, 6rem);
@@ -300,7 +324,13 @@
   }
 
   .exhibit:nth-child(even) .references {
+    justify-self: start;
+    margin-inline-end: 0;
     justify-content: flex-start;
+  }
+
+  .references {
+    flex-wrap: wrap;
   }
 
   .heading h2 {
