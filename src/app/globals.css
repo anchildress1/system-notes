@@ -381,15 +381,51 @@ body::before {
 /* Pulled onto the sheet rather than hung off its corner: tape holds paper down
    by covering both, so roughly two thirds of each strip lies on the print. */
 .taped::before {
+  --tape-angle: -27deg;
+  --tape-roll: -0.5rem;
   top: -0.5rem;
   left: -1.05rem;
-  transform: rotate(-27deg);
+  transform: rotate(var(--tape-angle));
 }
 
 .taped::after {
+  --tape-angle: -21deg;
+  --tape-roll: 0.5rem;
   right: -1.05rem;
   bottom: -0.5rem;
-  transform: rotate(-21deg);
+  transform: rotate(var(--tape-angle));
+}
+
+/* The tape goes on last: off the reel at a steeper angle, rolling down onto the
+   print as the sheet arrives. The angle is a property rather than a literal so
+   the resting state and the end of the roll cannot drift apart, and so a mirrored
+   instance sets the value without restating the mechanism.
+
+   transform here, not rotate: the tape has no transform of its own to compose
+   with, and the roll needs the rotation and the slide in one operation. */
+@keyframes tape-stick {
+  from {
+    transform: translateX(var(--tape-roll)) rotate(calc(var(--tape-angle) * 1.9));
+  }
+
+  to {
+    transform: translateX(0) rotate(var(--tape-angle));
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
+    /* Its own view(), not the print's named timeline: a pseudo-element does not
+       resolve view-timeline-name from its originating element, and the tape sat
+       frozen at the start of the roll. An engine without scroll timelines never
+       applies this and shows the tape already stuck, which is where it lands. */
+    .taped::before,
+    .taped::after {
+      animation: tape-stick 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 36%;
+    }
+  }
 }
 
 /* The explicit-content advisory, as a stamp rather than a colour. Ink, not

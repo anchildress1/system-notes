@@ -94,15 +94,17 @@
 }
 
 .exhibit:nth-child(odd) .media::before {
+  --tape-angle: 27deg;
+  --tape-roll: 0.5rem;
   right: -1.05rem;
   left: auto;
-  transform: rotate(27deg);
 }
 
 .exhibit:nth-child(odd) .media::after {
+  --tape-angle: 21deg;
+  --tape-roll: -0.5rem;
   right: auto;
   left: -1.05rem;
-  transform: rotate(21deg);
 }
 
 .exhibit:nth-child(even) .media {
@@ -221,10 +223,10 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
-    /* Literal, not var(--cover-range): with the custom property here the build
-       emitted `animation-range: entry cover 0%`, which ends the range at once.
-       Each value must match the --cover-range beside its rule, which is what the
-       no-scroll-timeline fallback reads. */
+    /* Literal, and matching the --cover-range beside each rule, which is what the
+       no-scroll-timeline fallback reads. Kept literal here rather than reading the
+       property: animation-range is parsed once and this is the value the whole
+       arrival is tuned against, so it should be readable without a lookup. */
     .heading,
     .copy {
       animation: exhibit-copy-arrival 1ms linear both;
