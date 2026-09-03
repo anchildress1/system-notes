@@ -36,11 +36,16 @@
 }
 
 .heading {
+  /* How far this part travels, as a share of the viewport. Read by both
+     animation-range below and ProjectDirectoryMotion where there is no scroll
+     timeline; one value, or the two drift and only one engine changes. */
+  --cover-range: 32%;
   min-width: 0;
   grid-area: heading;
 }
 
 .materials {
+  overflow-wrap: anywhere;
   color: var(--mute);
   font-family: var(--font-display);
   font-size: var(--fine);
@@ -76,6 +81,7 @@
 }
 
 .media {
+  --cover-range: 36%;
   min-width: 0;
   grid-area: media;
   margin: 0;
@@ -110,6 +116,7 @@
 }
 
 .copy {
+  --cover-range: 32%;
   display: grid;
   min-width: 0;
   align-content: start;
@@ -137,11 +144,8 @@
   text-wrap: pretty;
 }
 
-.materials {
-  overflow-wrap: anywhere;
-}
-
 .references {
+  --cover-range: 24%;
   display: flex;
   min-width: 0;
   align-items: baseline;
@@ -208,23 +212,6 @@
   to {
     translate: 0 0;
   }
-}
-
-/* How far each part travels, as a share of the viewport. Declared outside the
-   @supports blocks because both readers need it: animation-range below, and
-   ProjectDirectoryMotion on engines with no scroll timeline. One value, or the
-   two drift and only one engine changes. */
-.heading,
-.copy {
-  --cover-range: 32%;
-}
-
-.media {
-  --cover-range: 36%;
-}
-
-.references {
-  --cover-range: 24%;
 }
 
 @supports (animation-timeline: view()) {

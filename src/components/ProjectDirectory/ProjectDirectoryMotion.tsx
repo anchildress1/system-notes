@@ -17,7 +17,10 @@ type ProjectDirectoryMotionProps = {
   className: string;
 };
 
-export function ProjectDirectoryMotion({ children, className }: ProjectDirectoryMotionProps) {
+export function ProjectDirectoryMotion({
+  children,
+  className,
+}: Readonly<ProjectDirectoryMotionProps>) {
   const rootRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -54,9 +57,7 @@ export function ProjectDirectoryMotion({ children, className }: ProjectDirectory
     };
 
     const queueUpdate = () => {
-      if (frame === undefined) {
-        frame = window.requestAnimationFrame(updateFallback);
-      }
+      frame ??= window.requestAnimationFrame(updateFallback);
     };
 
     const configureFallback = () => {
