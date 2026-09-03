@@ -123,17 +123,26 @@ test.describe('project exhibit motion', () => {
         viewportRatio: number
       ) => {
         await print.evaluate(
-          (element, position) => {
+          async (element, position) => {
+            const frame = () =>
+              new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
             const bounds = element.getBoundingClientRect();
             const edgePosition = position.edge === 'top' ? bounds.top : bounds.bottom;
             window.scrollTo(
               0,
               edgePosition + window.scrollY - window.innerHeight * position.viewportRatio
             );
+            // A fixed wait races the browser's own pipeline: window.scrollTo does not
+            // fire `scroll` synchronously, and the listener that reads this position
+            // back only runs on the next requestAnimationFrame after that. A CI runner
+            // under load can miss a 50ms guess entirely — this waited for the scroll
+            // event, then for the rAF-debounced update, then for one frame beyond it.
+            await frame();
+            await frame();
+            await frame();
           },
           { edge, viewportRatio }
         );
-        await page.waitForTimeout(50);
         return print.evaluate(
           (element, selectedPseudo) =>
             Number.parseFloat(
