@@ -380,19 +380,12 @@ body::before {
 
 /* Pulled onto the sheet rather than hung off its corner: tape holds paper down
    by covering both, so roughly two thirds of each strip lies on the print. */
-.taped::before,
-.taped::after {
-  /* Off the reel at 1.9x the resting angle and slid out along its own length at
-     progress 0, turned down onto the print at 1. */
-  transform: translateX(calc(var(--tape-roll) * (1 - var(--tape-progress))))
-    rotate(calc(var(--tape-angle) * (1.9 - 0.9 * var(--tape-progress))));
-}
-
 .taped::before {
   --tape-angle: -27deg;
   --tape-roll: -0.5rem;
   top: -0.5rem;
   left: -1.05rem;
+  transform: rotate(var(--tape-angle));
 }
 
 .taped::after {
@@ -400,6 +393,7 @@ body::before {
   --tape-roll: 0.5rem;
   right: -1.05rem;
   bottom: -0.5rem;
+  transform: rotate(var(--tape-angle));
 }
 
 /* The tape goes on last: off the reel at a steeper angle, rolling down onto the
@@ -409,20 +403,34 @@ body::before {
 
    transform here, not rotate: the tape has no transform of its own to compose
    with, and the roll needs the rotation and the slide in one operation. */
-/* A number the pseudo-elements read, not an animation on them. Scroll-driven
-   animations on a pseudo-element are not driven by every engine that reports
-   support for the property, so the tape sat at the start of the roll in browsers
-   where @supports said yes. The roll runs on the figure — a real element — and
-   the tape follows it, because a custom property inherits into ::before/::after.
+@keyframes tape-stick {
+  from {
+    transform: translateX(var(--tape-roll)) rotate(calc(var(--tape-angle) * 1.9));
+  }
 
-   Registered so it interpolates; unregistered it would jump between 0 and 1. The
-   initial value is the resting state, so anything that cannot animate it shows
-   the tape already stuck. The keyframes live beside the exhibit that drives it:
-   CSS Modules scope @keyframes, so a module cannot reach a global one by name. */
-@property --tape-progress {
-  syntax: '<number>';
-  inherits: true;
-  initial-value: 1;
+  to {
+    transform: translateX(0) rotate(var(--tape-angle));
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
+    /* Its own view(), not the print's named timeline: a pseudo-element does not
+       resolve view-timeline-name from its originating element, and the tape sat
+       frozen at the start of the roll. An engine without scroll timelines never
+       applies this and shows the tape already stuck, which is where it lands. */
+    .taped::before,
+    .taped::after {
+      animation: tape-stick 1ms linear both;
+      animation-timeline: view();
+      /* 70, not the print's 36. A strip of tape is 22px tall, so it runs through
+         its own view progress far sooner than the sheet does: at 36 the roll was
+         over while the print was still 155px below the top of the screen, which
+         is under the reader's eye rather than in it. At 70 it is still turning as
+         the print settles and stuck down by the time the exhibit is read. */
+      animation-range: entry 0% cover 70%;
+    }
+  }
 }
 
 /* The explicit-content advisory, as a stamp rather than a colour. Ink, not

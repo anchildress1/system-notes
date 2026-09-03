@@ -202,19 +202,6 @@
   stroke-width: 2.5;
 }
 
-/* Drives --tape-progress, which .taped's pseudo-elements read to place the tape.
-   Here rather than in globals because CSS Modules scope keyframe names, so the
-   rule below could not reach a global one. */
-@keyframes tape-stick {
-  from {
-    --tape-progress: 0;
-  }
-
-  to {
-    --tape-progress: 1;
-  }
-}
-
 @keyframes exhibit-copy-arrival {
   from {
     translate: var(--copy-entry) 0;
@@ -260,19 +247,10 @@
       animation-range: entry 0% cover 32%;
     }
 
-    /* Two on the figure: its own arrival, and the tape's roll. The roll is here
-       rather than on .taped because both land on this element and a second
-       `animation` declaration in the other stylesheet would replace this one. It
-       runs longer because a strip of tape clears its own view progress well
-       before the sheet does. */
     .media {
-      animation:
-        exhibit-print-arrival 1ms linear both,
-        tape-stick 1ms linear both;
-      animation-timeline: view(), view();
-      animation-range:
-        entry 0% cover 36%,
-        entry 0% cover 70%;
+      animation: exhibit-print-arrival 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 36%;
     }
 
     .references {
