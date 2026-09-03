@@ -41,19 +41,12 @@ export function buildSiteJsonLd(projects: Project[], baseUrl: string) {
       '@type': 'SoftwareApplication',
       name: p.title,
       description: p.description,
-      applicationCategory: 'DeveloperApplication',
-      operatingSystem: 'Any',
       author: { '@id': person['@id'] },
       url: p.app_url,
       codeRepository: p.repo_url,
       award: p.award,
       image: p.image_url ? new URL(p.image_url, baseUrl).toString() : undefined,
       relatedLink: p.blog_posts?.map((b) => b.url) ?? [],
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'USD',
-      },
     })),
   };
 }
