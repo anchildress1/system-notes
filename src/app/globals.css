@@ -381,15 +381,26 @@ body::before {
 /* Pulled onto the sheet rather than hung off its corner: tape holds paper down
    by covering both, so roughly two thirds of each strip lies on the print. */
 .taped::before {
+  /* .taped's own default, same as --tilt above: the portrait composes .taped and
+     never sets this, so an unresolved var() here would make rotate invalid and
+     drop to none — a flat strip instead of tape. ProjectDirectory.module.css
+     overrides the value for the exhibits; nothing overrides the mechanism. */
+  --tape-angle: -27deg;
   top: -0.5rem;
   left: -1.05rem;
-  transform: rotate(-27deg);
+  /* rotate, not transform: ProjectDirectory.module.css drives this pseudo-element's
+     transform (translate, rotateY) for the scroll-in turn. Two `transform`
+     declarations on one element is a coin flip on stylesheet order; the
+     independent `rotate` property composes with transform instead of competing
+     with it — the same reason .taped itself uses `rotate: var(--tilt)` above. */
+  rotate: var(--tape-angle);
 }
 
 .taped::after {
+  --tape-angle: -21deg;
   right: -1.05rem;
   bottom: -0.5rem;
-  transform: rotate(-21deg);
+  rotate: var(--tape-angle);
 }
 
 /* The explicit-content advisory, as a stamp rather than a colour. Ink, not
@@ -729,9 +740,12 @@ main {
    @supports so a browser without scroll timelines renders the page in place,
    and behind a motion query.
 
-   ONE scroll-driven treatment, and it belongs to the portrait. A general .reveal
-   sat on four consecutive sections of /about, which is the most templated motion
-   available and flattened the one piece here that is art-directed. */
+   Art-directed per composition, never a general .reveal. One treatment repeated
+   down four consecutive sections of /about was the templated version, and it
+   flattened the piece it ran over. What replaced it gives each element role its
+   own range: the portrait drifts against the copy beside it, an exhibit's print,
+   copy and references arrive on three. Each is authored for one layout and does
+   not transfer to another. */
 @keyframes portrait-drift {
   from {
     transform: translateY(2rem);

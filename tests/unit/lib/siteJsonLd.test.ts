@@ -10,11 +10,10 @@ const project = (over: Partial<Project> = {}): Project => ({
   title: 'Alpha',
   status: 'Active',
   description: 'Does a thing.',
-  purpose: 'Because.',
-  long_description: '',
-  outcome: '',
   tech: [],
-  owner: 'anchildress1',
+  blog_posts: [],
+  announcements: [],
+  order_rank: 1,
   ...over,
 });
 

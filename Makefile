@@ -8,10 +8,17 @@ GITLEAKS_IMAGE := ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a
 images:
 	@node scripts/generate-image-variants.mjs
 
+# npm ci runs with --ignore-scripts, so no package's postinstall runs — including
+# the one that fetches Playwright's browsers. They have to be asked for by name, or
+# the first `make test-e2e` after a `make clean` dies on a missing executable rather
+# than on anything it asserts. The three are the engines playwright.config.ts
+# schedules; adding a project there means adding it here.
 install:
 	@echo "📦 Installing Node dependencies..."
 	npm ci --ignore-scripts
 	npm exec lefthook install
+	@echo "🎭 Installing Playwright browsers..."
+	npm exec -- playwright install chromium firefox webkit
 
 dev: images
 	@echo "🚀 Starting development server..."
@@ -83,7 +90,9 @@ deploy:
 	@echo "🚀 Deploying to Google Cloud..."
 	./deploy.sh
 
+# Report directories too. lhci asserts over every report left in .lighthouseci,
+# so one kept from an earlier build fails a run that had nothing wrong with it.
 clean:
 	@echo "🧹 Cleaning up..."
-	rm -rf node_modules .next coverage
+	rm -rf node_modules .next coverage .lighthouseci .lighthouseci-desktop test-results playwright-report
 	@echo "✨ Clean complete."

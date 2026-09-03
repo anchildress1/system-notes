@@ -1,11 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
+import exhibits from '@/data/exhibits.json';
 import {
   buildAgentPrompt,
   describeProject,
   emitAgentPrompt,
-  orderProjects,
   readAgentPrompt,
   resolveSiteUrl,
+  selectPortfolioProjects,
 } from '../../../scripts/generate-agent-prompt.mjs';
 
 const project = (overrides = {}) => ({
@@ -20,20 +21,24 @@ const project = (overrides = {}) => ({
   ...overrides,
 });
 
+const portfolioProjects = () =>
+  exhibits.map(({ id }, index) =>
+    project({ objectID: id, name: `Selected Project ${index + 1}`, order_rank: index + 1 })
+  );
+
 describe('agent prompt generator', () => {
   it('normalizes the public base URL without removing its origin', () => {
     expect(resolveSiteUrl('https://example.test/')).toBe('https://example.test');
     expect(resolveSiteUrl(undefined)).toBe('https://anchildress1.dev');
   });
 
-  it('orders explicit ranks before unranked projects without changing equal-rank order', () => {
-    const ordered = orderProjects([
-      project({ objectID: 'unranked' }),
-      project({ objectID: 'first', order_rank: 1 }),
-      project({ objectID: 'second', order_rank: 1 }),
+  it('selects only the public portfolio projects in their editorial order', () => {
+    const selected = selectPortfolioProjects([
+      ...portfolioProjects().reverse(),
+      project({ objectID: 'inventory-only', name: 'Inventory Only' }),
     ]);
 
-    expect(ordered.map((item) => item.objectID)).toEqual(['first', 'second', 'unranked']);
+    expect(selected.map((item) => item.objectID)).toEqual(exhibits.map(({ id }) => id));
   });
 
   it('describes only supplied evidence and links the selected project on this site', () => {
@@ -42,32 +47,59 @@ describe('agent prompt generator', () => {
       'https://example.test'
     );
 
-    expect(description).toContain('Link: https://example.test/projects?system=alpha');
+    expect(description).toContain('Link: https://example.test/notes?project=Alpha#notes-index');
     expect(description).not.toContain('Award:');
     expect(description).not.toContain('Stack:');
     expect(description).not.toContain('How it works:');
   });
 
-  it('builds a roster from every project in rank order', () => {
+  it('builds a roster in the order it is handed, not by registry rank', () => {
     const prompt = buildAgentPrompt(
-      [project({ objectID: 'later', name: 'Later', order_rank: 2 }), project({ order_rank: 1 })],
+      [project({ order_rank: 9 }), project({ objectID: 'later', name: 'Later', order_rank: 1 })],
       'https://example.test'
     );
 
     expect(prompt).toContain('complete at 2');
     expect(prompt.indexOf('### Alpha')).toBeLessThan(prompt.indexOf('### Later'));
+    expect(prompt).toContain('Three, and no others');
+    expect(prompt).toContain('`markdown-index`');
+    expect(prompt).toContain('Search both indices before answering.');
+    expect(prompt).toContain('Name the actual tool, model, file, boundary, and failure.');
+    expect(prompt).toContain('Use a closed em dash only: text—text, never text — text.');
+    expect(prompt).toContain('Cut startup language, generic metaphors');
+    expect(prompt).not.toMatch(/\bexhibit(?:ed|ion|s)?\b/i);
   });
 
   it('reads a valid registry through an injected filesystem', async () => {
-    const readProjects = vi.fn(async () => JSON.stringify([project()]));
+    const readProjects = vi.fn(async () =>
+      JSON.stringify([
+        ...portfolioProjects(),
+        project({ objectID: 'inventory-only', name: 'Inventory Only', order_rank: 99 }),
+      ])
+    );
 
     await expect(
       readAgentPrompt('/portfolio', 'https://example.test', readProjects)
     ).resolves.toMatchObject({
-      projectCount: 1,
-      prompt: expect.stringContaining('https://example.test/projects?system=alpha'),
+      projectCount: exhibits.length,
+      prompt: expect.stringContaining(
+        'https://example.test/notes?project=Selected%20Project%201#notes-index'
+      ),
     });
+    await expect(
+      readAgentPrompt('/portfolio', 'https://example.test', readProjects)
+    ).resolves.toEqual(
+      expect.objectContaining({ prompt: expect.not.stringContaining('Inventory Only') })
+    );
     expect(readProjects).toHaveBeenCalledWith('/portfolio/src/data/projects.json', 'utf8');
+  });
+
+  it('rejects a registry missing a selected project', async () => {
+    const readProjects = vi.fn(async () => JSON.stringify(portfolioProjects().slice(1)));
+
+    await expect(readAgentPrompt('/portfolio', undefined, readProjects)).rejects.toThrow(
+      'missing selected project save-the-sun'
+    );
   });
 
   it.each([
@@ -103,21 +135,28 @@ describe('agent prompt generator', () => {
     const stdout = { write: vi.fn() };
     const stderr = { write: vi.fn() };
     const writePrompt = vi.fn(async () => undefined);
-    const readProjects = vi.fn(async () => JSON.stringify([project()]));
+    // One project the list does not select, so the written count is not the registry's.
+    const readProjects = vi.fn(async () =>
+      JSON.stringify([...portfolioProjects(), project({ objectID: 'inventory-only' })])
+    );
 
     const runtime = { readProjects, stdout, stderr, writePrompt };
 
     await emitAgentPrompt({ args: ['node', 'script'] }, runtime);
-    expect(stdout.write).toHaveBeenCalledWith(expect.stringContaining('### Alpha'));
+    expect(stdout.write).toHaveBeenCalledWith(expect.stringContaining('### Selected Project 1'));
     expect(writePrompt).not.toHaveBeenCalled();
 
     await emitAgentPrompt({ args: ['node', 'script', '--out', '/tmp/prompt.txt'] }, runtime);
     expect(writePrompt).toHaveBeenCalledWith(
       '/tmp/prompt.txt',
-      expect.stringContaining('### Alpha')
+      expect.stringContaining('### Selected Project 1')
     );
     expect(stderr.write).toHaveBeenCalledWith(
-      expect.stringMatching(/^Wrote \d+ characters for 1 systems\n$/)
+      expect.stringMatching(
+        new RegExp(
+          `^Wrote \\d+ characters for ${exhibits.length} of ${exhibits.length + 1} systems\\n$`
+        )
+      )
     );
   });
 

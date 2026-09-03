@@ -44,6 +44,22 @@ vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
 // and an optional call in source would be a shim for the test environment.
 Element.prototype.scrollIntoView = vi.fn();
 
+// jsdom ships no matchMedia either. Same reasoning: every real browser has one, so
+// a component that calls it unconditionally on mount is not the bug — a suite that
+// renders that component without this stub is. Defaults to no match, which keeps
+// every motion effect an inert no-op for tests that never asked to exercise it;
+// ProjectDirectoryMotion.test.tsx overrides this locally where it needs specific
+// preference states.
+vi.stubGlobal(
+  'matchMedia',
+  vi.fn((query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  }))
+);
+
 import React from 'react';
 
 vi.mock('next/image', () => ({

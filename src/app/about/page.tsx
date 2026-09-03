@@ -113,10 +113,10 @@ export default function AboutPage() {
             <ul className={styles.records} aria-labelledby="awards-label">
               {awardedProjects.map((project) => (
                 <li key={project.id}>
-                  {/* The whole record is the link, and it goes to the exhibit holding the evidence. */}
+                  {/* Awards land on their exhibit in the catalogue, not a hidden reader state. */}
                   <Link
                     className={styles.record}
-                    href={`/projects?system=${encodeURIComponent(project.id)}`}
+                    href={`/projects#${encodeURIComponent(project.id)}`}
                   >
                     <span className={styles.recordBadge}>
                       {project.award}

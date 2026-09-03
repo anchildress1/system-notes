@@ -11,6 +11,11 @@ const viewports = [
   { width: 320, height: 740 },
   { width: 390, height: 844 },
   { width: 768, height: 1024 },
+  // 900 is the band nothing else reaches: 768 is exactly 48rem and lands in the
+  // single-column block, and cross-browser runs desktop widths. The two-column
+  // layout at its narrowest went unmeasured, and that is where the exhibit links
+  // were silently clipped rather than overflowing where it would have shown.
+  { width: 900, height: 1024 },
 ] as const;
 
 for (const viewport of viewports) {
@@ -152,18 +157,36 @@ test.describe('mobile interactions', () => {
     }
   });
 
-  test('expands a project into one readable column', async ({ page }) => {
+  test('keeps the seven-exhibit catalogue in one readable column', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/projects');
-    await page.getByTestId('project-system-notes').click();
-    const detail = page.getByRole('article');
 
-    await expect(detail.getByRole('img')).toBeVisible();
-    await expect(detail.getByRole('heading', { name: 'Outcome' })).toBeVisible();
+    await expect(page.getByTestId('exhibit-save-the-sun').getByRole('img')).toBeVisible();
+    await expect(page.getByRole('article')).toHaveCount(7);
+    await expect(
+      page.getByRole('region', { name: 'Selected exhibits' }).getByRole('button')
+    ).toHaveCount(0);
     const widths = await page.evaluate(() => ({
       scroll: document.documentElement.scrollWidth,
       client: document.documentElement.clientWidth,
     }));
     expect(widths.scroll).toBe(widths.client);
+  });
+
+  test('keeps exhibit entrances static in the stacked mobile layout', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/projects');
+
+    const catalogue = page.getByRole('region', { name: 'Selected exhibits' });
+    const parts = page.locator('[data-motion-part]');
+
+    await expect(catalogue).not.toHaveAttribute('data-motion-fallback', 'true');
+    await expect(parts.first()).toBeVisible();
+
+    for (let index = 0; index < (await parts.count()); index += 1) {
+      await expect
+        .poll(() => parts.nth(index).evaluate((element) => getComputedStyle(element).animationName))
+        .toBe('none');
+    }
   });
 });

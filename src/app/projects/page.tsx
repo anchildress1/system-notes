@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
-import ProjectDirectory from '@/components/ProjectDirectory/ProjectDirectory';
+import ProjectDirectory, {
+  EXHIBIT_DECK,
+  EXHIBIT_SUMMARY,
+} from '@/components/ProjectDirectory/ProjectDirectory';
 import { getProjects } from '@/lib/api';
 import { buildPageMetadata } from '@/lib/siteMetadata';
 import styles from './page.module.css';
 
 const pageTitle = 'Exhibits | Ashley Childress';
-const pageDescription =
-  'Shipped systems entered into evidence, each cross-filed with the decisions it produced — including the ones that failed on purpose.';
 
 export const metadata: Metadata = buildPageMetadata({
   title: pageTitle,
-  description: pageDescription,
+  description: EXHIBIT_SUMMARY,
   path: '/projects',
 });
 
@@ -21,12 +22,13 @@ export default function ProjectsPage() {
     <main id="main-content" className={styles.main}>
       <section className={`page-head ${styles.hero}`} aria-labelledby="exhibits-heading">
         <h1 id="exhibits-heading">
-          What I&rsquo;ve shipped.
+          Systems should
           <br />
-          <span>Including what I stopped.</span>
+          <span>show how the work holds up.</span>
         </h1>
+        <p className={styles.deck}>{EXHIBIT_DECK}</p>
       </section>
-      <div className="page-column">
+      <div className={`page-column ${styles.exhibition}`}>
         <ProjectDirectory projects={projects} />
       </div>
     </main>

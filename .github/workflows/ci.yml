@@ -37,7 +37,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Install Playwright Browsers and System Dependencies
-        run: npm exec -- playwright install --with-deps chromium webkit
+        run: npm exec -- playwright install --with-deps chromium firefox webkit
 
       - name: Check Formatting
         run: make format-check
