@@ -381,6 +381,11 @@ body::before {
 /* Pulled onto the sheet rather than hung off its corner: tape holds paper down
    by covering both, so roughly two thirds of each strip lies on the print. */
 .taped::before {
+  /* .taped's own default, same as --tilt above: the portrait composes .taped and
+     never sets this, so an unresolved var() here would make rotate invalid and
+     drop to none — a flat strip instead of tape. ProjectDirectory.module.css
+     overrides the value for the exhibits; nothing overrides the mechanism. */
+  --tape-angle: -27deg;
   top: -0.5rem;
   left: -1.05rem;
   /* rotate, not transform: ProjectDirectory.module.css drives this pseudo-element's
@@ -392,6 +397,7 @@ body::before {
 }
 
 .taped::after {
+  --tape-angle: -21deg;
   right: -1.05rem;
   bottom: -0.5rem;
   rotate: var(--tape-angle);
