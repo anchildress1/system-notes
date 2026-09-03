@@ -37,12 +37,6 @@ export function buildSiteJsonLd(projects: Project[], baseUrl: string) {
     description: 'A living, queryable index of projects and decisions.',
     author: person,
     publisher: { '@id': person['@id'] },
-    /* Only fields the registry actually holds. applicationCategory, operatingSystem
-       and an offers block at price 0 USD were all constants stamped on every entry:
-       nothing in projects.json records a price, a platform or a category, and six of
-       these are Retired, Archived or Scrapped, so the offer advertised work that is
-       not available. Structured data is read by machines that cannot tell an
-       invented default from a fact. */
     hasPart: projects.map((p) => ({
       '@type': 'SoftwareApplication',
       name: p.title,

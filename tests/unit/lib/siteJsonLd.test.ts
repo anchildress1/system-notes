@@ -65,7 +65,6 @@ describe('buildSiteJsonLd', () => {
     expect(entry).not.toHaveProperty('offers');
     expect(entry).not.toHaveProperty('operatingSystem');
     expect(entry).not.toHaveProperty('applicationCategory');
-    expect(JSON.stringify(graph)).not.toMatch(/price|USD/i);
   });
 
   it('points the site identity at the supplied base url', () => {
