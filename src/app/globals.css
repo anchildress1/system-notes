@@ -423,7 +423,12 @@ body::before {
     .taped::after {
       animation: tape-stick 1ms linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 36%;
+      /* 70, not the print's 36. A strip of tape is 22px tall, so it runs through
+         its own view progress far sooner than the sheet does: at 36 the roll was
+         over while the print was still 155px below the top of the screen, which
+         is under the reader's eye rather than in it. At 70 it is still turning as
+         the print settles and stuck down by the time the exhibit is read. */
+      animation-range: entry 0% cover 70%;
     }
   }
 }
