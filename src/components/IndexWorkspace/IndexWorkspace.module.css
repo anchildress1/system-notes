@@ -179,10 +179,11 @@
   background: var(--tile-swatch, var(--k-other));
   box-shadow: 0 0 0 1px var(--tile-keyline);
   content: '';
+  /* No filter here. The brightness filter it transitioned was replaced by the
+     selected ring below and nothing sets filter on this element in any state. */
   transition:
     transform 180ms var(--ease-out),
-    box-shadow 180ms ease,
-    filter 180ms ease;
+    box-shadow 180ms var(--ease-out);
 }
 
 .boardTiles li:hover::before {
@@ -496,10 +497,14 @@
   background: transparent;
   color: var(--bone);
   text-align: left;
+  /* 180ms; 260 read as lag on a row a pointer crosses quickly. Padding rather
+     than translateX so the indent moves the label without dragging the row's
+     right-hand meta off its rule. --ease-out on all three: the bare `ease` here
+     was drift, not a decision. */
   transition:
-    padding-left 260ms var(--ease-out),
-    color 200ms ease,
-    border-color 200ms ease;
+    padding-left 180ms var(--ease-out),
+    color 180ms var(--ease-out),
+    border-color 180ms var(--ease-out);
 }
 .queueList button:hover {
   padding-left: 0.9rem;
@@ -753,10 +758,6 @@
   .searchPill {
     padding-left: 0.85rem;
     gap: 0.5rem;
-  }
-
-  .retrieve {
-    font-size: 0.9375rem;
   }
 
   .secondaryFilters {

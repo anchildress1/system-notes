@@ -128,7 +128,12 @@ describe('IndexWorkspace', () => {
 
     expect(await screen.findByRole('searchbox', { name: 'Search the notes index' })).toBeVisible();
     expect(await screen.findByText('Failure is data')).toBeInTheDocument();
-    expect(screen.getByText(/1 entry · 1ms/i)).toBeInTheDocument();
+    // Split across two elements on purpose: only the count is live. Asserting the
+    // whole line as one string is what would silently put the timing back inside
+    // the region, where it re-announced on every keystroke carrying nothing new.
+    const hitCount = screen.getByText(/1 entry/i);
+    expect(hitCount).toHaveAttribute('aria-live', 'polite');
+    expect(screen.getByText(/1ms/i).closest('[aria-live]')).toBeNull();
     expect(screen.getByRole('button', { name: /Filed under/i })).toHaveAttribute(
       'aria-expanded',
       'true'
@@ -284,6 +289,14 @@ describe('IndexWorkspace', () => {
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-346');
     fireEvent.keyDown(boardElement, { key: 'ArrowUp' });
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-345');
+    // Before any letter, so no typeahead prefix is live and this takes the
+    // lone-Space path rather than being absorbed as a prefix character. It moves
+    // nothing, but must still be swallowed: left to the document it scrolled the
+    // page out from under a reader whose focus was on the board.
+    const loneSpace = fireEvent.keyDown(boardElement, { key: ' ' });
+    expect(loneSpace).toBe(false);
+    expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-345');
+
     fireEvent.keyDown(boardElement, { key: 'a' });
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-345');
 

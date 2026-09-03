@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useId, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import { hasValidAgentCredentials } from '@/lib/algolia';
 import BriefBody from './BriefBody';
 import IntakeBrief from './IntakeBriefLoader';
@@ -60,15 +60,15 @@ function readSavedBrief(): SavedBrief | null {
   }
 }
 
-/** Problems a reader can load into the field instead of writing their own. */
+/** Questions a reader can load into the field instead of writing their own. */
 export const SEEDS = [
-  'We can’t send our data to someone else’s servers. It still has to work.',
-  'My seniors are skimming four-hundred-line AI diffs and calling it review.',
-  'Nothing errored. The output was just quietly wrong.',
+  'Can this run somewhere our data never leaves?',
+  'What happens when the search gets slow?',
+  'How do you catch it when the answer is wrong but sounds right?',
 ] as const;
 
 export default function IntakeDesk() {
-  const [problem, setProblem] = useState('');
+  const [question, setQuestion] = useState('');
   // The asked question is held apart from what is being typed: editing the
   // field must not re-send, and re-asking the same words must re-send. The
   // nonce is what makes the second one true.
@@ -81,9 +81,27 @@ export default function IntakeDesk() {
   // answer back. Without this the form stayed live under a running request.
   const [inFlight, setInFlight] = useState(false);
 
+  /* Submitting cleared the field and rendered the brief below the fold, so the
+     only feedback was the field emptying. Honors reduced motion through the
+     global scroll-behavior guard. */
+  const answerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (asked) answerRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [asked]);
+
+  /* A live region announces a mutation to a region already on the page. The brief's
+     working and failure states are both <output> returned by IntakeBrief, so those
+     two swap in place and announce; the answer is a BriefBody, a different element
+     type at the same slot, so React replaces the node and it announces nothing.
+     Measured, not assumed. This region outlives all three states. */
+  const [progress, setProgress] = useState('');
+
   const keepBrief = useCallback(
     (answer: string) => {
       if (asked) keep({ question: asked.text, answer });
+      // Short on purpose: the brief runs to well over a thousand characters, and
+      // role=status is atomic.
+      setProgress('The brief is ready.');
     },
     [asked]
   );
@@ -94,35 +112,37 @@ export default function IntakeDesk() {
   const releaseForm = useCallback(() => setInFlight(false), []);
 
   const canAsk = hasValidAgentCredentials();
-  const trimmed = problem.trim();
+  const trimmed = question.trim();
 
   return (
     <div className={styles.desk}>
+      <output className="visually-hidden">{progress}</output>
       <form
         className={styles.compose}
         onSubmit={(event) => {
           event.preventDefault();
           if (!trimmed || !canAsk || inFlight) return;
           setInFlight(true);
+          setProgress('');
           setAsked((previous) => ({ text: trimmed, nonce: (previous?.nonce ?? 0) + 1 }));
           // The field empties on submit: the question has moved to the brief below, which
           // quotes it back.
-          setProblem('');
+          setQuestion('');
         }}
       >
         <label className="visually-hidden" htmlFor={fieldId}>
-          The problem
+          Your question
         </label>
         <textarea
           id={fieldId}
           className={styles.field}
           data-focus="ruled"
           rows={2}
-          value={problem}
-          onChange={(event) => setProblem(event.target.value)}
+          value={question}
+          onChange={(event) => setQuestion(event.target.value)}
           readOnly={inFlight}
           aria-describedby={canAsk ? undefined : noticeId}
-          placeholder="e.g. When something breaks, we can’t tell which AI wrote it."
+          placeholder="e.g. Can this run somewhere our data never leaves?"
         />
         <div className={styles.controls}>
           <button
@@ -146,11 +166,11 @@ export default function IntakeDesk() {
       </form>
 
       <div className={styles.shelf}>
-        <p className={styles.shelfLabel}>Or take one off the shelf.</p>
+        <p className={styles.shelfLabel}>Ask about my work</p>
         <ul className={styles.seeds}>
           {SEEDS.map((seed) => (
             <li key={seed}>
-              <button type="button" className={styles.seed} onClick={() => setProblem(seed)}>
+              <button type="button" className={styles.seed} onClick={() => setQuestion(seed)}>
                 {seed}
               </button>
             </li>
@@ -159,7 +179,7 @@ export default function IntakeDesk() {
       </div>
 
       {asked || saved ? (
-        <div className={styles.answer}>
+        <div className={styles.answer} ref={answerRef}>
           {asked ? (
             // Keyed so asking again is a fresh turn rather than an append: the
             // agent answers a question, it does not hold a conversation.

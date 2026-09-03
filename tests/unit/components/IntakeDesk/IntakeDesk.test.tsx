@@ -23,7 +23,7 @@ vi.mock('@/components/IntakeDesk/IntakeBriefLoader', () => ({
   ),
 }));
 
-const field = () => screen.getByLabelText('The problem');
+const field = () => screen.getByLabelText('Your question');
 const run = () => screen.getByRole('button', { name: 'Run it' });
 const finishTurn = () => fireEvent.click(screen.getByTestId('finish'));
 

@@ -132,7 +132,13 @@ export async function generateImageVariants({
       const widths = variantWidths(srcWidth, ladder);
 
       for (const width of widths) {
-        const buffer = await sharpFactory(srcPath).resize(width).webp({ quality: 72 }).toBuffer();
+        // effort 6, not the default 4: a harder encode search at the same quality
+        // target, ~4% smaller for build time. Output is NOT identical to the
+        // default's — measured fidelity against the master is.
+        const buffer = await sharpFactory(srcPath)
+          .resize(width)
+          .webp({ quality: 72, effort: 6 })
+          .toBuffer();
         await fs.writeFile(path.join(optDir, `${base}-${width}.webp`), buffer);
       }
 

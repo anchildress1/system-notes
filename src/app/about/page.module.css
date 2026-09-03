@@ -41,6 +41,44 @@
   gap: 1rem;
 }
 
+.trackRecord {
+  display: grid;
+  max-width: 50rem;
+  margin-top: clamp(2.25rem, 5vh, 3.5rem);
+  gap: 1.5rem;
+}
+
+.trackRecord dt {
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
+  text-transform: uppercase;
+}
+
+.trackRecord dd {
+  margin-top: 0.5rem;
+  margin-left: 0;
+  color: var(--bone);
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+  line-height: 1.6;
+}
+
+/* The second row is supporting evidence, so it sits back a step from the first. */
+.trackRecord div:last-child dd {
+  color: var(--soft);
+  font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
+}
+
+.since {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  letter-spacing: 0.06em;
+}
+
 /* Breaks its column on the right. main carries overflow-x: clip, so the bleed
    cannot widen the document. Wide viewports only — a narrow screen has no room. */
 @media (min-width: 62rem) {
@@ -422,14 +460,39 @@
   font-size: clamp(1.35rem, 2.4vw, 2.1rem);
   font-weight: 400;
   letter-spacing: -0.03em;
+  /* 180ms, not 320. Hover feedback wants to land while the pointer is still
+     arriving. Still padding rather than translateX: this row is space-between,
+     so translating it would carry the right-hand arrow off the rule with it,
+     where padding moves only the label. */
   transition:
     color 200ms var(--ease-out),
-    padding-left 320ms var(--ease-out);
+    padding-left 180ms var(--ease-out);
 }
 .outbound {
   color: var(--mute);
   font-family: var(--font-display);
   font-size: 0.8em;
+}
+
+/* Metadata setting, but NOT --fine. The other rows end in an arrow, which is
+   decoration; this one ends in the only contact detail on the site, and 11px is
+   not a size to set it at. Not uppercased either: the local part of an address
+   is case-sensitive and has to read as it is typed. */
+.reachAddress {
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+}
+
+/* Under the label rather than beside it once the row cannot hold both. */
+@media (max-width: 30rem) {
+  .contact nav a:has(.reachAddress) {
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 0.25rem;
+  }
 }
 
 /* Motion only, on top of the shared wash. The colour swap that came with the step

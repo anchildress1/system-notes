@@ -38,12 +38,9 @@
   gap: 4px;
   margin-top: 1.25rem;
   /* Shown rather than hidden while paused: the bars anchor the control above
-     them, and removing them makes the panel jump on play. */
-  transition: opacity 0.4s ease;
-}
-
-.equalizer[data-playing='true'] {
-  opacity: 1;
+     them, and removing them makes the panel jump on play. Which is why there is
+     no opacity here to transition — the hide-while-paused behaviour this once
+     animated was removed, and the transition outlived it. */
 }
 
 /* Neutral at rest, accent while running. Dimming the accent instead produced a

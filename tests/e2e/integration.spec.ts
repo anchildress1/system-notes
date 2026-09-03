@@ -120,8 +120,11 @@ test.describe('System Notes redesign', () => {
     // screenshot — which is how the illustration came to be lost.
     const layout = await page.evaluate(() => {
       const sidebar = document.querySelector<HTMLElement>('[aria-label="Browse notes by type"]');
+      // By type: the field is named by a real <label> now rather than an
+      // aria-label. closest('div') resolves to the search pill either way, and
+      // the relationships asserted below hold for the pill as for its wrapper.
       const search = document
-        .querySelector<HTMLInputElement>('[aria-label="Search the notes index"]')
+        .querySelector<HTMLInputElement>('input[type="search"]')
         ?.closest<HTMLElement>('div');
       const board = document.querySelector<HTMLElement>('[data-note-board]');
       const reader = document.querySelector<HTMLElement>('article');
@@ -194,45 +197,45 @@ test.describe('System Notes redesign', () => {
     );
   });
 
-  test('lists every system in the rail with no archive to open', async ({ page }) => {
+  test('shows the seven selected exhibits without a project reader', async ({ page }) => {
     await page.goto('/projects');
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('shipped');
-    // The rail scrolls, so there is nothing left for a show-all control to do.
-    await expect(page.getByTestId(/^project-/)).toHaveCount(20);
-    await expect(page.getByRole('navigation', { name: 'Systems' })).toContainText('Echo ESLint');
-    await expect(page.getByRole('button', { name: /show all/i })).toHaveCount(0);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Systems should');
+    await expect(page.getByRole('article')).toHaveCount(7);
+    await expect(page.getByTestId('exhibit-save-the-sun')).toBeVisible();
+    await expect(page.getByTestId('exhibit-rai-lint')).toBeVisible();
+    await expect(page.getByTestId('exhibit-system-notes')).toHaveCount(0);
+    await expect(page.getByRole('navigation', { name: 'Systems' })).toHaveCount(0);
   });
 
-  test('opens a system in the detail pane and links back to filtered notes', async ({ page }) => {
+  test('links exhibit evidence back to the Algolia project filter', async ({ page }) => {
     await page.goto('/projects');
-    await page.getByTestId('project-system-notes').click();
-    const detail = page.getByRole('article');
+    const exhibit = page.getByTestId('exhibit-save-the-sun');
 
-    await expect(detail.getByRole('heading', { level: 2 })).toHaveText('System Notes');
-    await expect(detail.getByRole('heading', { name: 'Outcome' })).toBeVisible();
-    await expect(detail.getByRole('heading', { name: 'Stack' })).toBeVisible();
-    await expect(detail.getByRole('link', { name: /Decisions from System Notes/ })).toHaveAttribute(
+    await expect(
+      exhibit.getByText('The model can speak. It does not get the answer.')
+    ).toBeVisible();
+    await expect(exhibit.getByRole('link', { name: /Filed notes/ })).toHaveAttribute(
       'href',
-      '/notes?project=System+Notes#notes-index'
+      '/notes?project=Save+the+Sun#notes-index'
     );
 
     const accessibility = await new AxeBuilder({ page }).analyze();
     expect(accessibility.violations).toEqual([]);
   });
 
-  test('hydrates a project filter when following a project into the index', async ({ page }) => {
+  test('hydrates a project filter when following an exhibit into the index', async ({ page }) => {
     const facetFilters: Array<string | null> = [];
     await mockAlgoliaSearch(
       page,
       [
         {
-          objectID: 'card:system-notes:1',
-          title: 'A System Notes decision',
+          objectID: 'card:save-the-sun:1',
+          title: 'A Save the Sun decision',
           blurb: 'Evidence attached.',
           fact: 'The complete decision.',
           category: 'Principle',
-          projects: ['System Notes'],
+          projects: ['Save the Sun'],
           'tags.lvl0': ['Testing'],
         },
       ],
@@ -241,21 +244,20 @@ test.describe('System Notes redesign', () => {
       }
     );
     await page.goto('/projects');
-    await page.getByTestId('project-system-notes').click();
 
     await page
-      .getByRole('article')
-      .getByRole('link', { name: /Decisions from System Notes/ })
+      .getByTestId('exhibit-save-the-sun')
+      .getByRole('link', { name: /Filed notes/ })
       .click();
 
-    await expect(page).toHaveURL(/\/?\?project=System(?:\+|%20)Notes#notes-index$/);
+    await expect(page).toHaveURL(/\/?\?project=Save(?:\+|%20)the(?:\+|%20)Sun#notes-index$/);
     await page
       .locator('summary')
       .filter({ hasText: /^Project/ })
       .click();
-    await expect(page.getByRole('checkbox', { name: 'System Notes' })).toBeChecked();
+    await expect(page.getByRole('checkbox', { name: 'Save the Sun' })).toBeChecked();
     await expect
-      .poll(() => facetFilters.some((value) => value?.includes('projects:System Notes')))
+      .poll(() => facetFilters.some((value) => value?.includes('projects:Save the Sun')))
       .toBe(true);
   });
 
@@ -313,51 +315,8 @@ test.describe('System Notes redesign', () => {
   });
 });
 
-test.describe('Deep links', () => {
-  test('opens the system named in the url', async ({ page }) => {
-    await page.goto('/projects?system=save-the-sun');
-
-    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toHaveText(
-      'Save the Sun'
-    );
-    await expect(page.getByTestId('project-save-the-sun')).toHaveAttribute('aria-current', 'true');
-  });
-
-  test('follows the selection so the open system is what a copied link reopens', async ({
-    page,
-  }) => {
-    await page.goto('/projects');
-    await page.getByTestId('project-vestige').click();
-
-    await expect(page).toHaveURL(/\?system=vestige$/);
-  });
-
-  test('falls back to the first system when the url names one that does not exist', async ({
-    page,
-  }) => {
-    await page.goto('/projects?system=not-a-real-system');
-
-    // Rendering nothing, or an error, would make a stale link a broken page.
-    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toBeVisible();
-  });
-
-  test('does not reuse an old system after client-side navigation', async ({ page }) => {
-    await page.goto('/projects?system=delegate-action');
-    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toHaveText(
-      'Delegate Action'
-    );
-
-    const nav = page.getByRole('navigation', { name: 'Primary navigation' });
-    await nav.getByRole('link', { name: 'how I decide' }).click();
-    await nav.getByRole('link', { name: 'what I’ve shipped' }).click();
-
-    await expect(page).toHaveURL('/projects');
-    await expect(page.getByRole('article').getByRole('heading', { level: 2 })).toHaveText(
-      'Save the Sun'
-    );
-  });
-
-  test('opens the exhibit behind each recorded win', async ({ page }) => {
+test.describe('Exhibit anchors', () => {
+  test('opens the recorded award at its catalogue exhibit', async ({ page }) => {
     await page.goto('/about');
     const wins = page.getByRole('link', { name: /winner/i });
     await expect(wins.first()).toBeVisible();
@@ -365,22 +324,24 @@ test.describe('Deep links', () => {
     const targets = await wins.evaluateAll((links) =>
       links.map((link) => link.getAttribute('href'))
     );
-    // A win with nowhere to check it is the claim this section exists not to
-    // make, so every record has to cite a system the directory actually holds.
+    // A win with nowhere to check it is the claim this section exists not to make.
     expect(targets.length).toBeGreaterThan(0);
     for (const href of targets) {
-      expect(href).toMatch(/^\/projects\?system=[a-z0-9-]+$/);
+      expect(href).toMatch(/^\/projects#[a-z0-9-]+$/);
     }
 
-    const first = wins.first();
-    const name = await first.textContent();
-    await first.click();
+    // Every one, not just the first. /about awards come from all twenty projects
+    // while only the curated seven emit an anchor, so a win outside the catalogue
+    // lands silently at the top of the page.
+    await page.goto('/projects');
+    for (const href of targets) {
+      const anchor = new URL(href!, 'https://anchildress1.dev').hash;
+      await expect(page.locator(anchor), `no exhibit at ${href}`).toBeVisible();
+    }
 
+    await page.goto('/about');
+    await wins.first().click();
     await expect(page).toHaveURL(targets[0]!);
-    const exhibit = page.getByRole('article').getByRole('heading', { level: 2 });
-    await expect(exhibit).toBeVisible();
-    // The exhibit that opens is the one the win named, not the rail's default.
-    expect(name).toContain((await exhibit.textContent())!.trim());
   });
 
   test('cites a checkable receipt behind every certification', async ({ page }) => {
@@ -411,23 +372,5 @@ test.describe('Deep links', () => {
       // credential from a lapsed one without opening the receipt.
       expect(receipt.text).toMatch(/\b(19|20)\d{2}\b/);
     }
-  });
-
-  test('scrolls a deep-linked system into the visible rail', async ({ page }) => {
-    await page.goto('/projects?system=delegate-action');
-    const active = page.getByTestId('project-delegate-action');
-    await expect(active).toHaveAttribute('aria-current', 'true');
-
-    const geometry = await active.evaluate((item) => {
-      const rail = item.closest('nav')!.getBoundingClientRect();
-      const current = item.getBoundingClientRect();
-      return {
-        visibleHorizontally: current.left >= rail.left && current.right <= rail.right,
-        visibleVertically: current.top >= rail.top && current.bottom <= rail.bottom,
-      };
-    });
-
-    expect(geometry.visibleHorizontally).toBe(true);
-    expect(geometry.visibleVertically).toBe(true);
   });
 });

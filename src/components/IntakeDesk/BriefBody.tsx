@@ -1,6 +1,6 @@
 'use client';
 
-import { citesKnownSystem } from '@/lib/systemIds';
+import { citesKnownProject } from '@/lib/systemIds';
 import { isSafeExternalUrl } from '@/lib/urlSafety';
 import styles from './IntakeDesk.module.css';
 
@@ -23,11 +23,11 @@ function isAllowedCitationUrl(href: string): boolean {
 
   return (
     url.origin === SITE_ORIGIN &&
-    url.pathname.replace(/\/$/, '') === '/projects' &&
+    url.pathname.replace(/\/$/, '') === '/notes' &&
     url.searchParams.size === 1 &&
-    url.searchParams.has('system') &&
-    !url.hash &&
-    citesKnownSystem(href)
+    url.searchParams.has('project') &&
+    url.hash === '#notes-index' &&
+    citesKnownProject(href)
   );
 }
 

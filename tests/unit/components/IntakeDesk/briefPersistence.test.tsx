@@ -36,7 +36,7 @@ describe('brief persistence', () => {
     const IntakeDesk = await loadDesk();
     render(<IntakeDesk />);
 
-    fireEvent.change(screen.getByLabelText('The problem'), { target: { value: 'A problem.' } });
+    fireEvent.change(screen.getByLabelText('Your question'), { target: { value: 'A problem.' } });
     fireEvent.click(screen.getByRole('button', { name: 'Run it' }));
     fireEvent.click(screen.getByTestId('settle'));
 
@@ -102,7 +102,7 @@ describe('brief persistence', () => {
     const IntakeDesk = await loadDesk();
 
     render(<IntakeDesk />);
-    fireEvent.change(screen.getByLabelText('The problem'), { target: { value: 'A problem.' } });
+    fireEvent.change(screen.getByLabelText('Your question'), { target: { value: 'A problem.' } });
     fireEvent.click(screen.getByRole('button', { name: 'Run it' }));
     fireEvent.click(screen.getByTestId('settle'));
 

@@ -25,6 +25,7 @@ export default function AboutPage() {
   const projects = getProjects();
   const groups = groupProjects(projects);
   const awardedProjects = projects.filter((project) => project.award);
+  const { since } = profile.trackRecord;
 
   return (
     <main id="main-content" className={styles.main}>
@@ -44,6 +45,20 @@ export default function AboutPage() {
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+          {/* In the hero: a reader screening for a role gives up before the fourth section. */}
+          <dl className={styles.trackRecord}>
+            <div>
+              <dt>Practice</dt>
+              <dd>
+                {profile.trackRecord.core.join(' · ')}
+                <span className={styles.since}>Shipping production systems since {since}</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Also shipped</dt>
+              <dd>{profile.trackRecord.applied.join(' · ')}</dd>
+            </div>
+          </dl>
         </div>
         <figure className={`drift ${styles.portrait}`}>
           {/* Both portraits ship; CSS shows the one matching the theme, and lazy is what
@@ -70,7 +85,7 @@ export default function AboutPage() {
         </figure>
       </section>
 
-      <section className={`reveal ${styles.proof}`} aria-labelledby="proof-heading">
+      <section className={styles.proof} aria-labelledby="proof-heading">
         <header>
           <h2 id="proof-heading">Claims should have receipts.</h2>
         </header>
@@ -98,10 +113,10 @@ export default function AboutPage() {
             <ul className={styles.records} aria-labelledby="awards-label">
               {awardedProjects.map((project) => (
                 <li key={project.id}>
-                  {/* The whole record is the link, and it goes to the exhibit holding the evidence. */}
+                  {/* Awards land on their exhibit in the catalogue, not a hidden reader state. */}
                   <Link
                     className={styles.record}
-                    href={`/projects?system=${encodeURIComponent(project.id)}`}
+                    href={`/projects#${encodeURIComponent(project.id)}`}
                   >
                     <span className={styles.recordBadge}>
                       {project.award}
@@ -142,6 +157,7 @@ export default function AboutPage() {
                   <span className={styles.credentialMeta}>
                     {certification.issuer} · {certification.issued}
                   </span>
+                  <span className="visually-hidden"> (opens in a new tab)</span>
                 </a>
               </li>
             ))}
@@ -149,7 +165,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className={`reveal ${styles.principles}`} aria-labelledby="principles-heading">
+      <section className={styles.principles} aria-labelledby="principles-heading">
         <header>
           <h2 id="principles-heading">The rules are short on purpose.</h2>
         </header>
@@ -170,7 +186,7 @@ export default function AboutPage() {
         </ol>
       </section>
 
-      <section className={`reveal ${styles.themeSong}`} aria-labelledby="theme-song-heading">
+      <section className={styles.themeSong} aria-labelledby="theme-song-heading">
         <header>
           {/* No artist line: the status beside the control already names them,
               and the design does not repeat it under the heading. */}
@@ -190,7 +206,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className={`reveal ${styles.contact}`} aria-labelledby="contact-heading">
+      <section className={styles.contact} aria-labelledby="contact-heading">
         <div>
           <h2 id="contact-heading">Follow the work, not a funnel.</h2>
         </div>
@@ -214,6 +230,9 @@ export default function AboutPage() {
             <span className={styles.outbound} aria-hidden="true">
               &#8599;
             </span>
+          </a>
+          <a className="washed" href={`mailto:${profile.email}`}>
+            Or just email me <span className={styles.reachAddress}>{profile.email}</span>
           </a>
         </nav>
       </section>

@@ -12,6 +12,7 @@ export default function SiteFooter() {
           {profile.links.map(({ label, href }) => (
             <a key={href} className="swiped" href={href} target="_blank" rel="noopener noreferrer">
               {label} <span aria-hidden="true">↗</span>
+              <span className="visually-hidden"> (opens in a new tab)</span>
             </a>
           ))}
         </nav>

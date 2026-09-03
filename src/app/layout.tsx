@@ -89,7 +89,10 @@ export const metadata: Metadata = {
     description: 'Engineering decisions, projects, and failure-tested working rules.',
     images: [SOCIAL_IMAGE_URL],
   },
-  robots: { index: true, follow: true },
+  // No `robots` here. "index, follow" is already the crawler default, so the line
+  // bought nothing — and being layout metadata it merged into every route,
+  // including not-found, which ships its own `noindex`. That left the 404 with two
+  // contradictory robots tags.
   manifest: '/manifest.json',
 };
 
