@@ -145,7 +145,12 @@
 }
 
 .references {
-  --cover-range: 24%;
+  /* 18, not 24. The references sit at the foot of the exhibit, so they enter the
+     viewport last and their own cover progress trails the heading's. At 24 they
+     were still 6-10px short with the exhibit centred and being read, which reads
+     as a footer misaligned with its column rather than as motion. Measured: 24
+     leaves 9.7px worst case across the seven, 20 and below land on the column. */
+  --cover-range: 18%;
   display: flex;
   min-width: 0;
   align-items: baseline;
@@ -216,23 +221,27 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
+    /* Literal, not var(--cover-range): with the custom property here the build
+       emitted `animation-range: entry cover 0%`, which ends the range at once.
+       Each value must match the --cover-range beside its rule, which is what the
+       no-scroll-timeline fallback reads. */
     .heading,
     .copy {
       animation: exhibit-copy-arrival 1ms linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover var(--cover-range);
+      animation-range: entry 0% cover 32%;
     }
 
     .media {
       animation: exhibit-print-arrival 1ms linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover var(--cover-range);
+      animation-range: entry 0% cover 36%;
     }
 
     .references {
       animation: exhibit-links-arrival 1ms linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover var(--cover-range);
+      animation-range: entry 0% cover 18%;
     }
   }
 }
