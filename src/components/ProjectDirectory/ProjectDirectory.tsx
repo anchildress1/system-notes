@@ -98,8 +98,12 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                   rel="noopener noreferrer"
                 >
                   {link.label}
+                  {/* All seven exhibits are on the page at once, so a screen reader's
+                      own link list — which strips the surrounding article — would
+                      otherwise show "Repository" seven times with nothing to tell
+                      them apart. */}
+                  <span className="visually-hidden"> — {project.title} (opens in a new tab)</span>
                   <FiArrowUpRight aria-hidden="true" />
-                  <span className="visually-hidden"> (opens in a new tab)</span>
                 </a>
               ))}
               <Link
@@ -107,6 +111,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                 href={getProjectNotesURL(project.title)}
               >
                 Filed notes
+                <span className="visually-hidden"> — {project.title}</span>
                 <FiArrowUpRight aria-hidden="true" />
               </Link>
             </footer>
