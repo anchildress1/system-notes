@@ -51,7 +51,18 @@ function renderParts(extra?: React.ReactNode) {
   return render(
     <ProjectDirectoryMotion className="catalogue">
       <div data-motion-part="copy" style={{ '--cover-range': '32%' } as React.CSSProperties} />
-      <div data-motion-part="media" style={{ '--cover-range': '36%' } as React.CSSProperties} />
+      <div
+        data-motion-part="media"
+        style={
+          {
+            '--cover-range': '36%',
+            '--tape-before-start-turn': '58deg',
+            '--tape-before-start-shift': '-0.5rem',
+            '--tape-after-start-turn': '-58deg',
+            '--tape-after-start-shift': '0.5rem',
+          } as React.CSSProperties
+        }
+      />
       <div
         data-motion-part="references"
         style={{ '--cover-range': '24%' } as React.CSSProperties}
@@ -131,6 +142,37 @@ describe('ProjectDirectoryMotion', () => {
     window.dispatchEvent(new Event('scroll'));
     flushFrames();
     animations.forEach((animation) => expect(animation.currentTime).toBeGreaterThan(0));
+  });
+
+  it('presses each tape edge down at its own viewport position', () => {
+    stubEnvironment();
+    renderParts();
+    const media = document.querySelector<HTMLElement>('[data-motion-part="media"]');
+    if (!media) throw new Error('Expected media motion part');
+    vi.spyOn(media, 'getBoundingClientRect').mockReturnValue({
+      top: 400,
+      bottom: 820,
+      height: 420,
+    } as DOMRect);
+
+    window.dispatchEvent(new Event('scroll'));
+    flushFrames();
+
+    expect(Number.parseFloat(media.style.getPropertyValue('--tape-before-turn'))).toBeGreaterThan(
+      0
+    );
+    expect(Number.parseFloat(media.style.getPropertyValue('--tape-after-turn'))).toBeLessThan(0);
+
+    vi.mocked(media.getBoundingClientRect).mockReturnValue({
+      top: 80,
+      bottom: 640,
+      height: 360,
+    } as DOMRect);
+    window.dispatchEvent(new Event('scroll'));
+    flushFrames();
+
+    expect(media.style.getPropertyValue('--tape-before-turn')).toBe('0.000deg');
+    expect(media.style.getPropertyValue('--tape-after-turn')).toBe('0.000deg');
   });
 
   it('cancels its animations and its media listener on unmount', () => {

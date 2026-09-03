@@ -21,6 +21,9 @@ test.describe('project exhibit motion', () => {
   test('animates every exhibit layer in supported desktop engines', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto('/projects');
+    await page.locator('html').evaluate((element) => {
+      element.style.scrollBehavior = 'auto';
+    });
 
     const catalogue = page.getByRole('region', { name: 'Selected exhibits' });
     const exhibit = page.locator('[data-testid^="exhibit-"]').nth(1);
@@ -102,6 +105,60 @@ test.describe('project exhibit motion', () => {
 
     expect(firstTilt).toBe('1.2deg');
     expect(secondTilt).toBe('-1.2deg');
+  });
+
+  test('presses each tape edge flat at the same scroll position', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/projects');
+    await page.locator('html').evaluate((element) => {
+      element.style.scrollBehavior = 'auto';
+    });
+
+    const media = page.locator('[data-testid^="exhibit-"] [data-motion-part="media"]');
+
+    for (const print of [media.first(), media.nth(1)]) {
+      const turnAt = async (
+        pseudo: '::before' | '::after',
+        edge: 'top' | 'bottom',
+        viewportRatio: number
+      ) => {
+        await print.evaluate(
+          (element, position) => {
+            const bounds = element.getBoundingClientRect();
+            const edgePosition = position.edge === 'top' ? bounds.top : bounds.bottom;
+            window.scrollTo(
+              0,
+              edgePosition + window.scrollY - window.innerHeight * position.viewportRatio
+            );
+          },
+          { edge, viewportRatio }
+        );
+        await page.waitForTimeout(50);
+        return print.evaluate(
+          (element, selectedPseudo) =>
+            Number.parseFloat(
+              element.style.getPropertyValue(
+                selectedPseudo === '::before' ? '--tape-before-turn' : '--tape-after-turn'
+              )
+            ),
+          pseudo
+        );
+      };
+
+      const beforeLifted = await turnAt('::before', 'top', 0.58);
+      const beforePlaced = await turnAt('::before', 'top', 0.18);
+      const beforeLater = await turnAt('::before', 'top', 0.05);
+      expect(Math.abs(beforeLifted)).toBeGreaterThan(0);
+      expect(beforePlaced).toBe(0);
+      expect(beforeLater).toBe(0);
+
+      const afterLifted = await turnAt('::after', 'bottom', 1.05);
+      const afterPlaced = await turnAt('::after', 'bottom', 0.82);
+      const afterLater = await turnAt('::after', 'bottom', 0.5);
+      expect(Math.abs(afterLifted)).toBeGreaterThan(0);
+      expect(afterPlaced).toBe(0);
+      expect(afterLater).toBe(0);
+    }
   });
 
   test('removes exhibit motion when reduced motion is requested', async ({ page }) => {

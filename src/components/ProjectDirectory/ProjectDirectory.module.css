@@ -84,6 +84,10 @@
 
 .media {
   --cover-range: 36%;
+  --tape-before-start-turn: 58deg;
+  --tape-before-start-shift: 0rem;
+  --tape-after-start-turn: -58deg;
+  --tape-after-start-shift: 0rem;
   min-width: 0;
   grid-area: media;
   margin: 0;
@@ -93,20 +97,45 @@
    below are its tape, mirrored for the odd row. */
 .exhibit:nth-child(odd) .media {
   --tilt: 1.2deg;
+  --tape-before-start-turn: -58deg;
+  --tape-before-start-shift: 0rem;
+  --tape-after-start-turn: 58deg;
+  --tape-after-start-shift: 0rem;
 }
 
 .exhibit:nth-child(odd) .media::before {
   --tape-angle: 27deg;
-  --tape-roll: 0.5rem;
+  --tape-origin: 33% 50%;
   right: -1.05rem;
   left: auto;
 }
 
 .exhibit:nth-child(odd) .media::after {
   --tape-angle: 21deg;
-  --tape-roll: -0.5rem;
+  --tape-origin: 75% 50%;
   right: auto;
   left: -1.05rem;
+}
+
+.media::before,
+.media::after {
+  transform-origin: var(--tape-origin);
+  transform: translateX(var(--tape-shift, 0rem)) rotate(var(--tape-angle))
+    rotateY(var(--tape-turn, 0deg));
+}
+
+.media::before {
+  --tape-angle: -27deg;
+  --tape-origin: 67% 50%;
+  --tape-shift: var(--tape-before-shift);
+  --tape-turn: var(--tape-before-turn);
+}
+
+.media::after {
+  --tape-angle: -21deg;
+  --tape-origin: 25% 50%;
+  --tape-shift: var(--tape-after-shift);
+  --tape-turn: var(--tape-after-turn);
 }
 
 .copy {
