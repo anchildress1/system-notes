@@ -111,6 +111,8 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                 href={getProjectNotesURL(project.title)}
               >
                 Filed notes
+                {/*
+                 */}
                 <span className="visually-hidden"> — {project.title}</span>
                 <FiArrowUpRight aria-hidden="true" />
               </Link>
