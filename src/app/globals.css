@@ -396,13 +396,9 @@ body::before {
   transform: rotate(var(--tape-angle));
 }
 
-/* The tape goes on last: off the reel at a steeper angle, rolling down onto the
-   print as the sheet arrives. The angle is a property rather than a literal so
-   the resting state and the end of the roll cannot drift apart, and so a mirrored
-   instance sets the value without restating the mechanism.
-
-   transform here, not rotate: the tape has no transform of its own to compose
-   with, and the roll needs the rotation and the slide in one operation. */
+/* Off the reel at a steeper angle, rolling down onto the print as the sheet
+   arrives. The angle is a property so the resting state and the end of the roll
+   cannot drift, and so a mirrored instance sets the value rather than the rule. */
 @keyframes tape-stick {
   from {
     transform: translateX(var(--tape-roll)) rotate(calc(var(--tape-angle) * 1.9));
@@ -415,19 +411,14 @@ body::before {
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
-    /* Its own view(), not the print's named timeline: a pseudo-element does not
-       resolve view-timeline-name from its originating element, and the tape sat
-       frozen at the start of the roll. An engine without scroll timelines never
-       applies this and shows the tape already stuck, which is where it lands. */
+    /* An engine without scroll timelines never applies this and shows the tape
+       already stuck, which is where the roll lands. */
     .taped::before,
     .taped::after {
       animation: tape-stick 1ms linear both;
       animation-timeline: view();
-      /* 70, not the print's 36. A strip of tape is 22px tall, so it runs through
-         its own view progress far sooner than the sheet does: at 36 the roll was
-         over while the print was still 155px below the top of the screen, which
-         is under the reader's eye rather than in it. At 70 it is still turning as
-         the print settles and stuck down by the time the exhibit is read. */
+      /* 70, not the print's 36. A strip is 22px tall, so it clears its own view
+         progress long before the sheet does and the roll ended off screen. */
       animation-range: entry 0% cover 70%;
     }
   }

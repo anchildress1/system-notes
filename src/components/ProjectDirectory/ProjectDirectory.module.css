@@ -39,9 +39,8 @@
 }
 
 .heading {
-  /* How far this part travels, as a share of the viewport. Read by both
-     animation-range below and ProjectDirectoryMotion where there is no scroll
-     timeline; one value, or the two drift and only one engine changes. */
+  /* What ProjectDirectoryMotion scrubs against where there is no scroll timeline.
+     Nothing enforces it against the animation-range below; keep the two equal. */
   --cover-range: 32%;
   min-width: 0;
   grid-area: heading;
@@ -110,16 +109,6 @@
   left: -1.05rem;
 }
 
-.exhibit:nth-child(even) .media {
-  --tilt: -1.2deg;
-}
-
-.media img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
 .copy {
   --cover-range: 32%;
   display: grid;
@@ -150,16 +139,12 @@
 }
 
 .references {
-  /* 18, not 24. The references sit at the foot of the exhibit, so they enter the
-     viewport last and their own cover progress trails the heading's. At 24 they
-     were still 6-10px short with the exhibit centred and being read, which reads
-     as a footer misaligned with its column rather than as motion. Measured: 24
-     leaves 9.7px worst case across the seven, 20 and below land on the column. */
+  /* 18, not the heading's 32. These sit at the foot of the exhibit, so they enter
+     last and trail it; at 24 they were still short of the column when read. */
   --cover-range: 18%;
-  /* Sized to its labels and free to run under the print, so a fifth link does not
-     wrap. The edge that matters is the one beside the copy; see the even rule. */
+  /* Sized to its labels and uncapped, so the row overruns the column under the
+     print rather than being squeezed. Only the edge facing the copy is held. */
   width: max-content;
-  max-width: 100%;
   justify-self: start;
   display: flex;
   min-width: 0;
@@ -182,8 +167,6 @@
 
 .reference {
   display: inline-flex;
-  min-width: 0;
-  max-width: 100%;
   gap: 0.25em;
   align-items: baseline;
   font-family: var(--font-display);
@@ -236,10 +219,6 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
-    /* Literal, and matching the --cover-range beside each rule, which is what the
-       no-scroll-timeline fallback reads. Kept literal here rather than reading the
-       property: animation-range is parsed once and this is the value the whole
-       arrival is tuned against, so it should be readable without a lookup. */
     .heading,
     .copy {
       animation: exhibit-copy-arrival 1ms linear both;
@@ -307,7 +286,10 @@
     justify-content: flex-start;
   }
 
+  /* One column: there is no print to run under, so the row is bound by the column
+     and wraps instead of overflowing it. */
   .references {
+    width: auto;
     flex-wrap: wrap;
   }
 
