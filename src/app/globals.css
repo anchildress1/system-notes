@@ -351,6 +351,10 @@ body::before {
      element's own, so a tilt set with transform silently vanishes wherever an
      animation also applies one. rotate is independent and composes. */
   rotate: var(--tilt);
+  /* The tape turns about its own long edge as it goes on. Without a perspective
+     here that turn is an orthographic squash — the strip gets shorter and never
+     reads as standing off the print. */
+  perspective: 40rem;
 }
 
 .taped::before,
@@ -396,16 +400,20 @@ body::before {
   transform: rotate(var(--tape-angle));
 }
 
-/* Off the reel at a steeper angle, rolling down onto the print as the sheet
-   arrives. The angle is a property so the resting state and the end of the roll
-   cannot drift, and so a mirrored instance sets the value rather than the rule. */
+/* Standing on its long edge, then turning flat onto the print as the sheet
+   arrives — a strip being pressed down rather than one sliding into place. The
+   diagonal is a property so the resting angle and the end of the turn cannot
+   drift, and so a mirrored instance sets the value rather than the rule.
+
+   Hinged on the edge that meets the print, not the middle, or the strip pivots
+   through the paper instead of onto it. */
 @keyframes tape-stick {
   from {
-    transform: translateX(var(--tape-roll)) rotate(calc(var(--tape-angle) * 1.9));
+    transform: translateX(var(--tape-roll)) rotate(var(--tape-angle)) rotateX(82deg);
   }
 
   to {
-    transform: translateX(0) rotate(var(--tape-angle));
+    transform: translateX(0) rotate(var(--tape-angle)) rotateX(0deg);
   }
 }
 
@@ -415,6 +423,7 @@ body::before {
        already stuck, which is where the roll lands. */
     .taped::before,
     .taped::after {
+      transform-origin: 50% 100%;
       animation: tape-stick 1ms linear both;
       animation-timeline: view();
       /* 70, not the print's 36. A strip is 22px tall, so it clears its own view
