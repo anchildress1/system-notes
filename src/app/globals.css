@@ -427,9 +427,12 @@ body::before {
     .taped::after {
       animation: tape-stick 1ms linear both;
       animation-timeline: view();
-      /* 70, not the print's 36. A strip is 22px tall, so it clears its own view
-         progress long before the sheet does and the roll ended off screen. */
-      animation-range: entry 0% cover 70%;
+      /* The print's own range. Stretching it to 70 kept the strip turning while the
+         exhibit was being read, so it sat permanently foreshortened — the tape
+         looked the wrong shape rather than looking like tape mid-turn. At 36 the
+         turn belongs to the arrival and the strip is flat by the time it is
+         looked at. */
+      animation-range: entry 0% cover 36%;
     }
   }
 }
