@@ -17,33 +17,19 @@ type MotionPart = {
   range: number;
 };
 
-type TapeLength = {
-  unit: string;
-  value: number;
-};
-
 type TapeMotion = {
-  afterShift: TapeLength;
   afterTurn: number;
-  beforeShift: TapeLength;
   beforeTurn: number;
   element: HTMLElement;
 };
-
-function parseTapeLength(raw: string): TapeLength {
-  const match = /^(-?\d*\.?\d+)([a-z%]+)?$/.exec(raw.trim());
-  return match
-    ? { value: Number.parseFloat(match[1]), unit: match[2] || 'px' }
-    : { value: 0, unit: 'px' };
-}
 
 function edgeProgress(edge: number, start: number, end: number): number {
   const progress = Math.min(1, Math.max(0, (start - edge) / (start - end)));
   return progress * progress * (3 - 2 * progress);
 }
 
-function tapeValue(start: number, progress: number, unit: string): string {
-  return `${(start * (1 - progress)).toFixed(3)}${unit}`;
+function tapeTurn(start: number, progress: number): string {
+  return `${(start * (1 - progress)).toFixed(3)}deg`;
 }
 
 function applyTapeMotion(tape: TapeMotion) {
@@ -60,29 +46,13 @@ function applyTapeMotion(tape: TapeMotion) {
     viewportHeight * bottomTapeEnd
   );
 
-  tape.element.style.setProperty(
-    '--tape-before-turn',
-    tapeValue(tape.beforeTurn, beforeProgress, 'deg')
-  );
-  tape.element.style.setProperty(
-    '--tape-before-shift',
-    tapeValue(tape.beforeShift.value, beforeProgress, tape.beforeShift.unit)
-  );
-  tape.element.style.setProperty(
-    '--tape-after-turn',
-    tapeValue(tape.afterTurn, afterProgress, 'deg')
-  );
-  tape.element.style.setProperty(
-    '--tape-after-shift',
-    tapeValue(tape.afterShift.value, afterProgress, tape.afterShift.unit)
-  );
+  tape.element.style.setProperty('--tape-before-turn', tapeTurn(tape.beforeTurn, beforeProgress));
+  tape.element.style.setProperty('--tape-after-turn', tapeTurn(tape.afterTurn, afterProgress));
 }
 
 function clearTapeMotion(tape: TapeMotion) {
   tape.element.style.removeProperty('--tape-before-turn');
-  tape.element.style.removeProperty('--tape-before-shift');
   tape.element.style.removeProperty('--tape-after-turn');
-  tape.element.style.removeProperty('--tape-after-shift');
 }
 
 type ProjectDirectoryMotionProps = {
@@ -124,9 +94,7 @@ export function ProjectDirectoryMotion({
         return {
           element,
           beforeTurn: Number.parseFloat(style.getPropertyValue('--tape-before-start-turn')),
-          beforeShift: parseTapeLength(style.getPropertyValue('--tape-before-start-shift')),
           afterTurn: Number.parseFloat(style.getPropertyValue('--tape-after-start-turn')),
-          afterShift: parseTapeLength(style.getPropertyValue('--tape-after-start-shift')),
         };
       });
       updateTapes();

@@ -383,13 +383,18 @@ body::before {
 .taped::before {
   top: -0.5rem;
   left: -1.05rem;
-  transform: rotate(-27deg);
+  /* rotate, not transform: ProjectDirectory.module.css drives this pseudo-element's
+     transform (translate, rotateY) for the scroll-in turn. Two `transform`
+     declarations on one element is a coin flip on stylesheet order; the
+     independent `rotate` property composes with transform instead of competing
+     with it — the same reason .taped itself uses `rotate: var(--tilt)` above. */
+  rotate: var(--tape-angle);
 }
 
 .taped::after {
   right: -1.05rem;
   bottom: -0.5rem;
-  transform: rotate(-21deg);
+  rotate: var(--tape-angle);
 }
 
 /* The explicit-content advisory, as a stamp rather than a colour. Ink, not

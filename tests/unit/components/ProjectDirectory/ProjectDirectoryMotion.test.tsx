@@ -57,9 +57,7 @@ function renderParts(extra?: React.ReactNode) {
           {
             '--cover-range': '36%',
             '--tape-before-start-turn': '58deg',
-            '--tape-before-start-shift': '-0.5rem',
             '--tape-after-start-turn': '-58deg',
-            '--tape-after-start-shift': '0.5rem',
           } as React.CSSProperties
         }
       />

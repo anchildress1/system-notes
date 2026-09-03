@@ -149,15 +149,17 @@ test.describe('project exhibit motion', () => {
       const beforePlaced = await turnAt('::before', 'top', 0.18);
       const beforeLater = await turnAt('::before', 'top', 0.05);
       expect(Math.abs(beforeLifted)).toBeGreaterThan(0);
-      expect(beforePlaced).toBe(0);
-      expect(beforeLater).toBe(0);
+      // Close to, not equal to: the clamp boundary is a subpixel scroll position,
+      // and Firefox's own rounding can land a thousandth of a degree past it.
+      expect(beforePlaced).toBeCloseTo(0, 1);
+      expect(beforeLater).toBeCloseTo(0, 1);
 
       const afterLifted = await turnAt('::after', 'bottom', 1.05);
       const afterPlaced = await turnAt('::after', 'bottom', 0.82);
       const afterLater = await turnAt('::after', 'bottom', 0.5);
       expect(Math.abs(afterLifted)).toBeGreaterThan(0);
-      expect(afterPlaced).toBe(0);
-      expect(afterLater).toBe(0);
+      expect(afterPlaced).toBeCloseTo(0, 1);
+      expect(afterLater).toBeCloseTo(0, 1);
     }
   });
 
