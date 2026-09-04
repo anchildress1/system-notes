@@ -12,43 +12,42 @@ the agent never encounters one.
 **system-notes**
 
 **What this index contains:**
-1 record = one section of a published article. An article is split across many records, ordered by `part`.
+1 record = one filed note: a decision, principle, working practice, architectural choice, award, or blog post, written at the time it happened.
 
 **Which industry or industries it serves:**
-Software engineering. Technical writing on AI systems, guardrails, and delivery practice.
+Software engineering. Specifically AI systems, guardrails, and failure-tested delivery.
 
 **Who would use this index:**
-An AI agent answering on Ashley Childress's behalf, and AI systems citing her published writing. This is a mirror of her technical articles, built so machines can index and quote them accurately. Not an editorial tool — nobody is drafting or revising here.
+An AI agent answering on Ashley Childress's behalf, and readers of her public portfolio. Not an internal team, and not a project-tracking tool — this is one engineer's public record of how and why decisions were made. Queries arrive as a stranger's problem, not as a known note title.
 
 **Primary use cases:**
 
-- **Passage retrieval:** given a described problem, find the section that argues the relevant point, then cite the article it belongs to. This is the dominant use case.
-- **Search:** across article title, section heading, and section content.
-- **Content discovery:** locating which article covers a topic at all.
+- **Evidence retrieval:** given a described problem, find the filed notes bearing on the same failure or risk. This is the dominant use case and the one to optimize for.
+- **Search:** across title, fact, projects and tags.
+- **Filtering:** narrow by category, project, or tag when the reader already knows what they are after.
+- **Highlighting:** title, fact and projects, to show which words matched.
 
 **Define precisely what a single record represents:**
-One section of one article — roughly a heading and the prose beneath it. It is a fragment, not a document. Several records share the same `title` and `url` and differ only by `heading`, `part` and `content`. A section carries an argument; the article carries the thesis.
+One decision and its reasoning. Not a summary of a project, and not a task — a record of a choice, a constraint, or a result that could later be defended or falsified. A project has many records; a record belongs to one or more projects but is never scoped to them.
 
 **Most relevant attributes:**
 
-| Attribute     | Role                                                                                     |
-| ------------- | ---------------------------------------------------------------------------------------- |
-| `content`     | searchable — the section's prose, in **raw markdown**; the primary text to match against |
-| `title`       | searchable — the article's title, repeated on every one of its sections                  |
-| `heading`     | searchable, filterable — the section's own heading. On `part` 0 this equals `title`      |
-| `part`        | section order within the article, zero-based; consecutive parts are adjacent prose       |
-| `url`         | the article's public link — **the identity of the source, not of the record**            |
-| `objectID`    | `url` and `part` joined as `url#part`; unique per section, not per article               |
-| `description` | the article's summary, repeated across its sections                                      |
-| `author`      | article author; always the same person, so it distinguishes nothing                      |
-| `created_at`  | publication time as a **Unix epoch integer in seconds**, not a date string               |
-| `language`    | filterable — article language                                                            |
-
-**Reading `content` safely:**
-`content` is markdown, not plain prose. It carries heading markers, blockquotes, code fences and inline links. Strip that markup before quoting a passage. Links inside `content` point at other people's articles, profiles and sources cited by the article — they are never citations for Ashley's own work. The only link that identifies this source is `url`.
+| Attribute                         | Role                                                                                               |
+| --------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `title`                           | searchable — the claim the note makes                                                              |
+| `fact`                            | searchable — the note's reasoning; the substance, and the primary text to match against            |
+| `content`                         | searchable — extended body where present                                                           |
+| `projects`                        | searchable, filterable, **multi-valued** — systems the note came out of                            |
+| `category`                        | searchable, filterable — one of: Architecture, Awards, Blog, Decision, Note, Principle, Work Style |
+| `tags.lvl0`                       | filterable, multi-valued — primary topic                                                           |
+| `tags.lvl1`                       | searchable, filterable, multi-valued — secondary topic                                             |
+| `signal`                          | ranking weight; higher means more load-bearing                                                     |
+| `url`                             | source link where the note has a public one                                                        |
+| `created_at` / `created_at_epoch` | when filed; epoch for sorting                                                                      |
+| `updated_at` / `updated_at_epoch` | last revision                                                                                      |
 
 **Multi-valued facets and hierarchical category patterns:**
-None. No facets are multi-valued and there is no category hierarchy. `title`, `url`, `description` and `author` repeat across every section of the same article, so they behave as grouping keys rather than as distinguishing values.
+`projects`, `tags.lvl0` and `tags.lvl1` are all multi-valued; a note commonly spans several projects and several topics. `tags.lvl0` / `tags.lvl1` form a two-level hierarchy where `lvl1` values are prefixed by their `lvl0` parent. `category` is single-valued and flat.
 
 **Any language/locale behavior:**
-English (`en`), plurals ignored during search.
+English only. Plurals ignored, English stop words removed.
