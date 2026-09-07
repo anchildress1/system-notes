@@ -1,7 +1,7 @@
-import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { AboutPageMotion } from '@/components/AboutPageMotion/AboutPageMotion';
 import ThemeSong from '@/components/ThemeSong/ThemeSong';
 import { BLOG_URL } from '@/config';
 import { profile } from '@/data/profile';
@@ -60,7 +60,7 @@ export default function AboutPage() {
             </div>
           </dl>
         </div>
-        <figure className={`drift ${styles.portrait}`}>
+        <figure className={styles.portrait}>
           {/* Both portraits ship; CSS shows the one matching the theme, and lazy is what
               keeps the hidden one from downloading. preload, eager and fetchPriority were
               each measured here: every one traded load delay for render delay.
@@ -169,13 +169,9 @@ export default function AboutPage() {
         <header>
           <h2 id="principles-heading">The rules are short on purpose.</h2>
         </header>
-        <ol>
+        <AboutPageMotion>
           {profile.principles.map((principle, index) => (
-            <li
-              key={principle.title}
-              className="stagger-in"
-              style={{ '--i': index } as CSSProperties}
-            >
+            <li key={principle.title} data-motion-part="principle">
               <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
               <div>
                 <h3>{principle.title}</h3>
@@ -183,7 +179,7 @@ export default function AboutPage() {
               </div>
             </li>
           ))}
-        </ol>
+        </AboutPageMotion>
       </section>
 
       <section className={styles.themeSong} aria-labelledby="theme-song-heading">

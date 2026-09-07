@@ -103,6 +103,40 @@
   /* The source art is square. Only the ratio is this picture's own. */
   --print-ratio: 1 / 1;
 }
+
+/* Same physical gesture as the project prints, but this portrait is already in
+   the first viewport: its tape presses flat on arrival instead of waiting for a
+   scroll position the reader cannot witness. The static diagonal remains in
+   `rotate`; this `transform` supplies only the edge turning toward the paper. */
+@keyframes about-tape-press {
+  from {
+    transform: rotateY(var(--tape-start-turn));
+  }
+
+  to {
+    transform: rotateY(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 55.01rem) {
+  .portrait::before,
+  .portrait::after {
+    transform-origin: var(--tape-origin);
+    animation: about-tape-press 680ms var(--ease-settle) backwards;
+  }
+
+  .portrait::before {
+    --tape-origin: 67% 50%;
+    --tape-start-turn: 58deg;
+    animation-delay: 180ms;
+  }
+
+  .portrait::after {
+    --tape-origin: 25% 50%;
+    --tape-start-turn: -58deg;
+    animation-delay: 310ms;
+  }
+}
 .portraitFrame {
   position: relative;
   aspect-ratio: var(--print-ratio);
@@ -378,6 +412,30 @@
 .principles ol {
   padding: 0;
   list-style: none;
+}
+
+/* Each principle rises as it enters the viewport rather than on page load: the
+   list's own reading order supplies the stagger, so no per-item delay is set. */
+.principles li[data-motion-part='principle'] {
+  --cover-range: 40%;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .principles li[data-motion-part='principle'] {
+      animation: rise-in 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+  }
+}
+
+@supports not (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .principles ol[data-motion-fallback='true'] li[data-motion-part='principle'] {
+      transform: translateY(1.25rem);
+    }
+  }
 }
 
 .principles li {

@@ -189,4 +189,47 @@ test.describe('mobile interactions', () => {
         .toBe('none');
     }
   });
+
+  test('keeps portrait tape static when it starts below the mobile fold', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/about');
+
+    const portrait = page.locator('main#main-content figure').first();
+    const tape = await portrait.evaluate((element) => ({
+      startsBelowFold: element.getBoundingClientRect().top >= window.innerHeight,
+      edges: ['::before', '::after'].map((pseudo) => ({
+        animation: getComputedStyle(element, pseudo).animationName,
+        transform: getComputedStyle(element, pseudo).transform,
+      })),
+    }));
+
+    expect(tape).toEqual({
+      startsBelowFold: true,
+      edges: [
+        { animation: 'none', transform: 'none' },
+        { animation: 'none', transform: 'none' },
+      ],
+    });
+  });
+
+  test('changes portrait tape motion only across the desktop breakpoint', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+
+    for (const { width, animated } of [
+      { width: 880, animated: false },
+      { width: 881, animated: true },
+    ]) {
+      await page.setViewportSize({ width, height: 1024 });
+      await page.goto('/about');
+      const portrait = page.locator('main#main-content figure').first();
+      const names = await portrait.evaluate((element) =>
+        ['::before', '::after'].map((pseudo) => getComputedStyle(element, pseudo).animationName)
+      );
+
+      expect(
+        names.every((name) => (animated ? name.includes('about-tape-press') : name === 'none')),
+        `portrait tape motion at ${width}px`
+      ).toBe(true);
+    }
+  });
 });

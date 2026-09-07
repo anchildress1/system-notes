@@ -1,4 +1,4 @@
-import { test as base, type Page } from '@playwright/test';
+import { expect, test as base, type Page } from '@playwright/test';
 
 export type MockAlgoliaHit = {
   objectID: string;
@@ -24,6 +24,79 @@ const ALGOLIA_SEARCH_ROUTE = /\/1\/indexes\/[^/]+\/queries(?:\?|$)/;
    architecture requires unverified. Matched on the path so the Agent Studio
    route, which is neither of these, stays untouched. */
 const ALGOLIA_INSIGHTS_ROUTE = /\/1\/events(?:\?|$)/;
+
+export type RecordedAnimationEvent = {
+  cosine: number;
+  elapsedTime: number;
+  phase: 'start' | 'end';
+  pseudoElement: string;
+  sine: number;
+  wallTime: number;
+};
+
+export async function recordAnimationLifecycle(page: Page, animationNamePart: string) {
+  await page.addInitScript((namePart) => {
+    const motionWindow = window as typeof window & {
+      __recordedAnimationEvents: RecordedAnimationEvent[];
+    };
+    motionWindow.__recordedAnimationEvents = [];
+
+    const record = (phase: RecordedAnimationEvent['phase']) => (event: AnimationEvent) => {
+      if (!event.animationName.includes(namePart)) return;
+      const transform =
+        event.target instanceof Element
+          ? getComputedStyle(event.target, event.pseudoElement).transform
+          : 'none';
+      const matrix = transform === 'none' ? new DOMMatrix() : new DOMMatrix(transform);
+      motionWindow.__recordedAnimationEvents.push({
+        cosine: matrix.m11,
+        elapsedTime: event.elapsedTime,
+        phase,
+        pseudoElement: event.pseudoElement,
+        sine: matrix.m13,
+        wallTime: performance.now(),
+      });
+    };
+
+    document.addEventListener('animationstart', record('start'));
+    document.addEventListener('animationend', record('end'));
+  }, animationNamePart);
+}
+
+export async function readAnimationLifecycle(page: Page): Promise<RecordedAnimationEvent[]> {
+  return page.evaluate(
+    () =>
+      (
+        window as typeof window & {
+          __recordedAnimationEvents?: RecordedAnimationEvent[];
+        }
+      ).__recordedAnimationEvents ?? []
+  );
+}
+
+export function expectTapePressLifecycle(lifecycle: RecordedAnimationEvent[]) {
+  const at = (phase: RecordedAnimationEvent['phase'], pseudoElement: string) =>
+    lifecycle.find((event) => event.phase === phase && event.pseudoElement === pseudoElement);
+  const beforeStart = at('start', '::before');
+  const afterStart = at('start', '::after');
+
+  expect(beforeStart?.elapsedTime).toBe(0);
+  expect(afterStart?.elapsedTime).toBe(0);
+  expect(beforeStart?.cosine).toBeLessThan(Math.cos(Math.PI / 4));
+  expect(afterStart?.cosine).toBeLessThan(Math.cos(Math.PI / 4));
+  expect(beforeStart?.sine).toBeLessThan(0);
+  expect(afterStart?.sine).toBeGreaterThan(0);
+
+  for (const [start, end] of [
+    [beforeStart, at('end', '::before')],
+    [afterStart, at('end', '::after')],
+  ]) {
+    expect(end?.elapsedTime).toBeCloseTo(0.68, 2);
+    expect((end?.wallTime ?? 0) - (start?.wallTime ?? 0)).toBeGreaterThanOrEqual(600);
+    expect(end?.cosine).toBeCloseTo(1, 3);
+    expect(end?.sine).toBeCloseTo(0, 3);
+  }
+}
 
 interface MockAlgoliaOptions {
   nbHits?: number;

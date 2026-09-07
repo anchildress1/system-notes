@@ -1,0 +1,143 @@
+import { render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { AboutPageMotion } from '@/components/AboutPageMotion/AboutPageMotion';
+
+type FakeAnimation = { cancel: ReturnType<typeof vi.fn>; pause: ReturnType<typeof vi.fn> } & {
+  currentTime: number;
+};
+
+const animations: FakeAnimation[] = [];
+const frames: FrameRequestCallback[] = [];
+const listeners = new Set<() => void>();
+
+/** Run whatever requestAnimationFrame has queued, as a real frame would. */
+function flushFrames() {
+  const queued = frames.splice(0);
+  queued.forEach((cb) => cb(0));
+}
+
+/** jsdom has none of the scroll-timeline surface, so every branch needs a stub. */
+function stubEnvironment({ supportsTimeline = false, prefersMotion = true } = {}) {
+  animations.length = 0;
+  listeners.clear();
+
+  vi.stubGlobal('CSS', { supports: () => supportsTimeline });
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches: prefersMotion && query.includes('no-preference'),
+    addEventListener: (_: string, handler: () => void) => listeners.add(handler),
+    removeEventListener: (_: string, handler: () => void) => listeners.delete(handler),
+  }));
+  // Deferred, like the real thing. A synchronous stub runs the callback before
+  // `frame = requestAnimationFrame(...)` assigns, so `frame` never returns to
+  // undefined and every scroll after the first is silently dropped.
+  frames.length = 0;
+  vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+    frames.push(cb);
+    return frames.length;
+  });
+  vi.stubGlobal('cancelAnimationFrame', vi.fn());
+  vi.stubGlobal('innerHeight', 800);
+
+  Element.prototype.animate = vi.fn(() => {
+    const animation = { cancel: vi.fn(), pause: vi.fn(), currentTime: 0 } as FakeAnimation;
+    animations.push(animation);
+    return animation as unknown as Animation;
+  }) as unknown as typeof Element.prototype.animate;
+}
+
+// --cover-range stands in for the stylesheet, which jsdom does not apply. The
+// component treats a part without one as not a part at all.
+function renderParts(extra?: React.ReactNode) {
+  return render(
+    <AboutPageMotion>
+      <li data-motion-part="principle" style={{ '--cover-range': '40%' } as React.CSSProperties} />
+      <li data-motion-part="principle" style={{ '--cover-range': '40%' } as React.CSSProperties} />
+      <li data-motion-part="principle" style={{ '--cover-range': '40%' } as React.CSSProperties} />
+      {extra}
+    </AboutPageMotion>
+  );
+}
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
+
+describe('AboutPageMotion', () => {
+  it('renders the principles list whatever the browser supports', () => {
+    stubEnvironment({ supportsTimeline: true });
+    renderParts();
+
+    expect(screen.getByRole('list').children).toHaveLength(3);
+  });
+
+  it('stays out of the way where the browser drives the timeline itself', () => {
+    stubEnvironment({ supportsTimeline: true });
+    renderParts();
+
+    expect(screen.getByRole('list')).not.toHaveAttribute('data-motion-fallback');
+    expect(animations).toHaveLength(0);
+  });
+
+  it('drives one paused animation per part where it does not', () => {
+    stubEnvironment();
+    renderParts();
+
+    expect(screen.getByRole('list')).toHaveAttribute('data-motion-fallback', 'true');
+    expect(animations).toHaveLength(3);
+    animations.forEach((animation) => expect(animation.pause).toHaveBeenCalled());
+  });
+
+  it('animates nothing when reduced motion is asked for', () => {
+    stubEnvironment({ prefersMotion: false });
+    renderParts();
+
+    expect(screen.getByRole('list')).not.toHaveAttribute('data-motion-fallback');
+    expect(animations).toHaveLength(0);
+  });
+
+  it('skips a part the stylesheet gives no range', () => {
+    stubEnvironment();
+    renderParts(<li data-motion-part="principle" />);
+
+    // Four items in the markup, three with a range. Scrubbing the fourth would
+    // set currentTime to NaN, which throws and strands every part after it.
+    expect(animations).toHaveLength(3);
+    window.dispatchEvent(new Event('scroll'));
+    expect(flushFrames).not.toThrow();
+  });
+
+  it('scrubs on every scroll, not just the first', () => {
+    stubEnvironment();
+    renderParts();
+    animations.forEach((animation) => {
+      animation.currentTime = 0;
+    });
+
+    window.dispatchEvent(new Event('scroll'));
+    flushFrames();
+    // jsdom reports a zero-height box at the top of an 800px viewport, so every
+    // part reads as fully arrived.
+    animations.forEach((animation) => expect(animation.currentTime).toBeGreaterThan(0));
+
+    // The second one proves the frame handle was released. A stub that ran the
+    // callback synchronously left it set and dropped everything after the first.
+    animations.forEach((animation) => {
+      animation.currentTime = 0;
+    });
+    window.dispatchEvent(new Event('scroll'));
+    flushFrames();
+    animations.forEach((animation) => expect(animation.currentTime).toBeGreaterThan(0));
+  });
+
+  it('cancels its animations and its media listener on unmount', () => {
+    stubEnvironment();
+    const { unmount } = renderParts();
+    const created = [...animations];
+
+    unmount();
+
+    created.forEach((animation) => expect(animation.cancel).toHaveBeenCalled());
+    expect(listeners.size).toBe(0);
+  });
+});

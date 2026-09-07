@@ -1,6 +1,12 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
-import { mockAlgoliaSearch, test } from './utils';
+import {
+  expectTapePressLifecycle,
+  mockAlgoliaSearch,
+  readAnimationLifecycle,
+  recordAnimationLifecycle,
+  test,
+} from './utils';
 
 // The workspace stacks below IndexWorkspace.module.css's 47.99rem breakpoint and
 // runs two columns above it. Branching on the project NAME instead pinned the
@@ -293,6 +299,43 @@ test.describe('System Notes redesign', () => {
     // software.
     await expect(section).toContainText('hunting the failure first');
     await expect(section.locator('p')).not.toHaveCount(0);
+  });
+
+  test('presses the profile portrait tape into place in desktop Chromium', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await recordAnimationLifecycle(page, 'about-tape-press');
+    await page.goto('/about', { waitUntil: 'domcontentloaded' });
+
+    const portrait = page.locator('main#main-content figure').first();
+    await expect(portrait).toBeVisible();
+    await expect
+      .poll(
+        async () =>
+          (await readAnimationLifecycle(page)).filter(({ phase }) => phase === 'end').length
+      )
+      .toBe(2);
+    const lifecycle = await readAnimationLifecycle(page);
+    expect(lifecycle.filter(({ phase }) => phase === 'start')).toHaveLength(2);
+    expect(lifecycle.filter(({ phase }) => phase === 'end')).toHaveLength(2);
+    expectTapePressLifecycle(lifecycle);
+  });
+
+  test('keeps the profile portrait tape flat for reduced motion in Chromium', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/about');
+
+    const portrait = page.locator('main#main-content figure').first();
+    const tape = await portrait.evaluate((element) =>
+      ['::before', '::after'].map((pseudo) => ({
+        animation: getComputedStyle(element, pseudo).animationName,
+        transform: getComputedStyle(element, pseudo).transform,
+      }))
+    );
+
+    expect(tape).toEqual([
+      { animation: 'none', transform: 'none' },
+      { animation: 'none', transform: 'none' },
+    ]);
   });
 
   test('renders the designed 404 with a working skip-link target', async ({ page }) => {

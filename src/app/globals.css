@@ -733,55 +733,6 @@ main {
   }
 }
 
-/* Scroll-driven, tracking scroll position rather than an observer and a state
-   flag — no JS, no hydration cost.
-
-   Transform only, never opacity, for the same reason as rise-in. Behind
-   @supports so a browser without scroll timelines renders the page in place,
-   and behind a motion query.
-
-   Art-directed per composition, never a general .reveal. One treatment repeated
-   down four consecutive sections of /about was the templated version, and it
-   flattened the piece it ran over. What replaced it gives each element role its
-   own range: the portrait drifts against the copy beside it, an exhibit's print,
-   copy and references arrive on three. Each is authored for one layout and does
-   not transfer to another. */
-@keyframes portrait-drift {
-  from {
-    transform: translateY(2rem);
-  }
-  to {
-    transform: translateY(-2rem);
-  }
-}
-
-@supports (animation-timeline: view()) {
-  /* Slower and against the scroll, so the portrait sits in a different plane to
-     the copy BESIDE it. Two columns only: below 55rem it stacks UNDER the copy,
-     where `entry cover` resolves already complete and produced no motion at any
-     scroll position — it only held the portrait a permanent 2rem higher. */
-  @media (prefers-reduced-motion: no-preference) and (min-width: 55.01rem) {
-    .drift {
-      animation: portrait-drift linear both;
-      animation-timeline: view();
-      animation-range: entry cover;
-    }
-  }
-}
-
-/* Staggered entrance for a repeated array. The delay comes off --i, set per
-   item from its index. Capped so a long list does not make the reader wait. */
-.stagger-in {
-  animation: rise-in 520ms var(--ease-settle) both;
-  animation-delay: calc(min(var(--i, 0) * 70ms, 560ms));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stagger-in {
-    animation: none;
-  }
-}
-
 @media (max-width: 44rem) {
   :root {
     --header-height: 7.75rem;
