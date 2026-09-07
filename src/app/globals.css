@@ -721,18 +721,6 @@ main {
   border: 0;
 }
 
-/* Rises into place without fading. An entrance starting at opacity 0 is
-   readable to axe as text at zero contrast for as long as it runs. Motion
-   carries the entrance; opacity stays out of it. */
-@keyframes rise-in {
-  from {
-    transform: translateY(1.25rem);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
 @media (max-width: 44rem) {
   :root {
     --header-height: 7.75rem;
