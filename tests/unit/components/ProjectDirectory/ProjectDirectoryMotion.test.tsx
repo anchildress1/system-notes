@@ -37,6 +37,13 @@ function stubEnvironment({ supportsTimeline = false, prefersMotion = true } = {}
   });
   vi.stubGlobal('cancelAnimationFrame', vi.fn());
   vi.stubGlobal('innerHeight', 800);
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe = vi.fn();
+      disconnect = vi.fn();
+    }
+  );
 
   Element.prototype.animate = vi.fn(() => {
     const animation = { cancel: vi.fn(), pause: vi.fn(), currentTime: 0 } as FakeAnimation;

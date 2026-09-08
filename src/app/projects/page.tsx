@@ -20,7 +20,7 @@ export default function ProjectsPage() {
 
   return (
     <main id="main-content" className={styles.main}>
-      <section className={`page-head ${styles.hero}`} aria-labelledby="exhibits-heading">
+      <section className="page-head" aria-labelledby="exhibits-heading">
         <h1 id="exhibits-heading">
           Systems should
           <br />

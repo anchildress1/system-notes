@@ -107,16 +107,20 @@ export const profile = {
     {
       title: 'Name the boundary.',
       body: 'A system becomes governable when ownership, input, and refusal conditions are explicit.',
+      projectId: 'save-the-sun',
     },
     {
       title: 'Make failure visible.',
       body: 'Quiet fallback is how a defect earns seniority. Errors should arrive early and with evidence.',
+      projectId: 'metal-birds-feed',
     },
     {
       title: 'Automate the proof.',
-      body: 'Tests, scanners, and release gates handle repeatable verification. Judgment stays human.',
+      body: 'Tests, scanners, and release gates handle repeatable verification.',
+      projectId: 'rai-lint',
     },
   ],
+  principlesConclusion: { lead: 'Judgment stays', emphasis: 'human.' },
   /* The site footer's row, and nothing else reads it. */
   links: [
     { label: 'GitHub', href: 'https://github.com/anchildress1' },

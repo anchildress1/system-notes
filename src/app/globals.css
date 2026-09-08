@@ -37,6 +37,7 @@
      height. A mask, because these carry different pens. */
   --stroke-brush-y: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 56' preserveAspectRatio='none'%3E%3Cpath d='M10.4,1.2 C5.1,10.5 2.6,21 3.2,33.4 C3.6,42.1 6.1,49 4.3,54.8 L10.1,55.2 C13.9,48.6 12.4,40.2 12.8,31.1 C13.3,20.4 14.7,9.6 12.3,1.4 Z' fill='%23000'/%3E%3C/svg%3E");
   --stroke-swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23000'/%3E%3C/svg%3E");
+  --stroke-swipe-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23f9cc21'/%3E%3C/svg%3E");
   /* The same swipe, pre-inked. A mask on an inline element masks its TEXT too,
      so a hover band drawn that way would cut the letters it sits behind; painted
      as a background it sits under them. Same duplication caveat as above. */
@@ -301,19 +302,13 @@ body::before {
   transform: rotate(-1deg) scaleX(1);
 }
 
-/* THE LIGHT PEN, AT REST. The same swipe laid down once and left there, for a
-   fact that should read as marked without outshouting an action beside it.
-
-   The text keeps its OWN ink rather than taking --mark-ink: a 16% wash is not
-   opaque enough to carry it, and on graphite that pairing is near-black on
-   near-black. */
+/* A smaller mark for supporting facts. Opaque gold keeps the stroke yellow on
+   graphite; its scale, rather than translucency, gives it less weight. */
 .marked-soft {
   width: fit-content;
   padding: 0.16em 0.34em 0.2em 0.28em;
-  /* Laid down TWICE. 16% gold over near-black is a murky olive; two passes
-     composite to 29%, the shade a highlighter leaves where a stroke doubles
-     back. .washed keeps the single-pass value the filter list was tuned with. */
-  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
+  color: var(--mark-ink);
+  background-image: var(--stroke-swipe-inked);
   background-position: 0 50%;
   background-repeat: no-repeat;
   /* 158%, for the same reason .btn uses it: --stroke-swipe insets its ink to
@@ -322,6 +317,12 @@ body::before {
   background-size: 100% 158%;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+}
+
+@media (forced-colors: active) {
+  .marked-soft {
+    background-image: none;
+  }
 }
 
 /* PAPER, TAPED DOWN. An image here is a print laid on the page: a mat, a
@@ -359,6 +360,12 @@ body::before {
   z-index: 2;
   width: 5.5rem;
   height: 1.4rem;
+  content: '';
+}
+
+.tape,
+.taped::before,
+.taped::after {
   /* Three passes, not two. Tape sits over a photograph as often as over the page,
      and at 29% it disappeared into a bright frame. 41% still shows what is
      underneath, which is what makes it read as tape rather than a painted bar. */
@@ -375,7 +382,6 @@ body::before {
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   pointer-events: none;
-  content: '';
 }
 
 /* Pulled onto the sheet rather than hung off its corner: tape holds paper down
@@ -819,38 +825,13 @@ main {
 .marked,
 .page-head h1 > span,
 .page-head-title > span {
-  /* THE STROKE IS INSET INTO THE BOX, and that is what fixes the stacking.
-
-     An inline box is as tall as the font's ascent plus descent — 1.52em for this
-     Didone, against a 1.42em line — so wrapped lines overlapped and the lower
-     stroke painted over the upper one, which CSS offers no way to reverse.
-
-     The glyphs only ever occupy 27.6% to 75.8% of that band, so --stroke-swipe is
-     drawn into the middle 20%-83% of its viewBox instead of filling it. The
-     visible stroke falls to 1.19em and clears the line. */
   padding: 0.15em 0.26em 0.22em 0.2em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   color: var(--mark-ink);
-  /* The opaque core. Both layers above it are yellows at partial alpha over
-     this same yellow, so the band behind the letters never thins and the ink
-     keeps its contrast wherever it falls. */
-  background-color: var(--mark);
-  background-image:
-    linear-gradient(to bottom, transparent 52%, var(--mark-drag) 74%, transparent 92%),
-    linear-gradient(to bottom, var(--mark-lift) 0 6%, transparent 24%);
-  /* The band is SKEWED, and the skew lives in the PATH rather than in a transform.
-     CSS ignores transforms on non-replaced inline boxes, and inline is what lets
-     the mark hug each wrapped line. Drawing the slant into the mask keeps both,
-     and gives every wrapped line its own angle rather than leaning as one slab.
-
-     Stretched, not tiled: a tile would saw-tooth at every repeat. */
-  -webkit-mask-image: var(--stroke-swipe);
-  mask-image: var(--stroke-swipe);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+  /* A background fragments with the line without clipping italic letters or
+     descenders, which a mask on the text itself cannot do. */
+  background: var(--stroke-swipe-inked) 0 50% / 100% 100% no-repeat;
 }
 
 /* The turn of the headline is MARKED, not coloured. Setting it in the accent is

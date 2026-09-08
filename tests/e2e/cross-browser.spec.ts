@@ -1,10 +1,5 @@
 import { expect } from '@playwright/test';
-import {
-  expectTapePressLifecycle,
-  readAnimationLifecycle,
-  recordAnimationLifecycle,
-  test,
-} from './utils';
+import { test, verifyAboutMotion, verifyAboutPortraitMotion } from './utils';
 
 test.describe('WebKit compatibility', () => {
   test('keeps the portfolio navigation and theme control usable', async ({ page }) => {
@@ -191,42 +186,16 @@ test.describe('project exhibit motion', () => {
   });
 });
 
-test.describe('profile portrait motion', () => {
-  test.use({ viewport: { width: 1440, height: 900 } });
-
-  test('presses both tape edges flat when the portrait loads', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'no-preference' });
-    await recordAnimationLifecycle(page, 'about-tape-press');
-    await page.goto('/about', { waitUntil: 'domcontentloaded' });
-
-    await expect
-      .poll(
-        async () =>
-          (await readAnimationLifecycle(page)).filter(({ phase }) => phase === 'end').length
-      )
-      .toBe(2);
-    expectTapePressLifecycle(await readAnimationLifecycle(page));
+test.describe('About annotation motion', () => {
+  test('slowly presses portrait tape on load and scrubs each edge when scrolling out and back', async ({
+    page,
+  }) => {
+    await verifyAboutPortraitMotion(page);
   });
 
-  test('keeps the portrait tape flat when reduced motion is requested', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/about');
-
-    const portrait = page.locator('main#main-content figure').first();
-    const tape = await portrait.evaluate((element) => ({
-      before: {
-        animation: getComputedStyle(element, '::before').animationName,
-        transform: getComputedStyle(element, '::before').transform,
-      },
-      after: {
-        animation: getComputedStyle(element, '::after').animationName,
-        transform: getComputedStyle(element, '::after').transform,
-      },
-    }));
-
-    expect(tape).toEqual({
-      before: { animation: 'none', transform: 'none' },
-      after: { animation: 'none', transform: 'none' },
-    });
+  test('registers About annotations within the scroll window and keeps reading copy still', async ({
+    page,
+  }) => {
+    await verifyAboutMotion(page);
   });
 });

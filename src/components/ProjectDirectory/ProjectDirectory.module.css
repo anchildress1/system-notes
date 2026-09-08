@@ -5,12 +5,14 @@
 }
 
 .exhibit {
-  --copy-entry: 3.5rem;
+  --exhibit-gap: clamp(1.25rem, 3vw, 3rem);
+  /* Both columns enter toward this gutter; their combined travel must fit it. */
+  --copy-entry: calc(var(--exhibit-gap) / 2);
   --links-entry: 5rem;
-  --media-entry: -4.5rem;
+  --media-entry: calc(var(--exhibit-gap) / -2);
   display: grid;
   align-items: start;
-  column-gap: clamp(1.25rem, 3vw, 3rem);
+  column-gap: var(--exhibit-gap);
   row-gap: 0;
   /* The references belong to the copy, so they sit in its column rather than
      spanning the exhibit. Spanning, they ran to the article's edge while the copy
@@ -24,9 +26,9 @@
 }
 
 .exhibit:nth-child(even) {
-  --copy-entry: -3.5rem;
+  --copy-entry: calc(var(--exhibit-gap) / -2);
   --links-entry: -5rem;
-  --media-entry: 4.5rem;
+  --media-entry: calc(var(--exhibit-gap) / 2);
   grid-template-areas:
     'media heading'
     'media copy'
@@ -74,7 +76,6 @@
 .award {
   composes: marked-soft from global;
   display: inline;
-  color: var(--bone);
   font-family: var(--font-display);
   font-size: var(--fine);
   font-weight: 600;

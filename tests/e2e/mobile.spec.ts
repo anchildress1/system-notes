@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
-import { mockAlgoliaSearch, test } from './utils';
+import { expectAboutMotionSettled, mockAlgoliaSearch, test } from './utils';
 
 const viewports = [
   // 280 is a folding phone's cover screen, and it is also what a 1280px window
@@ -190,46 +190,35 @@ test.describe('mobile interactions', () => {
     }
   });
 
-  test('keeps portrait tape static when it starts below the mobile fold', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'no-preference' });
-    await page.goto('/about');
-
-    const portrait = page.locator('main#main-content figure').first();
-    const tape = await portrait.evaluate((element) => ({
-      startsBelowFold: element.getBoundingClientRect().top >= window.innerHeight,
-      edges: ['::before', '::after'].map((pseudo) => ({
-        animation: getComputedStyle(element, pseudo).animationName,
-        transform: getComputedStyle(element, pseudo).transform,
-      })),
-    }));
-
-    expect(tape).toEqual({
-      startsBelowFold: true,
-      edges: [
-        { animation: 'none', transform: 'none' },
-        { animation: 'none', transform: 'none' },
-      ],
-    });
-  });
-
-  test('changes portrait tape motion only across the desktop breakpoint', async ({ page }) => {
+  test('keeps About annotations visible and settled throughout the mobile scroll', async ({
+    page,
+  }) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
 
-    for (const { width, animated } of [
-      { width: 880, animated: false },
-      { width: 881, animated: true },
-    ]) {
-      await page.setViewportSize({ width, height: 1024 });
+    for (const width of [280, 390, 768]) {
+      await page.setViewportSize({ width, height: 844 });
       await page.goto('/about');
-      const portrait = page.locator('main#main-content figure').first();
-      const names = await portrait.evaluate((element) =>
-        ['::before', '::after'].map((pseudo) => getComputedStyle(element, pseudo).animationName)
-      );
+      await expectAboutMotionSettled(page);
 
+      const annotations = page.locator('[data-about-motion]');
+      for (let index = 0; index < (await annotations.count()); index += 1) {
+        const annotation = annotations.nth(index);
+        await annotation.scrollIntoViewIfNeeded();
+        await expect(annotation).toBeVisible();
+        const bounds = await annotation.boundingBox();
+        expect(bounds, `annotation ${index + 1} has no bounds at ${width}px`).not.toBeNull();
+        expect(bounds!.x).toBeGreaterThanOrEqual(0);
+        expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+        expect(bounds!.y).toBeLessThan(844);
+        expect(bounds!.y + bounds!.height).toBeGreaterThan(0);
+      }
+
+      await expectAboutMotionSettled(page);
       expect(
-        names.every((name) => (animated ? name.includes('about-tape-press') : name === 'none')),
-        `portrait tape motion at ${width}px`
-      ).toBe(true);
+        await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+        )
+      ).toBe(0);
     }
   });
 });

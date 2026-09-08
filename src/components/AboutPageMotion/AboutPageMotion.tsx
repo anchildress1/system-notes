@@ -1,100 +1,117 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
+import { useTapeMotion } from '@/hooks/useTapeMotion';
 
-const motionQuery = '(prefers-reduced-motion: no-preference)';
-const partSelector = '[data-motion-part="principle"]';
-const animationDuration = 1000;
+const motionQuery = '(prefers-reduced-motion: no-preference) and (min-width: 55.01rem)';
+const duration = 1000;
+const tapeMotion = {
+  selector: '[data-about-tape]',
+  mediaQuery: motionQuery,
+  exitAbove: 'body > header',
+};
 
-type MotionPart = {
+type Annotation = {
   animation: Animation;
-  element: HTMLElement;
-  range: number;
+  source: HTMLElement;
+  start: number;
+  end: number;
 };
 
-type AboutPageMotionProps = {
-  children: ReactNode;
-};
-
-export function AboutPageMotion({ children }: Readonly<AboutPageMotionProps>) {
-  const rootRef = useRef<HTMLOListElement>(null);
+export function AboutPageMotion({
+  children,
+  className,
+}: Readonly<{ children: ReactNode; className: string }>) {
+  const rootRef = useRef<HTMLElement>(null);
+  useTapeMotion(rootRef, tapeMotion);
 
   useEffect(() => {
     const root = rootRef.current;
-
-    if (!root || CSS.supports('animation-timeline: view()') || !('animate' in Element.prototype)) {
+    if (!root || !('animate' in Element.prototype) || CSS.supports('animation-timeline: view()')) {
       return;
     }
 
-    const motionPreference = window.matchMedia(motionQuery);
-    let parts: MotionPart[] = [];
+    const preference = window.matchMedia(motionQuery);
+    let annotations: Annotation[] = [];
     let frame: number | undefined;
 
-    const clearFallback = () => {
-      if (frame !== undefined) {
-        window.cancelAnimationFrame(frame);
-        frame = undefined;
-      }
-
-      parts.forEach(({ animation }) => animation.cancel());
-      parts = [];
+    const clear = () => {
+      if (frame !== undefined) window.cancelAnimationFrame(frame);
+      frame = undefined;
+      annotations.forEach(({ animation }) => animation.cancel());
+      annotations = [];
       delete root.dataset.motionFallback;
     };
 
-    const updateFallback = () => {
+    const update = () => {
       frame = undefined;
+      if (CSS.supports('animation-timeline: view()')) {
+        clear();
+        return;
+      }
 
-      parts.forEach(({ animation, element, range }) => {
-        const bounds = element.getBoundingClientRect();
-        const travel = (window.innerHeight + bounds.height) * range;
-        const progress = Math.min(1, Math.max(0, (window.innerHeight - bounds.top) / travel));
-        animation.currentTime = progress * animationDuration;
+      // Read the stationary scene, never the mark whose transform we are writing.
+      const positions = annotations.map(({ source }) => source.getBoundingClientRect().top);
+      annotations.forEach(({ animation, start, end }, index) => {
+        const progress =
+          (window.innerHeight * start - positions[index]) / (window.innerHeight * (start - end));
+        animation.currentTime = Math.min(1, Math.max(0, progress)) * duration;
       });
     };
 
     const queueUpdate = () => {
-      frame ??= window.requestAnimationFrame(updateFallback);
+      if (annotations.length) frame ??= window.requestAnimationFrame(update);
     };
 
-    const configureFallback = () => {
-      clearFallback();
+    const configure = () => {
+      clear();
+      if (!preference.matches || CSS.supports('animation-timeline: view()')) return;
 
-      if (!motionPreference.matches) {
-        return;
-      }
+      annotations = Array.from(root.querySelectorAll<HTMLElement>('[data-about-scene]')).flatMap(
+        (source) =>
+          Array.from(source.querySelectorAll<HTMLElement>('[data-about-motion]')).flatMap(
+            (target) => {
+              const style = getComputedStyle(target);
+              const start = Number.parseFloat(style.getPropertyValue('--motion-start'));
+              const end = Number.parseFloat(style.getPropertyValue('--motion-end'));
+              const from = style.getPropertyValue('--motion-from').trim();
+              if (!Number.isFinite(start) || !Number.isFinite(end) || start <= end || !from)
+                return [];
 
+              const animation = target.animate([{ transform: from }, { transform: 'none' }], {
+                duration,
+                easing: 'linear',
+                fill: 'both',
+              });
+              animation.pause();
+              return [{ animation, source, start, end }];
+            }
+          )
+      );
       root.dataset.motionFallback = 'true';
-      const elements = Array.from(root.querySelectorAll<HTMLElement>(partSelector));
-      parts = elements.flatMap((element) => {
-        const style = getComputedStyle(element);
-        // The stylesheet owns the range. Without one there is nothing to scrub
-        // against, and a NaN currentTime throws and strands every later part.
-        const range = Number.parseFloat(style.getPropertyValue('--cover-range')) / 100;
-        if (!Number.isFinite(range) || range <= 0) return [];
-        const animation = element.animate([{ transform: style.transform }, { transform: 'none' }], {
-          duration: animationDuration,
-          easing: 'linear',
-          fill: 'both',
-        });
-
-        animation.pause();
-        return [{ animation, element, range }];
-      });
-      updateFallback();
+      update();
     };
 
-    configureFallback();
+    const observer = new ResizeObserver(queueUpdate);
+    observer.observe(root);
+    root.querySelectorAll('[data-about-scene]').forEach((source) => observer.observe(source));
+    configure();
     window.addEventListener('scroll', queueUpdate, { passive: true });
     window.addEventListener('resize', queueUpdate);
-    motionPreference.addEventListener('change', configureFallback);
+    preference.addEventListener('change', configure);
 
     return () => {
+      observer.disconnect();
       window.removeEventListener('scroll', queueUpdate);
       window.removeEventListener('resize', queueUpdate);
-      motionPreference.removeEventListener('change', configureFallback);
-      clearFallback();
+      preference.removeEventListener('change', configure);
+      clear();
     };
   }, []);
 
-  return <ol ref={rootRef}>{children}</ol>;
+  return (
+    <main id="main-content" ref={rootRef} className={className}>
+      {children}
+    </main>
+  );
 }
