@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import IntakeDesk from '@/components/IntakeDesk/IntakeDesk';
+import IntentLink from '@/components/IntentLink/IntentLink';
 import { profile } from '@/data/profile';
 import { buildPageMetadata } from '@/lib/siteMetadata';
 import styles from './page.module.css';
@@ -28,9 +28,9 @@ export default function IntakePage() {
             <strong>{profile.role}.</strong> I build {profile.trackRecord.summary}, and have since{' '}
             {profile.trackRecord.since}. The agent below cites only systems I&rsquo;ve actually
             shipped.{' '}
-            <Link className="marked-link" href="/projects">
+            <IntentLink className="marked-link" href="/projects">
               See the evidence.
-            </Link>
+            </IntentLink>
           </p>
           <IntakeDesk />
         </div>

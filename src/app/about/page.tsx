@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
+import { getImageProps } from 'next/image';
 import Link from 'next/link';
 import { FiArrowRight, FiArrowUpRight, FiStar } from 'react-icons/fi';
 import { AboutPageMotion } from '@/components/AboutPageMotion/AboutPageMotion';
@@ -64,17 +64,24 @@ export default function AboutPage() {
 
               No blur placeholder — Next draws it as an inline Gaussian-blur SVG, and two of
               them cost 145ms of FCP rasterising a picture about to be replaced. */}
-            {(['dark', 'light'] as const).map((theme) => (
-              <span key={theme} className={styles.portraitFrame} data-theme-image={theme}>
-                <Image
-                  src={profile.portrait[theme]}
-                  alt={profile.portrait.alt}
-                  fill
-                  loading="lazy"
-                  sizes="(max-width: 768px) 100vw, 36vw"
-                />
-              </span>
-            ))}
+            {(['dark', 'light'] as const).map((theme) => {
+              const { props } = getImageProps({
+                src: profile.portrait[theme],
+                alt: profile.portrait.alt,
+                fill: true,
+                loading: 'lazy',
+                sizes:
+                  '(max-width: 55rem) min(31rem, calc(100vw - clamp(2rem, 6vw, 6rem) - 1rem)), min(25rem, calc(34.286vw - 1rem))',
+              });
+
+              return (
+                <span key={theme} className={styles.portraitFrame} data-theme-image={theme}>
+                  {/* getImageProps keeps Next's responsive loader without an image client component. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img {...props} alt={props.alt} />
+                </span>
+              );
+            })}
             <figcaption>
               <span>Verified human</span>
               <span>Usually opinionated</span>
