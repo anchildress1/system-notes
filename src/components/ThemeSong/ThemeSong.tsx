@@ -30,12 +30,12 @@ const BARS = [
 /* The theme-song player: one control, a status line, and a decorative equalizer
    that runs only while the track does.
 
-   The control reports `aria-pressed` from the audio element's own events rather
-   than from the click, so the state always matches what is actually playing. */
+   A play request can still be buffering; only `playing` starts the equalizer. */
 export default function ThemeSong() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
   const audioRef = useRef<HTMLAudioElement>(null);
+  const isPlaying = status === 'playing';
+  const isLoading = status === 'loading';
 
   // Pausing on unmount stops audio outliving the page across a route change.
   useEffect(() => {
@@ -46,29 +46,36 @@ export default function ThemeSong() {
   async function toggle() {
     const audio = audioRef.current;
     if (!audio) return;
-    if (isPlaying) {
+    if (!audio.paused && status !== 'error') {
       audio.pause();
       return;
     }
+    if (status === 'error') audio.load();
+    setStatus('loading');
     try {
       await audio.play();
-    } catch {
-      // A refused play() is a normal outcome (autoplay policy, decode failure),
-      // not an exception to surface. The control reports it and stays usable.
-      setHasError(true);
+    } catch (error) {
+      // Cancelling a pending play (including on unmount) rejects with AbortError.
+      if (error instanceof DOMException && error.name === 'AbortError') return;
+      setStatus('error');
     }
   }
 
   // The advisory is part of the control's name: someone deciding whether to
   // press it needs the warning before the track starts, not after.
-  const action = isPlaying ? 'Pause' : 'Play';
+  let action = 'Play';
+  if (isPlaying) action = 'Pause';
+  else if (isLoading) action = 'Cancel loading';
+  else if (status === 'error') action = 'Retry';
+  let buttonText = action;
+  if (isLoading) buttonText = 'Cancel';
+  else if (status === 'idle') buttonText = 'Play it';
   const advisory = TRACK_EXPLICIT ? ' Explicit content.' : '';
-  const label = hasError
-    ? 'Theme song unavailable'
-    : `${action} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}.${advisory}`;
+  const label = `${action} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}.${advisory}`;
 
   let note = TRACK_ARTIST;
-  if (hasError) note = 'track unavailable';
+  if (status === 'error') note = 'track unavailable · try again';
+  else if (isLoading) note = 'loading audio…';
   else if (isPlaying) note = 'now playing';
 
   return (
@@ -81,7 +88,6 @@ export default function ThemeSong() {
           data-accent="filled"
           aria-pressed={isPlaying}
           aria-label={label}
-          disabled={hasError}
           onClick={toggle}
         >
           {/* Feather draws both as outlines; fill=currentColor solidifies the same shape
@@ -91,7 +97,7 @@ export default function ThemeSong() {
           ) : (
             <FiPlay aria-hidden="true" fill="currentColor" size={13} />
           )}
-          {isPlaying ? 'Pause' : 'Play it'}
+          {buttonText}
           {/* aria-hidden: the button's accessible name already ends in "Explicit content." */}
           {TRACK_EXPLICIT ? (
             <span className="explicit" aria-hidden="true">
@@ -125,13 +131,14 @@ export default function ThemeSong() {
         src={TRACK_SRC}
         preload="none"
         data-testid="theme-song-audio"
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
-        onError={() => {
-          setIsPlaying(false);
-          setHasError(true);
+        onPlay={() => setStatus('loading')}
+        onPlaying={() => setStatus('playing')}
+        onWaiting={(event) => {
+          if (!event.currentTarget.paused) setStatus('loading');
         }}
+        onPause={(event) => setStatus(event.currentTarget.error ? 'error' : 'idle')}
+        onEnded={() => setStatus('idle')}
+        onError={() => setStatus('error')}
       >
         <track kind="captions" src="data:text/vtt," default label="No captions available" />
       </audio>

@@ -157,6 +157,78 @@ test.describe('mobile interactions', () => {
     }
   });
 
+  test('can cancel buffering and then play the theme song on mobile', async ({ page }) => {
+    const audioReady = Promise.withResolvers<void>();
+    let requests = 0;
+    await page.route('**/audio/*.mp3', async (route) => {
+      requests += 1;
+      await audioReady.promise;
+      await route.continue();
+    });
+
+    try {
+      await page.goto('/about');
+      const audio = page.getByTestId('theme-song-audio');
+      const player = audio.locator('..');
+      const button = player.getByRole('button');
+      const note = player.locator('[aria-live="polite"]');
+      const equalizer = player.locator('[data-playing]');
+      expect(requests).toBe(0);
+
+      await button.tap();
+      await expect.poll(() => requests).toBeGreaterThan(0);
+      await expect(note).toHaveText('loading audio…');
+      await expect(button).toHaveAccessibleName(/Cancel loading the theme song/);
+      await expect(button).toHaveAttribute('aria-pressed', 'false');
+      await expect(equalizer).toHaveAttribute('data-playing', 'false');
+
+      await button.tap();
+      await expect(button).toHaveAccessibleName(/Play the theme song/);
+      await expect(note).toHaveText('Twisted Game Songs');
+      audioReady.resolve();
+
+      await button.tap();
+      await expect(note).toHaveText('now playing');
+      await expect(equalizer).toHaveAttribute('data-playing', 'true');
+      await expect
+        .poll(() => audio.evaluate((element: HTMLAudioElement) => element.currentTime))
+        .toBeGreaterThan(0.2);
+
+      await button.tap();
+      await expect(button).toHaveAttribute('aria-pressed', 'false');
+      await expect(audio).toHaveJSProperty('paused', true);
+    } finally {
+      audioReady.resolve();
+    }
+  });
+
+  test('retries the theme song after a failed mobile audio request', async ({ page }) => {
+    let requests = 0;
+    await page.route('**/audio/*.mp3', async (route) => {
+      requests += 1;
+      if (requests === 1) await route.abort('failed');
+      else await route.continue();
+    });
+    await page.goto('/about');
+    const audio = page.getByTestId('theme-song-audio');
+    const player = audio.locator('..');
+    const button = player.getByRole('button');
+
+    await button.tap();
+    await expect(button).toHaveAccessibleName(/Retry the theme song/);
+    await expect(button).toBeEnabled();
+    await expect(player.locator('[aria-live="polite"]')).toHaveText(
+      'track unavailable · try again'
+    );
+
+    await button.tap();
+    await expect(button).toHaveAccessibleName(/Pause the theme song/);
+    await expect
+      .poll(() => audio.evaluate((element: HTMLAudioElement) => element.currentTime))
+      .toBeGreaterThan(0.2);
+    expect(requests).toBeGreaterThan(1);
+  });
+
   test('keeps the seven-exhibit catalogue in one readable column', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/projects');

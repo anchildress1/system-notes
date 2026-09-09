@@ -294,7 +294,7 @@ test.describe('System Notes redesign', () => {
     expect(accessibility.violations).toEqual([]);
   });
 
-  test('plays the theme song under the writing that explains it', async ({ page }) => {
+  test('places the theme song under the writing that explains it', async ({ page }) => {
     await page.goto('/about');
     const section = page.locator('section').filter({ hasText: 'Theme song' });
 
