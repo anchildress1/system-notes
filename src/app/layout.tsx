@@ -93,7 +93,6 @@ export const metadata: Metadata = {
   // bought nothing — and being layout metadata it merged into every route,
   // including not-found, which ships its own `noindex`. That left the 404 with two
   // contradictory robots tags.
-  manifest: '/manifest.json',
 };
 
 export const viewport: Viewport = {
