@@ -14,6 +14,9 @@ export default function IntentLink(props: IntentLinkProps) {
   return (
     <Link
       {...props}
+      // false, not true: this link opts OUT of Link's own viewport-triggered
+      // prefetch until pointer/focus intent, then hands back `null` — the
+      // documented default — rather than forcing prefetch on regardless of it.
       prefetch={active ? null : false}
       onPointerEnter={() => setActive(true)}
       onFocus={() => setActive(true)}

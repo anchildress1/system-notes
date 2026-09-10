@@ -37,10 +37,12 @@
      height. A mask, because these carry different pens. */
   --stroke-brush-y: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 56' preserveAspectRatio='none'%3E%3Cpath d='M10.4,1.2 C5.1,10.5 2.6,21 3.2,33.4 C3.6,42.1 6.1,49 4.3,54.8 L10.1,55.2 C13.9,48.6 12.4,40.2 12.8,31.1 C13.3,20.4 14.7,9.6 12.3,1.4 Z' fill='%23000'/%3E%3C/svg%3E");
   --stroke-swipe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23000'/%3E%3C/svg%3E");
-  --stroke-swipe-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23f9cc21'/%3E%3C/svg%3E");
   /* The same swipe, pre-inked. A mask on an inline element masks its TEXT too,
      so a hover band drawn that way would cut the letters it sits behind; painted
      as a background it sits under them. Same duplication caveat as above. */
+  --stroke-swipe-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23f9cc21'/%3E%3C/svg%3E");
+  /* The same swipe again, at 16% fill-opacity: a wash for a resting state next
+     to the full-ink band a hover or active state draws. */
   --stroke-swipe-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23f9cc21' fill-opacity='0.16'/%3E%3C/svg%3E");
   --mark-soft: oklch(0.86 0.17 92 / 0.16);
   /* Sized for a halo around a 10px tile. --mark-soft is a panel-wide wash and
@@ -98,9 +100,6 @@
   --gutter: clamp(1rem, 3vw, 3rem);
   --header-height: 5.25rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  /* A second curve, deliberately not the first. It overshoots and settles, so
-     entrances using it arrive with a different weight to --ease-out's. */
-  --ease-settle: cubic-bezier(0.34, 1.32, 0.42, 1);
 
   /* Page-head rhythm, shared so the heads agree. The tail is about two thirds of
      the lead, which reads as a heading belonging to the section under it. Both
@@ -394,11 +393,11 @@ body::before {
   --tape-angle: -27deg;
   top: -0.5rem;
   left: -1.05rem;
-  /* rotate, not transform: ProjectDirectory.module.css drives this pseudo-element's
-     transform (translate, rotateY) for the scroll-in turn. Two `transform`
-     declarations on one element is a coin flip on stylesheet order; the
-     independent `rotate` property composes with transform instead of competing
-     with it — the same reason .taped itself uses `rotate: var(--tilt)` above. */
+  /* rotate, not transform: useTapeMotion drives this pseudo-element's transform
+     (rotateY only) for the scroll-in turn. Two `transform` declarations on one
+     element is a coin flip on stylesheet order; the independent `rotate`
+     property composes with transform instead of competing with it — the same
+     reason .taped itself uses `rotate: var(--tilt)` above. */
   rotate: var(--tape-angle);
 }
 
@@ -832,6 +831,17 @@ main {
   /* A background fragments with the line without clipping italic letters or
      descenders, which a mask on the text itself cannot do. */
   background: var(--stroke-swipe-inked) 0 50% / 100% 100% no-repeat;
+}
+
+/* background-image, not background-color: forced-colors already strips the
+   latter, and the shorthand above sets image, position, size and repeat in
+   one declaration that this has to follow in source order to win. */
+@media (forced-colors: active) {
+  .marked,
+  .page-head h1 > span,
+  .page-head-title > span {
+    background-image: none;
+  }
 }
 
 /* The turn of the headline is MARKED, not coloured. Setting it in the accent is

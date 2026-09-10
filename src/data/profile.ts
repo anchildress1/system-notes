@@ -121,7 +121,7 @@ export const profile = {
     },
   ],
   principlesConclusion: { lead: 'Judgment stays', emphasis: 'human.' },
-  /* The site footer's row, and nothing else reads it. */
+  /* The site footer's row. Also read by siteJsonLd.ts for JSON-LD's `sameAs`. */
   links: [
     { label: 'GitHub', href: 'https://github.com/anchildress1' },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/anchildress1' },

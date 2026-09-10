@@ -76,7 +76,8 @@ export default function AboutPage() {
 
               return (
                 <span key={theme} className={styles.portraitFrame} data-theme-image={theme}>
-                  {/* getImageProps keeps Next's responsive loader without an image client component. */}
+                  {/* getImageProps returns plain <img> props, so it skips the client-side
+                      state <Image> carries internally — this loop renders a bare <img>. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img {...props} alt={props.alt} />
                 </span>
