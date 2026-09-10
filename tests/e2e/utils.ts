@@ -102,6 +102,17 @@ async function readAboutScene(motion: Locator) {
   });
 }
 
+async function expectAboutSceneProgress(target: Locator) {
+  await expect
+    .poll(async () => {
+      const { progress, start, end, sourceRatio } = await readAboutScene(target);
+      // Engines round scroll positions, so the requested fraction may be unreachable.
+      const expected = Math.min(1, Math.max(0, (start - sourceRatio) / (start - end)));
+      return progress === null ? Number.NaN : progress - expected;
+    })
+    .toBeCloseTo(0, 2);
+}
+
 async function expectAboutPortraitStatic(page: Page) {
   const portrait = page.locator('[data-about-tape]');
   await expect(portrait).toHaveCount(1);
@@ -183,7 +194,7 @@ export async function verifyAboutMotion(page: Page) {
     const initial = await readAboutScene(target);
 
     await positionAboutScene(target, middleRatio);
-    await expect.poll(async () => (await readAboutScene(target)).progress).toBeCloseTo(0.5, 2);
+    await expectAboutSceneProgress(target);
     const middle = await readAboutScene(target);
     expect(middle.matrix).not.toEqual(initial.matrix);
     expect(middle.fullyInViewport, `annotation ${index + 1} moves outside the reading window`).toBe(
@@ -251,9 +262,7 @@ export async function verifyAboutMotion(page: Page) {
       let previousMatrix: number[] | undefined;
       for (const progress of [0.25, 0.5, 0.75]) {
         await positionAboutScene(target, start - (start - end) * progress);
-        await expect
-          .poll(async () => (await readAboutScene(target)).progress)
-          .toBeCloseTo(progress, 2);
+        await expectAboutSceneProgress(target);
         const state = await readAboutScene(target);
         if (previousMatrix) expect(state.matrix).not.toEqual(previousMatrix);
         previousMatrix = state.matrix;

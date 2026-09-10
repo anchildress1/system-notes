@@ -53,11 +53,6 @@ for (const viewport of viewports) {
 // violation twice. Reflow itself (WCAG 1.4.10) is asserted above, in pixels,
 // because axe has no rule for it.
 test.describe('mobile layout accessibility', () => {
-  // Box arithmetic, not rendering: both engines lay a 24px target out the same
-  // way, and where they do not, the boundingBox assertions in this file run on
-  // both and catch it. Re-running the rule on WebKit would restate the answer.
-  test.skip(({ browserName }) => browserName !== 'chromium', 'target size is box arithmetic');
-
   // The narrowest supported width. A target that clears 24px here clears it at
   // every wider viewport, so the other three widths would only repeat this.
   test.use({ viewport: { width: 280, height: 720 } });
@@ -73,6 +68,7 @@ test.describe('mobile layout accessibility', () => {
       const evaluated = [...results.passes, ...results.violations, ...results.incomplete];
       expect(evaluated.map((result) => result.id)).toContain('target-size');
       expect(results.violations).toEqual([]);
+      expect(results.incomplete).toEqual([]);
     });
   }
 
