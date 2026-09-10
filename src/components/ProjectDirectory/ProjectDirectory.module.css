@@ -77,7 +77,8 @@
   composes: marked-soft from global;
   display: inline;
   font-family: var(--font-display);
-  font-size: var(--fine);
+  /* Its own size, not --fine: this is a claim of merit, not a caption. */
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
