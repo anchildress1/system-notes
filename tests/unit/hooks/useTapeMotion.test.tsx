@@ -24,6 +24,7 @@ const observers: {
   disconnect: ReturnType<typeof vi.fn>;
 }[] = [];
 let matches = true;
+let nativeTimeline = false;
 let nextFrame = 0;
 
 function Harness({
@@ -107,10 +108,14 @@ function setMotion(enabled: boolean) {
 
 beforeEach(() => {
   matches = true;
+  nativeTimeline = false;
   nextFrame = 0;
   frames.clear();
   listeners.clear();
   observers.length = 0;
+  // jsdom's own CSS.supports is a stub that answers true for anything, which
+  // would make every test below look like a native-timeline browser.
+  vi.stubGlobal('CSS', { supports: vi.fn(() => nativeTimeline) });
   vi.stubGlobal('innerHeight', 800);
   vi.stubGlobal('scrollY', 0);
   vi.stubGlobal(
@@ -164,6 +169,26 @@ afterEach(() => {
 });
 
 describe('useTapeMotion', () => {
+  it('does nothing in range mode when the browser owns the timeline natively', () => {
+    nativeTimeline = true;
+    render(<Harness />);
+
+    expect(window.matchMedia).not.toHaveBeenCalled();
+    expect(observers).toHaveLength(0);
+    expect(screen.getByTestId('tape').style.getPropertyValue('--tape-before-turn')).toBe('');
+    window.dispatchEvent(new Event('scroll'));
+    expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+  });
+
+  it('still runs in exitAbove mode when the browser owns the timeline natively', () => {
+    nativeTimeline = true;
+    render(<Harness options={portraitOptions} boundaryBottom={100} />);
+
+    expect(window.matchMedia).toHaveBeenCalledWith(portraitOptions.mediaQuery);
+    expect(observers[0].observe).toHaveBeenCalledWith(screen.getByTestId('boundary'));
+    expect(turns()).toEqual([0, 0]);
+  });
+
   it.each([
     { top: 600, bottom: 950, expected: [58, -58] },
     { top: 464, bottom: 840, expected: [58, -58] },

@@ -35,6 +35,14 @@ export function useTapeMotion(rootRef: RefObject<HTMLElement | null>, options: T
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
+    // A native equivalent exists in the stylesheet only for range mode
+    // (ProjectDirectory's viewport-fraction before/after): its timing is
+    // pure viewport-height fractions, expressible as a fixed native range
+    // regardless of element size. exitAbove's (the About portrait's) timing
+    // is anchored to wherever the element naturally sits on the page at
+    // load — no native range is a function of that, only of element size or
+    // viewport size — so it always runs the JS fallback, even natively.
+    if ('before' in options && CSS.supports('animation-timeline: view()')) return;
 
     if (
       'before' in options &&

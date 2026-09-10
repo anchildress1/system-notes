@@ -145,8 +145,11 @@ test.describe('project exhibit motion', () => {
         );
         return print.evaluate(
           (element, selectedPseudo) =>
+            // Computed, not element.style: a supporting engine drives this
+            // natively via the stylesheet and never touches the inline style
+            // the JS fallback writes, but both land in the same computed value.
             Number.parseFloat(
-              element.style.getPropertyValue(
+              getComputedStyle(element).getPropertyValue(
                 selectedPseudo === '::before' ? '--tape-before-turn' : '--tape-after-turn'
               )
             ),
@@ -158,17 +161,20 @@ test.describe('project exhibit motion', () => {
       const beforePlaced = await turnAt('::before', 'top', 0.18);
       const beforeLater = await turnAt('::before', 'top', 0.05);
       expect(Math.abs(beforeLifted)).toBeGreaterThan(0);
-      // Close to, not equal to: the clamp boundary is a subpixel scroll position,
-      // and Firefox's own rounding can land a thousandth of a degree past it.
-      expect(beforePlaced).toBeCloseTo(0, 1);
-      expect(beforeLater).toBeCloseTo(0, 1);
+      // Close to, not equal to: the clamp boundary is a subpixel scroll position.
+      // Firefox's JS fallback can land a thousandth of a degree past it; a
+      // native engine computing its own entry/contain length thresholds
+      // against real layout rounds slightly differently again — WebKit
+      // measured a tenth of a degree off zero here.
+      expect(beforePlaced).toBeCloseTo(0, 0);
+      expect(beforeLater).toBeCloseTo(0, 0);
 
       const afterLifted = await turnAt('::after', 'bottom', 1.05);
       const afterPlaced = await turnAt('::after', 'bottom', 0.82);
       const afterLater = await turnAt('::after', 'bottom', 0.5);
       expect(Math.abs(afterLifted)).toBeGreaterThan(0);
-      expect(afterPlaced).toBeCloseTo(0, 1);
-      expect(afterLater).toBeCloseTo(0, 1);
+      expect(afterPlaced).toBeCloseTo(0, 0);
+      expect(afterLater).toBeCloseTo(0, 0);
     }
   });
 

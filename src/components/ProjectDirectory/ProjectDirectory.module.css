@@ -240,6 +240,32 @@
   }
 }
 
+/* Defined locally rather than shared from globals.css: CSS Modules hashes an
+   animation-name reference inside this file regardless of where the
+   matching @keyframes rule lives, so a shared definition would ship under a
+   name this file's own animation-name never resolves to. The properties
+   these animate are still registered once, globally, via @property in
+   globals.css. */
+@keyframes tape-before-fold-in {
+  from {
+    --tape-before-turn: var(--tape-before-start-turn);
+  }
+
+  to {
+    --tape-before-turn: 0deg;
+  }
+}
+
+@keyframes tape-after-fold-in {
+  from {
+    --tape-after-turn: var(--tape-after-start-turn);
+  }
+
+  to {
+    --tape-after-turn: 0deg;
+  }
+}
+
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
     .heading,
@@ -250,9 +276,31 @@
     }
 
     .media {
-      animation: exhibit-print-arrival 1ms linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 36%;
+      /* Fold ranges are exact, not tuned: --cover-range/entry above are
+         height-relative, but the JS fallback's before/after turn is pure
+         viewport-height fractions (0.58/0.18 and 1.05/0.82 of innerHeight),
+         with no element-height term at all. entry's 0% is defined as this
+         element's own top edge at the scrollport's far edge, so an absolute
+         length offset from it lands on the same viewport-height fraction
+         regardless of this element's height — entry 42vh is (1 - 0.58) *
+         100vh short of that edge, entry 82vh is (1 - 0.18) * 100vh short.
+         after tracks the bottom edge instead, which needs a bottom-anchored
+         start (contain's 0%, not entry's) to stay height-independent the
+         same way — but the fallback's own before-entering threshold (1.05)
+         sits fractionally earlier than contain 0% itself, an offset contain
+         can't express in a length shorter than its own 0%. The turn is
+         already fully folded for that entire stretch regardless, so starting
+         at contain 0% instead of the true (negative) offset changes nothing
+         a viewer can see. */
+      animation:
+        exhibit-print-arrival 1ms linear both,
+        tape-before-fold-in 1ms linear both,
+        tape-after-fold-in 1ms linear both;
+      animation-timeline: view(), view(), view();
+      animation-range:
+        entry 0% cover 36%,
+        entry 42vh entry 82vh,
+        contain 0% contain 18vh;
     }
 
     .references {

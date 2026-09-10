@@ -324,6 +324,30 @@ body::before {
   }
 }
 
+/* Registered so the exhibit corners' native scroll-driven fold animates a
+   smooth angle instead of stepping straight from one keyframe's value to the
+   next — an unregistered custom property can't interpolate. Both properties
+   are also the ones useTapeMotion writes inline for every JS-driven tape,
+   the About portrait included; @property doesn't change that path, it only
+   makes the native one possible. The @keyframes that animate these natively
+   live LOCALLY in ProjectDirectory.module.css instead of here: CSS Modules
+   hashes an animation-name reference inside a .module.css file regardless of
+   where the matching @keyframes rule is defined, so a shared @keyframes here
+   would ship with a name nothing in the built CSS actually references — the
+   animation silently has no keyframes at all, with no build error to catch
+   it. */
+@property --tape-before-turn {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@property --tape-after-turn {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+
 /* PAPER, TAPED DOWN. An image here is a print laid on the page: a mat, a
    two-stop shadow (a tight contact shadow plus a wide ambient one), half a
    degree of tilt, and two tape strips across opposite corners.
