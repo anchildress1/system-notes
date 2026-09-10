@@ -57,24 +57,29 @@ export function ProjectDirectoryMotion({
       delete root.dataset.motionFallback;
     };
 
+    const readProgress = (element: HTMLElement, range: number) => {
+      // Rendered bounds include the previous pose and would feed it back into progress.
+      // This catalogue scrolls with the window, without fixed or nested scrolling ancestors.
+      let documentTop = element.offsetTop;
+      for (
+        let parent = element.offsetParent as HTMLElement | null;
+        parent;
+        parent = parent.offsetParent as HTMLElement | null
+      ) {
+        documentTop += parent.offsetTop + parent.clientTop;
+      }
+      const top = documentTop - window.scrollY;
+      const travel = (window.innerHeight + element.offsetHeight) * range;
+      return Math.min(1, Math.max(0, (window.innerHeight - top) / travel));
+    };
+
     const updateFallback = () => {
       frame = undefined;
 
-      const updates = parts.map(({ animation, element, range }) => {
-        // Rendered bounds include the previous pose and would feed it back into progress.
-        let documentTop = element.offsetTop;
-        for (
-          let parent = element.offsetParent as HTMLElement | null;
-          parent;
-          parent = parent.offsetParent as HTMLElement | null
-        ) {
-          documentTop += parent.offsetTop + parent.clientTop;
-        }
-        const top = documentTop - window.scrollY;
-        const travel = (window.innerHeight + element.offsetHeight) * range;
-        const progress = Math.min(1, Math.max(0, (window.innerHeight - top) / travel));
-        return { animation, progress };
-      });
+      const updates = parts.map(({ animation, element, range }) => ({
+        animation,
+        progress: readProgress(element, range),
+      }));
 
       updates.forEach(({ animation, progress }) => {
         // A hidden or zero-height viewport makes travel 0 and progress NaN, and
@@ -117,10 +122,11 @@ export function ProjectDirectoryMotion({
             range,
             scale: style.scale === 'none' ? '1' : style.scale,
             translate: style.translate,
+            progress: readProgress(element, range),
           },
         ];
       });
-      parts = entries.map(({ element, range, scale, translate }) => {
+      parts = entries.map(({ element, range, scale, translate, progress }) => {
         const animation = element.animate(
           [
             { scale, translate },
@@ -130,13 +136,13 @@ export function ProjectDirectoryMotion({
         );
 
         animation.pause();
+        // Initial geometry must be read before any animation dirties the styles.
+        if (Number.isFinite(progress)) animation.currentTime = progress * animationDuration;
         return { animation, element, range };
       });
       if (!parts.length) {
         delete root.dataset.motionFallback;
-        return;
       }
-      updateFallback();
     };
 
     configureFallback();

@@ -141,6 +141,42 @@ describe('ProjectDirectoryMotion', () => {
     }
   });
 
+  it('reads every initial position before creating animations at a restored scroll position', () => {
+    stubEnvironment();
+    vi.stubGlobal('scrollY', 500);
+    const operations: string[] = [];
+    vi.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockImplementation(() => {
+      operations.push('top');
+      return 1100;
+    });
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(() => {
+      operations.push('height');
+      return 200;
+    });
+    const animate = vi.mocked(Element.prototype.animate).getMockImplementation()!;
+    vi.spyOn(Element.prototype, 'animate').mockImplementation(function (...args) {
+      operations.push('animate');
+      return animate.apply(this, args);
+    });
+
+    renderParts();
+
+    expect(operations).toEqual([
+      'top',
+      'height',
+      'top',
+      'height',
+      'top',
+      'height',
+      'animate',
+      'animate',
+      'animate',
+    ]);
+    expect(animations[0].currentTime).toBeCloseTo(625, 2);
+    expect(animations[1].currentTime).toBeCloseTo(555.556, 2);
+    expect(animations[2].currentTime).toBeCloseTo(833.333, 2);
+  });
+
   it('animates nothing when reduced motion is asked for', () => {
     stubEnvironment({ prefersMotion: false });
     renderParts();
@@ -189,10 +225,13 @@ describe('ProjectDirectoryMotion', () => {
     );
   });
 
-  it('does not throw or move an animation when the viewport has zero height', () => {
+  it.each([0, 800])('recovers from a zero-height viewport after mounting at %ipx', (height) => {
     stubEnvironment();
-    renderParts();
+    vi.stubGlobal('innerHeight', height);
+    expect(() => renderParts()).not.toThrow();
+    expect(animations).toHaveLength(3);
     animations.forEach((animation) => {
+      expect(Number.isFinite(animation.currentTime)).toBe(true);
       animation.currentTime = 0;
     });
 
@@ -201,6 +240,11 @@ describe('ProjectDirectoryMotion', () => {
 
     expect(flushFrames).not.toThrow();
     animations.forEach((animation) => expect(animation.currentTime).toBe(0));
+
+    vi.stubGlobal('innerHeight', 800);
+    window.dispatchEvent(new Event('resize'));
+    flushFrames();
+    animations.forEach((animation) => expect(animation.currentTime).toBe(1000));
   });
 
   it('scrubs on every scroll, not just the first', () => {
@@ -226,7 +270,17 @@ describe('ProjectDirectoryMotion', () => {
     animations.forEach((animation) => expect(animation.currentTime).toBeGreaterThan(0));
   });
 
-  it('uses layout geometry so repeated scrolls and reversals reach the same pose', () => {
+  it.each([
+    { label: 'one offset parent', offsets: [[996, 4]] },
+    {
+      label: 'three offset parents',
+      offsets: [
+        [496, 4],
+        [290, 10],
+        [193, 7],
+      ],
+    },
+  ])('reaches the same pose on repeated scrolls and reversals with $label', ({ offsets }) => {
     stubEnvironment();
     renderParts();
     const catalogue = screen.getByRole('region');
@@ -235,8 +289,14 @@ describe('ProjectDirectoryMotion', () => {
     vi.spyOn(media, 'offsetHeight', 'get').mockReturnValue(200);
     vi.spyOn(media, 'offsetTop', 'get').mockReturnValue(100);
     vi.spyOn(media, 'offsetParent', 'get').mockReturnValue(catalogue);
-    vi.spyOn(catalogue, 'offsetTop', 'get').mockReturnValue(996);
-    vi.spyOn(catalogue, 'clientTop', 'get').mockReturnValue(4);
+    const ancestors = offsets.map((_, index) =>
+      index === 0 ? catalogue : document.createElement('div')
+    );
+    ancestors.forEach((ancestor, index) => {
+      vi.spyOn(ancestor, 'offsetTop', 'get').mockReturnValue(offsets[index][0]);
+      vi.spyOn(ancestor, 'clientTop', 'get').mockReturnValue(offsets[index][1]);
+      vi.spyOn(ancestor, 'offsetParent', 'get').mockReturnValue(ancestors[index + 1] ?? null);
+    });
     vi.spyOn(media, 'getBoundingClientRect').mockImplementation(() => {
       const progress = animation.currentTime / 1000;
       return {
