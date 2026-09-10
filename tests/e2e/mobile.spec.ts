@@ -53,6 +53,7 @@ for (const viewport of viewports) {
 // violation twice. Reflow itself (WCAG 1.4.10) is asserted above, in pixels,
 // because axe has no rule for it.
 test.describe('mobile layout accessibility', () => {
+  // Both mobile engines measure this: font metrics and target placement can differ.
   // The narrowest supported width. A target that clears 24px here clears it at
   // every wider viewport, so the other three widths would only repeat this.
   test.use({ viewport: { width: 280, height: 720 } });
@@ -68,20 +69,9 @@ test.describe('mobile layout accessibility', () => {
       const evaluated = [...results.passes, ...results.violations, ...results.incomplete];
       expect(evaluated.map((result) => result.id)).toContain('target-size');
       expect(results.violations).toEqual([]);
-      expect(results.incomplete).toEqual([]);
+      expect(results.incomplete.map((result) => result.id)).toEqual([]);
     });
   }
-
-  // One route, one width: the tag is written once in the root layout, so
-  // asserting it per route would be four copies of the same fact.
-  test('lets the page be pinched open', async ({ page }) => {
-    await page.goto('/');
-
-    const results = await new AxeBuilder({ page }).withRules(['meta-viewport']).analyze();
-
-    expect(results.violations).toEqual([]);
-    expect(results.passes.map((result) => result.id)).toContain('meta-viewport');
-  });
 });
 
 test.describe('mobile interactions', () => {

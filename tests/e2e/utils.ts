@@ -106,7 +106,7 @@ async function expectAboutSceneProgress(target: Locator) {
   await expect
     .poll(async () => {
       const { progress, start, end, sourceRatio } = await readAboutScene(target);
-      // Engines round scroll positions, so the requested fraction may be unreachable.
+      // The page's scroll limits can clamp the requested scene position.
       const expected = Math.min(1, Math.max(0, (start - sourceRatio) / (start - end)));
       return progress === null ? Number.NaN : progress - expected;
     })
