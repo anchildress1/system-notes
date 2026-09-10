@@ -33,12 +33,25 @@ const BARS = [
   { height: 88, duration: 1.15, delay: 0.4 },
 ] as const;
 
+type PlayerStatus = 'idle' | 'loading' | 'playing' | 'error';
+
+// The control's label and its accessible name diverge per status (loading
+// reads "Cancel" on the button but "Cancel loading" in the name; idle reads
+// "Play it" but "Play"), so each status maps to both strings directly
+// instead of one overriding the other.
+const STATUS_COPY: Record<PlayerStatus, { action: string; buttonText: string }> = {
+  idle: { action: 'Play', buttonText: 'Play it' },
+  playing: { action: 'Pause', buttonText: 'Pause' },
+  loading: { action: 'Cancel loading', buttonText: 'Cancel' },
+  error: { action: 'Retry', buttonText: 'Retry' },
+};
+
 /* The theme-song player: one control, a status line, and a decorative equalizer
    that runs only while the track does.
 
    A play request can still be buffering; only `playing` starts the equalizer. */
 export default function ThemeSong() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'playing' | 'error'>('idle');
+  const [status, setStatus] = useState<PlayerStatus>('idle');
   const audioRef = useRef<HTMLAudioElement>(null);
   const isPlaying = status === 'playing';
   const isLoading = status === 'loading';
@@ -73,13 +86,7 @@ export default function ThemeSong() {
 
   // The advisory is part of the control's name: someone deciding whether to
   // press it needs the warning before the track starts, not after.
-  let action = 'Play';
-  if (isPlaying) action = 'Pause';
-  else if (isLoading) action = 'Cancel loading';
-  else if (status === 'error') action = 'Retry';
-  let buttonText = action;
-  if (isLoading) buttonText = 'Cancel';
-  else if (status === 'idle') buttonText = 'Play it';
+  const { action, buttonText } = STATUS_COPY[status];
   const advisory = TRACK_EXPLICIT ? ' Explicit content.' : '';
   const label = `${action} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}.${advisory}`;
 
