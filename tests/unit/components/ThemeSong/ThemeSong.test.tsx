@@ -178,6 +178,36 @@ describe('ThemeSong', () => {
     }
   );
 
+  it('ignores a pause event once a newer play already made it stale', () => {
+    const playback = stubPlayback();
+    render(<ThemeSong />);
+    fireEvent.click(toggle());
+
+    // A pause queued by an earlier toggle can still be in flight after a
+    // subsequent play() already flipped audio.paused back to false; the live
+    // DOM state, not the event, is what the handler trusts.
+    expect(audio().paused).toBe(false);
+    fireEvent.pause(audio());
+
+    expect(playback.play).toHaveBeenCalledOnce();
+    expect(toggle()).toHaveAccessibleName(/^Cancel loading the theme song/);
+    expect(note()).toHaveTextContent('loading audio');
+  });
+
+  it('rejects a cancelled play with a non-DOMException AbortError without setting an error', async () => {
+    const playback = stubPlayback();
+    playback.play.mockRejectedValueOnce(
+      Object.assign(new Error('Playback was cancelled'), { name: 'AbortError' })
+    );
+    render(<ThemeSong />);
+
+    fireEvent.click(toggle());
+    await act(async () => {});
+
+    expect(toggle()).toHaveAccessibleName(/^Cancel loading the theme song/);
+    expect(note()).toHaveTextContent('loading audio');
+  });
+
   it.each(['pause', 'end'] as const)('returns to idle after playback %s', async (event) => {
     const playback = stubPlayback();
     render(<ThemeSong />);

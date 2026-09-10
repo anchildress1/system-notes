@@ -12,6 +12,12 @@ export const TRACK_SRC = '/audio/twisted-game-songs-i-build-things.mp3';
  *  file cannot inherit this one's rating. */
 export const TRACK_EXPLICIT = true;
 
+function isAbortError(error: unknown): boolean {
+  return (
+    typeof error === 'object' && error !== null && 'name' in error && error.name === 'AbortError'
+  );
+}
+
 /* The equalizer: ten bars at fixed heights, each with its own period so the run
    never pulses in unison. Decorative, and hidden from assistive tech. */
 const BARS = [
@@ -56,7 +62,11 @@ export default function ThemeSong() {
       await audio.play();
     } catch (error) {
       // Cancelling a pending play (including on unmount) rejects with AbortError.
-      if (error instanceof DOMException && error.name === 'AbortError') return;
+      // Matched on .name rather than `instanceof DOMException` — a polyfilled
+      // or shimmed environment can reject with an AbortError-named object that
+      // fails that check, and misreporting a benign cancellation as a real
+      // failure is worse than the reverse.
+      if (isAbortError(error)) return;
       setStatus('error');
     }
   }
@@ -136,7 +146,20 @@ export default function ThemeSong() {
         onWaiting={(event) => {
           if (!event.currentTarget.paused) setStatus('loading');
         }}
-        onPause={(event) => setStatus(event.currentTarget.error ? 'error' : 'idle')}
+        onPause={(event) => {
+          const audio = event.currentTarget;
+          // A newer play() can already have superseded this pause by the time
+          // its (possibly queued) event fires; .paused is the live truth, this
+          // event is not. Applying a stale pause here is how rapid toggling
+          // desyncs the status from what is actually playing.
+          if (!audio.paused) return;
+          // Engines don't agree on whether `error` or `pause` fires first for a
+          // fatal failure (WebKit in particular). Checking the previous status
+          // as well as .error means an `error` event that already landed is
+          // never downgraded back to 'idle' by the `pause` that follows it; if
+          // `pause` lands first, the `error` event still due settles it.
+          setStatus((prev) => (prev === 'error' || audio.error ? 'error' : 'idle'));
+        }}
         onEnded={() => setStatus('idle')}
         onError={() => setStatus('error')}
       >
