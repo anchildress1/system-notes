@@ -21,9 +21,18 @@ const ALGOLIA_SEARCH_ROUTE = /\/1\/indexes\/[^/]+\/queries(?:\?|$)/;
    so narrowing the search route to /queries left it outside the fake boundary.
    IndexWorkspace.selectNote calls sendEvent on every selection, which made a
    note click reach the real provider from an E2E run and left the one event the
-   architecture requires unverified. Matched on the path so the Agent Studio
-   route, which is neither of these, stays untouched. */
+   architecture requires unverified. */
 const ALGOLIA_INSIGHTS_ROUTE = /\/1\/events(?:\?|$)/;
+
+/* Every host this app's Algolia client can reach: the search DSN and its three
+   regional failover hosts (all *.algolia.net or *.algolianet.com), the insights
+   host (*.algolia.io), and Agent Studio's completions endpoint — a THIRD host
+   shape, {appId}.algolia.net with no "-dsn" suffix, that the two routes above
+   never covered. A path-only match against a single host leaves every other
+   host, and any path this suite hasn't anticipated, free to reach the real
+   provider silently. */
+const ALGOLIA_HOST_PATTERN =
+  /^https:\/\/[^/]+\.(?:algolia\.net|algolianet\.com|algolia\.io)(?:\/|$)/i;
 
 async function positionAboutScene(target: Locator, viewportRatio: number) {
   const reachedRatio = await target.evaluate(async (element, ratio) => {
@@ -614,6 +623,34 @@ function countFacets(hits: MockAlgoliaHit[]) {
   };
 }
 
+/**
+ * Catches every Algolia-hosted request — search, its regional failover hosts,
+ * insights, and Agent Studio completions — regardless of path. A path already
+ * covered by {@link mockAlgoliaSearch} or {@link mockAlgoliaInsights} falls
+ * through to whichever of those is registered, in either order: Playwright
+ * resolves the most-recently-registered route first, and this handler defers
+ * to the network for anything it recognizes rather than assuming it runs
+ * first. Anything else is recorded and aborted instead of reaching the real
+ * provider.
+ *
+ * @returns A live array of unexpected request paths, appended to as they
+ *   occur. Assert it is empty after the action that should have stayed
+ *   inside the two known routes.
+ */
+export async function mockAlgoliaBoundary(page: Page): Promise<string[]> {
+  const unexpectedPaths: string[] = [];
+  await page.route(ALGOLIA_HOST_PATTERN, async (route) => {
+    const { pathname } = new URL(route.request().url());
+    if (ALGOLIA_SEARCH_ROUTE.test(pathname) || ALGOLIA_INSIGHTS_ROUTE.test(pathname)) {
+      await route.fallback();
+      return;
+    }
+    unexpectedPaths.push(pathname);
+    await route.abort('failed');
+  });
+  return unexpectedPaths;
+}
+
 export async function mockAlgoliaSearch(
   page: Page,
   hits: MockAlgoliaHit[],
@@ -734,11 +771,18 @@ export const test = base.extend<{
   autoMockAlgolia: [
     // Depends on insightsEvents so the stub is installed for EVERY spec, not
     // only the ones that assert on it — an unstubbed spec would reach the real
-    // provider the first time anything is selected.
+    // provider the first time anything is selected. mockAlgoliaBoundary is
+    // registered too, so a path neither of these two covers fails the test
+    // instead of silently reaching the real provider.
     async ({ page, insightsEvents }, use) => {
       void insightsEvents;
+      const unexpectedAlgoliaPaths = await mockAlgoliaBoundary(page);
       await mockAlgoliaSearch(page, []);
       await use();
+      expect(
+        unexpectedAlgoliaPaths,
+        'An Algolia request reached a path this suite does not stub'
+      ).toEqual([]);
     },
     { auto: true },
   ],
