@@ -144,7 +144,17 @@
 
 .origin {
   max-width: 35ch;
-  margin: clamp(2.5rem, 5vw, 4rem) 0 0 auto;
+  /* Negative, not auto: pulled left past the hero's own column line, not
+     just off the portrait's right edge. The grid ratio and .personal stay
+     untouched — only this text crosses it.
+     .personal caps at 26rem, so the gap between this text's natural
+     position and the column line grows in two different regimes: linearly
+     with the grid track below that cap, then faster above it once extra
+     track width becomes margin-left:auto slack. A plain vw clamp can't
+     follow that kink — it either overshot narrow desktop widths or fell
+     short on wide ones. This line is fitted through measured positions at
+     900px and 1488px instead of guessed. */
+  margin: clamp(2.5rem, 5vw, 4rem) 0 0 clamp(-11rem, calc(8.36rem - 20.4vw), -3rem);
   font-family: var(--font-editorial);
   font-size: clamp(1.25rem, 1.8vw, 1.65rem);
   line-height: 1.5;
@@ -655,6 +665,7 @@
 
   .origin {
     max-width: none;
+    margin-left: 0;
   }
 
   .principles header {
