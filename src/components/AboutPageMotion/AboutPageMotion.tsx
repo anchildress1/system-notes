@@ -53,10 +53,15 @@ export function AboutPageMotion({
       }
 
       // Read the stationary scene, never the mark whose transform we are writing.
-      const positions = annotations.map(({ source }) => source.getBoundingClientRect().top);
-      annotations.forEach(({ animation, start, end }, index) => {
-        const progress =
-          (window.innerHeight * start - positions[index]) / (window.innerHeight * (start - end));
+      // Keyed by source rather than array index: a scene with several targets
+      // shares one entry instead of re-reading the same rect per target.
+      const sources = new Set(annotations.map(({ source }) => source));
+      const tops = new Map(
+        Array.from(sources, (source) => [source, source.getBoundingClientRect().top])
+      );
+      annotations.forEach(({ animation, source, start, end }) => {
+        const top = tops.get(source)!;
+        const progress = (window.innerHeight * start - top) / (window.innerHeight * (start - end));
         // A hidden or zero-height viewport (window.innerHeight === 0) makes this
         // NaN, and an animation's currentTime throws a TypeError for anything
         // that isn't finite — out of this same unguarded passive effect.
