@@ -108,6 +108,39 @@ describe('ProjectDirectoryMotion', () => {
     animations.forEach((animation) => expect(animation.pause).toHaveBeenCalled());
   });
 
+  it('captures the entry transform from the active fallback stylesheet', () => {
+    stubEnvironment();
+    const stylesheet = document.createElement('style');
+    stylesheet.textContent = `
+      .catalogue [data-motion-part] { --cover-range: 32%; }
+      .catalogue[data-motion-fallback='true'] [data-motion-part] {
+        scale: 0.9;
+        translate: 40px 20px;
+      }
+    `;
+    document.head.append(stylesheet);
+
+    try {
+      render(
+        <ProjectDirectoryMotion className="catalogue">
+          <div data-motion-part="copy" />
+        </ProjectDirectoryMotion>
+      );
+
+      expect(Element.prototype.animate).toHaveBeenCalledWith(
+        [
+          { scale: '0.9', translate: '40px 20px' },
+          { scale: '1', translate: '0px' },
+        ],
+        expect.objectContaining({ fill: 'both' })
+      );
+      expect(animations).toHaveLength(1);
+      expect(animations[0].pause).toHaveBeenCalled();
+    } finally {
+      stylesheet.remove();
+    }
+  });
+
   it('animates nothing when reduced motion is asked for', () => {
     stubEnvironment({ prefersMotion: false });
     renderParts();
@@ -191,6 +224,35 @@ describe('ProjectDirectoryMotion', () => {
     window.dispatchEvent(new Event('scroll'));
     flushFrames();
     animations.forEach((animation) => expect(animation.currentTime).toBeGreaterThan(0));
+  });
+
+  it('uses layout geometry so repeated scrolls and reversals reach the same pose', () => {
+    stubEnvironment();
+    renderParts();
+    const catalogue = screen.getByRole('region');
+    const media = catalogue.querySelector<HTMLElement>('[data-motion-part="media"]')!;
+    const animation = animations[1];
+    vi.spyOn(media, 'offsetHeight', 'get').mockReturnValue(200);
+    vi.spyOn(media, 'offsetTop', 'get').mockReturnValue(100);
+    vi.spyOn(media, 'offsetParent', 'get').mockReturnValue(catalogue);
+    vi.spyOn(catalogue, 'offsetTop', 'get').mockReturnValue(996);
+    vi.spyOn(catalogue, 'clientTop', 'get').mockReturnValue(4);
+    vi.spyOn(media, 'getBoundingClientRect').mockImplementation(() => {
+      const progress = animation.currentTime / 1000;
+      return {
+        top: 1100 - window.scrollY + 32 * (1 - progress),
+        height: 200 * (0.94 + 0.06 * progress),
+      } as DOMRect;
+    });
+    animation.currentTime = 0;
+
+    for (const scrollY of [500, 500, 1000, 500]) {
+      vi.stubGlobal('scrollY', scrollY);
+      window.dispatchEvent(new Event('scroll'));
+      flushFrames();
+
+      expect(animation.currentTime).toBeCloseTo(scrollY === 1000 ? 1000 : 555.556, 2);
+    }
   });
 
   it('presses each tape edge down at its own viewport position', () => {

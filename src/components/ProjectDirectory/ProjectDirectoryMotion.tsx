@@ -60,10 +60,23 @@ export function ProjectDirectoryMotion({
     const updateFallback = () => {
       frame = undefined;
 
-      parts.forEach(({ animation, element, range }) => {
-        const bounds = element.getBoundingClientRect();
-        const travel = (window.innerHeight + bounds.height) * range;
-        const progress = Math.min(1, Math.max(0, (window.innerHeight - bounds.top) / travel));
+      const updates = parts.map(({ animation, element, range }) => {
+        // Rendered bounds include the previous pose and would feed it back into progress.
+        let documentTop = element.offsetTop;
+        for (
+          let parent = element.offsetParent as HTMLElement | null;
+          parent;
+          parent = parent.offsetParent as HTMLElement | null
+        ) {
+          documentTop += parent.offsetTop + parent.clientTop;
+        }
+        const top = documentTop - window.scrollY;
+        const travel = (window.innerHeight + element.offsetHeight) * range;
+        const progress = Math.min(1, Math.max(0, (window.innerHeight - top) / travel));
+        return { animation, progress };
+      });
+
+      updates.forEach(({ animation, progress }) => {
         // A hidden or zero-height viewport makes travel 0 and progress NaN, and
         // an animation's currentTime throws a TypeError for anything that
         // isn't finite — out of this same unguarded passive effect.
@@ -83,8 +96,10 @@ export function ProjectDirectoryMotion({
         return;
       }
 
+      // Entry transforms exist only while the fallback selector matches.
+      root.dataset.motionFallback = 'true';
       const elements = Array.from(root.querySelectorAll<HTMLElement>(motionPartSelector));
-      parts = elements.flatMap((element) => {
+      const entries = elements.flatMap((element) => {
         const style = getComputedStyle(element);
         // The stylesheet owns the range. Without one there is nothing to scrub
         // against, and a NaN currentTime throws and strands every later part.
@@ -96,27 +111,32 @@ export function ProjectDirectoryMotion({
           });
           return [];
         }
+        return [
+          {
+            element,
+            range,
+            scale: style.scale === 'none' ? '1' : style.scale,
+            translate: style.translate,
+          },
+        ];
+      });
+      parts = entries.map(({ element, range, scale, translate }) => {
         const animation = element.animate(
           [
-            {
-              scale: style.scale === 'none' ? '1' : style.scale,
-              translate: style.translate,
-            },
+            { scale, translate },
             { scale: '1', translate: '0px' },
           ],
           { duration: animationDuration, easing: 'linear', fill: 'both' }
         );
 
         animation.pause();
-        return [{ animation, element, range }];
+        return { animation, element, range };
       });
-      if (!parts.length) return;
-      // Read before write: updateFallback() calls getBoundingClientRect(), and
-      // this attribute is the CSS selector this file's stylesheet keys its
-      // translate/scale fallback off — setting it first invalidates style,
-      // then the geometry read forces a synchronous layout flush to answer it.
+      if (!parts.length) {
+        delete root.dataset.motionFallback;
+        return;
+      }
       updateFallback();
-      root.dataset.motionFallback = 'true';
     };
 
     configureFallback();

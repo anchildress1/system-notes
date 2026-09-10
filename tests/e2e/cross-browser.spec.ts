@@ -54,49 +54,41 @@ test.describe('project exhibit motion', () => {
     }
 
     for (const part of parts) {
+      const readPose = () =>
+        part.evaluate((element) => {
+          const style = getComputedStyle(element);
+          return `${style.translate}|${style.scale}`;
+        });
       await part.evaluate((element) => {
         const top = element.getBoundingClientRect().top + window.scrollY;
         window.scrollTo(0, top - window.innerHeight * 0.45);
       });
 
-      await expect
-        .poll(() =>
-          part.evaluate((element) => {
-            const style = getComputedStyle(element);
-            return `${style.translate}|${style.scale}`;
-          })
-        )
-        .toMatch(/^(0px|none)\|(1|none)$/);
+      await expect.poll(readPose).toMatch(/^(0px|none)\|(1|none)$/);
 
       await part.evaluate((element) => {
         const top = element.getBoundingClientRect().top + window.scrollY;
         window.scrollTo(0, top - window.innerHeight * 0.82);
       });
-      await expect
-        .poll(() =>
-          part.evaluate((element) => {
-            const style = getComputedStyle(element);
-            return `${style.translate}|${style.scale}`;
-          })
-        )
-        .not.toMatch(/^(0px|none)\|(1|none)$/);
-      const partialStyle = await part.evaluate((element) => {
-        const style = getComputedStyle(element);
-        return `${style.translate}|${style.scale}`;
-      });
+      await expect.poll(readPose).not.toMatch(/^(0px|none)\|(1|none)$/);
+      const partialStyle = await readPose();
+      const partialScroll = await page.evaluate(() => window.scrollY);
 
       await part.evaluate((element) => {
         const top = element.getBoundingClientRect().top + window.scrollY;
         window.scrollTo(0, top - window.innerHeight * 0.78);
       });
-      await expect
-        .poll(() =>
-          part.evaluate((element) => {
-            const style = getComputedStyle(element);
-            return `${style.translate}|${style.scale}`;
-          })
-        )
-        .not.toBe(partialStyle);
+      await expect.poll(readPose).not.toBe(partialStyle);
+
+      await page.evaluate((scroll) => window.scrollTo(0, scroll), partialScroll);
+      await expect.poll(readPose).toBe(partialStyle);
+      await page.evaluate(async () => {
+        window.dispatchEvent(new Event('scroll'));
+        for (let frame = 0; frame < 3; frame += 1) {
+          await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+        }
+      });
+      expect(await readPose()).toBe(partialStyle);
     }
 
     const media = page.locator('[data-testid^="exhibit-"] [data-motion-part="media"]');
