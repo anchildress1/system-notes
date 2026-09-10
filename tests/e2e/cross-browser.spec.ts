@@ -157,6 +157,9 @@ test.describe('project exhibit motion', () => {
         );
       };
 
+      // 0.58/0.18/1.05/0.82 below are ProjectDirectoryMotion.tsx's tapeMotion
+      // source values. Nothing enforces this copy against it; changing the
+      // source means updating this file too.
       const beforeLifted = await turnAt('::before', 'top', 0.58);
       const beforePlaced = await turnAt('::before', 'top', 0.18);
       const beforeLater = await turnAt('::before', 'top', 0.05);
@@ -165,7 +168,10 @@ test.describe('project exhibit motion', () => {
       // Firefox's JS fallback can land a thousandth of a degree past it; a
       // native engine computing its own entry/contain length thresholds
       // against real layout rounds slightly differently again — WebKit
-      // measured a tenth of a degree off zero here.
+      // measured 0.088deg off zero here, hence precision 0 (0.5deg) rather
+      // than precision 1 (0.05deg). Narrow this back to precision 1 if
+      // WebKit's rounding tightens, or if this ever needs to catch a real
+      // fold-boundary regression smaller than half a degree.
       expect(beforePlaced).toBeCloseTo(0, 0);
       expect(beforeLater).toBeCloseTo(0, 0);
 

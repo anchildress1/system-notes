@@ -54,11 +54,13 @@ export function AboutPageMotion({
 
       // Read the stationary scene, never the mark whose transform we are writing.
       // Keyed by source rather than array index: a scene with several targets
-      // shares one entry instead of re-reading the same rect per target.
-      const sources = new Set(annotations.map(({ source }) => source));
-      const tops = new Map(
-        Array.from(sources, (source) => [source, source.getBoundingClientRect().top])
-      );
+      // shares one entry instead of re-reading the same rect per target. Every
+      // annotation's source is set here on the same pass that reads it below,
+      // so the lookup is always present.
+      const tops = new Map<HTMLElement, number>();
+      for (const { source } of annotations) {
+        if (!tops.has(source)) tops.set(source, source.getBoundingClientRect().top);
+      }
       annotations.forEach(({ animation, source, start, end }) => {
         const top = tops.get(source)!;
         const progress = (window.innerHeight * start - top) / (window.innerHeight * (start - end));

@@ -291,7 +291,13 @@
          can't express in a length shorter than its own 0%. The turn is
          already fully folded for that entire stretch regardless, so starting
          at contain 0% instead of the true (negative) offset changes nothing
-         a viewer can see. */
+         a viewer can see.
+
+         0.58/0.18/1.05/0.82 are ProjectDirectoryMotion.tsx's tapeMotion
+         source values, mirrored here by hand as the vh offsets above and
+         again as literal ratios in cross-browser.spec.ts. Nothing enforces
+         the three copies against each other; changing the source means
+         recomputing both. */
       animation:
         exhibit-print-arrival 1ms linear both,
         tape-before-fold-in 1ms linear both,

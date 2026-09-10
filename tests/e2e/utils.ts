@@ -624,21 +624,21 @@ function countFacets(hits: MockAlgoliaHit[]) {
 }
 
 /**
- * Catches every Algolia-hosted request — search, its regional failover hosts,
- * insights, and Agent Studio completions — regardless of path. A path already
- * covered by {@link mockAlgoliaSearch} or {@link mockAlgoliaInsights} falls
- * through to whichever of those is registered, in either order: Playwright
- * resolves the most-recently-registered route first, and this handler defers
- * to the network for anything it recognizes rather than assuming it runs
- * first. Anything else is recorded and aborted instead of reaching the real
- * provider.
+ * Catches every Algolia-hosted request outside the search/insights routes and
+ * aborts it instead of letting it reach the real provider.
  *
+ * @param page The page to route.
  * @returns A live array of unexpected request paths, appended to as they
  *   occur. Assert it is empty after the action that should have stayed
  *   inside the two known routes.
  */
 export async function mockAlgoliaBoundary(page: Page): Promise<string[]> {
   const unexpectedPaths: string[] = [];
+  // A path already covered by mockAlgoliaSearch/mockAlgoliaInsights falls
+  // through to whichever of those is registered, in either order: Playwright
+  // resolves the most-recently-registered route first, and this handler
+  // defers to the network for anything it recognizes rather than assuming
+  // it runs first.
   await page.route(ALGOLIA_HOST_PATTERN, async (route) => {
     const { pathname } = new URL(route.request().url());
     if (ALGOLIA_SEARCH_ROUTE.test(pathname) || ALGOLIA_INSIGHTS_ROUTE.test(pathname)) {

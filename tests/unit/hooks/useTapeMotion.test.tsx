@@ -275,6 +275,16 @@ describe('useTapeMotion', () => {
     );
   });
 
+  it('still logs a degenerate before/after range when the browser owns the timeline natively', () => {
+    nativeTimeline = true;
+    render(<Harness options={{ ...projectOptions, before: { start: 0.5, end: 0.5 } }} />);
+
+    expect(console.error).toHaveBeenCalledWith(
+      'useTapeMotion: before/after range is not finite or has start === end.',
+      { before: { start: 0.5, end: 0.5 }, after: projectOptions.after }
+    );
+  });
+
   it('logs and stays settled when the caller supplies a non-finite before/after range', () => {
     render(<Harness options={{ ...projectOptions, after: { start: Number.NaN, end: 0.82 } }} />);
 

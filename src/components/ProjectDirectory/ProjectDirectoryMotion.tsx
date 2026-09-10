@@ -6,6 +6,10 @@ import { useTapeMotion } from '@/hooks/useTapeMotion';
 const desktopMotionQuery = '(prefers-reduced-motion: no-preference) and (min-width: 48.01rem)';
 const motionPartSelector = '[data-motion-part]';
 const animationDuration = 1000;
+// Mirrored as entry/contain length offsets in ProjectDirectory.module.css's
+// native animation-range, and as literal ratios in cross-browser.spec.ts.
+// Nothing enforces the three copies against each other; changing these
+// values means updating all three.
 const tapeMotion = {
   selector: '[data-motion-part="media"]',
   mediaQuery: desktopMotionQuery,

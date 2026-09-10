@@ -35,15 +35,10 @@ export function useTapeMotion(rootRef: RefObject<HTMLElement | null>, options: T
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    // A native equivalent exists in the stylesheet only for range mode
-    // (ProjectDirectory's viewport-fraction before/after): its timing is
-    // pure viewport-height fractions, expressible as a fixed native range
-    // regardless of element size. exitAbove's (the About portrait's) timing
-    // is anchored to wherever the element naturally sits on the page at
-    // load — no native range is a function of that, only of element size or
-    // viewport size — so it always runs the JS fallback, even natively.
-    if ('before' in options && CSS.supports('animation-timeline: view()')) return;
 
+    // Validated before the native check below: a caller-supplied range must
+    // fail the same way in every browser, not only the ones still running
+    // this fallback.
     if (
       'before' in options &&
       (isDegenerateRange(options.before) || isDegenerateRange(options.after))
@@ -54,6 +49,15 @@ export function useTapeMotion(rootRef: RefObject<HTMLElement | null>, options: T
       });
       return;
     }
+
+    // A native equivalent exists in the stylesheet only for range mode
+    // (ProjectDirectory's viewport-fraction before/after): its timing is
+    // pure viewport-height fractions, expressible as a fixed native range
+    // regardless of element size. exitAbove's (the About portrait's) timing
+    // is anchored to wherever the element naturally sits on the page at
+    // load — no native range is a function of that, only of element size or
+    // viewport size — so it always runs the JS fallback, even natively.
+    if ('before' in options && CSS.supports('animation-timeline: view()')) return;
 
     const preference = window.matchMedia(options.mediaQuery);
     let tapes: Tape[] = [];
