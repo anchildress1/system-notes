@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
+import { useScrollFallback, type ScrollFallbackEntry } from '@/hooks/useScrollFallback';
 import { useTapeMotion } from '@/hooks/useTapeMotion';
 
 const motionQuery = '(prefers-reduced-motion: no-preference) and (min-width: 55.01rem)';
@@ -11,11 +12,71 @@ const tapeMotion = {
   exitAbove: 'body > header',
 };
 
-type Annotation = {
-  animation: Animation;
+type AnnotationGeometry = {
   source: HTMLElement;
   start: number;
   end: number;
+};
+
+// A mistyped --motion-start/--motion-end/--motion-from anywhere in
+// page.module.css otherwise fails invisibly: the browser accepts the CSS and
+// getComputedStyle happily returns garbage, so nothing here ever throws — it
+// just silently produces no motion. Every rejection is logged and skipped
+// instead of left to that silence.
+function discoverAnnotations(root: HTMLElement): ScrollFallbackEntry<AnnotationGeometry>[] {
+  return Array.from(root.querySelectorAll<HTMLElement>('[data-about-scene]')).flatMap((source) =>
+    Array.from(source.querySelectorAll<HTMLElement>('[data-about-motion]')).flatMap((target) => {
+      const style = getComputedStyle(target);
+      const start = Number.parseFloat(style.getPropertyValue('--motion-start'));
+      const end = Number.parseFloat(style.getPropertyValue('--motion-end'));
+      const from = style.getPropertyValue('--motion-from').trim();
+      if (!Number.isFinite(start) || !Number.isFinite(end) || start <= end || !from) {
+        console.error(
+          'AboutPageMotion: --motion-start/--motion-end/--motion-from missing or invalid.',
+          { target, start, end, from }
+        );
+        return [];
+      }
+
+      // An invalid `from` transform is not thrown here — the Web Animations
+      // spec discards an unparseable keyframe value rather than rejecting the
+      // call — so there is nothing to catch below.
+      return [
+        {
+          element: target,
+          keyframes: [{ transform: from }, { transform: 'none' }],
+          geometry: { source, start, end },
+        },
+      ];
+    })
+  );
+}
+
+// Read the stationary scene, never the mark whose transform we are writing.
+// Keyed by source rather than by index: a scene with several targets shares
+// one entry instead of re-reading the same rect per target.
+function readAnnotationProgress(geometries: AnnotationGeometry[]): number[] {
+  const tops = new Map<HTMLElement, number>();
+  for (const { source } of geometries) {
+    if (!tops.has(source)) tops.set(source, source.getBoundingClientRect().top);
+  }
+  return geometries.map(({ source, start, end }) => {
+    const top = tops.get(source)!;
+    return (window.innerHeight * start - top) / (window.innerHeight * (start - end));
+  });
+}
+
+const annotationMotion = {
+  label: 'AboutPageMotion',
+  mediaQuery: motionQuery,
+  duration,
+  discover: discoverAnnotations,
+  readAll: readAnnotationProgress,
+  attributeTiming: 'after' as const,
+  resizeObserverTargets: (root: HTMLElement) => [
+    root,
+    ...Array.from(root.querySelectorAll('[data-about-scene]')),
+  ],
 };
 
 export function AboutPageMotion({
@@ -24,121 +85,7 @@ export function AboutPageMotion({
 }: Readonly<{ children: ReactNode; className: string }>) {
   const rootRef = useRef<HTMLElement>(null);
   useTapeMotion(rootRef, tapeMotion);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root || CSS.supports('animation-timeline: view()')) return;
-    if (!('animate' in Element.prototype)) {
-      console.error('AboutPageMotion: Web Animations API unavailable; scroll motion cannot run.');
-      return;
-    }
-
-    const preference = window.matchMedia(motionQuery);
-    let annotations: Annotation[] = [];
-    let frame: number | undefined;
-
-    const clear = () => {
-      if (frame !== undefined) window.cancelAnimationFrame(frame);
-      frame = undefined;
-      annotations.forEach(({ animation }) => animation.cancel());
-      annotations = [];
-      delete root.dataset.motionFallback;
-    };
-
-    const update = () => {
-      frame = undefined;
-      if (CSS.supports('animation-timeline: view()')) {
-        clear();
-        return;
-      }
-
-      // Read the stationary scene, never the mark whose transform we are writing.
-      // Keyed by source rather than array index: a scene with several targets
-      // shares one entry instead of re-reading the same rect per target. Every
-      // annotation's source is set here on the same pass that reads it below,
-      // so the lookup is always present.
-      const tops = new Map<HTMLElement, number>();
-      for (const { source } of annotations) {
-        if (!tops.has(source)) tops.set(source, source.getBoundingClientRect().top);
-      }
-      annotations.forEach(({ animation, source, start, end }) => {
-        const top = tops.get(source)!;
-        const progress = (window.innerHeight * start - top) / (window.innerHeight * (start - end));
-        // A hidden or zero-height viewport (window.innerHeight === 0) makes this
-        // NaN, and an animation's currentTime throws a TypeError for anything
-        // that isn't finite — out of this same unguarded passive effect.
-        if (!Number.isFinite(progress)) return;
-        animation.currentTime = Math.min(1, Math.max(0, progress)) * duration;
-      });
-    };
-
-    const queueUpdate = () => {
-      if (annotations.length) frame ??= window.requestAnimationFrame(update);
-    };
-
-    // A mistyped --motion-start/--motion-end/--motion-from anywhere in
-    // page.module.css otherwise fails invisibly: the browser accepts the CSS
-    // and getComputedStyle happily returns garbage, so nothing here ever
-    // throws — it just silently produces no motion. Every rejection is logged
-    // and skipped instead of left to that silence.
-    const configure = () => {
-      clear();
-      if (!preference.matches || CSS.supports('animation-timeline: view()')) return;
-
-      annotations = Array.from(root.querySelectorAll<HTMLElement>('[data-about-scene]')).flatMap(
-        (source) =>
-          Array.from(source.querySelectorAll<HTMLElement>('[data-about-motion]')).flatMap(
-            (target) => {
-              const style = getComputedStyle(target);
-              const start = Number.parseFloat(style.getPropertyValue('--motion-start'));
-              const end = Number.parseFloat(style.getPropertyValue('--motion-end'));
-              const from = style.getPropertyValue('--motion-from').trim();
-              if (!Number.isFinite(start) || !Number.isFinite(end) || start <= end || !from) {
-                console.error(
-                  'AboutPageMotion: --motion-start/--motion-end/--motion-from missing or invalid.',
-                  { target, start, end, from }
-                );
-                return [];
-              }
-
-              // An invalid `from` transform is not thrown here — the Web
-              // Animations spec discards an unparseable keyframe value rather
-              // than rejecting the call — so there is nothing to catch below.
-              const animation = target.animate([{ transform: from }, { transform: 'none' }], {
-                duration,
-                easing: 'linear',
-                fill: 'both',
-              });
-              animation.pause();
-              return [{ animation, source, start, end }];
-            }
-          )
-      );
-      if (!annotations.length) return;
-      // Read before write: update() calls getBoundingClientRect(), and this
-      // attribute is what page.module.css keys its scroll-fallback rules off —
-      // setting it first invalidates style, then the geometry read forces a
-      // synchronous layout flush to answer it.
-      update();
-      root.dataset.motionFallback = 'true';
-    };
-
-    const observer = new ResizeObserver(queueUpdate);
-    observer.observe(root);
-    root.querySelectorAll('[data-about-scene]').forEach((source) => observer.observe(source));
-    configure();
-    window.addEventListener('scroll', queueUpdate, { passive: true });
-    window.addEventListener('resize', queueUpdate);
-    preference.addEventListener('change', configure);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', queueUpdate);
-      window.removeEventListener('resize', queueUpdate);
-      preference.removeEventListener('change', configure);
-      clear();
-    };
-  }, []);
+  useScrollFallback(rootRef, annotationMotion);
 
   return (
     <main id="main-content" ref={rootRef} className={className}>
