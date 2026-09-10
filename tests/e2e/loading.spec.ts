@@ -31,11 +31,12 @@ for (const { source, target, label, intent } of [
       if (url.searchParams.has('_rsc')) prefetched.push(url.pathname);
     });
     await page.goto(source);
-    // Next schedules automatic prefetch during idle time after hydration.
-    await page.waitForLoadState('networkidle');
+    const link = page.getByRole('link', { name: label, exact: true });
+    // Next schedules automatic prefetch during idle time after hydration;
+    // wait for the link to hydrate before asserting none has fired yet.
+    await expect(link).toBeVisible();
     expect(prefetched).not.toContain(target);
 
-    const link = page.getByRole('link', { name: label, exact: true });
     if (intent === 'hover') await link.hover();
     else await link.focus();
 

@@ -54,14 +54,13 @@ function stubPlayback() {
     pause,
     load,
     async start() {
-      await act(async () => {
-        fireEvent.playing(audio());
-        for (const request of requests) {
-          if (request.state !== 'pending') continue;
-          request.state = 'settled';
-          request.resolve();
-        }
-      });
+      fireEvent.playing(audio());
+      for (const request of requests) {
+        if (request.state !== 'pending') continue;
+        request.state = 'settled';
+        request.resolve();
+      }
+      await act(async () => {});
     },
     end() {
       paused = true;

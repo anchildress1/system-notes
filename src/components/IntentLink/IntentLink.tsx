@@ -8,7 +8,7 @@ type IntentLinkProps = Pick<
   'href' | 'children' | 'className' | 'aria-current'
 >;
 
-export default function IntentLink(props: IntentLinkProps) {
+export default function IntentLink(props: Readonly<IntentLinkProps>) {
   const [active, setActive] = useState(false);
 
   return (
