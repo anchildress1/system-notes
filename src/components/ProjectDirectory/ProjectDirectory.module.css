@@ -276,28 +276,10 @@
     }
 
     .media {
-      /* Fold ranges are exact, not tuned: --cover-range/entry above are
-         height-relative, but the JS fallback's before/after turn is pure
-         viewport-height fractions (0.58/0.18 and 1.05/0.82 of innerHeight),
-         with no element-height term at all. entry's 0% is defined as this
-         element's own top edge at the scrollport's far edge, so an absolute
-         length offset from it lands on the same viewport-height fraction
-         regardless of this element's height — entry 42vh is (1 - 0.58) *
-         100vh short of that edge, entry 82vh is (1 - 0.18) * 100vh short.
-         after tracks the bottom edge instead, which needs a bottom-anchored
-         start (contain's 0%, not entry's) to stay height-independent the
-         same way — but the fallback's own before-entering threshold (1.05)
-         sits fractionally earlier than contain 0% itself, an offset contain
-         can't express in a length shorter than its own 0%. The turn is
-         already fully folded for that entire stretch regardless, so starting
-         at contain 0% instead of the true (negative) offset changes nothing
-         a viewer can see.
-
-         0.58/0.18/1.05/0.82 are ProjectDirectoryMotion.tsx's tapeMotion
-         source values, mirrored here by hand as the vh offsets above and
-         again as literal ratios in cross-browser.spec.ts. Nothing enforces
-         the three copies against each other; changing the source means
-         recomputing both. */
+      /* entry-crossing 100% anchors the bottom edge even when the print is
+         taller than the viewport; contain switches to its top in that case.
+         These offsets mirror tapeMotion's 0.58/0.18 and 1.05/0.82 viewport
+         fractions in ProjectDirectoryMotion.tsx. */
       animation:
         exhibit-print-arrival 1ms linear both,
         tape-before-fold-in 1ms linear both,
@@ -306,7 +288,7 @@
       animation-range:
         entry 0% cover 36%,
         entry 42vh entry 82vh,
-        contain 0% contain 18vh;
+        entry-crossing calc(100% - 5vh) entry-crossing calc(100% + 18vh);
     }
 
     .references {

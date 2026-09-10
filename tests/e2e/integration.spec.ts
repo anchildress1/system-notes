@@ -1,7 +1,13 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
 import sharp from 'sharp';
-import { mockAlgoliaSearch, test, verifyAboutMotion, verifyAboutPortraitMotion } from './utils';
+import {
+  mockAlgoliaSearch,
+  test,
+  verifyAboutMotion,
+  verifyAboutPortraitMotion,
+  verifyLowerTapeFold,
+} from './utils';
 
 // The workspace stacks below IndexWorkspace.module.css's 47.99rem breakpoint and
 // runs two columns above it. Branching on the project NAME instead pinned the
@@ -10,6 +16,10 @@ import { mockAlgoliaSearch, test, verifyAboutMotion, verifyAboutPortraitMotion }
 const STACK_BREAKPOINT_PX = 768;
 
 test.describe('System Notes redesign', () => {
+  test('keeps the lower tape folding as tall prints enter a short viewport', async ({ page }) => {
+    await verifyLowerTapeFold(page);
+  });
+
   test('loads the filing workspace under the page head', async ({ page }) => {
     await mockAlgoliaSearch(page, [
       {

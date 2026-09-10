@@ -34,6 +34,79 @@ const ALGOLIA_INSIGHTS_ROUTE = /\/1\/events(?:\?|$)/;
 const ALGOLIA_HOST_PATTERN =
   /^https:\/\/[^/]+\.(?:algolia\.net|algolianet\.com|algolia\.io)(?:\/|$)/i;
 
+export async function verifyLowerTapeFold(page: Page) {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/projects');
+  await page.evaluate(async () => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    await document.fonts.ready;
+  });
+  const prints = page.locator('[data-motion-part="media"]');
+
+  // Resize the same page across the point where a print exceeds the viewport.
+  for (const height of [900, 360, 900]) {
+    await page.setViewportSize({ width: 1440, height });
+    expect(await prints.first().evaluate((element) => element.clientHeight > innerHeight)).toBe(
+      height === 360
+    );
+
+    for (const print of [prints.first(), prints.nth(1)]) {
+      const turnAt = async (ratio: number) => {
+        const state = await print.evaluate(async (element, position) => {
+          // The print also arrives with a transform; settle its geometry before sampling tape.
+          for (let frame = 0; frame < 4; frame += 1) {
+            window.scrollTo(
+              0,
+              element.getBoundingClientRect().bottom + scrollY - innerHeight * position
+            );
+            await new Promise<void>((resolve) =>
+              requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+            );
+          }
+          const style = getComputedStyle(element);
+          const turn = Number.parseFloat(style.getPropertyValue('--tape-after-turn'));
+          const start = Number.parseFloat(style.getPropertyValue('--tape-after-start-turn'));
+          const tape = getComputedStyle(element, '::after');
+          return {
+            remaining: turn / start,
+            projected: new DOMMatrix(tape.transform).m11,
+            expectedProjection: Math.cos((turn * Math.PI) / 180),
+            positionError: element.getBoundingClientRect().bottom - innerHeight * position,
+          };
+        }, ratio);
+        expect(Math.abs(state.positionError)).toBeLessThan(1);
+        expect(state.projected).toBeCloseTo(state.expectedProjection, 4);
+        return state.remaining;
+      };
+
+      expect(await turnAt(1.05)).toBeGreaterThan(0.9);
+      const middle = await turnAt(0.935);
+      const middleScroll = await page.evaluate(() => scrollY);
+      // Native timelines ignore the resting tilt; the fallback reads its rendered bounds.
+      // Both must visibly remain mid-fold as the lower corner enters the viewport.
+      expect(middle).toBeGreaterThan(0.25);
+      expect(middle).toBeLessThan(0.75);
+      const later = await turnAt(0.87);
+      expect(later).toBeGreaterThan(0);
+      expect(later).toBeLessThan(middle);
+      expect(await turnAt(0.82)).toBeCloseTo(0, 2);
+      // Restoring a fractional scroll position can round the turn by a fraction of a degree.
+      await page.evaluate((position) => window.scrollTo(0, position), middleScroll);
+      await expect
+        .poll(() =>
+          print.evaluate((element) => {
+            const style = getComputedStyle(element);
+            return (
+              Number.parseFloat(style.getPropertyValue('--tape-after-turn')) /
+              Number.parseFloat(style.getPropertyValue('--tape-after-start-turn'))
+            );
+          })
+        )
+        .toBeCloseTo(middle, 2);
+    }
+  }
+}
+
 async function positionAboutScene(target: Locator, viewportRatio: number) {
   const reachedRatio = await target.evaluate(async (element, ratio) => {
     const source = element.closest('[data-about-scene]');

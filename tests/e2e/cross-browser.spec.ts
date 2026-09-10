@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test, verifyAboutMotion, verifyAboutPortraitMotion } from './utils';
+import { test, verifyAboutMotion, verifyAboutPortraitMotion, verifyLowerTapeFold } from './utils';
 
 test.describe('WebKit compatibility', () => {
   test('keeps the portfolio navigation and theme control usable', async ({ page }) => {
@@ -17,6 +17,10 @@ test.describe('WebKit compatibility', () => {
 
 test.describe('project exhibit motion', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
+
+  test('keeps the lower tape folding as tall prints enter a short viewport', async ({ page }) => {
+    await verifyLowerTapeFold(page);
+  });
 
   test('animates every exhibit layer in supported desktop engines', async ({
     page,
