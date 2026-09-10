@@ -154,6 +154,7 @@ beforeEach(() => {
     const bottom = Number(this.dataset.bottom ?? 0) - scroll;
     return { top, bottom, height: bottom - top } as DOMRect;
   });
+  vi.spyOn(console, 'error').mockImplementation(() => undefined);
 });
 
 afterEach(() => {
@@ -229,8 +230,35 @@ describe('useTapeMotion', () => {
       expect(observers).toHaveLength(0);
       window.dispatchEvent(new Event('scroll'));
       expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+      expect(console.error).toHaveBeenCalledWith(
+        'useTapeMotion: --tape-before-start-turn/--tape-after-start-turn missing or invalid.',
+        expect.objectContaining({ element: screen.getByTestId('tape') })
+      );
     }
   );
+
+  it('logs and stays settled when the caller supplies a degenerate before/after range', () => {
+    render(<Harness options={{ ...projectOptions, before: { start: 0.5, end: 0.5 } }} />);
+
+    expect(screen.getByTestId('tape').style.getPropertyValue('--tape-before-turn')).toBe('');
+    expect(observers).toHaveLength(0);
+    window.dispatchEvent(new Event('scroll'));
+    expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith(
+      'useTapeMotion: before/after range is not finite or has start === end.',
+      { before: { start: 0.5, end: 0.5 }, after: projectOptions.after }
+    );
+  });
+
+  it('logs and stays settled when the caller supplies a non-finite before/after range', () => {
+    render(<Harness options={{ ...projectOptions, after: { start: Number.NaN, end: 0.82 } }} />);
+
+    expect(screen.getByTestId('tape').style.getPropertyValue('--tape-before-turn')).toBe('');
+    expect(console.error).toHaveBeenCalledWith(
+      'useTapeMotion: before/after range is not finite or has start === end.',
+      expect.any(Object)
+    );
+  });
 
   it('does not observe or schedule when motion is disabled or no tape matches', () => {
     matches = false;
@@ -245,6 +273,9 @@ describe('useTapeMotion', () => {
     expect(screen.getByTestId('tape').style.getPropertyValue('--tape-before-turn')).toBe('');
     window.dispatchEvent(new Event('scroll'));
     expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith('useTapeMotion: selector matched no elements.', {
+      selector: '[data-absent]',
+    });
   });
 
   it.each([
@@ -402,6 +433,10 @@ describe('portrait tape leaving the viewport', () => {
 
     expect(turns()).toEqual([0, 0]);
     expect(observers[0].observe).toHaveBeenCalledTimes(2);
+    expect(console.error).toHaveBeenCalledWith(
+      'useTapeMotion: exitAbove selector matched no element; folding against 0.',
+      { exitAbove: portraitOptions.exitAbove }
+    );
     scrollTo(100);
     expect(turns()[0]).toBe(32);
     expect(turns()[1]).toBeLessThan(0);

@@ -107,8 +107,9 @@ beforeEach(() => {
   );
   vi.stubGlobal('innerHeight', 800);
   vi.stubGlobal('scrollY', 0);
-  // A synchronous frame stub assigns the handle after the callback clears it,
-  // making a broken controller appear to support later scroll events.
+  // Deliberately deferred, not synchronous: a synchronous stub would assign the
+  // handle after its own callback already cleared it, making a broken
+  // controller look like it still handles later scroll events.
   vi.stubGlobal(
     'requestAnimationFrame',
     vi.fn((callback: FrameRequestCallback) => {
@@ -154,6 +155,7 @@ beforeEach(() => {
     const height = Number(this.dataset.height ?? '100');
     return { top, bottom: top + height, height } as DOMRect;
   });
+  vi.spyOn(console, 'error').mockImplementation(() => undefined);
 });
 
 afterEach(() => {
@@ -421,6 +423,17 @@ describe('AboutPageMotion', () => {
     expect(animations[0].currentTime).toBeCloseTo(825);
   });
 
+  it('does not throw or move the animation when the viewport has zero height', () => {
+    renderMotion(<Scene top={520} />);
+    expect(animations[0].currentTime).toBeCloseTo(500);
+
+    vi.stubGlobal('innerHeight', 0);
+    window.dispatchEvent(new Event('resize'));
+
+    expect(flushFrames).not.toThrow();
+    expect(animations[0].currentTime).toBeCloseTo(500);
+  });
+
   it('observes layout sources and updates after layout changes without a scroll', () => {
     renderMotion();
     const source = screen.getByTestId('scene-first');
@@ -456,6 +469,21 @@ describe('AboutPageMotion', () => {
     expect(animations[0].element).toBe(screen.getByTestId('target-first'));
     expect(animations[0].currentTime).toBeCloseTo(500);
     expect(flushFrames).not.toThrow();
+    expect(console.error).toHaveBeenCalledWith(
+      'AboutPageMotion: --motion-start/--motion-end/--motion-from missing or invalid.',
+      expect.objectContaining({ target: screen.getByTestId('target-invalid') })
+    );
+  });
+
+  it('leaves content settled and logs when every target on the page is invalid', () => {
+    renderMotion(<Scene start="" />);
+
+    expect(screen.getByRole('main')).not.toHaveAttribute('data-motion-fallback');
+    expect(animations).toHaveLength(0);
+    expect(console.error).toHaveBeenCalledWith(
+      'AboutPageMotion: --motion-start/--motion-end/--motion-from missing or invalid.',
+      expect.any(Object)
+    );
   });
 
   it('ignores sources without targets and targets without a source', () => {
@@ -483,13 +511,16 @@ describe('AboutPageMotion', () => {
     expect(animations).toHaveLength(0);
   });
 
-  it('leaves content settled when the browser cannot create animations', () => {
+  it('leaves content settled and logs when the browser cannot create animations', () => {
     Reflect.deleteProperty(Element.prototype, 'animate');
     renderMotion();
 
     expect(screen.getByRole('main')).not.toHaveAttribute('data-motion-fallback');
     expect(screen.getByText('Judgment stays human.')).toBeVisible();
     expect(observers).toHaveLength(0);
+    expect(console.error).toHaveBeenCalledWith(
+      'AboutPageMotion: Web Animations API unavailable; scroll motion cannot run.'
+    );
   });
 
   it('clears pending motion when the preference changes and resumes at the current position', () => {

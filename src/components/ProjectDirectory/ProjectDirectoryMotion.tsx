@@ -34,7 +34,11 @@ export function ProjectDirectoryMotion({
   useEffect(() => {
     const root = rootRef.current;
 
-    if (!root || CSS.supports('animation-timeline: view()') || !('animate' in Element.prototype)) {
+    if (!root || CSS.supports('animation-timeline: view()')) return;
+    if (!('animate' in Element.prototype)) {
+      console.error(
+        'ProjectDirectoryMotion: Web Animations API unavailable; scroll motion cannot run.'
+      );
       return;
     }
 
@@ -60,6 +64,10 @@ export function ProjectDirectoryMotion({
         const bounds = element.getBoundingClientRect();
         const travel = (window.innerHeight + bounds.height) * range;
         const progress = Math.min(1, Math.max(0, (window.innerHeight - bounds.top) / travel));
+        // A hidden or zero-height viewport makes travel 0 and progress NaN, and
+        // an animation's currentTime throws a TypeError for anything that
+        // isn't finite — out of this same unguarded passive effect.
+        if (!Number.isFinite(progress)) return;
         animation.currentTime = progress * animationDuration;
       });
     };
@@ -75,14 +83,19 @@ export function ProjectDirectoryMotion({
         return;
       }
 
-      root.dataset.motionFallback = 'true';
       const elements = Array.from(root.querySelectorAll<HTMLElement>(motionPartSelector));
       parts = elements.flatMap((element) => {
         const style = getComputedStyle(element);
         // The stylesheet owns the range. Without one there is nothing to scrub
         // against, and a NaN currentTime throws and strands every later part.
         const range = Number.parseFloat(style.getPropertyValue('--cover-range')) / 100;
-        if (!Number.isFinite(range) || range <= 0) return [];
+        if (!Number.isFinite(range) || range <= 0) {
+          console.error('ProjectDirectoryMotion: --cover-range missing or invalid.', {
+            element,
+            range,
+          });
+          return [];
+        }
         const animation = element.animate(
           [
             {
@@ -97,7 +110,13 @@ export function ProjectDirectoryMotion({
         animation.pause();
         return [{ animation, element, range }];
       });
+      if (!parts.length) return;
+      // Read before write: updateFallback() calls getBoundingClientRect(), and
+      // this attribute is the CSS selector this file's stylesheet keys its
+      // translate/scale fallback off — setting it first invalidates style,
+      // then the geometry read forces a synchronous layout flush to answer it.
       updateFallback();
+      root.dataset.motionFallback = 'true';
     };
 
     configureFallback();

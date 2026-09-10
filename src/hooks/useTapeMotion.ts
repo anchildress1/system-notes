@@ -5,11 +5,19 @@ type TapeRange = Readonly<{
   end: number;
 }>;
 
+// The union below reads as "range mode XOR boundary mode," but a literal
+// carrying keys from both branches still type-checks — TS only rejects a key
+// unknown to every member, and each key here belongs to one. No caller does
+// this today; don't rely on the type to catch it if one ever does.
 export type TapeMotionOptions = Readonly<
   { selector: string; mediaQuery: string } & (
     { before: TapeRange; after: TapeRange } | { exitAbove: string }
   )
 >;
+
+function isDegenerateRange(range: TapeRange): boolean {
+  return !Number.isFinite(range.start) || !Number.isFinite(range.end) || range.start === range.end;
+}
 
 type Tape = {
   element: HTMLElement;
@@ -27,12 +35,21 @@ export function useTapeMotion(rootRef: RefObject<HTMLElement | null>, options: T
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    const elements = Array.from(root.querySelectorAll<HTMLElement>(options.selector));
-    if (!elements.length) return;
-    const boundary = 'exitAbove' in options ? document.querySelector(options.exitAbove) : null;
+
+    if (
+      'before' in options &&
+      (isDegenerateRange(options.before) || isDegenerateRange(options.after))
+    ) {
+      console.error('useTapeMotion: before/after range is not finite or has start === end.', {
+        before: options.before,
+        after: options.after,
+      });
+      return;
+    }
 
     const preference = window.matchMedia(options.mediaQuery);
     let tapes: Tape[] = [];
+    let boundary: Element | null = null;
     let frame: number | undefined;
     let observer: ResizeObserver | undefined;
 
@@ -81,11 +98,31 @@ export function useTapeMotion(rootRef: RefObject<HTMLElement | null>, options: T
       clear();
       if (!preference.matches) return;
 
+      const elements = Array.from(root.querySelectorAll<HTMLElement>(options.selector));
+      if (!elements.length) {
+        console.error('useTapeMotion: selector matched no elements.', {
+          selector: options.selector,
+        });
+        return;
+      }
+      boundary = 'exitAbove' in options ? document.querySelector(options.exitAbove) : null;
+      if ('exitAbove' in options && !boundary) {
+        console.error('useTapeMotion: exitAbove selector matched no element; folding against 0.', {
+          exitAbove: options.exitAbove,
+        });
+      }
+
       tapes = elements.flatMap((element) => {
         const style = getComputedStyle(element);
         const beforeTurn = Number.parseFloat(style.getPropertyValue('--tape-before-start-turn'));
         const afterTurn = Number.parseFloat(style.getPropertyValue('--tape-after-start-turn'));
-        if (!Number.isFinite(beforeTurn) || !Number.isFinite(afterTurn)) return [];
+        if (!Number.isFinite(beforeTurn) || !Number.isFinite(afterTurn)) {
+          console.error(
+            'useTapeMotion: --tape-before-start-turn/--tape-after-start-turn missing or invalid.',
+            { element, beforeTurn, afterTurn }
+          );
+          return [];
+        }
         return [{ element, beforeTurn, afterTurn }];
       });
       if (!tapes.length) return;

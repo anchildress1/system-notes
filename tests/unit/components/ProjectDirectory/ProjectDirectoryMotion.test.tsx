@@ -37,6 +37,7 @@ function stubEnvironment({ supportsTimeline = false, prefersMotion = true } = {}
   });
   vi.stubGlobal('cancelAnimationFrame', vi.fn());
   vi.stubGlobal('innerHeight', 800);
+  vi.spyOn(console, 'error').mockImplementation(() => undefined);
   vi.stubGlobal(
     'ResizeObserver',
     class {
@@ -117,13 +118,56 @@ describe('ProjectDirectoryMotion', () => {
 
   it('skips a part the stylesheet gives no range', () => {
     stubEnvironment();
-    renderParts(<div data-motion-part="caption" />);
+    const caption = <div data-motion-part="caption" data-testid="caption" />;
+    renderParts(caption);
 
     // Four parts in the markup, three with a range. Scrubbing the fourth would
     // set currentTime to NaN, which throws and strands every part after it.
     expect(animations).toHaveLength(3);
     window.dispatchEvent(new Event('scroll'));
     expect(flushFrames).not.toThrow();
+    expect(console.error).toHaveBeenCalledWith(
+      'ProjectDirectoryMotion: --cover-range missing or invalid.',
+      expect.objectContaining({ element: screen.getByTestId('caption') })
+    );
+  });
+
+  it('leaves the catalogue unmarked when every part is skipped', () => {
+    stubEnvironment();
+    render(
+      <ProjectDirectoryMotion className="catalogue">
+        <div data-motion-part="caption" />
+      </ProjectDirectoryMotion>
+    );
+
+    expect(animations).toHaveLength(0);
+    expect(screen.getByRole('region')).not.toHaveAttribute('data-motion-fallback');
+  });
+
+  it('logs and stays static when the Web Animations API is unavailable', () => {
+    stubEnvironment();
+    Reflect.deleteProperty(Element.prototype, 'animate');
+    renderParts();
+
+    expect(screen.getByRole('region')).not.toHaveAttribute('data-motion-fallback');
+    expect(animations).toHaveLength(0);
+    expect(console.error).toHaveBeenCalledWith(
+      'ProjectDirectoryMotion: Web Animations API unavailable; scroll motion cannot run.'
+    );
+  });
+
+  it('does not throw or move an animation when the viewport has zero height', () => {
+    stubEnvironment();
+    renderParts();
+    animations.forEach((animation) => {
+      animation.currentTime = 0;
+    });
+
+    vi.stubGlobal('innerHeight', 0);
+    window.dispatchEvent(new Event('scroll'));
+
+    expect(flushFrames).not.toThrow();
+    animations.forEach((animation) => expect(animation.currentTime).toBe(0));
   });
 
   it('scrubs on every scroll, not just the first', () => {
