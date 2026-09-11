@@ -63,13 +63,6 @@ for (const width of [412, 880, 881, 1097, 1440]) {
           }
         });
         await page.goto('/about');
-        // The srcset candidate is chosen once, from whatever width is in effect
-        // when the browser first evaluates `sizes` — before this test reads
-        // clientWidth to compute its own "expected" candidate. A grid column
-        // sized around unsettled fallback-font metrics can still be reflowing
-        // at that point; reading clientWidth before the swap-in compares the
-        // fetch against a width it was never computed from.
-        await page.evaluate(() => document.fonts.ready);
         const portrait = page.locator('[data-theme-image="dark"] img');
         await portrait.scrollIntoViewIfNeeded();
         await portrait.evaluate((image: HTMLImageElement) => image.decode());
@@ -79,7 +72,69 @@ for (const width of [412, 880, 881, 1097, 1440]) {
             const [src, descriptor] = candidate.trim().split(/\s+/);
             return { src, width: Number.parseInt(descriptor) };
           });
-          const requiredWidth = image.clientWidth * devicePixelRatio;
+
+          // `sizes` is a hand-written approximation of the box's CSS width,
+          // evaluated once by the browser when it picks a srcset candidate.
+          // image.clientWidth measures a *different* thing — the box's real
+          // rendered width — and the two aren't guaranteed to agree exactly;
+          // CI's scrollbar reservation nudges them apart by enough to cross
+          // a ladder rung even once fonts and layout are fully settled.
+          // Evaluate the sizes attribute's own expression instead, the way
+          // the HTML spec says a UA must: as a `width` value under its
+          // matching media condition.
+          // A plain split(',') also breaks on the commas inside min()/calc()
+          // argument lists, so the branch split has to track paren depth.
+          const splitTopLevel = (value: string): string[] => {
+            const parts: string[] = [];
+            let depth = 0;
+            let current = '';
+            for (const char of value) {
+              if (char === '(') depth += 1;
+              else if (char === ')') depth -= 1;
+              if (char === ',' && depth === 0) {
+                parts.push(current.trim());
+                current = '';
+              } else {
+                current += char;
+              }
+            }
+            parts.push(current.trim());
+            return parts;
+          };
+
+          // A leading media condition is itself parenthesized, so pulling it
+          // off with a greedy regex over-matches into the nested min()/calc()
+          // that follows — same paren-depth problem as the comma split above.
+          const extractCondition = (branch: string): [string, string] | null => {
+            if (branch[0] !== '(') return null;
+            let depth = 0;
+            for (let i = 0; i < branch.length; i += 1) {
+              if (branch[i] === '(') depth += 1;
+              else if (branch[i] === ')') {
+                depth -= 1;
+                if (depth === 0) return [branch.slice(0, i + 1), branch.slice(i + 1).trim()];
+              }
+            }
+            return null;
+          };
+
+          const sizesList = splitTopLevel(image.getAttribute('sizes')!);
+          const fallback = sizesList[sizesList.length - 1];
+          let sourceSize = fallback;
+          for (const branch of sizesList.slice(0, -1)) {
+            const parsed = extractCondition(branch);
+            if (parsed && window.matchMedia(parsed[0]).matches) {
+              sourceSize = parsed[1];
+              break;
+            }
+          }
+
+          const probe = document.createElement('div');
+          probe.style.cssText = `position: fixed; visibility: hidden; height: 0; width: ${sourceSize};`;
+          document.body.appendChild(probe);
+          const requiredWidth = probe.getBoundingClientRect().width * devicePixelRatio;
+          probe.remove();
+
           const fitting = widths.find(({ width }) => width >= requiredWidth) ?? widths.at(-1)!;
           return { actual: new URL(image.currentSrc).pathname, expected: fitting.src };
         });
