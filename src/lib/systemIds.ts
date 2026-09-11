@@ -10,6 +10,7 @@
 export const PROJECT_NAMES = [
   'Save the Sun',
   'Unearthed',
+  'Happen to Have?',
   'Carbon Trace',
   'Metal Birds Feed',
   'Vestige',
