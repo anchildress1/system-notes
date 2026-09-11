@@ -63,6 +63,13 @@ for (const width of [412, 880, 881, 1097, 1440]) {
           }
         });
         await page.goto('/about');
+        // The srcset candidate is chosen once, from whatever width is in effect
+        // when the browser first evaluates `sizes` — before this test reads
+        // clientWidth to compute its own "expected" candidate. A grid column
+        // sized around unsettled fallback-font metrics can still be reflowing
+        // at that point; reading clientWidth before the swap-in compares the
+        // fetch against a width it was never computed from.
+        await page.evaluate(() => document.fonts.ready);
         const portrait = page.locator('[data-theme-image="dark"] img');
         await portrait.scrollIntoViewIfNeeded();
         await portrait.evaluate((image: HTMLImageElement) => image.decode());

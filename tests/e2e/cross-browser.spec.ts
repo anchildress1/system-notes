@@ -205,13 +205,24 @@ test.describe('project exhibit motion', () => {
 test.describe('About annotation motion', () => {
   test('slowly presses portrait tape on load and scrubs each edge when scrolling out and back', async ({
     page,
+    browserName,
   }) => {
+    // WebKit under CI has measurably coarser animation-delay event timing than
+    // desktop WebKit does locally: two separate runs observed 79ms and 123ms
+    // where local always shows the full ~250ms nominal gap. Firefox on the
+    // same CI runner doesn't need this.
+    test.slow(browserName === 'webkit', 'animationstart timing is coarser on CI WebKit');
     await verifyAboutPortraitMotion(page);
   });
 
   test('registers About annotations within the scroll window and keeps reading copy still', async ({
     page,
+    browserName,
   }) => {
+    // Many sequential scroll-and-settle steps; under CI's slower WebKit this
+    // accumulates past the default 30s test timeout even though no single
+    // step is broken. Firefox on the same CI runner doesn't need this.
+    test.slow(browserName === 'webkit', 'many sequential scroll settles are slow on CI WebKit');
     await verifyAboutMotion(page);
   });
 });
