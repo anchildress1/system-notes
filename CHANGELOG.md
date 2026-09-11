@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.1.0](https://github.com/anchildress1/system-notes/compare/v3.0.0...v3.1.0) (2026-09-11)
+
+
+### Features
+
+* animate About and the project directory on scroll ([#153](https://github.com/anchildress1/system-notes/issues/153)) ([7039a7f](https://github.com/anchildress1/system-notes/commit/7039a7f2cc620798350688cc3026ac3f8f521486))
+* **projects:** curate the exhibits as a finite catalogue ([#144](https://github.com/anchildress1/system-notes/issues/144)) ([87a49b1](https://github.com/anchildress1/system-notes/commit/87a49b1df5d11469b56ce63848da1e88cf39def4))
+
+
+### Bug Fixes
+
+* derive About's proof-panel stat assertions from live project data ([#156](https://github.com/anchildress1/system-notes/issues/156)) ([8495696](https://github.com/anchildress1/system-notes/commit/84956966dc338f93c962304aa157c8152c5b8742))
+* **seo:** stop the JSON-LD claiming a price nothing charges ([#146](https://github.com/anchildress1/system-notes/issues/146)) ([d5d37b9](https://github.com/anchildress1/system-notes/commit/d5d37b9f93dc5d544a137084ca72cfcb0fda3c25))
+
 ## [3.0.0](https://github.com/anchildress1/system-notes/compare/v2.5.4...v3.0.0) (2026-08-31)
 
 
