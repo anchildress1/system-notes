@@ -44,6 +44,20 @@
   /* The same swipe again, at 16% fill-opacity: a wash for a resting state next
      to the full-ink band a hover or active state draws. */
   --stroke-swipe-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23f9cc21' fill-opacity='0.16'/%3E%3C/svg%3E");
+  /* The same swipe once more, ink pooling low and thinning where it lifts —
+     the --mark-drag/--mark-lift highlight this file's history once painted
+     with a mask on the text itself, which clipped descenders and italics
+     wherever the mask's edge crossed them (see the headline .marked rule
+     below). A gradient baked into the PATH'S OWN FILL instead of the flat
+     hex stays a background, same as -inked, so it never touches the glyphs
+     and still clones correctly across wrapped lines via box-decoration-break.
+     Stops are --mark-drag/--mark-lift pre-blended over --mark's own
+     0.549/0.502 alpha, in sRGB, since a data URI cannot read a custom
+     property; recompute by hand if either token's value changes. Percentages
+     are of the PATH's own bounding box (the default gradientUnits), not the
+     full viewBox — the ink pools within the stroke itself, not the padding
+     around it. */
+  --stroke-swipe-smudged: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fbd651'/%3E%3Cstop offset='0.06' stop-color='%23fbd651'/%3E%3Cstop offset='0.24' stop-color='%23f9cc21'/%3E%3Cstop offset='0.52' stop-color='%23f9cc21'/%3E%3Cstop offset='0.74' stop-color='%23e9bf25'/%3E%3Cstop offset='0.92' stop-color='%23f9cc21'/%3E%3Cstop offset='1' stop-color='%23f9cc21'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='url(%23g)'/%3E%3C/svg%3E");
   --mark-soft: oklch(0.86 0.17 92 / 0.16);
   /* Sized for a halo around a 10px tile. --mark-soft is a panel-wide wash and
      disappears at that scale. */
@@ -853,8 +867,10 @@ main {
   -webkit-box-decoration-break: clone;
   color: var(--mark-ink);
   /* A background fragments with the line without clipping italic letters or
-     descenders, which a mask on the text itself cannot do. */
-  background: var(--stroke-swipe-inked) 0 50% / 100% 100% no-repeat;
+     descenders, which a mask on the text itself cannot do. -smudged, not
+     -inked: the headline mark carries the ink-pools-low texture; the smaller
+     marks (.marked-soft) stay flat on -inked. */
+  background: var(--stroke-swipe-smudged) 0 50% / 100% 100% no-repeat;
 }
 
 /* background-image, not background-color: forced-colors already strips the
