@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
 import sharp from 'sharp';
+import { getProjects } from '@/lib/api';
+import { groupProjects } from '@/lib/projectStatus';
 import {
   mockAlgoliaSearch,
   test,
@@ -281,9 +283,15 @@ test.describe('System Notes redesign', () => {
     const portraits = page.getByAltText(/portrait of Ashley Childress/i);
     await expect(portraits).toHaveCount(2);
     await expect(portraits.locator('visible=true')).toHaveCount(1);
-    await expect(page.getByText('20', { exact: true })).toBeVisible();
-    await expect(page.getByText('14', { exact: true })).toBeVisible();
-    await expect(page.getByText('3', { exact: true })).toBeVisible();
+    // Derived from the same data the page renders from, not hardcoded: a
+    // literal here silently drifted out of sync the last time a project's
+    // status or count changed, and nothing caught it until CI failed.
+    const projects = getProjects();
+    const groups = groupProjects(projects);
+    const awardedCount = projects.filter((project) => project.award).length;
+    await expect(page.getByText(`${projects.length}`, { exact: true })).toBeVisible();
+    await expect(page.getByText(`${groups.current.length}`, { exact: true })).toBeVisible();
+    await expect(page.getByText(`${awardedCount}`, { exact: true })).toBeVisible();
     await expect(page.getByText('Judgment stays human.', { exact: true })).toHaveCount(1);
     await expect(
       page.getByText(/I grew up in a coal-mining town in southwest Virginia/)
