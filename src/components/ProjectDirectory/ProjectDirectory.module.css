@@ -5,12 +5,14 @@
 }
 
 .exhibit {
-  --copy-entry: 3.5rem;
+  --exhibit-gap: clamp(1.25rem, 3vw, 3rem);
+  /* Both columns enter toward this gutter; their combined travel must fit it. */
+  --copy-entry: calc(var(--exhibit-gap) / 2);
   --links-entry: 5rem;
-  --media-entry: -4.5rem;
+  --media-entry: calc(var(--exhibit-gap) / -2);
   display: grid;
   align-items: start;
-  column-gap: clamp(1.25rem, 3vw, 3rem);
+  column-gap: var(--exhibit-gap);
   row-gap: 0;
   /* The references belong to the copy, so they sit in its column rather than
      spanning the exhibit. Spanning, they ran to the article's edge while the copy
@@ -24,9 +26,9 @@
 }
 
 .exhibit:nth-child(even) {
-  --copy-entry: -3.5rem;
+  --copy-entry: calc(var(--exhibit-gap) / -2);
   --links-entry: -5rem;
-  --media-entry: 4.5rem;
+  --media-entry: calc(var(--exhibit-gap) / 2);
   grid-template-areas:
     'media heading'
     'media copy'
@@ -74,9 +76,9 @@
 .award {
   composes: marked-soft from global;
   display: inline;
-  color: var(--bone);
   font-family: var(--font-display);
-  font-size: var(--fine);
+  /* Its own size, not --fine: this is a claim of merit, not a caption. */
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
@@ -239,6 +241,32 @@
   }
 }
 
+/* Defined locally rather than shared from globals.css: CSS Modules hashes an
+   animation-name reference inside this file regardless of where the
+   matching @keyframes rule lives, so a shared definition would ship under a
+   name this file's own animation-name never resolves to. The properties
+   these animate are still registered once, globally, via @property in
+   globals.css. */
+@keyframes tape-before-fold-in {
+  from {
+    --tape-before-turn: var(--tape-before-start-turn);
+  }
+
+  to {
+    --tape-before-turn: 0deg;
+  }
+}
+
+@keyframes tape-after-fold-in {
+  from {
+    --tape-after-turn: var(--tape-after-start-turn);
+  }
+
+  to {
+    --tape-after-turn: 0deg;
+  }
+}
+
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) and (min-width: 48.01rem) {
     .heading,
@@ -249,9 +277,19 @@
     }
 
     .media {
-      animation: exhibit-print-arrival 1ms linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 36%;
+      /* entry-crossing 100% anchors the bottom edge even when the print is
+         taller than the viewport; contain switches to its top in that case.
+         These offsets mirror tapeMotion's 0.58/0.18 and 1.05/0.82 viewport
+         fractions in ProjectDirectoryMotion.tsx. */
+      animation:
+        exhibit-print-arrival 1ms linear both,
+        tape-before-fold-in 1ms linear both,
+        tape-after-fold-in 1ms linear both;
+      animation-timeline: view(), view(), view();
+      animation-range:
+        entry 0% cover 36%,
+        entry 42vh entry 82vh,
+        entry-crossing calc(100% - 5vh) entry-crossing calc(100% + 18vh);
     }
 
     .references {

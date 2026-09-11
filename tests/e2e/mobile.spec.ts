@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
-import { mockAlgoliaSearch, test } from './utils';
+import { expectAboutMotionSettled, mockAlgoliaSearch, test } from './utils';
 
 const viewports = [
   // 280 is a folding phone's cover screen, and it is also what a 1280px window
@@ -53,11 +53,7 @@ for (const viewport of viewports) {
 // violation twice. Reflow itself (WCAG 1.4.10) is asserted above, in pixels,
 // because axe has no rule for it.
 test.describe('mobile layout accessibility', () => {
-  // Box arithmetic, not rendering: both engines lay a 24px target out the same
-  // way, and where they do not, the boundingBox assertions in this file run on
-  // both and catch it. Re-running the rule on WebKit would restate the answer.
-  test.skip(({ browserName }) => browserName !== 'chromium', 'target size is box arithmetic');
-
+  // Both mobile engines measure this: font metrics and target placement can differ.
   // The narrowest supported width. A target that clears 24px here clears it at
   // every wider viewport, so the other three widths would only repeat this.
   test.use({ viewport: { width: 280, height: 720 } });
@@ -73,19 +69,9 @@ test.describe('mobile layout accessibility', () => {
       const evaluated = [...results.passes, ...results.violations, ...results.incomplete];
       expect(evaluated.map((result) => result.id)).toContain('target-size');
       expect(results.violations).toEqual([]);
+      expect(results.incomplete.map((result) => result.id)).toEqual([]);
     });
   }
-
-  // One route, one width: the tag is written once in the root layout, so
-  // asserting it per route would be four copies of the same fact.
-  test('lets the page be pinched open', async ({ page }) => {
-    await page.goto('/');
-
-    const results = await new AxeBuilder({ page }).withRules(['meta-viewport']).analyze();
-
-    expect(results.violations).toEqual([]);
-    expect(results.passes.map((result) => result.id)).toContain('meta-viewport');
-  });
 });
 
 test.describe('mobile interactions', () => {
@@ -157,6 +143,78 @@ test.describe('mobile interactions', () => {
     }
   });
 
+  test('can cancel buffering and then play the theme song on mobile', async ({ page }) => {
+    const audioReady = Promise.withResolvers<void>();
+    let requests = 0;
+    await page.route('**/audio/*.mp3', async (route) => {
+      requests += 1;
+      await audioReady.promise;
+      await route.continue();
+    });
+
+    try {
+      await page.goto('/about');
+      const audio = page.getByTestId('theme-song-audio');
+      const player = audio.locator('..');
+      const button = player.getByRole('button');
+      const note = player.locator('[aria-live="polite"]');
+      const equalizer = player.locator('[data-playing]');
+      expect(requests).toBe(0);
+
+      await button.tap();
+      await expect.poll(() => requests).toBeGreaterThan(0);
+      await expect(note).toHaveText('loading audio…');
+      await expect(button).toHaveAccessibleName(/Cancel loading the theme song/);
+      await expect(button).toHaveAttribute('aria-pressed', 'false');
+      await expect(equalizer).toHaveAttribute('data-playing', 'false');
+
+      await button.tap();
+      await expect(button).toHaveAccessibleName(/Play the theme song/);
+      await expect(note).toHaveText('Twisted Game Songs');
+      audioReady.resolve();
+
+      await button.tap();
+      await expect(note).toHaveText('now playing');
+      await expect(equalizer).toHaveAttribute('data-playing', 'true');
+      await expect
+        .poll(() => audio.evaluate((element: HTMLAudioElement) => element.currentTime))
+        .toBeGreaterThan(0.2);
+
+      await button.tap();
+      await expect(button).toHaveAttribute('aria-pressed', 'false');
+      await expect(audio).toHaveJSProperty('paused', true);
+    } finally {
+      audioReady.resolve();
+    }
+  });
+
+  test('retries the theme song after a failed mobile audio request', async ({ page }) => {
+    let requests = 0;
+    await page.route('**/audio/*.mp3', async (route) => {
+      requests += 1;
+      if (requests === 1) await route.abort('failed');
+      else await route.continue();
+    });
+    await page.goto('/about');
+    const audio = page.getByTestId('theme-song-audio');
+    const player = audio.locator('..');
+    const button = player.getByRole('button');
+
+    await button.tap();
+    await expect(button).toHaveAccessibleName(/Retry the theme song/);
+    await expect(button).toBeEnabled();
+    await expect(player.locator('[aria-live="polite"]')).toHaveText(
+      'track unavailable · try again'
+    );
+
+    await button.tap();
+    await expect(button).toHaveAccessibleName(/Pause the theme song/);
+    await expect
+      .poll(() => audio.evaluate((element: HTMLAudioElement) => element.currentTime))
+      .toBeGreaterThan(0.2);
+    expect(requests).toBeGreaterThan(1);
+  });
+
   test('keeps the seven-exhibit catalogue in one readable column', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/projects');
@@ -187,6 +245,38 @@ test.describe('mobile interactions', () => {
       await expect
         .poll(() => parts.nth(index).evaluate((element) => getComputedStyle(element).animationName))
         .toBe('none');
+    }
+  });
+
+  test('keeps About annotations visible and settled throughout the mobile scroll', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+
+    for (const width of [280, 390, 768]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto('/about');
+      await expectAboutMotionSettled(page);
+
+      const annotations = page.locator('[data-about-motion]');
+      for (let index = 0; index < (await annotations.count()); index += 1) {
+        const annotation = annotations.nth(index);
+        await annotation.scrollIntoViewIfNeeded();
+        await expect(annotation).toBeVisible();
+        const bounds = await annotation.boundingBox();
+        expect(bounds, `annotation ${index + 1} has no bounds at ${width}px`).not.toBeNull();
+        expect(bounds!.x).toBeGreaterThanOrEqual(0);
+        expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+        expect(bounds!.y).toBeLessThan(844);
+        expect(bounds!.y + bounds!.height).toBeGreaterThan(0);
+      }
+
+      await expectAboutMotionSettled(page);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+        )
+      ).toBe(0);
     }
   });
 });

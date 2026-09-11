@@ -37,6 +37,14 @@ function stubEnvironment({ supportsTimeline = false, prefersMotion = true } = {}
   });
   vi.stubGlobal('cancelAnimationFrame', vi.fn());
   vi.stubGlobal('innerHeight', 800);
+  vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe = vi.fn();
+      disconnect = vi.fn();
+    }
+  );
 
   Element.prototype.animate = vi.fn(() => {
     const animation = { cancel: vi.fn(), pause: vi.fn(), currentTime: 0 } as FakeAnimation;
@@ -100,6 +108,75 @@ describe('ProjectDirectoryMotion', () => {
     animations.forEach((animation) => expect(animation.pause).toHaveBeenCalled());
   });
 
+  it('captures the entry transform from the active fallback stylesheet', () => {
+    stubEnvironment();
+    const stylesheet = document.createElement('style');
+    stylesheet.textContent = `
+      .catalogue [data-motion-part] { --cover-range: 32%; }
+      .catalogue[data-motion-fallback='true'] [data-motion-part] {
+        scale: 0.9;
+        translate: 40px 20px;
+      }
+    `;
+    document.head.append(stylesheet);
+
+    try {
+      render(
+        <ProjectDirectoryMotion className="catalogue">
+          <div data-motion-part="copy" />
+        </ProjectDirectoryMotion>
+      );
+
+      expect(Element.prototype.animate).toHaveBeenCalledWith(
+        [
+          { scale: '0.9', translate: '40px 20px' },
+          { scale: '1', translate: '0px' },
+        ],
+        expect.objectContaining({ fill: 'both' })
+      );
+      expect(animations).toHaveLength(1);
+      expect(animations[0].pause).toHaveBeenCalled();
+    } finally {
+      stylesheet.remove();
+    }
+  });
+
+  it('reads every initial position before creating animations at a restored scroll position', () => {
+    stubEnvironment();
+    vi.stubGlobal('scrollY', 500);
+    const operations: string[] = [];
+    vi.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockImplementation(() => {
+      operations.push('top');
+      return 1100;
+    });
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(() => {
+      operations.push('height');
+      return 200;
+    });
+    const animate = vi.mocked(Element.prototype.animate).getMockImplementation()!;
+    vi.spyOn(Element.prototype, 'animate').mockImplementation(function (...args) {
+      operations.push('animate');
+      return animate.apply(this, args);
+    });
+
+    renderParts();
+
+    expect(operations).toEqual([
+      'top',
+      'height',
+      'top',
+      'height',
+      'top',
+      'height',
+      'animate',
+      'animate',
+      'animate',
+    ]);
+    expect(animations[0].currentTime).toBeCloseTo(625, 2);
+    expect(animations[1].currentTime).toBeCloseTo(555.556, 2);
+    expect(animations[2].currentTime).toBeCloseTo(833.333, 2);
+  });
+
   it('animates nothing when reduced motion is asked for', () => {
     stubEnvironment({ prefersMotion: false });
     renderParts();
@@ -110,13 +187,64 @@ describe('ProjectDirectoryMotion', () => {
 
   it('skips a part the stylesheet gives no range', () => {
     stubEnvironment();
-    renderParts(<div data-motion-part="caption" />);
+    const caption = <div data-motion-part="caption" data-testid="caption" />;
+    renderParts(caption);
 
     // Four parts in the markup, three with a range. Scrubbing the fourth would
     // set currentTime to NaN, which throws and strands every part after it.
     expect(animations).toHaveLength(3);
     window.dispatchEvent(new Event('scroll'));
     expect(flushFrames).not.toThrow();
+    expect(console.error).toHaveBeenCalledWith(
+      'ProjectDirectoryMotion: --cover-range missing or invalid.',
+      expect.objectContaining({ element: screen.getByTestId('caption') })
+    );
+  });
+
+  it('leaves the catalogue unmarked when every part is skipped', () => {
+    stubEnvironment();
+    render(
+      <ProjectDirectoryMotion className="catalogue">
+        <div data-motion-part="caption" />
+      </ProjectDirectoryMotion>
+    );
+
+    expect(animations).toHaveLength(0);
+    expect(screen.getByRole('region')).not.toHaveAttribute('data-motion-fallback');
+  });
+
+  it('logs and stays static when the Web Animations API is unavailable', () => {
+    stubEnvironment();
+    Reflect.deleteProperty(Element.prototype, 'animate');
+    renderParts();
+
+    expect(screen.getByRole('region')).not.toHaveAttribute('data-motion-fallback');
+    expect(animations).toHaveLength(0);
+    expect(console.error).toHaveBeenCalledWith(
+      'ProjectDirectoryMotion: Web Animations API unavailable; scroll motion cannot run.'
+    );
+  });
+
+  it.each([0, 800])('recovers from a zero-height viewport after mounting at %ipx', (height) => {
+    stubEnvironment();
+    vi.stubGlobal('innerHeight', height);
+    expect(() => renderParts()).not.toThrow();
+    expect(animations).toHaveLength(3);
+    animations.forEach((animation) => {
+      expect(Number.isFinite(animation.currentTime)).toBe(true);
+      animation.currentTime = 0;
+    });
+
+    vi.stubGlobal('innerHeight', 0);
+    window.dispatchEvent(new Event('scroll'));
+
+    expect(flushFrames).not.toThrow();
+    animations.forEach((animation) => expect(animation.currentTime).toBe(0));
+
+    vi.stubGlobal('innerHeight', 800);
+    window.dispatchEvent(new Event('resize'));
+    flushFrames();
+    animations.forEach((animation) => expect(animation.currentTime).toBe(1000));
   });
 
   it('scrubs on every scroll, not just the first', () => {
@@ -140,6 +268,51 @@ describe('ProjectDirectoryMotion', () => {
     window.dispatchEvent(new Event('scroll'));
     flushFrames();
     animations.forEach((animation) => expect(animation.currentTime).toBeGreaterThan(0));
+  });
+
+  it.each([
+    { label: 'one offset parent', offsets: [[996, 4]] },
+    {
+      label: 'three offset parents',
+      offsets: [
+        [496, 4],
+        [290, 10],
+        [193, 7],
+      ],
+    },
+  ])('reaches the same pose on repeated scrolls and reversals with $label', ({ offsets }) => {
+    stubEnvironment();
+    renderParts();
+    const catalogue = screen.getByRole('region');
+    const media = catalogue.querySelector<HTMLElement>('[data-motion-part="media"]')!;
+    const animation = animations[1];
+    vi.spyOn(media, 'offsetHeight', 'get').mockReturnValue(200);
+    vi.spyOn(media, 'offsetTop', 'get').mockReturnValue(100);
+    vi.spyOn(media, 'offsetParent', 'get').mockReturnValue(catalogue);
+    const ancestors = offsets.map((_, index) =>
+      index === 0 ? catalogue : document.createElement('div')
+    );
+    ancestors.forEach((ancestor, index) => {
+      vi.spyOn(ancestor, 'offsetTop', 'get').mockReturnValue(offsets[index][0]);
+      vi.spyOn(ancestor, 'clientTop', 'get').mockReturnValue(offsets[index][1]);
+      vi.spyOn(ancestor, 'offsetParent', 'get').mockReturnValue(ancestors[index + 1] ?? null);
+    });
+    vi.spyOn(media, 'getBoundingClientRect').mockImplementation(() => {
+      const progress = animation.currentTime / 1000;
+      return {
+        top: 1100 - window.scrollY + 32 * (1 - progress),
+        height: 200 * (0.94 + 0.06 * progress),
+      } as DOMRect;
+    });
+    animation.currentTime = 0;
+
+    for (const scrollY of [500, 500, 1000, 500]) {
+      vi.stubGlobal('scrollY', scrollY);
+      window.dispatchEvent(new Event('scroll'));
+      flushFrames();
+
+      expect(animation.currentTime).toBeCloseTo(scrollY === 1000 ? 1000 : 555.556, 2);
+    }
   });
 
   it('presses each tape edge down at its own viewport position', () => {

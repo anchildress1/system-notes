@@ -1,28 +1,16 @@
 .main {
   width: min(100%, var(--page-max));
-  /* No tail. .contact closes the page with its own; both together left a
-     15rem void above the footer. */
   padding: 0 var(--gutter);
   margin: 0 auto;
 }
+
 .hero {
   display: grid;
-  min-height: calc(100svh - var(--header-height));
   align-items: start;
-  align-content: start;
-  padding-block: var(--head-lead) var(--head-tail);
-  gap: 0 clamp(3rem, 7vw, 8rem);
-  grid-template-columns: minmax(0, 1fr) minmax(16rem, 28rem);
+  padding-block: var(--head-lead) clamp(4rem, 6vw, 6rem);
+  gap: clamp(2rem, 4vw, 4rem);
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.8fr);
 }
-
-.heroCopy {
-  animation: rise-in 650ms var(--ease-out) both;
-}
-
-/* Type comes from .page-head-title in globals.css. This head sits in a centred
-   two-column grid and cannot take .page-head's own padding, so it takes the
-   class that carries only the type — the alternative was a second copy of the
-   size, weight and tracking that silently drifted from the other three heads. */
 
 .role {
   margin-top: clamp(2rem, 5vw, 4rem);
@@ -33,22 +21,22 @@
 }
 
 .introduction {
-  display: grid;
-  max-width: 50rem;
+  max-width: 54ch;
   margin-top: 1.75rem;
   color: var(--soft);
-  font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
-  gap: 1rem;
+  font-size: clamp(1rem, 1.2vw, 1.0625rem);
+  line-height: 1.75;
 }
 
 .trackRecord {
   display: grid;
-  max-width: 50rem;
+  max-width: 48ch;
   margin-top: clamp(2.25rem, 5vh, 3.5rem);
   gap: 1.5rem;
 }
 
-.trackRecord dt {
+.trackRecord dt,
+.recordLabel {
   color: var(--mute);
   font-family: var(--font-display);
   font-size: var(--fine);
@@ -64,7 +52,6 @@
   line-height: 1.6;
 }
 
-/* The second row is supporting evidence, so it sits back a step from the first. */
 .trackRecord div:last-child dd {
   color: var(--soft);
   font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
@@ -79,38 +66,66 @@
   letter-spacing: 0.06em;
 }
 
-/* Breaks its column on the right. main carries overflow-x: clip, so the bleed
-   cannot widen the document. Wide viewports only — a narrow screen has no room. */
-@media (min-width: 62rem) {
-  .portrait {
-    margin-top: clamp(3rem, 9vh, 7rem);
-    margin-right: clamp(-3rem, -2vw, -1rem);
-    margin-bottom: clamp(-7rem, -9vh, -3.5rem);
-    position: relative;
-    z-index: 1;
+.personal {
+  max-width: 26rem;
+  padding-top: clamp(2rem, 4vw, 4rem);
+  margin-left: auto;
+}
+
+.portrait {
+  composes: taped from global;
+  --print-ratio: 1 / 1;
+  --tape-before-start-turn: 58deg;
+  --tape-after-start-turn: -58deg;
+}
+
+.portrait::before,
+.portrait::after {
+  transform: rotateY(var(--tape-turn, 0deg));
+}
+
+.portrait::before {
+  --tape-entry-turn: 64deg;
+  --tape-turn: var(--tape-before-turn);
+  transform-origin: 67% 50%;
+}
+
+.portrait::after {
+  --tape-entry-turn: -64deg;
+  --tape-turn: var(--tape-after-turn);
+  transform-origin: 25% 50%;
+}
+
+@keyframes portrait-tape-press {
+  from {
+    transform: rotateY(var(--tape-entry-turn));
   }
-  .heroCopy {
-    position: relative;
-    z-index: 0;
+  to {
+    transform: rotateY(var(--tape-turn, 0deg));
   }
 }
 
-/* The same treatment every other image gets. A radial mask, a caption gradient
-   and overflow: hidden used to live here, and each clips something .taped needs:
-   the mask clips the box-shadow, the overflow clips the tape. */
-.portrait {
-  composes: taped from global;
-  /* The source art is square. Only the ratio is this picture's own. */
-  --print-ratio: 1 / 1;
+@media (prefers-reduced-motion: no-preference) and (min-width: 55.01rem) {
+  .portrait::before,
+  .portrait::after {
+    animation: portrait-tape-press 2s ease-in-out backwards;
+  }
+
+  .portrait::before {
+    animation-delay: 250ms;
+  }
+
+  .portrait::after {
+    animation-delay: 500ms;
+  }
 }
+
 .portraitFrame {
   position: relative;
   aspect-ratio: var(--print-ratio);
   display: none;
 }
 
-/* The dark portrait is the default because the dark theme is: with scripting
-   off no attribute is ever stamped, and the page renders dark. */
 .portraitFrame[data-theme-image='dark'] {
   display: block;
 }
@@ -123,79 +138,278 @@
   display: block;
 }
 
-/* Set, colour, spacing and placement come from .taped figcaption. Only the
-   displacement below is this caption's own. */
 .portrait figcaption span:last-child {
-  margin-left: clamp(1.5rem, 5vw, 4rem);
+  margin-left: clamp(1rem, 3vw, 3rem);
 }
 
-.portrait figcaption span:first-child::before {
-  display: inline-block;
-  width: 0.45rem;
-  height: 0.45rem;
-  margin-right: 0.5rem;
-  border-radius: 50%;
-  background: var(--mark);
-  content: '';
-}
-.proof,
-.principles,
-.themeSong,
-.contact {
-  position: relative;
-  display: grid;
-  border-top: 0.5px solid var(--line-strong);
-  grid-template-columns: minmax(14rem, 0.62fr) minmax(0, 1.5fr);
-  gap: clamp(2rem, 6vw, 7rem);
-}
-
-.proof {
-  padding-block: clamp(4rem, 8vw, 8rem) clamp(3rem, 5vw, 5rem);
-  /* The shared gap separates the label COLUMN from the content one; at 6vw it is
-     far too much air between stacked rows of the same column. */
-  row-gap: clamp(2.5rem, 5vw, 4rem);
+.origin {
+  max-width: 35ch;
+  /* Negative, not auto: pulled left past the hero's own column line, not
+     just off the portrait's right edge. The grid ratio and .personal stay
+     untouched — only this text crosses it.
+     .personal caps at 26rem, so the gap between this text's natural
+     position and the column line grows in two different regimes: linearly
+     with the grid track below that cap, then faster above it once extra
+     track width becomes margin-left:auto slack. A plain vw clamp can't
+     follow that kink — it either overshot narrow desktop widths or fell
+     short on wide ones. This line is fitted through measured positions at
+     900px and 1488px instead of guessed. */
+  margin: clamp(2.5rem, 5vw, 4rem) 0 0 clamp(-11rem, calc(8.36rem - 20.4vw), -3rem);
+  font-family: var(--font-editorial);
+  font-size: clamp(1.25rem, 1.8vw, 1.65rem);
+  line-height: 1.5;
+  text-wrap: pretty;
 }
 
 .principles {
-  padding-block: clamp(3rem, 5.5vw, 5.5rem) clamp(4rem, 7vw, 7rem);
+  padding-block: clamp(2rem, 4vw, 4rem) clamp(3rem, 5vw, 5rem);
 }
 
-.themeSong {
-  padding-block: clamp(4.5rem, 9vw, 9rem) clamp(3rem, 5vw, 5rem);
+.principles header {
+  max-width: 48rem;
+  margin-bottom: clamp(2rem, 4vw, 4rem);
+  margin-left: clamp(2rem, 6vw, 6rem);
 }
 
-.contact {
-  padding-block: clamp(3.5rem, 6.5vw, 6.5rem) clamp(3rem, 5vw, 5rem);
-}
-.proof header h2,
-.principles header h2,
-.themeSong header h2,
+.principles h2,
+.proof h2,
+.themeSong h2,
 .contact h2 {
-  position: relative;
-  width: max-content;
-  max-width: calc(100% + clamp(0rem, 4vw, 4.5rem));
   font-family: var(--font-editorial);
   font-size: clamp(2.6rem, 5vw, 5rem);
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   line-height: 0.98;
   text-wrap: balance;
 }
+
+.principles ol {
+  max-width: 69rem;
+  padding: 0;
+  margin: 0 0 0 auto;
+  list-style: none;
+}
+
+.principles li {
+  display: grid;
+  position: relative;
+  align-items: center;
+  grid-template-columns: clamp(4.5rem, 8vw, 8rem) minmax(0, 1fr);
+  column-gap: clamp(1.25rem, 2.5vw, 2.5rem);
+  padding-block: clamp(2.5rem, 3vw, 3rem);
+}
+
+.principles li:first-child {
+  margin-right: clamp(2rem, 10vw, 10rem);
+}
+
+.principles li:nth-child(2) {
+  margin-left: clamp(3rem, 12vw, 12rem);
+}
+
+.principles li:nth-child(3) {
+  margin-left: clamp(1rem, 4vw, 4rem);
+}
+
+.margin {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 10rem;
+}
+
+.principleNumber {
+  position: relative;
+  font-family: var(--font-editorial);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.annotation {
+  --motion-start: 0.8;
+  --motion-end: 0.38;
+  --motion-from: translate(-1rem, 0.5rem) rotateY(58deg);
+  position: absolute;
+  width: min(100%, 7.5rem);
+  height: 2rem;
+  pointer-events: none;
+}
+
+.principleTape {
+  composes: tape from global;
+  rotate: -9deg;
+  transform-origin: 75% center;
+}
+
+.principleTape,
+.principleStroke,
+.judgmentStroke {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.principles li:nth-child(2) .principleTape {
+  --motion-start: 0.78;
+  --motion-end: 0.36;
+  --motion-from: translate(1rem, -0.5rem) rotateY(-58deg);
+  rotate: 8deg;
+  transform-origin: 25% center;
+}
+
+.strokeAnchor {
+  height: 0.75rem;
+  bottom: 1.7rem;
+}
+
+.principleStroke {
+  --motion-start: 0.76;
+  --motion-end: 0.34;
+  --motion-from: scaleX(0.3);
+  background: var(--mark);
+  mask: var(--stroke-brush) center / 100% 100% no-repeat;
+  rotate: -5deg;
+  transform-origin: left center;
+}
+
+.principles h3 {
+  font-family: var(--font-editorial);
+  font-size: clamp(2rem, 4vw, 3.8rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.principleCopy p {
+  max-width: 46ch;
+  margin-top: 1.2rem;
+  color: var(--soft);
+  font-size: 1.03rem;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+.principleEvidence {
+  composes: marked-link from global;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.35rem;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+}
+
+.principleEvidence svg,
+.record svg,
+.credentialGo svg,
+.outbound svg {
+  width: 1em;
+  height: 1em;
+}
+
+.conclusion {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: clamp(3rem, 5vw, 5rem);
+  margin-left: auto;
+  padding-bottom: 0.15em;
+  font-family: var(--font-editorial);
+  font-size: clamp(3rem, 7vw, 7rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.human {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.15em;
+}
+
+.judgmentAnchor {
+  position: absolute;
+  inset: auto 0 0;
+  height: 0.16em;
+}
+
+.judgmentStroke {
+  --motion-start: 0.84;
+  --motion-end: 0.4;
+  --motion-from: scaleX(0.3);
+  background: var(--mark);
+  mask: var(--stroke-brush) center / 100% 100% no-repeat;
+  transform-origin: left center;
+}
+
+@keyframes annotation-registers {
+  from {
+    transform: var(--motion-from);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 55.01rem) {
+    .main [data-about-scene] {
+      view-timeline: --about-scene block;
+    }
+
+    .main [data-about-motion] {
+      animation: annotation-registers 1ms linear both;
+      animation-timeline: --about-scene;
+      animation-range: entry calc(100vh - var(--motion-start) * 100vh) entry
+        calc(100vh - var(--motion-end) * 100vh);
+    }
+  }
+}
+
+.proof {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(1rem, 1.5vw, 1.5rem);
+  row-gap: clamp(2.5rem, 3vw, 3rem);
+  padding-block: clamp(3rem, 5vw, 5rem);
+}
+
+.proof header {
+  grid-column: 3 / -1;
+}
+
 .proof dl {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: last baseline;
-  column-gap: clamp(2.5rem, 6vw, 6rem);
-  row-gap: 2.5rem;
+  display: grid;
+  grid-column: 1 / 11;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 48rem;
+  align-items: start;
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+}
+
+.awards {
+  grid-column: 1 / 7;
+}
+
+.certifications {
+  grid-column: 7 / -1;
+  margin-top: clamp(2.5rem, 5vw, 5rem);
 }
 
 .proof dl div {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
-.proof dl div:first-child dd {
-  font-size: clamp(5.5rem, 11vw, 11rem);
+
+.proof dl div:nth-child(2) {
+  margin-top: 1.5rem;
 }
+
+.proof dl div:nth-child(3) {
+  margin-top: 0.5rem;
+}
+
 .proof dt {
   margin-top: 0.9rem;
   color: var(--mute);
@@ -206,331 +420,168 @@
   text-transform: uppercase;
 }
 
-/* The figures are INK, with the gold struck under them. The stroke rides in
-   padding rather than over the glyphs: line-height 0.78 is tighter than the
-   numerals are tall, so a background pinned to the box bottom would cut them. */
 .proof dd {
+  position: relative;
+  order: -1;
   width: fit-content;
-  padding-bottom: 0.22em;
-  background-image: var(--stroke-brush-inked);
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 100% 0.1em;
+  padding-bottom: 0.2em;
   color: var(--bone);
   font-family: var(--font-editorial);
-  font-size: clamp(3rem, 5.5vw, 5.5rem);
-  line-height: 0.78;
+  font-size: clamp(3.5rem, 6vw, 6rem);
+  line-height: 0.85;
   letter-spacing: -0.04em;
 }
-.proof dl div:nth-child(1) dd {
-  transform: rotate(-0.7deg);
+
+.receiptCount {
+  --motion-start: 0.84;
+  --motion-end: 0.62;
+  --motion-from: translateY(-2rem) rotate(-4deg);
+  transform-origin: left bottom;
 }
 
-.proof dl div:nth-child(2) dd {
-  transform: rotate(0.5deg);
+.proof dl div:nth-child(2) .receiptCount {
+  --motion-start: 0.82;
+  --motion-end: 0.6;
+  --motion-from: translateY(-2.5rem);
 }
 
-.proof dl div:nth-child(3) dd {
-  transform: rotate(-1.1deg);
+.proof dl div:nth-child(3) .receiptCount {
+  --motion-start: 0.8;
+  --motion-end: 0.58;
+  --motion-from: translateY(-3rem) rotate(4deg);
 }
 
-/* Names one of the two record lists. Fine print rather than a heading scale — a
-   second display heading competes with the h2 that already overruns its column. */
-.recordGroup {
-  grid-column: 2;
+.receiptStroke {
+  --motion-start: 0.62;
+  --motion-end: 0.36;
+  --motion-from: scaleX(0);
+  position: absolute;
+  inset: auto 0 0;
+  height: 0.1em;
+  background: var(--mark);
+  mask: var(--stroke-brush) center / 100% 100% no-repeat;
+  transform-origin: left center;
+  pointer-events: none;
 }
 
-.recordLabel {
-  color: var(--mute);
-  font-family: var(--font-display);
-  font-size: var(--fine);
-  font-weight: 600;
-  letter-spacing: var(--fine-tracking);
-  text-transform: uppercase;
+.proof dl div:nth-child(2) .receiptStroke {
+  --motion-start: 0.6;
+  --motion-end: 0.34;
 }
 
-.records {
-  padding: 0;
-  margin-top: 1.1rem;
-  list-style: none;
+.proof dl div:nth-child(3) .receiptStroke {
+  --motion-start: 0.58;
+  --motion-end: 0.32;
 }
 
-/* Loose columns. Two credentials set as full records added six lines to the
-   tallest section on the page; as footnotes they take two. */
+.records,
 .credentials {
   padding: 0;
   margin-top: 1.1rem;
-  columns: 2 15rem;
-  column-gap: clamp(1.5rem, 4vw, 3rem);
   list-style: none;
 }
 
-.credentials li {
-  /* A footnote is never split across a column. */
-  break-inside: avoid;
+.records li + li,
+.credentials li + li {
+  margin-top: 1.1rem;
 }
 
 .credential {
   composes: washed from global;
-  display: grid;
-  /* Pulled back by its own padding so the wash bleeds past the text rather than
-     indenting the list away from the label above it. */
-  padding: 0.5rem 0.85rem;
-  margin-left: -0.85rem;
-  border-radius: 0.15rem;
-  color: inherit;
-  text-decoration: none;
 }
 
-.credentialName {
-  display: flex;
-  align-items: baseline;
-  font-family: var(--font-editorial);
-  font-size: 1.05rem;
-  font-weight: 500;
-  gap: 0.4rem;
-  letter-spacing: -0.01em;
-}
-
-.credentialMeta {
-  margin-top: 0.1rem;
-  color: var(--mute);
-  font-family: var(--font-display);
-  font-size: var(--fine);
-  letter-spacing: var(--fine-tracking);
-  text-transform: uppercase;
-}
-.credentialGo {
-  color: var(--mute);
-  font-size: 0.85em;
-  transition: transform 180ms var(--ease-out);
-}
-
-.credential:hover .credentialGo,
-.credential:focus-visible .credentialGo {
-  transform: translate(0.15rem, -0.15rem);
-}
-
-.records li + li {
-  margin-top: 1.1rem;
-}
 .record {
   composes: washed from global;
+}
+
+.credential,
+.record {
   display: grid;
-  /* Pulled back by its own padding so the wash bleeds past the text instead of
-     indenting the list away from the rule above it. */
   padding: 0.7rem 0.85rem;
   margin-left: -0.85rem;
-  border-radius: 0.15rem;
   color: inherit;
-  gap: 0.3rem;
   text-decoration: none;
+  gap: 0.4rem;
 }
 
 .recordBadge {
   composes: marked-soft from global;
+  --motion-start: 0.78;
+  --motion-end: 0.42;
+  --motion-from: translateX(-0.8rem) rotate(-2deg);
   display: inline-flex;
+  width: fit-content;
   align-items: center;
   font-family: var(--font-display);
   font-size: 0.9375rem;
   font-weight: 600;
   gap: 0.4rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform-origin: left center;
+}
+
+.recordLine,
+.credentialName {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-editorial);
+  font-size: 1.2rem;
+  font-weight: 500;
+  gap: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.credentialMeta {
+  color: var(--mute);
+  font-family: var(--font-display);
+  font-size: var(--fine);
+  letter-spacing: var(--fine-tracking);
   text-transform: uppercase;
 }
 
-.recordLine {
-  display: flex;
-  align-items: baseline;
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 500;
-  gap: 0.5rem;
-  letter-spacing: -0.015em;
-}
-
-/* Motion only. The row already carries the wash, and a second colour on a hover
-   is what globals.css forbids. */
-.recordGo {
+.recordGo,
+.credentialGo {
+  display: inline-flex;
   color: var(--mute);
   transition: transform 180ms var(--ease-out);
 }
 
 .record:hover .recordGo,
-.record:focus-visible .recordGo {
-  transform: translateX(0.25rem);
+.record:focus-visible .recordGo,
+.credential:hover .credentialGo,
+.credential:focus-visible .credentialGo {
+  transform: translate(0.2rem, -0.1rem);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .recordGo,
-  .credentialGo {
-    transition: none;
-  }
-
-  .record:hover .recordGo,
-  .record:focus-visible .recordGo,
-  .credential:hover .credentialGo,
-  .credential:focus-visible .credentialGo {
-    transform: none;
-  }
-}
-
-.principles ol {
-  padding: 0;
-  list-style: none;
-}
-
-.principles li {
-  display: block;
-  position: relative;
-  padding-left: 0;
-}
-
-.principles li + li {
-  margin-top: clamp(2.5rem, 5vw, 4.5rem);
-}
-@media (min-width: 62rem) {
-  .principles li:nth-child(even) {
-    margin-left: clamp(1.5rem, 4vw, 4rem);
-  }
-}
-
-.principles li > span {
-  position: absolute;
-  top: 0.5rem;
-  color: var(--ink-accent);
-  font-family: var(--font-display);
-  font-size: var(--fine);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: var(--fine-tracking);
-}
-@media (min-width: 62rem) {
-  .principles li > span {
-    left: -3.25rem;
-  }
-
-  .principles li:nth-child(2) > span {
-    left: -4.5rem;
-  }
-
-  .principles li:nth-child(3) > span {
-    left: -2.5rem;
-  }
-}
-
-@media (max-width: 61.99rem) {
-  .principles li > span {
-    position: static;
-    display: block;
-    margin-bottom: 0.4rem;
-  }
-}
-
-.principles h3 {
-  font-family: var(--font-editorial);
-  font-size: clamp(1.8rem, 3.2vw, 3.2rem);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.06;
-  text-wrap: balance;
-}
-
-.principles li p {
-  max-width: 52ch;
-  margin-top: 0.9rem;
-  color: var(--soft);
-  font-size: 1.03rem;
-  line-height: 1.7;
-  text-wrap: pretty;
-}
-
-.contact nav {
+.themeSong {
   display: grid;
+  grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+  align-items: start;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  padding-block: clamp(4rem, 6vw, 6rem);
 }
 
-.contact nav a {
-  display: flex;
-  min-height: 3.75rem;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  border-bottom: 0.5px solid var(--line-strong);
-  color: var(--bone);
-  font-family: var(--font-editorial);
-  font-size: clamp(1.35rem, 2.4vw, 2.1rem);
-  font-weight: 400;
-  letter-spacing: -0.03em;
-  /* 180ms, not 320. Hover feedback wants to land while the pointer is still
-     arriving. Still padding rather than translateX: this row is space-between,
-     so translating it would carry the right-hand arrow off the rule with it,
-     where padding moves only the label. */
-  transition:
-    color 200ms var(--ease-out),
-    padding-left 180ms var(--ease-out);
-}
-.outbound {
-  color: var(--mute);
-  font-family: var(--font-display);
-  font-size: 0.8em;
+.themeSong header {
+  align-self: center;
 }
 
-/* Metadata setting, but NOT --fine. The other rows end in an arrow, which is
-   decoration; this one ends in the only contact detail on the site, and 11px is
-   not a size to set it at. Not uppercased either: the local part of an address
-   is case-sensitive and has to read as it is typed. */
-.reachAddress {
-  color: var(--soft);
-  font-family: var(--font-display);
-  font-size: 0.875rem;
-  letter-spacing: 0.02em;
+.themeSong h2 {
+  font-style: italic;
 }
 
-/* Under the label rather than beside it once the row cannot hold both. */
-@media (max-width: 30rem) {
-  .contact nav a:has(.reachAddress) {
-    flex-direction: column;
-    align-items: start;
-    justify-content: center;
-    gap: 0.25rem;
-  }
-}
-
-/* Motion only, on top of the shared wash. The colour swap that came with the step
-   is what globals.css forbids. */
-.contact nav a:hover {
-  padding-left: 0.85rem;
-}
-
-@media (max-width: 55rem) {
-  .hero,
-  .proof,
-  .principles,
-  .themeSong,
-  .contact {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  /* The hero sets row-gap 0, which is right while the copy and portrait are side by
-     side. Collapsed to one column it left the figure touching the last paragraph. */
-  .hero {
-    min-height: auto;
-    row-gap: clamp(2.5rem, 8vw, 4rem);
-  }
-
-  .portrait {
-    width: min(100%, 32rem);
-  }
-
-  .recordGroup {
-    grid-column: auto;
-  }
+.songPlayer {
+  --motion-start: 0.82;
+  --motion-end: 0.42;
+  --motion-from: translateX(-2rem) rotate(-2deg);
+  transform-origin: left center;
 }
 
 .themeSongCopy {
   display: grid;
-  max-width: 70ch;
-  margin-top: 1.625rem;
-  gap: 1.125rem;
+  max-width: 60ch;
+  margin-top: 2rem;
+  gap: 1.5rem;
 }
 
 .themeSongCopy p {
@@ -543,4 +594,159 @@
 .themeSongCopy strong {
   color: var(--bone);
   font-weight: 600;
+}
+
+.contact {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(1.5rem, 2vw, 2rem);
+  padding-block: clamp(4rem, 7vw, 7rem);
+}
+
+.contactHeading {
+  padding-top: 2rem;
+}
+
+.contact nav {
+  display: grid;
+  align-content: start;
+}
+
+.contactLinks {
+  --motion-start: 0.74;
+  --motion-end: 0.52;
+  --motion-from: translateY(2rem);
+}
+
+.contact nav a {
+  display: flex;
+  min-height: 3.75rem;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--bone);
+  font-family: var(--font-editorial);
+  font-size: clamp(1.35rem, 2.4vw, 2.1rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  transition: padding-left 180ms var(--ease-out);
+}
+
+.contact nav a:hover {
+  padding-left: 0.85rem;
+}
+
+.outbound {
+  display: inline-flex;
+  color: var(--mute);
+  font-size: 0.8em;
+}
+
+.reachAddress {
+  color: var(--soft);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 55rem) {
+  .hero,
+  .proof,
+  .themeSong,
+  .contact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .personal {
+    max-width: 32rem;
+    padding-top: 0;
+    margin-inline: auto;
+  }
+
+  .origin {
+    max-width: none;
+    margin-left: 0;
+  }
+
+  .principles header {
+    margin-left: 0;
+  }
+
+  .principles li,
+  .principles li:first-child,
+  .principles li:nth-child(2),
+  .principles li:nth-child(3) {
+    grid-template-columns: 4rem minmax(0, 1fr);
+    align-items: start;
+    column-gap: 1rem;
+    margin-inline: 0;
+  }
+
+  .conclusion {
+    margin-left: 0;
+  }
+
+  .proof header,
+  .proof dl,
+  .awards,
+  .certifications {
+    grid-column: auto;
+  }
+
+  .certifications,
+  .proof dl div:nth-child(2),
+  .proof dl div:nth-child(3) {
+    margin-top: 0;
+  }
+
+  .contactHeading {
+    padding-top: 0;
+  }
+
+  .margin {
+    min-height: 5rem;
+  }
+
+  .principleNumber {
+    font-size: 2rem;
+  }
+
+  .annotation:not(.strokeAnchor) {
+    height: 1.8rem;
+  }
+
+  .strokeAnchor {
+    bottom: 0;
+  }
+}
+
+@media (max-width: 30rem) {
+  .contact nav a:has(.reachAddress) {
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main [data-about-motion],
+  .portrait::before,
+  .portrait::after {
+    animation: none;
+    transform: none;
+  }
+
+  .recordGo,
+  .credentialGo,
+  .contact nav a {
+    transition: none;
+  }
+
+  .record:hover .recordGo,
+  .record:focus-visible .recordGo,
+  .credential:hover .credentialGo,
+  .credential:focus-visible .credentialGo {
+    transform: none;
+  }
 }

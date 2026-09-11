@@ -1,6 +1,13 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
-import { mockAlgoliaSearch, test } from './utils';
+import sharp from 'sharp';
+import {
+  mockAlgoliaSearch,
+  test,
+  verifyAboutMotion,
+  verifyAboutPortraitMotion,
+  verifyLowerTapeFold,
+} from './utils';
 
 // The workspace stacks below IndexWorkspace.module.css's 47.99rem breakpoint and
 // runs two columns above it. Branching on the project NAME instead pinned the
@@ -9,6 +16,10 @@ import { mockAlgoliaSearch, test } from './utils';
 const STACK_BREAKPOINT_PX = 768;
 
 test.describe('System Notes redesign', () => {
+  test('keeps the lower tape folding as tall prints enter a short viewport', async ({ page }) => {
+    await verifyLowerTapeFold(page);
+  });
+
   test('loads the filing workspace under the page head', async ({ page }) => {
     await mockAlgoliaSearch(page, [
       {
@@ -265,21 +276,35 @@ test.describe('System Notes redesign', () => {
     await page.goto('/about');
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Forged between');
-    // Both portraits ship so the theme can swap them without a fetch; exactly
-    // one is ever displayed, and the other is display:none and so out of the
-    // accessibility tree entirely.
+    // Both portraits are in the markup; the hidden one stays out of the
+    // accessibility tree and downloads only when its theme becomes visible.
     const portraits = page.getByAltText(/portrait of Ashley Childress/i);
     await expect(portraits).toHaveCount(2);
     await expect(portraits.locator('visible=true')).toHaveCount(1);
     await expect(page.getByText('20', { exact: true })).toBeVisible();
     await expect(page.getByText('14', { exact: true })).toBeVisible();
     await expect(page.getByText('3', { exact: true })).toBeVisible();
+    await expect(page.getByText('Judgment stays human.', { exact: true })).toHaveCount(1);
+    await expect(
+      page.getByText(/I grew up in a coal-mining town in southwest Virginia/)
+    ).toBeVisible();
+    const narrative = await page
+      .getByRole('main')
+      .locator(':scope > section')
+      .evaluateAll((sections) => sections.map((section) => section.querySelector('h1, h2')?.id));
+    expect(narrative).toEqual([
+      'about-heading',
+      'principles-heading',
+      'theme-song-heading',
+      'proof-heading',
+      'contact-heading',
+    ]);
 
     const accessibility = await new AxeBuilder({ page }).analyze();
     expect(accessibility.violations).toEqual([]);
   });
 
-  test('plays the theme song under the writing that explains it', async ({ page }) => {
+  test('places the theme song under the writing that explains it', async ({ page }) => {
     await page.goto('/about');
     const section = page.locator('section').filter({ hasText: 'Theme song' });
 
@@ -294,6 +319,84 @@ test.describe('System Notes redesign', () => {
     await expect(section).toContainText('hunting the failure first');
     await expect(section.locator('p')).not.toHaveCount(0);
   });
+
+  test('registers About annotations within the scroll window and keeps reading copy still', async ({
+    page,
+  }) => {
+    await verifyAboutMotion(page);
+  });
+
+  test('slowly presses About portrait tape on load and scrubs each edge when scrolling out and back', async ({
+    page,
+  }) => {
+    await verifyAboutPortraitMotion(page);
+  });
+
+  for (const scheme of ['dark', 'light'] as const) {
+    test(`paints every wrapped About headline highlight without masking its text in ${scheme}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 280, height: 844 });
+      await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
+      await page.goto('/about');
+      await page.evaluate(() => document.fonts.ready);
+      const heading = page.getByRole('heading', { level: 1 });
+      const mark = heading.locator(':scope > span');
+      await expect(mark).toHaveCSS('mask-image', 'none');
+
+      const painted = await mark.evaluate((element) => {
+        const heading = element.closest('h1')!.getBoundingClientRect();
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 1;
+        const context = canvas.getContext('2d')!;
+        context.fillStyle = getComputedStyle(element).getPropertyValue('--mark');
+        context.fillRect(0, 0, 1, 1);
+        return {
+          color: [...context.getImageData(0, 0, 1, 1).data].slice(0, 3),
+          lines: [...element.getClientRects()].map((rect) => ({
+            left: rect.left - heading.left,
+            top: rect.top - heading.top,
+            right: rect.right - heading.left,
+            bottom: rect.bottom - heading.top,
+          })),
+        };
+      });
+      expect(painted.lines.length, 'the regression needs an actually wrapped mark').toBeGreaterThan(
+        1
+      );
+      const { data, info } = await sharp(await heading.screenshot({ scale: 'css' }))
+        .removeAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      for (const line of painted.lines) {
+        let markPixels = 0;
+        let pixels = 0;
+        for (
+          let y = Math.max(0, Math.ceil(line.top));
+          y < Math.min(info.height, Math.floor(line.bottom));
+          y += 1
+        ) {
+          for (
+            let x = Math.max(0, Math.ceil(line.left));
+            x < Math.min(info.width, Math.floor(line.right));
+            x += 1
+          ) {
+            const offset = (y * info.width + x) * info.channels;
+            if (
+              painted.color.every((channel, index) => Math.abs(data[offset + index] - channel) < 8)
+            )
+              markPixels += 1;
+            pixels += 1;
+          }
+        }
+        expect(pixels).toBeGreaterThan(0);
+        expect(
+          markPixels / pixels,
+          'a wrapped headline line lost its painted ground'
+        ).toBeGreaterThan(0.15);
+      }
+    });
+  }
 
   test('renders the designed 404 with a working skip-link target', async ({ page }) => {
     const response = await page.goto('/no-such-record');
@@ -316,6 +419,33 @@ test.describe('System Notes redesign', () => {
 });
 
 test.describe('Exhibit anchors', () => {
+  test('connects every About principle to its named project evidence', async ({ page }) => {
+    await page.goto('/about');
+    const evidence = page
+      .getByRole('region', { name: 'The rules are short on purpose.' })
+      .getByRole('link');
+    await expect(evidence).toHaveCount(3);
+    const targets = await evidence.evaluateAll((links) =>
+      links.map((link) => ({ label: link.textContent?.trim(), href: link.getAttribute('href') }))
+    );
+    expect(targets).toEqual([
+      { label: 'Save the Sun', href: '/projects#save-the-sun' },
+      { label: 'Metal Birds Feed', href: '/projects#metal-birds-feed' },
+      { label: 'RAI Lint', href: '/projects#rai-lint' },
+    ]);
+
+    await page.goto('/projects');
+    for (const { href, label } of targets) {
+      const anchor = new URL(href!, 'https://anchildress1.dev').hash;
+      await expect(
+        page.locator(anchor).getByRole('heading', { name: label, exact: true })
+      ).toBeVisible();
+    }
+    await page.goto('/about');
+    await evidence.first().click();
+    await expect(page).toHaveURL('/projects#save-the-sun');
+  });
+
   test('opens the recorded award at its catalogue exhibit', async ({ page }) => {
     await page.goto('/about');
     const wins = page.getByRole('link', { name: /winner/i });

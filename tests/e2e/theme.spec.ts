@@ -5,10 +5,18 @@ import { mockAlgoliaSearch, test } from './utils';
 
 const ROUTES = ['/', '/notes', '/projects', '/about'] as const;
 
-// WebKit is excluded from this file by testIgnore on the Mobile Safari project
-// rather than by a runtime skip, so the spec never collects there instead of
-// collecting and reporting as skipped. The reason lives with the exclusion.
+// Chromium owns the shared theme and markup checks; mobile specs measure reflow.
 test.describe('Theme', () => {
+  // One route and engine: the viewport tag is shared markup from the root layout.
+  test('allows zoom through the shared viewport declaration', async ({ page }) => {
+    await page.goto('/');
+
+    const results = await new AxeBuilder({ page }).withRules(['meta-viewport']).analyze();
+
+    expect(results.violations).toEqual([]);
+    expect(results.passes.map((result) => result.id)).toContain('meta-viewport');
+  });
+
   test.describe('resolved from the system preference', () => {
     for (const scheme of ['dark', 'light'] as const) {
       test.describe(`${scheme} preference`, () => {

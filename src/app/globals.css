@@ -40,7 +40,24 @@
   /* The same swipe, pre-inked. A mask on an inline element masks its TEXT too,
      so a hover band drawn that way would cut the letters it sits behind; painted
      as a background it sits under them. Same duplication caveat as above. */
+  --stroke-swipe-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23f9cc21'/%3E%3C/svg%3E");
+  /* The same swipe again, at 16% fill-opacity: a wash for a resting state next
+     to the full-ink band a hover or active state draws. */
   --stroke-swipe-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23f9cc21' fill-opacity='0.16'/%3E%3C/svg%3E");
+  /* The same swipe once more, ink pooling low and thinning where it lifts —
+     the --mark-drag/--mark-lift highlight this file's history once painted
+     with a mask on the text itself, which clipped descenders and italics
+     wherever the mask's edge crossed them (see the headline .marked rule
+     below). A gradient baked into the PATH'S OWN FILL instead of the flat
+     hex stays a background, same as -inked, so it never touches the glyphs
+     and still clones correctly across wrapped lines via box-decoration-break.
+     Stops are --mark-drag/--mark-lift pre-blended over --mark's own
+     0.549/0.502 alpha, in sRGB, since a data URI cannot read a custom
+     property; recompute by hand if either token's value changes. Percentages
+     are of the PATH's own bounding box (the default gradientUnits), not the
+     full viewBox — the ink pools within the stroke itself, not the padding
+     around it. */
+  --stroke-swipe-smudged: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fbd651'/%3E%3Cstop offset='0.06' stop-color='%23fbd651'/%3E%3Cstop offset='0.24' stop-color='%23f9cc21'/%3E%3Cstop offset='0.52' stop-color='%23f9cc21'/%3E%3Cstop offset='0.74' stop-color='%23e9bf25'/%3E%3Cstop offset='0.92' stop-color='%23f9cc21'/%3E%3Cstop offset='1' stop-color='%23f9cc21'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='url(%23g)'/%3E%3C/svg%3E");
   --mark-soft: oklch(0.86 0.17 92 / 0.16);
   /* Sized for a halo around a 10px tile. --mark-soft is a panel-wide wash and
      disappears at that scale. */
@@ -97,9 +114,6 @@
   --gutter: clamp(1rem, 3vw, 3rem);
   --header-height: 5.25rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  /* A second curve, deliberately not the first. It overshoots and settles, so
-     entrances using it arrive with a different weight to --ease-out's. */
-  --ease-settle: cubic-bezier(0.34, 1.32, 0.42, 1);
 
   /* Page-head rhythm, shared so the heads agree. The tail is about two thirds of
      the lead, which reads as a heading belonging to the section under it. Both
@@ -301,19 +315,13 @@ body::before {
   transform: rotate(-1deg) scaleX(1);
 }
 
-/* THE LIGHT PEN, AT REST. The same swipe laid down once and left there, for a
-   fact that should read as marked without outshouting an action beside it.
-
-   The text keeps its OWN ink rather than taking --mark-ink: a 16% wash is not
-   opaque enough to carry it, and on graphite that pairing is near-black on
-   near-black. */
+/* A smaller mark for supporting facts. Opaque gold keeps the stroke yellow on
+   graphite; its scale, rather than translucency, gives it less weight. */
 .marked-soft {
   width: fit-content;
   padding: 0.16em 0.34em 0.2em 0.28em;
-  /* Laid down TWICE. 16% gold over near-black is a murky olive; two passes
-     composite to 29%, the shade a highlighter leaves where a stroke doubles
-     back. .washed keeps the single-pass value the filter list was tuned with. */
-  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
+  color: var(--mark-ink);
+  background-image: var(--stroke-swipe-inked);
   background-position: 0 50%;
   background-repeat: no-repeat;
   /* 158%, for the same reason .btn uses it: --stroke-swipe insets its ink to
@@ -322,6 +330,36 @@ body::before {
   background-size: 100% 158%;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+}
+
+@media (forced-colors: active) {
+  .marked-soft {
+    background-image: none;
+  }
+}
+
+/* Registered so the exhibit corners' native scroll-driven fold animates a
+   smooth angle instead of stepping straight from one keyframe's value to the
+   next — an unregistered custom property can't interpolate. Both properties
+   are also the ones useTapeMotion writes inline for every JS-driven tape,
+   the About portrait included; @property doesn't change that path, it only
+   makes the native one possible. The @keyframes that animate these natively
+   live LOCALLY in ProjectDirectory.module.css instead of here: CSS Modules
+   hashes an animation-name reference inside a .module.css file regardless of
+   where the matching @keyframes rule is defined, so a shared @keyframes here
+   would ship with a name nothing in the built CSS actually references — the
+   animation silently has no keyframes at all, with no build error to catch
+   it. */
+@property --tape-before-turn {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@property --tape-after-turn {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
 }
 
 /* PAPER, TAPED DOWN. An image here is a print laid on the page: a mat, a
@@ -359,6 +397,12 @@ body::before {
   z-index: 2;
   width: 5.5rem;
   height: 1.4rem;
+  content: '';
+}
+
+.tape,
+.taped::before,
+.taped::after {
   /* Three passes, not two. Tape sits over a photograph as often as over the page,
      and at 29% it disappeared into a bright frame. 41% still shows what is
      underneath, which is what makes it read as tape rather than a painted bar. */
@@ -375,7 +419,6 @@ body::before {
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   pointer-events: none;
-  content: '';
 }
 
 /* Pulled onto the sheet rather than hung off its corner: tape holds paper down
@@ -388,11 +431,11 @@ body::before {
   --tape-angle: -27deg;
   top: -0.5rem;
   left: -1.05rem;
-  /* rotate, not transform: ProjectDirectory.module.css drives this pseudo-element's
-     transform (translate, rotateY) for the scroll-in turn. Two `transform`
-     declarations on one element is a coin flip on stylesheet order; the
-     independent `rotate` property composes with transform instead of competing
-     with it — the same reason .taped itself uses `rotate: var(--tilt)` above. */
+  /* rotate, not transform: useTapeMotion drives this pseudo-element's transform
+     (rotateY only) for the scroll-in turn. Two `transform` declarations on one
+     element is a coin flip on stylesheet order; the independent `rotate`
+     property composes with transform instead of competing with it — the same
+     reason .taped itself uses `rotate: var(--tilt)` above. */
   rotate: var(--tape-angle);
 }
 
@@ -721,67 +764,6 @@ main {
   border: 0;
 }
 
-/* Rises into place without fading. An entrance starting at opacity 0 is
-   readable to axe as text at zero contrast for as long as it runs. Motion
-   carries the entrance; opacity stays out of it. */
-@keyframes rise-in {
-  from {
-    transform: translateY(1.25rem);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-/* Scroll-driven, tracking scroll position rather than an observer and a state
-   flag — no JS, no hydration cost.
-
-   Transform only, never opacity, for the same reason as rise-in. Behind
-   @supports so a browser without scroll timelines renders the page in place,
-   and behind a motion query.
-
-   Art-directed per composition, never a general .reveal. One treatment repeated
-   down four consecutive sections of /about was the templated version, and it
-   flattened the piece it ran over. What replaced it gives each element role its
-   own range: the portrait drifts against the copy beside it, an exhibit's print,
-   copy and references arrive on three. Each is authored for one layout and does
-   not transfer to another. */
-@keyframes portrait-drift {
-  from {
-    transform: translateY(2rem);
-  }
-  to {
-    transform: translateY(-2rem);
-  }
-}
-
-@supports (animation-timeline: view()) {
-  /* Slower and against the scroll, so the portrait sits in a different plane to
-     the copy BESIDE it. Two columns only: below 55rem it stacks UNDER the copy,
-     where `entry cover` resolves already complete and produced no motion at any
-     scroll position — it only held the portrait a permanent 2rem higher. */
-  @media (prefers-reduced-motion: no-preference) and (min-width: 55.01rem) {
-    .drift {
-      animation: portrait-drift linear both;
-      animation-timeline: view();
-      animation-range: entry cover;
-    }
-  }
-}
-
-/* Staggered entrance for a repeated array. The delay comes off --i, set per
-   item from its index. Capped so a long list does not make the reader wait. */
-.stagger-in {
-  animation: rise-in 520ms var(--ease-settle) both;
-  animation-delay: calc(min(var(--i, 0) * 70ms, 560ms));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stagger-in {
-    animation: none;
-  }
-}
-
 @media (max-width: 44rem) {
   :root {
     --header-height: 7.75rem;
@@ -880,38 +862,26 @@ main {
 .marked,
 .page-head h1 > span,
 .page-head-title > span {
-  /* THE STROKE IS INSET INTO THE BOX, and that is what fixes the stacking.
-
-     An inline box is as tall as the font's ascent plus descent — 1.52em for this
-     Didone, against a 1.42em line — so wrapped lines overlapped and the lower
-     stroke painted over the upper one, which CSS offers no way to reverse.
-
-     The glyphs only ever occupy 27.6% to 75.8% of that band, so --stroke-swipe is
-     drawn into the middle 20%-83% of its viewBox instead of filling it. The
-     visible stroke falls to 1.19em and clears the line. */
   padding: 0.15em 0.26em 0.22em 0.2em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   color: var(--mark-ink);
-  /* The opaque core. Both layers above it are yellows at partial alpha over
-     this same yellow, so the band behind the letters never thins and the ink
-     keeps its contrast wherever it falls. */
-  background-color: var(--mark);
-  background-image:
-    linear-gradient(to bottom, transparent 52%, var(--mark-drag) 74%, transparent 92%),
-    linear-gradient(to bottom, var(--mark-lift) 0 6%, transparent 24%);
-  /* The band is SKEWED, and the skew lives in the PATH rather than in a transform.
-     CSS ignores transforms on non-replaced inline boxes, and inline is what lets
-     the mark hug each wrapped line. Drawing the slant into the mask keeps both,
-     and gives every wrapped line its own angle rather than leaning as one slab.
+  /* A background fragments with the line without clipping italic letters or
+     descenders, which a mask on the text itself cannot do. -smudged, not
+     -inked: the headline mark carries the ink-pools-low texture; the smaller
+     marks (.marked-soft) stay flat on -inked. */
+  background: var(--stroke-swipe-smudged) 0 50% / 100% 100% no-repeat;
+}
 
-     Stretched, not tiled: a tile would saw-tooth at every repeat. */
-  -webkit-mask-image: var(--stroke-swipe);
-  mask-image: var(--stroke-swipe);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+/* background-image, not background-color: forced-colors already strips the
+   latter, and the shorthand above sets image, position, size and repeat in
+   one declaration that this has to follow in source order to win. */
+@media (forced-colors: active) {
+  .marked,
+  .page-head h1 > span,
+  .page-head-title > span {
+    background-image: none;
+  }
 }
 
 /* The turn of the headline is MARKED, not coloured. Setting it in the accent is

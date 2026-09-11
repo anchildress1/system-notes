@@ -9,6 +9,20 @@
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
+/* Rises into place without fading. Declared here rather than shared from
+   globals.css: CSS Modules scope every @keyframes identifier per file,
+   including one only referenced via animation-name, so a name declared in a
+   different module resolves to nothing and the animation silently never
+   runs. */
+@keyframes rise-in {
+  from {
+    transform: translateY(1.25rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 .message {
   max-width: 68rem;
   animation: rise-in 600ms var(--ease-out) both;

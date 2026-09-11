@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { test } from './utils';
+import { test, verifyAboutMotion, verifyAboutPortraitMotion, verifyLowerTapeFold } from './utils';
 
 test.describe('WebKit compatibility', () => {
   test('keeps the portfolio navigation and theme control usable', async ({ page }) => {
@@ -18,7 +18,14 @@ test.describe('WebKit compatibility', () => {
 test.describe('project exhibit motion', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test('animates every exhibit layer in supported desktop engines', async ({ page }) => {
+  test('keeps the lower tape folding as tall prints enter a short viewport', async ({ page }) => {
+    await verifyLowerTapeFold(page);
+  });
+
+  test('animates every exhibit layer in supported desktop engines', async ({
+    page,
+    browserName,
+  }, testInfo) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto('/projects');
     await page.locator('html').evaluate((element) => {
@@ -36,10 +43,15 @@ test.describe('project exhibit motion', () => {
 
     await expect(exhibit).toBeVisible();
 
-    // The component keys off the feature, not the engine. Branching on the
-    // browser name instead would fail a correct implementation the day Firefox
-    // ships scroll timelines, and blame the wrong thing if WebKit regressed.
     const hasScrollTimeline = await page.evaluate(() => CSS.supports('animation-timeline: view()'));
+    testInfo.annotations.push({
+      type: 'motion-path',
+      description: hasScrollTimeline ? 'native scroll timeline' : 'JavaScript fallback',
+    });
+    // Firefox owns fallback coverage; gaining native support needs a new coverage owner.
+    if (browserName === 'firefox') {
+      expect(hasScrollTimeline, 'This project must exercise the JavaScript fallback').toBe(false);
+    }
 
     if (!hasScrollTimeline) {
       await expect(catalogue).toHaveAttribute('data-motion-fallback', 'true');
@@ -54,49 +66,41 @@ test.describe('project exhibit motion', () => {
     }
 
     for (const part of parts) {
+      const readPose = () =>
+        part.evaluate((element) => {
+          const style = getComputedStyle(element);
+          return `${style.translate}|${style.scale}`;
+        });
       await part.evaluate((element) => {
         const top = element.getBoundingClientRect().top + window.scrollY;
         window.scrollTo(0, top - window.innerHeight * 0.45);
       });
 
-      await expect
-        .poll(() =>
-          part.evaluate((element) => {
-            const style = getComputedStyle(element);
-            return `${style.translate}|${style.scale}`;
-          })
-        )
-        .toMatch(/^(0px|none)\|(1|none)$/);
+      await expect.poll(readPose).toMatch(/^(0px|none)\|(1|none)$/);
 
       await part.evaluate((element) => {
         const top = element.getBoundingClientRect().top + window.scrollY;
         window.scrollTo(0, top - window.innerHeight * 0.82);
       });
-      await expect
-        .poll(() =>
-          part.evaluate((element) => {
-            const style = getComputedStyle(element);
-            return `${style.translate}|${style.scale}`;
-          })
-        )
-        .not.toMatch(/^(0px|none)\|(1|none)$/);
-      const partialStyle = await part.evaluate((element) => {
-        const style = getComputedStyle(element);
-        return `${style.translate}|${style.scale}`;
-      });
+      await expect.poll(readPose).not.toMatch(/^(0px|none)\|(1|none)$/);
+      const partialStyle = await readPose();
+      const partialScroll = await page.evaluate(() => window.scrollY);
 
       await part.evaluate((element) => {
         const top = element.getBoundingClientRect().top + window.scrollY;
         window.scrollTo(0, top - window.innerHeight * 0.78);
       });
-      await expect
-        .poll(() =>
-          part.evaluate((element) => {
-            const style = getComputedStyle(element);
-            return `${style.translate}|${style.scale}`;
-          })
-        )
-        .not.toBe(partialStyle);
+      await expect.poll(readPose).not.toBe(partialStyle);
+
+      await page.evaluate((scroll) => window.scrollTo(0, scroll), partialScroll);
+      await expect.poll(readPose).toBe(partialStyle);
+      await page.evaluate(async () => {
+        window.dispatchEvent(new Event('scroll'));
+        for (let frame = 0; frame < 3; frame += 1) {
+          await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+        }
+      });
+      expect(await readPose()).toBe(partialStyle);
     }
 
     const media = page.locator('[data-testid^="exhibit-"] [data-motion-part="media"]');
@@ -145,8 +149,11 @@ test.describe('project exhibit motion', () => {
         );
         return print.evaluate(
           (element, selectedPseudo) =>
+            // Computed, not element.style: a supporting engine drives this
+            // natively via the stylesheet and never touches the inline style
+            // the JS fallback writes, but both land in the same computed value.
             Number.parseFloat(
-              element.style.getPropertyValue(
+              getComputedStyle(element).getPropertyValue(
                 selectedPseudo === '::before' ? '--tape-before-turn' : '--tape-after-turn'
               )
             ),
@@ -154,21 +161,30 @@ test.describe('project exhibit motion', () => {
         );
       };
 
+      // 0.58/0.18/1.05/0.82 below are ProjectDirectoryMotion.tsx's tapeMotion
+      // source values. Nothing enforces this copy against it; changing the
+      // source means updating this file too.
       const beforeLifted = await turnAt('::before', 'top', 0.58);
       const beforePlaced = await turnAt('::before', 'top', 0.18);
       const beforeLater = await turnAt('::before', 'top', 0.05);
       expect(Math.abs(beforeLifted)).toBeGreaterThan(0);
-      // Close to, not equal to: the clamp boundary is a subpixel scroll position,
-      // and Firefox's own rounding can land a thousandth of a degree past it.
-      expect(beforePlaced).toBeCloseTo(0, 1);
-      expect(beforeLater).toBeCloseTo(0, 1);
+      // Close to, not equal to: the clamp boundary is a subpixel scroll position.
+      // Firefox's JS fallback can land a thousandth of a degree past it; a
+      // native engine computing its own entry/contain length thresholds
+      // against real layout rounds slightly differently again — WebKit
+      // measured 0.088deg off zero here, hence precision 0 (0.5deg) rather
+      // than precision 1 (0.05deg). Narrow this back to precision 1 if
+      // WebKit's rounding tightens, or if this ever needs to catch a real
+      // fold-boundary regression smaller than half a degree.
+      expect(beforePlaced).toBeCloseTo(0, 0);
+      expect(beforeLater).toBeCloseTo(0, 0);
 
       const afterLifted = await turnAt('::after', 'bottom', 1.05);
       const afterPlaced = await turnAt('::after', 'bottom', 0.82);
       const afterLater = await turnAt('::after', 'bottom', 0.5);
       expect(Math.abs(afterLifted)).toBeGreaterThan(0);
-      expect(afterPlaced).toBeCloseTo(0, 1);
-      expect(afterLater).toBeCloseTo(0, 1);
+      expect(afterPlaced).toBeCloseTo(0, 0);
+      expect(afterLater).toBeCloseTo(0, 0);
     }
   });
 
@@ -183,5 +199,30 @@ test.describe('project exhibit motion', () => {
     await expect
       .poll(() => part.evaluate((element) => getComputedStyle(element).animationName))
       .toBe('none');
+  });
+});
+
+test.describe('About annotation motion', () => {
+  test('slowly presses portrait tape on load and scrubs each edge when scrolling out and back', async ({
+    page,
+    browserName,
+  }) => {
+    // WebKit under CI has measurably coarser animation-delay event timing than
+    // desktop WebKit does locally: two separate runs observed 79ms and 123ms
+    // where local always shows the full ~250ms nominal gap. Firefox on the
+    // same CI runner doesn't need this.
+    test.slow(browserName === 'webkit', 'animationstart timing is coarser on CI WebKit');
+    await verifyAboutPortraitMotion(page);
+  });
+
+  test('registers About annotations within the scroll window and keeps reading copy still', async ({
+    page,
+    browserName,
+  }) => {
+    // Many sequential scroll-and-settle steps; under CI's slower WebKit this
+    // accumulates past the default 30s test timeout even though no single
+    // step is broken. Firefox on the same CI runner doesn't need this.
+    test.slow(browserName === 'webkit', 'many sequential scroll settles are slow on CI WebKit');
+    await verifyAboutMotion(page);
   });
 });

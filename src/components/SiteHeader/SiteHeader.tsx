@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import IntentLink from '@/components/IntentLink/IntentLink';
 import ThemeToggle from '@/components/ThemeToggle/ThemeToggle';
 import { BLOG_URL } from '@/config';
 import styles from './SiteHeader.module.css';
@@ -31,21 +31,21 @@ export default function SiteHeader() {
         Skip to main content
       </a>
       <div className={styles.inner}>
-        <Link className={styles.brand} href="/">
+        <IntentLink className={styles.brand} href="/">
           <span className={styles.wordmark}>Ashley Childress</span>
-        </Link>
+        </IntentLink>
         <nav className={styles.navigation} aria-label="Primary navigation">
           {destinations.map(({ href, label }) => {
             const current = isCurrentPath(pathname, href);
             return (
-              <Link
+              <IntentLink
                 key={href}
                 className={styles.navLink}
                 href={href}
                 aria-current={current ? 'page' : undefined}
               >
                 {label}
-              </Link>
+              </IntentLink>
             );
           })}
           <a className={styles.navLink} href={BLOG_URL} target="_blank" rel="noopener noreferrer">

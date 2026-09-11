@@ -1,21 +1,6 @@
-/* The warm palette this page used to scope to itself is now the site's own, and
-   so is its focus ring: the only focusable thing under .main is a <button>, which
-   the global :where(a, button, input, summary) rule already covers. The override
-   that used to sit here beat that rule on specificity and drew a bare accent
-   rectangle with no keyline, so the exhibits room was the one route whose focus
-   ring did not match the rest of the site. Nothing here needs tokens, or rules,
-   of its own any more. */
-/* No background of its own. Painting --void here covered the body's seam, which
-   is why this was the one page without it. */
 .main {
   min-height: 100svh;
   color: var(--bone);
-}
-
-/* Container and rhythm both come from .page-head. This used to carry its own
-   94rem/6vw column, which put the heading 86px inside the directory below it. */
-.hero {
-  position: relative;
 }
 
 .deck {
@@ -28,5 +13,5 @@
 }
 
 .exhibition {
-  padding-top: clamp(6rem, 10vw, 10rem);
+  padding-top: clamp(3.5rem, 6vw, 6rem);
 }
