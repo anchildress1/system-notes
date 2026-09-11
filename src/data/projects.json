@@ -107,6 +107,26 @@
     ]
   },
   {
+    "objectID": "happen-to-have",
+    "name": "Happen to Have?",
+    "what_it_is": "A voice advice exchange where you answer a stranger's question out loud before you're allowed to ask one of your own.",
+    "why_it_exists": "Makes giving the admission rule instead of an optional extra, and keeps every piece of advice human-authored.",
+    "long_description": "Next.js 16 on Cloud Run with Neon Postgres, where Gemini transcribes, translates, redacts and judges each recording across four parallel calls that must agree unanimously. The original audio lives only for the length of the request and never reaches storage; publication and the earned ask commit in one SQL statement.",
+    "outcome": "Shipped live with anonymous sessions, no accounts and no feed. A withheld result explains itself in human-written copy, crisis routes to real support lines, and playback is voiced from processed text so no stranger's real voice is replayed.",
+    "status": "Deployed",
+    "owner": "anchildress1",
+    "tech": [
+      { "name": "Next.js 16 / React", "role": "App Framework & SSR" },
+      { "name": "TypeScript 7 · Biome", "role": "Application Language & Lint" },
+      { "name": "Neon Postgres", "role": "Data & Atomic Reciprocity" },
+      { "name": "Gemini API", "role": "Transcription, Redaction, Review, Text-to-Speech" },
+      { "name": "Google Cloud Run", "role": "Containerized Hosting & Deploy" }
+    ],
+    "repo_url": "https://github.com/anchildress1/happen-to-have",
+    "app_url": "https://happentohave.anchildress1.dev",
+    "order_rank": 15
+  },
+  {
     "objectID": "carbon-trace",
     "name": "Carbon Trace",
     "what_it_is": "An immersive memoir about fighting to become an engineer when the world wasn't built for you to.",
