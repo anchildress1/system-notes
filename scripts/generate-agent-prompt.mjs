@@ -72,9 +72,9 @@ export function selectOtherProjects(projects, selected) {
   return projects.filter((project) => !selectedIds.has(project.objectID));
 }
 
-// "Deployed" reads as still live or shipping; everything else — Retired, Scrapped,
-// Archived, and any future status — reads as no longer running.
-const LIVE_STATUSES = new Set(['Deployed', 'Active', 'Released', 'Published', 'Pre-release']);
+// "Deployed" reads as already shipped; Pre-release hasn't cut its first release yet,
+// so it reads as not-yet-running, same as Retired, Scrapped, Archived, and any future status.
+const LIVE_STATUSES = new Set(['Deployed', 'Active', 'Released', 'Published']);
 
 export function isDeployedStatus(status) {
   return LIVE_STATUSES.has(status);

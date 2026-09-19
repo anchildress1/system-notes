@@ -100,7 +100,7 @@ describe('agent prompt generator', () => {
     expect(isDeployedStatus('Active')).toBe(true);
     expect(isDeployedStatus('Released')).toBe(true);
     expect(isDeployedStatus('Published')).toBe(true);
-    expect(isDeployedStatus('Pre-release')).toBe(true);
+    expect(isDeployedStatus('Pre-release')).toBe(false);
     expect(isDeployedStatus('Retired')).toBe(false);
     expect(isDeployedStatus('Archived')).toBe(false);
     expect(isDeployedStatus('Scrapped')).toBe(false);
