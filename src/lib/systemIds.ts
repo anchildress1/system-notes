@@ -1,5 +1,5 @@
 /**
- * Every project name in `projects.json`, not just the seven the agent is handed.
+ * Every project name in `projects.json`, not just the six the agent is handed.
  * A citation naming an unselected project is still a citation of her work.
  *
  * Held apart from `projects.json` rather than derived from it: the intake renders
