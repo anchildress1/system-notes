@@ -106,6 +106,17 @@ describe('agent prompt generator', () => {
     expect(description).toBe('- Beta: [Shipping \\[v2\\]](https://example.test/v2)');
   });
 
+  it("escapes a backslash so it cannot cancel the next character's escape", () => {
+    const description = describeOtherProject(
+      project({
+        name: 'Beta',
+        blog_posts: [{ title: 'C:\\Users', url: 'https://example.test/path' }],
+      })
+    );
+
+    expect(description).toBe('- Beta: [C:\\\\Users](https://example.test/path)');
+  });
+
   it('classifies live-sounding statuses as deployed and everything else as retired', () => {
     expect(isDeployedStatus('Deployed')).toBe(true);
     expect(isDeployedStatus('Active')).toBe(true);

@@ -59,8 +59,10 @@ export function describeProject(project, site) {
   return lines.join('\n');
 }
 
-// A title carrying a literal ']' would otherwise close the markdown link early.
-const escapeLinkText = (text) => text.replace(/[[\]]/g, '\\$&');
+// A literal ']' would otherwise close the markdown link early, and a literal
+// backslash has to be escaped too or it pairs with the next character's escape
+// and cancels it back out.
+const escapeLinkText = (text) => text.replace(/[\\[\]]/g, '\\$&');
 
 /** Selected list omits her, but a fact can still be sourced to her write-up. */
 export function describeOtherProject(project) {
