@@ -124,7 +124,13 @@
     ],
     "repo_url": "https://github.com/anchildress1/happen-to-have",
     "app_url": "https://happentohave.anchildress1.dev",
-    "order_rank": 15
+    "order_rank": 15,
+    "blog_posts": [
+      {
+        "title": "Happen to Have? Answer One Before You Ask One",
+        "url": "https://dev.to/anchildress1/happen-to-have-answer-one-before-you-ask-one-5957"
+      }
+    ]
   },
   {
     "objectID": "carbon-trace",
