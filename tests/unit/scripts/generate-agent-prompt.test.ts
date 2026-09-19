@@ -95,6 +95,17 @@ describe('agent prompt generator', () => {
     expect(describeOtherProject(project({ name: 'Solo', blog_posts: [] }))).toBe('- Solo');
   });
 
+  it('escapes brackets in a write-up title so they cannot close the link early', () => {
+    const description = describeOtherProject(
+      project({
+        name: 'Beta',
+        blog_posts: [{ title: 'Shipping [v2]', url: 'https://example.test/v2' }],
+      })
+    );
+
+    expect(description).toBe('- Beta: [Shipping \\[v2\\]](https://example.test/v2)');
+  });
+
   it('classifies live-sounding statuses as deployed and everything else as retired', () => {
     expect(isDeployedStatus('Deployed')).toBe(true);
     expect(isDeployedStatus('Active')).toBe(true);
@@ -139,10 +150,10 @@ describe('agent prompt generator', () => {
     );
 
     expect(withOthers).toContain('## Other projects');
-    expect(withOthers.indexOf('### Deployed')).toBeLessThan(withOthers.indexOf('### Retired'));
+    expect(withOthers.indexOf('### Deployed')).toBeLessThan(withOthers.indexOf('### Not live'));
     expect(withOthers).toContain('- Beta: [Beta Post](https://example.test/beta)');
     expect(withOthers).toContain('- Gamma');
-    expect(withOthers.indexOf('Gamma')).toBeGreaterThan(withOthers.indexOf('### Retired'));
+    expect(withOthers.indexOf('Gamma')).toBeGreaterThan(withOthers.indexOf('### Not live'));
 
     const withoutOthers = buildAgentPrompt([project()], [], 'https://example.test');
     expect(withoutOthers).not.toContain('## Other projects');
@@ -201,8 +212,8 @@ describe('agent prompt generator', () => {
       '- Written Elsewhere: [Written Elsewhere Post](https://example.test/elsewhere)'
     );
     expect(prompt).toContain('- Shelved Thing');
-    expect(prompt.indexOf('Written Elsewhere')).toBeLessThan(prompt.indexOf('### Retired'));
-    expect(prompt.indexOf('### Retired')).toBeLessThan(prompt.indexOf('Shelved Thing'));
+    expect(prompt.indexOf('Written Elsewhere')).toBeLessThan(prompt.indexOf('### Not live'));
+    expect(prompt.indexOf('### Not live')).toBeLessThan(prompt.indexOf('Shelved Thing'));
   });
 
   it('rejects a registry missing a selected project', async () => {
@@ -242,6 +253,10 @@ describe('agent prompt generator', () => {
       read: async () => JSON.stringify([project({ blog_posts: [null] })]),
     },
     { label: 'invalid rank', read: async () => JSON.stringify([project({ order_rank: 'first' })]) },
+    {
+      label: 'unrecognized status',
+      read: async () => JSON.stringify([project({ status: 'Live' })]),
+    },
   ])('rejects a $label without producing a prompt', async ({ read }) => {
     await expect(readAgentPrompt('/portfolio', undefined, read)).rejects.toThrow();
   });

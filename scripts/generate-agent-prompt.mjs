@@ -59,10 +59,13 @@ export function describeProject(project, site) {
   return lines.join('\n');
 }
 
+// A title carrying a literal ']' would otherwise close the markdown link early.
+const escapeLinkText = (text) => text.replace(/[[\]]/g, '\\$&');
+
 /** Selected list omits her, but a fact can still be sourced to her write-up. */
 export function describeOtherProject(project) {
   const writeups = (project.blog_posts ?? [])
-    .map((post) => `[${post.title}](${post.url})`)
+    .map((post) => `[${escapeLinkText(post.title)}](${post.url})`)
     .join(' | ');
   return writeups ? `- ${project.name}: ${writeups}` : `- ${project.name}`;
 }
@@ -72,9 +75,13 @@ export function selectOtherProjects(projects, selected) {
   return projects.filter((project) => !selectedIds.has(project.objectID));
 }
 
-// "Deployed" reads as already shipped; Pre-release hasn't cut its first release yet,
-// so it reads as not-yet-running, same as Retired, Scrapped, Archived, and any future status.
+// "Deployed" reads as already shipped. Pre-release hasn't cut its first release yet,
+// which is the opposite lifecycle end from Retired/Scrapped/Archived — grouping them
+// together is fine for the agent prompt's binary shipped/not-shipped split, as long as
+// the heading never claims the not-yet-shipped ones were retired.
 const LIVE_STATUSES = new Set(['Deployed', 'Active', 'Released', 'Published']);
+const NOT_LIVE_STATUSES = new Set(['Pre-release', 'Retired', 'Archived', 'Scrapped']);
+const KNOWN_STATUSES = new Set([...LIVE_STATUSES, ...NOT_LIVE_STATUSES]);
 
 export function isDeployedStatus(status) {
   return LIVE_STATUSES.has(status);
@@ -84,12 +91,12 @@ function buildOtherProjectsSection(otherProjects) {
   if (otherProjects.length === 0) return '';
 
   const deployed = otherProjects.filter((project) => isDeployedStatus(project.status));
-  const retired = otherProjects.filter((project) => !isDeployedStatus(project.status));
+  const notLive = otherProjects.filter((project) => !isDeployedStatus(project.status));
   const describeList = (list) => list.map((project) => describeOtherProject(project)).join('\n');
 
   const sections = [
     deployed.length && `### Deployed\n\n${describeList(deployed)}`,
-    retired.length && `### Retired\n\n${describeList(retired)}`,
+    notLive.length && `### Not live\n\n${describeList(notLive)}`,
   ]
     .filter(Boolean)
     .join('\n\n');
@@ -224,6 +231,12 @@ function validatePromptProjects(value) {
       'outcome',
     ]) {
       requiredProjectText(project, key, index);
+    }
+
+    if (!KNOWN_STATUSES.has(project.status)) {
+      throw new TypeError(
+        `projects.json entry ${index} has an unrecognized status "${project.status}".`
+      );
     }
 
     if (!Array.isArray(project.tech)) {
