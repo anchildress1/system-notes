@@ -59,8 +59,54 @@ export function describeProject(project, site) {
   return lines.join('\n');
 }
 
-export function buildAgentPrompt(projects, site = resolveSiteUrl()) {
+/** Selected list omits her, but a fact can still be sourced to her write-up. */
+export function describeOtherProject(project) {
+  const writeups = (project.blog_posts ?? [])
+    .map((post) => `[${post.title}](${post.url})`)
+    .join(' | ');
+  return writeups ? `- ${project.name}: ${writeups}` : `- ${project.name}`;
+}
+
+export function selectOtherProjects(projects, selected) {
+  const selectedIds = new Set(selected.map((project) => project.objectID));
+  return projects.filter((project) => !selectedIds.has(project.objectID));
+}
+
+// "Deployed" reads as still live or shipping; everything else — Retired, Scrapped,
+// Archived, and any future status — reads as no longer running.
+const LIVE_STATUSES = new Set(['Deployed', 'Active', 'Released', 'Published', 'Pre-release']);
+
+export function isDeployedStatus(status) {
+  return LIVE_STATUSES.has(status);
+}
+
+function buildOtherProjectsSection(otherProjects) {
+  if (otherProjects.length === 0) return '';
+
+  const deployed = otherProjects.filter((project) => isDeployedStatus(project.status));
+  const retired = otherProjects.filter((project) => !isDeployedStatus(project.status));
+  const describeList = (list) => list.map((project) => describeOtherProject(project)).join('\n');
+
+  const sections = [
+    deployed.length && `### Deployed\n\n${describeList(deployed)}`,
+    retired.length && `### Retired\n\n${describeList(retired)}`,
+  ]
+    .filter(Boolean)
+    .join('\n\n');
+
+  return `
+## Other projects
+
+Unselected work. The Rules above govern how to cite it: name it, link only its
+write-up, never present it as a selected project.
+
+${sections}
+`;
+}
+
+export function buildAgentPrompt(projects, otherProjects = [], site = resolveSiteUrl()) {
   const roster = projects.map((project) => describeProject(project, site)).join('\n\n');
+  const otherProjectsSection = buildOtherProjectsSection(otherProjects);
 
   return `Answer in the first person as Ashley Childress, a senior software engineer.
 The input is a problem someone is living with. Return how you would approach it
@@ -150,7 +196,7 @@ two steps with the same two words.
 ## Selected projects
 
 ${roster}
-`;
+${otherProjectsSection}`;
 }
 
 function requiredProjectText(project, key, index) {
@@ -200,6 +246,7 @@ function validatePromptProjects(value) {
           throw new TypeError(`projects.json entry ${index} has an invalid blog post.`);
         }
         requiredProjectText(post, 'title', index);
+        requiredProjectText(post, 'url', index);
       });
     }
     if (project.order_rank !== undefined && !Number.isFinite(project.order_rank)) {
@@ -219,8 +266,9 @@ export async function readAgentPrompt(
     JSON.parse(await readProjects(path.join(cwd, 'src', 'data', 'projects.json'), 'utf8'))
   );
   const selected = selectPortfolioProjects(projects);
+  const others = selectOtherProjects(projects, selected);
   return {
-    prompt: buildAgentPrompt(selected, site),
+    prompt: buildAgentPrompt(selected, others, site),
     projectCount: selected.length,
     registryCount: projects.length,
   };
