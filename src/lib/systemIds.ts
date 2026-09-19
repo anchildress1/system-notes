@@ -12,7 +12,6 @@ export const PROJECT_NAMES = [
   'Unearthed',
   'Happen to Have?',
   'Carbon Trace',
-  'Metal Birds Feed',
   'Vestige',
   'RAI Lint',
   'RAI Commit Badge',

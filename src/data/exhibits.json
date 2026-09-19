@@ -10,11 +10,6 @@
     "evidence": "Gemma runs on the phone. Audio is discarded after inference, the three lens reads stay visible, and patterns cite the entries that earned them."
   },
   {
-    "id": "metal-birds-feed",
-    "standard": "Public data is only useful when its provenance survives the trip.",
-    "evidence": "National aircraft registries become a normalized SQLite feed with source attribution intact. An unchanged registry does not redeploy; an ambiguous registration fails closed."
-  },
-  {
     "id": "supascribe-notes",
     "standard": "A model may write a note. It does not get a general database connection.",
     "evidence": "Seven narrow tools, Zod validation before Postgres, revision history on every write, and a batch response that says exactly which cards failed."

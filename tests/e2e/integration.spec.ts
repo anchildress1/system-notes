@@ -438,7 +438,7 @@ test.describe('Exhibit anchors', () => {
     );
     expect(targets).toEqual([
       { label: 'Save the Sun', href: '/projects#save-the-sun' },
-      { label: 'Metal Birds Feed', href: '/projects#metal-birds-feed' },
+      { label: 'SupaScribe Notes', href: '/projects#supascribe-notes' },
       { label: 'RAI Lint', href: '/projects#rai-lint' },
     ]);
 

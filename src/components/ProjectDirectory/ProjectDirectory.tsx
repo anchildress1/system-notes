@@ -15,7 +15,7 @@ type ExhibitCopy = {
 };
 
 /* Beside the list they count, not in the page that renders them. */
-export const EXHIBIT_DECK = 'Seven exhibits in AI, backend systems, and guardrail work.';
+export const EXHIBIT_DECK = 'Six exhibits in AI, backend systems, and guardrail work.';
 export const EXHIBIT_SUMMARY = `${EXHIBIT_DECK} Each one shows its evidence and failure boundary.`;
 
 export const EXHIBITS: readonly ExhibitCopy[] = rawExhibits;
