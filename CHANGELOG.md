@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/anchildress1/system-notes/compare/v3.1.0...v3.2.0) (2026-09-19)
+
+
+### Features
+
+* add Google Cloud Professional Cloud Architect certification ([#159](https://github.com/anchildress1/system-notes/issues/159)) ([a0be469](https://github.com/anchildress1/system-notes/commit/a0be4693394c10d5b8e731d8fd88c3a94bf7e8e4))
+
 ## [3.1.0](https://github.com/anchildress1/system-notes/compare/v3.0.0...v3.1.0) (2026-09-11)
 
 
