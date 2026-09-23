@@ -15,7 +15,7 @@ type ExhibitCopy = {
 };
 
 /* Beside the list they count, not in the page that renders them. */
-export const EXHIBIT_DECK = 'Six exhibits in AI, backend systems, and guardrail work.';
+export const EXHIBIT_DECK = 'Seven exhibits in AI, backend systems, and guardrail work.';
 export const EXHIBIT_SUMMARY = `${EXHIBIT_DECK} Each one shows its evidence and failure boundary.`;
 
 export const EXHIBITS: readonly ExhibitCopy[] = rawExhibits;
@@ -98,9 +98,9 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                   rel="noopener noreferrer"
                 >
                   {link.label}
-                  {/* All six exhibits are on the page at once, so a screen reader's
+                  {/* All seven exhibits are on the page at once, so a screen reader's
                       own link list — which strips the surrounding article — would
-                      otherwise show "Repository" six times with nothing to tell
+                      otherwise show "Repository" seven times with nothing to tell
                       them apart. */}
                   <span className="visually-hidden"> — {project.title} (opens in a new tab)</span>
                   <FiArrowUpRight aria-hidden="true" />

@@ -118,7 +118,7 @@ export const profile = {
     {
       title: 'Make failure visible.',
       body: 'Quiet fallback is how a defect earns seniority. Errors should arrive early and with evidence.',
-      projectId: 'supascribe-notes',
+      projectId: 'metal-birds-feed',
     },
     {
       title: 'Automate the proof.',

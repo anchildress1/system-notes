@@ -215,12 +215,12 @@ test.describe('mobile interactions', () => {
     expect(requests).toBeGreaterThan(1);
   });
 
-  test('keeps the six-exhibit catalogue in one readable column', async ({ page }) => {
+  test('keeps the seven-exhibit catalogue in one readable column', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/projects');
 
     await expect(page.getByTestId('exhibit-save-the-sun').getByRole('img')).toBeVisible();
-    await expect(page.getByRole('article')).toHaveCount(6);
+    await expect(page.getByRole('article')).toHaveCount(7);
     await expect(
       page.getByRole('region', { name: 'Selected exhibits' }).getByRole('button')
     ).toHaveCount(0);

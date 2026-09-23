@@ -210,11 +210,11 @@ test.describe('System Notes redesign', () => {
     );
   });
 
-  test('shows the six selected exhibits without a project reader', async ({ page }) => {
+  test('shows the seven selected exhibits without a project reader', async ({ page }) => {
     await page.goto('/projects');
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Systems should');
-    await expect(page.getByRole('article')).toHaveCount(6);
+    await expect(page.getByRole('article')).toHaveCount(7);
     await expect(page.getByTestId('exhibit-save-the-sun')).toBeVisible();
     await expect(page.getByTestId('exhibit-rai-lint')).toBeVisible();
     await expect(page.getByTestId('exhibit-system-notes')).toHaveCount(0);
@@ -438,7 +438,7 @@ test.describe('Exhibit anchors', () => {
     );
     expect(targets).toEqual([
       { label: 'Save the Sun', href: '/projects#save-the-sun' },
-      { label: 'SupaScribe Notes', href: '/projects#supascribe-notes' },
+      { label: 'Metal Birds Feed', href: '/projects#metal-birds-feed' },
       { label: 'RAI Lint', href: '/projects#rai-lint' },
     ]);
 
@@ -469,7 +469,7 @@ test.describe('Exhibit anchors', () => {
     }
 
     // Every one, not just the first. /about awards come from all twenty projects
-    // while only the curated six emit an anchor, so a win outside the catalogue
+    // while only the curated seven emit an anchor, so a win outside the catalogue
     // lands silently at the top of the page.
     await page.goto('/projects');
     for (const href of targets) {

@@ -8,7 +8,7 @@ import rawProjects from '@/data/projects.json';
 import { mockProject } from '@tests/test-utils/fixtures';
 
 // Derived, not copied: a hardcoded list lets an added exhibit render nowhere
-// while every assertion here still counts the old six.
+// while every assertion here still counts the old seven.
 const registry = new Map(
   (rawProjects as { objectID: string; name: string }[]).map((p) => [p.objectID, p.name])
 );
