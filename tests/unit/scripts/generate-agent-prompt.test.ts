@@ -59,7 +59,6 @@ describe('agent prompt generator', () => {
   it('builds a roster in the order it is handed, not by registry rank', () => {
     const prompt = buildAgentPrompt(
       [project({ order_rank: 9 }), project({ objectID: 'later', name: 'Later', order_rank: 1 })],
-      [],
       'https://example.test'
     );
 
@@ -147,18 +146,14 @@ describe('agent prompt generator', () => {
   });
 
   it('appends an other-projects section, bucketed by status, only when there is something to list', () => {
-    const withOthers = buildAgentPrompt(
-      [project()],
-      [
-        project({
-          name: 'Beta',
-          status: 'Deployed',
-          blog_posts: [{ title: 'Beta Post', url: 'https://example.test/beta' }],
-        }),
-        project({ objectID: 'gamma', name: 'Gamma', status: 'Archived' }),
-      ],
-      'https://example.test'
-    );
+    const withOthers = buildAgentPrompt([project()], 'https://example.test', [
+      project({
+        name: 'Beta',
+        status: 'Deployed',
+        blog_posts: [{ title: 'Beta Post', url: 'https://example.test/beta' }],
+      }),
+      project({ objectID: 'gamma', name: 'Gamma', status: 'Archived' }),
+    ]);
 
     expect(withOthers).toContain('## Other projects');
     expect(withOthers.indexOf('### Deployed')).toBeLessThan(withOthers.indexOf('### Not live'));
@@ -166,7 +161,7 @@ describe('agent prompt generator', () => {
     expect(withOthers).toContain('- Gamma');
     expect(withOthers.indexOf('Gamma')).toBeGreaterThan(withOthers.indexOf('### Not live'));
 
-    const withoutOthers = buildAgentPrompt([project()], [], 'https://example.test');
+    const withoutOthers = buildAgentPrompt([project()], 'https://example.test');
     expect(withoutOthers).not.toContain('## Other projects');
   });
 
@@ -258,6 +253,22 @@ describe('agent prompt generator', () => {
     {
       label: 'blog post missing its url',
       read: async () => JSON.stringify([project({ blog_posts: [{ title: 'Untitled' }] })]),
+    },
+    {
+      label: 'blog post with an unsafe url',
+      read: async () =>
+        JSON.stringify([
+          project({ blog_posts: [{ title: 'Untitled', url: 'javascript:alert(1)' }] }),
+        ]),
+    },
+    {
+      label: 'blog post url carrying credentials',
+      read: async () =>
+        JSON.stringify([
+          project({
+            blog_posts: [{ title: 'Untitled', url: 'https://user:pass@example.test/post' }],
+          }),
+        ]),
     },
     {
       label: 'non-object evidence',

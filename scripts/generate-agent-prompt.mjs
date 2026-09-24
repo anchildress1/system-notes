@@ -54,10 +54,12 @@ export function describeProject(project, site) {
   // a second link here is what the rule above avoids. What the model cannot get
   // from either index is which articles are about which project, so it cited a
   // project and its own write-up as two agreeing sources.
-  const writeups = (project.blog_posts ?? []).map((post) => post.title).join(' | ');
+  const writeups = joinWriteups(project.blog_posts, (post) => post.title);
   if (writeups) lines.push(`Write-ups: ${writeups}`);
   return lines.join('\n');
 }
+
+const joinWriteups = (posts, format) => (posts ?? []).map(format).join(' | ');
 
 // A literal ']' would otherwise close the markdown link early, and a literal
 // backslash has to be escaped too or it pairs with the next character's escape
@@ -66,9 +68,10 @@ const escapeLinkText = (text) => text.replace(/[\\[\]]/g, '\\$&');
 
 /** Selected list omits her, but a fact can still be sourced to her write-up. */
 export function describeOtherProject(project) {
-  const writeups = (project.blog_posts ?? [])
-    .map((post) => `[${escapeLinkText(post.title)}](${post.url})`)
-    .join(' | ');
+  const writeups = joinWriteups(
+    project.blog_posts,
+    (post) => `[${escapeLinkText(post.title)}](${post.url})`
+  );
   return writeups ? `- ${project.name}: ${writeups}` : `- ${project.name}`;
 }
 
@@ -92,8 +95,13 @@ export function isDeployedStatus(status) {
 function buildOtherProjectsSection(otherProjects) {
   if (otherProjects.length === 0) return '';
 
-  const deployed = otherProjects.filter((project) => isDeployedStatus(project.status));
-  const notLive = otherProjects.filter((project) => !isDeployedStatus(project.status));
+  const { deployed, notLive } = otherProjects.reduce(
+    (buckets, project) => {
+      (isDeployedStatus(project.status) ? buckets.deployed : buckets.notLive).push(project);
+      return buckets;
+    },
+    { deployed: [], notLive: [] }
+  );
   const describeList = (list) => list.map((project) => describeOtherProject(project)).join('\n');
 
   const sections = [
@@ -113,7 +121,7 @@ ${sections}
 `;
 }
 
-export function buildAgentPrompt(projects, otherProjects = [], site = resolveSiteUrl()) {
+export function buildAgentPrompt(projects, site = resolveSiteUrl(), otherProjects = []) {
   const roster = projects.map((project) => describeProject(project, site)).join('\n\n');
   const otherProjectsSection = buildOtherProjectsSection(otherProjects);
 
@@ -208,6 +216,17 @@ ${roster}
 ${otherProjectsSection}`;
 }
 
+// Mirrors src/lib/urlSafety.ts's isSafeExternalUrl. Duplicated rather than imported:
+// this script runs as plain Node outside the Next.js/TypeScript toolchain.
+function isSafeUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && url.username === '' && url.password === '';
+  } catch {
+    return false;
+  }
+}
+
 function requiredProjectText(project, key, index) {
   const value = project[key];
   if (typeof value !== 'string' || !value.trim()) {
@@ -262,6 +281,9 @@ function validatePromptProjects(value) {
         }
         requiredProjectText(post, 'title', index);
         requiredProjectText(post, 'url', index);
+        if (!isSafeUrl(post.url)) {
+          throw new TypeError(`projects.json entry ${index} has an unsafe blog post url.`);
+        }
       });
     }
     if (project.order_rank !== undefined && !Number.isFinite(project.order_rank)) {
@@ -283,7 +305,7 @@ export async function readAgentPrompt(
   const selected = selectPortfolioProjects(projects);
   const others = selectOtherProjects(projects, selected);
   return {
-    prompt: buildAgentPrompt(selected, others, site),
+    prompt: buildAgentPrompt(selected, site, others),
     projectCount: selected.length,
     registryCount: projects.length,
   };
