@@ -54,13 +54,76 @@ export function describeProject(project, site) {
   // a second link here is what the rule above avoids. What the model cannot get
   // from either index is which articles are about which project, so it cited a
   // project and its own write-up as two agreeing sources.
-  const writeups = (project.blog_posts ?? []).map((post) => post.title).join(' | ');
+  const writeups = joinWriteups(project.blog_posts, (post) => post.title);
   if (writeups) lines.push(`Write-ups: ${writeups}`);
   return lines.join('\n');
 }
 
-export function buildAgentPrompt(projects, site = resolveSiteUrl()) {
+const joinWriteups = (posts, format) => (posts ?? []).map(format).join(' | ');
+
+// A literal ']' would otherwise close the markdown link early, and a literal
+// backslash has to be escaped too or it pairs with the next character's escape
+// and cancels it back out.
+const escapeLinkText = (text) => text.replace(/[\\[\]]/g, '\\$&');
+
+/** Selected list omits her, but a fact can still be sourced to her write-up. */
+export function describeOtherProject(project) {
+  const writeups = joinWriteups(
+    project.blog_posts,
+    (post) => `[${escapeLinkText(post.title)}](${post.url})`
+  );
+  return writeups ? `- ${project.name}: ${writeups}` : `- ${project.name}`;
+}
+
+export function selectOtherProjects(projects, selected) {
+  const selectedIds = new Set(selected.map((project) => project.objectID));
+  return projects.filter((project) => !selectedIds.has(project.objectID));
+}
+
+// "Deployed" reads as already shipped. Pre-release hasn't cut its first release yet,
+// which is the opposite lifecycle end from Retired/Scrapped/Archived — grouping them
+// together is fine for the agent prompt's binary shipped/not-shipped split, as long as
+// the heading never claims the not-yet-shipped ones were retired.
+const LIVE_STATUSES = new Set(['Deployed', 'Active', 'Released', 'Published']);
+const NOT_LIVE_STATUSES = new Set(['Pre-release', 'Retired', 'Archived', 'Scrapped']);
+const KNOWN_STATUSES = new Set([...LIVE_STATUSES, ...NOT_LIVE_STATUSES]);
+
+export function isDeployedStatus(status) {
+  return LIVE_STATUSES.has(status);
+}
+
+function buildOtherProjectsSection(otherProjects) {
+  if (otherProjects.length === 0) return '';
+
+  const { deployed, notLive } = otherProjects.reduce(
+    (buckets, project) => {
+      (isDeployedStatus(project.status) ? buckets.deployed : buckets.notLive).push(project);
+      return buckets;
+    },
+    { deployed: [], notLive: [] }
+  );
+  const describeList = (list) => list.map((project) => describeOtherProject(project)).join('\n');
+
+  const sections = [
+    deployed.length && `### Deployed\n\n${describeList(deployed)}`,
+    notLive.length && `### Not live\n\n${describeList(notLive)}`,
+  ]
+    .filter(Boolean)
+    .join('\n\n');
+
+  return `
+## Other projects
+
+Unselected work. The Rules above govern how to cite it: name it, link only its
+write-up, never present it as a selected project.
+
+${sections}
+`;
+}
+
+export function buildAgentPrompt(projects, site = resolveSiteUrl(), otherProjects = []) {
   const roster = projects.map((project) => describeProject(project, site)).join('\n\n');
+  const otherProjectsSection = buildOtherProjectsSection(otherProjects);
 
   return `Answer in the first person as Ashley Childress, a senior software engineer.
 The input is a problem someone is living with. Return how you would approach it
@@ -150,7 +213,18 @@ two steps with the same two words.
 ## Selected projects
 
 ${roster}
-`;
+${otherProjectsSection}`;
+}
+
+// Mirrors src/lib/urlSafety.ts's isSafeExternalUrl. Duplicated rather than imported:
+// this script runs as plain Node outside the Next.js/TypeScript toolchain.
+function isSafeUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && url.username === '' && url.password === '';
+  } catch {
+    return false;
+  }
 }
 
 function requiredProjectText(project, key, index) {
@@ -180,6 +254,12 @@ function validatePromptProjects(value) {
       requiredProjectText(project, key, index);
     }
 
+    if (!KNOWN_STATUSES.has(project.status)) {
+      throw new TypeError(
+        `projects.json entry ${index} has an unrecognized status "${project.status}".`
+      );
+    }
+
     if (!Array.isArray(project.tech)) {
       throw new TypeError(`projects.json entry ${index} has invalid tech.`);
     }
@@ -200,6 +280,10 @@ function validatePromptProjects(value) {
           throw new TypeError(`projects.json entry ${index} has an invalid blog post.`);
         }
         requiredProjectText(post, 'title', index);
+        requiredProjectText(post, 'url', index);
+        if (!isSafeUrl(post.url)) {
+          throw new TypeError(`projects.json entry ${index} has an unsafe blog post url.`);
+        }
       });
     }
     if (project.order_rank !== undefined && !Number.isFinite(project.order_rank)) {
@@ -219,8 +303,9 @@ export async function readAgentPrompt(
     JSON.parse(await readProjects(path.join(cwd, 'src', 'data', 'projects.json'), 'utf8'))
   );
   const selected = selectPortfolioProjects(projects);
+  const others = selectOtherProjects(projects, selected);
   return {
-    prompt: buildAgentPrompt(selected, site),
+    prompt: buildAgentPrompt(selected, site, others),
     projectCount: selected.length,
     registryCount: projects.length,
   };

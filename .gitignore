@@ -71,3 +71,10 @@ commit.tmp
 # public/ on every lint/test/build, so they are derived artifacts, not inputs.
 public/**/opt/
 src/data/image-manifest.json
+
+# aqk: this machine's state — rewritten by every run, it does not belong in git
+.aqk/last-run.md
+.aqk/last-probe.md
+.aqk/advice-shown
+.aqk/update-checked
+.aqk/feedback-asked

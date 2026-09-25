@@ -2,10 +2,13 @@ import { describe, expect, it, vi } from 'vitest';
 import exhibits from '@/data/exhibits.json';
 import {
   buildAgentPrompt,
+  describeOtherProject,
   describeProject,
   emitAgentPrompt,
+  isDeployedStatus,
   readAgentPrompt,
   resolveSiteUrl,
+  selectOtherProjects,
   selectPortfolioProjects,
 } from '../../../scripts/generate-agent-prompt.mjs';
 
@@ -68,6 +71,98 @@ describe('agent prompt generator', () => {
     expect(prompt).toContain('Use a closed em dash only: text—text, never text — text.');
     expect(prompt).toContain('Cut startup language, generic metaphors');
     expect(prompt).not.toMatch(/\bexhibit(?:ed|ion|s)?\b/i);
+    expect(prompt).not.toContain('## Other projects');
+  });
+
+  it('describes an other project as a name plus its write-up links, when it has any', () => {
+    const description = describeOtherProject(
+      project({
+        name: 'Beta',
+        blog_posts: [
+          { title: 'First Post', url: 'https://example.test/first' },
+          { title: 'Second Post', url: 'https://example.test/second' },
+        ],
+      })
+    );
+
+    expect(description).toBe(
+      '- Beta: [First Post](https://example.test/first) | [Second Post](https://example.test/second)'
+    );
+  });
+
+  it('describes an other project by name alone when it has no write-up', () => {
+    expect(describeOtherProject(project({ name: 'Solo', blog_posts: [] }))).toBe('- Solo');
+  });
+
+  it('escapes brackets in a write-up title so they cannot close the link early', () => {
+    const description = describeOtherProject(
+      project({
+        name: 'Beta',
+        blog_posts: [{ title: 'Shipping [v2]', url: 'https://example.test/v2' }],
+      })
+    );
+
+    expect(description).toBe('- Beta: [Shipping \\[v2\\]](https://example.test/v2)');
+  });
+
+  it("escapes a backslash so it cannot cancel the next character's escape", () => {
+    const description = describeOtherProject(
+      project({
+        name: 'Beta',
+        blog_posts: [{ title: 'C:\\Users', url: 'https://example.test/path' }],
+      })
+    );
+
+    expect(description).toBe('- Beta: [C:\\\\Users](https://example.test/path)');
+  });
+
+  it('classifies live-sounding statuses as deployed and everything else as retired', () => {
+    expect(isDeployedStatus('Deployed')).toBe(true);
+    expect(isDeployedStatus('Active')).toBe(true);
+    expect(isDeployedStatus('Released')).toBe(true);
+    expect(isDeployedStatus('Published')).toBe(true);
+    expect(isDeployedStatus('Pre-release')).toBe(false);
+    expect(isDeployedStatus('Retired')).toBe(false);
+    expect(isDeployedStatus('Archived')).toBe(false);
+    expect(isDeployedStatus('Scrapped')).toBe(false);
+  });
+
+  it('selects every unselected project, regardless of write-up status', () => {
+    const selected = [project({ objectID: 'alpha' })];
+    const others = selectOtherProjects(
+      [
+        project({ objectID: 'alpha' }),
+        project({
+          objectID: 'beta',
+          name: 'Beta',
+          blog_posts: [{ title: 'Beta Post', url: 'https://example.test/beta' }],
+        }),
+        project({ objectID: 'gamma', name: 'Gamma', blog_posts: [] }),
+      ],
+      selected
+    );
+
+    expect(others.map((item) => item.objectID)).toEqual(['beta', 'gamma']);
+  });
+
+  it('appends an other-projects section, bucketed by status, only when there is something to list', () => {
+    const withOthers = buildAgentPrompt([project()], 'https://example.test', [
+      project({
+        name: 'Beta',
+        status: 'Deployed',
+        blog_posts: [{ title: 'Beta Post', url: 'https://example.test/beta' }],
+      }),
+      project({ objectID: 'gamma', name: 'Gamma', status: 'Archived' }),
+    ]);
+
+    expect(withOthers).toContain('## Other projects');
+    expect(withOthers.indexOf('### Deployed')).toBeLessThan(withOthers.indexOf('### Not live'));
+    expect(withOthers).toContain('- Beta: [Beta Post](https://example.test/beta)');
+    expect(withOthers).toContain('- Gamma');
+    expect(withOthers.indexOf('Gamma')).toBeGreaterThan(withOthers.indexOf('### Not live'));
+
+    const withoutOthers = buildAgentPrompt([project()], 'https://example.test');
+    expect(withoutOthers).not.toContain('## Other projects');
   });
 
   it('reads a valid registry through an injected filesystem', async () => {
@@ -89,9 +184,42 @@ describe('agent prompt generator', () => {
     await expect(
       readAgentPrompt('/portfolio', 'https://example.test', readProjects)
     ).resolves.toEqual(
-      expect.objectContaining({ prompt: expect.not.stringContaining('Inventory Only') })
+      expect.objectContaining({
+        prompt: expect.not.stringContaining('notes?project=Inventory%20Only'),
+      })
     );
     expect(readProjects).toHaveBeenCalledWith('/portfolio/src/data/projects.json', 'utf8');
+  });
+
+  it('lists every unselected project, bucketed by status, through the real read path', async () => {
+    const readProjects = vi.fn(async () =>
+      JSON.stringify([
+        ...portfolioProjects(),
+        project({
+          objectID: 'written-elsewhere',
+          name: 'Written Elsewhere',
+          status: 'Deployed',
+          order_rank: 99,
+          blog_posts: [{ title: 'Written Elsewhere Post', url: 'https://example.test/elsewhere' }],
+        }),
+        project({
+          objectID: 'shelved',
+          name: 'Shelved Thing',
+          status: 'Archived',
+          order_rank: 100,
+        }),
+      ])
+    );
+
+    const { prompt } = await readAgentPrompt('/portfolio', 'https://example.test', readProjects);
+
+    expect(prompt).toContain('## Other projects');
+    expect(prompt).toContain(
+      '- Written Elsewhere: [Written Elsewhere Post](https://example.test/elsewhere)'
+    );
+    expect(prompt).toContain('- Shelved Thing');
+    expect(prompt.indexOf('Written Elsewhere')).toBeLessThan(prompt.indexOf('### Not live'));
+    expect(prompt.indexOf('### Not live')).toBeLessThan(prompt.indexOf('Shelved Thing'));
   });
 
   it('rejects a registry missing a selected project', async () => {
@@ -123,10 +251,34 @@ describe('agent prompt generator', () => {
         JSON.stringify([project({ blog_posts: [{ url: 'https://example.test/post' }] })]),
     },
     {
+      label: 'blog post missing its url',
+      read: async () => JSON.stringify([project({ blog_posts: [{ title: 'Untitled' }] })]),
+    },
+    {
+      label: 'blog post with an unsafe url',
+      read: async () =>
+        JSON.stringify([
+          project({ blog_posts: [{ title: 'Untitled', url: 'javascript:alert(1)' }] }),
+        ]),
+    },
+    {
+      label: 'blog post url carrying credentials',
+      read: async () =>
+        JSON.stringify([
+          project({
+            blog_posts: [{ title: 'Untitled', url: 'https://user:pass@example.test/post' }],
+          }),
+        ]),
+    },
+    {
       label: 'non-object evidence',
       read: async () => JSON.stringify([project({ blog_posts: [null] })]),
     },
     { label: 'invalid rank', read: async () => JSON.stringify([project({ order_rank: 'first' })]) },
+    {
+      label: 'unrecognized status',
+      read: async () => JSON.stringify([project({ status: 'Live' })]),
+    },
   ])('rejects a $label without producing a prompt', async ({ read }) => {
     await expect(readAgentPrompt('/portfolio', undefined, read)).rejects.toThrow();
   });
