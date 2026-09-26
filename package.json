@@ -32,7 +32,7 @@
     "node": ">=26"
   },
   "dependencies": {
-    "@ai-sdk/react": "^4.0.82",
+    "@ai-sdk/react": "^4.0.110",
     "@algolia/client-common": "^5.48.0",
     "ai": "^7.0.79",
     "algoliasearch": "^5.48.0",
