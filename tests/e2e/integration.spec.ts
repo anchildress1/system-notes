@@ -50,6 +50,7 @@ test.describe('System Notes redesign', () => {
       { path: '/', state: 'restored brief' },
       { path: '/notes', state: 'initial' },
       { path: '/notes', state: 'search offline' },
+      { path: '/notes', state: 'stale results' },
       { path: '/projects', state: 'initial' },
       { path: '/about', state: 'initial' },
     ] as const;
@@ -82,6 +83,17 @@ test.describe('System Notes redesign', () => {
         // hydration nor the mocked Algolia response, so an empty result would
         // mean the measured nodes were absent, not that they passed.
         await expect(page.getByRole('paragraph').first()).toBeVisible();
+        if (state === 'stale results') {
+          // Aborting before the first load renders SearchFailure instead —
+          // items.length is 0, so the stale-results sentence never appears and
+          // an alert gate passes on the wrong alert. Succeed first, then break
+          // the NEXT search and gate on that exact line.
+          await expect(page.getByRole('article')).toBeVisible();
+          await page.unroute(/algolia/);
+          await page.route(/algolia/, (route) => route.abort('failed'));
+          await page.getByRole('searchbox', { name: 'Search the notes index' }).fill('now offline');
+          await expect(page.getByText('Showing the last available results.')).toBeVisible();
+        }
         if (path === '/notes' && state === 'initial') {
           await expect(page.getByRole('article')).toBeVisible();
         }
