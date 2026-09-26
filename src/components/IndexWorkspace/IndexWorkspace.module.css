@@ -80,16 +80,12 @@
    refined facet lost its fill the moment the cursor left. Same band, same token;
    it just does not lift. */
 .categoryList button[data-selected] {
-  background-image: var(--stroke-swipe-inked);
+  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
   background-position: 0 50%;
   background-repeat: no-repeat;
-  background-size: 100% 158%;
-  color: var(--mark-ink);
-}
-
-.categoryList button[data-selected] .categoryName,
-.categoryList button[data-selected] .categoryCount {
-  color: inherit;
+  background-size:
+    100% 158%,
+    100% 158%;
 }
 
 .categorySwatch {
@@ -497,17 +493,6 @@
   border-bottom: 0.5px solid var(--line-strong);
   color: var(--bone);
   text-align: left;
-  /* 180ms; 260 read as lag on a row a pointer crosses quickly. Padding rather
-     than translateX so the indent moves the label without dragging the row's
-     right-hand meta off its rule. --ease-out on all three: the bare `ease` here
-     was drift, not a decision. */
-  transition:
-    padding-left 180ms var(--ease-out),
-    color 180ms var(--ease-out),
-    border-color 180ms var(--ease-out);
-}
-.queueList button:hover {
-  padding-left: 0.9rem;
 }
 
 /* Four measures that repeat, so a paged run of ten does not fall back to flat
@@ -555,7 +540,10 @@
   position: absolute;
   top: 0.35rem;
   bottom: clamp(1.5rem, 3vw, 2.25rem);
-  left: -0.85rem;
+  /* Stands clear of the label, and still inside the pane's padding: the reading
+     pane gives 2.5vw here and only 1rem below the stacked breakpoint, where this
+     drops with it. A mark past that edge is a horizontal scrollbar. */
+  left: -1.15rem;
   width: 0.85rem;
   /* --mark, not --ink-accent. The alias resolves to --mark-ink on paper, which
      painted this black there: correct for ink, wrong for a MARK. Gold is
@@ -811,6 +799,10 @@
 
   .readingPane {
     padding: 1rem;
+  }
+
+  .queueList li[data-open]::before {
+    left: -0.7rem;
   }
 
   .searchPill {

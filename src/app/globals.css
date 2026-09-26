@@ -509,30 +509,28 @@ body::before {
 }
 
 .washed {
-  /* The INKED swipe, like .marked-soft above, not --mark-soft as a flat colour.
-     16% gold is a layer: painted as a background it composited over graphite and
-     went olive, which is the one place this file's own rule — opaque gold keeps
-     the stroke yellow on graphite, and SCALE rather than translucency gives it
-     less weight — was not being followed. A row is the larger of the two scales,
-     so the band is full-bleed where .marked-hover's is line-height tall. */
-  /* THREE passes of the soft swipe, exactly as .tape stacks three --mark-soft
-     layers — same construction, so the band lands on the tape's colour rather
-     than full-strength gold. One pass is too faint to see; the opaque swipe is
-     the mark itself and far too loud for a hover. */
-  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft), var(--stroke-swipe-soft);
+  /* TWO passes of the soft swipe. --mark-soft is a LAYER: painted as a flat
+     background-color it composited over graphite and went olive, which is the
+     one place this file's own rule — opaque gold keeps the stroke yellow there,
+     and SCALE rather than translucency gives a mark less weight — was not being
+     followed.
+     .tape stacks three of the same 16% gold; two is that construction one step
+     lighter, which is where a hover sits. One pass alone does not register, and
+     the opaque swipe is the mark itself, far too loud under a pointer.
+     A row is the larger of the two hover scales, so the band is full-bleed where
+     .marked-hover's is line-height tall. */
+  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
   background-position: 0 50%;
   background-repeat: no-repeat;
   background-size: 100% 0;
-  transition: background-size 180ms var(--ease-out);
 }
 
 .washed:hover,
 .washed:focus-visible {
   /* 158% for the same reason .btn and .marked-soft use it: --stroke-swipe insets
      its ink to the middle 61% of the viewBox. No colour here: the band is a
-     layer, so the label keeps the contrast it already had. */
+     layer, so every label keeps the contrast it already had. */
   background-size:
-    100% 158%,
     100% 158%,
     100% 158%;
 }
@@ -626,14 +624,15 @@ body::before {
     linear-gradient(to bottom, var(--mark-lift) 0 6%, transparent 24%);
 }
 
-/* The same band the rest of the hovers draw, not a flat 16% fill — see .washed. */
+/* The same band .washed draws, not a flat 16% fill and not the opaque mark. */
 .btn[data-variant='outline']:hover:not(:disabled) {
   border-color: var(--ink-accent);
-  background-image: var(--stroke-swipe-inked);
+  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
   background-position: 0 50%;
   background-repeat: no-repeat;
-  background-size: 100% 158%;
-  color: var(--mark-ink);
+  background-size:
+    100% 158%,
+    100% 158%;
 }
 
 /* Reads as deliberately parked rather than broken: the label stays legible
