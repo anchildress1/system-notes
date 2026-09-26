@@ -18,6 +18,58 @@ import {
 const STACK_BREAKPOINT_PX = 768;
 
 test.describe('System Notes redesign', () => {
+  test('keeps prose at or above 16px on every route', async ({ page }) => {
+    // axe has no font-size rule and contrast passes as readily at 11px as at 16px,
+    // so a full green suite said nothing about this: the notes index shipped its
+    // own evidence at 11.5px, and /projects listed an exhibit's stack at 11px.
+    // Reading the COMPUTED size is the only thing that measures it.
+    //
+    // Prose is sentence-case running text of six words or more. A tracked
+    // uppercase label is a caption and keeps --fine (11px) on purpose; the line
+    // a reader stops and reads does not.
+    const findings: string[] = [];
+    for (const width of [280, 390, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      for (const path of ['/', '/notes', '/projects', '/about']) {
+        await mockAlgoliaSearch(page, [
+          {
+            objectID: 'card:test:1',
+            title: 'Failure is useful data',
+            blurb: 'Evidence attached.',
+            fact: 'The complete evidence behind the decision, written out at its real length.',
+            category: 'Principle',
+            projects: ['System Notes'],
+            'tags.lvl0': ['Testing'],
+          },
+        ]);
+        await page.goto(path);
+        await page.evaluate(() => document.fonts.ready);
+        findings.push(
+          ...(await page.evaluate(() => {
+            const small = new Set<string>();
+            for (const element of document.querySelectorAll<HTMLElement>('body *')) {
+              const text = [...element.childNodes]
+                .filter((node) => node.nodeType === Node.TEXT_NODE)
+                .map((node) => node.textContent?.trim() ?? '')
+                .join(' ')
+                .trim();
+              if (text.split(/\s+/).length < 6) continue;
+              if (element.className.includes('visually-hidden')) continue;
+              const style = getComputedStyle(element);
+              if (style.visibility === 'hidden' || style.display === 'none') continue;
+              if (style.textTransform === 'uppercase') continue;
+              const size = parseFloat(style.fontSize);
+              if (size >= 16) continue;
+              small.add(`${size}px "${text.slice(0, 48)}"`);
+            }
+            return [...small].map((entry) => `${location.pathname} ${entry}`);
+          }))
+        );
+      }
+    }
+    expect(findings).toEqual([]);
+  });
+
   test('keeps the lower tape folding as tall prints enter a short viewport', async ({ page }) => {
     await verifyLowerTapeFold(page);
   });

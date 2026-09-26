@@ -15,7 +15,6 @@
 }
 
 .factBlock {
-  max-width: 62rem;
   margin-top: 1.15rem;
 }
 
@@ -28,11 +27,21 @@
   text-transform: uppercase;
 }
 
+/* The note's own prose, and the reason the page exists. It reads at or above the
+   document's 16px, never below it — 0.72rem here put the evidence a hair above
+   the 11px reserved for metadata nobody is meant to stop on.
+
+   The preferred term is rem + vw, not bare vw. A viewport-only size ignores the
+   reader's text-size setting entirely: it cannot grow to 200% where the vw band
+   is what resolves, and 1.4.4 is about the text scaling, not the box. */
 .fact {
+  /* In ch, so the measure tracks the type rather than a fixed 62rem that grew to
+     about a hundred characters a line as soon as the type did. */
+  max-width: 76ch;
   margin-top: 0.4rem;
   color: var(--soft);
   font-family: var(--font-display);
-  font-size: clamp(0.72rem, 1.2vw, 0.84rem);
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
   line-height: 1.7;
   white-space: pre-wrap;
 }

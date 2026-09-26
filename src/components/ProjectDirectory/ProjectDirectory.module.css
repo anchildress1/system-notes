@@ -52,9 +52,11 @@
   overflow-wrap: anywhere;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: var(--fine);
+  /* Not --fine: this is the exhibit's stack, a line a reader stops and reads,
+     not a caption they glance past. */
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: var(--fine-tracking);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -78,7 +80,7 @@
   display: inline;
   font-family: var(--font-display);
   /* Its own size, not --fine: this is a claim of merit, not a caption. */
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: var(--fine-tracking);
   text-transform: uppercase;

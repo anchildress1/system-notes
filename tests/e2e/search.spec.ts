@@ -119,6 +119,33 @@ test.describe('Notes index', () => {
     expect(accessibility.violations).toEqual([]);
   });
 
+  test('keeps the note it opens readable at every width, and under text zoom', async ({ page }) => {
+    // axe has no font-size rule, so the suite stayed green while the note's own
+    // prose rendered at 11.5px — under the document's 16px and a hair above the
+    // 11px reserved for metadata. Reading the COMPUTED size in a real browser is
+    // the only thing that measures this; a value copied from the stylesheet into
+    // a unit test would just drift alongside it.
+    await mockAlgoliaSearch(page, [buildHit()]);
+    await page.goto('/notes');
+    const fact = page.getByText('The complete evidence behind the decision.');
+    const sizeOf = () => fact.evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
+
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await expect(fact).toBeVisible();
+      expect(await sizeOf(), `fact body at ${width}px`).toBeGreaterThanOrEqual(16);
+    }
+
+    // 1.4.4: text has to reach 200% of its own size. A size keyed to the
+    // viewport alone cannot, because nothing about the root font changes it.
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const base = await sizeOf();
+    await page.evaluate(() => {
+      document.documentElement.style.fontSize = '200%';
+    });
+    expect(await sizeOf()).toBeGreaterThanOrEqual(base * 1.8);
+  });
+
   test('keeps the composite board operable with reduced motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await mockAlgoliaSearch(page, [
