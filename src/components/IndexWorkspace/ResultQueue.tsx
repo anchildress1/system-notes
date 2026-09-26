@@ -94,11 +94,21 @@ export default function ResultQueue({
                 <button
                   type="button"
                   className="washed"
+                  // Names the button, and so the heading, from the title alone.
+                  // From its contents every heading read ordinal-project-date
+                  // first and the rotor became identical prefixes.
+                  aria-labelledby={titleId}
                   aria-expanded={open}
                   // Only while the panel exists. A dangling aria-controls names
                   // an id that is not in the document.
                   aria-controls={open ? panelId : undefined}
-                  onClick={() => onSelect(hit.objectID)}
+                  // One note is open, so this control cannot collapse it. Unsaid,
+                  // it announces expanded and ignores Enter. Re-selecting also
+                  // re-sent the insights click.
+                  aria-disabled={open || undefined}
+                  onClick={() => {
+                    if (!open) onSelect(hit.objectID);
+                  }}
                 >
                   <span className={styles.queueMeta}>
                     <span>

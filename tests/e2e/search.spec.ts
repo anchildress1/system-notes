@@ -101,7 +101,11 @@ test.describe('Notes index', () => {
 
     // The row carries the heading and the meta; the panel under it carries the
     // evidence. Neither states the other's facts twice.
-    await expect(row.getByRole('heading', { name: 'Failure is useful data' })).toBeVisible();
+    // Exact: by default a name match is a substring, which passed while the
+    // heading was named for the whole meta line.
+    await expect(
+      row.getByRole('heading', { name: 'Failure is useful data', exact: true })
+    ).toBeVisible();
     await expect(row.getByText('Principle')).toBeVisible();
     await expect(row.getByText(/System Notes/).first()).toBeVisible();
     await expect(card).toHaveAccessibleName('Failure is useful data');

@@ -78,6 +78,45 @@ describe('ResultQueue', () => {
     expect(rowTitles()).toEqual([1, 2, 3, 4, 5, 6].map((rank) => `Old note ${rank}`));
   });
 
+  it('names each row heading from the title alone', () => {
+    // From its contents the heading name is the whole meta line, so rotor
+    // navigation reads an ordinal, a project and a date before any title.
+    render(<Workspace items={resultSet('Old')} initialId="card:shared:first" />);
+
+    const headings = screen.getAllByRole('heading', { level: 3 });
+    expect(headings).toHaveLength(6);
+    for (const [index, heading] of headings.entries()) {
+      expect(heading).toHaveAccessibleName(`Old note ${index + 1}`);
+      // The meta line stays in the row and in reading order; it is only kept
+      // out of the NAME.
+      expect(heading).toHaveTextContent(`№ ${index + 1}`);
+    }
+  });
+
+  it('refuses to re-select the note already open', () => {
+    // The open control cannot collapse anything, so activating it must not bank
+    // a second insights click for a note the reader is already reading.
+    const onSelect = vi.fn();
+    render(
+      <Workspace items={resultSet('Old')} initialId="card:shared:first" onSelect={onSelect} />
+    );
+
+    const first = rows()[0]!;
+    expect(first).toHaveAttribute('aria-expanded', 'true');
+    expect(first).toHaveAttribute('aria-disabled', 'true');
+
+    fireEvent.click(first);
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(openRows()).toHaveLength(1);
+
+    // A closed row is a live control and carries no aria-disabled.
+    expect(rows()[1]).not.toHaveAttribute('aria-disabled');
+    fireEvent.click(rows()[1]!);
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(rows()[0]).not.toHaveAttribute('aria-disabled');
+    expect(rows()[1]).toHaveAttribute('aria-disabled', 'true');
+  });
+
   it('renders the open note as the only panel, named by its own row', () => {
     render(
       <ResultQueue
@@ -252,6 +291,7 @@ describe('ResultQueue', () => {
       <ResultQueue
         items={[createMockHit({ category: '', projects: [], created_at: 'bad-date' })]}
         onSelect={vi.fn()}
+        onReveal={vi.fn()}
       />
     );
 
