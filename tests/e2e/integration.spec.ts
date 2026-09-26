@@ -54,7 +54,11 @@ test.describe('System Notes redesign', () => {
                 .join(' ')
                 .trim();
               if (text.split(/\s+/).length < 6) continue;
-              if (element.className.includes('visually-hidden')) continue;
+              // classList, not className: on an SVG element className is an
+              // SVGAnimatedString with no .includes, and every route renders
+              // react-icons SVGs. A <text> or <title> long enough to reach this
+              // line would throw and take the whole sweep with it.
+              if (element.classList.contains('visually-hidden')) continue;
               const style = getComputedStyle(element);
               if (style.visibility === 'hidden' || style.display === 'none') continue;
               if (style.textTransform === 'uppercase') continue;
