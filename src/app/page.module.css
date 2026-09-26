@@ -13,7 +13,7 @@
   max-width: 48rem;
   margin-bottom: clamp(1.5rem, 4vh, 2.75rem);
   color: var(--soft);
-  font-size: clamp(0.9375rem, 1.5vw, 1.0625rem);
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
 }
 
 .proof strong {

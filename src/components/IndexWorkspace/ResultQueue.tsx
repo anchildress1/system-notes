@@ -1,44 +1,37 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import type { Hit } from 'instantsearch.js';
 import FactCard from '@/components/FactCard/FactCard';
 import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteContent';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
-/* Alternates shown per page. The reader above holds the featured note, so a page
-   is one note plus five.
-
-   Five, not ten: .queueTitle scales the type down by rank and floors at 1.05rem,
-   which rank 5 reaches. */
-const PAGE_SIZE = 5;
+/* Rows per page. Six rather than five because the note being read is no longer
+   lifted out of the list into a reader above it — a page carries the same six
+   notes it always carried, all of them as rows. */
+const PAGE_SIZE = 6;
 
 interface ResultQueueProps {
   items: Hit<FactHitRecord>[];
   selectedId?: string;
   onSelect: (id: string) => void;
+  /* Paging opens a note without reporting a result click: pressing Next is
+     navigation, not a reader picking that note out of the ranking, and an
+     insights click event fired from it would be a signal nobody sent. */
+  onReveal: (id: string) => void;
 }
 
-export default function ResultQueue({ items, selectedId, onSelect }: Readonly<ResultQueueProps>) {
-  const readerRef = useRef<HTMLDivElement>(null);
-  const shouldFocusReader = useRef(false);
-  const [pager, setPager] = useState({ page: 0, signature: '' });
+export default function ResultQueue({
+  items,
+  selectedId,
+  onSelect,
+  onReveal,
+}: Readonly<ResultQueueProps>) {
   const previousRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   /** Which end control moved the page, so focus can be rescued if it retires. */
   const pressedEnd = useRef<'previous' | 'next' | null>(null);
-  const featuredIndex = Math.max(
-    items.findIndex((item) => item.objectID === selectedId),
-    0
-  );
-  const featured = items[featuredIndex];
-
-  useEffect(() => {
-    if (!shouldFocusReader.current) return;
-    shouldFocusReader.current = false;
-    readerRef.current?.focus({ preventScroll: true });
-  }, [featured?.objectID]);
 
   // Paging to the last page disables the very control that got you there, and a
   // disabled element cannot hold focus — the browser drops it to <body>, which
@@ -53,86 +46,90 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
     const source = pressed === 'previous' ? previousRef.current : nextRef.current;
     if (!source?.disabled) return;
     (pressed === 'previous' ? nextRef.current : previousRef.current)?.focus();
-  }, [pager]);
+  }, [selectedId]);
 
-  // A new result set starts at its own first page. The page is stored WITH the set it
-  // was chosen for and read back only when the two still agree, so a stale page is
-  // ignored rather than corrected.
-  const resultSignature = JSON.stringify(items.map((item) => item.objectID));
-  const requestedPage = pager.signature === resultSignature ? pager.page : 0;
+  if (items.length === 0) return null;
 
-  if (!featured) return null;
-
-  const alternatives = items
-    .map((hit, index) => ({ hit, index }))
-    .filter(({ hit }) => hit.objectID !== featured.objectID);
-  const pageCount = Math.max(1, Math.ceil(alternatives.length / PAGE_SIZE));
-  // Clamped on read, not corrected in state: selecting a note on the last page
-  // removes it from the alternates and can retire that page mid-render.
-  const currentPage = Math.min(requestedPage, pageCount - 1);
-  const goToPage = (next: number) => setPager({ page: next, signature: resultSignature });
+  // A stale or absent selection falls back to the top-ranked note rather than
+  // leaving a list of rows with nothing open in it.
+  const openIndex = Math.max(
+    items.findIndex((item) => item.objectID === selectedId),
+    0
+  );
+  const openId = items[openIndex]!.objectID;
+  const pageCount = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  // THE SELECTION IS THE PAGE. The page is derived from the open note and never
+  // stored, so the two cannot disagree — and the rail's board, which selects by
+  // rank, brings the queue with it for free. Holding a chosen page alongside the
+  // selection is what let Next land on six rows with nothing open on them.
+  const currentPage = Math.floor(openIndex / PAGE_SIZE);
+  // Paging therefore moves the reader: it opens the first note of the page it
+  // lands on, which is the only thing that can be open there.
+  const goToPage = (next: number) => onReveal(items[next * PAGE_SIZE]!.objectID);
   const pageStart = currentPage * PAGE_SIZE;
-  const visible = alternatives.slice(pageStart, pageStart + PAGE_SIZE);
+  const visible = items.slice(pageStart, pageStart + PAGE_SIZE);
 
   return (
     <section aria-label="Notes results">
       <h2 className="visually-hidden">Matching notes</h2>
-      <div className={styles.readingQueue}>
-        {/* No aria-live here. Choosing a note already moves focus to this element,
-            which announces it; the live region announced it a second time, and
-            aria-atomic re-read the whole card — title, fact, project, date, tags
-            and actions — on every keystroke that changed the top hit. */}
-        <div
-          ref={readerRef}
-          className={styles.reader}
-          tabIndex={-1}
-          aria-label={`Now reading: ${featured.title}`}
-        >
-          <FactCard
-            key={featured.objectID}
-            hit={featured}
-            position={getFactHitPosition(featured, featuredIndex + 1)}
-          />
-        </div>
-
-        {visible.length > 0 ? (
-          <ol
-            className={styles.queueList}
-            data-ranked-queue
-            aria-label="Highest-ranked alternate notes"
-          >
-            {visible.map(({ hit, index }, rank) => {
-              const position = getFactHitPosition(hit, index + 1);
-              const project = getNoteProjects(hit)[0] ?? 'System Notes';
-              const date = formatNoteDate(hit.created_at);
-              return (
-                <li key={hit.objectID} style={{ '--rank': rank } as CSSProperties}>
-                  <button
-                    type="button"
-                    className="washed"
-                    onClick={() => {
-                      shouldFocusReader.current = true;
-                      onSelect(hit.objectID);
-                    }}
-                  >
-                    <span className={styles.queueMeta}>
-                      <span>
-                        № {position} · {project}
-                        {date ? ` · ${date}` : ''}
-                      </span>
-                      <span>{hit.category || 'Note'}</span>
+      {/* No aria-live. The open row is the one the reader just activated, with
+          focus still on its own control, so a live region only re-read the whole
+          note — title, fact, project, date, tags and actions — on every keystroke
+          that changed the top hit. Measured, not assumed. */}
+      <ol className={styles.queueList} data-ranked-queue aria-label="Ranked notes">
+        {visible.map((hit, offset) => {
+          const index = pageStart + offset;
+          const open = hit.objectID === openId;
+          const position = getFactHitPosition(hit, index + 1);
+          const project = getNoteProjects(hit)[0] ?? 'System Notes';
+          const date = formatNoteDate(hit.created_at);
+          const panelId = `note-${hit.objectID}`;
+          const titleId = `note-title-${hit.objectID}`;
+          return (
+            <li key={hit.objectID} data-open={open || undefined}>
+              {/* The row's own label is the note's heading, so the opened note
+                  does not restate it. A heading rather than a bare button: the
+                  list is the document outline of the results. */}
+              <h3 className={styles.queueHeading}>
+                <button
+                  type="button"
+                  className="washed"
+                  // Names the button, and so the heading, from the title alone.
+                  // From its contents every heading read ordinal-project-date
+                  // first and the rotor became identical prefixes.
+                  aria-labelledby={titleId}
+                  aria-expanded={open}
+                  // Only while the panel exists. A dangling aria-controls names
+                  // an id that is not in the document.
+                  aria-controls={open ? panelId : undefined}
+                  // One note is open, so this control cannot collapse it. Unsaid,
+                  // it announces expanded and ignores Enter. Re-selecting also
+                  // re-sent the insights click.
+                  aria-disabled={open || undefined}
+                  onClick={() => {
+                    if (!open) onSelect(hit.objectID);
+                  }}
+                >
+                  <span className={styles.queueMeta}>
+                    <span>
+                      № {position} · {project}
+                      {date ? ` · ${date}` : ''}
                     </span>
-                    <span className={styles.queueTitle}>{hit.title}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
-        ) : null}
-      </div>
+                    <span>{hit.category || 'Note'}</span>
+                  </span>
+                  <span className={styles.queueTitle} id={titleId}>
+                    {hit.title}
+                  </span>
+                </button>
+              </h3>
+              {open ? <FactCard hit={hit} id={panelId} labelledBy={titleId} /> : null}
+            </li>
+          );
+        })}
+      </ol>
 
       {pageCount > 1 ? (
-        <nav className={styles.queuePager} aria-label="Alternate notes pages">
+        <nav className={styles.queuePager} aria-label="Ranked notes pages">
           <button
             type="button"
             ref={previousRef}

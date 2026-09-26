@@ -18,6 +18,133 @@ import {
 const STACK_BREAKPOINT_PX = 768;
 
 test.describe('System Notes redesign', () => {
+  test('keeps prose at or above 16px on every route', async ({ page }) => {
+    // axe has no font-size rule and contrast passes as readily at 11px as at 16px,
+    // so a full green suite said nothing about this: the notes index shipped its
+    // own evidence at 11.5px, and /projects listed an exhibit's stack at 11px.
+    // Reading the COMPUTED size is the only thing that measures it.
+    //
+    // Prose is sentence-case running text. A tracked uppercase label is a
+    // caption and keeps --fine (11px) on purpose; the line a reader stops and
+    // reads does not.
+    const SAVED_BRIEF = JSON.stringify({
+      question: 'Can this run somewhere our data never leaves?',
+      answer:
+        'Yes. The index is read-only and the agent cites only notes already filed, so nothing a reader types is retained anywhere.',
+    });
+    const hit = {
+      objectID: 'card:test:1',
+      title: 'Failure is useful data',
+      blurb: 'Evidence attached.',
+      fact: 'The complete evidence behind the decision, written out at its real length.',
+      category: 'Principle',
+      projects: ['System Notes'],
+      'tags.lvl0': ['Testing'],
+    };
+    // Loading each route in its initial state leaves every state reached by
+    // interaction unmeasured, and prose lives in those too — a restored brief,
+    // a search that fell over. Each entry below is a (route, state) pair the
+    // sweep actually renders, not just a URL.
+    const surfaces = [
+      { path: '/', state: 'initial' },
+      { path: '/', state: 'restored brief' },
+      { path: '/notes', state: 'initial' },
+      { path: '/notes', state: 'search offline' },
+      { path: '/notes', state: 'stale results' },
+      { path: '/projects', state: 'initial' },
+      { path: '/about', state: 'initial' },
+    ] as const;
+
+    const findings: string[] = [];
+    for (const width of [280, 390, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      for (const { path, state } of surfaces) {
+        if (state === 'search offline') {
+          await page.unroute(/algolia/);
+          await page.route(/algolia/, (route) => route.abort('failed'));
+        } else {
+          await mockAlgoliaSearch(page, [hit]);
+        }
+        await page.goto(path);
+        // Seeded rather than asked: IntakeDesk renders a kept brief directly, so
+        // the panel's prose is reachable without standing up the agent. Set on
+        // the loaded page and reloaded, NOT through addInitScript — init scripts
+        // accumulate for the life of the page and the seed then leaked into every
+        // later pass, which stopped 'initial' being initial.
+        await page.evaluate(
+          (brief: string | null) => {
+            if (brief) sessionStorage.setItem('system-notes-intake-brief', brief);
+            else sessionStorage.removeItem('system-notes-intake-brief');
+          },
+          state === 'restored brief' ? SAVED_BRIEF : null
+        );
+        await page.reload();
+        // Gate the sweep on the prose existing. `load` waits for neither
+        // hydration nor the mocked Algolia response, so an empty result would
+        // mean the measured nodes were absent, not that they passed.
+        await expect(page.getByRole('paragraph').first()).toBeVisible();
+        if (state === 'stale results') {
+          // Aborting before the first load renders SearchFailure instead —
+          // items.length is 0, so the stale-results sentence never appears and
+          // an alert gate passes on the wrong alert. Succeed first, then break
+          // the NEXT search and gate on that exact line.
+          await expect(page.getByRole('article')).toBeVisible();
+          await page.unroute(/algolia/);
+          await page.route(/algolia/, (route) => route.abort('failed'));
+          await page.getByRole('searchbox', { name: 'Search the notes index' }).fill('now offline');
+          await expect(page.getByText('Showing the last available results.')).toBeVisible();
+        }
+        if (path === '/notes' && state === 'initial') {
+          await expect(page.getByRole('article')).toBeVisible();
+        }
+        if (state === 'search offline') {
+          await expect(page.getByRole('alert').first()).toBeVisible();
+        }
+        if (state === 'restored brief') {
+          await expect(page.getByText(/An AI agent wrote this/)).toBeVisible();
+        }
+        await page.evaluate(() => document.fonts.ready);
+        findings.push(
+          ...(await page.evaluate((label: string) => {
+            const small = new Set<string>();
+            for (const element of document.querySelectorAll<HTMLElement>('body *')) {
+              const text = [...element.childNodes]
+                .filter((node) => node.nodeType === Node.TEXT_NODE)
+                .map((node) => node.textContent?.trim() ?? '')
+                .join(' ')
+                .trim();
+              // Role, not length. A six-word cutoff exempted whole sentences
+              // for being short: "Shipping production systems since 2014" ran
+              // at 11px under it. Three real words is the floor for a clause,
+              // counted as tokens with two or more letters so "· 1 ms" does
+              // not qualify as one.
+              const words = text.split(/\s+/).filter((word) => /\p{L}{2,}/u.test(word));
+              if (words.length < 3) continue;
+              // A control's label is a control, sized by target rules and its
+              // own conventions — nav items, link text and button copy are not
+              // the running text this floor governs.
+              if (element.closest('a, button, summary')) continue;
+              // classList, not className: on an SVG element className is an
+              // SVGAnimatedString with no .includes, and every route renders
+              // react-icons SVGs. A <text> or <title> long enough to reach this
+              // line would throw and take the whole sweep with it.
+              if (element.classList.contains('visually-hidden')) continue;
+              const style = getComputedStyle(element);
+              if (style.visibility === 'hidden' || style.display === 'none') continue;
+              if (style.textTransform === 'uppercase') continue;
+              const size = parseFloat(style.fontSize);
+              if (size >= 16) continue;
+              small.add(`${size}px "${text.slice(0, 48)}"`);
+            }
+            return [...small].map((entry) => `${location.pathname} [${label}] ${entry}`);
+          }, state))
+        );
+      }
+    }
+    await page.unroute(/algolia/);
+    expect(findings).toEqual([]);
+  });
+
   test('keeps the lower tape folding as tall prints enter a short viewport', async ({ page }) => {
     await verifyLowerTapeFold(page);
   });

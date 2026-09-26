@@ -2,9 +2,10 @@
   display: flex;
   min-width: 0;
   padding: 0 0 clamp(1.5rem, 3vw, 2.25rem);
-  /* No box and no fill. The queue beneath is separated by hairlines alone, so a
-     bordered panel here made the entry you are reading the only object on the page
-     still wearing a container. */
+  /* No box and no fill. The note opens inside the row that names it, and the rows
+     are separated by hairlines alone, so a bordered panel here made the entry you
+     are reading the only object on the page still wearing a container. The one
+     border closes the open row. */
   border: 0;
   border-bottom: 1px solid var(--edge);
   background: transparent;
@@ -13,52 +14,7 @@
   animation: dossier-enter 340ms var(--ease-out) both;
 }
 
-.cardMeta {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  color: var(--mute);
-  font-family: var(--font-display);
-  font-variant-numeric: tabular-nums;
-  font-size: var(--fine);
-  letter-spacing: var(--fine-tracking);
-  gap: 1rem;
-  text-transform: uppercase;
-}
-
-/* min-width:0 is what lets the ellipsis engage: a flex item's automatic
-   minimum size is min-content, so overflow:hidden alone never shrinks it. */
-.cardMeta > span:first-child {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.category {
-  flex: 0 0 auto;
-  padding: 0;
-  border: 0;
-  color: var(--ink-accent);
-  font-size: var(--fine);
-  letter-spacing: var(--fine-tracking);
-  text-transform: uppercase;
-}
-
-.title {
-  max-width: 66rem;
-  margin-top: 0.75rem;
-  font-family: var(--font-editorial);
-  font-size: clamp(1.7rem, 2.4vw, 2.2rem);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.14;
-  overflow-wrap: anywhere;
-  text-wrap: pretty;
-}
-
 .factBlock {
-  max-width: 62rem;
   margin-top: 1.15rem;
 }
 
@@ -71,11 +27,21 @@
   text-transform: uppercase;
 }
 
+/* The note's own prose, and the reason the page exists. It reads at or above the
+   document's 16px, never below it — 0.72rem here put the evidence a hair above
+   the 11px reserved for metadata nobody is meant to stop on.
+
+   The preferred term is rem + vw, not bare vw. A viewport-only size ignores the
+   reader's text-size setting entirely: it cannot grow to 200% where the vw band
+   is what resolves, and 1.4.4 is about the text scaling, not the box. */
 .fact {
+  /* In ch, so the measure tracks the type rather than a fixed 62rem that grew to
+     about a hundred characters a line as soon as the type did. */
+  max-width: 76ch;
   margin-top: 0.4rem;
   color: var(--soft);
   font-family: var(--font-display);
-  font-size: clamp(0.72rem, 1.2vw, 0.84rem);
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
   line-height: 1.7;
   white-space: pre-wrap;
 }
@@ -152,12 +118,6 @@
 @keyframes dossier-enter {
   from {
     transform: translateY(0.65rem);
-  }
-}
-
-@media (max-width: 47.99rem) {
-  .cardMeta {
-    align-items: flex-start;
   }
 }
 

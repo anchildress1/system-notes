@@ -18,11 +18,21 @@ vi.mock('algoliasearch/lite', () => ({
   })),
 }));
 
+// The opened note carries no heading of its own — the row that opened it does,
+// and names the panel through aria-labelledby. So the mock renders the fact and
+// takes its accessible name from outside, exactly as the real card does.
 vi.mock('@/components/FactCard/FactCard', () => ({
-  default: ({ hit, position }: { hit: { title: string }; position: number }) => (
-    <article data-position={position}>{hit.title}</article>
+  default: ({ hit, id, labelledBy }: { hit: { fact: string }; id: string; labelledBy: string }) => (
+    <article id={id} aria-labelledby={labelledBy}>
+      {hit.fact}
+    </article>
   ),
 }));
+
+const queueRows = () => [
+  ...document.querySelectorAll<HTMLButtonElement>('[data-ranked-queue] button'),
+];
+const queueTitles = () => queueRows().map((row) => row.children.item(1)?.textContent);
 
 function result() {
   return {
@@ -105,7 +115,7 @@ describe('IndexWorkspace', () => {
     await renderWorkspace();
     await screen.findByText('Ranked note 1');
 
-    const pager = screen.getByRole('navigation', { name: 'Alternate notes pages' });
+    const pager = screen.getByRole('navigation', { name: 'Ranked notes pages' });
     const next = within(pager).getByRole('button', { name: /next/i });
     const previous = within(pager).getByRole('button', { name: /previous/i });
     expect(previous).toBeDisabled();
@@ -138,7 +148,10 @@ describe('IndexWorkspace', () => {
       'aria-expanded',
       'true'
     );
-    expect(screen.getByText('Principle')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^Principle, 1 notes$/ })).toHaveAttribute(
+      'aria-pressed',
+      'false'
+    );
     expect(screen.getByRole('option', { name: /Failure is data, position 1/i })).toBeVisible();
     expect(screen.getByText('Project')).toBeInTheDocument();
     expect(screen.getByText('Topic')).toBeInTheDocument();
@@ -244,7 +257,7 @@ describe('IndexWorkspace', () => {
     };
 
     await renderWorkspace();
-    expect(await screen.findByRole('article')).toHaveTextContent('Ranked note 1');
+    expect(await screen.findByRole('article')).toHaveAccessibleName('Ranked note 1');
     const boardElement = screen.getByRole('listbox', { name: 'Top ranked notes' });
     const board = within(boardElement);
     const tiles = board.getAllByRole('option');
@@ -259,11 +272,10 @@ describe('IndexWorkspace', () => {
     ]);
     expect(tiles[346]).toHaveAccessibleName('Ranked note 347, position 347');
     expect(screen.queryByText(/malformed notes were withheld/i)).not.toBeInTheDocument();
-    expect(
-      [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
-        row.textContent?.trim()
-      )
-    ).toEqual([2, 3, 4, 5, 6].map((rank) => expect.stringContaining(`Ranked note ${rank}`)));
+    // The note being read is a row like every other, so the first page is the
+    // ranking's own first six — nothing is lifted out of it.
+    expect(queueTitles()).toEqual([1, 2, 3, 4, 5, 6].map((rank) => `Ranked note ${rank}`));
+    expect(queueRows()[0]).toHaveAttribute('aria-expanded', 'true');
     expect(boardElement).toHaveAttribute('tabindex', '0');
     expect(tiles.every((tile) => !tile.hasAttribute('tabindex'))).toBe(true);
     expect(boardElement).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
@@ -302,25 +314,25 @@ describe('IndexWorkspace', () => {
 
     fireEvent.click(board.getByRole('option', { name: 'Ranked note 37, position 37' }));
 
-    expect(screen.getByRole('article')).toHaveTextContent('Ranked note 37');
-    expect(screen.getByRole('article')).toHaveAttribute('data-position', '37');
+    expect(screen.getByRole('article')).toHaveAccessibleName('Ranked note 37');
+    expect(screen.getByRole('article')).toHaveTextContent('Evidence 37');
     expect(boardElement).toHaveFocus();
     expect(board.getByRole('option', { name: 'Ranked note 37, position 37' })).toHaveAttribute(
       'aria-selected',
       'true'
     );
-    expect(
-      [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
-        row.textContent?.trim()
-      )
-    ).toEqual([1, 2, 3, 4, 5].map((rank) => expect.stringContaining(`Ranked note ${rank}`)));
+    // Rank 37 sits on the seventh page of six, and that page is what the queue
+    // shows — a selection made in the rail must not open a note on a page the
+    // reader cannot see.
+    expect(screen.getByText('Page 7 of 58')).toBeVisible();
+    expect(queueTitles()).toEqual([37, 38, 39, 40, 41, 42].map((rank) => `Ranked note ${rank}`));
+    expect(queueRows()[0]).toHaveAttribute('aria-expanded', 'true');
+
     fireEvent.click(board.getByRole('option', { name: 'Ranked note 3, position 3' }));
-    expect(screen.getByRole('article')).toHaveTextContent('Ranked note 3');
-    expect(
-      [...document.querySelectorAll('[data-ranked-queue] button')].map((row) =>
-        row.textContent?.trim()
-      )
-    ).toEqual([1, 2, 4, 5, 6].map((rank) => expect.stringContaining(`Ranked note ${rank}`)));
+    expect(screen.getByRole('article')).toHaveAccessibleName('Ranked note 3');
+    expect(screen.getByText('Page 1 of 58')).toBeVisible();
+    expect(queueTitles()).toEqual([1, 2, 3, 4, 5, 6].map((rank) => `Ranked note ${rank}`));
+    expect(queueRows()[2]).toHaveAttribute('aria-expanded', 'true');
   });
 
   it('moves by title type-ahead, supports rapid prefixes, and wraps', async () => {
@@ -370,12 +382,12 @@ describe('IndexWorkspace', () => {
 
     fireEvent.keyDown(board, { key: 'a' });
     expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
-    expect(screen.getByRole('article')).toHaveTextContent('Architecture boundary');
+    expect(screen.getByRole('article')).toHaveAccessibleName('Architecture boundary');
 
     // "am" resolves the other A title and wraps from the second option.
     fireEvent.keyDown(board, { key: 'm' });
     expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
-    expect(screen.getByRole('article')).toHaveTextContent('Amber boundary');
+    expect(screen.getByRole('article')).toHaveAccessibleName('Amber boundary');
 
     fireEvent.keyDown(board, { key: 'z' });
     expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
@@ -391,7 +403,7 @@ describe('IndexWorkspace', () => {
     fireEvent.keyDown(board, { key: ' ' });
     fireEvent.keyDown(board, { key: 'p' });
     expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-3');
-    expect(screen.getByRole('article')).toHaveTextContent('I put a database behind it');
+    expect(screen.getByRole('article')).toHaveAccessibleName('I put a database behind it');
   });
 
   it('caps the board at 500 notes without expanding the reading pane', async () => {
@@ -415,7 +427,7 @@ describe('IndexWorkspace', () => {
     expect(
       board.queryByRole('option', { name: /Ranked note 501, position/i })
     ).not.toBeInTheDocument();
-    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(5);
+    expect(queueRows()).toHaveLength(6);
   });
 
   it.each([1, 2, 3, 4])(
@@ -434,13 +446,10 @@ describe('IndexWorkspace', () => {
 
       await renderWorkspace();
 
-      expect(await screen.findByRole('article')).toHaveTextContent('Ranked note 1');
-      const rows = [...document.querySelectorAll('[data-ranked-queue] button')];
-      expect(rows).toHaveLength(Math.max(0, count - 1));
-      expect(rows.map((row) => row.textContent)).toEqual(
-        Array.from({ length: count - 1 }, (_, index) =>
-          expect.stringContaining(`Ranked note ${index + 2}`)
-        )
+      expect(await screen.findByRole('article')).toHaveAccessibleName('Ranked note 1');
+      expect(queueRows()).toHaveLength(count);
+      expect(queueTitles()).toEqual(
+        Array.from({ length: count }, (_, index) => `Ranked note ${index + 1}`)
       );
       // The queue states its count by what it renders, not by a line of prose
       // restating it above the cards.
@@ -534,20 +543,20 @@ describe('IndexWorkspace', () => {
     fireEvent.click(toggle);
 
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
-    expect(screen.getByRole('button', { name: /principle/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^Principle, 1 notes$/ })).toBeInTheDocument();
   });
 
   it('refines from the filing rail and exposes a clear action', async () => {
     await renderWorkspace();
     await screen.findByText('Failure is data');
-    const category = screen.getByRole('button', { name: /principle/i });
+    const category = screen.getByRole('button', { name: /^Principle, 1 notes$/ });
     fireEvent.click(category);
 
     await waitFor(() => expect(category).toHaveAttribute('aria-pressed', 'true'));
     expect(screen.getByRole('button', { name: 'Clear search and filters' })).toBeEnabled();
   });
 
-  it('reads a compact queue row without changing the ranked order', async () => {
+  it('opens a queue row where it sits, keeping focus and the ranked order', async () => {
     searchHarness.hits.push({
       objectID: 'card:test:2',
       title: 'Second decision',
@@ -558,24 +567,26 @@ describe('IndexWorkspace', () => {
       'tags.lvl0': ['Testing'],
     });
     searchHarness.facets.category = { Principle: 1, Decision: 1 };
-    const view = await renderWorkspace();
-    const featured = await screen.findByRole('article');
-    expect(featured).toHaveTextContent('Failure is data');
+    await renderWorkspace();
+    expect(await screen.findByRole('article')).toHaveAccessibleName('Failure is data');
 
-    fireEvent.click(view.container.querySelector('[data-ranked-queue] button')!);
+    const second = queueRows()[1]!;
+    second.focus();
+    fireEvent.click(second);
 
-    expect(screen.getByRole('article')).toHaveTextContent('Second decision');
-    await waitFor(() =>
-      expect(screen.getByLabelText('Now reading: Second decision')).toHaveFocus()
-    );
-    expect(
-      [...view.container.querySelectorAll('[data-ranked-queue] button')].map((row) =>
-        row.textContent?.trim()
-      )
-    ).toEqual([expect.stringContaining('Failure is data')]);
+    expect(screen.getByRole('article')).toHaveAccessibleName('Second decision');
+    // The row stays where it was and keeps the focus that activated it. Nothing
+    // is promoted, so the ranking on screen is untouched.
+    expect(second).toHaveFocus();
+    expect(second).toHaveAttribute('aria-expanded', 'true');
+    expect(queueTitles()).toEqual(['Failure is data', 'Second decision']);
+    expect(queueRows()[0]).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getAllByRole('article')).toHaveLength(1);
 
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'fresh ranking' } });
-    await waitFor(() => expect(screen.getByRole('article')).toHaveTextContent('Failure is data'));
+    await waitFor(() =>
+      expect(screen.getByRole('article')).toHaveAccessibleName('Failure is data')
+    );
   });
 
   it('toggles one category without disturbing its neighbours', async () => {
@@ -750,11 +761,12 @@ describe('IndexWorkspace', () => {
     const board = within(await screen.findByRole('listbox', { name: 'Top ranked notes' }));
     expect(board.getByRole('option', { name: 'Failure is data, position 1' })).toBeVisible();
     expect(board.getByRole('option', { name: 'Actual rank three, position 3' })).toBeVisible();
-    expect(document.querySelector('[data-ranked-queue] button')).toHaveTextContent(
-      '№ 3 · System Notes'
-    );
+    // The withheld record's rank is not reused: the surviving note keeps the
+    // position the index gave it.
+    expect(queueRows()[1]).toHaveTextContent('№ 3 · System Notes');
     fireEvent.click(board.getByRole('option', { name: 'Actual rank three, position 3' }));
-    expect(screen.getByRole('article')).toHaveAttribute('data-position', '3');
+    expect(screen.getByRole('article')).toHaveAccessibleName('Actual rank three');
+    expect(queueRows()[1]).toHaveAttribute('aria-expanded', 'true');
   });
 
   it('withholds duplicate remote IDs from the board and visible notes', async () => {
@@ -772,10 +784,10 @@ describe('IndexWorkspace', () => {
 
     await renderWorkspace();
 
-    expect(await screen.findByRole('article')).toHaveTextContent('Unique note 1');
+    expect(await screen.findByRole('article')).toHaveAccessibleName('Unique note 1');
     expect(screen.queryByText('Duplicate should disappear')).not.toBeInTheDocument();
     expect(screen.getAllByRole('option', { name: /Unique note \d+, position/i })).toHaveLength(6);
-    expect(document.querySelectorAll('[data-ranked-queue] button')).toHaveLength(5);
+    expect(queueRows()).toHaveLength(6);
     expect(screen.getByRole('alert')).toHaveTextContent('Some malformed notes were withheld.');
   });
 

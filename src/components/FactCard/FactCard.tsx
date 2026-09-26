@@ -3,36 +3,27 @@
 import { useMemo } from 'react';
 import type { Hit } from 'instantsearch.js';
 import { FiArrowUpRight } from 'react-icons/fi';
-import { formatNoteDate, getNoteBody, getNoteProjects, getNoteTags } from '@/lib/noteContent';
+import { getNoteBody, getNoteProjects, getNoteTags } from '@/lib/noteContent';
 import { getSafeHostname, isSafeExternalUrl } from '@/lib/urlSafety';
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './FactCard.module.css';
 
 interface FactCardProps {
   hit: Hit<FactHitRecord>;
-  position?: number;
+  /** Named by the row that opened it, which carries the note's heading and meta. */
+  id: string;
+  labelledBy: string;
 }
 
-export default function FactCard({ hit, position = 1 }: Readonly<FactCardProps>) {
+export default function FactCard({ hit, id, labelledBy }: Readonly<FactCardProps>) {
   const sourceUrl = isSafeExternalUrl(hit.url) ? hit.url : undefined;
   const sourceHost = getSafeHostname(sourceUrl);
   const fact = hit.fact.trim() || getNoteBody(hit);
   const tags = useMemo(() => getNoteTags(hit), [hit]);
   const projects = useMemo(() => getNoteProjects(hit), [hit]);
-  const date = formatNoteDate(hit.created_at);
 
   return (
-    <article id={`note-${hit.objectID}`} className={styles.card}>
-      <div className={styles.cardMeta}>
-        <span>
-          № {String(position).padStart(2, '0')} · {projects[0] || 'System Notes'}
-          {date ? ` · ${date}` : ''}
-        </span>
-        <span className={styles.category}>{hit.category || 'Note'}</span>
-      </div>
-
-      <h3 className={styles.title}>{hit.title}</h3>
-
+    <article id={id} aria-labelledby={labelledBy} className={styles.card}>
       <div className={styles.factBlock}>
         <p className={styles.factLabel}>Fact</p>
         <p className={styles.fact}>{fact}</p>

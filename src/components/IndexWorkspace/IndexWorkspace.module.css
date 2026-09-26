@@ -453,32 +453,26 @@
   border-top: 1px solid var(--line-strong);
 }
 
-.readingQueue {
-  display: grid;
-  min-width: 0;
-  /* Without an explicit track the implicit one resolves to max(min-content),
-     which the queue's nowrap meta line pushed to 337px inside a 288px pane. */
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.reader {
-  scroll-margin-top: calc(var(--header-height) + 1rem);
-}
-
-.reader:focus-visible {
-  outline: 2px solid var(--ink-accent);
-  outline-offset: 0.25rem;
-}
-
 .queueList {
   display: grid;
   min-width: 0;
   padding: 0;
   list-style: none;
+  /* Without an explicit track the implicit one resolves to max(min-content),
+     which the nowrap meta line pushed to 337px inside a 288px pane. */
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .queueList li {
+  position: relative;
   min-width: 0;
+}
+
+/* The row's label is the note's heading, so the heading element carries no type
+   of its own — the meta line and the title inside it each set their own. */
+.queueHeading {
+  margin: 0;
+  font: inherit;
 }
 
 /* An exhibition catalog, not a stack of cards: a hairline between entries and
@@ -536,6 +530,58 @@
   padding-left: clamp(0rem, 2.5vw, 2.5rem);
 }
 
+/* The meta line stops short of the pane's edge, by a different amount on each
+   alternate row, so the run of rows never resolves into a pair of flush columns.
+   Clamped to 0 below the width where the first span starts truncating. */
+.queueList li:nth-child(odd) .queueMeta {
+  padding-right: clamp(0rem, 4vw, 3.4rem);
+}
+
+.queueList li:nth-child(even) .queueMeta {
+  padding-right: clamp(0rem, 1.5vw, 1.1rem);
+}
+
+/* Mark the open row; never recolour it. Offset past the label's own indent so the
+   two never align.
+   Mask on ::before, never on the button — a mask clips the focus ring.
+   Keep left inset under the pane's 1rem padding or it becomes a scrollbar.
+   Span the LABEL only: --stroke-brush-y is 16x56 with preserveAspectRatio='none',
+   so a full-row span flattens the wobble to ~1px and draws a 1px rule. */
+.queueList li[data-open] .queueHeading {
+  position: relative;
+}
+
+.queueList li[data-open] .queueHeading::before {
+  position: absolute;
+  top: 0.35rem;
+  left: -0.85rem;
+  width: 0.5rem;
+  /* Capped, not anchored to both edges. A wrapped title makes the heading
+     arbitrarily tall and stretched the 16x56 brush back into a thin rule.
+     4rem against 0.5rem holds the aspect near 1:8; a short heading only ever
+     makes it squarer. */
+  height: min(4rem, calc(100% - 0.7rem));
+  background: var(--ink-accent);
+  content: '';
+  /* Prefixed like every other mask here. Unprefixed alone drops the mark on
+     Safari before 16.4, and the fallback is a solid bar. */
+  -webkit-mask-image: var(--stroke-brush-y);
+  mask-image: var(--stroke-brush-y);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  pointer-events: none;
+}
+
+/* The open note is indented past its own label and stops short of the right edge
+   by a different amount again, so the block is never centred in the row it
+   belongs to. The two insets are the page's 61.8/38.2 seam ratio. */
+.queueList li[data-open] > article {
+  margin-right: clamp(0.5rem, 6.18vw, 4.6rem);
+  margin-left: clamp(0.35rem, 3.82vw, 2.85rem);
+}
+
 .queueMeta {
   display: flex;
   align-items: baseline;
@@ -561,16 +607,25 @@
 .queueTitle {
   display: block;
   margin-top: 0.45rem;
-  /* Scaled by rank, because this list is ranked. Floored at 1rem so the tail of the
-     queue never becomes fine print. */
+  /* One size for every row. Rank used to scale it, which capped a page at five
+     rows before the tail became fine print and made the list unreadable as soon
+     as the note being read stopped being the one at the top. */
   font-family: var(--font-editorial);
-  font-size: max(1.05rem, calc(1.65rem - var(--rank, 0) * 0.14rem));
+  font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.65rem);
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.14;
   overflow-wrap: anywhere;
   text-wrap: pretty;
 }
+
+/* A state, not a rank: the row you are reading is larger than the rows you are
+   not. Nothing about its position in the list changes its size. */
+.queueList li[data-open] .queueTitle {
+  max-width: 52ch;
+  font-size: clamp(1.5rem, 1.15rem + 1.7vw, 2.2rem);
+}
+
 .queuePager {
   display: flex;
   align-items: center;
@@ -598,7 +653,7 @@
   border: 1px solid var(--ink-accent);
   color: var(--soft);
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 .failureState {
@@ -610,7 +665,7 @@
   border-left: 2px solid var(--ink-accent);
   color: var(--soft);
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.4;
   gap: 0.35rem;
 }
@@ -627,7 +682,7 @@
   right: 0;
   color: var(--ink-accent);
   font-family: var(--font-display);
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .emptyState,
@@ -749,10 +804,6 @@
 
   .readingPane {
     padding: 1rem;
-  }
-
-  .reader {
-    scroll-margin-top: 1rem;
   }
 
   .searchPill {
