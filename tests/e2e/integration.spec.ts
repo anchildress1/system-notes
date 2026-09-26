@@ -24,9 +24,9 @@ test.describe('System Notes redesign', () => {
     // own evidence at 11.5px, and /projects listed an exhibit's stack at 11px.
     // Reading the COMPUTED size is the only thing that measures it.
     //
-    // Prose is sentence-case running text of six words or more. A tracked
-    // uppercase label is a caption and keeps --fine (11px) on purpose; the line
-    // a reader stops and reads does not.
+    // Prose is sentence-case running text. A tracked uppercase label is a
+    // caption and keeps --fine (11px) on purpose; the line a reader stops and
+    // reads does not.
     const SAVED_BRIEF = JSON.stringify({
       question: 'Can this run somewhere our data never leaves?',
       answer:
@@ -101,7 +101,17 @@ test.describe('System Notes redesign', () => {
                 .map((node) => node.textContent?.trim() ?? '')
                 .join(' ')
                 .trim();
-              if (text.split(/\s+/).length < 6) continue;
+              // Role, not length. A six-word cutoff exempted whole sentences
+              // for being short: "Shipping production systems since 2014" ran
+              // at 11px under it. Three real words is the floor for a clause,
+              // counted as tokens with two or more letters so "· 1 ms" does
+              // not qualify as one.
+              const words = text.split(/\s+/).filter((word) => /\p{L}{2,}/u.test(word));
+              if (words.length < 3) continue;
+              // A control's label is a control, sized by target rules and its
+              // own conventions — nav items, link text and button copy are not
+              // the running text this floor governs.
+              if (element.closest('a, button, summary')) continue;
               // classList, not className: on an SVG element className is an
               // SVGAnimatedString with no .includes, and every route renders
               // react-icons SVGs. A <text> or <title> long enough to reach this
