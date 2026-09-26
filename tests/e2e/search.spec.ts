@@ -29,7 +29,7 @@ test.describe('Notes index', () => {
     await expect(page.getByText(/1 entry · 1ms/i)).toBeVisible();
   });
 
-  test('keeps keyboard focus in the queue while updating the static reader', async ({
+  test('opens a queue row in place, keeping focus on the row that was activated', async ({
     page,
     insightsEvents,
   }) => {
@@ -40,17 +40,37 @@ test.describe('Notes index', () => {
     await page.goto('/notes');
     const initialURL = page.url();
 
-    const queueRow = page.locator('[data-ranked-queue]').getByRole('button').first();
+    const rows = page.locator('[data-ranked-queue]').getByRole('button');
+    // Every note is a row, including the one being read, so the ranking on
+    // screen is the ranking the index returned.
+    await expect(rows).toHaveCount(2);
+    await expect(rows.first()).toContainText('Failure is useful data');
+    await expect(rows.first()).toHaveAttribute('aria-expanded', 'true');
+
+    const queueRow = rows.nth(1);
     await expect(queueRow).toContainText('Second decision');
     await queueRow.focus();
     await queueRow.press('Enter');
 
-    await expect(page.getByLabel('Now reading: Second decision')).toBeFocused();
-    await expect(page.getByRole('article')).toContainText('Second decision');
-    await expect(page.getByRole('article')).toContainText(
-      'The complete evidence behind the decision.'
-    );
+    // The row keeps the focus that opened it: nothing is promoted to the top of
+    // the list, so there is nothing above to move focus to.
+    await expect(queueRow).toBeFocused();
+    await expect(queueRow).toHaveAttribute('aria-expanded', 'true');
+    await expect(rows.first()).toHaveAttribute('aria-expanded', 'false');
+    await expect(rows.first()).toContainText('Failure is useful data');
+    const panel = page.getByRole('article');
+    await expect(panel).toHaveCount(1);
+    await expect(panel).toHaveAccessibleName('Second decision');
+    await expect(panel).toContainText('The complete evidence behind the decision.');
+    // The panel is named by the row, so aria-controls has to resolve to it.
+    const controls = await queueRow.getAttribute('aria-controls');
+    expect(controls).toBe(await panel.getAttribute('id'));
+    // A collapsed row names nothing, because the panel it would name is gone.
+    expect(await rows.first().getAttribute('aria-controls')).toBeNull();
     expect(page.url()).toBe(initialURL);
+
+    const accessibility = await new AxeBuilder({ page }).analyze();
+    expect(accessibility.violations).toEqual([]);
 
     // The selection fires the click event and does NOT touch the URL. Both
     // halves matter: the event is the contract, and gating it on URL state is
@@ -74,12 +94,19 @@ test.describe('Notes index', () => {
     await mockAlgoliaSearch(page, [buildHit()]);
     await page.goto('/notes');
     const initialURL = page.url();
-    const card = page.getByRole('article').filter({ hasText: 'Failure is useful data' });
+    const row = page
+      .locator('[data-ranked-queue] li')
+      .filter({ hasText: 'Failure is useful data' });
+    const card = page.getByRole('article');
 
-    await expect(card.getByRole('heading', { name: 'Failure is useful data' })).toBeVisible();
+    // The row carries the heading and the meta; the panel under it carries the
+    // evidence. Neither states the other's facts twice.
+    await expect(row.getByRole('heading', { name: 'Failure is useful data' })).toBeVisible();
+    await expect(row.getByText('Principle')).toBeVisible();
+    await expect(row.getByText(/System Notes/).first()).toBeVisible();
+    await expect(card).toHaveAccessibleName('Failure is useful data');
     await expect(card.getByText('The complete evidence behind the decision.')).toBeVisible();
-    await expect(card.getByText('Principle')).toBeVisible();
-    await expect(card.getByText(/System Notes/)).toBeVisible();
+    await expect(card.getByRole('heading')).toHaveCount(0);
     await expect(card.getByRole('button', { name: /Open note|Close note/i })).toHaveCount(0);
     await expect(card.getByRole('link', { name: /Permalink/i })).toHaveCount(0);
     await expect(card.getByRole('link', { name: /View source/i })).toHaveAttribute(
@@ -112,7 +139,7 @@ test.describe('Notes index', () => {
     await expect.poll(reducedTileMotion).toEqual({ animation: 'none', transition: '0s' });
     await expect(board).toBeFocused();
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
-    await expect(page.getByRole('article')).toContainText('Second decision');
+    await expect(page.getByRole('article')).toHaveAccessibleName('Second decision');
   });
 
   test('syncs the query through InstantSearch routing', async ({ page }) => {
@@ -250,7 +277,7 @@ test.describe('Notes index', () => {
     // ranked list's prefix — never a reordering or a sample of it.
     const onBoard = hits.slice(0, boardShape.tiles);
     expect(tileTitles).toEqual(onBoard.map((hit) => hit.title));
-    expect(initialQueueTitles).toEqual(hits.slice(1, 6).map((hit) => hit.title));
+    expect(initialQueueTitles).toEqual(hits.slice(0, 6).map((hit) => hit.title));
     expect(tileCategories).toEqual(onBoard.map((hit) => hit.category));
 
     await expect(board).toHaveJSProperty('tabIndex', 0);
@@ -298,14 +325,19 @@ test.describe('Notes index', () => {
       (option) => getComputedStyle(option, '::before').animationName
     );
     expect(selectedAnimation).toMatch(/board-select$/);
-    const selectedCard = page.getByRole('article').filter({ hasText: 'Ranked note 37' });
-    await expect(selectedCard.getByRole('heading', { name: 'Ranked note 37' })).toBeVisible();
+    const selectedCard = page.getByRole('article');
+    await expect(selectedCard).toHaveAccessibleName('Ranked note 37');
     await expect(selectedCard).toContainText('The complete evidence behind the decision.');
+    // A note opens where it sits, so a selection made in the rail has to bring
+    // the queue to the page that row is on.
     const selectedQueueTitles = await page
       .locator('[data-ranked-queue] button')
       .evaluateAll((buttons) => buttons.map((button) => button.children.item(1)?.textContent));
-    expect(selectedQueueTitles).toEqual(hits.slice(0, 5).map((hit) => hit.title));
-    await expect(page.getByRole('list', { name: 'Highest-ranked alternate notes' })).toBeVisible();
+    expect(selectedQueueTitles).toEqual(hits.slice(36, 42).map((hit) => hit.title));
+    await expect(page.locator('[data-ranked-queue] button[aria-expanded="true"]')).toContainText(
+      'Ranked note 37'
+    );
+    await expect(page.getByRole('list', { name: 'Ranked notes' })).toBeVisible();
     expect(page.url()).toBe(initialURL);
 
     const accessibility = await new AxeBuilder({ page }).analyze();
@@ -450,7 +482,7 @@ test.describe('Notes index', () => {
     // rather than authoritative, so the reader opens on the top-ranked note.
     await page.goto('/notes?note=card%3Atest%3A2');
 
-    await expect(page.getByRole('article')).toContainText('First decision');
+    await expect(page.getByRole('article')).toHaveAccessibleName('First decision');
     await expect(page.getByRole('listbox', { name: 'Top ranked notes' })).toHaveAttribute(
       'aria-activedescendant',
       'note-board-option-0'
