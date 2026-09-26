@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/anchildress1/system-notes/compare/v3.2.1...v3.3.0) (2026-09-26)
+
+
+### Features
+
+* open the selected note in its own row on the notes index ([#169](https://github.com/anchildress1/system-notes/issues/169)) ([85a0141](https://github.com/anchildress1/system-notes/commit/85a01414d0f2bf508d3faf9238fdad72105c1362))
+
 ## [3.2.1](https://github.com/anchildress1/system-notes/compare/v3.2.0...v3.2.1) (2026-09-26)
 
 
