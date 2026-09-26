@@ -27,30 +27,73 @@ test.describe('System Notes redesign', () => {
     // Prose is sentence-case running text of six words or more. A tracked
     // uppercase label is a caption and keeps --fine (11px) on purpose; the line
     // a reader stops and reads does not.
+    const SAVED_BRIEF = JSON.stringify({
+      question: 'Can this run somewhere our data never leaves?',
+      answer:
+        'Yes. The index is read-only and the agent cites only notes already filed, so nothing a reader types is retained anywhere.',
+    });
+    const hit = {
+      objectID: 'card:test:1',
+      title: 'Failure is useful data',
+      blurb: 'Evidence attached.',
+      fact: 'The complete evidence behind the decision, written out at its real length.',
+      category: 'Principle',
+      projects: ['System Notes'],
+      'tags.lvl0': ['Testing'],
+    };
+    // Loading each route in its initial state leaves every state reached by
+    // interaction unmeasured, and prose lives in those too — a restored brief,
+    // a search that fell over. Each entry below is a (route, state) pair the
+    // sweep actually renders, not just a URL.
+    const surfaces = [
+      { path: '/', state: 'initial' },
+      { path: '/', state: 'restored brief' },
+      { path: '/notes', state: 'initial' },
+      { path: '/notes', state: 'search offline' },
+      { path: '/projects', state: 'initial' },
+      { path: '/about', state: 'initial' },
+    ] as const;
+
     const findings: string[] = [];
     for (const width of [280, 390, 1440]) {
       await page.setViewportSize({ width, height: 1000 });
-      for (const path of ['/', '/notes', '/projects', '/about']) {
-        await mockAlgoliaSearch(page, [
-          {
-            objectID: 'card:test:1',
-            title: 'Failure is useful data',
-            blurb: 'Evidence attached.',
-            fact: 'The complete evidence behind the decision, written out at its real length.',
-            category: 'Principle',
-            projects: ['System Notes'],
-            'tags.lvl0': ['Testing'],
-          },
-        ]);
+      for (const { path, state } of surfaces) {
+        if (state === 'search offline') {
+          await page.unroute(/algolia/);
+          await page.route(/algolia/, (route) => route.abort('failed'));
+        } else {
+          await mockAlgoliaSearch(page, [hit]);
+        }
         await page.goto(path);
+        // Seeded rather than asked: IntakeDesk renders a kept brief directly, so
+        // the panel's prose is reachable without standing up the agent. Set on
+        // the loaded page and reloaded, NOT through addInitScript — init scripts
+        // accumulate for the life of the page and the seed then leaked into every
+        // later pass, which stopped 'initial' being initial.
+        await page.evaluate(
+          (brief: string | null) => {
+            if (brief) sessionStorage.setItem('system-notes-intake-brief', brief);
+            else sessionStorage.removeItem('system-notes-intake-brief');
+          },
+          state === 'restored brief' ? SAVED_BRIEF : null
+        );
+        await page.reload();
         // Gate the sweep on the prose existing. `load` waits for neither
         // hydration nor the mocked Algolia response, so an empty result would
         // mean the measured nodes were absent, not that they passed.
         await expect(page.getByRole('paragraph').first()).toBeVisible();
-        if (path === '/notes') await expect(page.getByRole('article')).toBeVisible();
+        if (path === '/notes' && state === 'initial') {
+          await expect(page.getByRole('article')).toBeVisible();
+        }
+        if (state === 'search offline') {
+          await expect(page.getByRole('alert').first()).toBeVisible();
+        }
+        if (state === 'restored brief') {
+          await expect(page.getByText(/An AI agent wrote this/)).toBeVisible();
+        }
         await page.evaluate(() => document.fonts.ready);
         findings.push(
-          ...(await page.evaluate(() => {
+          ...(await page.evaluate((label: string) => {
             const small = new Set<string>();
             for (const element of document.querySelectorAll<HTMLElement>('body *')) {
               const text = [...element.childNodes]
@@ -71,11 +114,12 @@ test.describe('System Notes redesign', () => {
               if (size >= 16) continue;
               small.add(`${size}px "${text.slice(0, 48)}"`);
             }
-            return [...small].map((entry) => `${location.pathname} ${entry}`);
-          }))
+            return [...small].map((entry) => `${location.pathname} [${label}] ${entry}`);
+          }, state))
         );
       }
     }
+    await page.unroute(/algolia/);
     expect(findings).toEqual([]);
   });
 

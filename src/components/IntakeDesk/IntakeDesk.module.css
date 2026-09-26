@@ -208,7 +208,7 @@
   margin-top: 0.7rem;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: var(--fine);
+  font-size: 1rem;
   line-height: 1.5;
 }
 /* A STROKE, not a border — drawn in the same gold the marks are, so the reader's
@@ -221,7 +221,7 @@
   margin-top: 0.9rem;
   color: var(--mute);
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.5;
   text-wrap: pretty;
 }
@@ -306,7 +306,7 @@
   padding-left: clamp(0.9rem, 2vw, 1.5rem);
   margin-top: 1.35rem;
   color: var(--mute);
-  font-size: 0.99rem;
+  font-size: 1rem;
   line-height: 1.7;
   text-wrap: pretty;
 }
