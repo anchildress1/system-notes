@@ -133,6 +133,17 @@ function IndexExperience() {
       selection?.query === query && rankedItems.some((item) => item.objectID === selection?.id);
     return stillValid ? selection?.id : rankedItems[0]?.objectID;
   }, [rankedItems, selection, query]);
+  // Moves the selection without reporting a result click. Paging the queue lands
+  // on a note the reader navigated to rather than picked, and insights only
+  // recognizes the one kind of click — so sending it from here would put a
+  // selection nobody made into the click-through data.
+  const revealNote = useCallback(
+    (id: string) => {
+      if (!rankedItems.some((item) => item.objectID === id)) return;
+      setSelection({ id, query });
+    },
+    [rankedItems, query]
+  );
   const selectNote = useCallback(
     (id: string) => {
       const hit = rankedItems.find((item) => item.objectID === id);
@@ -155,6 +166,7 @@ function IndexExperience() {
           readableItemCount={readableItems.length}
           selectedId={selectedId}
           onSelect={selectNote}
+          onReveal={revealNote}
         />
       </div>
     </div>
@@ -168,6 +180,7 @@ interface SearchResultsProps {
   status: string;
   selectedId?: string;
   onSelect: (id: string) => void;
+  onReveal: (id: string) => void;
 }
 
 function SearchResults({
@@ -177,6 +190,7 @@ function SearchResults({
   status,
   selectedId,
   onSelect,
+  onReveal,
 }: Readonly<SearchResultsProps>) {
   if (items.length === 0) {
     if (rawItemCount > 0) return <UnreadableResults />;
@@ -195,7 +209,7 @@ function SearchResults({
     <div className={styles.resultArea}>
       <SearchStatus status={status} />
       {rawItemCount !== readableItemCount ? <PartialResultsWarning /> : null}
-      <ResultQueue items={items} selectedId={selectedId} onSelect={onSelect} />
+      <ResultQueue items={items} selectedId={selectedId} onSelect={onSelect} onReveal={onReveal} />
     </div>
   );
 }

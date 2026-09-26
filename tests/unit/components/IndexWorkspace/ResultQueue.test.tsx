@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import ResultQueue from '@/components/IndexWorkspace/ResultQueue';
 import { createMockHit } from '@tests/test-utils/fixtures';
@@ -24,12 +25,42 @@ function resultSet(label: string, length = 7) {
 
 const rows = () => [...document.querySelectorAll<HTMLButtonElement>('[data-ranked-queue] button')];
 const rowTitles = () => rows().map((row) => row.children.item(1)?.textContent);
+const openRows = () => rows().filter((row) => row.getAttribute('aria-expanded') === 'true');
+
+/** The workspace owns the selection, so paging only moves when it is fed back. */
+function Workspace({
+  items,
+  initialId,
+  onSelect = vi.fn(),
+}: {
+  items: ReturnType<typeof resultSet>;
+  initialId?: string;
+  onSelect?: (id: string) => void;
+}) {
+  const [selectedId, setSelectedId] = useState(initialId);
+  return (
+    <ResultQueue
+      items={items}
+      selectedId={selectedId}
+      onSelect={(id) => {
+        onSelect(id);
+        setSelectedId(id);
+      }}
+      onReveal={setSelectedId}
+    />
+  );
+}
 
 describe('ResultQueue', () => {
   it('opens the selected note inside its own row, leaving the order alone', () => {
     const onSelect = vi.fn();
     render(
-      <ResultQueue items={resultSet('Old')} selectedId="card:shared:first" onSelect={onSelect} />
+      <ResultQueue
+        items={resultSet('Old')}
+        selectedId="card:shared:first"
+        onSelect={onSelect}
+        onReveal={vi.fn()}
+      />
     );
 
     const [first, second] = rows();
@@ -48,7 +79,14 @@ describe('ResultQueue', () => {
   });
 
   it('renders the open note as the only panel, named by its own row', () => {
-    render(<ResultQueue items={resultSet('Old')} selectedId="card:Old:3" onSelect={vi.fn()} />);
+    render(
+      <ResultQueue
+        items={resultSet('Old')}
+        selectedId="card:Old:3"
+        onSelect={vi.fn()}
+        onReveal={vi.fn()}
+      />
+    );
 
     const panels = screen.getAllByRole('article');
     expect(panels).toHaveLength(1);
@@ -59,7 +97,12 @@ describe('ResultQueue', () => {
 
   it('keeps the row in place rather than moving focus to a reader above it', () => {
     render(
-      <ResultQueue items={resultSet('Old')} selectedId="card:shared:first" onSelect={vi.fn()} />
+      <ResultQueue
+        items={resultSet('Old')}
+        selectedId="card:shared:first"
+        onSelect={vi.fn()}
+        onReveal={vi.fn()}
+      />
     );
 
     const second = rows()[1]!;
@@ -69,108 +112,58 @@ describe('ResultQueue', () => {
     expect(second).toHaveFocus();
   });
 
-  it('holds a hand-chosen page across a re-render of the same results', () => {
-    const { rerender } = render(
-      <ResultQueue items={resultSet('Old')} selectedId="card:shared:first" onSelect={vi.fn()} />
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-    expect(screen.getByText('Page 2 of 2')).toBeVisible();
-    expect(rowTitles()).toEqual(['Old note 7']);
-
-    rerender(
-      <ResultQueue items={resultSet('Old')} selectedId="card:shared:first" onSelect={vi.fn()} />
-    );
-
-    expect(screen.getByText('Page 2 of 2')).toBeVisible();
-    expect(rowTitles()).toEqual(['Old note 7']);
-  });
-
-  it('returns to the selection page when a new result set keeps the same lead hit', () => {
-    const { rerender } = render(
-      <ResultQueue items={resultSet('Old')} selectedId="card:shared:first" onSelect={vi.fn()} />
-    );
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-
-    rerender(
-      <ResultQueue items={resultSet('New')} selectedId="card:shared:first" onSelect={vi.fn()} />
-    );
-
-    expect(screen.getByText('Page 1 of 2')).toBeVisible();
-    expect(rowTitles()).toEqual([1, 2, 3, 4, 5, 6].map((rank) => `New note ${rank}`));
-  });
-
   it('pages to whichever page the new selection lives on', () => {
     // The rail's board selects by rank, so the note it picks can sit pages down.
     // A page with nothing open on it is the failure this prevents.
     const items = resultSet('Old', 20);
     const { rerender } = render(
-      <ResultQueue items={items} selectedId="card:shared:first" onSelect={vi.fn()} />
+      <ResultQueue
+        items={items}
+        selectedId="card:shared:first"
+        onSelect={vi.fn()}
+        onReveal={vi.fn()}
+      />
     );
     expect(screen.getByText('Page 1 of 4')).toBeVisible();
 
-    rerender(<ResultQueue items={items} selectedId="card:Old:15" onSelect={vi.fn()} />);
+    rerender(
+      <ResultQueue items={items} selectedId="card:Old:15" onSelect={vi.fn()} onReveal={vi.fn()} />
+    );
 
     expect(screen.getByText('Page 3 of 4')).toBeVisible();
     expect(screen.getByRole('article')).toHaveTextContent('Old evidence 15');
     expect(rows()[2]).toHaveAttribute('aria-expanded', 'true');
   });
 
-  it('keeps a hand-chosen page until the selection itself changes', () => {
-    const items = resultSet('Old', 20);
-    const { rerender } = render(
-      <ResultQueue items={items} selectedId="card:Old:15" onSelect={vi.fn()} />
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-    expect(screen.getByText('Page 4 of 4')).toBeVisible();
-
-    rerender(<ResultQueue items={items} selectedId="card:Old:15" onSelect={vi.fn()} />);
-    expect(screen.getByText('Page 4 of 4')).toBeVisible();
-
-    rerender(<ResultQueue items={items} selectedId="card:Old:2" onSelect={vi.fn()} />);
-    expect(screen.getByText('Page 1 of 4')).toBeVisible();
-  });
-
-  it('drops a held page the narrowed result set can no longer reach', () => {
-    const items = resultSet('Old', 20);
-    const { rerender } = render(
-      <ResultQueue items={items} selectedId="card:Old:20" onSelect={vi.fn()} />
-    );
-    expect(screen.getByText('Page 4 of 4')).toBeVisible();
-
-    // Narrowing leaves two notes and no page four. Holding page four would render
-    // an empty list with a pager pointing at nothing.
-    rerender(<ResultQueue items={items.slice(0, 2)} selectedId="card:Old:20" onSelect={vi.fn()} />);
-
-    expect(
-      screen.queryByRole('navigation', { name: 'Ranked notes pages' })
-    ).not.toBeInTheDocument();
-    expect(rowTitles()).toEqual(['Old note 1', 'Old note 2']);
-  });
-
   it('opens the top-ranked note when the selection is not in the results', () => {
-    render(<ResultQueue items={resultSet('Old')} selectedId="card:gone:99" onSelect={vi.fn()} />);
+    render(
+      <ResultQueue
+        items={resultSet('Old')}
+        selectedId="card:gone:99"
+        onSelect={vi.fn()}
+        onReveal={vi.fn()}
+      />
+    );
 
     expect(rows()[0]).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByRole('article')).toHaveTextContent('Old evidence 1');
   });
 
   it('opens the top-ranked note when no selection is supplied at all', () => {
-    render(<ResultQueue items={resultSet('Old')} onSelect={vi.fn()} />);
+    render(<ResultQueue items={resultSet('Old')} onSelect={vi.fn()} onReveal={vi.fn()} />);
 
     expect(rows()[0]).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByText('Page 1 of 2')).toBeVisible();
   });
 
   it('renders nothing rather than an empty list when there are no results', () => {
-    const { container } = render(<ResultQueue items={[]} onSelect={vi.fn()} />);
+    const { container } = render(<ResultQueue items={[]} onSelect={vi.fn()} onReveal={vi.fn()} />);
 
     expect(container).toBeEmptyDOMElement();
   });
 
   it.each([1, 6])('omits the pager when %i notes fit on one page', (count) => {
-    render(<ResultQueue items={resultSet('Old', count)} onSelect={vi.fn()} />);
+    render(<ResultQueue items={resultSet('Old', count)} onSelect={vi.fn()} onReveal={vi.fn()} />);
 
     expect(rows()).toHaveLength(count);
     expect(
@@ -178,10 +171,57 @@ describe('ResultQueue', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('moves focus to the opposite pager control when the pressed one retires', () => {
+  it('opens the first note of the page it pages onto', () => {
+    // Every page has exactly one open row. Storing a chosen page alongside the
+    // selection is what let Next land on six rows with nothing open on any of
+    // them, which is the one state the reading surface must never reach.
+    render(<Workspace items={resultSet('Old', 20)} initialId="card:shared:first" />);
+
+    for (const [page, lead] of [
+      [2, 'Old note 7'],
+      [3, 'Old note 13'],
+      [4, 'Old note 19'],
+    ] as const) {
+      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+      expect(screen.getByText(`Page ${page} of 4`)).toBeVisible();
+      expect(openRows()).toHaveLength(1);
+      expect(openRows()[0]?.children.item(1)?.textContent).toBe(lead);
+      expect(rowTitles()[0]).toBe(lead);
+    }
+
+    fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
+    expect(screen.getByText('Page 3 of 4')).toBeVisible();
+    expect(openRows()[0]?.children.item(1)?.textContent).toBe('Old note 13');
+  });
+
+  it('never leaves a page without an open row, however it is reached', () => {
+    render(<Workspace items={resultSet('Old', 20)} initialId="card:Old:15" />);
+
+    expect(openRows()).toHaveLength(1);
+    for (const name of ['Previous', 'Previous', 'Next', 'Next', 'Next']) {
+      fireEvent.click(screen.getByRole('button', { name }));
+      expect(openRows()).toHaveLength(1);
+      expect(screen.getAllByRole('article')).toHaveLength(1);
+    }
+  });
+
+  it('pages without reporting a result click', () => {
+    // Pressing Next is navigation. An insights click fired from it would record
+    // a selection the reader never made.
+    const onSelect = vi.fn();
     render(
-      <ResultQueue items={resultSet('Old')} selectedId="card:shared:first" onSelect={vi.fn()} />
+      <Workspace items={resultSet('Old', 20)} initialId="card:shared:first" onSelect={onSelect} />
     );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(onSelect).not.toHaveBeenCalled();
+
+    fireEvent.click(rows()[1]!);
+    expect(onSelect).toHaveBeenCalledWith('card:Old:8');
+  });
+
+  it('moves focus to the opposite pager control when the pressed one retires', () => {
+    render(<Workspace items={resultSet('Old')} initialId="card:shared:first" />);
 
     const next = screen.getByRole('button', { name: 'Next' });
     const previous = screen.getByRole('button', { name: 'Previous' });
@@ -198,7 +238,7 @@ describe('ResultQueue', () => {
 
   it('falls back to the row ordinal when a hit carries no remote position', () => {
     const items = resultSet('Old', 3).map((hit) => ({ ...hit, __position: 0 }));
-    render(<ResultQueue items={items} onSelect={vi.fn()} />);
+    render(<ResultQueue items={items} onSelect={vi.fn()} onReveal={vi.fn()} />);
 
     expect(rows().map((row) => row.children.item(0)?.textContent)).toEqual([
       expect.stringContaining('№ 1'),

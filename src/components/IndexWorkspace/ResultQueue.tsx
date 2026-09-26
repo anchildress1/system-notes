@@ -1,6 +1,6 @@
 'use client';
 
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import type { Hit } from 'instantsearch.js';
 import FactCard from '@/components/FactCard/FactCard';
 import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteContent';
@@ -16,10 +16,18 @@ interface ResultQueueProps {
   items: Hit<FactHitRecord>[];
   selectedId?: string;
   onSelect: (id: string) => void;
+  /* Paging opens a note without reporting a result click: pressing Next is
+     navigation, not a reader picking that note out of the ranking, and an
+     insights click event fired from it would be a signal nobody sent. */
+  onReveal: (id: string) => void;
 }
 
-export default function ResultQueue({ items, selectedId, onSelect }: Readonly<ResultQueueProps>) {
-  const [pager, setPager] = useState({ page: 0, signature: '', selection: '' });
+export default function ResultQueue({
+  items,
+  selectedId,
+  onSelect,
+  onReveal,
+}: Readonly<ResultQueueProps>) {
   const previousRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   /** Which end control moved the page, so focus can be rescued if it retires. */
@@ -38,7 +46,7 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
     const source = pressed === 'previous' ? previousRef.current : nextRef.current;
     if (!source?.disabled) return;
     (pressed === 'previous' ? nextRef.current : previousRef.current)?.focus();
-  }, [pager]);
+  }, [selectedId]);
 
   if (items.length === 0) return null;
 
@@ -49,22 +57,15 @@ export default function ResultQueue({ items, selectedId, onSelect }: Readonly<Re
     0
   );
   const openId = items[openIndex]!.objectID;
-  const resultSignature = JSON.stringify(items.map((item) => item.objectID));
   const pageCount = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
-  // A note opens where it sits, so the open row has to be on the page in view —
-  // and the board in the rail can select a note hundreds of ranks down. The page
-  // therefore follows the selection, and a page chosen by hand is remembered
-  // against BOTH the result set and the selection it was chosen under. Either
-  // one changing hands the page back to wherever the open row now is, rather
-  // than leaving a page with nothing open on it.
-  // No clamp: a held page is only read back while the result set is byte-identical
-  // to the one it was chosen under, so it cannot outlive the page it names.
-  const currentPage =
-    pager.signature === resultSignature && pager.selection === (selectedId ?? '')
-      ? pager.page
-      : Math.floor(openIndex / PAGE_SIZE);
-  const goToPage = (next: number) =>
-    setPager({ page: next, signature: resultSignature, selection: selectedId ?? '' });
+  // THE SELECTION IS THE PAGE. The page is derived from the open note and never
+  // stored, so the two cannot disagree — and the rail's board, which selects by
+  // rank, brings the queue with it for free. Holding a chosen page alongside the
+  // selection is what let Next land on six rows with nothing open on them.
+  const currentPage = Math.floor(openIndex / PAGE_SIZE);
+  // Paging therefore moves the reader: it opens the first note of the page it
+  // lands on, which is the only thing that can be open there.
+  const goToPage = (next: number) => onReveal(items[next * PAGE_SIZE]!.objectID);
   const pageStart = currentPage * PAGE_SIZE;
   const visible = items.slice(pageStart, pageStart + PAGE_SIZE);
 

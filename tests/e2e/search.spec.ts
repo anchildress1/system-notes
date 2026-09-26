@@ -146,6 +146,45 @@ test.describe('Notes index', () => {
     expect(await sizeOf()).toBeGreaterThanOrEqual(base * 1.8);
   });
 
+  test('keeps exactly one note open on every page of the queue', async ({
+    page,
+    insightsEvents,
+  }) => {
+    // A page with nothing open on it is the one state the reading surface must
+    // never reach, and the pager is the easiest way to get there.
+    await mockAlgoliaSearch(
+      page,
+      Array.from({ length: 20 }, (_, index) =>
+        buildHit({ objectID: `card:test:${index + 1}`, title: `Ranked note ${index + 1}` })
+      )
+    );
+    await page.goto('/notes');
+
+    const open = page.locator('[data-ranked-queue] button[aria-expanded="true"]');
+    const next = page.getByRole('button', { name: 'Next' });
+    const previous = page.getByRole('button', { name: 'Previous' });
+
+    for (const [page_, lead] of [
+      [2, 'Ranked note 7'],
+      [3, 'Ranked note 13'],
+      [4, 'Ranked note 19'],
+    ] as const) {
+      await next.click();
+      await expect(page.getByText(`Page ${page_} of 4`)).toBeVisible();
+      await expect(open).toHaveCount(1);
+      await expect(open).toContainText(lead);
+      await expect(page.getByRole('article')).toHaveAccessibleName(lead);
+    }
+
+    await previous.click();
+    await expect(open).toHaveCount(1);
+    await expect(open).toContainText('Ranked note 13');
+
+    // Paging is navigation, not a result click. Only the view event InstantSearch
+    // sends for the displayed hits belongs in the insights stream here.
+    expect(insightsEvents.filter((event) => event.eventName === 'Note Selected')).toHaveLength(0);
+  });
+
   test('keeps the composite board operable with reduced motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await mockAlgoliaSearch(page, [
