@@ -554,13 +554,22 @@
 .queueList li[data-open] .queueHeading::before {
   position: absolute;
   top: 0.35rem;
-  bottom: 0.35rem;
   left: -0.85rem;
   width: 0.5rem;
+  /* Capped, not anchored to both edges. A wrapped title makes the heading
+     arbitrarily tall and stretched the 16x56 brush back into a thin rule.
+     4rem against 0.5rem holds the aspect near 1:8; a short heading only ever
+     makes it squarer. */
+  height: min(4rem, calc(100% - 0.7rem));
   background: var(--ink-accent);
   content: '';
+  /* Prefixed like every other mask here. Unprefixed alone drops the mark on
+     Safari before 16.4, and the fallback is a solid bar. */
+  -webkit-mask-image: var(--stroke-brush-y);
   mask-image: var(--stroke-brush-y);
+  -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   pointer-events: none;
 }
@@ -673,7 +682,7 @@
   right: 0;
   color: var(--ink-accent);
   font-family: var(--font-display);
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .emptyState,
