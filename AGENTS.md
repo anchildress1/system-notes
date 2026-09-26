@@ -20,6 +20,8 @@ Each of these has shipped. All of them pass review, typecheck, lint, and CI.
 - **`composes` works only on a simple class selector.** A descendant or element selector fails the build — put the global class in the JSX.
 - **An out-of-gamut `oklch()` is clipped toward a hue nobody chose.** Verify a new value lands inside sRGB before shipping it.
 - **An accessibility rule named in `withRules` reports nothing when it did not run.** Assert the rule ran before asserting no violations, or the check is green without measuring anything.
+- **axe has no font-size rule, and contrast passes just as happily at 11px.** The notes index shipped its own evidence at 11.5px and `/projects` listed an exhibit's stack at 11px, both through a full green suite. Prose — sentence-case running text — reads at or above 16px on every route; `--fine` (11px) is for tracked uppercase captions a reader glances at, never for a sentence. The floor is asserted against computed styles across all four routes at 280/390/1440 in `integration.spec.ts`; a number copied out of the stylesheet into a unit test drifts with it.
+- **A `font-size` whose preferred term is bare `vw` cannot scale to 200%.** Inside the `vw` band nothing about the root font moves it, so 1.4.4 fails while the clamp looks responsive. Write the preferred term as `rem + vw`.
 
 ## Settled decisions
 
@@ -30,7 +32,8 @@ Each was tried and reverted. Re-opening one costs a pass and lands back here.
 - **An alias token never holds a literal.** Giving one its own value is how the second hue keeps coming back.
 - **Two button variants.** If something needs a third, it is a link.
 - **One image treatment, site-wide.** A second is the defect, not the solution. The shared rule owns fit, sizing, ratio and grade; a page supplies only the ratio's value, because the shape of a picture is a fact about the picture.
-- **A selected note never reaches the URL,** and never opens in an overlay or a modal. It renders in the workspace reader.
+- **A selected note never reaches the URL,** and never opens in an overlay or a modal. It opens in place, inside the row that names it — never lifted out of the list into a reader above it, and never scrolled to. The rail's board can select a note pages down, so the queue's page follows the selection; a page with nothing open on it is the defect.
+- **No rank-driven type scale.** Every row title is one size, and the open row is larger because it is open. Scaling by rank capped the list at five rows before its tail became fine print, and only worked while the note being read was the one at the top.
 - **No kicker, slug, eyebrow, or label row above an `h1`,** under any name.
 - **The tick marks the site** — the header wordmark and the footer byline. It never marks a section.
 
