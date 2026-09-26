@@ -27,7 +27,7 @@
   {
     "id": "unearthed",
     "standard": "Natural language still has to respect the read boundary.",
-    "evidence": "Federal energy data is served through FastAPI, DuckDB, and R2. Generated SQL is read-only, single-statement, time-bounded, and capped before it can become someone else's incident."
+    "evidence": "Federal energy data is served from Snowflake through FastAPI. Cortex Analyst turns a plain-language question into SQL that stays read-only, single-statement, time-bounded and capped before it can become someone else's incident."
   },
   {
     "id": "carbon-trace",

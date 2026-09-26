@@ -52,10 +52,10 @@
   {
     "objectID": "unearthed",
     "name": "Unearthed",
-    "what_it_is": "A tool that walks the energy supply chain backward, from any U.S. address to the coal mine feeding its grid.",
-    "why_it_exists": "Names the exact mine — operator, accidents, emissions — behind every light switch.",
-    "long_description": "SvelteKit and FastAPI on Cloud Run trace outlet to power plant to fuel contract to mine, surfacing MSHA accident records, EIA production, and EPA emissions for each. Snowflake Cortex powers natural-language queries; a live tonnage ticker shows extraction in real time.",
-    "outcome": "Ran in production tracing any U.S. address back to its mine via federal MSHA, EIA, and EPA data — since retired. Won Earth Day 2026.",
+    "what_it_is": "Names the coal mine feeding your electric grid — the accident record, the operator, the county, the tons — and hands you a natural-language interface to the data behind it.",
+    "why_it_exists": "Power Profiler and iLoveMountains report aggregates. Neither names the specific hole in the ground feeding your house, or the safety record of the people working it.",
+    "long_description": "SvelteKit 2 on Svelte 5 runes, with a Python 3.12 FastAPI service on Cloud Run, walks an address through Google Maps and Places to its power plant, its fuel contract, and the mine behind both. Federal MSHA, EIA and EPA data lands in Snowflake, emissions by way of the Marketplace. Cortex COMPLETE on llama3.3-70b writes the prose; Cortex Analyst answers the questions in plain language.",
+    "outcome": "Ran in production tracing any U.S. address back to its mine through federal MSHA, EIA and EPA data — since retired. Entered the Earth Day 2026 Weekend Challenge for Best Use of Snowflake, and won.",
     "status": "Retired",
     "owner": "anchildress1",
     "image_url": "/projects/unearthed.webp",
@@ -63,19 +63,19 @@
     "tech": [
       {
         "name": "Snowflake Cortex",
-        "role": "AI Query Engine"
+        "role": "Cortex Analyst · COMPLETE (llama3.3-70b)"
       },
       {
-        "name": "Anthropic Claude API",
-        "role": "Agentic Q&A · Tool Use"
+        "name": "Snowflake",
+        "role": "Federal Data Platform · Marketplace"
       },
       {
         "name": "SvelteKit 2",
-        "role": "Frontend Framework"
+        "role": "Frontend · Svelte 5 Runes"
       },
       {
         "name": "FastAPI",
-        "role": "Backend API"
+        "role": "Python 3.12 Backend"
       },
       {
         "name": "Google Cloud Run",
@@ -83,11 +83,7 @@
       },
       {
         "name": "Google Maps API",
-        "role": "Address Lookup"
-      },
-      {
-        "name": "H3 Hexbin",
-        "role": "Geospatial Density"
+        "role": "Address Lookup · Places"
       }
     ],
     "blog_posts": [
@@ -97,7 +93,7 @@
       }
     ],
     "award": "Earth Day 2026 Winner",
-    "repo_url": "https://github.com/anchildress1/unearthed",
+    "repo_url": "https://github.com/anchildress1/unearthed/tree/v1.0.0",
     "order_rank": 10,
     "announcements": [
       {
