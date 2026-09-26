@@ -541,29 +541,30 @@
   padding-right: clamp(0rem, 1.5vw, 1.1rem);
 }
 
-/* Mark the open row; never recolour it. Offset past the label's own indent so the
-   two never align.
-   Mask on ::before, never on the button — a mask clips the focus ring.
-   Keep left inset under the pane's 1rem padding or it becomes a scrollbar.
-   Span the LABEL only: --stroke-brush-y is 16x56 with preserveAspectRatio='none',
-   so a full-row span flattens the wobble to ~1px and draws a 1px rule. */
-.queueList li[data-open] .queueHeading {
-  position: relative;
-}
-
-.queueList li[data-open] .queueHeading::before {
+/* Mark the open row down its WHOLE height — label and note both — never recolour
+   it. Offset past the label's own indent so the two never align.
+   Mask on ::before, never on the button: a mask clips the focus ring.
+   Keep the left inset under the pane's 1rem padding or it becomes a scrollbar. */
+.queueList li[data-open]::before {
   position: absolute;
   top: 0.35rem;
+  bottom: clamp(1.5rem, 3vw, 2.25rem);
   left: -0.85rem;
-  width: 0.5rem;
-  /* Capped, not anchored to both edges. A wrapped title makes the heading
-     arbitrarily tall and stretched the 16x56 brush back into a thin rule.
-     4rem against 0.5rem holds the aspect near 1:8; a short heading only ever
-     makes it squarer. */
-  height: min(4rem, calc(100% - 0.7rem));
-  background: var(--ink-accent);
+  width: 0.85rem;
+  /* --mark, not --ink-accent. The alias resolves to --mark-ink on paper, which
+     painted this black there: correct for ink, wrong for a MARK. Gold is
+     1.41:1 on cream, so it carries --tile-keyline along its own edge instead of
+     changing hue. drop-shadow twice, not box-shadow — the mask clips a shadow
+     drawn on the box, while drop-shadow traces the alpha the mask leaves. */
+  background: var(--mark);
+  filter: drop-shadow(0 0 0.5px var(--tile-keyline)) drop-shadow(0 0 0.5px var(--tile-keyline));
   content: '';
-  /* Prefixed like every other mask here. Unprefixed alone drops the mark on
+  /* One continuous stroke, widened rather than tiled. --stroke-brush-y is 16x56
+     under preserveAspectRatio='none': at 0.5rem wide its wobble flattened to a
+     pixel down a tall note and drew a rule, and repeating it put a visible pinch
+     at every join, which reads as a dashed line rather than a swipe. At 0.85rem
+     the same stretch still carries ~2px of edge variation, so it stays drawn.
+     Prefixed like every other mask here: unprefixed alone drops the mark on
      Safari before 16.4, and the fallback is a solid bar. */
   -webkit-mask-image: var(--stroke-brush-y);
   mask-image: var(--stroke-brush-y);
