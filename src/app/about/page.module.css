@@ -32,7 +32,11 @@
 
 .trackRecord {
   display: grid;
-  max-width: 48ch;
+  /* A delimited list of names, not a paragraph, so it takes the column rather
+     than a reading measure. At 48ch it was capped to about half the space it
+     had and broke "Distributed systems" across two lines with the gutter beside
+     it empty. */
+  max-width: 72ch;
   margin-top: clamp(2.25rem, 5vh, 3.5rem);
   gap: 1.5rem;
 }
@@ -52,6 +56,8 @@
   color: var(--bone);
   font-size: clamp(1rem, 1.3vw, 1.15rem);
   line-height: 1.6;
+  /* Even the lines rather than leaving one word alone on the last. */
+  text-wrap: balance;
 }
 
 .trackRecord div:last-child dd {
@@ -558,18 +564,28 @@
 
 .themeSong {
   display: grid;
-  grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+  /* Split near the page's own 61.8% seam rather than at a third, so the player
+     and its copy sit right of centre instead of hugging the heading. */
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
   align-items: start;
   gap: clamp(1.5rem, 3vw, 3rem);
   padding-block: clamp(4rem, 6vw, 6rem);
 }
 
 .themeSong header {
-  align-self: center;
+  align-self: start;
 }
 
 .themeSong h2 {
   font-style: italic;
+}
+
+/* The track takes the second line whole. Left inline it broke mid-title, and a
+   title is a name — it does not wrap. The heading's own clamp scales with the
+   viewport, so the nowrap never outgrows its column. */
+.songTitle {
+  display: block;
+  text-wrap: nowrap;
 }
 
 .songPlayer {
