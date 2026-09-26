@@ -124,6 +124,9 @@ test.describe('System Notes redesign', () => {
               // own conventions — nav items, link text and button copy are not
               // the running text this floor governs.
               if (element.closest('a, button, summary')) continue;
+              // A definition list is a metadata structure by definition — its
+              // terms and values are captions, however many words they run to.
+              if (element.closest('dl')) continue;
               // classList, not className: on an SVG element className is an
               // SVGAnimatedString with no .includes, and every route renders
               // react-icons SVGs. A <text> or <title> long enough to reach this
@@ -131,7 +134,15 @@ test.describe('System Notes redesign', () => {
               if (element.classList.contains('visually-hidden')) continue;
               const style = getComputedStyle(element);
               if (style.visibility === 'hidden' || style.display === 'none') continue;
+              // Tracked or uppercase is this repo's caption idiom — a role line,
+              // a dt, a metadata footnote. Prose is never tracked. Reading role
+              // off the uppercase flag alone raised About's "Shipping production
+              // systems since 2014" to 16px, which flattened a caption into a
+              // third list item and broke the column's rhythm.
               if (style.textTransform === 'uppercase') continue;
+              if (style.letterSpacing !== 'normal' && parseFloat(style.letterSpacing) > 0) {
+                continue;
+              }
               const size = parseFloat(style.fontSize);
               if (size >= 16) continue;
               small.add(`${size}px "${text.slice(0, 48)}"`);
