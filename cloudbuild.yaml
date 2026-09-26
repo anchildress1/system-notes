@@ -36,4 +36,3 @@ substitutions:
 options:
   logging: CLOUD_LOGGING_ONLY
   substitutionOption: 'ALLOW_LOOSE'
-  machineType: 'E2_STANDARD_2'
