@@ -78,11 +78,20 @@
   color: var(--ink-accent);
 }
 
-/* Selected is the wash held down. .washed paints only under the pointer, so a
+/* Selected is the band held down. .washed paints only under the pointer, so a
    refined facet lost its fill the moment the cursor left. Same band, same token;
    it just does not lift. */
 .categoryList button[data-selected] {
-  background-color: var(--mark-soft);
+  background-image: var(--stroke-swipe-inked);
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+  background-size: 100% 158%;
+  color: var(--mark-ink);
+}
+
+.categoryList button[data-selected] .categoryName,
+.categoryList button[data-selected] .categoryCount {
+  color: inherit;
 }
 
 .categorySwatch {
