@@ -43,6 +43,11 @@ test.describe('System Notes redesign', () => {
           },
         ]);
         await page.goto(path);
+        // Gate the sweep on the prose existing. `load` waits for neither
+        // hydration nor the mocked Algolia response, so an empty result would
+        // mean the measured nodes were absent, not that they passed.
+        await expect(page.getByRole('paragraph').first()).toBeVisible();
+        if (path === '/notes') await expect(page.getByRole('article')).toBeVisible();
         await page.evaluate(() => document.fonts.ready);
         findings.push(
           ...(await page.evaluate(() => {

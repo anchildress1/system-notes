@@ -541,18 +541,22 @@
   padding-right: clamp(0rem, 1.5vw, 1.1rem);
 }
 
-/* The open row is MARKED, not recoloured: a drawn stroke down its left edge, set
-   off from the label by more than the label's own indent so the two never line
-   up. The mask sits on ::before and never on the button — a mask clips
-   everything its element paints, the focus ring included. Inset well inside the
-   pane's 1rem minimum padding, because a mark that pokes past the pane is a
-   horizontal scrollbar. */
-.queueList li[data-open]::before {
+/* Mark the open row; never recolour it. Offset past the label's own indent so the
+   two never align.
+   Mask on ::before, never on the button — a mask clips the focus ring.
+   Keep left inset under the pane's 1rem padding or it becomes a scrollbar.
+   Span the LABEL only: --stroke-brush-y is 16x56 with preserveAspectRatio='none',
+   so a full-row span flattens the wobble to ~1px and draws a 1px rule. */
+.queueList li[data-open] .queueHeading {
+  position: relative;
+}
+
+.queueList li[data-open] .queueHeading::before {
   position: absolute;
-  top: 0.55rem;
-  bottom: clamp(1.5rem, 3vw, 2.25rem);
-  left: -0.7rem;
-  width: 0.3rem;
+  top: 0.35rem;
+  bottom: 0.35rem;
+  left: -0.85rem;
+  width: 0.5rem;
   background: var(--ink-accent);
   content: '';
   mask-image: var(--stroke-brush-y);
@@ -640,7 +644,7 @@
   border: 1px solid var(--ink-accent);
   color: var(--soft);
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 .failureState {
@@ -652,7 +656,7 @@
   border-left: 2px solid var(--ink-accent);
   color: var(--soft);
   font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.4;
   gap: 0.35rem;
 }
