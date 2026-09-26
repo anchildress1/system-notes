@@ -508,40 +508,37 @@ body::before {
   text-transform: uppercase;
 }
 
-.washed.washed {
+.washed {
   /* The INKED swipe, like .marked-soft above, not --mark-soft as a flat colour.
      16% gold is a layer: painted as a background it composited over graphite and
      went olive, which is the one place this file's own rule — opaque gold keeps
      the stroke yellow on graphite, and SCALE rather than translucency gives it
      less weight — was not being followed. A row is the larger of the two scales,
-     so the band is full-bleed where .marked-hover's is line-height tall.
-     Doubled class: consumers set `background: transparent`, and the shorthand
-     resets background-image to none from a selector that outranks one class. */
-  background-image: var(--stroke-swipe-inked);
+     so the band is full-bleed where .marked-hover's is line-height tall. */
+  /* THREE passes of the soft swipe, exactly as .tape stacks three --mark-soft
+     layers — same construction, so the band lands on the tape's colour rather
+     than full-strength gold. One pass is too faint to see; the opaque swipe is
+     the mark itself and far too loud for a hover. */
+  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft), var(--stroke-swipe-soft);
   background-position: 0 50%;
   background-repeat: no-repeat;
   background-size: 100% 0;
-  transition:
-    background-size 180ms var(--ease-out),
-    color 180ms var(--ease-out);
+  transition: background-size 180ms var(--ease-out);
 }
 
-.washed.washed:hover,
-.washed.washed:focus-visible {
+.washed:hover,
+.washed:focus-visible {
   /* 158% for the same reason .btn and .marked-soft use it: --stroke-swipe insets
-     its ink to the middle 61% of the viewBox. */
-  background-size: 100% 158%;
-  color: var(--mark-ink);
+     its ink to the middle 61% of the viewBox. No colour here: the band is a
+     layer, so the label keeps the contrast it already had. */
+  background-size:
+    100% 158%,
+    100% 158%,
+    100% 158%;
 }
 
-/* Descendants pick their ink against the resting ground, not against gold. On
-   the band they take its ink. Doubled class, not !important: a module rule like
-   `.queueMeta > span:last-child` outranks one class plus a pseudo, and the
-   accent badge stayed gold on gold. */
-.washed.washed:hover *,
-.washed.washed:focus-visible * {
-  color: inherit;
-}
+/* Descendants keep their own ink: the band is translucent, so every label that
+   was legible on the resting ground is still legible on it. */
 
 @media (prefers-reduced-motion: reduce) {
   .marked-hover,
@@ -758,8 +755,13 @@ summary {
   cursor: pointer;
 }
 
+/* The reset owns both. Every consumer was re-declaring `background: transparent`
+   itself, and that SHORTHAND resets background-image to none — which silently
+   clobbered .washed's band from a selector that outranks one class. Zero it once
+   here and the primitive composes at its own specificity. */
 button {
   border: 0;
+  background: none;
 }
 
 img,
