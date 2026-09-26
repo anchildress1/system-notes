@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/anchildress1/system-notes/compare/v3.2.0...v3.2.1) (2026-09-26)
+
+
+### Bug Fixes
+
+* drop invalid Cloud Build machineType override ([#167](https://github.com/anchildress1/system-notes/issues/167)) ([c22015a](https://github.com/anchildress1/system-notes/commit/c22015a58fb9a82beaaf51ea0af251c947d0c441))
+
 ## [3.2.0](https://github.com/anchildress1/system-notes/compare/v3.1.0...v3.2.0) (2026-09-25)
 
 
