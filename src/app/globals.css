@@ -520,9 +520,12 @@ body::before {
      A row is the larger of the two hover scales, so the band is full-bleed where
      .marked-hover's is line-height tall. */
   background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
-  background-position: 0 50%;
+  /* Centred and bled 1% past each edge. --stroke-swipe's ink runs x 0.4 to 119.4
+     of a 120 viewBox, so at 100% the band stops about half a percent short on
+     either side — nothing on a badge, a visible gap across a full row. */
+  background-position: 50% 50%;
   background-repeat: no-repeat;
-  background-size: 100% 0;
+  background-size: 102% 0;
 }
 
 .washed:hover,
@@ -531,8 +534,8 @@ body::before {
      its ink to the middle 61% of the viewBox. No colour here: the band is a
      layer, so every label keeps the contrast it already had. */
   background-size:
-    100% 158%,
-    100% 158%;
+    102% 158%,
+    102% 158%;
 }
 
 /* Descendants keep their own ink: the band is translucent, so every label that
@@ -628,11 +631,11 @@ body::before {
 .btn[data-variant='outline']:hover:not(:disabled) {
   border-color: var(--ink-accent);
   background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
-  background-position: 0 50%;
+  background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size:
-    100% 158%,
-    100% 158%;
+    102% 158%,
+    102% 158%;
 }
 
 /* Reads as deliberately parked rather than broken: the label stays legible
