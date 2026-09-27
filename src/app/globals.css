@@ -520,12 +520,14 @@ body::before {
      A row is the larger of the two hover scales, so the band is full-bleed where
      .marked-hover's is line-height tall. */
   background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
-  /* Centred and bled 1% past each edge. --stroke-swipe's ink runs x 0.4 to 119.4
-     of a 120 viewBox, so at 100% the band stops about half a percent short on
-     either side — nothing on a badge, a visible gap across a full row. */
+  /* Centred and run 0.8rem past each edge. --stroke-swipe's ink stops at x 0.4
+     and 119.4 of a 120 viewBox, so at 100% the band lands short of its own box;
+     closing only that gap left it sitting exactly on the edge, which reads as a
+     fill. A marker overshoots what it marks. A background cannot overflow the
+     page, so the overhang costs no scrollbar. */
   background-position: 50% 50%;
   background-repeat: no-repeat;
-  background-size: 102% 0;
+  background-size: calc(100% + 1.6rem) 0;
 }
 
 .washed:hover,
@@ -534,8 +536,8 @@ body::before {
      its ink to the middle 61% of the viewBox. No colour here: the band is a
      layer, so every label keeps the contrast it already had. */
   background-size:
-    102% 158%,
-    102% 158%;
+    calc(100% + 1.6rem) 158%,
+    calc(100% + 1.6rem) 158%;
 }
 
 /* Descendants keep their own ink: the band is translucent, so every label that
@@ -634,8 +636,8 @@ body::before {
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size:
-    102% 158%,
-    102% 158%;
+    calc(100% + 1.6rem) 158%,
+    calc(100% + 1.6rem) 158%;
 }
 
 /* Reads as deliberately parked rather than broken: the label stays legible

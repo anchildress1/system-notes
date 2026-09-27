@@ -84,8 +84,8 @@
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size:
-    102% 158%,
-    102% 158%;
+    calc(100% + 1.6rem) 158%,
+    calc(100% + 1.6rem) 158%;
 }
 
 .categorySwatch {
