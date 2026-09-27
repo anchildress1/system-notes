@@ -24,7 +24,26 @@ for (const viewport of viewports) {
 
     for (const path of ['/', '/notes', '/projects', '/about']) {
       test(`${path} has no horizontal overflow`, async ({ page }) => {
+        // /notes renders the unavailable state on the harness's fake credentials,
+        // so without this the route under test carries no queue, no open row and
+        // none of the marks that could overflow it — green without measuring.
+        if (path === '/notes') {
+          await mockAlgoliaSearch(page, [
+            {
+              objectID: 'card:test:1',
+              title: 'A ranked note whose title is long enough to wrap at 280px',
+              blurb: 'Short.',
+              fact: 'The complete evidence behind the decision, at its real length.',
+              category: 'Principle',
+              projects: ['System Notes'],
+              'tags.lvl0': ['Testing'],
+            },
+          ]);
+        }
         await page.goto(path);
+        if (path === '/notes') {
+          await expect(page.locator('[data-ranked-queue] li[data-open]')).toBeVisible();
+        }
 
         const widths = await page.evaluate(() => {
           window.scrollTo(9999, window.scrollY);

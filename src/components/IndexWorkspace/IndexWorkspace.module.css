@@ -32,7 +32,6 @@
   justify-content: space-between;
   padding: 0 1.25rem;
   border-bottom: 1px solid var(--line);
-  background: transparent;
   color: var(--mute);
   font-family: var(--font-display);
   font-size: 0.9375rem;
@@ -62,7 +61,6 @@
   min-height: 3.35rem;
   align-items: center;
   padding: 0;
-  background: transparent;
   color: var(--bone);
   text-align: left;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -78,11 +76,14 @@
   color: var(--ink-accent);
 }
 
-/* Selected is the wash held down. .washed paints only under the pointer, so a
-   refined facet lost its fill the moment the cursor left. Same band, same token;
-   it just does not lift. */
-.categoryList button[data-selected] {
-  background-color: var(--mark-soft);
+/* Drives the band .washed already draws on this button's ::before, so a held
+   facet and a hovered one are the same mark at the same width. Declaring a
+   background here instead painted on the element, which clips it to the box and
+   left the selected state visibly narrower than the hover. */
+.categoryList button[data-selected]::before {
+  background-size:
+    102% 158%,
+    102% 158%;
 }
 
 .categorySwatch {
@@ -415,6 +416,11 @@
   width: min(22rem, calc(100vw - 2 * var(--gutter)));
   max-height: 20rem;
   overflow-y: auto;
+  /* Room for the hover band's overhang. .washed bleeds 0.8rem past each inline
+     edge, and overflow-y: auto computes overflow-x to auto, so with the labels
+     flush to the content box that bleed became 13px of sideways scroll inside
+     the dropdown. */
+  padding-inline: 0.8rem;
   border: 1px solid var(--line-strong);
   background: var(--panel);
   box-shadow: 0 1.2rem 3rem var(--drop);
@@ -476,7 +482,7 @@
 }
 
 /* An exhibition catalog, not a stack of cards: a hairline between entries and
-   nothing else. The row indents on hover rather than lighting up. */
+   nothing else. The shared band is all a row gains under a pointer. */
 .queueList button {
   display: grid;
   /* An implicit `auto` track resolves to max(min-content, …) and can grow past
@@ -488,20 +494,8 @@
   padding: 1.15rem 0;
   border: 0;
   border-bottom: 0.5px solid var(--line-strong);
-  background: transparent;
   color: var(--bone);
   text-align: left;
-  /* 180ms; 260 read as lag on a row a pointer crosses quickly. Padding rather
-     than translateX so the indent moves the label without dragging the row's
-     right-hand meta off its rule. --ease-out on all three: the bare `ease` here
-     was drift, not a decision. */
-  transition:
-    padding-left 180ms var(--ease-out),
-    color 180ms var(--ease-out),
-    border-color 180ms var(--ease-out);
-}
-.queueList button:hover {
-  padding-left: 0.9rem;
 }
 
 /* Four measures that repeat, so a paged run of ten does not fall back to flat
@@ -541,29 +535,33 @@
   padding-right: clamp(0rem, 1.5vw, 1.1rem);
 }
 
-/* Mark the open row; never recolour it. Offset past the label's own indent so the
-   two never align.
-   Mask on ::before, never on the button — a mask clips the focus ring.
-   Keep left inset under the pane's 1rem padding or it becomes a scrollbar.
-   Span the LABEL only: --stroke-brush-y is 16x56 with preserveAspectRatio='none',
-   so a full-row span flattens the wobble to ~1px and draws a 1px rule. */
-.queueList li[data-open] .queueHeading {
-  position: relative;
-}
-
-.queueList li[data-open] .queueHeading::before {
+/* Mark the open row down label and note both, stopping clear of the note's own
+   closing rule rather than running onto it — never recolour it. Offset past the label's own indent so the two never align.
+   Mask on ::before, never on the button: a mask clips the focus ring.
+   Keep the left inset under the pane's 1rem padding or it becomes a scrollbar. */
+.queueList li[data-open]::before {
   position: absolute;
   top: 0.35rem;
-  left: -0.85rem;
-  width: 0.5rem;
-  /* Capped, not anchored to both edges. A wrapped title makes the heading
-     arbitrarily tall and stretched the 16x56 brush back into a thin rule.
-     4rem against 0.5rem holds the aspect near 1:8; a short heading only ever
-     makes it squarer. */
-  height: min(4rem, calc(100% - 0.7rem));
-  background: var(--ink-accent);
+  bottom: clamp(1.5rem, 3vw, 2.25rem);
+  /* Stands clear of the label, and still inside the pane's padding: the reading
+     pane gives 2.5vw here and only 1rem below the stacked breakpoint, where this
+     drops with it. A mark past that edge is a horizontal scrollbar. */
+  left: -1.15rem;
+  width: 0.85rem;
+  /* --mark, not --ink-accent. The alias resolves to --mark-ink on paper, which
+     painted this black there: correct for ink, wrong for a MARK. Gold is
+     1.41:1 on cream, so it carries --tile-keyline along its own edge instead of
+     changing hue. drop-shadow twice, not box-shadow — the mask clips a shadow
+     drawn on the box, while drop-shadow traces the alpha the mask leaves. */
+  background: var(--mark);
+  filter: drop-shadow(0 0 0.5px var(--tile-keyline)) drop-shadow(0 0 0.5px var(--tile-keyline));
   content: '';
-  /* Prefixed like every other mask here. Unprefixed alone drops the mark on
+  /* One continuous stroke, widened rather than tiled. --stroke-brush-y is 16x56
+     under preserveAspectRatio='none': at 0.5rem wide its wobble flattened to a
+     pixel down a tall note and drew a rule, and repeating it put a visible pinch
+     at every join, which reads as a dashed line rather than a swipe. At 0.85rem
+     the same stretch still carries ~2px of edge variation, so it stays drawn.
+     Prefixed like every other mask here: unprefixed alone drops the mark on
      Safari before 16.4, and the fallback is a solid bar. */
   -webkit-mask-image: var(--stroke-brush-y);
   mask-image: var(--stroke-brush-y);
@@ -804,6 +802,10 @@
 
   .readingPane {
     padding: 1rem;
+  }
+
+  .queueList li[data-open]::before {
+    left: -0.7rem;
   }
 
   .searchPill {

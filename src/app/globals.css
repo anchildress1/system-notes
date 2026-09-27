@@ -509,17 +509,49 @@ body::before {
 }
 
 .washed {
-  transition: background-color 180ms var(--ease-out);
+  position: relative;
+  /* The band paints on a ::before at z-index -1, and the pseudo must stay behind
+     this element's own text without slipping behind an ancestor's ground. */
+  isolation: isolate;
 }
 
-.washed:hover,
-.washed:focus-visible {
-  background-color: var(--mark-soft);
+/* TWO passes of the soft swipe, on a pseudo-element rather than this element's
+   own background. --mark-soft is a LAYER: painted as a flat background-color it
+   composited over graphite and went olive, which is the one place this file's
+   own rule — opaque gold keeps the stroke yellow there, and SCALE rather than
+   translucency gives a mark less weight — was not being followed.
+   .tape stacks three of the same 16% gold; two is that construction one step
+   lighter, which is where a hover sits.
+   A background is clipped to its own border box however large the image is, so
+   the overhang a marker leaves has to come from a box that is itself wider:
+   hence the negative inline inset. */
+.washed::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 -0.8rem;
+  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
+  /* 102% and centred, because --stroke-swipe's ink stops at x 0.4 and 119.4 of a
+     120 viewBox and would otherwise land short of even this wider box. */
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: 102% 0;
+  content: '';
+  pointer-events: none;
+}
+
+.washed:hover::before,
+.washed:focus-visible::before {
+  /* 158%, as everything drawn with --stroke-swipe uses. No colour set here: the
+     band is a layer, so every label keeps the contrast it already had. */
+  background-size:
+    102% 158%,
+    102% 158%;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marked-hover,
-  .washed {
+  /* .washed is not here: its band has no transition to suppress. The state is
+     the band, not a movement into it. */
+  .marked-hover {
     transition: none;
   }
 }
@@ -603,10 +635,17 @@ body::before {
     linear-gradient(to bottom, var(--mark-lift) 0 6%, transparent 24%);
 }
 
+/* The same band .washed draws, not a flat 16% fill and not the opaque mark. */
 .btn[data-variant='outline']:hover:not(:disabled) {
   border-color: var(--ink-accent);
-  background-color: var(--mark-soft);
-  color: var(--bone);
+  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
+  /* On the element, not a pseudo: a bordered control's band belongs inside its
+     own edge. calc() would only crop, since a background is clipped to the box. */
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size:
+    102% 158%,
+    102% 158%;
 }
 
 /* Reads as deliberately parked rather than broken: the label stays legible
@@ -728,8 +767,13 @@ summary {
   cursor: pointer;
 }
 
+/* The reset owns border AND background, so a button does not arrive carrying a
+   platform fill that every consumer then clears by hand. A default, not a guard:
+   element specificity loses to any class, so a component declaring `background:`
+   still wins — and that shorthand takes background-image with it. */
 button {
   border: 0;
+  background: none;
 }
 
 img,
