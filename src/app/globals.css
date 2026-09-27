@@ -553,8 +553,9 @@ body::before {
    was legible on the resting ground is still legible on it. */
 
 @media (prefers-reduced-motion: reduce) {
-  .marked-hover,
-  .washed {
+  /* .washed is not here: its band has no transition to suppress. The state is
+     the band, not a movement into it. */
+  .marked-hover {
     transition: none;
   }
 }

@@ -566,8 +566,10 @@
 
 .themeSong {
   display: grid;
-  /* Split near the page's own 61.8% seam rather than at a third, so the player
-     and its copy sit right of centre instead of hugging the heading. */
+  /* Boundary just under halfway, not at a third: the player and its copy sit
+     right of centre instead of hugging the heading. NOT the --seam-at 61.8%
+     hairline — that runs the page, and pushing this split out to meet it left
+     the copy too narrow to read. */
   grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
   align-items: start;
   gap: clamp(1.5rem, 3vw, 3rem);

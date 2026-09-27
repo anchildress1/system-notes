@@ -54,7 +54,7 @@
     "name": "Unearthed",
     "what_it_is": "Enter an address, get the coal mine feeding that grid — operator, county, accident record, tons pulled out — then ask about the contract in plain language.",
     "why_it_exists": "Power Profiler and iLoveMountains publish aggregates. Neither names the mine behind a given house, or the safety record of the people working it.",
-    "long_description": "Three tiers: SvelteKit in the browser, FastAPI on Cloud Run, Snowflake as the data and AI spine. MSHA, EIA and EPA records stay in Snowflake — H3 hexbin geospatial and the EPA Clean Air Markets Marketplace feed run natively, with no ETL out. Cortex Analyst turns a typed question into SQL against a semantic model; Cortex Complete on llama3.3-70b writes the memorial prose from the mine's own safety record.",
+    "long_description": "Three tiers: SvelteKit in the browser, FastAPI on Cloud Run, Snowflake as the data and AI spine. MSHA, EIA and EPA records stay in Snowflake — H3 hexbin geospatial and the EPA Clean Air Markets Marketplace feed run natively, with no ETL out. Cortex Analyst turns a typed question into SQL against a semantic model; Cortex Complete on llama3.3-70b writes the memorial prose from the mine's own safety record. With Snowflake down it falls back to nineteen cached subregions and flags the prose as degraded rather than passing a template off as generated.",
     "outcome": "Built for the Earth Day 2026 Weekend Challenge, entered under Best Use of Snowflake, named an Overall Winner. Taken down after the challenge rather than kept paying to run it.",
     "status": "Retired",
     "owner": "anchildress1",
