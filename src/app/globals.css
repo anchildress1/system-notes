@@ -509,35 +509,44 @@ body::before {
 }
 
 .washed {
-  /* TWO passes of the soft swipe. --mark-soft is a LAYER: painted as a flat
-     background-color it composited over graphite and went olive, which is the
-     one place this file's own rule — opaque gold keeps the stroke yellow there,
-     and SCALE rather than translucency gives a mark less weight — was not being
-     followed.
-     .tape stacks three of the same 16% gold; two is that construction one step
-     lighter, which is where a hover sits. One pass alone does not register, and
-     the opaque swipe is the mark itself, far too loud under a pointer.
-     A row is the larger of the two hover scales, so the band is full-bleed where
-     .marked-hover's is line-height tall. */
-  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
-  /* Centred and run 0.8rem past each edge. --stroke-swipe's ink stops at x 0.4
-     and 119.4 of a 120 viewBox, so at 100% the band lands short of its own box;
-     closing only that gap left it sitting exactly on the edge, which reads as a
-     fill. A marker overshoots what it marks. A background cannot overflow the
-     page, so the overhang costs no scrollbar. */
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: calc(100% + 1.6rem) 0;
+  position: relative;
+  /* The band paints on a ::before at z-index -1, and the pseudo must stay behind
+     this element's own text without slipping behind an ancestor's ground. */
+  isolation: isolate;
 }
 
-.washed:hover,
-.washed:focus-visible {
+/* TWO passes of the soft swipe, on a pseudo-element rather than this element's
+   own background. --mark-soft is a LAYER: painted as a flat background-color it
+   composited over graphite and went olive, which is the one place this file's
+   own rule — opaque gold keeps the stroke yellow there, and SCALE rather than
+   translucency gives a mark less weight — was not being followed.
+   .tape stacks three of the same 16% gold; two is that construction one step
+   lighter, which is where a hover sits.
+   A background is clipped to its own border box however large the image is, so
+   the overhang a marker leaves has to come from a box that is itself wider:
+   hence the negative inline inset. */
+.washed::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 -0.8rem;
+  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
+  /* 102% and centred, because --stroke-swipe's ink stops at x 0.4 and 119.4 of a
+     120 viewBox and would otherwise land short of even this wider box. */
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: 102% 0;
+  content: '';
+  pointer-events: none;
+}
+
+.washed:hover::before,
+.washed:focus-visible::before {
   /* 158% for the same reason .btn and .marked-soft use it: --stroke-swipe insets
-     its ink to the middle 61% of the viewBox. No colour here: the band is a
-     layer, so every label keeps the contrast it already had. */
+     its ink to the middle 61% of the viewBox. No colour on the element: the band
+     is a layer, so every label keeps the contrast it already had. */
   background-size:
-    calc(100% + 1.6rem) 158%,
-    calc(100% + 1.6rem) 158%;
+    102% 158%,
+    102% 158%;
 }
 
 /* Descendants keep their own ink: the band is translucent, so every label that
@@ -633,11 +642,13 @@ body::before {
 .btn[data-variant='outline']:hover:not(:disabled) {
   border-color: var(--ink-accent);
   background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
+  /* On the element, not a pseudo: a bordered control's band belongs inside its
+     own edge. calc() would only crop, since a background is clipped to the box. */
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size:
-    calc(100% + 1.6rem) 158%,
-    calc(100% + 1.6rem) 158%;
+    102% 158%,
+    102% 158%;
 }
 
 /* Reads as deliberately parked rather than broken: the label stays legible

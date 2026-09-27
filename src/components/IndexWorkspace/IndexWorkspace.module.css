@@ -79,13 +79,14 @@
 /* Selected is the band held down. .washed paints only under the pointer, so a
    refined facet lost its fill the moment the cursor left. Same band, same token;
    it just does not lift. */
-.categoryList button[data-selected] {
-  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
+/* Drives the band .washed already draws on this button's ::before, so a held
+   facet and a hovered one are the same mark at the same width. Declaring a
+   background here instead painted on the element, which clips it to the box and
+   left the selected state visibly narrower than the hover. */
+.categoryList button[data-selected]::before {
   background-size:
-    calc(100% + 1.6rem) 158%,
-    calc(100% + 1.6rem) 158%;
+    102% 158%,
+    102% 158%;
 }
 
 .categorySwatch {
