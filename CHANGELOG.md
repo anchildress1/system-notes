@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.3.0](https://github.com/anchildress1/system-notes/compare/v3.2.1...v3.3.0) (2026-09-27)
+
+
+### Features
+
+* open the selected note in its own row on the notes index ([#169](https://github.com/anchildress1/system-notes/issues/169)) ([85a0141](https://github.com/anchildress1/system-notes/commit/85a01414d0f2bf508d3faf9238fdad72105c1362))
+
+
+### Bug Fixes
+
+* mark the notes index in gold, and settle the shared hover band ([#172](https://github.com/anchildress1/system-notes/issues/172)) ([ace8789](https://github.com/anchildress1/system-notes/commit/ace878946fa618da3b2ae290efe2b8075c2280d2))
+
 ## [3.2.1](https://github.com/anchildress1/system-notes/compare/v3.2.0...v3.2.1) (2026-09-26)
 
 
