@@ -76,9 +76,6 @@
   color: var(--ink-accent);
 }
 
-/* Selected is the band held down. .washed paints only under the pointer, so a
-   refined facet lost its fill the moment the cursor left. Same band, same token;
-   it just does not lift. */
 /* Drives the band .washed already draws on this button's ::before, so a held
    facet and a hovered one are the same mark at the same width. Declaring a
    background here instead painted on the element, which clips it to the box and
@@ -419,6 +416,11 @@
   width: min(22rem, calc(100vw - 2 * var(--gutter)));
   max-height: 20rem;
   overflow-y: auto;
+  /* Room for the hover band's overhang. .washed bleeds 0.8rem past each inline
+     edge, and overflow-y: auto computes overflow-x to auto, so with the labels
+     flush to the content box that bleed became 13px of sideways scroll inside
+     the dropdown. */
+  padding-inline: 0.8rem;
   border: 1px solid var(--line-strong);
   background: var(--panel);
   box-shadow: 0 1.2rem 3rem var(--drop);
@@ -480,7 +482,7 @@
 }
 
 /* An exhibition catalog, not a stack of cards: a hairline between entries and
-   nothing else. The row indents on hover rather than lighting up. */
+   nothing else. The shared band is all a row gains under a pointer. */
 .queueList button {
   display: grid;
   /* An implicit `auto` track resolves to max(min-content, …) and can grow past
@@ -533,8 +535,8 @@
   padding-right: clamp(0rem, 1.5vw, 1.1rem);
 }
 
-/* Mark the open row down its WHOLE height — label and note both — never recolour
-   it. Offset past the label's own indent so the two never align.
+/* Mark the open row down label and note both, stopping clear of the note's own
+   closing rule rather than running onto it — never recolour it. Offset past the label's own indent so the two never align.
    Mask on ::before, never on the button: a mask clips the focus ring.
    Keep the left inset under the pane's 1rem padding or it becomes a scrollbar. */
 .queueList li[data-open]::before {

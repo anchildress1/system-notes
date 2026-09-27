@@ -46,10 +46,7 @@
   transition: background 0.4s ease;
 }
 
-/* One block, not two: the playing state was split across a pair of identical
-   selectors, which is css:S4666 and leaves the next edit guessing which half
-   owns what.
-   The bars keep their heights and pulse in opacity. Animating scale instead
+/* The bars keep their heights and pulse in opacity. Animating scale instead
    made every bar travel the same distance, which read as a level meter rather
    than the fixed silhouette the design draws. */
 .equalizer[data-playing='true'] .bar {

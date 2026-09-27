@@ -189,6 +189,35 @@ test.describe('Notes index', () => {
     expect(insightsEvents.filter((event) => event.eventName === 'Note Selected')).toHaveLength(0);
   });
 
+  test('paints the shared hover band on a queue row', async ({ page }) => {
+    // The band draws on .washed's ::before. Consumers used to declare
+    // `background: transparent` themselves, and that SHORTHAND reset
+    // background-image to none from a selector outranking the primitive, which
+    // removed the band with the whole suite still green. The reset owns button
+    // background now; this is what notices if that ownership moves back.
+    //
+    // Asserts that a layer is painted and that hover grows it — never which
+    // colour, which is the stylesheet's business and would drift in a test.
+    await mockAlgoliaSearch(page, [
+      buildHit(),
+      buildHit({ objectID: 'card:test:2', title: 'Second decision' }),
+    ]);
+    await page.goto('/notes');
+    const row = page.locator('[data-ranked-queue] button').nth(1);
+    const band = () =>
+      row.evaluate((el) => {
+        const s = getComputedStyle(el, '::before');
+        return { image: s.backgroundImage, size: s.backgroundSize };
+      });
+
+    const resting = await band();
+    expect(resting.image).not.toBe('none');
+    expect(resting.size).toMatch(/ 0px/);
+
+    await row.hover();
+    await expect.poll(async () => (await band()).size).not.toMatch(/ 0px/);
+  });
+
   test('keeps the composite board operable with reduced motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await mockAlgoliaSearch(page, [

@@ -26,7 +26,7 @@
   max-width: 54ch;
   margin-top: 1.75rem;
   color: var(--soft);
-  font-size: clamp(1rem, 1.2vw, 1.0625rem);
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.0625rem);
   line-height: 1.75;
 }
 
@@ -56,13 +56,12 @@
   color: var(--bone);
   font-size: clamp(1rem, 1.3vw, 1.15rem);
   line-height: 1.6;
-  /* Even the lines rather than leaving one word alone on the last. */
   text-wrap: balance;
 }
 
 .trackRecord div:last-child dd {
   color: var(--soft);
-  font-size: clamp(1rem, 1.2vw, 1.0625rem);
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.0625rem);
 }
 
 .since {
@@ -584,12 +583,20 @@
   font-style: italic;
 }
 
-/* The track takes the second line whole. Left inline it broke mid-title, and a
-   title is a name — it does not wrap. The heading's own clamp scales with the
-   viewport, so the nowrap never outgrows its column. */
+/* The track takes the second line whole: left inline it broke mid-title, and a
+   title is a name. Only where there is room, though — the h2's clamp floors at
+   2.6rem below a 52rem viewport, so it stops shrinking exactly where the column
+   is narrowest. Measured at 280px the line wants 284px inside a 248px box, and
+   the surplus paints outside the viewport with nothing able to scroll to it.
+   Below 24rem it wraps instead. */
 .songTitle {
   display: block;
-  text-wrap: nowrap;
+}
+
+@media (min-width: 24rem) {
+  .songTitle {
+    text-wrap: nowrap;
+  }
 }
 
 .songPlayer {

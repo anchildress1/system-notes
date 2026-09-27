@@ -108,11 +108,17 @@ test.describe('System Notes redesign', () => {
           ...(await page.evaluate((label: string) => {
             const small = new Set<string>();
             for (const element of document.querySelectorAll<HTMLElement>('body *')) {
-              const text = [...element.childNodes]
+              // Token count reads the whole subtree, because this repo wraps
+              // marks and tracked runs in spans and a sentence split across two
+              // of them was escaping the floor as two short fragments. The SIZE
+              // is still read from the element that sets it.
+              const own = [...element.childNodes]
                 .filter((node) => node.nodeType === Node.TEXT_NODE)
                 .map((node) => node.textContent?.trim() ?? '')
                 .join(' ')
                 .trim();
+              if (!own) continue;
+              const text = (element.textContent ?? '').trim();
               // Role, not length. A six-word cutoff exempted whole sentences
               // for being short: "Shipping production systems since 2014" ran
               // at 11px under it. Three real words is the floor for a clause,
@@ -124,9 +130,10 @@ test.describe('System Notes redesign', () => {
               // own conventions — nav items, link text and button copy are not
               // the running text this floor governs.
               if (element.closest('a, button, summary')) continue;
-              // A definition list is a metadata structure by definition — its
-              // terms and values are captions, however many words they run to.
-              if (element.closest('dl')) continue;
+              // A dt is the caption; a dd is whatever it is asked to hold, and
+              // About's track record holds sentences. Exempting the whole dl
+              // turned the floor off for reading copy this very branch resized.
+              if (element.closest('dt')) continue;
               // classList, not className: on an SVG element className is an
               // SVGAnimatedString with no .includes, and every route renders
               // react-icons SVGs. A <text> or <title> long enough to reach this

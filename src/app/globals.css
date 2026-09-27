@@ -541,16 +541,12 @@ body::before {
 
 .washed:hover::before,
 .washed:focus-visible::before {
-  /* 158% for the same reason .btn and .marked-soft use it: --stroke-swipe insets
-     its ink to the middle 61% of the viewBox. No colour on the element: the band
-     is a layer, so every label keeps the contrast it already had. */
+  /* 158%, as everything drawn with --stroke-swipe uses. No colour set here: the
+     band is a layer, so every label keeps the contrast it already had. */
   background-size:
     102% 158%,
     102% 158%;
 }
-
-/* Descendants keep their own ink: the band is translucent, so every label that
-   was legible on the resting ground is still legible on it. */
 
 @media (prefers-reduced-motion: reduce) {
   /* .washed is not here: its band has no transition to suppress. The state is
@@ -771,10 +767,10 @@ summary {
   cursor: pointer;
 }
 
-/* The reset owns both. Every consumer was re-declaring `background: transparent`
-   itself, and that SHORTHAND resets background-image to none — which silently
-   clobbered .washed's band from a selector that outranks one class. Zero it once
-   here and the primitive composes at its own specificity. */
+/* The reset owns border AND background, so a button does not arrive carrying a
+   platform fill that every consumer then clears by hand. A default, not a guard:
+   element specificity loses to any class, so a component declaring `background:`
+   still wins — and that shorthand takes background-image with it. */
 button {
   border: 0;
   background: none;
