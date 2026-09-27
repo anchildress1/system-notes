@@ -389,19 +389,21 @@
 
 .proof dl {
   display: grid;
-  grid-column: 1 / 11;
+  /* The proof block leans right, and no two of its parts share a left edge —
+     header at 3, receipts at 6, awards at 4, certifications at 8. Four indents
+     inside one right-weighted band: a set, not a stack. */
+  grid-column: 6 / -1;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  max-width: 48rem;
   align-items: start;
   gap: clamp(1rem, 2.5vw, 2.5rem);
 }
 
 .awards {
-  grid-column: 1 / 7;
+  grid-column: 4 / 8;
 }
 
 .certifications {
-  grid-column: 7 / -1;
+  grid-column: 8 / -1;
   margin-top: clamp(2.5rem, 5vw, 5rem);
 }
 
