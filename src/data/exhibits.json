@@ -27,7 +27,7 @@
   {
     "id": "unearthed",
     "standard": "Natural language still has to respect the read boundary.",
-    "evidence": "Federal energy data is served from Snowflake through FastAPI. Cortex Analyst turns a plain-language question into SQL that stays read-only, single-statement, time-bounded and capped before it can become someone else's incident."
+    "evidence": "Cortex Analyst writes the SQL, so the guard sits between it and the warehouse: SELECT-only and single-statement, run under a least-privilege read-only role, with a 10-second statement timeout and a 500-row ceiling. The federal data never leaves Snowflake."
   },
   {
     "id": "carbon-trace",
