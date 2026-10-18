@@ -16,6 +16,15 @@ import styles from './IntakeDesk.module.css';
    @returns The text of the turn, or an empty string when it carried none. */
 export function messageText(message: UIMessage | undefined): string {
   if (!message) return '';
+  // A guardrail block arrives as a data part, and the SDK does not act on it: text
+  // already streamed stays in the message. Input guardrails classify concurrently
+  // with the stream, so without this the blocked answer is what renders.
+  const violation = message.parts.find((part) => part.type === 'data-guardrail-violation') as
+    { data?: { fallbackResponse?: unknown } } | undefined;
+  if (violation) {
+    const fallback = violation.data?.fallbackResponse;
+    return typeof fallback === 'string' ? fallback.trim() : '';
+  }
   return message.parts
     .filter((part): part is { type: 'text'; text: string } => part.type === 'text')
     .map((part) => part.text)

@@ -27,6 +27,14 @@ describe('profile track record', () => {
     expect(profile.trackRecord.since).toBeLessThanOrEqual(new Date().getFullYear());
   });
 
+  it('starts the core practice inside the career, not before it', () => {
+    // The home page dates the summary from coreSince. Earlier than `since` claims
+    // the stack predates the career; later than today claims a future.
+    const { since, coreSince } = profile.trackRecord;
+    expect(coreSince).toBeGreaterThanOrEqual(since);
+    expect(coreSince).toBeLessThanOrEqual(new Date().getFullYear());
+  });
+
   it('keeps the summary shaped to run inside a sentence', () => {
     // The home page sets it as "I build {summary}, and have since …". A leading
     // capital or a trailing stop breaks that sentence in the middle.
