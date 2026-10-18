@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseBrief, parseBriefStructure } from '@/components/IntakeDesk/BriefBody';
+import { profile } from '@/data/profile';
 
 describe('parseBrief', () => {
   it('returns prose untouched when it carries no citation', () => {
@@ -50,6 +51,25 @@ describe('parseBrief', () => {
   ])('drops a malformed project citation: %s', (href) => {
     expect(parseBrief(`[Claim](${href})`)).toEqual([{ text: 'Claim' }]);
   });
+
+  it.each([
+    { label: 'Email me', href: `mailto:${profile.email}` },
+    { label: 'LinkedIn', href: profile.links.find((link) => link.label === 'LinkedIn')!.href },
+    { label: 'the credential', href: profile.certifications[0]!.credentialUrl },
+  ])('follows a citation to the profile evidence itself: $href', ({ label, href }) => {
+    expect(parseBrief(`Reach out on [${label}](${href}).`)).toEqual([
+      { text: 'Reach out on ' },
+      { text: label, href },
+      { text: '.' },
+    ]);
+  });
+
+  it.each(['mailto:someone-else@example.test', 'https://linkedin.com/in/someone-else'])(
+    'drops a look-alike url the profile does not list: %s',
+    (href) => {
+      expect(parseBrief(`[Claim](${href})`)).toEqual([{ text: 'Claim' }]);
+    }
+  );
 
   it('drops credentials embedded in a url', () => {
     expect(parseBrief('[x](https://user:pass@example.com)')).toEqual([{ text: 'x' }]);

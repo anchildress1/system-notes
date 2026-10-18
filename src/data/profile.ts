@@ -68,7 +68,10 @@ const certifications: readonly Certification[] = [
 /* `core` is the professional practice; `applied` is what the exhibits happen to
    be built in. Merged into one row, a backend engineer reads as a generalist. */
 interface TrackRecord {
+  /** First year shipping production systems at all. */
   readonly since: number;
+  /** First year in the `core` practice; `summary` is true from here, not from `since`. */
+  readonly coreSince: number;
   /** Runs inside a sentence, so it carries its own casing and no trailing stop. */
   readonly summary: string;
   readonly core: readonly string[];
@@ -77,6 +80,7 @@ interface TrackRecord {
 
 const trackRecord: TrackRecord = {
   since: 2014,
+  coreSince: 2018,
   summary: 'distributed backend systems in Java and Node.js on GCP',
   core: ['Java', 'Node.js', 'Google Cloud Platform', 'Distributed systems'],
   applied: [

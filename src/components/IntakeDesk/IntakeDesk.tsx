@@ -62,9 +62,9 @@ function readSavedBrief(): SavedBrief | null {
 
 /** Questions a reader can load into the field instead of writing their own. */
 export const SEEDS = [
-  'Can this run somewhere our data never leaves?',
-  'What happens when the search gets slow?',
-  'How do you catch it when the answer is wrong but sounds right?',
+  'We want natural-language search over sensitive data — how would you wall off the model?',
+  'Our AI looks fine in demos and lies in production. How do you test it?',
+  'What are your core backend skills, and how does the AI work fit in?',
 ] as const;
 
 export default function IntakeDesk() {
@@ -142,7 +142,7 @@ export default function IntakeDesk() {
           onChange={(event) => setQuestion(event.target.value)}
           readOnly={inFlight}
           aria-describedby={canAsk ? undefined : noticeId}
-          placeholder="e.g. Can this run somewhere our data never leaves?"
+          placeholder="e.g. Can a small model handle this on the phone, or does it need a GPU?"
         />
         <div className={styles.controls}>
           <button

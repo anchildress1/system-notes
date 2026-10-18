@@ -137,8 +137,8 @@
     "name": "Carbon Trace",
     "what_it_is": "An immersive memoir about fighting to become an engineer when the world wasn't built for you to.",
     "why_it_exists": "Turns lived experience with gender bias into something you feel, not just read.",
-    "long_description": "A framework-free browser experience — vanilla JS coordinating Canvas 2D rendering, PixiJS displacement shaders, and GSAP-timed scene transitions, synced to layered Howler audio cues through every shift in bias, endurance, and becoming.",
-    "outcome": "Deployed and live, pairing memoir text with real-time PixiJS/GSAP scene transitions and Howler audio cues. Won WeCoded 2026.",
+    "long_description": "A vanilla JavaScript scene engine coordinates Canvas 2D, PixiJS displacement shaders, GSAP timelines, and layered Howler.js audio across each chapter. The visual layer is hidden from assistive tech so the DOM carries the story on its own, and controls let a reader step or mute without losing their place.",
+    "outcome": "Live at carbon-trace.anchildress1.dev and named a WeCoded 2026 Winner.",
     "status": "Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/carbon-trace.webp",
@@ -183,12 +183,80 @@
     ]
   },
   {
+    "objectID": "wild-find",
+    "name": "Wild Find",
+    "what_it_is": "An Android scavenger hunt for kids 8 and up, played with a parent: three plants recorded nearby this month, found and photographed, with open-weight models on the phone checking every photo.",
+    "why_it_exists": "A kid's reason to go outside should not cost a photo or a location. Nothing leaves the phone but the center of a whole-degree square.",
+    "long_description": "Each hunt makes one network call — iNaturalist species_counts for the center of a rounded whole-degree area, never the device's coordinates — and picks three targets, never two from one genus and never anything flagged toxic. On capture, TinyCLIP ViT-8M/16 Text-3M checks the frame is a plant and BioCLIP 2.5 Mobile checks it is the target, both on ONNX Runtime; a find has to beat every other local plant and lead every local toxic look-alike by a set margin, three frames in a row. A pure-Kotlin core owns every rule and is unit-tested on the JVM. Gemma 4 26B A4B ran only on the laptop at build time, writing the where-to-look hints and the contact-hazard list; it was measured in the app and dropped. Kid copy never says a plant is safe, and both the pipeline build and the device tests fail if it does.",
+    "outcome": "v1.0.0 released as a signed APK, built for the DEV Hacktoberfest Open-Source AI Challenge: Touch Grass. On fresh test photos 56 of 99 targets pass and none of 267 toxic photos does; every number is in a dated write-up under docs/results.",
+    "status": "Released",
+    "owner": "anchildress1",
+    "image_url": "/projects/wild-find.webp",
+    "image_alt": "Briar, a big-eared squirrel mascot, waves from a mossy rock in a sunlit forest beside the words Side quests grow on trees",
+    "tech": [
+      { "name": "Kotlin 2.4 + Jetpack Compose", "role": "Android 11+ UI" },
+      { "name": "BioCLIP 2.5 Mobile", "role": "Target & Hazard Check" },
+      { "name": "TinyCLIP ViT-8M/16 Text-3M", "role": "Plant Gate" },
+      { "name": "ONNX Runtime", "role": "On-Device Inference" },
+      { "name": "CameraX", "role": "Capture · 3-Frame Verify" },
+      { "name": "iNaturalist API", "role": "Nearby Sightings · One Call" },
+      { "name": "Python + uv", "role": "Build-Time Species Table & Toxicity Flags" },
+      {
+        "name": "Gemma 4 26B A4B via Ollama",
+        "role": "Build-Time Hints & Contact Hazards · Laptop Only"
+      }
+    ],
+    "blog_posts": [
+      {
+        "title": "Side Quests Grow on Trees (Leave Them Where They Grow)",
+        "url": "https://dev.to/anchildress1/side-quests-grow-on-trees-leave-them-where-they-grow-84e"
+      }
+    ],
+    "repo_url": "https://github.com/anchildress1/wild-find",
+    "app_url": "https://github.com/anchildress1/wild-find/releases",
+    "award": null,
+    "order_rank": 22
+  },
+  {
+    "objectID": "soundboard",
+    "name": "Soundboard",
+    "what_it_is": "A release agent for one musician: self-hosted Gemma 4 watches and listens to a finished music video, drafts its YouTube title, description, hashtags and tags, and verifies the upload.",
+    "why_it_exists": "Nathan writes, records and films his own music; publishing still cost him a marketing department's worth of metadata. Built for him in one weekend, with unreleased audio never leaving our own cloud project.",
+    "long_description": "A SvelteKit app on Cloud Run drives a page-driven pipeline, one step per request: ffmpeg measures loudness, true peak, clipping and silence, then Gemma 4 12B on llama-server behind a single scale-to-zero Vertex AI L4 endpoint analyzes each 29.5-second audio window plus eight frames from it. The model never gets to invent a number — ffmpeg's measurements are the only ones that reach the draft, and model-emitted numerics are stripped. Hashtags come from a deterministic search of existing videos, the draft is grounded in the genre's most-viewed music videos and Nathan's approved brand guide, and the upload goes up private and is read back from the YouTube API before it is marked verified. One Sentry trace per job, each Gemma call recorded as an AI agent span.",
+    "outcome": "Live at soundboard.anchildress1.dev, entered in the DEV Hacktoberfest Weekend Challenge: Build for a Friend. One complete draft per video for Nathan to approve, edit or re-run; the model bills about $0.81 an hour while awake and nothing scaled to zero.",
+    "status": "Deployed",
+    "owner": "anchildress1",
+    "image_url": "/projects/soundboard.webp",
+    "image_alt": "Soundboard drafting a YouTube title, description and tags from a finished music video",
+    "tech": [
+      { "name": "SvelteKit 2 / Svelte 5", "role": "App Framework & SSR" },
+      { "name": "TypeScript", "role": "Application Language" },
+      { "name": "Gemma 4 12B", "role": "Audio & Frame Analysis · Metadata Draft" },
+      { "name": "llama-server on Vertex AI", "role": "Self-Hosted Inference · 1× NVIDIA L4" },
+      { "name": "ffmpeg", "role": "Audio Measurement & Short Render" },
+      { "name": "Google Cloud Run", "role": "App Hosting · Scale to Zero" },
+      { "name": "Firestore · Cloud Storage · Secret Manager", "role": "Jobs, Media & Tokens" },
+      { "name": "YouTube Data API v3", "role": "Catalog Reads & Verified Upload" },
+      { "name": "Sentry", "role": "AI Agent Tracing" }
+    ],
+    "blog_posts": [
+      {
+        "title": "20+ Years of Friendship. One Weekend to Build His Marketing Department.",
+        "url": "https://dev.to/anchildress1/20-years-of-friendship-one-weekend-to-build-his-marketing-department-1bd"
+      }
+    ],
+    "repo_url": "https://github.com/anchildress1/soundboard",
+    "app_url": "https://soundboard.anchildress1.dev",
+    "award": null,
+    "order_rank": 24
+  },
+  {
     "objectID": "metal-birds-feed",
     "name": "Metal Birds Feed",
     "what_it_is": "A unified global aircraft registry assembled from public civil-aviation sources, normalized to one schema and stripped of personal data.",
     "why_it_exists": "No two countries' registries share a schema, and most carry owner names. This unifies both away.",
-    "long_description": "FAA is the schema baseline; other registries extend it only when they publish something structurally new. Country differences become config-driven field mappings instead of one-off parsers, so one engine covers every country. Each build ships as an immutable, versioned static snapshot — no database to run or pay for.",
-    "outcome": "One schema across every source, each carrying a license posture on record — Open, Personal-use, or Excluded. No paid aviation API in the stack.",
+    "long_description": "FAA is the schema baseline; other registries extend it only when they publish something structurally new, and natural-person street addresses are dropped at the mapping config. Country differences become YAML field mappings instead of one-off parsers. Per-country slices assemble in Cloudflare R2 into one SQLite file baked into a scale-to-zero Cloud Run container for authenticated tail-number and ICAO hex lookups.",
+    "outcome": "One schema across every source, each recorded under an Open, Private-use, or Restrictive posture in DATA_LICENSES.md — no paid aviation API in the stack.",
     "status": "Active",
     "owner": "anchildress1",
     "image_url": "/projects/metal-birds-feed.webp",
@@ -279,10 +347,10 @@
   {
     "objectID": "rai-lint",
     "name": "RAI Lint",
-    "what_it_is": "A published linter that hard-enforces AI attribution directly in commit workflows.",
-    "why_it_exists": "AI touched that commit. Now the history says so — enforced, not just implied.",
-    "long_description": "TypeScript and Python rules plug into commitlint and gitlint, enforcing explicit AI attribution on every commit that touches AI-assisted code. Mechanical and strict by design — a failing git hook, not a policy document nobody reads.",
-    "outcome": "Published to npm and PyPI — and dogfooded on this very repo, where commits fail without proper AI attribution. Enforced at commit time, not left to convention.",
+    "what_it_is": "commitlint and gitlint plugins that fail a commit unless it carries an AI attribution footer and a human Signed-off-by line.",
+    "why_it_exists": "Commits on AI-assisted repos were landing with no record of what the model wrote and what a human reviewed.",
+    "long_description": "A TypeScript plugin for commitlint and a Python plugin for gitlint share the same two rules: rai-attribution checks one of five footer levels (Authored-by through Generated-by), and rai-signed-off-by checks the human sign-off. A parity test keeps the regexes identical across both languages.",
+    "outcome": "Published to npm and PyPI via OIDC Trusted Publishing and enforced on this repo's own commit hook.",
     "status": "Published",
     "owner": "anchildress1",
     "image_url": "/projects/rai-lint.webp",
@@ -349,10 +417,10 @@
   {
     "objectID": "supascribe-notes",
     "name": "SupaScribe Notes",
-    "what_it_is": "A lightweight pipeline that turns messy thoughts into structured System Notes index cards, stored durably in Supabase.",
-    "why_it_exists": "Freeform thoughts in, schema-perfect index cards out — no cleanup step.",
-    "long_description": "Exposed as an MCP server so any AI client can write directly: an Express API validates every payload against Zod schemas before Postgres ever sees it — enforced at capture time, not cleanup time. Freeform input in, structured System Notes cards out. No exceptions.",
-    "outcome": "Deployed and live: any MCP-speaking AI client can write a note that lands in Postgres already schema-valid, with zero manual cleanup pass.",
+    "what_it_is": "A remote MCP server and ChatGPT App on Cloud Run that writes and queries the index cards backing this site's notes.",
+    "why_it_exists": "Decisions and postmortems died in scratch files unless filing one took a single tool call from whichever editor or chat was already open.",
+    "long_description": "An Express server exposes seven MCP tools over streaming HTTP. Every write validates against Zod — including the two-level tags hierarchy — before touching Supabase Postgres, records a row in card_revisions on every change, and returns per-card status on batch writes.",
+    "outcome": "Deployed on Cloud Run and used to file the notes in this portfolio's Algolia index.",
     "status": "Deployed",
     "owner": "anchildress1",
     "image_url": "/projects/supascribe-notes.webp",

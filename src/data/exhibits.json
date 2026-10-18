@@ -10,9 +10,14 @@
     "evidence": "Gemma runs on the phone. Audio is discarded after inference, the three lens reads stay visible, and patterns cite the entries that earned them."
   },
   {
+    "id": "wild-find",
+    "standard": "A match only counts once every toxic look-alike loses.",
+    "evidence": "BioCLIP 2.5 Mobile and TinyCLIP ViT-8M/16 Text-3M check every photo on the phone — a find has to beat every toxic plant nearby, three frames running. None of the 267 toxic test photos have passed. Gemma 4 26B A4B wrote the hints on a laptop and never made it into the app."
+  },
+  {
     "id": "metal-birds-feed",
-    "standard": "Public data is only useful when its provenance survives the trip.",
-    "evidence": "National aircraft registries become a normalized SQLite feed with source attribution intact. An unchanged registry does not redeploy; an ambiguous registration fails closed."
+    "standard": "Every country keeps its own aircraft register. The feed ships one schema and drops the home addresses.",
+    "evidence": "Civil-aviation registers map into one SQLite file in Cloudflare R2, with the source license and attribution kept on every row. An unchanged register doesn't redeploy — and an ambiguous tail number fails the build."
   },
   {
     "id": "supascribe-notes",
@@ -31,7 +36,7 @@
   },
   {
     "id": "carbon-trace",
-    "standard": "The spectacle still has to make sense with the sound off.",
-    "evidence": "A hand-built scene engine keeps audio, Canvas effects, captions, and controls in step. The visual layer is hidden from assistive tech; the DOM tells the story."
+    "standard": "Mute the audio and turn off the shaders — the memoir still reads straight through.",
+    "evidence": "A vanilla JavaScript scene engine keeps Canvas 2D, PixiJS shaders, GSAP timelines, and Howler.js audio in step. The canvas is hidden from screen readers; the DOM carries the whole story."
   }
 ]
