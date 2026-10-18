@@ -28,7 +28,8 @@ test.describe('System Notes redesign', () => {
     // caption and keeps --fine (11px) on purpose; the line a reader stops and
     // reads does not.
     const SAVED_BRIEF = JSON.stringify({
-      question: 'Can this run somewhere our data never leaves?',
+      question:
+        'We want natural-language search over sensitive data — how would you wall off the model?',
       answer:
         'Yes. The index is read-only and the agent cites only notes already filed, so nothing a reader types is retained anywhere.',
     });

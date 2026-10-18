@@ -10,8 +10,8 @@ node scripts/generate-agent-prompt.mjs            # to stdout
 node scripts/generate-agent-prompt.mjs --out FILE # to a file
 ```
 
-Regenerate and repaste whenever `src/data/projects.json` or
-`src/data/exhibits.json` changes. Nothing in CI checks that the pasted copy still
+Regenerate and repaste whenever `src/data/projects.json`, `src/data/exhibits.json`
+or `src/data/profile.ts` changes. Nothing in CI checks that the pasted copy still
 matches; the two drift silently.
 
 The prose lives in `scripts/generate-agent-prompt.mjs`. Edit it there, never in
@@ -23,11 +23,16 @@ the dashboard, or the next regeneration overwrites the edit.
   ("I'll show you how I'd fix it"), so a third-person narrator contradicts the
   surface it renders into.
 - Ashley's authored voice rules, narrowed for short engineering answers: named
-  nouns, mixed sentence rhythm, earned dry humor, closed em dashes, and explicit
+  nouns, mixed sentence rhythm, earned dry humor, open em dashes, and explicit
   bans on startup language and common AI tells.
-- Three sources and no others: `system-notes`, `markdown-index`, and the selected
-  project list.
-- Output contract: verdict, approach, refusal, gaps.
+- Four sources and no others: `system-notes`, `markdown-index`, the selected
+  project list, and the profile compiled from `src/data/profile.ts` (role, years,
+  stack, location, certifications with credential urls, contact).
+- Input routing: problem-shaped → verdict, approach, refusal, summary;
+  person-shaped (experience, skills, fit, availability, contact) → answer,
+  evidence, handoff.
+- Handoff links Email and LinkedIn only, and only when a human is needed.
+  Compensation, notice, references and employers are declared not on file.
 - Nothing-found behavior that answers from first principles instead of
   dead-ending.
 - Project citations resolve to that project's filtered notes in Algolia; the

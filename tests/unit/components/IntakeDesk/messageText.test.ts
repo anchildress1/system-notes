@@ -46,6 +46,27 @@ describe('messageText', () => {
     expect(messageText(message([{ type: 'text', text: '\n  Spaced.  \n' }]))).toBe('Spaced.');
   });
 
+  it('replaces streamed text with the fallback when a guardrail blocks the turn', () => {
+    const blocked = message([
+      { type: 'text', text: 'Half an answer the classifier caught' },
+      {
+        type: 'data-guardrail-violation',
+        data: { category: 'off_topic', fallbackResponse: ' Outside anything I have filed. ' },
+      },
+    ] as UIMessage['parts']);
+
+    expect(messageText(blocked)).toBe('Outside anything I have filed.');
+  });
+
+  it('returns nothing for a blocked turn that carried no fallback', () => {
+    const blocked = message([
+      { type: 'text', text: 'Half an answer' },
+      { type: 'data-guardrail-violation', data: { category: 'abuse' } },
+    ] as UIMessage['parts']);
+
+    expect(messageText(blocked)).toBe('');
+  });
+
   it('handles no message at all', () => {
     expect(messageText(undefined)).toBe('');
   });

@@ -12,6 +12,8 @@ export const PROJECT_NAMES = [
   'Unearthed',
   'Happen to Have?',
   'Carbon Trace',
+  'Wild Find',
+  'Soundboard',
   'Metal Birds Feed',
   'Vestige',
   'RAI Lint',
