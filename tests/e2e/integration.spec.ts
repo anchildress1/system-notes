@@ -356,11 +356,11 @@ test.describe('System Notes redesign', () => {
     );
   });
 
-  test('shows the seven selected exhibits without a project reader', async ({ page }) => {
+  test('shows the eight selected exhibits without a project reader', async ({ page }) => {
     await page.goto('/projects');
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Systems should');
-    await expect(page.getByRole('article')).toHaveCount(7);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('What I’ve built.');
+    await expect(page.getByRole('article')).toHaveCount(8);
     await expect(page.getByTestId('exhibit-save-the-sun')).toBeVisible();
     await expect(page.getByTestId('exhibit-rai-lint')).toBeVisible();
     await expect(page.getByTestId('exhibit-system-notes')).toHaveCount(0);
@@ -371,9 +371,7 @@ test.describe('System Notes redesign', () => {
     await page.goto('/projects');
     const exhibit = page.getByTestId('exhibit-save-the-sun');
 
-    await expect(
-      exhibit.getByText('The model can speak. It does not get the answer.')
-    ).toBeVisible();
+    await expect(exhibit.getByText(/I built a rune-guessing game/)).toBeVisible();
     await expect(exhibit.getByRole('link', { name: /Filed notes/ })).toHaveAttribute(
       'href',
       '/notes?project=Save+the+Sun#notes-index'

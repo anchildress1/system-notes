@@ -85,11 +85,12 @@ test.describe('Primary navigation', () => {
     await page.goto('/');
 
     await expect(page.getByText('Senior Software Engineer.')).toBeVisible();
-    await expect(page.getByText(/cites only systems I’ve actually shipped/i)).toBeVisible();
-    await expect(page.getByRole('link', { name: 'See the evidence.' })).toHaveAttribute(
-      'href',
-      '/projects'
-    );
+    await expect(page.getByText(/agent answers from my project notes/i)).toBeVisible();
+    const featured = page.getByRole('link', { name: 'Metal Birds Feed', exact: true });
+    await expect(featured).toHaveAttribute('href', '/projects#metal-birds-feed');
+    await featured.click();
+    await expect(page).toHaveURL('/projects#metal-birds-feed');
+    await expect(page.getByTestId('exhibit-metal-birds-feed')).toBeInViewport();
   });
 
   test('moves between the intake, exhibits, index, and about', async ({ page }) => {

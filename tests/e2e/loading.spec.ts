@@ -22,7 +22,7 @@ test('loads only the light portrait on a fresh light-theme visit', async ({ page
 for (const { source, target, label, intent } of [
   { source: '/projects', target: '/about', label: 'about me', intent: 'hover' },
   { source: '/about', target: '/', label: 'Ashley Childress', intent: 'focus' },
-  { source: '/', target: '/projects', label: 'See the evidence.', intent: 'focus' },
+  { source: '/', target: '/projects', label: 'Metal Birds Feed', intent: 'focus' },
 ]) {
   test(`prefetches ${label} only after ${intent}`, async ({ page }) => {
     const prefetched: string[] = [];
@@ -42,7 +42,9 @@ for (const { source, target, label, intent } of [
 
     await expect.poll(() => prefetched).toContain(target);
     await link.click();
-    await expect(page).toHaveURL(target);
+    await expect(page).toHaveURL(
+      label === 'Metal Birds Feed' ? `${target}#metal-birds-feed` : target
+    );
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.getByRole('main')).toBeFocused();
   });

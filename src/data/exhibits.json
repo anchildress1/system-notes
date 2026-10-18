@@ -1,42 +1,42 @@
 [
   {
+    "id": "metal-birds-feed",
+    "standard": "Aircraft registers don't agree on a format. I got them into one feed.",
+    "evidence": "Each register becomes a SQLite artifact, and a private Cloud Run service handles the lookups and attaches the source's required credit. Unchanged data doesn't trigger a redeploy; ambiguous registrations fail the build."
+  },
+  {
     "id": "save-the-sun",
-    "standard": "The model can speak. It does not get the answer.",
-    "evidence": "Gemini reads a player's question, plays the wolf, and voices both characters. The deterministic game engine keeps the rune secret and decides every claim."
+    "standard": "I built a rune-guessing game and gave Gemini the wolf. It still has to work out the answer.",
+    "evidence": "You race the wolf to identify a hidden rune. Gemini reads your questions and voices both characters, while the game engine keeps the answer secret and checks every guess. Giving the opponent the answer would have made for a pretty short game."
   },
   {
     "id": "vestige",
-    "standard": "A model can observe without getting to diagnose.",
-    "evidence": "Gemma runs on the phone. Audio is discarded after inference, the three lens reads stay visible, and patterns cite the entries that earned them."
+    "standard": "A brain tracker that can point out a pattern and show me where it came from.",
+    "evidence": "I record short voice entries, and Gemma looks for patterns on the phone. Every pattern cites the entries behind it, the individual model reads stay visible, and the audio is discarded after processing. It doesn't diagnose me."
   },
   {
     "id": "wild-find",
-    "standard": "A match only counts once every toxic look-alike loses.",
-    "evidence": "BioCLIP 2.5 Mobile and TinyCLIP ViT-8M/16 Text-3M check every photo on the phone — a find has to beat every toxic plant nearby, three frames running. None of the 267 toxic test photos have passed. Gemma 4 26B A4B wrote the hints on a laptop and never made it into the app."
-  },
-  {
-    "id": "metal-birds-feed",
-    "standard": "Every country keeps its own aircraft register. The feed ships one schema and drops the home addresses.",
-    "evidence": "Civil-aviation registers map into one SQLite file in Cloudflare R2, with the source license and attribution kept on every row. An unchanged register doesn't redeploy — and an ambiguous tail number fails the build."
+    "standard": "A plant scavenger hunt for kids, with a lot of work spent making sure poison ivy couldn't win it.",
+    "evidence": "The photo checks run on the phone, and code decides whether a find counts. None of the 267 toxic test photos passed. Gemma writes the hints at build time; no language model runs in the app."
   },
   {
     "id": "supascribe-notes",
-    "standard": "A model may write a note. It does not get a general database connection.",
-    "evidence": "Seven narrow tools, Zod validation before Postgres, revision history on every write, and a batch response that says exactly which cards failed."
+    "standard": "I gave ChatGPT and Claude a way to write my index cards without handing either one the database.",
+    "evidence": "Decisions go from the conversation into Supabase through seven specific tools. Zod checks the input before a write, revisions stay in the history, and a failed batch tells me which cards need another try."
   },
   {
     "id": "rai-lint",
-    "standard": "AI attribution belongs in the commit, not the postmortem.",
-    "evidence": "The Node and Python linters reject a commit without an attribution footer and a human sign-off. The record is enforced where the work enters history."
+    "standard": "If AI helped write the code, the commit should say so.",
+    "evidence": "I built Node and Python linters to check AI-attribution footers and human sign-off before a commit lands. They can enforce the format. Whether the credit is honest still takes a person reading it."
   },
   {
     "id": "unearthed",
-    "standard": "Natural language still has to respect the read boundary.",
-    "evidence": "Cortex Analyst writes the SQL, so the guard sits between it and the warehouse: SELECT-only and single-statement, run under a least-privilege read-only role, with a 10-second statement timeout and a 500-row ceiling."
+    "standard": "I followed the electricity back to the coal mines and their safety records.",
+    "evidence": "Unearthed connects an address to the grid feeding it and lets you ask questions about the data. Cortex Analyst writes the SQL; I restrict it to one read-only statement, a 10-second timeout, and 500 rows. An interesting question doesn't need an unlimited warehouse bill."
   },
   {
     "id": "carbon-trace",
-    "standard": "Mute the audio and turn off the shaders — the memoir still reads straight through.",
-    "evidence": "A vanilla JavaScript scene engine keeps Canvas 2D, PixiJS shaders, GSAP timelines, and Howler.js audio in step. The canvas is hidden from screen readers; the DOM carries the whole story."
+    "standard": "My path from a coal-mining town to software, told as an interactive memoir.",
+    "evidence": "I built a scene engine to keep Canvas effects, captions, and audio in step. You can mute it or turn off the shaders and still read the whole story. Screen readers get the DOM; they don't have to make sense of the canvas."
   }
 ]
