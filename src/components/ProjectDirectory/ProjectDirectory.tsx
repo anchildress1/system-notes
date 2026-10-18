@@ -15,8 +15,8 @@ type ExhibitCopy = {
 };
 
 /* Beside the list they count, not in the page that renders them. */
-export const EXHIBIT_DECK = 'Eight exhibits in AI, backend systems, and guardrail work.';
-export const EXHIBIT_SUMMARY = `${EXHIBIT_DECK} Each one shows its evidence and failure boundary.`;
+export const EXHIBIT_DECK = 'Eight exhibits, from aircraft data to a rune-guessing wolf.';
+export const EXHIBIT_SUMMARY = `${EXHIBIT_DECK} Code, demos, and notes on the decisions along the way.`;
 
 export const EXHIBITS: readonly ExhibitCopy[] = rawExhibits;
 
@@ -36,7 +36,7 @@ function evidenceLinks(project: Project) {
     ...project.blog_posts.map((post) => ({ label: 'Writing', href: post.url })),
     // Filed apart from the writing: someone else announcing a win is evidence for
     // the award, not an account of how the thing was built.
-    ...project.announcements.map((post) => ({ label: 'Receipt', href: post.url })),
+    ...project.announcements.map((post) => ({ label: 'Award', href: post.url })),
   ].filter((link): link is { label: string; href: string } => link !== null);
 }
 
@@ -98,9 +98,9 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                   rel="noopener noreferrer"
                 >
                   {link.label}
-                  {/* All seven exhibits are on the page at once, so a screen reader's
+                  {/* All exhibits are on the page at once, so a screen reader's
                       own link list — which strips the surrounding article — would
-                      otherwise show "Repository" seven times with nothing to tell
+                      otherwise show "Repository" repeatedly with nothing to tell
                       them apart. */}
                   <span className="visually-hidden"> — {project.title} (opens in a new tab)</span>
                   <FiArrowUpRight aria-hidden="true" />

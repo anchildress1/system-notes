@@ -276,7 +276,9 @@ describe('agent prompt generator', () => {
   });
 
   it('rejects a registry missing a selected project', async () => {
-    const readProjects = vi.fn(async () => JSON.stringify(portfolioProjects().slice(1)));
+    const readProjects = vi.fn(async () =>
+      JSON.stringify(portfolioProjects().filter(({ objectID }) => objectID !== 'save-the-sun'))
+    );
 
     await expect(readAgentPrompt('/portfolio', undefined, readProjects)).rejects.toThrow(
       'missing selected project save-the-sun'
