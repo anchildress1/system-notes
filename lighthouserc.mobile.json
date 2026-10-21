@@ -12,7 +12,7 @@
       "settings": {
         "chromeFlags": "--headless=new --disable-gpu --no-sandbox --disable-dev-shm-usage",
         "onlyCategories": ["performance", "accessibility", "best-practices", "seo"],
-        "skipAudits": ["uses-http2"]
+        "skipAudits": ["modern-http-insight"]
       }
     },
     "assert": {

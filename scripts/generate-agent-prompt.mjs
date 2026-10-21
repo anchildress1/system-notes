@@ -18,9 +18,6 @@ import path from 'node:path';
 import selectedProjects from '../src/data/exhibits.json' with { type: 'json' };
 
 // profile.ts reaches config through the `@/` alias, which only the bundlers know.
-// Plain Node runs this script, so the alias is resolved here and `.ts` is loaded
-// as a TypeScript module explicitly — without the format, Node guesses from a
-// typeless package.json and warns on every run.
 const SRC_URL = new URL('../src/', import.meta.url);
 registerHooks({
   resolve(specifier, context, next) {
@@ -28,11 +25,6 @@ registerHooks({
       return next(new URL(`${specifier.slice(2)}.ts`, SRC_URL).href, context);
     }
     return next(specifier, context);
-  },
-  load(url, context, next) {
-    return url.endsWith('.ts')
-      ? next(url, { ...context, format: 'module-typescript' })
-      : next(url, context);
   },
 });
 const { profile } = await import('../src/data/profile.ts');

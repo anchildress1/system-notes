@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { profile } from '@/data/profile';
-import exhibits from '@/data/exhibits.json';
+import exhibits from '@/data/exhibits.json' with { type: 'json' };
 import { getProjects } from '@/lib/api';
 
 describe('profile principle evidence', () => {
