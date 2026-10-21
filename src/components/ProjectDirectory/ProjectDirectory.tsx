@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiArrowUpRight } from 'react-icons/fi';
-import rawExhibits from '@/data/exhibits.json';
+import rawExhibits from '@/data/exhibits.json' with { type: 'json' };
 import type { Project } from '@/lib/api';
 import { blurFor } from '@/lib/imageVariants';
 import { getProjectNotesURL } from '@/lib/searchRouting';

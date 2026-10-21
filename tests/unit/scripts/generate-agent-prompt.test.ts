@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import exhibits from '@/data/exhibits.json';
+import exhibits from '@/data/exhibits.json' with { type: 'json' };
 import {
   buildAgentPrompt,
   describeOtherProject,

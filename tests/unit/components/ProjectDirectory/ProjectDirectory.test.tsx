@@ -4,7 +4,7 @@ import ProjectDirectory, {
   EXHIBIT_DECK,
   EXHIBITS,
 } from '@/components/ProjectDirectory/ProjectDirectory';
-import rawProjects from '@/data/projects.json';
+import rawProjects from '@/data/projects.json' with { type: 'json' };
 import { mockProject } from '@tests/test-utils/fixtures';
 
 // Derived, not copied: a hardcoded list lets an added exhibit render nowhere
