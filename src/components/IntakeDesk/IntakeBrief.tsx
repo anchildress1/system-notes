@@ -119,10 +119,10 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
   // not repeatable for free, and leaving the page should not spend another one.
   const hasSettledAnswer = useRef(false);
   useEffect(() => {
-    if (isWorking || !answer || hasSettledAnswer.current) return;
+    if (failed || isWorking || !answer || hasSettledAnswer.current) return;
     hasSettledAnswer.current = true;
     onSettled?.(answer);
-  }, [answer, isWorking, onSettled]);
+  }, [answer, failed, isWorking, onSettled]);
 
   if (failed) {
     return (

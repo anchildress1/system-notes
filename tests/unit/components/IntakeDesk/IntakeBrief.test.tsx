@@ -319,6 +319,26 @@ describe('IntakeBrief', () => {
     expect(screen.getByText(/could not answer/i)).toBeVisible();
   });
 
+  it.each(['error', 'ready'])(
+    'does not save a partial answer after failure with status %s',
+    (status) => {
+      chat.state = {
+        status,
+        error: new Error('stream interrupted'),
+        messages: [{ id: '1', role: 'assistant', parts: [{ type: 'text', text: 'Incomplete.' }] }],
+      };
+      const onSettled = vi.fn();
+      const onFinished = vi.fn();
+
+      render(<IntakeBrief question={QUESTION} onSettled={onSettled} onFinished={onFinished} />);
+
+      expect(screen.getByText(/could not answer/i)).toBeVisible();
+      expect(screen.queryByText('Incomplete.')).not.toBeInTheDocument();
+      expect(onFinished).toHaveBeenCalledOnce();
+      expect(onSettled).not.toHaveBeenCalled();
+    }
+  );
+
   it.each([
     { parts: [{ type: 'text', text: '   ' }] },
     { parts: [{ type: 'reasoning', text: 'Thinking.' }] },
