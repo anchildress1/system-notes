@@ -101,3 +101,9 @@
     justify-content: space-between;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .message {
+    animation: none;
+  }
+}

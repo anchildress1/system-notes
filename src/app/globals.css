@@ -188,7 +188,7 @@ html {
 :root[data-theme-switching] *,
 :root[data-theme-switching] *::before,
 :root[data-theme-switching] *::after {
-  transition: none !important;
+  transition: none;
 }
 
 /* NO min-width, and NO overflow clip. Together they were a trap: body's
@@ -837,9 +837,6 @@ main {
   *,
   *::before,
   *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }

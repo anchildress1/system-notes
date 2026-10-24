@@ -853,8 +853,8 @@
   .boardTiles li:hover::before,
   .boardTiles li:active::before,
   .boardTiles li[data-activated]::before {
-    animation: none !important;
-    transition: none !important;
+    animation-name: none;
+    transition-property: none;
   }
 }
 

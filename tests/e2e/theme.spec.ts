@@ -17,6 +17,45 @@ test.describe('Theme', () => {
     expect(results.passes.map((result) => result.id)).toContain('meta-viewport');
   });
 
+  for (const reducedMotion of ['no-preference', 'reduce'] as const) {
+    test(`honors ${reducedMotion} motion on the 404 message`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion });
+      const response = await page.goto('/no-such-record');
+      expect(response?.status()).toBe(404);
+      const message = page.getByRole('region', { name: /This trail ends without a note/i });
+      await expect(message).toBeVisible();
+      await expect(message).toHaveCSS('opacity', '1');
+      if (reducedMotion === 'reduce') {
+        await expect(message).toHaveCSS('animation-name', 'none');
+        await expect(message).toHaveCSS('transform', 'none');
+      } else {
+        await expect(message).toHaveCSS('animation-name', /rise-in$/);
+      }
+    });
+
+    test(`honors ${reducedMotion} motion while the theme song plays`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion });
+      await page.goto('/about');
+      const audio = page.getByTestId('theme-song-audio');
+      const player = audio.locator('..');
+      const equalizer = player.locator('[data-playing]');
+      const button = player.getByRole('button');
+      await button.click();
+      await expect(equalizer).toHaveAttribute('data-playing', 'true');
+      await expect(equalizer.locator('span').first()).toBeVisible();
+      const animations = () =>
+        equalizer.evaluate((element) => element.getAnimations({ subtree: true }).length);
+      if (reducedMotion === 'reduce') {
+        await expect.poll(animations).toBe(0);
+        await expect(equalizer.locator('span').first()).toHaveCSS('animation-name', 'none');
+      } else {
+        await expect.poll(animations).toBeGreaterThan(0);
+      }
+      await button.click();
+      await expect(audio).toHaveJSProperty('paused', true);
+    });
+  }
+
   test.describe('resolved from the system preference', () => {
     for (const scheme of ['dark', 'light'] as const) {
       test.describe(`${scheme} preference`, () => {
@@ -80,24 +119,45 @@ test.describe('Theme', () => {
       await expect(meta).toHaveAttribute('content', THEME_COLORS.light);
     });
 
-    test('swaps theme tokens without transitioning through a mixed palette', async ({ page }) => {
-      await page.goto('/');
+    for (const reducedMotion of ['no-preference', 'reduce'] as const) {
+      for (const route of ROUTES) {
+        test(`swaps theme tokens without transitions on ${route} with ${reducedMotion} motion`, async ({
+          page,
+        }) => {
+          await page.emulateMedia({ reducedMotion });
+          await page.goto(route);
 
-      const repaint = await page.evaluate(() => {
-        const toggle = document.querySelector<HTMLButtonElement>(
-          'button[aria-label="Light theme"]'
-        );
-        if (!toggle) return null;
-        toggle.click();
-        return {
-          switching: document.documentElement.hasAttribute('data-theme-switching'),
-          transitionDuration: getComputedStyle(toggle).transitionDuration,
-        };
-      });
+          const repaint = await page.evaluate(() => {
+            const toggle = document.querySelector<HTMLButtonElement>(
+              'button[aria-label="Light theme"]'
+            );
+            if (!toggle) return null;
+            toggle.click();
+            const rendered = [...document.querySelectorAll('*')].filter(
+              (element) => element.getClientRects().length > 0
+            );
+            const transitioning = rendered.flatMap((element) =>
+              [null, '::before', '::after'].flatMap((pseudo) => {
+                const style = getComputedStyle(element, pseudo);
+                if (pseudo && ['none', 'normal'].includes(style.content)) return [];
+                return style.transitionProperty === 'none'
+                  ? []
+                  : [`${element.tagName}.${element.className}${pseudo ?? ''}`];
+              })
+            );
+            return {
+              switching: document.documentElement.hasAttribute('data-theme-switching'),
+              transitioning,
+            };
+          });
 
-      expect(repaint).toEqual({ switching: true, transitionDuration: '0s' });
-      await expect.poll(() => page.locator('html').getAttribute('data-theme-switching')).toBeNull();
-    });
+          expect(repaint).toEqual({ switching: true, transitioning: [] });
+          await expect
+            .poll(() => page.locator('html').getAttribute('data-theme-switching'))
+            .toBeNull();
+        });
+      }
+    }
 
     test('carries the choice across a navigation', async ({ page }) => {
       await page.goto('/');
