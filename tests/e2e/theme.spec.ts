@@ -56,6 +56,35 @@ test.describe('Theme', () => {
     });
   }
 
+  for (const route of ROUTES) {
+    test(`updates component transitions when motion preference changes on ${route}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await page.goto(route);
+      const transitions = () =>
+        page.evaluate(() =>
+          [...document.querySelectorAll('*')].flatMap((element) =>
+            [null, '::before', '::after'].flatMap((pseudo) => {
+              const style = getComputedStyle(element, pseudo);
+              if (pseudo && ['none', 'normal'].includes(style.content)) return [];
+              return style.transitionProperty !== 'none' &&
+                style.transitionDuration
+                  .split(',')
+                  .some((duration) => Number.parseFloat(duration) > 0)
+                ? [`${element.tagName}.${element.className}${pseudo ?? ''}`]
+                : [];
+            })
+          )
+        );
+      await expect.poll(async () => (await transitions()).length).toBeGreaterThan(0);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await expect.poll(transitions).toEqual([]);
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await expect.poll(async () => (await transitions()).length).toBeGreaterThan(0);
+    });
+  }
+
   test.describe('resolved from the system preference', () => {
     for (const scheme of ['dark', 'light'] as const) {
       test.describe(`${scheme} preference`, () => {

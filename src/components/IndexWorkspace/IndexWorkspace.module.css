@@ -13,9 +13,11 @@
   min-width: 20rem;
   border-right: 1px solid var(--line);
   background: var(--void);
-  transition:
-    width 320ms var(--ease-out),
-    min-width 320ms var(--ease-out);
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      width 320ms var(--ease-out),
+      min-width 320ms var(--ease-out);
+  }
 }
 
 .sidebar[data-open='false'] {
@@ -115,9 +117,11 @@
   font-size: 0.9375rem;
   font-weight: 700;
   text-overflow: ellipsis;
-  transition:
-    color 160ms ease,
-    transform 160ms ease;
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      color 160ms ease,
+      transform 160ms ease;
+  }
   white-space: nowrap;
 }
 
@@ -182,9 +186,11 @@
   content: '';
   /* No filter here. The brightness filter it transitioned was replaced by the
      selected ring below and nothing sets filter on this element in any state. */
-  transition:
-    transform 180ms var(--ease-out),
-    box-shadow 180ms var(--ease-out);
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      transform 180ms var(--ease-out),
+      box-shadow 180ms var(--ease-out);
+  }
 }
 
 .boardTiles li:hover::before {
@@ -298,7 +304,9 @@
   color: var(--bone);
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.7rem;
-  transition: border-color 0.25s var(--ease-out);
+  @media (prefers-reduced-motion: no-preference) {
+    transition: border-color 0.25s var(--ease-out);
+  }
 }
 
 /* The global ring stays on the input; the rule underneath reinforces which
