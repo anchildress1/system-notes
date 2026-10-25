@@ -10,7 +10,9 @@ interface ThemeSongParagraph {
 // to its own literal shape and the renderer could not read both fields off the
 // resulting union.
 const themeSongParagraphs: readonly ThemeSongParagraph[] = [
-  { body: 'I’ve called “I Build Things” my theme song since the first time I heard it.' },
+  {
+    body: 'I’ve called “I Build Things” by Twisted Game Songs my theme song since the first time I heard it.',
+  },
   {
     lead: 'I design systems by hunting the failure first.',
     body:

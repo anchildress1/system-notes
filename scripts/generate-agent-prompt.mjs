@@ -97,10 +97,14 @@ export function describeProfile(person) {
     ...person.links.map((link) => `- ${link.label}: ${link.href}`),
   ];
   const principles = person.principles.map((item) => `- ${item.title} ${item.body}`);
+  const themeSongCopy = person.themeSong.paragraphs
+    .map((paragraph) => [paragraph.lead, paragraph.body].filter(Boolean).join(' '))
+    .join(' ');
   return [
     `Name: ${person.name}`,
     `Role: ${person.role}`,
     `In her words: ${person.introduction.join(' ')}`,
+    `Theme song: "${person.themeSong.track}" by ${person.themeSong.artist} — ${themeSongCopy}`,
     'Principles:',
     ...principles,
     `Shipping production systems since: ${person.trackRecord.since}`,
