@@ -183,7 +183,7 @@ test.describe('mobile interactions', () => {
       await button.tap();
       await expect.poll(() => requests).toBeGreaterThan(0);
       await expect(note).toHaveText('loading audio…');
-      await expect(button).toHaveAccessibleName(/Cancel — the theme song/);
+      await expect(button).toHaveAccessibleName(/Cancel loading — the theme song/);
       await expect(button).toHaveAttribute('aria-pressed', 'false');
       await expect(equalizer).toHaveAttribute('data-playing', 'false');
 

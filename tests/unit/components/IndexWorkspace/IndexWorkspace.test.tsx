@@ -546,6 +546,26 @@ describe('IndexWorkspace', () => {
     expect(screen.getByRole('button', { name: /^Principle, 1 notes$/ })).toBeInTheDocument();
   });
 
+  it('keeps each facet chip\u2019s printed label inside its accessible name', () => {
+    // Positive guard: label-content-name-mismatch is INAPPLICABLE to these chips
+    // now that no aria-label overrides their content, so it reports nothing
+    // either way. What 2.5.3 asks is that the printed label still be part of the
+    // spoken name, and only asserting that catches a name drifting off the chip.
+    return renderWorkspace().then(async () => {
+      await screen.findByText('Failure is data');
+      const chips = screen
+        .getAllByRole('button', { name: /, (?:[\d,]+ notes|no matching notes)$/i })
+        .filter((chip) => chip.dataset.category);
+      expect(chips.length).toBeGreaterThan(0);
+
+      for (const chip of chips) {
+        const printed = chip.querySelector('[class*="categoryName"]')?.textContent?.trim();
+        expect(printed).toBeTruthy();
+        expect(chip).toHaveAccessibleName(new RegExp(`^${printed}, `, 'i'));
+      }
+    });
+  });
+
   it('refines from the filing rail and exposes a clear action', async () => {
     await renderWorkspace();
     await screen.findByText('Failure is data');

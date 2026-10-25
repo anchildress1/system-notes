@@ -120,7 +120,7 @@ describe('ThemeSong', () => {
     expect(audio().paused).toBe(false);
     expect(toggle()).toHaveTextContent('Cancel');
     expect(toggle()).toHaveAccessibleName(
-      `Cancel — the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
+      `Cancel loading — the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
     );
     expect(toggle()).toHaveAttribute('aria-pressed', 'false');
     expect(note()).toHaveTextContent('loading audio');
@@ -189,7 +189,7 @@ describe('ThemeSong', () => {
     fireEvent.pause(audio());
 
     expect(playback.play).toHaveBeenCalledOnce();
-    expect(toggle()).toHaveAccessibleName(/^Cancel — the theme song/);
+    expect(toggle()).toHaveAccessibleName(/^Cancel loading — the theme song/);
     expect(note()).toHaveTextContent('loading audio');
   });
 
@@ -203,7 +203,7 @@ describe('ThemeSong', () => {
     fireEvent.click(toggle());
     await act(async () => {});
 
-    expect(toggle()).toHaveAccessibleName(/^Cancel — the theme song/);
+    expect(toggle()).toHaveAccessibleName(/^Cancel loading — the theme song/);
     expect(note()).toHaveTextContent('loading audio');
   });
 

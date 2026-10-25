@@ -35,15 +35,17 @@ const BARS = [
 
 type PlayerStatus = 'idle' | 'loading' | 'playing' | 'error';
 
-// One string per status, because the accessible name is built FROM this text
-// rather than over it: a name whose action verb differs from the printed one
-// leaves a speech-input user with nothing matching what they can see. The
-// status itself is carried by the live note under the control, not the name.
-const STATUS_TEXT: Record<PlayerStatus, string> = {
-  idle: 'Play it',
-  playing: 'Pause',
-  loading: 'Cancel',
-  error: 'Retry',
+// The name is built FROM the printed text rather than over it: a name whose
+// action verb differs from the printed one leaves a speech-input user with
+// nothing matching what they can see. `detail` EXTENDS that text instead of
+// replacing it, so the printed text stays a prefix of the name by construction
+// — which is all Label in Name asks — and "Cancel" can still say what it
+// cancels without the button growing mid-load under the reader's finger.
+const STATUS_COPY: Record<PlayerStatus, { text: string; detail?: string }> = {
+  idle: { text: 'Play it' },
+  playing: { text: 'Pause' },
+  loading: { text: 'Cancel', detail: ' loading' },
+  error: { text: 'Retry' },
 };
 
 /* The theme-song player: one control, a status line, and a decorative equalizer
@@ -86,14 +88,14 @@ export default function ThemeSong() {
 
   // The advisory is part of the control's name: someone deciding whether to
   // press it needs the warning before the track starts, not after.
-  const buttonText = STATUS_TEXT[status];
+  const { text: buttonText, detail = '' } = STATUS_COPY[status];
   const advisory = TRACK_EXPLICIT ? ' Explicit content.' : '';
   // The whole name in ONE node, opening on the printed action text. Split across
   // two, it is not the same string everywhere: browsers join sibling nodes with a
   // space and jsdom does not, so the separator is either doubled or missing
   // depending on who is computing it. Derived from buttonText rather than
   // repeating it, so the printed text cannot drift out of the spoken one.
-  const label = `${buttonText} — the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}.${advisory}`;
+  const label = `${buttonText}${detail} — the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}.${advisory}`;
 
   let note = TRACK_ARTIST;
   if (status === 'error') note = 'track unavailable · try again';
@@ -126,10 +128,12 @@ export default function ThemeSong() {
               rule apply to the parts it cannot contain. */}
           <span aria-hidden="true">{buttonText}</span>
           <span className="visually-hidden">{label}</span>
-          {/* The badge's own glyph is CSS content: as a text node it joins the
-              visible text, and no spoken phrase ends in a bare "E". The advisory
-              it stands for is already the last sentence of the name. */}
-          {TRACK_EXPLICIT ? <span className="explicit" aria-hidden="true" /> : null}
+          {/* aria-hidden: the name already ends in "Explicit content." */}
+          {TRACK_EXPLICIT ? (
+            <span className="explicit" aria-hidden="true">
+              E
+            </span>
+          ) : null}
         </button>
         <p className={styles.note} aria-live="polite">
           {note}
