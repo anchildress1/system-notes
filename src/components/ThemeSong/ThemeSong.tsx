@@ -104,7 +104,6 @@ export default function ThemeSong() {
           data-variant="filled"
           data-accent="filled"
           aria-pressed={isPlaying}
-          aria-label={label}
           onClick={toggle}
         >
           {/* Feather draws both as outlines; fill=currentColor solidifies the same shape
@@ -114,8 +113,13 @@ export default function ThemeSong() {
           ) : (
             <FiPlay aria-hidden="true" fill="currentColor" size={13} />
           )}
-          {buttonText}
-          {/* aria-hidden: the button's accessible name already ends in "Explicit content." */}
+          {/* The name comes from the hidden span, not an aria-label over these two.
+              An override is label-content-name-mismatch (WCAG 2.5.3) wherever the
+              name does not contain the visible text, and it never can here: the
+              button reads "Play it" against a name that opens on "Play", and the
+              explicit badge is a bare "E" that belongs in no spoken phrase. */}
+          <span aria-hidden="true">{buttonText}</span>
+          <span className="visually-hidden">{label}</span>
           {TRACK_EXPLICIT ? (
             <span className="explicit" aria-hidden="true">
               E

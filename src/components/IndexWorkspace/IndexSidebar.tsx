@@ -312,11 +312,6 @@ export default function IndexSidebar({
                 className="washed"
                 data-category={category.key}
                 data-selected={category.isRefined || undefined}
-                aria-label={
-                  category.count > 0
-                    ? `${category.label}, ${category.count.toLocaleString()} notes`
-                    : `${category.label}, no matching notes`
-                }
                 aria-pressed={category.isRefined}
                 onClick={() => refine(category.key)}
               >
@@ -329,12 +324,25 @@ export default function IndexSidebar({
                   data-award={category.isAward || undefined}
                   aria-hidden="true"
                 />
-                <span className={styles.categoryName}>{category.label}</span>
-                <span className={styles.categoryCount}>
+                {/* The chip's three parts are drawn for the eye and spoken as one
+                    phrase by the hidden span below. An aria-label carrying that
+                    phrase over them instead is label-content-name-mismatch (WCAG
+                    2.5.3): the name has to contain the visible text, and adjacent
+                    spans give "Principle2 +" with no separator, which no wording
+                    of the phrase can ever contain. */}
+                <span className={styles.categoryName} aria-hidden="true">
+                  {category.label}
+                </span>
+                <span className={styles.categoryCount} aria-hidden="true">
                   {/* No numeral on a refined category the narrowed set emptied: "0 −" is a count of
    nothing standing where a filter's size belongs. The sign alone still lifts it. */}
                   {category.count > 0 ? `${category.count.toLocaleString()} ` : ''}
                   {category.isRefined ? '−' : '+'}
+                </span>
+                <span className="visually-hidden">
+                  {category.count > 0
+                    ? `${category.label}, ${category.count.toLocaleString()} notes`
+                    : `${category.label}, no matching notes`}
                 </span>
               </button>
             </li>

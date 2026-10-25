@@ -94,10 +94,12 @@ export default function ResultQueue({
                 <button
                   type="button"
                   className="washed"
-                  // Names the button, and so the heading, from the title alone.
-                  // From its contents every heading read ordinal-project-date
-                  // first and the rotor became identical prefixes.
-                  aria-labelledby={titleId}
+                  // No aria-labelledby: the meta line below is aria-hidden, so the
+                  // name derives from the title alone anyway, and the heading with
+                  // it. Naming it explicitly while the meta stayed in the
+                  // accessible tree is label-content-name-mismatch (WCAG 2.5.3) —
+                  // the visible text has to be part of the name, and an override
+                  // naming a control a strict subset of what it shows fails that.
                   aria-expanded={open}
                   // Only while the panel exists. A dangling aria-controls names
                   // an id that is not in the document.
@@ -110,7 +112,12 @@ export default function ResultQueue({
                     if (!open) onSelect(hit.objectID);
                   }}
                 >
-                  <span className={styles.queueMeta}>
+                  {/* Rank, project, date and category all read again inside the
+                      open note, so the row states them for the eye only: in the
+                      accessible tree they would prefix every title in the
+                      outline, which is what naming the control separately used
+                      to work around. */}
+                  <span className={styles.queueMeta} aria-hidden="true">
                     <span>
                       № {position} · {project}
                       {date ? ` · ${date}` : ''}
