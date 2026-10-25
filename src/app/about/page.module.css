@@ -553,7 +553,9 @@
 .credentialGo {
   display: inline-flex;
   color: var(--mute);
-  transition: transform 180ms var(--ease-out);
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform 180ms var(--ease-out);
+  }
 }
 
 .record:hover .recordGo,
@@ -658,7 +660,9 @@
   font-size: clamp(1.35rem, 2.4vw, 2.1rem);
   font-weight: 400;
   letter-spacing: -0.03em;
-  transition: padding-left 180ms var(--ease-out);
+  @media (prefers-reduced-motion: no-preference) {
+    transition: padding-left 180ms var(--ease-out);
+  }
 }
 
 .contact nav a:hover {
@@ -764,12 +768,6 @@
   .portrait::after {
     animation: none;
     transform: none;
-  }
-
-  .recordGo,
-  .credentialGo,
-  .contact nav a {
-    transition: none;
   }
 
   .record:hover .recordGo,
