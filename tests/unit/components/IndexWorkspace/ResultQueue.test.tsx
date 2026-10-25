@@ -93,6 +93,18 @@ describe('ResultQueue', () => {
     }
   });
 
+  it('describes each row with the meta it keeps out of the name', () => {
+    // Keeping the rank, project, date and category out of the name must not drop
+    // them from the accessible tree: the open note never restates them, so a
+    // description is the only place a screen reader can still reach them.
+    render(<Workspace items={resultSet('Old')} initialId="card:shared:first" />);
+
+    for (const [index, row] of rows().entries()) {
+      expect(row).toHaveAccessibleName(`Old note ${index + 1}`);
+      expect(row).toHaveAccessibleDescription(`№ ${index + 1} · Project Alpha · Work Style`);
+    }
+  });
+
   it('refuses to re-select the note already open', () => {
     // The open control cannot collapse anything, so activating it must not bank
     // a second insights click for a note the reader is already reading.

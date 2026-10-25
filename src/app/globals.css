@@ -480,6 +480,13 @@ body::before {
   place-items: center;
 }
 
+/* The letter is generated content, not a text node: inside a control it would
+   otherwise join the visible text the accessible name has to contain, and no
+   spoken name ends in a bare "E". Generated content is not visible text. */
+.explicit::after {
+  content: 'E';
+}
+
 /* How a picture sits inside its print, for EVERY image on the site.
 
    cover, not contain: a print is filled edge to edge. The ratio is declared

@@ -85,6 +85,7 @@ export default function ResultQueue({
           const date = formatNoteDate(hit.created_at);
           const panelId = `note-${hit.objectID}`;
           const titleId = `note-title-${hit.objectID}`;
+          const metaId = `note-meta-${hit.objectID}`;
           return (
             <li key={hit.objectID} data-open={open || undefined}>
               {/* The row's own label is the note's heading, so the opened note
@@ -96,11 +97,20 @@ export default function ResultQueue({
                   className="washed"
                   // No aria-labelledby: the meta line below is aria-hidden, so the
                   // name derives from the title alone anyway, and the heading with
-                  // it. Naming it explicitly while the meta stayed in the
-                  // accessible tree is label-content-name-mismatch (WCAG 2.5.3) —
-                  // the visible text has to be part of the name, and an override
-                  // naming a control a strict subset of what it shows fails that.
+                  // it. Restoring the override would REINTRODUCE
+                  // label-content-name-mismatch (WCAG 2.5.3) rather than satisfy
+                  // the convention — the rule only matches an element carrying
+                  // aria-label(ledby), and it measures against the visible text,
+                  // which counts aria-hidden content. Verified: title-only name
+                  // plus hidden meta passes; the same markup with aria-labelledby
+                  // added back fails.
                   aria-expanded={open}
+                  // The meta reaches assistive tech as this control's DESCRIPTION,
+                  // announced after the name rather than prefixing it. It cannot
+                  // be dropped instead: the open note states the fact, projects
+                  // when there are several, tags and the source, and never the
+                  // rank, date or category.
+                  aria-describedby={metaId}
                   // Only while the panel exists. A dangling aria-controls names
                   // an id that is not in the document.
                   aria-controls={open ? panelId : undefined}
@@ -112,11 +122,6 @@ export default function ResultQueue({
                     if (!open) onSelect(hit.objectID);
                   }}
                 >
-                  {/* Rank, project, date and category all read again inside the
-                      open note, so the row states them for the eye only: in the
-                      accessible tree they would prefix every title in the
-                      outline, which is what naming the control separately used
-                      to work around. */}
                   <span className={styles.queueMeta} aria-hidden="true">
                     <span>
                       № {position} · {project}
@@ -126,6 +131,20 @@ export default function ResultQueue({
                   </span>
                   <span className={styles.queueTitle} id={titleId}>
                     {hit.title}
+                  </span>
+                  {/* Spoken form of the meta line, carrying the separators the
+                      layout makes visually instead: the drawn version puts the
+                      category in its own corner, so read straight through it ran
+                      the project into the category as one word. Last in the row
+                      because the two above it hold the child positions the layout
+                      and the specs read them from. Both hidden —
+                      aria-hidden keeps it out of the name, visually-hidden keeps
+                      it off the page — because its only job is to be the target
+                      of aria-describedby, which resolves either way. */}
+                  <span id={metaId} className="visually-hidden" aria-hidden="true">
+                    {[`№ ${position}`, project, date, hit.category || 'Note']
+                      .filter(Boolean)
+                      .join(' · ')}
                   </span>
                 </button>
               </h3>

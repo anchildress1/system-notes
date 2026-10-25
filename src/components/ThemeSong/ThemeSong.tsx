@@ -35,15 +35,15 @@ const BARS = [
 
 type PlayerStatus = 'idle' | 'loading' | 'playing' | 'error';
 
-// The control's label and its accessible name diverge per status (loading
-// reads "Cancel" on the button but "Cancel loading" in the name; idle reads
-// "Play it" but "Play"), so each status maps to both strings directly
-// instead of one overriding the other.
-const STATUS_COPY: Record<PlayerStatus, { action: string; buttonText: string }> = {
-  idle: { action: 'Play', buttonText: 'Play it' },
-  playing: { action: 'Pause', buttonText: 'Pause' },
-  loading: { action: 'Cancel loading', buttonText: 'Cancel' },
-  error: { action: 'Retry', buttonText: 'Retry' },
+// One string per status, because the accessible name is built FROM this text
+// rather than over it: a name whose action verb differs from the printed one
+// leaves a speech-input user with nothing matching what they can see. The
+// status itself is carried by the live note under the control, not the name.
+const STATUS_TEXT: Record<PlayerStatus, string> = {
+  idle: 'Play it',
+  playing: 'Pause',
+  loading: 'Cancel',
+  error: 'Retry',
 };
 
 /* The theme-song player: one control, a status line, and a decorative equalizer
@@ -86,9 +86,14 @@ export default function ThemeSong() {
 
   // The advisory is part of the control's name: someone deciding whether to
   // press it needs the warning before the track starts, not after.
-  const { action, buttonText } = STATUS_COPY[status];
+  const buttonText = STATUS_TEXT[status];
   const advisory = TRACK_EXPLICIT ? ' Explicit content.' : '';
-  const label = `${action} the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}.${advisory}`;
+  // The whole name in ONE node, opening on the printed action text. Split across
+  // two, it is not the same string everywhere: browsers join sibling nodes with a
+  // space and jsdom does not, so the separator is either doubled or missing
+  // depending on who is computing it. Derived from buttonText rather than
+  // repeating it, so the printed text cannot drift out of the spoken one.
+  const label = `${buttonText} — the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}.${advisory}`;
 
   let note = TRACK_ARTIST;
   if (status === 'error') note = 'track unavailable · try again';
@@ -113,18 +118,18 @@ export default function ThemeSong() {
           ) : (
             <FiPlay aria-hidden="true" fill="currentColor" size={13} />
           )}
-          {/* The name comes from the hidden span, not an aria-label over these two.
-              An override is label-content-name-mismatch (WCAG 2.5.3) wherever the
-              name does not contain the visible text, and it never can here: the
-              button reads "Play it" against a name that opens on "Play", and the
-              explicit badge is a bare "E" that belongs in no spoken phrase. */}
+          {/* The printed action text opens the name, so someone saying what they
+              see ("Play it") matches the spoken label — the agreement Label in
+              Name (WCAG 2.5.3) is about. It is the hidden twin that carries it to
+              assistive tech, because only a single node gives one name in every
+              implementation; aria-label over it would instead make the mismatch
+              rule apply to the parts it cannot contain. */}
           <span aria-hidden="true">{buttonText}</span>
           <span className="visually-hidden">{label}</span>
-          {TRACK_EXPLICIT ? (
-            <span className="explicit" aria-hidden="true">
-              E
-            </span>
-          ) : null}
+          {/* The badge's own glyph is CSS content: as a text node it joins the
+              visible text, and no spoken phrase ends in a bare "E". The advisory
+              it stands for is already the last sentence of the name. */}
+          {TRACK_EXPLICIT ? <span className="explicit" aria-hidden="true" /> : null}
         </button>
         <p className={styles.note} aria-live="polite">
           {note}
