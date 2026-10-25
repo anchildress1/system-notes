@@ -20,7 +20,11 @@
   color: var(--bone);
 }
 
-/* Keep the project name and its underline together when the paragraph wraps. */
+/* .marked-link clones its stroke per fragment, so a wrapped link draws two
+   half-underlines. Scoped here and not onto .marked-link: this link measures
+   ~120px against the 248px column a 280px screen gives, so nowrap cannot reach
+   the edge. A longer link here could, and the content column is clipped, so it
+   would strand text nothing can scroll to. */
 .proof a {
   white-space: nowrap;
 }

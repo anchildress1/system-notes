@@ -22,9 +22,11 @@ const PROFILE_HREFS = new Set<string>([
   ...profile.certifications.map((cert) => cert.credentialUrl),
 ]);
 
-/** Whether a model-written citation points at evidence this site publishes. */
+/** Whether a citation points at evidence that can be checked: this site's notes,
+    her write-ups, or a url the prompt handed the agent. */
 function isAllowedCitationUrl(href: string): boolean {
-  // Before the https gate: mailto is a real profile link and no scheme check.
+  // Ahead of the https gate: these are local literals the prompt also hands the
+  // agent, and the mailto among them has no https to pass.
   if (PROFILE_HREFS.has(href)) return true;
   if (!isSafeExternalUrl(href)) return false;
 
@@ -137,9 +139,6 @@ export function briefToPlainText(question: string, answer: string): string {
   return `${question}\n\n${paragraphs.join('\n\n')}`;
 }
 
-/* A button label lives inside <button>, so the prose floor does not reach it —
-   and the copy status is echoed into a live <output> beside it rather than
-   relying on the label change being announced on its own. */
 const COPY_IDLE = 'Copy the brief';
 const COPY_RESET_MS = 2000;
 
@@ -159,10 +158,17 @@ export default function BriefBody({
   );
 
   const copyBrief = async () => {
+    // Built outside the try: it runs the citation parser over model output, and a
+    // throw from there is not a clipboard refusal — reported as one, a parser bug
+    // on one answer is indistinguishable from a denied permission.
+    const text = briefToPlainText(question, answer);
     try {
-      await navigator.clipboard.writeText(briefToPlainText(question, answer));
+      await navigator.clipboard.writeText(text);
       setCopyStatus('copied');
-    } catch {
+    } catch (error) {
+      console.error('Brief copy failed.', {
+        name: error instanceof Error ? error.name : 'ClipboardError',
+      });
       setCopyStatus('failed');
     }
     if (copyTimer.current !== null) clearTimeout(copyTimer.current);
@@ -236,6 +242,8 @@ export default function BriefBody({
         <button type="button" className="btn" data-variant="outline" onClick={copyBrief}>
           {copyWord || COPY_IDLE}
         </button>
+        {/* The status is echoed here rather than left to the label change, which a
+            screen reader does not reliably announce on its own. */}
         <output className="visually-hidden">{copyWord}</output>
       </div>
     </section>

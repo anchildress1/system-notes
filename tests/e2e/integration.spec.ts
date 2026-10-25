@@ -826,8 +826,8 @@ test.describe('Exhibit anchors', () => {
       expect(href).toMatch(/^\/projects#[a-z0-9-]+$/);
     }
 
-    // Every one, not just the first. /about awards come from all twenty projects
-    // while only the curated seven emit an anchor, so a win outside the catalogue
+    // Every one, not just the first. /about awards come from every project
+    // while only the curated exhibits emit an anchor, so a win outside the catalogue
     // lands silently at the top of the page.
     await page.goto('/projects');
     for (const href of targets) {

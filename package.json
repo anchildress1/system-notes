@@ -78,10 +78,10 @@
   },
   "overrides": {
     "next": "$next",
-    "uuid": "^14.0.0",
+    "uuid": "^14.0.3",
     "postcss": ">=8.5.23 <9",
     "nanoid": "^3.3.18",
-    "chrome-launcher": "^1.2.1",
+    "chrome-launcher": "^1.2.2",
     "ip-address": "^10.3.1",
     "fast-uri": "^3.1.9",
     "sharp": "^0.35.5",
@@ -92,9 +92,6 @@
     "js-yaml": "^4.3.2",
     "@opentelemetry/core": "^2.8.0",
     "@opentelemetry/resources": "^2.8.0",
-    "instantsearch.js": {
-      "qs": "^6.15.2"
-    },
     "get-uri": {
       "basic-ftp": "^6.2.3"
     },
@@ -102,18 +99,14 @@
     "@lhci/cli": {
       "inquirer": "^8.2.7",
       "tmp": "^0.2.7",
-      "uuid": "^14.0.3",
-      "proxy-agent": "^8.0.2",
-      "chrome-launcher": "^1.2.2"
-    },
-    "@lhci/utils": {
-      "js-yaml": "^4.3.2"
+      "proxy-agent": "^8.0.2"
     },
     "hogan.js": {
       "mkdirp": "^3.0.1"
     },
     "puppeteer-core": "^25.16.0",
-    "qs": "^6.16.0"
+    "qs": "^6.16.0",
+    "minimatch": "^9.0.9"
   },
   "volta": {
     "node": "26.12.0",
@@ -123,10 +116,5 @@
     "entry": [
       "src/lib/imageLoader.ts"
     ]
-  },
-  "allowScripts": {
-    "fsevents@2.3.3": true,
-    "lefthook@2.2.2": true,
-    "unrs-resolver@1.12.2": true
   }
 }

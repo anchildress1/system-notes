@@ -32,6 +32,20 @@ export function messageText(message: UIMessage | undefined): string {
     .trim();
 }
 
+// Reasons that mean the model stopped before it was done. `stop`, `other` and
+// `tool-calls` do not, and an absent reason is not evidence either way — the
+// chunk field is optional, so a provider that omits it on a whole answer must
+// not have that answer thrown away.
+const TRUNCATING_REASONS = new Set(['length', 'content-filter', 'error', 'interrupted']);
+
+/** Whether a settled turn carries positive evidence that it stopped early. */
+function isTruncated(finishReason: string | undefined, message: UIMessage | undefined): boolean {
+  if (finishReason && TRUNCATING_REASONS.has(finishReason)) return true;
+  // Text parts are closed by `text-end`. One still open means the stream ended
+  // mid-answer, which is the case no finish reason reports at all.
+  return Boolean(message?.parts.some((part) => part.type === 'text' && part.state === 'streaming'));
+}
+
 /* Talks to the Agent Studio completions endpoint directly.
 
    Not react-instantsearch's chat connector: it persists `initialUserMessage` to
@@ -72,12 +86,29 @@ interface BriefProps {
 export default function IntakeBrief({ question, onSettled, onFinished }: Readonly<BriefProps>) {
   const [timedOut, setTimedOut] = useState(false);
   const [sendFailed, setSendFailed] = useState(false);
-  const [emptyCompletion, setEmptyCompletion] = useState(false);
+  const [incomplete, setIncomplete] = useState(false);
   const { messages, status, error, sendMessage, stop } = useChat({
     transport,
-    onError: () => setSendFailed(true),
-    onFinish: ({ message, isAbort, isError }) => {
-      if (!isAbort && !isError && !messageText(message)) setEmptyCompletion(true);
+    onError: (sendError) => {
+      // Logged like every other provider failure here: on screen a 503, an
+      // expired key, a malformed chunk and a hang are one sentence, so without
+      // this there is nothing to tell them apart by. Narrowed to the name, which
+      // is the rule for anything a provider hands back.
+      console.error('Intake brief request failed.', {
+        name: sendError instanceof Error ? sendError.name : 'ProviderError',
+      });
+      setSendFailed(true);
+    },
+    // A turn can stop early and still settle as `ready` with no error and no
+    // onError, so isError alone let half an answer through to be saved and
+    // announced as the finished brief. Judged on POSITIVE evidence only: both
+    // `finishReason` and a text part's `state` are optional in the SDK and a
+    // provider that sends neither is not thereby reporting a truncation.
+    onFinish: ({ message, isAbort, isError, isDisconnect, finishReason }) => {
+      if (isAbort || isError) return;
+      if (isDisconnect || isTruncated(finishReason, message) || !messageText(message)) {
+        setIncomplete(true);
+      }
     },
   });
 
@@ -94,7 +125,7 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
   const answer = messageText(
     [...messages].reverse().find((message) => message.role === 'assistant')
   );
-  const failed = Boolean(error) || status === 'error' || timedOut || sendFailed || emptyCompletion;
+  const failed = Boolean(error) || status === 'error' || timedOut || sendFailed || incomplete;
   const isWorking = !failed && (status === 'submitted' || status === 'streaming');
 
   // Stop waiting rather than wait forever. The request is aborted so a late
