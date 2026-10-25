@@ -111,7 +111,9 @@ a.skipLink[data-variant='filled']:focus {
   font-weight: 600;
   letter-spacing: 0.01em;
   text-transform: lowercase;
-  transition: color 160ms ease;
+  @media (prefers-reduced-motion: no-preference) {
+    transition: color 160ms ease;
+  }
 }
 
 /* The current page takes the same stroke all the way up; .swiped owns the half-

@@ -16,6 +16,7 @@ const captured = vi.hoisted(() => ({
   options: undefined as Record<string, unknown> | undefined,
   sent: [] as Array<{ text: string }>,
   stopped: 0,
+  stop: vi.fn(() => Promise.resolve()),
   transport: undefined as Record<string, unknown> | undefined,
   send: vi.fn(() => Promise.resolve()),
 }));
@@ -42,6 +43,7 @@ vi.mock('@ai-sdk/react', () => ({
       },
       stop: () => {
         captured.stopped += 1;
+        return captured.stop();
       },
     };
   },
@@ -74,6 +76,8 @@ describe('IntakeBrief', () => {
     captured.options = undefined;
     captured.sent = [];
     captured.stopped = 0;
+    captured.stop.mockReset();
+    captured.stop.mockResolvedValue(undefined);
     captured.send.mockReset();
     captured.send.mockResolvedValue(undefined);
   });
@@ -278,6 +282,24 @@ describe('IntakeBrief', () => {
     expect(screen.getByText(/did not answer in time/i)).toBeVisible();
     expect(onFinished).toHaveBeenCalledTimes(1);
     expect(captured.stopped).toBe(1);
+  });
+
+  it('finishes a timed-out turn when stopping the stream rejects', async () => {
+    vi.useFakeTimers();
+    chat.state = { status: 'submitted', messages: [] };
+    captured.stop.mockRejectedValueOnce(new Error('abort failed'));
+    const onFinished = vi.fn();
+    const onSettled = vi.fn();
+
+    render(<IntakeBrief question={QUESTION} onFinished={onFinished} onSettled={onSettled} />);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(45_000);
+    });
+
+    expect(screen.getByText(/did not answer in time/i)).toBeVisible();
+    expect(captured.stop).toHaveBeenCalledOnce();
+    expect(onFinished).toHaveBeenCalledOnce();
+    expect(onSettled).not.toHaveBeenCalled();
   });
 
   it('echoes the question on a failed turn, since the field is cleared on submit', () => {

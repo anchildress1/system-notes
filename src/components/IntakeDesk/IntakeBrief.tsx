@@ -93,7 +93,7 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
   useEffect(() => {
     if (!isWorking) return undefined;
     const timer = setTimeout(() => {
-      stop();
+      void stop().catch(() => setSendFailed(true));
       setTimedOut(true);
     }, TURN_TIMEOUT_MS);
     return () => clearTimeout(timer);

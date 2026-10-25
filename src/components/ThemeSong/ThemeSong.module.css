@@ -43,7 +43,9 @@
   flex: 1;
   background: var(--edge);
   transform-origin: bottom;
-  transition: background 0.4s ease;
+  @media (prefers-reduced-motion: no-preference) {
+    transition: background 0.4s ease;
+  }
 }
 
 /* The bars keep their heights and pulse in opacity. Animating scale instead

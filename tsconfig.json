@@ -38,6 +38,6 @@
     "**/*.bench.ts",
     "**/*.bench.tsx",
     "tests/setupTests.ts",
-    "vitest.config.ts"
+    "vitest.config.mjs"
   ]
 }
