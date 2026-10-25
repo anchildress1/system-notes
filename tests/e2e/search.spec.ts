@@ -230,13 +230,13 @@ test.describe('Notes index', () => {
     const reducedTileMotion = () =>
       secondTile.evaluate((option) => {
         const style = getComputedStyle(option, '::before');
-        return { animation: style.animationName, transition: style.transitionProperty };
+        return { animation: style.animationName, transitionProperty: style.transitionProperty };
       });
     await expect(page.locator('html')).toHaveCSS('scroll-behavior', 'auto');
-    await expect.poll(reducedTileMotion).toEqual({ animation: 'none', transition: 'none' });
+    await expect.poll(reducedTileMotion).toEqual({ animation: 'none', transitionProperty: 'none' });
     await board.focus();
     await board.press('ArrowRight');
-    await expect.poll(reducedTileMotion).toEqual({ animation: 'none', transition: 'none' });
+    await expect.poll(reducedTileMotion).toEqual({ animation: 'none', transitionProperty: 'none' });
     await expect(board).toBeFocused();
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
     await expect(page.getByRole('article')).toHaveAccessibleName('Second decision');
