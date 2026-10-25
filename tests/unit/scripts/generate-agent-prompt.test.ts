@@ -31,6 +31,11 @@ const person = () => ({
   email: 't@example.test',
   location: 'Nowhere',
   introduction: ['I build things.', 'I grew up somewhere.'],
+  themeSong: {
+    track: 'I Build Things',
+    artist: 'Twisted Game Songs',
+    paragraphs: [{ body: 'My theme song.' }, { lead: 'Hunt failure.', body: 'Before production.' }],
+  },
   principles: [{ title: 'Name it.', body: 'Boundaries matter.' }],
   trackRecord: { since: 2010, coreSince: 2015, summary: 'things', core: ['A'], applied: ['B'] },
   certifications: [
@@ -111,6 +116,9 @@ describe('agent prompt generator', () => {
     expect(description).toContain('Shipping production systems since: 2010');
     expect(description).toContain('Core practice, since 2015: A');
     expect(description).toContain('In her words: I build things. I grew up somewhere.');
+    expect(description).toContain(
+      'Theme song: "I Build Things" by Twisted Game Songs — My theme song. Hunt failure. Before production.'
+    );
     expect(description).toContain('- Name it. Boundaries matter.');
     expect(description).toContain('- Cert, Issuer, May 2020: https://example.test/cert');
     expect(description).toContain('- Email: mailto:t@example.test');
