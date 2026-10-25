@@ -183,12 +183,12 @@ test.describe('mobile interactions', () => {
       await button.tap();
       await expect.poll(() => requests).toBeGreaterThan(0);
       await expect(note).toHaveText('loading audio…');
-      await expect(button).toHaveAccessibleName(/Cancel loading the theme song/);
+      await expect(button).toHaveAccessibleName(/Cancel loading — the theme song/);
       await expect(button).toHaveAttribute('aria-pressed', 'false');
       await expect(equalizer).toHaveAttribute('data-playing', 'false');
 
       await button.tap();
-      await expect(button).toHaveAccessibleName(/Play the theme song/);
+      await expect(button).toHaveAccessibleName(/Play it — the theme song/);
       await expect(note).toHaveText('Twisted Game Songs');
       audioReady.resolve();
 
@@ -220,14 +220,14 @@ test.describe('mobile interactions', () => {
     const button = player.getByRole('button');
 
     await button.tap();
-    await expect(button).toHaveAccessibleName(/Retry the theme song/);
+    await expect(button).toHaveAccessibleName(/Retry — the theme song/);
     await expect(button).toBeEnabled();
     await expect(player.locator('[aria-live="polite"]')).toHaveText(
       'track unavailable · try again'
     );
 
     await button.tap();
-    await expect(button).toHaveAccessibleName(/Pause the theme song/);
+    await expect(button).toHaveAccessibleName(/Pause — the theme song/);
     await expect
       .poll(() => audio.evaluate((element: HTMLAudioElement) => element.currentTime))
       .toBeGreaterThan(0.2);

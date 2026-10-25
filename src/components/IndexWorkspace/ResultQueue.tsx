@@ -94,10 +94,15 @@ export default function ResultQueue({
                 <button
                   type="button"
                   className="washed"
-                  // Names the button, and so the heading, from the title alone.
-                  // From its contents every heading read ordinal-project-date
-                  // first and the rotor became identical prefixes.
-                  aria-labelledby={titleId}
+                  // No aria-labelledby: the meta line below is aria-hidden, so the
+                  // name derives from the title alone anyway, and the heading with
+                  // it. Restoring the override would REINTRODUCE
+                  // label-content-name-mismatch (WCAG 2.5.3) rather than satisfy
+                  // the convention — the rule only matches an element carrying
+                  // aria-label(ledby), and it measures against the visible text,
+                  // which counts aria-hidden content. Verified: title-only name
+                  // plus hidden meta passes; the same markup with aria-labelledby
+                  // added back fails.
                   aria-expanded={open}
                   // Only while the panel exists. A dangling aria-controls names
                   // an id that is not in the document.
@@ -110,7 +115,7 @@ export default function ResultQueue({
                     if (!open) onSelect(hit.objectID);
                   }}
                 >
-                  <span className={styles.queueMeta}>
+                  <span className={styles.queueMeta} aria-hidden="true">
                     <span>
                       № {position} · {project}
                       {date ? ` · ${date}` : ''}
@@ -122,6 +127,19 @@ export default function ResultQueue({
                   </span>
                 </button>
               </h3>
+              {/* Spoken form of the meta, OUTSIDE the control: inside it, it would
+                  join the name and prefix every title in the outline. Out here it
+                  is ordinary content of the row, so every engine reads it and
+                  nothing depends on a hidden node being referenced — a description
+                  would, and WebKit builds no AX object for an aria-hidden one.
+                  It carries the separators the layout makes visually: the drawn
+                  line puts the category in its own corner, so read straight
+                  through it ran the project into the category as one word. */}
+              <p className="visually-hidden">
+                {[`№ ${position}`, project, date, hit.category || 'Note']
+                  .filter(Boolean)
+                  .join(' · ')}
+              </p>
               {open ? <FactCard hit={hit} id={panelId} labelledBy={titleId} /> : null}
             </li>
           );

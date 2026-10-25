@@ -106,7 +106,9 @@ test.describe('Notes index', () => {
     await expect(
       row.getByRole('heading', { name: 'Failure is useful data', exact: true })
     ).toBeVisible();
-    await expect(row.getByText('Principle')).toBeVisible();
+    // .first(): the row states its meta twice over, once drawn and once as the
+    // control's spoken description, and only the drawn one is visible.
+    await expect(row.getByText('Principle').first()).toBeVisible();
     await expect(row.getByText(/System Notes/).first()).toBeVisible();
     await expect(card).toHaveAccessibleName('Failure is useful data');
     await expect(card.getByText('The complete evidence behind the decision.')).toBeVisible();
