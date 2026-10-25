@@ -45,7 +45,9 @@
   /* Long input scrolls rather than being cut off with nothing to say so. */
   overflow-y: auto;
   resize: none;
-  transition: border-color 0.25s var(--ease-out);
+  @media (prefers-reduced-motion: no-preference) {
+    transition: border-color 0.25s var(--ease-out);
+  }
 }
 
 /* No opacity on top of --mute, which is already the quietest ink the palette has —
@@ -389,9 +391,11 @@
   font-size: 1rem;
   line-height: 1.45;
   text-align: left;
-  transition:
-    border-color 0.25s var(--ease-out),
-    color 0.25s var(--ease-out);
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      border-color 0.25s var(--ease-out),
+      color 0.25s var(--ease-out);
+  }
 }
 .seeds li:nth-child(1) .seed {
   max-width: 38ch;

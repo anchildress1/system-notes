@@ -106,7 +106,9 @@ test.describe('Notes index', () => {
     await expect(
       row.getByRole('heading', { name: 'Failure is useful data', exact: true })
     ).toBeVisible();
-    await expect(row.getByText('Principle')).toBeVisible();
+    // .first(): the row states its meta twice over, once drawn and once as the
+    // control's spoken description, and only the drawn one is visible.
+    await expect(row.getByText('Principle').first()).toBeVisible();
     await expect(row.getByText(/System Notes/).first()).toBeVisible();
     await expect(card).toHaveAccessibleName('Failure is useful data');
     await expect(card.getByText('The complete evidence behind the decision.')).toBeVisible();
@@ -230,12 +232,13 @@ test.describe('Notes index', () => {
     const reducedTileMotion = () =>
       secondTile.evaluate((option) => {
         const style = getComputedStyle(option, '::before');
-        return { animation: style.animationName, transition: style.transitionDuration };
+        return { animation: style.animationName, transitionDuration: style.transitionDuration };
       });
-    await expect.poll(reducedTileMotion).toEqual({ animation: 'none', transition: '0s' });
+    await expect(page.locator('html')).toHaveCSS('scroll-behavior', 'auto');
+    await expect.poll(reducedTileMotion).toEqual({ animation: 'none', transitionDuration: '0s' });
     await board.focus();
     await board.press('ArrowRight');
-    await expect.poll(reducedTileMotion).toEqual({ animation: 'none', transition: '0s' });
+    await expect.poll(reducedTileMotion).toEqual({ animation: 'none', transitionDuration: '0s' });
     await expect(board).toBeFocused();
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-1');
     await expect(page.getByRole('article')).toHaveAccessibleName('Second decision');

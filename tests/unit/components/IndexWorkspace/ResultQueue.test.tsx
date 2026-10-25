@@ -93,6 +93,24 @@ describe('ResultQueue', () => {
     }
   });
 
+  it('keeps the meta out of the name without dropping it from the row', () => {
+    // Keeping the rank, project, date and category out of the NAME must not drop
+    // them from the accessible tree: the open note never restates them. They sit
+    // outside the control as row content, so no engine has to resolve a hidden
+    // referenced node to reach them.
+    render(<Workspace items={resultSet('Old')} initialId="card:shared:first" />);
+
+    for (const [index, row] of rows().entries()) {
+      expect(row).toHaveAccessibleName(`Old note ${index + 1}`);
+      // Positive guard, because label-content-name-mismatch is INAPPLICABLE here
+      // and so reports nothing either way: the printed text has to stay part of
+      // the name, which is the thing 2.5.3 actually asks for.
+      expect(row.textContent).toContain(`Old note ${index + 1}`);
+      const listItem = row.closest('li');
+      expect(listItem?.textContent).toContain(`№ ${index + 1} · Project Alpha · Work Style`);
+    }
+  });
+
   it('refuses to re-select the note already open', () => {
     // The open control cannot collapse anything, so activating it must not bank
     // a second insights click for a note the reader is already reading.

@@ -100,7 +100,7 @@ describe('ThemeSong', () => {
     render(<ThemeSong />);
 
     expect(toggle()).toHaveAccessibleName(
-      `Play the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
+      `Play it — the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
     );
     expect(toggle()).toHaveAttribute('aria-pressed', 'false');
     expect(toggle()).toBeEnabled();
@@ -120,7 +120,7 @@ describe('ThemeSong', () => {
     expect(audio().paused).toBe(false);
     expect(toggle()).toHaveTextContent('Cancel');
     expect(toggle()).toHaveAccessibleName(
-      `Cancel loading the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
+      `Cancel loading — the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
     );
     expect(toggle()).toHaveAttribute('aria-pressed', 'false');
     expect(note()).toHaveTextContent('loading audio');
@@ -129,7 +129,7 @@ describe('ThemeSong', () => {
     await playback.start();
 
     expect(toggle()).toHaveAccessibleName(
-      `Pause the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
+      `Pause — the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
     );
     expect(toggle()).toHaveAttribute('aria-pressed', 'true');
     expect(note()).toHaveTextContent('now playing');
@@ -147,7 +147,7 @@ describe('ThemeSong', () => {
     expect(playback.pause).toHaveBeenCalledOnce();
     expect(playback.play).toHaveBeenCalledOnce();
     expect(audio().paused).toBe(true);
-    expect(toggle()).toHaveAccessibleName(/^Play the theme song/);
+    expect(toggle()).toHaveAccessibleName(/^Play it — the theme song/);
     expect(toggle()).toBeEnabled();
     expect(toggle()).toHaveAttribute('aria-pressed', 'false');
     expect(note()).toHaveTextContent(TRACK_ARTIST);
@@ -189,7 +189,7 @@ describe('ThemeSong', () => {
     fireEvent.pause(audio());
 
     expect(playback.play).toHaveBeenCalledOnce();
-    expect(toggle()).toHaveAccessibleName(/^Cancel loading the theme song/);
+    expect(toggle()).toHaveAccessibleName(/^Cancel loading — the theme song/);
     expect(note()).toHaveTextContent('loading audio');
   });
 
@@ -203,7 +203,7 @@ describe('ThemeSong', () => {
     fireEvent.click(toggle());
     await act(async () => {});
 
-    expect(toggle()).toHaveAccessibleName(/^Cancel loading the theme song/);
+    expect(toggle()).toHaveAccessibleName(/^Cancel loading — the theme song/);
     expect(note()).toHaveTextContent('loading audio');
   });
 
@@ -217,7 +217,7 @@ describe('ThemeSong', () => {
     else playback.end();
 
     expect(audio().paused).toBe(true);
-    expect(toggle()).toHaveAccessibleName(/^Play the theme song/);
+    expect(toggle()).toHaveAccessibleName(/^Play it — the theme song/);
     expect(toggle()).toHaveAttribute('aria-pressed', 'false');
     expect(note()).toHaveTextContent(TRACK_ARTIST);
     expect(equalizer()).toHaveAttribute('data-playing', 'false');
@@ -255,7 +255,7 @@ describe('ThemeSong', () => {
     fireEvent.waiting(audio());
 
     expect(audio().paused).toBe(true);
-    expect(toggle()).toHaveAccessibleName(/^Play the theme song/);
+    expect(toggle()).toHaveAccessibleName(/^Play it — the theme song/);
     expect(note()).toHaveTextContent(TRACK_ARTIST);
     expect(equalizer()).toHaveAttribute('data-playing', 'false');
   });
@@ -269,7 +269,7 @@ describe('ThemeSong', () => {
     await screen.findByText('track unavailable · try again');
 
     expect(toggle()).toHaveAccessibleName(
-      `Retry the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
+      `Retry — the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
     );
     expect(toggle()).toBeEnabled();
     expect(toggle()).toHaveAttribute('aria-pressed', 'false');
@@ -309,7 +309,7 @@ describe('ThemeSong', () => {
     expect(playback.play).toHaveBeenCalledTimes(2);
     await playback.start();
 
-    expect(toggle()).toHaveAccessibleName(/^Pause the theme song/);
+    expect(toggle()).toHaveAccessibleName(/^Pause — the theme song/);
     expect(note()).toHaveTextContent('now playing');
   });
 
@@ -323,7 +323,7 @@ describe('ThemeSong', () => {
     fireEvent.pause(audio());
 
     expect(audio().error).not.toBeNull();
-    expect(toggle()).toHaveAccessibleName(/^Retry the theme song/);
+    expect(toggle()).toHaveAccessibleName(/^Retry — the theme song/);
     expect(toggle()).toBeEnabled();
     expect(note()).toHaveTextContent('track unavailable · try again');
     expect(equalizer()).toHaveAttribute('data-playing', 'false');
