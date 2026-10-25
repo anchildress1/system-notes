@@ -770,12 +770,6 @@
     transform: none;
   }
 
-  .recordGo,
-  .credentialGo,
-  .contact nav a {
-    transition: none;
-  }
-
   .record:hover .recordGo,
   .record:focus-visible .recordGo,
   .credential:hover .credentialGo,

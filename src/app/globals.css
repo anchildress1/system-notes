@@ -554,14 +554,6 @@ body::before {
     102% 158%;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  /* .washed is not here: its band has no transition to suppress. The state is
-     the band, not a movement into it. */
-  .marked-hover {
-    transition: none;
-  }
-}
-
 /* THE BUTTON. Two variants, one shape, and the only place either is written
    down. filled is the page's one action; outline is every other control. There
    is no third variant — if something needs one, it is a link. */

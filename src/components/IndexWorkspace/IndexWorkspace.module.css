@@ -857,12 +857,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .boardTiles li::before,
-  .boardTiles li:hover::before,
-  .boardTiles li:active::before,
   .boardTiles li[data-activated]::before {
     animation-name: none;
-    transition-property: none;
   }
 }
 
