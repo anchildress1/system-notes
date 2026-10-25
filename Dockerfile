@@ -6,7 +6,10 @@ ENV NPM_CONFIG_LOGLEVEL=error
 
 # Install with the lockfile first so this layer caches across source changes.
 COPY package.json package-lock.json ./
-RUN npm install --global --ignore-scripts npm@12.2.0
+# Read from package.json, as CI does. Hardcoded, the production image kept
+# installing the old npm after a packageManager bump, with engines.npm wide
+# enough to satisfy both and nothing comparing them.
+RUN npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
 RUN npm ci --ignore-scripts
 
 # .dockerignore excludes secrets, dependencies, and build output.

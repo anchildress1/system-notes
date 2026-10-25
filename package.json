@@ -82,14 +82,9 @@
     "@lhci/cli": {
       "inquirer": "^8.2.7",
       "tmp": "^0.2.7",
-      "uuid": "^14.0.3",
-      "proxy-agent": "^8.0.2",
-      "chrome-launcher": "^1.2.2"
+      "proxy-agent": "^8.0.2"
     },
-    "@lhci/utils": {
-      "js-yaml": "^4.3.2"
-    },
-    "chrome-launcher": "^1.2.1",
+    "chrome-launcher": "^1.2.2",
     "get-uri": {
       "basic-ftp": "^6.2.5"
     },
@@ -109,10 +104,5 @@
     "entry": [
       "src/lib/imageLoader.ts"
     ]
-  },
-  "allowScripts": {
-    "fsevents@2.3.3": true,
-    "lefthook@2.2.2": true,
-    "unrs-resolver@1.12.2": true
   }
 }

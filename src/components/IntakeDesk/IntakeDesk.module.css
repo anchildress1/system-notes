@@ -413,7 +413,6 @@
   composes: marked-link from global;
 }
 
-/* Only the gap from the brief above it: shape, fill and hover stay on .btn. */
 .briefActions {
   margin-top: clamp(1.5rem, 4vh, 2.75rem);
 }
