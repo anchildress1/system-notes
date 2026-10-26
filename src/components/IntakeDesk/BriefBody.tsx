@@ -174,8 +174,9 @@ export default function BriefBody({
     if (copyTimer.current !== null) clearTimeout(copyTimer.current);
     copyTimer.current = setTimeout(() => setCopyStatus(null), COPY_RESET_MS);
   };
-  const copyWord =
-    copyStatus === 'copied' ? 'Copied' : copyStatus === 'failed' ? 'Could not copy' : '';
+  let copyWord = '';
+  if (copyStatus === 'copied') copyWord = 'Copied';
+  else if (copyStatus === 'failed') copyWord = 'Could not copy';
   // Keyed on where the segment starts in the paragraph rather than on its place
   // in the array. Segments tile the source, so the offset is unique, and it does
   // not shift when an earlier one is split by a citation.

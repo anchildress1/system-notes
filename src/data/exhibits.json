@@ -17,7 +17,7 @@
   {
     "id": "wild-find",
     "standard": "A plant scavenger hunt for kids, with a lot of work spent making sure poison ivy couldn't win it.",
-    "evidence": "The photo checks run on the phone, and code decides whether a find counts. None of the 267 toxic test photos passed. Gemma writes the hints at build time; no language model runs in the app."
+    "evidence": "The photo checks run on the phone, and code decides whether a find counts. None of the 267 toxic photos across the tuning and test sets passed. Gemma writes the hints at build time; no language model runs in the app."
   },
   {
     "id": "supascribe-notes",
