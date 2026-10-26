@@ -2,6 +2,7 @@ import { cache } from 'react';
 import { algoliasearch } from 'algoliasearch';
 import { ALGOLIA_INDEX_NAME } from '@/config';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
+import { failureCause } from '@/lib/failureCause';
 
 /** How long a pulse is reused before the index is asked again. */
 export const PULSE_TTL_MS = 5 * 60_000;
@@ -88,9 +89,10 @@ export const getIndexPulse = cache(async (): Promise<IndexPulse | null> => {
   } catch (error) {
     // The header is furniture on every page, including the 404. It degrades to
     // its unnumbered form rather than taking a route down with the index.
-    console.error('Index pulse lookup failed.', {
-      name: error instanceof Error ? error.name : 'ProviderError',
-    });
+    // The cause belongs in the message: Next's dev log flattens an object
+    // argument to `{}`, so a name passed beside the string is lost in the file
+    // where the failure is read back.
+    console.error(`Index pulse lookup failed. ${failureCause(error)}`);
     // A dynamic route must not make every request wait through the same outage.
     cached = { at: Date.now(), value: null };
     return null;
