@@ -185,9 +185,9 @@ test.describe('Intake streaming transport', () => {
       await expect(
         page.getByText('Incomplete evidence must not become a finished brief.')
       ).toHaveCount(0);
-      expect(await page.evaluate(() => sessionStorage.getItem('system-notes-intake-brief'))).toBe(
-        null
-      );
+      expect(
+        await page.evaluate(() => sessionStorage.getItem('system-notes-intake-brief'))
+      ).toBeNull();
       expect(requests).toHaveLength(1);
       expectQuestion(requests[0]);
 

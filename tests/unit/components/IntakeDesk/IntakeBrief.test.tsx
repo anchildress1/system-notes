@@ -57,7 +57,7 @@ type FinishEvent = {
   isAbort: boolean;
   isDisconnect: boolean;
   isError: boolean;
-  finishReason?: string;
+  finishReason?: string | undefined;
 };
 
 function finishTurn(message = chat.state.messages[0]!, overrides: Partial<FinishEvent> = {}) {
@@ -362,7 +362,11 @@ describe('IntakeBrief', () => {
     { label: 'a disconnect', overrides: { isDisconnect: true }, state: 'done' as const },
     // No finish reason reports this one: the body just stops, and the only trace
     // is a text part that `text-end` never closed.
-    { label: 'a body that just stops', overrides: {}, state: 'streaming' as const },
+    {
+      label: 'a body that just stops',
+      overrides: { finishReason: undefined },
+      state: 'streaming' as const,
+    },
   ])('refuses a turn truncated by $label, with no error to read', ({ overrides, state }) => {
     const message = {
       id: '1',
