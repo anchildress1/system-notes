@@ -1,4 +1,4 @@
-FROM node:26-bookworm-slim AS installer
+FROM node:26.12.1-trixie-slim AS installer
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NPM_CONFIG_UPDATE_NOTIFIER=false
@@ -6,6 +6,10 @@ ENV NPM_CONFIG_LOGLEVEL=error
 
 # Install with the lockfile first so this layer caches across source changes.
 COPY package.json package-lock.json ./
+# Read from package.json, as CI does. Hardcoded, the production image kept
+# installing the old npm after a packageManager bump, with engines.npm wide
+# enough to satisfy both and nothing comparing them.
+RUN npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
 RUN npm ci --ignore-scripts
 
 # .dockerignore excludes secrets, dependencies, and build output.
@@ -31,7 +35,7 @@ ENV NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID
 # `postbuild` folds .next/static and public into .next/standalone.
 RUN npm run build
 
-FROM node:26-bookworm-slim AS runner
+FROM node:26.12.1-trixie-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1

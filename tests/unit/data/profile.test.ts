@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { profile } from '@/data/profile';
-import exhibits from '@/data/exhibits.json';
+import exhibits from '@/data/exhibits.json' with { type: 'json' };
 import { getProjects } from '@/lib/api';
+import { isSafeExternalUrl } from '@/lib/urlSafety';
 
 describe('profile principle evidence', () => {
   it('connects each principle to an exhibit that is actually in the catalogue', () => {
@@ -27,8 +28,16 @@ describe('profile track record', () => {
     expect(profile.trackRecord.since).toBeLessThanOrEqual(new Date().getFullYear());
   });
 
+  it('starts the core practice inside the career, not before it', () => {
+    // The home page dates the summary from coreSince. Earlier than `since` claims
+    // the stack predates the career; later than today claims a future.
+    const { since, coreSince } = profile.trackRecord;
+    expect(coreSince).toBeGreaterThanOrEqual(since);
+    expect(coreSince).toBeLessThanOrEqual(new Date().getFullYear());
+  });
+
   it('keeps the summary shaped to run inside a sentence', () => {
-    // The home page sets it as "I build {summary}, and have since …". A leading
+    // The home page sets it as "I’ve worked on {summary} since {coreSince}". A leading
     // capital or a trailing stop breaks that sentence in the middle.
     const { summary } = profile.trackRecord;
     expect(summary).not.toMatch(/^[A-Z]/);
@@ -63,6 +72,19 @@ describe('profile certifications', () => {
       expect(certification.name.trim()).not.toBe('');
       expect(certification.issuer.trim()).not.toBe('');
       expect(certification.issued.trim()).not.toBe('');
+    }
+  });
+
+  it('keeps every citable profile url safe to follow', () => {
+    // BriefBody admits these by exact set membership AHEAD of its https gate, so
+    // they are the one set of citations the url-safety check never sees. Derived,
+    // not sampled: an `http:` or `javascript:` link added here would otherwise
+    // become a live anchor inside untrusted model output with nothing to stop it.
+    for (const link of profile.links) {
+      expect(isSafeExternalUrl(link.href)).toBe(true);
+    }
+    for (const certification of profile.certifications) {
+      expect(isSafeExternalUrl(certification.credentialUrl)).toBe(true);
     }
   });
 

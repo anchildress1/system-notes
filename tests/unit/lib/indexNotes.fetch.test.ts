@@ -88,6 +88,34 @@ describe('getIndexNotes', () => {
     await expect(getIndexNotes()).resolves.toEqual([]);
   });
 
+  it('logs the cause in the message rather than beside it', async () => {
+    const outage = new Error('Unreachable hosts');
+    outage.name = 'RetryError';
+    harness.search.mockRejectedValue(outage);
+    const { getIndexNotes } = await loadNotes();
+    await getIndexNotes();
+
+    // One string argument: an object passed beside it reaches the dev log as
+    // `{}`, and the failure becomes undiagnosable wherever it is read back.
+    expect(console.error).toHaveBeenCalledWith(
+      'Index notes lookup failed. RetryError: Unreachable hosts'
+    );
+  });
+
+  it('names the deadline when the index never answers', async () => {
+    vi.useFakeTimers();
+    harness.search.mockReturnValue(new Promise(() => {}));
+    const { getIndexNotes } = await loadNotes();
+
+    const pending = getIndexNotes();
+    await vi.advanceTimersByTimeAsync(4_000);
+    await pending;
+
+    expect(console.error).toHaveBeenCalledWith(
+      'Index notes lookup failed. Error: Index notes exceeded their response deadline.'
+    );
+  });
+
   it('does not make every request wait through the same outage', async () => {
     harness.search.mockRejectedValue(new Error('index unreachable'));
     const { getIndexNotes } = await loadNotes();

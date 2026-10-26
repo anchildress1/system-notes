@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect } from '@playwright/test';
+import { expect, type Page, type Request } from '@playwright/test';
 import sharp from 'sharp';
 import { getProjects } from '@/lib/api';
 import { groupProjects } from '@/lib/projectStatus';
@@ -17,6 +17,220 @@ import {
 // desktop-width engine silently ran the stacked assertions and failed.
 const STACK_BREAKPOINT_PX = 768;
 
+test.describe('Intake streaming transport', () => {
+  const question = 'How do you keep aircraft lookups independent of the source registers?';
+  const answer = 'The service reads a built SQLite artifact.\n\nThe source stays attached.';
+  const completionRoute =
+    /^https:\/\/[^/]+\.algolia\.net\/agent-studio\/1\/agents\/[^/]+\/completions(?:\?|$)/;
+
+  function stream(parts: Record<string, unknown>[]): string {
+    return `${parts.map((part) => `data: ${JSON.stringify(part)}\n\n`).join('')}data: [DONE]\n\n`;
+  }
+
+  const successParts = [
+    { type: 'start', messageId: 'answer-1' },
+    { type: 'start-step' },
+    { type: 'reasoning-start', id: 'reasoning-1' },
+    { type: 'reasoning-delta', id: 'reasoning-1', delta: 'Private reasoning must stay hidden.' },
+    { type: 'reasoning-end', id: 'reasoning-1' },
+    { type: 'text-start', id: 'text-1' },
+    { type: 'text-delta', id: 'text-1', delta: 'The service reads a built ' },
+    { type: 'text-delta', id: 'text-1', delta: 'SQLite artifact.' },
+    { type: 'text-end', id: 'text-1' },
+    { type: 'text-start', id: 'text-2' },
+    { type: 'text-delta', id: 'text-2', delta: '\n\nThe source stays attached.' },
+    { type: 'text-end', id: 'text-2' },
+    { type: 'finish-step' },
+    { type: 'finish', finishReason: 'stop' },
+  ];
+
+  async function ask(page: Page) {
+    await page.goto('/');
+    await expect(page.getByRole('button', { name: 'Run it', exact: true })).toBeEnabled();
+    await page.getByRole('textbox', { name: 'Your question', exact: true }).fill(question);
+    await page.getByRole('button', { name: 'Run it', exact: true }).click();
+  }
+
+  function expectQuestion(request: Request) {
+    const url = new URL(request.url());
+    expect(request.method()).toBe('POST');
+    expect(url.hostname.toLowerCase()).toBe('testappid1.algolia.net');
+    expect(url.pathname).toBe('/agent-studio/1/agents/test-agent/completions');
+    expect(request.headers()).toMatchObject({
+      'x-algolia-application-id': 'TESTAPPID1',
+      'x-algolia-api-key': 'test_search_key_valid_length_20',
+    });
+    expect(url.searchParams.get('stream')).toBe('true');
+    expect(url.searchParams.get('compatibilityMode')).toBe('ai-sdk-5');
+    expect(request.postDataJSON()).toMatchObject({
+      messages: [
+        {
+          role: 'user',
+          parts: [{ type: 'text', text: question }],
+        },
+      ],
+    });
+    expect(request.postDataJSON().messages).toHaveLength(1);
+  }
+
+  test('parses streamed text parts, restores the brief, and sends a fresh turn when asked again', async ({
+    page,
+  }) => {
+    const requests: Request[] = [];
+    let releaseResponse!: () => void;
+    const responseReady = new Promise<void>((resolve) => {
+      releaseResponse = resolve;
+    });
+    await page.route(completionRoute, async (route) => {
+      requests.push(route.request());
+      await responseReady;
+      await route.fulfill({
+        status: 200,
+        contentType: 'text/event-stream',
+        headers: { 'x-vercel-ai-ui-message-stream': 'v1' },
+        body: stream(successParts),
+      });
+    });
+
+    await ask(page);
+    try {
+      await expect.poll(() => requests.length).toBe(1);
+      await expect(page.getByText('Reading the evidence', { exact: true })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Run it', exact: true })).toBeDisabled();
+      await expect(page.getByRole('textbox', { name: 'Your question' })).toHaveAttribute(
+        'readonly',
+        ''
+      );
+      await expect(page.getByRole('region', { name: 'The brief', exact: true })).toHaveCount(0);
+    } finally {
+      releaseResponse();
+    }
+
+    const brief = page.getByRole('region', { name: 'The brief', exact: true });
+    await expect(brief.getByText('The service reads a built SQLite artifact.')).toBeVisible();
+    await expect(brief.getByText('The source stays attached.')).toBeVisible();
+    await expect(page.getByText('Private reasoning must stay hidden.')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Run it', exact: true })).toBeEnabled();
+    await expect
+      .poll(() => page.evaluate(() => sessionStorage.getItem('system-notes-intake-brief')))
+      .toBe(JSON.stringify({ question, answer }));
+
+    await page.reload();
+    await expect(brief.getByText('The source stays attached.')).toBeVisible();
+    expect(requests).toHaveLength(1);
+
+    await page.getByRole('textbox', { name: 'Your question', exact: true }).fill(question);
+    await page.getByRole('button', { name: 'Run it', exact: true }).click();
+    await expect.poll(() => requests.length).toBe(2);
+    await expect(brief.getByText('The source stays attached.')).toBeVisible();
+    for (const request of requests) expectQuestion(request);
+  });
+
+  for (const failure of [
+    { name: 'malformed SSE JSON', status: 200, body: 'data: {broken-json}\n\n' },
+    {
+      name: 'an invalid text chunk',
+      status: 200,
+      body: stream([{ type: 'text-delta', id: 'text-1', delta: 42 }]),
+    },
+    {
+      name: 'a provider error chunk',
+      status: 200,
+      body: stream([{ type: 'error', errorText: 'Provider details must stay hidden.' }]),
+    },
+    {
+      name: 'an error after partial answer text',
+      status: 200,
+      body: stream([
+        { type: 'start', messageId: 'partial-1' },
+        { type: 'text-start', id: 'text-1' },
+        {
+          type: 'text-delta',
+          id: 'text-1',
+          delta: 'Incomplete evidence must not become a finished brief.',
+        },
+        { type: 'error', errorText: 'Provider details must stay hidden.' },
+      ]),
+    },
+    {
+      name: 'an empty completed turn',
+      status: 200,
+      body: stream([{ type: 'start', messageId: 'empty-1' }, { type: 'finish' }]),
+    },
+    { name: 'an HTTP failure', status: 503, body: 'Provider details must stay hidden.' },
+  ]) {
+    test(`rejects ${failure.name} and releases the question form`, async ({ page }) => {
+      const requests: Request[] = [];
+      await page.route(completionRoute, async (route) => {
+        requests.push(route.request());
+        await route.fulfill({
+          status: failure.status,
+          contentType: 'text/event-stream',
+          headers: { 'x-vercel-ai-ui-message-stream': 'v1' },
+          body: failure.body,
+        });
+      });
+
+      await ask(page);
+
+      await expect(page.getByText(/The agent could not answer that\./)).toBeVisible();
+      await expect(page.getByText(question, { exact: true })).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: 'Search the index', exact: true })
+      ).toHaveAttribute('href', '/notes');
+      await expect(page.getByRole('button', { name: 'Run it', exact: true })).toBeEnabled();
+      await expect(page.getByRole('textbox', { name: 'Your question' })).toBeEditable();
+      await expect(page.getByRole('region', { name: 'The brief', exact: true })).toHaveCount(0);
+      await expect(page.getByText('Provider details must stay hidden.')).toHaveCount(0);
+      await expect(
+        page.getByText('Incomplete evidence must not become a finished brief.')
+      ).toHaveCount(0);
+      expect(
+        await page.evaluate(() => sessionStorage.getItem('system-notes-intake-brief'))
+      ).toBeNull();
+      expect(requests).toHaveLength(1);
+      expectQuestion(requests[0]);
+
+      await page.reload();
+      await expect(page.getByRole('button', { name: 'Run it', exact: true })).toBeEnabled();
+      await expect(page.getByRole('region', { name: 'The brief', exact: true })).toHaveCount(0);
+      expect(requests).toHaveLength(1);
+    });
+  }
+
+  test('replaces streamed text with the guardrail fallback before rendering or saving it', async ({
+    page,
+  }) => {
+    const fallback = 'I can only answer questions about the work filed here.';
+    const requests: Request[] = [];
+    await page.route(completionRoute, async (route) => {
+      requests.push(route.request());
+      await route.fulfill({
+        status: 200,
+        contentType: 'text/event-stream',
+        headers: { 'x-vercel-ai-ui-message-stream': 'v1' },
+        body: stream([
+          ...successParts.slice(0, -1),
+          { type: 'data-guardrail-violation', data: { fallbackResponse: fallback } },
+          { type: 'finish' },
+        ]),
+      });
+    });
+
+    await ask(page);
+
+    const brief = page.getByRole('region', { name: 'The brief', exact: true });
+    await expect(brief.getByText(fallback, { exact: true })).toBeVisible();
+    await expect(page.getByText('The service reads a built SQLite artifact.')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Run it', exact: true })).toBeEnabled();
+    await expect
+      .poll(() => page.evaluate(() => sessionStorage.getItem('system-notes-intake-brief')))
+      .toBe(JSON.stringify({ question, answer: fallback }));
+    expect(requests).toHaveLength(1);
+    expectQuestion(requests[0]);
+  });
+});
+
 test.describe('System Notes redesign', () => {
   test('keeps prose at or above 16px on every route', async ({ page }) => {
     // axe has no font-size rule and contrast passes as readily at 11px as at 16px,
@@ -28,7 +242,8 @@ test.describe('System Notes redesign', () => {
     // caption and keeps --fine (11px) on purpose; the line a reader stops and
     // reads does not.
     const SAVED_BRIEF = JSON.stringify({
-      question: 'Can this run somewhere our data never leaves?',
+      question:
+        'We want natural-language search over sensitive data — how would you wall off the model?',
       answer:
         'Yes. The index is read-only and the agent cites only notes already filed, so nothing a reader types is retained anywhere.',
     });
@@ -355,11 +570,11 @@ test.describe('System Notes redesign', () => {
     );
   });
 
-  test('shows the seven selected exhibits without a project reader', async ({ page }) => {
+  test('shows the eight selected exhibits without a project reader', async ({ page }) => {
     await page.goto('/projects');
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Systems should');
-    await expect(page.getByRole('article')).toHaveCount(7);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('What I’ve built.');
+    await expect(page.getByRole('article')).toHaveCount(8);
     await expect(page.getByTestId('exhibit-save-the-sun')).toBeVisible();
     await expect(page.getByTestId('exhibit-rai-lint')).toBeVisible();
     await expect(page.getByTestId('exhibit-system-notes')).toHaveCount(0);
@@ -370,9 +585,7 @@ test.describe('System Notes redesign', () => {
     await page.goto('/projects');
     const exhibit = page.getByTestId('exhibit-save-the-sun');
 
-    await expect(
-      exhibit.getByText('The model can speak. It does not get the answer.')
-    ).toBeVisible();
+    await expect(exhibit.getByText(/I built a rune-guessing game/)).toBeVisible();
     await expect(exhibit.getByRole('link', { name: /Filed notes/ })).toHaveAttribute(
       'href',
       '/notes?project=Save+the+Sun#notes-index'
@@ -613,8 +826,8 @@ test.describe('Exhibit anchors', () => {
       expect(href).toMatch(/^\/projects#[a-z0-9-]+$/);
     }
 
-    // Every one, not just the first. /about awards come from all twenty projects
-    // while only the curated seven emit an anchor, so a win outside the catalogue
+    // Every one, not just the first. /about awards come from every project
+    // while only the curated exhibits emit an anchor, so a win outside the catalogue
     // lands silently at the top of the page.
     await page.goto('/projects');
     for (const href of targets) {

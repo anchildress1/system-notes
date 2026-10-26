@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
+import { profile } from '@/data/profile';
 import { citesKnownProject } from '@/lib/systemIds';
 import { isSafeExternalUrl } from '@/lib/urlSafety';
 import styles from './IntakeDesk.module.css';
@@ -11,8 +13,21 @@ const LINK = /\[([^[\]\n]+)\]\(([^\s)]+)\)/g;
 const SITE_ORIGIN = 'https://anchildress1.dev';
 const DEV_ORIGIN = 'https://dev.to';
 
-/** Whether a model-written citation points at evidence this site publishes. */
+/* The prompt hands the agent the profile's urls as its contact evidence, so the
+   renderer has to follow the same list exactly — a near-match would pass a url
+   the prompt never listed. */
+const PROFILE_HREFS = new Set<string>([
+  `mailto:${profile.email}`,
+  ...profile.links.map((link) => link.href),
+  ...profile.certifications.map((cert) => cert.credentialUrl),
+]);
+
+/** Whether a citation points at evidence that can be checked: this site's notes,
+    her write-ups, or a url the prompt handed the agent. */
 function isAllowedCitationUrl(href: string): boolean {
+  // Ahead of the https gate: these are local literals the prompt also hands the
+  // agent, and the mailto among them has no https to pass.
+  if (PROFILE_HREFS.has(href)) return true;
   if (!isSafeExternalUrl(href)) return false;
 
   const url = new URL(href);
@@ -106,11 +121,62 @@ export function parseBriefStructure(answer: string): BriefBlock[] {
   });
 }
 
+/**
+ * The brief as clipboard text: the question, then the answer's paragraphs with
+ * every citation flattened to `label (url)` — or to its bare label when the url
+ * is not one the renderer would follow either.
+ */
+export function briefToPlainText(question: string, answer: string): string {
+  const paragraphs = answer
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .map((paragraph) =>
+      parseBrief(paragraph)
+        .map((segment) => (segment.href ? `${segment.text} (${segment.href})` : segment.text))
+        .join('')
+    );
+  return `${question}\n\n${paragraphs.join('\n\n')}`;
+}
+
+const COPY_IDLE = 'Copy the brief';
+const COPY_RESET_MS = 2000;
+
 /** The settled brief. Renders identically whether it just arrived or was restored. */
 export default function BriefBody({
   question,
   answer,
 }: Readonly<{ question: string; answer: string }>) {
+  const [copyStatus, setCopyStatus] = useState<'copied' | 'failed' | null>(null);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (copyTimer.current !== null) clearTimeout(copyTimer.current);
+    },
+    []
+  );
+
+  const copyBrief = async () => {
+    // Built outside the try: it runs the citation parser over model output, and a
+    // throw from there is not a clipboard refusal — reported as one, a parser bug
+    // on one answer is indistinguishable from a denied permission.
+    const text = briefToPlainText(question, answer);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyStatus('copied');
+    } catch (error) {
+      console.error('Brief copy failed.', {
+        name: error instanceof Error ? error.name : 'ClipboardError',
+      });
+      setCopyStatus('failed');
+    }
+    if (copyTimer.current !== null) clearTimeout(copyTimer.current);
+    copyTimer.current = setTimeout(() => setCopyStatus(null), COPY_RESET_MS);
+  };
+  let copyWord = '';
+  if (copyStatus === 'copied') copyWord = 'Copied';
+  else if (copyStatus === 'failed') copyWord = 'Could not copy';
   // Keyed on where the segment starts in the paragraph rather than on its place
   // in the array. Segments tile the source, so the offset is unique, and it does
   // not shift when an earlier one is split by a citation.
@@ -173,6 +239,14 @@ export default function BriefBody({
           </p>
         );
       })}
+      <div className={styles.briefActions}>
+        <button type="button" className="btn" data-variant="outline" onClick={copyBrief}>
+          {copyWord || COPY_IDLE}
+        </button>
+        {/* The status is echoed here rather than left to the label change, which a
+            screen reader does not reliably announce on its own. */}
+        <output className="visually-hidden">{copyWord}</output>
+      </div>
     </section>
   );
 }

@@ -412,3 +412,7 @@
 .briefLink {
   composes: marked-link from global;
 }
+
+.briefActions {
+  margin-top: clamp(1.5rem, 4vh, 2.75rem);
+}

@@ -51,22 +51,26 @@ vi.mock('@ai-sdk/react', () => ({
 
 const QUESTION = 'Our AI-generated code breaks in production.';
 
-function finishTurn(message = chat.state.messages[0]!) {
-  const onFinish = captured.options?.onFinish as
-    | ((event: {
-        message: ChatState['messages'][number];
-        messages: ChatState['messages'];
-        isAbort: boolean;
-        isDisconnect: boolean;
-        isError: boolean;
-      }) => void)
-    | undefined;
+type FinishEvent = {
+  message: ChatState['messages'][number];
+  messages: ChatState['messages'];
+  isAbort: boolean;
+  isDisconnect: boolean;
+  isError: boolean;
+  finishReason?: string | undefined;
+};
+
+function finishTurn(message = chat.state.messages[0]!, overrides: Partial<FinishEvent> = {}) {
+  const onFinish = captured.options?.onFinish as ((event: FinishEvent) => void) | undefined;
   onFinish?.({
     message,
     messages: chat.state.messages,
     isAbort: false,
     isDisconnect: false,
     isError: false,
+    // What a whole answer carries. Every other reason means it stopped early.
+    finishReason: 'stop',
+    ...overrides,
   });
 }
 
@@ -319,6 +323,69 @@ describe('IntakeBrief', () => {
     expect(screen.getByText(/could not answer/i)).toBeVisible();
   });
 
+  // Both cases set an error, so `failed` short-circuits on Boolean(error) before
+  // status is read: the parameter changes nothing. Kept because the two statuses
+  // are both reachable, but the case that actually exercises the guard is the one
+  // below, where the SDK reports no failure at all.
+  it.each(['error', 'ready'])(
+    'does not save a partial answer after failure with status %s',
+    (status) => {
+      chat.state = {
+        status,
+        error: new Error('stream interrupted'),
+        messages: [{ id: '1', role: 'assistant', parts: [{ type: 'text', text: 'Incomplete.' }] }],
+      };
+      const onSettled = vi.fn();
+      const onFinished = vi.fn();
+
+      render(<IntakeBrief question={QUESTION} onSettled={onSettled} onFinished={onFinished} />);
+
+      expect(screen.getByText(/could not answer/i)).toBeVisible();
+      expect(screen.queryByText('Incomplete.')).not.toBeInTheDocument();
+      expect(onFinished).toHaveBeenCalledOnce();
+      expect(onSettled).not.toHaveBeenCalled();
+    }
+  );
+
+  // A capped turn ends `length` and a dropped body ends with no reason at all.
+  // Both settle as `ready` with no error and no onError, so nothing here is
+  // readable from `error` or `status` — only the finish reason says the turn
+  // stopped early. Until it was read, half an answer was saved and announced as
+  // the finished brief.
+  it.each([
+    { label: 'a token cap', overrides: { finishReason: 'length' }, state: 'done' as const },
+    {
+      label: 'a content filter',
+      overrides: { finishReason: 'content-filter' },
+      state: 'done' as const,
+    },
+    { label: 'a disconnect', overrides: { isDisconnect: true }, state: 'done' as const },
+    // No finish reason reports this one: the body just stops, and the only trace
+    // is a text part that `text-end` never closed.
+    {
+      label: 'a body that just stops',
+      overrides: { finishReason: undefined },
+      state: 'streaming' as const,
+    },
+  ])('refuses a turn truncated by $label, with no error to read', ({ overrides, state }) => {
+    const message = {
+      id: '1',
+      role: 'assistant' as const,
+      parts: [{ type: 'text' as const, text: 'Half a sen', state }],
+    };
+    chat.state = { status: 'streaming', messages: [message] };
+    const onSettled = vi.fn();
+    const onFinished = vi.fn();
+
+    render(<IntakeBrief question={QUESTION} onSettled={onSettled} onFinished={onFinished} />);
+    act(() => finishTurn(message, overrides));
+
+    expect(screen.getByText(/could not answer/i)).toBeVisible();
+    expect(screen.queryByText('Half a sen')).not.toBeInTheDocument();
+    expect(onSettled).not.toHaveBeenCalled();
+    expect(onFinished).toHaveBeenCalledOnce();
+  });
+
   it.each([
     { parts: [{ type: 'text', text: '   ' }] },
     { parts: [{ type: 'reasoning', text: 'Thinking.' }] },
@@ -353,4 +420,23 @@ describe('IntakeBrief', () => {
 
     expect(await screen.findByText(/could not answer/i)).toBeVisible();
   });
+
+  it.each([{ finishReason: 'stop' }, { finishReason: undefined }, { finishReason: 'other' }])(
+    'keeps a whole answer when the finish reason is $finishReason',
+    ({ finishReason }) => {
+      // An absent reason is NOT a truncation: the chunk field is optional, so a
+      // provider that never sends it would otherwise lose every answer.
+      const message = {
+        id: '1',
+        role: 'assistant' as const,
+        parts: [{ type: 'text' as const, text: 'A whole answer.', state: 'done' as const }],
+      };
+      chat.state = { status: 'streaming', messages: [message] };
+
+      render(<IntakeBrief question={QUESTION} />);
+      act(() => finishTurn(message, { finishReason }));
+
+      expect(screen.queryByText(/could not answer/i)).not.toBeInTheDocument();
+    }
+  );
 });

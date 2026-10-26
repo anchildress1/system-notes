@@ -4,27 +4,30 @@ import ProjectDirectory, {
   EXHIBIT_DECK,
   EXHIBITS,
 } from '@/components/ProjectDirectory/ProjectDirectory';
-import rawProjects from '@/data/projects.json';
+import rawProjects from '@/data/projects.json' with { type: 'json' };
 import { mockProject } from '@tests/test-utils/fixtures';
 
 // Derived, not copied: a hardcoded list lets an added exhibit render nowhere
-// while every assertion here still counts the old seven.
+// while every assertion here still counted a hardcoded roster.
 const registry = new Map(
   (rawProjects as { objectID: string; name: string }[]).map((p) => [p.objectID, p.name])
 );
 const selected = EXHIBITS.map(({ id }) => [id, registry.get(id)!] as const);
 
 const projects = [
-  ...selected.map(([id, title], index) => ({
+  ...selected.map(([id, title]) => ({
     ...mockProject,
     id,
     title,
-    award: index === 0 ? 'A real award' : undefined,
-    app_url: index === 0 ? 'https://example.com/app' : undefined,
-    repo_url: index === 0 ? 'https://github.com/example/project' : undefined,
+    award: id === 'save-the-sun' ? 'A real award' : undefined,
+    app_url: id === 'save-the-sun' ? 'https://example.com/app' : undefined,
+    repo_url: id === 'save-the-sun' ? 'https://github.com/example/project' : undefined,
     blog_posts:
-      index === 0 ? [{ title: 'Build notes', url: 'https://dev.to/example/build-notes' }] : [],
-    announcements: index === 0 ? [{ title: 'Award', url: 'https://dev.to/devteam/award' }] : [],
+      id === 'save-the-sun'
+        ? [{ title: 'Build notes', url: 'https://dev.to/example/build-notes' }]
+        : [],
+    announcements:
+      id === 'save-the-sun' ? [{ title: 'Award', url: 'https://dev.to/devteam/award' }] : [],
     tech: [
       { name: 'TypeScript', role: 'Language' },
       { name: 'Cloud Run', role: 'Deploy' },
@@ -56,6 +59,7 @@ describe('ProjectDirectory', () => {
     render(<ProjectDirectory projects={projects} />);
 
     expect(screen.getAllByRole('article')).toHaveLength(selected.length);
+    expect(screen.getAllByRole('article')[0]).toHaveAttribute('id', 'metal-birds-feed');
     expect(screen.getByTestId('exhibit-save-the-sun')).toHaveAttribute('id', 'save-the-sun');
     expect(screen.queryByText('Unselected System')).not.toBeInTheDocument();
     expect(
@@ -67,12 +71,8 @@ describe('ProjectDirectory', () => {
     render(<ProjectDirectory projects={projects} />);
     const exhibit = screen.getByTestId('exhibit-save-the-sun');
 
-    expect(
-      within(exhibit).getByText('The model can speak. It does not get the answer.')
-    ).toBeVisible();
-    expect(
-      within(exhibit).getByText(/deterministic game engine keeps the rune secret/i)
-    ).toBeVisible();
+    expect(within(exhibit).getByText(/I built a rune-guessing game/)).toBeVisible();
+    expect(within(exhibit).getByText(/game engine keeps the answer secret/i)).toBeVisible();
     expect(within(exhibit).getByText('TypeScript · Cloud Run · Vitest')).toBeVisible();
   });
 
@@ -80,7 +80,7 @@ describe('ProjectDirectory', () => {
     render(<ProjectDirectory projects={projects} />);
     const exhibit = screen.getByTestId('exhibit-save-the-sun');
 
-    const outbound = ['Live site', 'Repository', 'Writing', 'Receipt'];
+    const outbound = ['Live site', 'Repository', 'Writing', 'Award'];
     for (const label of outbound) {
       const link = within(exhibit).getByRole('link', { name: new RegExp(label) });
       expect(link).toHaveAttribute('target', '_blank');
@@ -97,7 +97,7 @@ describe('ProjectDirectory', () => {
     render(<ProjectDirectory projects={projects} />);
     const exhibit = screen.getByTestId('exhibit-vestige');
 
-    for (const label of ['Live site', 'Repository', 'Writing', 'Receipt']) {
+    for (const label of ['Live site', 'Repository', 'Writing', 'Award']) {
       expect(
         within(exhibit).queryByRole('link', { name: new RegExp(label) })
       ).not.toBeInTheDocument();

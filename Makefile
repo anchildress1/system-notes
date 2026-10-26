@@ -55,6 +55,7 @@ test-e2e: images
 	NEXT_PUBLIC_ALGOLIA_APPLICATION_ID=TESTAPPID1 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=test_search_key_valid_length_20 \
 	NEXT_PUBLIC_ALGOLIA_SEARCH_INDEX_NAME=system-notes \
+	NEXT_PUBLIC_ALGOLIA_AGENT_ID=test-agent \
 	INDEX_PULSE_DISABLED=true \
 	NEXT_PUBLIC_BASE_URL=http://localhost:3002 \
 	npm run build
