@@ -99,9 +99,33 @@ describe('getIndexPulse', () => {
 
     // A null pulse renders the unnumbered header; a zero would be a lie.
     expect(await getIndexPulse()).toBeNull();
+  });
+
+  it('logs the cause in the message rather than beside it', async () => {
+    const outage = new Error('Unreachable hosts');
+    outage.name = 'RetryError';
+    harness.search.mockRejectedValue(outage);
+    const { getIndexPulse } = await loadPulse();
+    await getIndexPulse();
+
+    // One string argument: an object passed beside it reaches the dev log as
+    // `{}`, and the failure becomes undiagnosable wherever it is read back.
     expect(console.error).toHaveBeenCalledWith(
-      'Index pulse lookup failed.',
-      expect.objectContaining({ name: 'Error' })
+      'Index pulse lookup failed. RetryError: Unreachable hosts'
+    );
+  });
+
+  it('names the deadline when the index never answers', async () => {
+    vi.useFakeTimers();
+    harness.search.mockReturnValue(new Promise(() => {}));
+    const { getIndexPulse } = await loadPulse();
+
+    const pending = getIndexPulse();
+    await vi.advanceTimersByTimeAsync(5_000);
+    await pending;
+
+    expect(console.error).toHaveBeenCalledWith(
+      'Index pulse lookup failed. Error: Index pulse exceeded its response deadline.'
     );
   });
 

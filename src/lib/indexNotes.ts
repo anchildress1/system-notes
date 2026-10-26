@@ -2,6 +2,7 @@ import { cache } from 'react';
 import { algoliasearch } from 'algoliasearch';
 import { ALGOLIA_INDEX_NAME } from '@/config';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
+import { failureCause } from '@/lib/failureCause';
 import { NOTE_BODY_FALLBACK, getNoteBody, normalizeFactHitRecord } from '@/lib/noteContent';
 
 /** How long a fetched page of notes is reused before the index is asked again. */
@@ -97,9 +98,7 @@ export const getIndexNotes = cache(async (): Promise<IndexNote[]> => {
     cached = { at: Date.now(), value };
     return value;
   } catch (error) {
-    console.error('Index notes lookup failed.', {
-      name: error instanceof Error ? error.name : 'ProviderError',
-    });
+    console.error(`Index notes lookup failed. ${failureCause(error)}`);
     // A dynamic route must not make every request wait through the same outage.
     cached = { at: Date.now(), value: [] };
     return [];
