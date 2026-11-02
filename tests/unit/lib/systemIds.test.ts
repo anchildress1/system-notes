@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import rawProjects from '@/data/projects.json';
+import rawProjects from '@/data/projects.json' with { type: 'json' };
 import { citesKnownProject, PROJECT_NAMES } from '@/lib/systemIds';
 
 describe('PROJECT_NAMES', () => {

@@ -8,7 +8,7 @@ import styles from './page.module.css';
 export const metadata: Metadata = buildPageMetadata({
   title: "Ashley's System Notes",
   description:
-    'Ask how the work holds up. The answer cites only systems Ashley Childress has actually shipped, and states the gaps it cannot fill.',
+    'Ashley Childress builds backend systems in Java and Node.js on GCP. Browse the projects, read the decisions, or ask a question about the work.',
   path: '/',
 });
 
@@ -18,19 +18,24 @@ export default function IntakePage() {
       <section className={styles.intake} aria-labelledby="intake-heading">
         <div className="page-head">
           <h1 id="intake-heading">
-            What do you want to know?
+            I build backend systems.
             <br />
-            <span>I&rsquo;ll answer, or tell you where the gap is.</span>
+            <span>Ask me how they work.</span>
           </h1>
         </div>
         <div className="page-column">
           <p className={styles.proof}>
-            <strong>{profile.role}.</strong> I build {profile.trackRecord.summary}, and have since{' '}
-            {profile.trackRecord.since}. The agent below cites only systems I&rsquo;ve actually
-            shipped.{' '}
-            <IntentLink className="marked-link" href="/projects">
-              See the evidence.
+            <strong>{profile.role}.</strong> I&rsquo;ve worked on {profile.trackRecord.summary}{' '}
+            since {profile.trackRecord.coreSince}. The agent answers from my project notes, so you
+            can follow its sources and check my work.
+          </p>
+          <p className={styles.proof}>
+            Start with{' '}
+            <IntentLink className="marked-link" href="/projects#metal-birds-feed">
+              Metal Birds Feed
             </IntentLink>
+            : I got national aircraft registers into one feed and built a Cloud Run service to look
+            them up.
           </p>
           <IntakeDesk />
         </div>

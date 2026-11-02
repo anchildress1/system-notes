@@ -1,4 +1,4 @@
-import manifest from '@/data/image-manifest.json';
+import manifest from '@/data/image-manifest.json' with { type: 'json' };
 
 interface Variant {
   blur: string;

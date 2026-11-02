@@ -1,4 +1,4 @@
-import rawProjects from '@/data/projects.json';
+import rawProjects from '@/data/projects.json' with { type: 'json' };
 import { isSafeExternalUrl } from '@/lib/urlSafety';
 
 interface TechItem {

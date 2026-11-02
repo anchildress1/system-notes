@@ -22,9 +22,9 @@ export default function ProjectsPage() {
     <main id="main-content" className={styles.main}>
       <section className="page-head" aria-labelledby="exhibits-heading">
         <h1 id="exhibits-heading">
-          Systems should
+          What I&rsquo;ve built.
           <br />
-          <span>show how the work holds up.</span>
+          <span>And what I had to figure out.</span>
         </h1>
         <p className={styles.deck}>{EXHIBIT_DECK}</p>
       </section>

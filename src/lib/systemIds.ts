@@ -1,9 +1,9 @@
 /**
- * Every project name in `projects.json`, not just the seven the agent is handed.
+ * Every project name in `projects.json`, not just the ones the agent is handed.
  * A citation naming an unselected project is still a citation of her work.
  *
  * Held apart from `projects.json` rather than derived from it: the intake renders
- * on the front page, and importing the project data to read twenty names would
+ * on the front page, and importing the project data to read every name would
  * ship every `long_description` into that bundle with them. `systemIds.test.ts`
  * fails if the two ever disagree, so the copy cannot drift unnoticed.
  */
@@ -12,6 +12,8 @@ export const PROJECT_NAMES = [
   'Unearthed',
   'Happen to Have?',
   'Carbon Trace',
+  'Wild Find',
+  'Soundboard',
   'Metal Birds Feed',
   'Vestige',
   'RAI Lint',
