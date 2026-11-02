@@ -98,6 +98,8 @@
     },
     "lighthouse": {
       "puppeteer-core": "^25.16.0"
-    }
+    },
+    "minimatch": "^11.0.3",
+    "chrome-launcher": "^1.2.1"
   }
 }
