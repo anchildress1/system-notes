@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.4.0](https://github.com/anchildress1/system-notes/compare/v3.3.0...v3.4.0) (2026-11-02)
+
+
+### Features
+
+* add the recruiter intake desk, the Wild Find exhibit, and the ESM build ([#195](https://github.com/anchildress1/system-notes/issues/195)) ([2d7aaf3](https://github.com/anchildress1/system-notes/commit/2d7aaf320d3cc59331a8399c8d29766a59a3d1ee))
+
+
+### Bug Fixes
+
+* handle cancellation failures and simplify reduced motion ([#191](https://github.com/anchildress1/system-notes/issues/191)) ([971010c](https://github.com/anchildress1/system-notes/commit/971010c1f388361421f38dd16b8db7b8ef898375))
+* name rows, facet chips, and the player from their own content ([#194](https://github.com/anchildress1/system-notes/issues/194)) ([a920823](https://github.com/anchildress1/system-notes/commit/a9208232c0570a37c3003e3946ad590c93f74be3))
+
 ## [3.3.0](https://github.com/anchildress1/system-notes/compare/v3.2.1...v3.3.0) (2026-09-27)
 
 
