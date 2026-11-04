@@ -1,13 +1,6 @@
 import { runInNewContext } from 'node:vm';
 import { describe, expect, it, vi } from 'vitest';
-import {
-  DEFAULT_THEME,
-  parseTheme,
-  resolveTheme,
-  THEME_COLORS,
-  THEME_SCRIPT,
-  THEME_STORAGE_KEY,
-} from '@/lib/theme';
+import { parseTheme, THEME_COLORS, THEME_SCRIPT, THEME_STORAGE_KEY } from '@/lib/theme';
 
 describe('parseTheme', () => {
   it('accepts the two literals and nothing else', () => {
@@ -21,23 +14,6 @@ describe('parseTheme', () => {
     for (const value of [null, undefined, '', 'Dark', 'LIGHT', 'system', 0, 1, {}, []]) {
       expect(parseTheme(value), String(value)).toBeNull();
     }
-  });
-});
-
-describe('resolveTheme', () => {
-  it('prefers a stored choice over the system preference', () => {
-    expect(resolveTheme('dark', true)).toBe('dark');
-    expect(resolveTheme('light', false)).toBe('light');
-  });
-
-  it('falls back to the system preference when nothing is stored', () => {
-    expect(resolveTheme(null, true)).toBe('light');
-    expect(resolveTheme(null, false)).toBe('dark');
-  });
-
-  it('treats an unusable stored value as no value at all', () => {
-    expect(resolveTheme('purple', true)).toBe('light');
-    expect(resolveTheme('purple', false)).toBe(DEFAULT_THEME);
   });
 });
 

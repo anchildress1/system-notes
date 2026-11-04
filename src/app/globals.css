@@ -221,6 +221,7 @@ body::before {
     linear-gradient(var(--line) 1px, transparent 1px),
     linear-gradient(90deg, var(--line) 1px, transparent 1px);
   background-size: 4rem 4rem;
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent 70%);
   mask-image: linear-gradient(to bottom, black, transparent 70%);
   opacity: 0.18;
   pointer-events: none;
@@ -672,7 +673,7 @@ body::before {
 /* The focus ring is the marker, keylined. --mark is 1.41:1 against paper and
    WCAG 2.2 wants 3:1 from a focus indicator, so the hairline carries the
    contrast and the gold carries the brand. */
-:where(a, button, input, textarea, summary):focus-visible {
+:where(a, button, input, textarea, summary, [role='listbox']):focus-visible {
   outline: 2px solid var(--mark);
   outline-offset: 2px;
   box-shadow: 0 0 0 5px var(--tile-keyline);
@@ -745,10 +746,6 @@ textarea[data-focus='ruled']:focus-visible {
 
 ::-webkit-scrollbar-thumb {
   background: var(--thumb);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--mark);
 }
 
 a {
@@ -869,7 +866,7 @@ main {
   font-family: var(--font-editorial);
   /* Sized to leave the fold something to hold. The measure stays in ch, so it
      shrinks with the type and every line breaks exactly where it did before. */
-  font-size: clamp(2.25rem, 5.8vw, 5.5rem);
+  font-size: clamp(2.25rem, 1.375rem + 4.35vw, 5.5rem);
   font-weight: 500;
   /* A Didone sets tight but not as tight as a grotesque — its thin strokes need
      air or the counters fill in at display size. */
@@ -886,7 +883,7 @@ main {
   max-width: 26ch;
   /* Scaled by the same quarter as the default, so the two stay a step apart
      rather than converging into one size with two names. */
-  font-size: clamp(1.85rem, 4vw, 3.75rem);
+  font-size: clamp(1.85rem, 0.938rem + 3vw, 3.75rem);
 }
 
 /* THE MARK — the single definition of the highlighter. Compose this one class;

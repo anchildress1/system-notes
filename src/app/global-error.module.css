@@ -13,18 +13,11 @@
    sRGB rendering of the token it stands for, and #f9cc21 is --mark exactly. It
    used to be #fabb41 — hue 80, half an arc off the site's only hue, which is
    the failure mode a hard-coded copy exists to have. */
-.errorCode {
-  margin: 0 0 1.5rem;
-  color: #f9cc21;
-  font-size: 0.9375rem;
-  letter-spacing: 0.16em;
-}
-
 .errorHeading {
   max-width: 70rem;
   margin: 0;
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(4rem, 11vw, 10rem);
+  font-size: clamp(4rem, 2.5rem + 8.25vw, 10rem);
   font-weight: 400;
   letter-spacing: -0.06em;
   line-height: 0.8;

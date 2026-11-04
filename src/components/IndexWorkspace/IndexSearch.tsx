@@ -7,6 +7,7 @@ import {
   useSearchBox,
   useStats,
 } from 'react-instantsearch';
+import { FiX } from 'react-icons/fi';
 import { SiAlgolia } from 'react-icons/si';
 import styles from './IndexWorkspace.module.css';
 
@@ -65,7 +66,7 @@ export default function IndexSearch() {
             onClick={clear}
             aria-label="Clear search and filters"
           >
-            ✕ clear
+            <FiX aria-hidden="true" /> clear
           </button>
         ) : (
           <kbd>⌘K</kbd>

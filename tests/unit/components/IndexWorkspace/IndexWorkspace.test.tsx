@@ -222,8 +222,8 @@ describe('IndexWorkspace', () => {
         screen.getByRole('button', { name: new RegExp(`^${label}, ${count} notes$`, 'i') })
       ).toBeInTheDocument();
     }
-    // Awards keep their star, so the label is not a bare facet value.
-    expect(screen.getByRole('button', { name: /^Awards ★, 27 notes$/i })).toBeInTheDocument();
+    // The star is drawn, not spoken: the name is the facet value alone.
+    expect(screen.getByRole('button', { name: /^Awards, 27 notes$/i })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^other,/i })).not.toBeInTheDocument();
 
     // The tile carries the note's own category, not a family it was folded into.

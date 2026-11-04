@@ -35,7 +35,7 @@
   /* The floor is 1.15rem, not 1.45rem: at 390px the larger size took the
      placeholder to four lines inside a three-line field and the last word was
      sliced in half by the field's own rule. */
-  font-size: clamp(1.15rem, 3.1vw, 2.5rem);
+  font-size: clamp(1.15rem, 0.625rem + 2.325vw, 2.5rem);
   line-height: 1.3;
   /* A cap in rem over a floor in em, because the constraints run in opposite
      directions. The placeholder needs MORE lines as the type gets smaller — three at
@@ -264,7 +264,7 @@
   margin-top: 1.35rem;
   color: var(--bone);
   font-family: var(--font-editorial);
-  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+  font-size: clamp(1.35rem, 0.463rem + 1.65vw, 1.85rem);
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.24;

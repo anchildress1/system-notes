@@ -23,17 +23,6 @@ export function parseTheme(value: unknown): Theme | null {
   return value === 'dark' || value === 'light' ? value : null;
 }
 
-/**
- * Picks the theme to render from a stored choice and the system preference.
- *
- * @param stored A previously stored value, if any.
- * @param prefersLight Whether the OS asks for a light interface.
- * @returns The stored choice when it is valid, otherwise the system preference.
- */
-export function resolveTheme(stored: unknown, prefersLight: boolean): Theme {
-  return parseTheme(stored) ?? (prefersLight ? 'light' : DEFAULT_THEME);
-}
-
 /* The script that stamps the theme onto `<html>` before the first paint.
 
    Runs synchronously in `<head>`, so it must not throw: `localStorage` is a
