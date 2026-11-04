@@ -401,11 +401,11 @@
 
 .awards {
   grid-column: 4 / 8;
+  margin-top: clamp(2.5rem, 5vw, 5rem);
 }
 
 .certifications {
   grid-column: 8 / -1;
-  margin-top: clamp(2.5rem, 5vw, 5rem);
 }
 
 .proof dl div {
@@ -729,7 +729,7 @@
     grid-column: auto;
   }
 
-  .certifications,
+  .awards,
   .proof dl div:nth-child(2),
   .proof dl div:nth-child(3) {
     margin-top: 0;
