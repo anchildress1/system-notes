@@ -27,7 +27,9 @@ function stubPlayback() {
     configurable: true,
     get: () => mediaError,
   });
-  const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(function () {
+  const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(function (
+    this: HTMLMediaElement
+  ) {
     if (paused) {
       paused = false;
       this.dispatchEvent(new Event('play'));
@@ -36,7 +38,9 @@ function stubPlayback() {
       requests.push({ state: 'pending', resolve, reject });
     });
   });
-  const pause = vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(function () {
+  const pause = vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(function (
+    this: HTMLMediaElement
+  ) {
     if (paused) return;
     paused = true;
     this.dispatchEvent(new Event('pause'));

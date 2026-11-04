@@ -154,7 +154,7 @@ describe('ProjectDirectoryMotion', () => {
       return 200;
     });
     const animate = vi.mocked(Element.prototype.animate).getMockImplementation()!;
-    vi.spyOn(Element.prototype, 'animate').mockImplementation(function (...args) {
+    vi.spyOn(Element.prototype, 'animate').mockImplementation(function (this: Element, ...args) {
       operations.push('animate');
       return animate.apply(this, args);
     });

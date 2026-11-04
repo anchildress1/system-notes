@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import type sharp from 'sharp';
 
 const { generateImageVariants, isUpToDate, publicPathFor, variantWidths } =
   await import('../../../scripts/generate-image-variants.mjs');
@@ -12,7 +13,7 @@ function imageFactory(width = 500) {
       webp: vi.fn(() => ({ toBuffer: vi.fn(async () => Buffer.from(file)) })),
     };
     return chain;
-  });
+  }) as unknown as typeof sharp;
 }
 
 function filesystem(overrides: Partial<Record<string, unknown>> = {}) {
@@ -38,7 +39,7 @@ describe('image variant generator', () => {
     await expect(
       generateImageVariants({
         cwd: '/portfolio',
-        fs,
+        fs: fs as never,
         log,
         sharpFactory,
         sources: [{ dir: 'projects', files: null }],
@@ -73,7 +74,7 @@ describe('image variant generator', () => {
     await expect(
       generateImageVariants({
         cwd: '/portfolio',
-        fs,
+        fs: fs as never,
         log: vi.fn(),
         sharpFactory,
         sources: [{ dir: 'projects', files: null }],
@@ -122,7 +123,7 @@ describe('image variant generator', () => {
     await expect(
       generateImageVariants({
         cwd: '/portfolio',
-        fs,
+        fs: fs as never,
         log: vi.fn(),
         sharpFactory,
         sources: [{ dir: '', files: ['profile.webp'] }],
