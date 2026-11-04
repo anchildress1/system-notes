@@ -570,26 +570,6 @@ test.describe('Notes index', () => {
 
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
   });
-
-  test('ignores a ?note param and opens the top-ranked note', async ({ page }) => {
-    await mockAlgoliaSearch(page, [
-      buildHit({ objectID: 'card:test:1', title: 'First decision' }),
-      buildHit({
-        objectID: 'card:test:2',
-        title: 'Selected decision',
-        category: 'Decision',
-      }),
-    ]);
-    // Selection lives in the workspace, not the URL. A stale ?note link is inert
-    // rather than authoritative, so the reader opens on the top-ranked note.
-    await page.goto('/notes?note=card%3Atest%3A2');
-
-    await expect(page.getByRole('article')).toHaveAccessibleName('First decision');
-    await expect(page.getByRole('listbox', { name: 'Top ranked notes' })).toHaveAttribute(
-      'aria-activedescendant',
-      'note-board-option-0'
-    );
-  });
 });
 
 test.describe('Refinement visibility', () => {

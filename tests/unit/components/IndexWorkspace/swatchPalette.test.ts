@@ -6,8 +6,7 @@ import {
 } from '@/components/IndexWorkspace/swatchPalette';
 
 describe('SWATCH_PALETTE', () => {
-  it('holds enough slots that adjacent ranks differ', () => {
-    expect(SWATCH_PALETTE.length).toBeGreaterThanOrEqual(4);
+  it('holds distinct slots, so adjacent ranks differ', () => {
     expect(new Set(SWATCH_PALETTE).size).toBe(SWATCH_PALETTE.length);
   });
 

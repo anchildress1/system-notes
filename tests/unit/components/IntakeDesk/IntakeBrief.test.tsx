@@ -413,6 +413,19 @@ describe('IntakeBrief', () => {
     expect(onSettled).not.toHaveBeenCalled();
   });
 
+  it('logs a provider failure by name only, never its message', () => {
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    render(<IntakeBrief question={QUESTION} />);
+    const onError = captured.options?.onError as ((error: unknown) => void) | undefined;
+
+    act(() => onError?.(new Error('secret key abc')));
+
+    expect(logged).toHaveBeenCalledWith('Intake brief request failed.', { name: 'Error' });
+    expect(JSON.stringify(logged.mock.calls)).not.toContain('secret key abc');
+    expect(screen.getByText(/could not answer/i)).toBeVisible();
+    logged.mockRestore();
+  });
+
   it('recovers when sending the question rejects', async () => {
     captured.send.mockRejectedValueOnce(new Error('network'));
     const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined);

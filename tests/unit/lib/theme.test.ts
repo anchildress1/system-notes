@@ -44,13 +44,31 @@ describe('THEME_SCRIPT', () => {
     expect(THEME_SCRIPT).toContain(THEME_COLORS.dark);
   });
 
-  it('accepts only the two literals out of storage', () => {
-    expect(THEME_SCRIPT).toContain("s==='dark'||s==='light'");
-  });
+  it.each([
+    { stored: 'dark', prefersLight: true, expected: 'dark' },
+    { stored: 'light', prefersLight: false, expected: 'light' },
+    { stored: null, prefersLight: true, expected: 'light' },
+    { stored: 'blue', prefersLight: false, expected: 'dark' },
+    { stored: 'blue', prefersLight: true, expected: 'light' },
+  ])(
+    'stamps $expected for stored $stored when the system prefers light: $prefersLight',
+    ({ stored, prefersLight, expected }) => {
+      const setDocumentTheme = vi.fn();
 
-  it('reads the system preference when storage has nothing usable', () => {
-    expect(THEME_SCRIPT).toContain('prefers-color-scheme: light');
-  });
+      runInNewContext(THEME_SCRIPT, {
+        localStorage: { getItem: () => stored },
+        matchMedia: (query: string) => ({
+          matches: prefersLight && query === '(prefers-color-scheme: light)',
+        }),
+        document: {
+          documentElement: { setAttribute: setDocumentTheme },
+          querySelector: () => null,
+        },
+      });
+
+      expect(setDocumentTheme).toHaveBeenCalledWith('data-theme', expected);
+    }
+  );
 
   it('still applies a light system preference when storage is unavailable', () => {
     const setDocumentTheme = vi.fn();

@@ -18,7 +18,7 @@ interface PageMetadataInput {
   description: string;
   /** Omitted for a route with no canonical address of its own, such as the 404. */
   path?: string;
-  type?: 'article' | 'profile' | 'website';
+  type?: 'profile' | 'website';
 }
 
 /* Every route builds its social metadata HERE rather than declaring its own.

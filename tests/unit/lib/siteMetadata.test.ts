@@ -5,17 +5,17 @@ describe('page metadata', () => {
   it('builds page-specific social metadata without losing shared image fields', () => {
     expect(
       buildPageMetadata({
-        title: 'A note | System Notes',
-        description: 'The useful bit.',
-        path: '/notes/card:test:1',
-        type: 'article',
+        title: 'About | System Notes',
+        description: 'The person.',
+        path: '/about',
+        type: 'profile',
       })
     ).toMatchObject({
-      title: { absolute: 'A note | System Notes' },
-      alternates: { canonical: '/notes/card:test:1' },
+      title: { absolute: 'About | System Notes' },
+      alternates: { canonical: '/about' },
       openGraph: {
-        type: 'article',
-        url: '/notes/card:test:1',
+        type: 'profile',
+        url: '/about',
         siteName: SITE_NAME,
         images: [SOCIAL_IMAGE],
       },
