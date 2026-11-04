@@ -415,10 +415,14 @@ describe('IntakeBrief', () => {
 
   it('recovers when sending the question rejects', async () => {
     captured.send.mockRejectedValueOnce(new Error('network'));
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     render(<IntakeBrief question={QUESTION} />);
 
     expect(await screen.findByText(/could not answer/i)).toBeVisible();
+    // Name only: a provider's message never reaches the log.
+    expect(logged).toHaveBeenCalledWith('Intake brief request failed.', { name: 'Error' });
+    logged.mockRestore();
   });
 
   it.each([{ finishReason: 'stop' }, { finishReason: undefined }, { finishReason: 'other' }])(

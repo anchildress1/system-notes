@@ -2,7 +2,7 @@
 
 import { createNullCache } from '@algolia/client-common';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Configure,
   InstantSearch,
@@ -14,6 +14,7 @@ import aa from 'search-insights';
 import 'instantsearch.css/themes/reset.css';
 import { ALGOLIA_INDEX_NAME } from '@/config';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
+import { failureCause } from '@/lib/failureCause';
 import { normalizeFactSearchHit } from '@/lib/noteContent';
 import { createSearchRouting } from '@/lib/searchRouting';
 import type { FactHitRecord } from '@/types/algolia';
@@ -106,7 +107,10 @@ export default function IndexWorkspace() {
 
 function IndexExperience() {
   const { items, sendEvent } = useHits<FactHitRecord>();
-  const { status } = useInstantSearch({ catchError: true });
+  const { status, error } = useInstantSearch({ catchError: true });
+  useEffect(() => {
+    if (error) console.error(`Index search failed. ${failureCause(error)}`);
+  }, [error]);
   const readableItems = useMemo(() => {
     const seenIds = new Set<string>();
     return items.flatMap((item) => {

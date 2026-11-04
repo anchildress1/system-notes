@@ -706,11 +706,14 @@ describe('IndexWorkspace', () => {
     searchHarness.hits = [];
     searchHarness.facets = {};
     searchHarness.search.mockRejectedValue(new Error('Algolia unavailable'));
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     await renderWorkspace();
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Search is offline.');
     expect(screen.getByRole('alert')).toHaveTextContent('Everything else works.');
+    expect(logged).toHaveBeenCalledWith(expect.stringContaining('Algolia unavailable'));
+    logged.mockRestore();
   });
 
   it('stops waiting when a search request never settles', async () => {

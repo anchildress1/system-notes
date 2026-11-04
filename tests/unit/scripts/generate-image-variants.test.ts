@@ -46,6 +46,9 @@ describe('image variant generator', () => {
       })
     ).resolves.toEqual({ status: 'written', variants: 4 });
 
+    expect(fs.rm).toHaveBeenCalledWith('/portfolio/src/data/image-manifest.json', {
+      force: true,
+    });
     expect(fs.readdir).toHaveBeenCalledWith('/portfolio/public/projects');
     expect(fs.rm).toHaveBeenCalledWith('/portfolio/public/projects/opt', {
       force: true,

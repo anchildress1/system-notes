@@ -118,6 +118,9 @@ export async function generateImageVariants({
     return { status: 'current', variants: 0 };
   }
 
+  // A crash after the wipe below must not leave a manifest that still looks current.
+  await fs.rm(outFile, { force: true });
+
   const manifest = {};
   for (const { dir, srcDir, optDir, names } of plan) {
     // Wipe first so variants of a deleted or renamed source cannot linger.
