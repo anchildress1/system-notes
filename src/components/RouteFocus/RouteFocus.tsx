@@ -3,7 +3,10 @@
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
-/** Moves focus to the new page's main landmark after a client-side navigation; `tabIndex=-1` keeps it out of the tab order and `preventScroll` leaves scroll to the router. */
+/**
+ * Moves focus to the new page's main landmark after a client-side navigation.
+ * `tabIndex=-1` keeps it out of the tab order; `preventScroll` leaves scroll to the router.
+ */
 export default function RouteFocus() {
   const pathname = usePathname();
   const isFirstRender = useRef(true);

@@ -347,7 +347,7 @@ test.describe('System Notes redesign', () => {
             if (element.closest('a, button, summary')) continue;
             // A dt is the caption; a dd is whatever it is asked to hold, and
             // About's track record holds sentences. Exempting the whole dl
-            // turned the floor off for reading copy this very branch resized.
+            // turned the floor off for reading copy.
             if (element.closest('dt')) continue;
             // classList, not className: on an SVG element className is an
             // SVGAnimatedString with no .includes, and every route renders

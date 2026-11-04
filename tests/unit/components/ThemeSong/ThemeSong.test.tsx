@@ -135,7 +135,6 @@ describe('ThemeSong', () => {
     expect(toggle()).toHaveAccessibleName(
       `Pause — the theme song, ${TRACK_TITLE} by ${TRACK_ARTIST}. Explicit content.`
     );
-    expect(toggle()).toHaveAccessibleName(/^Pause — the theme song/);
     expect(note()).toHaveTextContent('now playing');
     expect(equalizer()).toHaveAttribute('data-playing', 'true');
   });
