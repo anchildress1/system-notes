@@ -5,7 +5,7 @@ import RouteFocus from '@/components/RouteFocus/RouteFocus';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import SiteHeader from '@/components/SiteHeader/SiteHeader';
 import { getProjects } from '@/lib/api';
-import { isValidAppId } from '@/lib/algolia';
+import { algoliaPreconnectHost } from '@/lib/algolia';
 import { buildSiteJsonLd } from '@/lib/siteJsonLd';
 import { SITE_NAME, SOCIAL_IMAGE, SOCIAL_IMAGE_URL } from '@/lib/siteMetadata';
 import { THEME_COLORS, THEME_SCRIPT } from '@/lib/theme';
@@ -54,9 +54,7 @@ const editorial = Bodoni_Moda({
 });
 
 const baseUrl = resolveBaseUrl();
-const algoliaAppId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
-const algoliaPreconnectHost =
-  algoliaAppId && isValidAppId(algoliaAppId) ? `https://${algoliaAppId}-dsn.algolia.net` : null;
+const preconnectHost = algoliaPreconnectHost(process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID);
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -115,10 +113,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     // one level only, so real mismatches inside the app still report.
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        {algoliaPreconnectHost ? (
+        {preconnectHost ? (
           <>
-            <link rel="preconnect" href={algoliaPreconnectHost} crossOrigin="anonymous" />
-            <link rel="dns-prefetch" href={algoliaPreconnectHost} />
+            <link rel="preconnect" href={preconnectHost} crossOrigin="anonymous" />
+            <link rel="dns-prefetch" href={preconnectHost} />
           </>
         ) : null}
         <link rel="preconnect" href="https://insights.algolia.io" crossOrigin="anonymous" />
