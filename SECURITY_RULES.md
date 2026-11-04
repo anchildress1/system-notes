@@ -2,27 +2,25 @@
 
 Strict security rules for the `system-notes` repository. Follow these whenever you change code that fetches remote content, loads files, or resolves paths. Default to deny on any validation failure.
 
-## 1. Outbound Fetch / SSRF Prevention (if outbound fetching is reintroduced)
+## 1. Outbound Requests
 
-The application makes no outbound requests to third-party content today; the route that did was removed with the feature. If any is introduced, these become mandatory.
+The application contacts one third party, Algolia. The browser sends search and click events and, once a question is submitted, the intake's agent request. The server reads the notes index at request time (`indexNotes`, `indexPulse`). Nothing else leaves the app. Any new outbound request needs a stated reason and must meet these rules.
 
 ### Rule 1.1: Treat remote content as untrusted
 
-Sitemap `<loc>` entries and post HTML are attacker-influenceable. Never follow a URL derived from them without validation.
+Index records and agent output are attacker-influenceable. Never render them as HTML, and never follow a URL derived from them without validation.
 
-### Rule 1.2: Exact-origin allowlist
+### Rule 1.2: Fixed origin
 
-Only fetch URLs whose origin exactly matches the sitemap origin and whose path starts with `/posts/`. Reject alternate schemes, ports, credentials, lookalike hosts, and every validation failure.
+Build the host from a validated value (`isValidAppId`), never from user input or remote content. Reject alternate schemes, ports, credentials, and lookalike hosts.
 
 ### Rule 1.3: Bounded requests
 
-Every outbound fetch must set a timeout (`AbortSignal.timeout`), disable automatic redirects, and tolerate failure by returning empty or partial results — never by throwing into the request path.
+Every server-side request sets a timeout and tolerates failure by returning empty or partial results — never by throwing into the request path. A raw `fetch` also disables automatic redirects.
 
 ### Rule 1.4: Bound remote work
 
-- Cap the sitemap at 1 MB and each post response at 2 MB.
-- Process at most 50 unique post URLs with no more than five concurrent post fetches.
-- Keep parsing linear in input size; do not use backtracking-prone patterns over remote content.
+Cap response size and concurrency on any bulk fetch. Keep parsing linear in input size; do not use backtracking-prone patterns over remote content.
 
 ## 2. Path Traversal Prevention (if local file serving is added)
 
