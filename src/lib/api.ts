@@ -11,10 +11,23 @@ interface BlogLink {
   url: string;
 }
 
+export const PROJECT_STATUSES = [
+  'Active',
+  'Archived',
+  'Deployed',
+  'Pre-release',
+  'Published',
+  'Released',
+  'Retired',
+  'Scrapped',
+] as const;
+
+export type ProjectStatus = (typeof PROJECT_STATUSES)[number];
+
 export interface Project {
   id: string;
   title: string;
-  status: string;
+  status: ProjectStatus;
   description: string;
   tech: TechItem[];
   repo_url?: string;
@@ -31,6 +44,13 @@ export interface Project {
 type RawProject = Record<string, unknown>;
 
 const str = (value: unknown): string | undefined => (typeof value === 'string' ? value : undefined);
+
+function parseStatus(item: RawProject, index: number): ProjectStatus {
+  const value = requiredString(item, 'status', index);
+  const status = PROJECT_STATUSES.find((known) => known === value);
+  if (!status) throw new TypeError(`projects.json entry ${index} has an unknown status.`);
+  return status;
+}
 
 function requiredString(item: RawProject, key: string, index: number): string {
   const value = str(item[key])?.trim();
@@ -102,7 +122,7 @@ function parseProject(item: RawProject, index: number): Project {
   return {
     id: requiredString(item, 'objectID', index),
     title: requiredString(item, 'name', index),
-    status: str(item['status']) ?? '',
+    status: parseStatus(item, index),
     description: str(item['what_it_is']) ?? '',
     tech: parseTech(item['tech'], index),
     repo_url: externalUrl(item, 'repo_url', index),

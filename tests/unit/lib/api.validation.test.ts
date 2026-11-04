@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 const validProject = () => ({
   objectID: 'project-alpha',
   name: 'Project Alpha',
+  status: 'Active',
   tech: [{ name: 'TypeScript', role: 'Language' }],
 });
 
@@ -15,12 +16,21 @@ async function getProjectsFrom(projects: unknown[]) {
 afterEach(() => vi.doUnmock('@/data/projects.json'));
 
 describe('project data validation', () => {
-  it.each(['objectID', 'name'])('rejects a project with a missing required %s', async (field) => {
-    const project = validProject();
-    delete project[field as keyof typeof project];
-    const getProjects = await getProjectsFrom([project]);
+  it.each(['objectID', 'name', 'status'])(
+    'rejects a project with a missing required %s',
+    async (field) => {
+      const project = validProject();
+      delete project[field as keyof typeof project];
+      const getProjects = await getProjectsFrom([project]);
 
-    expect(getProjects).toThrow(`invalid ${field}`);
+      expect(getProjects).toThrow(`invalid ${field}`);
+    }
+  );
+
+  it('rejects a status outside the known set rather than filing it as current', async () => {
+    const getProjects = await getProjectsFrom([{ ...validProject(), status: 'Retred' }]);
+
+    expect(getProjects).toThrow('unknown status');
   });
 
   it.each([
