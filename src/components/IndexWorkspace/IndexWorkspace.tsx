@@ -17,7 +17,6 @@ import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '
 import { failureCause } from '@/lib/failureCause';
 import { normalizeFactSearchHit } from '@/lib/noteContent';
 import { createSearchRouting } from '@/lib/searchRouting';
-import type { FactHitRecord } from '@/types/algolia';
 import { getSearchUserToken } from '@/utils/userToken';
 import IndexSearch from './IndexSearch';
 import IndexSidebar from './IndexSidebar';
@@ -106,7 +105,7 @@ export default function IndexWorkspace() {
 }
 
 function IndexExperience() {
-  const { items, sendEvent } = useHits<FactHitRecord>();
+  const { items, sendEvent } = useHits();
   const { status, error } = useInstantSearch({ catchError: true });
   useEffect(() => {
     if (error) console.error(`Index search failed. ${failureCause(error)}`);
