@@ -37,13 +37,9 @@ export default function IndexSearch() {
 
   return (
     <div className={styles.searchArea}>
-      {/* The `retrieve>` prompt is gone. A console prefix on a search field is a
-          costume, and it was the loudest one on the site. */}
       {/* A div, not a label. The clear button is a labelable element, so nesting it
           inside a <label> is an invalid content model and made clicking "clear"
-          also fire the label's forwarding to the input. The name now comes from a
-          real <label> naming only the field, rather than from an aria-label
-          duplicating a visually-hidden span the aria-label already overrode. */}
+          also fire the label's forwarding to the input. */}
       <div className={styles.searchPill}>
         <label className="visually-hidden" htmlFor={searchId}>
           Search the notes index
@@ -107,23 +103,13 @@ export default function IndexSearch() {
   );
 }
 
-/**
- * Collapses facet values that differ only by case into one control.
- *
- * Algolia matches facet filters case-insensitively, so a link carrying
- * "System Notes" narrows the results even where the records are filed as
- * "System notes". InstantSearch compares isRefined with a strict string
- * equality, so it treated those as two values: it synthesized a checked entry
- * for the refinement with a count of zero, and left the real entry — the one
- * with the count next to it — unchecked. Two boxes for one filter, and the one
- * a reader would click was the wrong one.
- *
- * The merged entry keeps the refined spelling as its value, so refine() toggles
- * the refinement that actually exists rather than adding a second one.
- */
+/** Merges facet values that differ only by case, keeping the refined spelling as the value. */
 export function mergeFacetItemsByCase<
   T extends { value: string; label: string; count: number; isRefined: boolean },
 >(items: T[]): T[] {
+  // Algolia matches facet filters case-insensitively but InstantSearch compares isRefined
+  // with strict equality, so without this a refined "System Notes" shows beside an unchecked
+  // "System notes".
   const merged = new Map<string, T>();
   for (const item of items) {
     const key = item.value.toLowerCase();

@@ -91,7 +91,7 @@ interface BriefProps {
 
 /* Sends one question to the agent and renders the answer once it settles. There is
    no conversation: asking again remounts the component, which is why the page keys
-   it on the question text. */
+   it on the nonce and question. */
 export default function IntakeBrief({ question, onSettled, onFinished }: Readonly<BriefProps>) {
   const [timedOut, setTimedOut] = useState(false);
   const [sendFailed, setSendFailed] = useState(false);

@@ -23,10 +23,7 @@ import styles from './IndexWorkspace.module.css';
 // — no grouping, no relabelling, no fallback bucket — so changing a category name
 // is a data change, not a code change.
 //
-// Rank comes from the *unfiltered* facet list, held alongside the board's census.
-// Refining re-sorts the live list by the narrowed counts, and keying off that
-// repainted most of the board the moment a filter was applied, so the census could
-// no longer be read as "the same board, with matches lit".
+// Rank comes from the unfiltered facet list; a narrowed list would repaint the board on every filter.
 
 // Awards take a tone outside the rank palette. This is the one place a name
 // matters, and it matches on meaning rather than an exact value, so "Awards"
@@ -166,9 +163,8 @@ export default function IndexSidebar({
     [categories]
   );
 
-  // Every tile on the board is a MATCH. Dimming non-matching tiles instead rendered
-  // a grid three-quarters full of grey, indistinguishable from a disabled control.
-  // The board reflows when a filter narrows it, which reads as the index responding.
+  // Every tile is a MATCH; the board reflows when a filter narrows it, which reads as the
+  // index responding.
   const boardItems = useMemo(
     () => fitBoardToWholeRows(rankedItems, boardColumns),
     [rankedItems, boardColumns]

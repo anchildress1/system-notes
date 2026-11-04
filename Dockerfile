@@ -6,9 +6,7 @@ ENV NPM_CONFIG_LOGLEVEL=error
 
 # Install with the lockfile first so this layer caches across source changes.
 COPY package.json package-lock.json ./
-# Read from package.json, as CI does. Hardcoded, the production image kept
-# installing the old npm after a packageManager bump, with engines.npm wide
-# enough to satisfy both and nothing comparing them.
+# Read from package.json, as CI does, so a packageManager bump reaches the production image.
 RUN npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
 RUN npm ci --ignore-scripts
 

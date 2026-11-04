@@ -97,7 +97,7 @@ describe('getIndexPulse', () => {
     harness.search.mockRejectedValue(new Error('RetryError'));
     const { getIndexPulse } = await loadPulse();
 
-    // A null pulse renders the unnumbered header; a zero would be a lie.
+    // A null pulse renders no pulse line; a zero would be a lie.
     expect(await getIndexPulse()).toBeNull();
   });
 

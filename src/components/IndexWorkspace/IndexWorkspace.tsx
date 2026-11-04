@@ -123,12 +123,12 @@ function IndexExperience() {
   const { query } = useSearchBox();
   // The selection carries the query it was made under, so a new search discards
   // it by derivation rather than by resetting state in an effect. Otherwise the
-  // pane keeps showing a note left over from the previous query while the board
+  // open row keeps a note left over from the previous query while the board
   // underneath it has already moved on.
   const [selection, setSelection] = useState<{ id: string; query: string } | null>(null);
 
   // Selection lives in the workspace, not the URL. The board is a reading
-  // surface: picking a note swaps the pane and reports the click to Algolia,
+  // surface: picking a note opens its row and reports the click to Algolia,
   // and it falls back to the top-ranked note whenever the current pick is stale
   // or has dropped out of the results.
   const selectedId = useMemo(() => {

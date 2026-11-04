@@ -47,8 +47,8 @@ describe('assignSwatches', () => {
   });
 
   it('never lets an award consume a rank slot', () => {
-    // The regression: with awards ranked third, the fifth category wrapped back
-    // onto slot 0 and painted identically to the first.
+    // With awards ranked third, the fifth category would wrap back onto slot 0
+    // and paint identically to the first.
     const assigned = assignSwatches(
       ['Decisions', 'Architecture', 'Practice', 'Awards ★', 'Principles'],
       isAward

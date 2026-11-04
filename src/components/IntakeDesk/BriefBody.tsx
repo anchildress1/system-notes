@@ -78,15 +78,7 @@ export type BriefBlock =
   | { kind: 'counter'; text: string }
   | { kind: 'body'; text: string };
 
-/**
- * Signposts the agent opens a step with.
- *
- * The ordinal alone is not enough: a paragraph may legitimately begin "Second
- * point." without being a step in a sequence, and matching it swallowed the word
- * and rendered the remainder as "point.". A real signpost is punctuated
- * ("First, I would…") or runs straight into the first person ("Then I would…"),
- * which is how the agent actually writes them.
- */
+/** Signposts the agent opens a step with: punctuated, or running into the first person. */
 const STEP_OPENER =
   /^(first|second|third|fourth|fifth|next|then|finally|lastly)\b(?:[,:]\s+|\s+(?=I\s))/i;
 

@@ -3,22 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
-/*
-   Moves focus to the new page's main landmark after a client-side navigation.
-
-   Without this, focus stays on the nav link that was activated. Chrome
-   re-evaluates :focus-visible on the NEXT keypress, so a reader who clicked a
-   link with the mouse and then pressed an arrow key to scroll had the focus ring
-   appear on a link they were no longer using. The ring was correct about the
-   element; the element was wrong about the focus.
-
-   It is also what a soft navigation owes a keyboard or screen reader user, who
-   would otherwise be stranded in the header of a page they have already left.
-
-   tabIndex is set here rather than on each `main` so a new route cannot forget
-   it; -1 keeps the landmark out of the tab sequence while allowing focus().
-   preventScroll because the router already restores scroll position.
-*/
+/** Moves focus to the new page's main landmark after a client-side navigation; `tabIndex=-1` keeps it out of the tab order and `preventScroll` leaves scroll to the router. */
 export default function RouteFocus() {
   const pathname = usePathname();
   const isFirstRender = useRef(true);

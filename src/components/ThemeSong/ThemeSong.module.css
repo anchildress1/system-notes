@@ -30,15 +30,11 @@
   align-items: flex-end;
   gap: 4px;
   margin-top: 1.25rem;
-  /* Shown rather than hidden while paused: the bars anchor the control above
-     them, and removing them makes the panel jump on play. Which is why there is
-     no opacity here to transition — the hide-while-paused behaviour this once
-     animated was removed, and the transition outlived it. */
+  /* Shown rather than hidden while paused: the bars anchor the control, and
+     removing them makes the panel jump on play. */
 }
 
-/* Neutral at rest, accent while running. Dimming the accent instead produced a
-   washed-out pink — a color that appears nowhere else in the system, so it read
-   as a rendering fault rather than as an idle state. */
+/* Neutral at rest, accent while running. */
 .bar {
   flex: 1;
   background: var(--edge);

@@ -191,12 +191,7 @@ html {
   transition: none;
 }
 
-/* NO min-width, and NO overflow clip. Together they were a trap: body's
-   overflow-x: clip PROPAGATES to the viewport, so paired with a min-width the
-   surplus sat outside the viewport and scrollX could not leave 0 — unreachable,
-   not merely off screen. 280px is a real device and is also 1280px at 400%
-   zoom, which WCAG 1.4.10 asks to work. Decorative overhang is contained by
-   `main`, which is a real clipping box. */
+/* No min-width or overflow clip on body; `main` clips overflow. */
 body {
   min-height: 100vh;
   background:
@@ -779,11 +774,11 @@ picture {
   max-width: 100%;
 }
 
-/* Every route clips its own horizontal overflow HERE. body's overflow-x: clip
-   PROPAGATES to the viewport: it stops sideways scrolling but leaves
-   documentElement.scrollWidth still reporting the overflow, which is what the
-   mobile suite asserts on. Anything that hangs past its column — a taped
-   print's tape, a rotated sheet, the portrait's negative margin — relies on this. */
+/* Every route clips its own horizontal overflow HERE, never on body: body's
+   overflow-x: clip propagates to the viewport, stops sideways scrolling, and
+   leaves documentElement.scrollWidth reporting the overflow. Anything that hangs
+   past its column — a taped print's tape, a rotated sheet, the portrait's
+   negative margin — relies on this. */
 main {
   display: block;
   overflow-x: clip;
@@ -865,7 +860,7 @@ main {
   max-width: 20ch;
   font-family: var(--font-editorial);
   /* Sized to leave the fold something to hold. The measure stays in ch, so it
-     shrinks with the type and every line breaks exactly where it did before. */
+     shrinks with the type. */
   font-size: clamp(2.25rem, 1.375rem + 4.35vw, 5.5rem);
   font-weight: 500;
   /* A Didone sets tight but not as tight as a grotesque — its thin strokes need

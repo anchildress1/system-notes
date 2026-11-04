@@ -23,6 +23,5 @@ pre-push:
       run: make test
     security-scan:
       run: make secret-scan
-    # Performance is 98 desktop / 92 mobile; accessibility, best-practices, and SEO are 100.
     performance:
       run: make test-perf

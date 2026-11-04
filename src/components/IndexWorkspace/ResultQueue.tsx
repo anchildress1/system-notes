@@ -7,9 +7,6 @@ import { formatNoteDate, getFactHitPosition, getNoteProjects } from '@/lib/noteC
 import type { FactHitRecord } from '@/types/algolia';
 import styles from './IndexWorkspace.module.css';
 
-/* Rows per page. Six rather than five because the note being read is no longer
-   lifted out of the list into a reader above it — a page carries the same six
-   notes it always carried, all of them as rows. */
 const PAGE_SIZE = 6;
 
 interface ResultQueueProps {

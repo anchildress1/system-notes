@@ -81,9 +81,9 @@ export default function IntakeDesk() {
   // answer back. Without this the form stayed live under a running request.
   const [inFlight, setInFlight] = useState(false);
 
-  /* Submitting cleared the field and rendered the brief below the fold, so the
-     only feedback was the field emptying. Honors reduced motion through the
-     global scroll-behavior guard. */
+  /* Scroll the answer into view: submitting clears the field and renders the
+     brief below the fold. Honors reduced motion through the global
+     scroll-behavior guard. */
   const answerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (asked) answerRef.current?.scrollIntoView({ block: 'nearest' });
