@@ -42,6 +42,12 @@ interface Certification {
 // once and a new entry cannot quietly drop a field.
 const certifications: readonly Certification[] = [
   {
+    name: 'Professional Agentic Architect',
+    issuer: 'Google Cloud',
+    issued: 'November 2026',
+    credentialUrl: 'https://www.credly.com/badges/ceb8b979-8d5a-4e04-a831-bbcaf983a33f/public_url',
+  },
+  {
     name: 'Professional Cloud Architect',
     issuer: 'Google Cloud',
     issued: 'September 2026',
