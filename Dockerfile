@@ -45,5 +45,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # --chmod=555 (read+execute, no write) satisfies S6504.
 COPY --from=installer --chown=node:node --chmod=555 /app/.next/standalone ./
 
+# Next creates .next/cache on the first /_next/image request, and a read-only
+# tree turns that mkdir into an unhandledRejection. Only this directory is writable.
+RUN mkdir .next/cache && chown node:node .next/cache
+
 USER node
 CMD ["node", "server.js"]
