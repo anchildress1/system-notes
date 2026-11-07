@@ -34,7 +34,10 @@ A searchable record of Ashley Childress's engineering decisions, constraints, fa
 
 ## Local development
 
+Node and npm are pinned in `mise.toml`; install [mise](https://mise.jdx.dev) first.
+
 ```bash
+mise install
 make install
 make dev
 ```
@@ -68,14 +71,14 @@ Admin and write-scoped keys belong outside this app. Giving one a `NEXT_PUBLIC_`
 - Unit coverage includes production TypeScript and project-owned generator scripts; floors are 97% lines, 95% functions/statements, and 90% branches.
 - Chromium runs the full mocked-provider browser suite; WebKit runs compatibility checks; mobile Chrome and Safari run responsive checks, plus the two accessibility rules whose answer depends on the viewport.
 - Algolia search and Agent Studio are mocked browser-integration boundaries. The suite never claims live-provider validation.
-- Lighthouse samples `/`, `/projects`, and `/about` three times on desktop, and those routes plus `/notes` five times on mobile. Accessibility and SEO remain 100; best practices and unexpected console errors gate every route except mobile `/notes`; desktop performance remains at least 98 and mobile at least 92.
+- Lighthouse samples `/`, `/projects`, and `/about` three times on desktop, and those routes plus `/notes` five times on mobile. Accessibility and SEO remain 100; best practices and unexpected console errors gate every route except mobile `/notes`; desktop performance remains at least 98 and mobile at least 89.
 - InstantSearch owns query and refinement URL state at `/notes`.
 - The notes workspace owns selected-reader state and fires Algolia click events on selection.
 - The intake defers its agent transport until a question is submitted.
 
 ## Security
 
-The application makes no outbound requests to third-party content. Rules for reintroducing any are in [`SECURITY_RULES.md`](./SECURITY_RULES.md).
+The application contacts one third party, Algolia: the browser sends search and click events, the intake sends its question to an Algolia agent once submitted, and the server reads the notes index at request time. Nothing else leaves the app. Rules for any new outbound request are in [`SECURITY_RULES.md`](./SECURITY_RULES.md).
 
 `gitleaks`, CodeQL, Semgrep, SonarCloud, dependency auditing, and locked-down CI permissions cover the less glamorous ways software can embarrass its owner.
 

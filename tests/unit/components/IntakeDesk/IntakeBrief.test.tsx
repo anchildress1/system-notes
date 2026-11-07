@@ -95,9 +95,8 @@ describe('IntakeBrief', () => {
   });
 
   it('does not re-ask when the component re-renders', () => {
-    // The regression this guards: the send used to be handed to the connector as
-    // `initialUserMessage`, which cached it in sessionStorage and then refused to
-    // send it ever again. Owning the send means owning "exactly once" too.
+    // The component owns the send, so it owns "exactly once": a connector-handled
+    // initial message is cached in sessionStorage and never sent again.
     const { rerender } = render(<IntakeBrief question={QUESTION} />);
     rerender(<IntakeBrief question={QUESTION} />);
 
@@ -252,8 +251,7 @@ describe('IntakeBrief', () => {
   });
 
   it('reports the turn finished when it fails, so the form is not left disabled', () => {
-    // The regression: the desk only re-enabled itself from onSettled, which a
-    // failed turn never reaches — the button stayed dead until a reload.
+    // The desk re-enables from onFinished; onSettled is never reached on failure.
     chat.state = { status: 'error', error: new Error('gone'), messages: [] };
     const onFinished = vi.fn();
 
@@ -413,12 +411,29 @@ describe('IntakeBrief', () => {
     expect(onSettled).not.toHaveBeenCalled();
   });
 
+  it('logs a provider failure by name only, never its message', () => {
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    render(<IntakeBrief question={QUESTION} />);
+    const onError = captured.options?.onError as ((error: unknown) => void) | undefined;
+
+    act(() => onError?.(new Error('secret key abc')));
+
+    expect(logged).toHaveBeenCalledWith('Intake brief request failed.', { name: 'Error' });
+    expect(JSON.stringify(logged.mock.calls)).not.toContain('secret key abc');
+    expect(screen.getByText(/could not answer/i)).toBeVisible();
+    logged.mockRestore();
+  });
+
   it('recovers when sending the question rejects', async () => {
     captured.send.mockRejectedValueOnce(new Error('network'));
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     render(<IntakeBrief question={QUESTION} />);
 
     expect(await screen.findByText(/could not answer/i)).toBeVisible();
+    // Name only: a provider's message never reaches the log.
+    expect(logged).toHaveBeenCalledWith('Intake brief request failed.', { name: 'Error' });
+    logged.mockRestore();
   });
 
   it.each([{ finishReason: 'stop' }, { finishReason: undefined }, { finishReason: 'other' }])(

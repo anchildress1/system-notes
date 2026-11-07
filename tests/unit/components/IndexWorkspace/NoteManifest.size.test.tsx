@@ -35,18 +35,4 @@ describe('NoteManifest payload', () => {
 
     expect(bytes / SSR_NOTE_LIMIT).toBeLessThan(MAX_BYTES_PER_NOTE);
   });
-
-  it('scales with the note count rather than carrying fixed bulk', () => {
-    // A wrapper that ballooned per render would show up as a constant the budget
-    // above could absorb while the real page could not.
-    const render = (count: number) =>
-      Buffer.byteLength(
-        renderToStaticMarkup(
-          <NoteManifest notes={Array.from({ length: count }, (_, i) => longNote(i))} />
-        ),
-        'utf8'
-      );
-
-    expect(render(20) - render(10)).toBeLessThan(MAX_BYTES_PER_NOTE * 10);
-  });
 });

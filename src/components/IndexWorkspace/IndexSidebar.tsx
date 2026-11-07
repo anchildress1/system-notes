@@ -11,6 +11,7 @@ import {
   type MouseEvent,
 } from 'react';
 import type { Hit } from 'instantsearch.js';
+import { FiChevronsLeft, FiChevronsRight, FiStar } from 'react-icons/fi';
 import { useClearRefinements, useRefinementList, useSearchBox } from 'react-instantsearch';
 import { getFactHitPosition } from '@/lib/noteContent';
 import { fitBoardToWholeRows } from './boardLayout';
@@ -22,14 +23,11 @@ import styles from './IndexWorkspace.module.css';
 // — no grouping, no relabelling, no fallback bucket — so changing a category name
 // is a data change, not a code change.
 //
-// Rank comes from the *unfiltered* facet list, held alongside the board's census.
-// Refining re-sorts the live list by the narrowed counts, and keying off that
-// repainted most of the board the moment a filter was applied, so the census could
-// no longer be read as "the same board, with matches lit".
+// Rank comes from the unfiltered facet list; a narrowed list would repaint the board on every filter.
 
 // Awards take a tone outside the rank palette. This is the one place a name
-// matters, and it matches on meaning rather than an exact value, so "Awards",
-// "Award" and "Awards ★" all keep the treatment.
+// matters, and it matches on meaning rather than an exact value, so "Awards"
+// and "Award" both keep the treatment.
 function isAwardCategory(value: string | undefined): boolean {
   return /award/i.test(value ?? '');
 }
@@ -141,7 +139,7 @@ export default function IndexSidebar({
         .filter((item) => item.count > 0 || item.isRefined)
         .map((item) => ({
           key: item.value,
-          label: isAwardCategory(item.value) ? `${item.label} ★` : item.label,
+          label: item.label,
           count: item.count,
           isRefined: item.isRefined,
           isAward: isAwardCategory(item.value),
@@ -165,9 +163,8 @@ export default function IndexSidebar({
     [categories]
   );
 
-  // Every tile on the board is a MATCH. Dimming non-matching tiles instead rendered
-  // a grid three-quarters full of grey, indistinguishable from a disabled control.
-  // The board reflows when a filter narrows it, which reads as the index responding.
+  // Every tile is a MATCH; the board reflows when a filter narrows it, which reads as the
+  // index responding.
   const boardItems = useMemo(
     () => fitBoardToWholeRows(rankedItems, boardColumns),
     [rankedItems, boardColumns]
@@ -300,7 +297,7 @@ export default function IndexSidebar({
         onClick={() => setIsOpen((open) => !open)}
       >
         <span>{isOpen ? 'Filed under' : 'Menu'}</span>
-        <span aria-hidden="true">{isOpen ? '«' : '»'}</span>
+        {isOpen ? <FiChevronsLeft aria-hidden="true" /> : <FiChevronsRight aria-hidden="true" />}
       </button>
 
       <div id="index-catalog" className={styles.catalog}>
@@ -332,6 +329,7 @@ export default function IndexSidebar({
                     of the phrase can ever contain. */}
                 <span className={styles.categoryName} aria-hidden="true">
                   {category.label}
+                  {category.isAward ? <FiStar className={styles.awardStar} /> : null}
                 </span>
                 <span className={styles.categoryCount} aria-hidden="true">
                   {/* No numeral on a refined category the narrowed set emptied: "0 −" is a count of

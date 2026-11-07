@@ -28,20 +28,11 @@
   animation: rise-in 600ms var(--ease-out) both;
 }
 
-.code {
-  margin-bottom: 1.5rem;
-  color: var(--mute);
-  font-family: var(--font-display);
-  font-size: var(--fine);
-  letter-spacing: var(--fine-tracking);
-  text-transform: uppercase;
-}
-
 /* Type and the italic turn both come from .page-head-title. This page carried
    its own clamp and its own mobile step, which is how the site ended up with
    more heading sizes than it has heads. */
 
-.message > p:not(.code) {
+.message > p {
   max-width: 43rem;
   margin-top: 2rem;
   color: var(--soft);
@@ -72,7 +63,7 @@
 .marker {
   color: transparent;
   font-family: var(--font-display);
-  font-size: clamp(9rem, 25vw, 25rem);
+  font-size: clamp(9rem, 6.25rem + 18.75vw, 25rem);
   font-style: normal;
   line-height: 0.7;
   -webkit-text-stroke: 1px var(--line-strong);

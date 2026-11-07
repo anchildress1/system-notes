@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { FiArrowUpRight } from 'react-icons/fi';
 import IntentLink from '@/components/IntentLink/IntentLink';
 import ThemeToggle from '@/components/ThemeToggle/ThemeToggle';
 import { BLOG_URL } from '@/config';
@@ -49,7 +50,7 @@ export default function SiteHeader() {
             );
           })}
           <a className={styles.navLink} href={BLOG_URL} target="_blank" rel="noopener noreferrer">
-            blog <span aria-hidden="true">↗</span>
+            blog <FiArrowUpRight aria-hidden="true" />
             <span className={styles.srOnly}> (opens in a new tab)</span>
           </a>
           <ThemeToggle />

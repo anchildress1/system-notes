@@ -22,10 +22,7 @@ test.describe('project exhibit motion', () => {
     await verifyLowerTapeFold(page);
   });
 
-  test('animates every exhibit layer in supported desktop engines', async ({
-    page,
-    browserName,
-  }, testInfo) => {
+  test('animates every exhibit layer in supported desktop engines', async ({ page }, testInfo) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto('/projects');
     await page.locator('html').evaluate((element) => {
@@ -48,8 +45,8 @@ test.describe('project exhibit motion', () => {
       type: 'motion-path',
       description: hasScrollTimeline ? 'native scroll timeline' : 'JavaScript fallback',
     });
-    // Firefox owns fallback coverage; gaining native support needs a new coverage owner.
-    if (browserName === 'firefox') {
+    // The firefox-fallback project owns fallback coverage.
+    if (testInfo.project.name === 'firefox-fallback') {
       expect(hasScrollTimeline, 'This project must exercise the JavaScript fallback').toBe(false);
     }
 

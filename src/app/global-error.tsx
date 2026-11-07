@@ -4,22 +4,23 @@ import styles from './global-error.module.css';
 
 export default function GlobalError({
   error,
-  reset,
+  retry,
 }: Readonly<{
-  error: Error & { digest?: string };
-  reset: () => void;
+  error: unknown;
+  retry: () => void;
 }>) {
+  // A value thrown in a Client Component arrives as-is and may not be an Error.
+  const digest = error instanceof Error ? (error as Error & { digest?: string }).digest : undefined;
   return (
     <html lang="en">
       <body className={styles.errorShell}>
-        <p className={styles.errorCode}>SYSTEM / ERROR</p>
         <h1 className={styles.errorHeading}>The failure path works.</h1>
         <p className={styles.errorMessage}>
-          {error.digest
-            ? `The page stopped with reference ${error.digest}.`
+          {digest
+            ? `The page stopped with reference ${digest}.`
             : 'The page stopped before it could produce a useful result.'}
         </p>
-        <button type="button" className={styles.errorAction} onClick={reset}>
+        <button type="button" className={styles.errorAction} onClick={retry}>
           Try again
         </button>
       </body>

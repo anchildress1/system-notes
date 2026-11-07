@@ -4,9 +4,9 @@ import styles from './NoteManifest.module.css';
 
 /* The corpus as plain server-rendered text.
 
-   The workspace is client-only, so without this a crawler and a reader with
-   scripting off both got "Loading the index •••" and nothing else. It is the
-   list the workspace replaces once it mounts, not a second copy shown beside it. */
+   The workspace is client-only, so a crawler and a reader with scripting off
+   would otherwise see only the loading shell. It is the list the workspace
+   replaces once it mounts, not a second copy shown beside it. */
 export default function NoteManifest({ notes }: Readonly<{ notes: IndexNote[] }>) {
   if (notes.length === 0) return null;
 

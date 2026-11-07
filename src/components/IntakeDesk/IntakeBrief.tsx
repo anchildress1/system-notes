@@ -9,6 +9,15 @@ import { ALGOLIA_APP_ID, ALGOLIA_AGENT_ID, ALGOLIA_SEARCH_KEY } from '@/lib/algo
 import BriefBody from './BriefBody';
 import styles from './IntakeDesk.module.css';
 
+// Logged like every other provider failure: on screen a 503, an expired key, a
+// malformed chunk and a hang are one sentence, so without this there is nothing
+// to tell them apart by. Narrowed to the name, the rule for anything a provider hands back.
+function logSendFailure(failure: unknown) {
+  console.error('Intake brief request failed.', {
+    name: failure instanceof Error ? failure.name : 'ProviderError',
+  });
+}
+
 /* Reads the answer out of a message. A turn arrives as parts — text alongside
    reasoning, tool calls and sources — and only the text parts are the answer.
 
@@ -82,7 +91,7 @@ interface BriefProps {
 
 /* Sends one question to the agent and renders the answer once it settles. There is
    no conversation: asking again remounts the component, which is why the page keys
-   it on the question text. */
+   it on the nonce and question. */
 export default function IntakeBrief({ question, onSettled, onFinished }: Readonly<BriefProps>) {
   const [timedOut, setTimedOut] = useState(false);
   const [sendFailed, setSendFailed] = useState(false);
@@ -90,13 +99,7 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
   const { messages, status, error, sendMessage, stop } = useChat({
     transport,
     onError: (sendError) => {
-      // Logged like every other provider failure here: on screen a 503, an
-      // expired key, a malformed chunk and a hang are one sentence, so without
-      // this there is nothing to tell them apart by. Narrowed to the name, which
-      // is the rule for anything a provider hands back.
-      console.error('Intake brief request failed.', {
-        name: sendError instanceof Error ? sendError.name : 'ProviderError',
-      });
+      logSendFailure(sendError);
       setSendFailed(true);
     },
     // A turn can stop early and still settle as `ready` with no error and no
@@ -119,7 +122,10 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
   useEffect(() => {
     if (hasSent.current) return;
     hasSent.current = true;
-    void sendMessage({ text: question }).catch(() => setSendFailed(true));
+    void sendMessage({ text: question }).catch((error_) => {
+      logSendFailure(error_);
+      setSendFailed(true);
+    });
   }, [question, sendMessage]);
 
   const answer = messageText(
@@ -133,7 +139,10 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
   useEffect(() => {
     if (!isWorking) return undefined;
     const timer = setTimeout(() => {
-      void stop().catch(() => setSendFailed(true));
+      void stop().catch((error_) => {
+        logSendFailure(error_);
+        setSendFailed(true);
+      });
       setTimedOut(true);
     }, TURN_TIMEOUT_MS);
     return () => clearTimeout(timer);

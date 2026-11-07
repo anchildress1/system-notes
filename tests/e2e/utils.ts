@@ -521,7 +521,11 @@ export async function verifyAboutPortraitMotion(page: Page) {
     for (const start of starts) {
       const end = ends.find(({ pseudo }) => pseudo === start.pseudo)!;
       expect(end.elapsed - start.elapsed).toBeCloseTo(2, 1);
-      expect(end.at - start.at, 'the press must unfold over real time').toBeGreaterThan(1800);
+      // The 2s elapsed check above proves the animation ran its full length; this only
+      // rejects one that snaps. A late animationstart on CI WebKit (the same coarseness
+      // noted for the stagger) shrank a 2s press to 1783ms against the old 1800 floor.
+      // Restore toward 1800 if CI WebKit's event timing improves.
+      expect(end.at - start.at, 'the press must unfold over real time').toBeGreaterThan(1500);
       expect(end.at - start.at).toBeLessThan(3000);
       const samples = trace.samples.filter(({ pseudo }) => pseudo === start.pseudo);
       const initial = samples.find(({ at }) => at >= start.at)!;

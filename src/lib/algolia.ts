@@ -9,6 +9,16 @@ export function isValidAppId(appId: string): boolean {
   return APP_ID_PATTERN.test(appId);
 }
 
+/**
+ * The Algolia host to preconnect to for an application id.
+ *
+ * @param appId The configured application id, if any.
+ * @returns The host origin, or null when the id is not a well-formed Algolia id.
+ */
+export function algoliaPreconnectHost(appId: string | undefined): string | null {
+  return appId && isValidAppId(appId) ? `https://${appId}-dsn.algolia.net` : null;
+}
+
 export function isValidApiKey(apiKey: string): boolean {
   return apiKey.length >= MIN_KEY_LENGTH;
 }

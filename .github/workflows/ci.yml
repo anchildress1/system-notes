@@ -30,7 +30,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version-file: 'package.json'
+          node-version-file: 'mise.toml'
           cache: 'npm'
 
       - name: Setup npm
@@ -86,9 +86,7 @@ jobs:
           retention-days: 30
 
       # include-hidden-files, because lhci writes to a DOT directory and the
-      # action excludes hidden paths by default — so every file here was being
-      # filtered out and the artifact has always been empty. This is the actual
-      # cause of "No files were found with the provided path".
+      # action excludes hidden paths by default.
       #
       # The `if` is still worth having: it stops the upload running at all when
       # an earlier step failed and the perf step never got to write anything.

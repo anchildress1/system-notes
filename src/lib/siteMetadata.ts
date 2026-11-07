@@ -3,8 +3,7 @@ import type { Metadata } from 'next';
 export const SITE_NAME = 'System Notes';
 /* The System Notes project card, shared as the site's own. WebP: checked against
    LinkedIn's Post Inspector, which scrapes it, renders the full card, and
-   re-hosts a transcode on its own CDN. A JPEG duplicate was carried here for a
-   while on the belief that it would not — it does. */
+   re-hosts a transcode on its own CDN. */
 export const SOCIAL_IMAGE_URL = '/projects/system-notes.webp';
 export const SOCIAL_IMAGE = {
   url: SOCIAL_IMAGE_URL,
@@ -18,7 +17,7 @@ interface PageMetadataInput {
   description: string;
   /** Omitted for a route with no canonical address of its own, such as the 404. */
   path?: string;
-  type?: 'article' | 'profile' | 'website';
+  type?: 'profile' | 'website';
 }
 
 /* Every route builds its social metadata HERE rather than declaring its own.

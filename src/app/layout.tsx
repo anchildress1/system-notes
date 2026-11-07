@@ -5,7 +5,7 @@ import RouteFocus from '@/components/RouteFocus/RouteFocus';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import SiteHeader from '@/components/SiteHeader/SiteHeader';
 import { getProjects } from '@/lib/api';
-import { isValidAppId } from '@/lib/algolia';
+import { algoliaPreconnectHost } from '@/lib/algolia';
 import { buildSiteJsonLd } from '@/lib/siteJsonLd';
 import { SITE_NAME, SOCIAL_IMAGE, SOCIAL_IMAGE_URL } from '@/lib/siteMetadata';
 import { THEME_COLORS, THEME_SCRIPT } from '@/lib/theme';
@@ -22,9 +22,7 @@ const sans = localFont({
   fallback: ['system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
 });
 
-// Everything Archivo is not: wordmark, headlines, and every piece of metadata
-// the site used to set in a monospace or a serif. One variable cut covers all
-// three, which is why three families could leave.
+// Wordmark, headlines and metadata. One variable cut covers all three roles.
 const display = localFont({
   src: './fonts/SpaceGrotesk-Variable.woff2',
   variable: '--font-display',
@@ -54,9 +52,7 @@ const editorial = Bodoni_Moda({
 });
 
 const baseUrl = resolveBaseUrl();
-const algoliaAppId = process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID;
-const algoliaPreconnectHost =
-  algoliaAppId && isValidAppId(algoliaAppId) ? `https://${algoliaAppId}-dsn.algolia.net` : null;
+const preconnectHost = algoliaPreconnectHost(process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID);
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -89,10 +85,8 @@ export const metadata: Metadata = {
     description: 'Engineering decisions, projects, and failure-tested working rules.',
     images: [SOCIAL_IMAGE_URL],
   },
-  // No `robots` here. "index, follow" is already the crawler default, so the line
-  // bought nothing — and being layout metadata it merged into every route,
-  // including not-found, which ships its own `noindex`. That left the 404 with two
-  // contradictory robots tags.
+  // No `robots`: layout metadata merges into every route, including not-found,
+  // which ships its own `noindex`.
 };
 
 export const viewport: Viewport = {
@@ -115,10 +109,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     // one level only, so real mismatches inside the app still report.
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        {algoliaPreconnectHost ? (
+        {preconnectHost ? (
           <>
-            <link rel="preconnect" href={algoliaPreconnectHost} crossOrigin="anonymous" />
-            <link rel="dns-prefetch" href={algoliaPreconnectHost} />
+            <link rel="preconnect" href={preconnectHost} crossOrigin="anonymous" />
+            <link rel="dns-prefetch" href={preconnectHost} />
           </>
         ) : null}
         <link rel="preconnect" href="https://insights.algolia.io" crossOrigin="anonymous" />

@@ -6,7 +6,7 @@ vi.mock('@/lib/api', () => ({
     {
       id: 'a',
       title: 'Alpha',
-      status: '',
+      status: 'Active',
       description: 'd',
       tech: [],
       blog_posts: [],

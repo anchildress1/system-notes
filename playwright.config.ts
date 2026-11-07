@@ -32,6 +32,18 @@ export default defineConfig({
       use: { ...devices['Desktop Firefox'] },
       testMatch: '**/cross-browser.spec.ts',
     },
+    // Recent Firefox ships native scroll timelines, so the project above runs the native
+    // path. This one turns them off to keep the JavaScript fallback under test.
+    {
+      name: 'firefox-fallback',
+      use: {
+        ...devices['Desktop Firefox'],
+        launchOptions: {
+          firefoxUserPrefs: { 'layout.css.scroll-driven-animations.enabled': false },
+        },
+      },
+      testMatch: '**/cross-browser.spec.ts',
+    },
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },

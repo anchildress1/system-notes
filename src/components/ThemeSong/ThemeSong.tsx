@@ -110,7 +110,6 @@ export default function ThemeSong() {
           className={styles.toggle}
           data-variant="filled"
           data-accent="filled"
-          aria-pressed={isPlaying}
           onClick={toggle}
         >
           {/* Feather draws both as outlines; fill=currentColor solidifies the same shape

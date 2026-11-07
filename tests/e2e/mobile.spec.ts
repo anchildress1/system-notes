@@ -4,9 +4,7 @@ import { expectAboutMotionSettled, mockAlgoliaSearch, test } from './utils';
 
 const viewports = [
   // 280 is a folding phone's cover screen, and it is also what a 1280px window
-  // looks like at 400% zoom — the width WCAG 1.4.10 asks to reflow to. The page
-  // used to hold a 320px floor and clip the overflow, so 40px of every route was
-  // not merely off screen but unreachable: scrollX could not leave 0.
+  // looks like at 400% zoom — the width WCAG 1.4.10 asks to reflow to.
   { width: 280, height: 720 },
   { width: 320, height: 740 },
   { width: 390, height: 844 },
@@ -143,9 +141,8 @@ test.describe('mobile interactions', () => {
   });
 
   test('keeps the theme song player inside the viewport on the about page', async ({ page }) => {
-    // The player moved out of the header, so the panel that used to hang off the
-    // pill is gone. What matters now is that the control and its equaliser stay
-    // within the page at the width where the layout is tightest.
+    // The control and its equaliser must stay within the page at the width where
+    // the layout is tightest.
     for (const width of [320, 390]) {
       await page.setViewportSize({ width, height: 844 });
       await page.goto('/about');
@@ -184,7 +181,6 @@ test.describe('mobile interactions', () => {
       await expect.poll(() => requests).toBeGreaterThan(0);
       await expect(note).toHaveText('loading audio…');
       await expect(button).toHaveAccessibleName(/Cancel loading — the theme song/);
-      await expect(button).toHaveAttribute('aria-pressed', 'false');
       await expect(equalizer).toHaveAttribute('data-playing', 'false');
 
       await button.tap();
@@ -200,7 +196,7 @@ test.describe('mobile interactions', () => {
         .toBeGreaterThan(0.2);
 
       await button.tap();
-      await expect(button).toHaveAttribute('aria-pressed', 'false');
+      await expect(button).toHaveAccessibleName(/Play it — the theme song/);
       await expect(audio).toHaveJSProperty('paused', true);
     } finally {
       audioReady.resolve();

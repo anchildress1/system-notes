@@ -3,9 +3,9 @@ const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
 /**
- * Describes how long ago something happened, in the header's clipped register.
+ * Describes how long ago something happened, in a clipped register.
  *
- * Deliberately coarse: the header states when the index last moved, not a
+ * Deliberately coarse: the pulse line states when the index last moved, not a
  * duration anyone will do arithmetic on.
  *
  * @param iso ISO timestamp of the event.

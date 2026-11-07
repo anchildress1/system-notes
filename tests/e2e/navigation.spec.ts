@@ -41,9 +41,8 @@ test.describe('Skip link', () => {
     expect(headerHeight, 'header is taller than its content').toBeLessThanOrEqual(innerHeight + 2);
   });
 
-  // It used to be parked above the fold, where an elastic overscroll rubber-banded
-  // it back into view. Asserting the offset only ever asserted the threshold, so
-  // this asserts what was actually wanted: nothing on screen until focus.
+  // Asserting the offset only asserts the threshold; this asserts what is wanted:
+  // nothing on screen until focus.
   test('paints nothing until it takes focus', async ({ page }) => {
     await page.goto('/');
 

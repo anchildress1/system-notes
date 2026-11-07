@@ -1,4 +1,4 @@
-import type { Project } from '@/lib/api';
+import type { Project, ProjectStatus } from '@/lib/api';
 
 export type ProjectBucket = 'current' | 'ended';
 
@@ -9,13 +9,10 @@ export type ProjectBucket = 'current' | 'ended';
  * Released or Published is current, and testing for the word active filed all
  * three as over.
  */
-const ENDED = new Set(['retired', 'archived', 'scrapped']);
+const ENDED: ReadonlySet<ProjectStatus> = new Set(['Retired', 'Archived', 'Scrapped']);
 
-export function getProjectBucket(status: string): ProjectBucket {
-  const value = status.trim().toLowerCase();
-  // An unfiled status is not evidence that the work is still standing.
-  if (!value) return 'ended';
-  return ENDED.has(value) ? 'ended' : 'current';
+export function getProjectBucket(status: ProjectStatus): ProjectBucket {
+  return ENDED.has(status) ? 'ended' : 'current';
 }
 
 export function groupProjects(projects: readonly Project[]): Record<ProjectBucket, Project[]> {
