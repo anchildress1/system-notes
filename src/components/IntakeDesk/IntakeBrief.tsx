@@ -122,8 +122,8 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
   useEffect(() => {
     if (hasSent.current) return;
     hasSent.current = true;
-    void sendMessage({ text: question }).catch((rejection) => {
-      logSendFailure(rejection);
+    void sendMessage({ text: question }).catch((error_) => {
+      logSendFailure(error_);
       setSendFailed(true);
     });
   }, [question, sendMessage]);
@@ -139,8 +139,8 @@ export default function IntakeBrief({ question, onSettled, onFinished }: Readonl
   useEffect(() => {
     if (!isWorking) return undefined;
     const timer = setTimeout(() => {
-      void stop().catch((rejection) => {
-        logSendFailure(rejection);
+      void stop().catch((error_) => {
+        logSendFailure(error_);
         setSendFailed(true);
       });
       setTimedOut(true);
