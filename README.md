@@ -34,6 +34,8 @@ A searchable record of Ashley Childress's engineering decisions, constraints, fa
 
 ## Local development
 
+Node and npm are pinned in `mise.toml`; install [mise](https://mise.jdx.dev) first.
+
 ```bash
 mise install
 make install
