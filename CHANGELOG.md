@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.1](https://github.com/anchildress1/system-notes/compare/v3.4.0...v3.4.1) (2026-11-07)
+
+
+### Bug Fixes
+
+* make the runtime cache writable, move to mise, and bring the repo back to its rules ([#200](https://github.com/anchildress1/system-notes/issues/200)) ([b808f3b](https://github.com/anchildress1/system-notes/commit/b808f3b599c8841b24780c10115ffddabd822d63))
+
 ## [3.4.0](https://github.com/anchildress1/system-notes/compare/v3.3.0...v3.4.0) (2026-11-02)
 
 
