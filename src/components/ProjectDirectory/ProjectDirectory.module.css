@@ -249,9 +249,23 @@
    name this file's own animation-name never resolves to. The properties
    these animate are still registered once, globally, via @property in
    globals.css. */
+/* Literal start turns, one set per row orientation. Firefox does not interpolate a
+   registered custom property whose keyframe value is a var(): the fold held its
+   start angle and snapped to 0 midway. The JS fallback and the e2e fold check
+   still read --tape-*-start-turn, so those stay in step with these values. */
 @keyframes tape-before-fold-in {
   from {
-    --tape-before-turn: var(--tape-before-start-turn);
+    --tape-before-turn: 58deg;
+  }
+
+  to {
+    --tape-before-turn: 0deg;
+  }
+}
+
+@keyframes tape-before-fold-in-mirrored {
+  from {
+    --tape-before-turn: -58deg;
   }
 
   to {
@@ -261,7 +275,17 @@
 
 @keyframes tape-after-fold-in {
   from {
-    --tape-after-turn: var(--tape-after-start-turn);
+    --tape-after-turn: -58deg;
+  }
+
+  to {
+    --tape-after-turn: 0deg;
+  }
+}
+
+@keyframes tape-after-fold-in-mirrored {
+  from {
+    --tape-after-turn: 58deg;
   }
 
   to {
@@ -292,6 +316,11 @@
         entry 0% cover 36%,
         entry 42vh entry 82vh,
         entry-crossing calc(100% - 5vh) entry-crossing calc(100% + 18vh);
+    }
+
+    .exhibit:nth-child(odd) .media {
+      animation-name:
+        exhibit-print-arrival, tape-before-fold-in-mirrored, tape-after-fold-in-mirrored;
     }
 
     .references {
