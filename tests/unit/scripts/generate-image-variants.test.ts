@@ -65,6 +65,32 @@ describe('image variant generator', () => {
     expect(log).toHaveBeenCalledWith('Wrote 4 variants for 2 sources');
   });
 
+  it('drops the manifest before a run that crashes, so the next run is not skipped', async () => {
+    const fs = filesystem();
+    const sharpFactory = imageFactory(0);
+
+    await expect(
+      generateImageVariants({
+        cwd: '/portfolio',
+        fs: fs as never,
+        log: vi.fn(),
+        sharpFactory,
+        sources: [{ dir: 'projects', files: null }],
+      })
+    ).rejects.toThrow('Missing width metadata');
+
+    // The manifest goes first: a crash after the variant wipe would otherwise leave the
+    // old manifest looking current beside variants that no longer exist.
+    expect(fs.rm.mock.calls[0]).toEqual([
+      '/portfolio/src/data/image-manifest.json',
+      { force: true },
+    ]);
+    expect(fs.writeFile).not.toHaveBeenCalledWith(
+      '/portfolio/src/data/image-manifest.json',
+      expect.anything()
+    );
+  });
+
   it('skips only when the manifest exists, names match, and every input is older', async () => {
     const fs = filesystem({
       readFile: vi.fn(async () =>
