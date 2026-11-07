@@ -15,9 +15,7 @@ import sharp from 'sharp';
 //   448 — desktop 3-up card (the flat `448px` branch of its `sizes`) at 1x
 //   768 — phone card at 2x: a 412px viewport gives a 364px slot, so ~728px
 //   896 — desktop 3-up card at 2x, and the 672px single-column slot at 1x
-// A 1344 rung was measured and dropped: neither the mobile nor the desktop
-// Lighthouse profile ever requested it, and it cost 792 KB of build output to
-// serve only DPR-3 phones, which upscale from 896 imperceptibly.
+// No 1344 rung: it would serve only DPR-3 phones, which upscale from 896 imperceptibly.
 export const LADDER = [448, 768, 896];
 
 export const SOURCES = [
@@ -25,18 +23,9 @@ export const SOURCES = [
   { dir: '', files: ['profile-dark.webp', 'profile-light.webp'] },
 ];
 
-// Matches the grade `.taped img` applies via CSS, so the placeholder does not
-// shift colour the moment the real image decodes.
-//
-// This used to be `.grayscale()`, matching a treatment ProjectCard applied back
-// when images were styled per page. That treatment is gone — every image on the
-// site now composes `.taped`, whose only grade is `saturate(0.8) contrast(1.06)`
-// — so a fully grey placeholder was popping to near-full colour on decode: the
-// exact flash the grayscale existed to prevent, inverted.
-//
-// Saturation only. The 6% contrast bump is invisible on a 12px source blown up
-// to fill its slot, and reproducing it here would mean hand-rolling a linear
-// ramp for something nobody can see.
+// Matches the saturation `.taped img` applies in CSS, so the placeholder does not
+// shift colour when the real image decodes. Saturation only: the contrast bump is
+// invisible on a 12px source.
 export const variantWidths = (sourceWidth, ladder = LADDER) =>
   [...new Set(ladder.map((width) => Math.min(width, sourceWidth)))].sort((a, b) => a - b);
 
@@ -117,6 +106,9 @@ export async function generateImageVariants({
     log('Image variants already up to date');
     return { status: 'current', variants: 0 };
   }
+
+  // A crash after the wipe below must not leave a manifest that still looks current.
+  await fs.rm(outFile, { force: true });
 
   const manifest = {};
   for (const { dir, srcDir, optDir, names } of plan) {

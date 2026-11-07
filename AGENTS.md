@@ -94,7 +94,7 @@ The measurements behind the rules, so none of them reads as taste:
 - Conventional Commits, with the RAI footer.
 - Every icon comes from `react-icons`. Never hand-draw an SVG icon, and never use a Unicode character as one — a glyph renders as whatever the reader's font stack happens to have, which is not a decision this repo gets to make.
 - Validate Algolia credentials through the shared helper rather than an inline regex.
-- `SECURITY_RULES.md` is mandatory policy for any change touching outbound fetches, file loading, or path resolution. The application currently makes no outbound requests; keep it that way unless asked.
+- `SECURITY_RULES.md` is mandatory policy for any change touching outbound fetches, file loading, or path resolution. The application contacts one third party, Algolia (search, insights, the intake agent); keep it that way unless asked.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

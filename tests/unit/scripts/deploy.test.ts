@@ -126,7 +126,7 @@ function deploymentEnv(
 async function runDeploy(env: Record<string, string>) {
   const cwd = await mkdtemp(path.join(tmpdir(), 'system-notes-deploy-cwd-'));
   temporaryDirectories.push(cwd);
-  return run('/bin/bash', [deployScript], { cwd, env });
+  return run('/bin/bash', [deployScript], { cwd, env: env as NodeJS.ProcessEnv });
 }
 
 afterEach(async () => {

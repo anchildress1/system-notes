@@ -6,7 +6,7 @@ import styles from './not-found.module.css';
 
 /* No path: a 404 has no canonical address of its own, so it gets none.
    No `robots` either — Next emits its own `noindex` here, and a second
-   directive is what put two contradictory tags on the page. */
+   directive would duplicate it. */
 export const metadata: Metadata = buildPageMetadata({
   title: 'Page not found | Ashley’s System Notes',
   description: 'That address holds no record.',
@@ -16,7 +16,6 @@ export default function NotFoundPage() {
   return (
     <main id="main-content" className={styles.main}>
       <section className={styles.message} aria-labelledby="not-found-heading">
-        <p className={styles.code}>404 · Record absent</p>
         <h1 id="not-found-heading" className="page-head-title">
           This trail ends <span>without a note.</span>
         </h1>

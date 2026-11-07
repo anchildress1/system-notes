@@ -16,11 +16,9 @@
   gap: 2rem;
 }
 
-/* Not a flex row. It was one so a former aria-hidden span could be gapped away
-   from the byline; the mark is a ::before now, which carries its own margin and
-   stands on the text's baseline the way the header's does. Left as flex, the
-   gap stacked on that margin and align-items centred the mark against the line
-   — the whole of why the two ends of the page disagreed. */
+/* Not a flex row: the mark is a ::before that carries its own margin and stands
+   on the text's baseline the way the header's does. Left as flex, the gap stacked
+   on that margin and align-items centred the mark against the line. */
 .byline {
   composes: tick from global;
 }

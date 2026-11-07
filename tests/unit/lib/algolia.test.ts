@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { hasValidAlgoliaCredentials, isValidApiKey, isValidAppId } from '@/lib/algolia';
+import {
+  algoliaPreconnectHost,
+  hasValidAlgoliaCredentials,
+  isValidApiKey,
+  isValidAppId,
+} from '@/lib/algolia';
 
 describe('isValidAppId', () => {
   it('accepts valid 10-char alphanumeric app IDs', () => {
@@ -95,4 +100,17 @@ describe('hasValidAgentCredentials', () => {
   ])('refuses a %s agent id even with usable credentials', async (_label, agentId) => {
     expect(await (await agentCheck(VALID_APP_ID, VALID_KEY))(agentId)).toBe(false);
   });
+});
+
+describe('algoliaPreconnectHost', () => {
+  it('names the application host for a well-formed id', () => {
+    expect(algoliaPreconnectHost('ABCDEF1234')).toBe('https://ABCDEF1234-dsn.algolia.net');
+  });
+
+  it.each([undefined, '', 'evil.com/x', 'short', 'ABCDEF1234.evil.com'])(
+    'refuses to build a host from %j',
+    (appId) => {
+      expect(algoliaPreconnectHost(appId)).toBeNull();
+    }
+  );
 });

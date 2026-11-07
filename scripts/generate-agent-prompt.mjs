@@ -30,6 +30,15 @@ registerHooks({
 });
 const { profile } = await import('../src/data/profile.ts');
 
+/**
+ * @typedef {object} Runtime
+ * @property {(file: string, encoding: 'utf8') => Promise<string>} readProjects
+ * @property {{ write(text: string): unknown }} stderr
+ * @property {{ write(text: string): unknown }} stdout
+ * @property {(file: string, text: string) => Promise<unknown>} writePrompt
+ */
+
+/** @type {Runtime} */
 const DEFAULT_RUNTIME = {
   readProjects: readFile,
   stderr: process.stderr,
@@ -87,7 +96,27 @@ export function describeOtherProject(project) {
   return writeups ? `- ${project.name}: ${writeups}` : `- ${project.name}`;
 }
 
-/** The person, as facts with a url where one exists. */
+/**
+ * What the prompt reads of the profile; widened from the `as const` literal so a fixture can stand in.
+ *
+ * @typedef {object} Person
+ * @property {string} name
+ * @property {string} role
+ * @property {string} email
+ * @property {string} location
+ * @property {readonly string[]} introduction
+ * @property {{ track: string, artist: string, paragraphs: readonly { lead?: string, body: string }[] }} themeSong
+ * @property {readonly { title: string, body: string }[]} principles
+ * @property {{ since: number, coreSince: number, summary: string, core: readonly string[], applied: readonly string[] }} trackRecord
+ * @property {readonly { name: string, issuer: string, issued: string, credentialUrl: string }[]} certifications
+ * @property {readonly { label: string, href: string }[]} links
+ */
+
+/**
+ * The person, as facts with a url where one exists.
+ *
+ * @param {Person} person
+ */
 export function describeProfile(person) {
   const certifications = person.certifications.map(
     (cert) => `- ${cert.name}, ${cert.issuer}, ${cert.issued}: ${cert.credentialUrl}`
@@ -164,6 +193,7 @@ ${sections}
 `;
 }
 
+/** @param {Person} [person] */
 export function buildAgentPrompt(
   projects,
   site = resolveSiteUrl(),
@@ -342,6 +372,7 @@ function validatePromptProjects(value) {
   return value;
 }
 
+/** @param {Runtime['readProjects']} [readProjects] */
 export async function readAgentPrompt(
   cwd = process.cwd(),
   site = resolveSiteUrl(),
@@ -359,6 +390,10 @@ export async function readAgentPrompt(
   };
 }
 
+/**
+ * @param {{ args?: string[], cwd?: string, site?: string }} [options]
+ * @param {Runtime} [runtime]
+ */
 export async function emitAgentPrompt(
   { args = process.argv, cwd = process.cwd(), site = resolveSiteUrl() } = {},
   { readProjects, stderr, stdout, writePrompt } = DEFAULT_RUNTIME

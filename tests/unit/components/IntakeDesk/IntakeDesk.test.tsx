@@ -67,7 +67,7 @@ describe('IntakeDesk', () => {
     expect(run()).toBeDisabled();
 
     // Any terminal state — answered, failed, or timed out — reaches the desk the
-    // same way. A turn that failed used to leave this button disabled for good.
+    // same way and re-enables the button.
     finishTurn();
 
     expect(run()).toBeEnabled();

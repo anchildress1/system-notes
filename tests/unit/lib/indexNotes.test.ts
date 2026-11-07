@@ -53,7 +53,7 @@ describe('toIndexNotes', () => {
   });
 
   it('bounds the server-rendered page against the route performance floor', () => {
-    // /notes gates at a mobile Lighthouse floor of 92 and the corpus runs to
+    // /notes gates at a mobile Lighthouse floor and the corpus runs to
     // hundreds. An unbounded fetch would put the whole index in the HTML.
     expect(SSR_NOTE_LIMIT).toBeGreaterThan(0);
     expect(SSR_NOTE_LIMIT).toBeLessThanOrEqual(100);

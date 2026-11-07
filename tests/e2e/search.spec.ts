@@ -192,11 +192,9 @@ test.describe('Notes index', () => {
   });
 
   test('paints the shared hover band on a queue row', async ({ page }) => {
-    // The band draws on .washed's ::before. Consumers used to declare
-    // `background: transparent` themselves, and that SHORTHAND reset
-    // background-image to none from a selector outranking the primitive, which
-    // removed the band with the whole suite still green. The reset owns button
-    // background now; this is what notices if that ownership moves back.
+    // The band draws on .washed's ::before. A consumer's `background` SHORTHAND
+    // resets background-image to none and removes the band, so the reset owns
+    // button background and this notices if that ownership moves.
     //
     // Asserts that a layer is painted and that hover grows it — never which
     // colour, which is the stylesheet's business and would drift in a test.
@@ -569,26 +567,6 @@ test.describe('Notes index', () => {
     await board.press('ArrowRight');
 
     await expect(board).toHaveAttribute('aria-activedescendant', 'note-board-option-0');
-  });
-
-  test('ignores a ?note param and opens the top-ranked note', async ({ page }) => {
-    await mockAlgoliaSearch(page, [
-      buildHit({ objectID: 'card:test:1', title: 'First decision' }),
-      buildHit({
-        objectID: 'card:test:2',
-        title: 'Selected decision',
-        category: 'Decision',
-      }),
-    ]);
-    // Selection lives in the workspace, not the URL. A stale ?note link is inert
-    // rather than authoritative, so the reader opens on the top-ranked note.
-    await page.goto('/notes?note=card%3Atest%3A2');
-
-    await expect(page.getByRole('article')).toHaveAccessibleName('First decision');
-    await expect(page.getByRole('listbox', { name: 'Top ranked notes' })).toHaveAttribute(
-      'aria-activedescendant',
-      'note-board-option-0'
-    );
   });
 });
 

@@ -1,3 +1,4 @@
+import { FiArrowUpRight } from 'react-icons/fi';
 import { profile } from '@/data/profile';
 import styles from './SiteFooter.module.css';
 
@@ -11,7 +12,7 @@ export default function SiteFooter() {
         <nav className={styles.links} aria-label="External links">
           {profile.links.map(({ label, href }) => (
             <a key={href} className="swiped" href={href} target="_blank" rel="noopener noreferrer">
-              {label} <span aria-hidden="true">↗</span>
+              {label} <FiArrowUpRight aria-hidden="true" />
               <span className="visually-hidden"> (opens in a new tab)</span>
             </a>
           ))}

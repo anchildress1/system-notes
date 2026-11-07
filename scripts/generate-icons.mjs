@@ -1,8 +1,5 @@
-// The rasters are renders of src/app/icon.svg, never hand-drawn. They drifted
-// once: the SVG went gold and icon.png, apple-icon.png and favicon.ico kept the
-// retired pink (#ff3d9a) on a #100b11 ground, which is what a browser tab, a
-// bookmark and the PWA install card each showed for a full release. Regenerate
-// here instead of editing any of them.
+// The rasters are renders of src/app/icon.svg, never hand-drawn. Regenerate here
+// instead of editing any of them.
 import { Buffer } from 'node:buffer';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -20,6 +17,14 @@ export const PNG_TARGETS = [
   { file: 'src/app/apple-icon.png', size: 180 },
 ];
 
+/**
+ * @typedef {object} Runtime
+ * @property {{ mkdir: typeof mkdir, writeFile: typeof writeFile }} fs
+ * @property {{ write(text: string): unknown }} log
+ * @property {typeof sharp} sharpFactory
+ */
+
+/** @type {Runtime} */
 const DEFAULT_RUNTIME = {
   fs: { mkdir, writeFile },
   log: process.stdout,
@@ -70,6 +75,10 @@ export function packIco(entries) {
   return Buffer.concat([header, ...directory, ...entries.map(({ png }) => png)]);
 }
 
+/**
+ * @param {{ pngTargets?: typeof PNG_TARGETS, root?: string, source?: string, icoSizes?: number[] }} [options]
+ * @param {Runtime} [runtime]
+ */
 export async function generateIcons(
   { pngTargets = PNG_TARGETS, root = ROOT, source = SOURCE, icoSizes = ICO_SIZES } = {},
   { fs, log, sharpFactory } = DEFAULT_RUNTIME

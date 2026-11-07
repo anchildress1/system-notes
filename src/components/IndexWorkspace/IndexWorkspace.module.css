@@ -69,6 +69,11 @@
   gap: 0.75rem;
 }
 
+.awardStar {
+  margin-inline-start: 0.25em;
+  vertical-align: -0.1em;
+}
+
 .categoryList button:hover .categoryName,
 .categoryList button[data-selected] .categoryName {
   transform: translateX(0.25rem);
@@ -139,8 +144,7 @@
 
 .boardTiles {
   display: grid;
-  /* An <ol> carries a 40px list indent by default. It used to be zeroed here;
-     the plate that briefly replaced it is gone, so the reset has to come back. */
+  /* An <ol> carries a 40px list indent by default; zero it. */
   padding: 0;
   margin-top: 0.5rem;
   border: 1px solid transparent;
@@ -152,14 +156,12 @@
      WCAG 2.5.8 target size is met through its equivalent-control exception — every
      note on the board is also a full-height row in the queue beside it — and the
      tiles are not individual tab stops: the listbox is the one focusable thing and
-     arrow keys move within it. A 24px floor was tried and bought four columns' worth
-     of stride the census was never drawn at. */
+     arrow keys move within it. */
   --tile-min: 16px;
   --tile-sep: 4px;
   grid-template-columns: repeat(auto-fill, minmax(var(--tile-min), 1fr));
   gap: 0;
   list-style: none;
-  outline: none;
 }
 
 .boardTiles li {
@@ -184,8 +186,6 @@
   background: var(--tile-swatch, var(--k-other));
   box-shadow: 0 0 0 1px var(--tile-keyline);
   content: '';
-  /* No filter here. The brightness filter it transitioned was replaced by the
-     selected ring below and nothing sets filter on this element in any state. */
   @media (prefers-reduced-motion: no-preference) {
     transition:
       transform 180ms var(--ease-out),
@@ -203,13 +203,6 @@
 
 .boardTiles li:active::before {
   transform: scale(0.9);
-}
-
-.boardTiles:focus-visible {
-  border-color: var(--ink-accent);
-  box-shadow:
-    0 0 0 2px var(--void),
-    0 0 0 4px var(--ink-accent);
 }
 
 .boardTiles li[aria-selected='true']::before {
@@ -322,7 +315,7 @@
   background: transparent;
   color: var(--bone);
   font-family: var(--font-editorial);
-  font-size: clamp(1.25rem, 2.4vw, 2rem);
+  font-size: clamp(1.25rem, 0.5rem + 1.8vw, 2rem);
   font-weight: 500;
   letter-spacing: -0.01em;
 }
@@ -506,8 +499,8 @@
   text-align: left;
 }
 
-/* Four measures that repeat, so a paged run of ten does not fall back to flat
-   padding from the fifth row down. */
+/* Four measures that repeat, so a page does not fall back to flat padding from
+   the fifth row down. */
 .queueList li:nth-child(4n + 1) button {
   padding-block: 1rem 1.45rem;
 }
@@ -613,9 +606,7 @@
 .queueTitle {
   display: block;
   margin-top: 0.45rem;
-  /* One size for every row. Rank used to scale it, which capped a page at five
-     rows before the tail became fine print and made the list unreadable as soon
-     as the note being read stopped being the one at the top. */
+  /* One size for every row; the open row is larger because it is open. */
   font-family: var(--font-editorial);
   font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.65rem);
   font-weight: 500;
@@ -729,7 +720,7 @@
   max-width: 48rem;
   margin-top: 0.9rem;
   font-family: var(--font-editorial);
-  font-size: clamp(2.3rem, 6.4vw, 5.4rem);
+  font-size: clamp(2.3rem, 1.35rem + 4.8vw, 5.4rem);
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1;

@@ -6,9 +6,7 @@ ENV NPM_CONFIG_LOGLEVEL=error
 
 # Install with the lockfile first so this layer caches across source changes.
 COPY package.json package-lock.json ./
-# Read from package.json, as CI does. Hardcoded, the production image kept
-# installing the old npm after a packageManager bump, with engines.npm wide
-# enough to satisfy both and nothing comparing them.
+# Read from package.json, as CI does, so a packageManager bump reaches the production image.
 RUN npm install --global --ignore-scripts "$(node -p "require('./package.json').packageManager")"
 RUN npm ci --ignore-scripts
 
@@ -44,6 +42,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # postbuild already placed .next/static and public inside it.
 # --chmod=555 (read+execute, no write) satisfies S6504.
 COPY --from=installer --chown=node:node --chmod=555 /app/.next/standalone ./
+
+# Next creates .next/cache on the first /_next/image request, and a read-only
+# tree turns that mkdir into an unhandledRejection. Only this directory is writable.
+RUN mkdir .next/cache && chown node:node .next/cache
 
 USER node
 CMD ["node", "server.js"]

@@ -26,8 +26,8 @@ images:
 
 timeout: '1200s'
 
-# Optional in the app, so it needs a default here: Cloud Build fails a build that
-# references a substitution nothing provides.
+# Optional in the app, so it needs a default here. ALLOW_LOOSE below lets a build
+# reference a substitution nothing provides, so deploy.sh is what verifies the public env.
 substitutions:
   _NEXT_PUBLIC_ALGOLIA_AGENT_ID: ''
 

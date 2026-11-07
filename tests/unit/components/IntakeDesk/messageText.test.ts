@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { UIMessage } from 'instantsearch.js/es/lib/ai-lite';
+import type { UIMessage } from 'ai';
 import { messageText } from '@/components/IntakeDesk/IntakeBrief';
 
 const message = (parts: UIMessage['parts']): UIMessage => ({

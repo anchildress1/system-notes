@@ -7,7 +7,7 @@ import { failureCause } from '@/lib/failureCause';
 /** How long a pulse is reused before the index is asked again. */
 export const PULSE_TTL_MS = 5 * 60_000;
 
-/** How long the index gets to answer before the header gives up on it. */
+/** How long the index gets to answer before the page renders without it. */
 const PULSE_DEADLINE_MS = 3_000;
 
 /**
@@ -61,7 +61,7 @@ function withDeadline<T>(request: Promise<T>): Promise<T> {
   });
 }
 
-/* Reads the index's total and newest-filed date for the header.
+/* Reads the index's total and newest-filed date for the /notes page head.
 
    The index has no date-sorted replica, so every record is fetched with only
    `created_at` retrieved and the newest is picked here. */
@@ -87,8 +87,7 @@ export const getIndexPulse = cache(async (): Promise<IndexPulse | null> => {
     cached = { at: Date.now(), value };
     return value;
   } catch (error) {
-    // The header is furniture on every page, including the 404. It degrades to
-    // its unnumbered form rather than taking a route down with the index.
+    // The page renders without the pulse rather than failing with the index.
     // The cause belongs in the message: Next's dev log flattens an object
     // argument to `{}`, so a name passed beside the string is lost in the file
     // where the failure is read back.

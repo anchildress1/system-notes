@@ -13,7 +13,7 @@ const NOTES_DEADLINE_MS = 3_000;
 
 /* The workspace is client-only, so this is the whole of what a crawler — or a
    reader without scripting — ever sees of the corpus. Bounded rather than the
-   full index: the route is gated at a mobile Lighthouse floor of 92, and the
+   full index: the route is gated at a mobile Lighthouse floor, and the
    notes are ranked, so the tail buys far less than it costs. */
 export const SSR_NOTE_LIMIT = 60;
 

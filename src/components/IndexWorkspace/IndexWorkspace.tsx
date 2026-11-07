@@ -2,7 +2,7 @@
 
 import { createNullCache } from '@algolia/client-common';
 import { liteClient as algoliasearch } from 'algoliasearch/lite';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Configure,
   InstantSearch,
@@ -14,9 +14,9 @@ import aa from 'search-insights';
 import 'instantsearch.css/themes/reset.css';
 import { ALGOLIA_INDEX_NAME } from '@/config';
 import { ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, hasValidAlgoliaCredentials } from '@/lib/algolia';
+import { failureCause } from '@/lib/failureCause';
 import { normalizeFactSearchHit } from '@/lib/noteContent';
 import { createSearchRouting } from '@/lib/searchRouting';
-import type { FactHitRecord } from '@/types/algolia';
 import { getSearchUserToken } from '@/utils/userToken';
 import IndexSearch from './IndexSearch';
 import IndexSidebar from './IndexSidebar';
@@ -105,8 +105,11 @@ export default function IndexWorkspace() {
 }
 
 function IndexExperience() {
-  const { items, sendEvent } = useHits<FactHitRecord>();
-  const { status } = useInstantSearch({ catchError: true });
+  const { items, sendEvent } = useHits();
+  const { status, error } = useInstantSearch({ catchError: true });
+  useEffect(() => {
+    if (error) console.error(`Index search failed. ${failureCause(error)}`);
+  }, [error]);
   const readableItems = useMemo(() => {
     const seenIds = new Set<string>();
     return items.flatMap((item) => {
@@ -120,12 +123,12 @@ function IndexExperience() {
   const { query } = useSearchBox();
   // The selection carries the query it was made under, so a new search discards
   // it by derivation rather than by resetting state in an effect. Otherwise the
-  // pane keeps showing a note left over from the previous query while the board
+  // open row keeps a note left over from the previous query while the board
   // underneath it has already moved on.
   const [selection, setSelection] = useState<{ id: string; query: string } | null>(null);
 
   // Selection lives in the workspace, not the URL. The board is a reading
-  // surface: picking a note swaps the pane and reports the click to Algolia,
+  // surface: picking a note opens its row and reports the click to Algolia,
   // and it falls back to the top-ranked note whenever the current pick is stale
   // or has dropped out of the results.
   const selectedId = useMemo(() => {

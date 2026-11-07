@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { describe, expect, it, vi } from 'vitest';
+import type sharp from 'sharp';
 import { generateIcons, packIco, render } from '../../../scripts/generate-icons.mjs';
 
 describe('icon generator', () => {
@@ -27,7 +28,7 @@ describe('icon generator', () => {
       resize: vi.fn(() => chain),
       toBuffer: vi.fn(async () => Buffer.from('png')),
     };
-    const sharpFactory = vi.fn(() => chain);
+    const sharpFactory = vi.fn(() => chain) as unknown as typeof sharp;
     const fs = { mkdir: vi.fn(async () => undefined), writeFile: vi.fn(async () => undefined) };
     const log = { write: vi.fn() };
 

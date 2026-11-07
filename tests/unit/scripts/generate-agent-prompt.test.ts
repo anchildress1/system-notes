@@ -209,7 +209,7 @@ describe('agent prompt generator', () => {
       selected
     );
 
-    expect(others.map((item) => item.objectID)).toEqual(['beta', 'gamma']);
+    expect(others.map((item: { objectID: string }) => item.objectID)).toEqual(['beta', 'gamma']);
   });
 
   it('appends an other-projects section, bucketed by status, only when there is something to list', () => {

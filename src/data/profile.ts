@@ -1,6 +1,6 @@
 import { BLOG_URL } from '@/config';
 
-/** One paragraph of the theme-song note. `lead` carried emphasis in the copy. */
+/** One paragraph of the theme-song note; `lead` is the emphasised sentence, kept apart from `body` so the data holds no markup. */
 interface ThemeSongParagraph {
   readonly lead?: string;
   readonly body?: string;
@@ -41,6 +41,12 @@ interface Certification {
 // Typed here rather than inferred through `as const`, so the shape is stated
 // once and a new entry cannot quietly drop a field.
 const certifications: readonly Certification[] = [
+  {
+    name: 'Professional Agentic Architect',
+    issuer: 'Google Cloud',
+    issued: 'November 2026',
+    credentialUrl: 'https://www.credly.com/badges/ceb8b979-8d5a-4e04-a831-bbcaf983a33f/public_url',
+  },
   {
     name: 'Professional Cloud Architect',
     issuer: 'Google Cloud',
@@ -140,9 +146,6 @@ export const profile = {
     { label: 'DEV', href: BLOG_URL },
     { label: 'X', href: 'https://x.com/anchildress1' },
   ],
-  // `lead` is the sentence that carried emphasis in the original copy; it is a
-  // separate field rather than inline markup so the data stays free of markup
-  // and the page decides how emphasis is rendered.
   themeSong: {
     track: 'I Build Things',
     artist: 'Twisted Game Songs',
