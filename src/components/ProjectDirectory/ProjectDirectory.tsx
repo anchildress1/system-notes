@@ -110,6 +110,7 @@ export default function ProjectDirectory({ projects }: Readonly<{ projects: Proj
                 className={`swiped ${styles.reference}`}
                 href={getProjectNotesURL(project.title)}
               >
+                {/* A text expression, not bare text: Sonar S6772 flags JSX text followed by an element on the next line. */}
                 {'Filed notes'}
                 <span className="visually-hidden"> — {project.title}</span>
                 <FiArrowUpRight aria-hidden="true" />
