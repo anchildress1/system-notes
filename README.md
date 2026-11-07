@@ -35,6 +35,7 @@ A searchable record of Ashley Childress's engineering decisions, constraints, fa
 ## Local development
 
 ```bash
+mise install
 make install
 make dev
 ```

@@ -99,10 +99,6 @@
     "puppeteer-core": "^25.16.0",
     "uuid": "^14.0.3"
   },
-  "volta": {
-    "node": "26.13.0",
-    "npm": "12.2.0"
-  },
   "knip": {
     "entry": [
       "src/lib/imageLoader.ts"
