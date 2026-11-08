@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "deny": [
+      "mcp__cloud-run__create_project",
+      "mcp__cloud-run__deploy_container_image",
+      "mcp__cloud-run__deploy_file_contents",
+      "mcp__cloud-run__deploy_local_folder"
+    ]
+  }
+}
