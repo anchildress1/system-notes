@@ -94,11 +94,16 @@ The measurements behind the rules, so none of them reads as taste:
 - Conventional Commits, with the RAI footer.
 - Every icon comes from `react-icons`. Never hand-draw an SVG icon, and never use a Unicode character as one — a glyph renders as whatever the reader's font stack happens to have, which is not a decision this repo gets to make.
 - Validate Algolia credentials through the shared helper rather than an inline regex.
+- `.mcp.json` is tracked and pins every local server; bump a pin deliberately, never to `latest`. Use the server over a hand-rolled equivalent:
+  - `next-devtools`: runtime errors, routes, build state, Next docs. Needs the checkout's one dev server; a second `next dev` here refuses to start. Find it with `nextjs_index`. If none is running, ask the user to start `npm run dev`; never stop or restart one.
+  - `sonarqube`: issues, hotspots and quality gate, queried on demand; pre-push does not run Sonar, `sonar.yml` does. Runs in Docker. Takes the user token from `SONAR_TOKEN`; project and global tokens are rejected.
+  - `algolia`: remote, unpinned. Inspect indices and records. Sign in through `/mcp`.
+  - `cloud-run`: read-only (`list_projects`, `list_services`, `get_service`, `get_service_log`). `.claude/settings.json` denies `deploy_*` and `create_project`; deploy with `deploy.sh`, never through the server.
 - `SECURITY_RULES.md` is mandatory policy for any change touching outbound fetches, file loading, or path resolution. The application contacts one third party, Algolia (search, insights, the intake agent); keep it that way unless asked.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
-# This is NOT the Next.js you know
+## This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 
