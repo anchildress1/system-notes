@@ -96,7 +96,7 @@ The measurements behind the rules, so none of them reads as taste:
 - Validate Algolia credentials through the shared helper rather than an inline regex.
 - `.mcp.json` is tracked and pins every local server; bump a pin deliberately, never to `latest`. Use the server over a hand-rolled equivalent:
   - `next-devtools`: runtime errors, routes, build state, Next docs. Needs the checkout's one dev server; a second `next dev` here refuses to start. Find it with `nextjs_index`. If none is running, ask the user to start `npm run dev`; never stop or restart one.
-  - `sonarqube`: the pre-push Sonar check. Runs in Docker. Takes the user token from `SONAR_TOKEN`; project and global tokens are rejected.
+  - `sonarqube`: issues, hotspots and quality gate, queried on demand; pre-push does not run Sonar, `sonar.yml` does. Runs in Docker. Takes the user token from `SONAR_TOKEN`; project and global tokens are rejected.
   - `algolia`: remote, unpinned. Inspect indices and records. Sign in through `/mcp`.
   - `cloud-run`: read-only (`list_services`, `get_service`, `get_service_log`). Never call `deploy_*` or `create_project` unless asked.
 - `SECURITY_RULES.md` is mandatory policy for any change touching outbound fetches, file loading, or path resolution. The application contacts one third party, Algolia (search, insights, the intake agent); keep it that way unless asked.
