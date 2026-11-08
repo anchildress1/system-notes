@@ -95,7 +95,7 @@ The measurements behind the rules, so none of them reads as taste:
 - Every icon comes from `react-icons`. Never hand-draw an SVG icon, and never use a Unicode character as one — a glyph renders as whatever the reader's font stack happens to have, which is not a decision this repo gets to make.
 - Validate Algolia credentials through the shared helper rather than an inline regex.
 - `.mcp.json` is tracked and pins every local server; bump a pin deliberately, never to `latest`. Use the server over a hand-rolled equivalent:
-  - `next-devtools`: runtime errors, routes, build state, Next docs. Needs a dev server. Ports 3000-3003 are the user's; never start, stop or restart on them. Start your own with `npm run image-variants && npx next dev --port 3100` in the background, pass `port` to `nextjs_index`, and kill only the PID you captured.
+  - `next-devtools`: runtime errors, routes, build state, Next docs. Needs the checkout's one dev server; a second `next dev` here refuses to start. Find it with `nextjs_index`. If none is running, ask the user to start `npm run dev`; never stop or restart one.
   - `sonarqube`: the pre-push Sonar check. Runs in Docker. Takes the user token from `SONAR_TOKEN`; project and global tokens are rejected.
   - `algolia`: remote, unpinned. Inspect indices and records. Sign in through `/mcp`.
   - `cloud-run`: read-only (`list_services`, `get_service`, `get_service_log`). Never call `deploy_*` or `create_project` unless asked.

@@ -15,7 +15,7 @@
         "SONARQUBE_TOKEN",
         "-e",
         "SONARQUBE_ORG",
-        "sonarsource/sonarqube-mcp:1.31.0.4891"
+        "sonarsource/sonarqube-mcp:1.31.0.4891@sha256:a2c04608b1e18fa5093eb17de64d942abb0a7e0c6b7ba4148724b1bb617e93ee"
       ],
       "env": {
         "SONARQUBE_TOKEN": "${SONAR_TOKEN}",
