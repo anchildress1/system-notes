@@ -94,11 +94,16 @@ The measurements behind the rules, so none of them reads as taste:
 - Conventional Commits, with the RAI footer.
 - Every icon comes from `react-icons`. Never hand-draw an SVG icon, and never use a Unicode character as one — a glyph renders as whatever the reader's font stack happens to have, which is not a decision this repo gets to make.
 - Validate Algolia credentials through the shared helper rather than an inline regex.
+- `.mcp.json` is tracked and pins every local server; bump a pin deliberately, never to `latest`. Use the server over a hand-rolled equivalent:
+  - `next-devtools`: runtime errors, routes, build state, Next docs. Needs a dev server. Ports 3000-3003 are the user's; never start, stop or restart on them. Start your own with `npm run image-variants && npx next dev --port 3100` in the background, pass `port` to `nextjs_index`, and kill only the PID you captured.
+  - `sonarqube`: the pre-push Sonar check. Runs in Docker. Takes the user token from `SONAR_TOKEN`; project and global tokens are rejected.
+  - `algolia`: remote, unpinned. Inspect indices and records. Sign in through `/mcp`.
+  - `cloud-run`: read-only (`list_services`, `get_service`, `get_service_log`). Never call `deploy_*` or `create_project` unless asked.
 - `SECURITY_RULES.md` is mandatory policy for any change touching outbound fetches, file loading, or path resolution. The application contacts one third party, Algolia (search, insights, the intake agent); keep it that way unless asked.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
-# This is NOT the Next.js you know
+## This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 
