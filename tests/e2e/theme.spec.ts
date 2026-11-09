@@ -378,6 +378,37 @@ test.describe('Highlighter pen', () => {
     }
   }
 
+  // The loop above loads each route at rest. These are the states only
+  // interaction reaches: the swap's bare text, and the outline hover band.
+  for (const scheme of ['dark', 'light'] as const) {
+    test(`every pen keeps the swap and hover states legible in ${scheme}`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto('/');
+      const html = page.locator('html');
+      const scan = async (state: string) => {
+        const results = await new AxeBuilder({ page }).withRules(['color-contrast']).analyze();
+        expect(
+          results.passes.map((result) => result.id),
+          state
+        ).toContain('color-contrast');
+        expect(results.violations, state).toEqual([]);
+      };
+
+      for (const pen of ['yellow', ...ALTERNATE_PENS]) {
+        await page.evaluate((stamped) => {
+          document.documentElement.dataset.pen = stamped;
+          document.documentElement.dataset.penPhase = 'pre';
+        }, pen);
+        await expect(html).toHaveAttribute('data-pen-phase', 'pre');
+        await scan(`${pen} mid-swap`);
+
+        await page.evaluate(() => delete document.documentElement.dataset.penPhase);
+        await page.getByRole('button', { name: 'Light theme', exact: true }).hover();
+        await scan(`${pen} outline hover`);
+      }
+    });
+  }
+
   test('restates every pre-inked band in every pen block', async ({ page }) => {
     await page.goto('/');
     // A data URI cannot read --mark, so a pen block that misses one leaves that

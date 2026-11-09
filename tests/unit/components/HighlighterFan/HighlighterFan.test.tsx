@@ -164,6 +164,17 @@ describe('HighlighterFan', () => {
     expect(pen('Blue').dataset.state).toBe('rest');
   });
 
+  it('closes without choosing when the open fan is tapped on the chosen pen', () => {
+    preferences({ hover: false, reducedMotion: true });
+    render(<HighlighterFan />);
+    fireEvent.click(pen('Yellow'));
+
+    fireEvent.click(pen('Yellow'));
+
+    expect(states()).toEqual({ Yellow: 'rest', Blue: 'hide', Green: 'hide', Pink: 'hide' });
+    expect(localStorage.getItem(PEN_STORAGE_KEY)).toBeNull();
+  });
+
   it('closes on a tap outside the fan', () => {
     preferences({ hover: false });
     render(<HighlighterFan />);
