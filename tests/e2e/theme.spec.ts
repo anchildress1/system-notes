@@ -328,3 +328,87 @@ test.describe('Theme', () => {
     });
   });
 });
+
+// Chromium: the pen is shared root-layout markup and tokens; one engine answers it.
+test.describe('Highlighter pen', () => {
+  const ALTERNATE_PENS = ['blue', 'green', 'pink'] as const;
+
+  test('is picked from the fan and survives a reload', async ({ page }) => {
+    await page.goto('/');
+    const html = page.locator('html');
+    await expect(html).not.toHaveAttribute('data-pen');
+
+    // By keyboard: the splayed pens overlap toward their pivot, so a pointer
+    // aimed at a pen's centre lands on its neighbour. A reader aims at the tip.
+    await page.getByRole('button', { name: 'Yellow highlighter', exact: true }).focus();
+    await page.keyboard.press('Tab');
+    const blue = page.getByRole('button', { name: 'Blue highlighter', exact: true });
+    await expect(blue).toBeFocused();
+    await page.keyboard.press('Enter');
+
+    await expect(blue).toHaveAttribute('aria-pressed', 'true');
+    await expect(html).toHaveAttribute('data-pen', 'blue');
+    await expect(html).not.toHaveAttribute('data-pen-phase');
+
+    // Stamped by the head script, so the reload never paints a gold frame first.
+    await page.reload();
+    await expect(html).toHaveAttribute('data-pen', 'blue');
+    await expect(blue).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  for (const pen of ALTERNATE_PENS) {
+    for (const scheme of ['dark', 'light'] as const) {
+      test(`${pen} keeps every band legible in ${scheme}`, async ({ page }) => {
+        await page.emulateMedia({ colorScheme: scheme });
+        await page.addInitScript((stored) => localStorage.setItem('system-notes-pen', stored), pen);
+
+        for (const route of ROUTES) {
+          await page.goto(route);
+          await expect(page.locator('html')).toHaveAttribute('data-pen', pen);
+
+          const results = await new AxeBuilder({ page }).withRules(['color-contrast']).analyze();
+          // A rule that never ran reports no violations too.
+          expect(
+            results.passes.map((result) => result.id),
+            route
+          ).toContain('color-contrast');
+          expect(results.violations, route).toEqual([]);
+        }
+      });
+    }
+  }
+
+  test('repaints the headline band from the pen, not a baked-in gold', async ({ page }) => {
+    await page.goto('/');
+    const band = page.locator('.page-head h1 > span').first();
+    const gold = await band.evaluate((element) => getComputedStyle(element).backgroundImage);
+
+    await page.evaluate(() => {
+      document.documentElement.dataset.pen = 'pink';
+    });
+
+    await expect
+      .poll(() => band.evaluate((element) => getComputedStyle(element).backgroundImage))
+      .not.toBe(gold);
+  });
+});
+
+test.describe('Highlighter swap motion', () => {
+  test.use({ reducedMotion: 'no-preference' });
+
+  test('lifts the old ink right to left by keeping the band anchored left', async ({ page }) => {
+    await page.goto('/');
+    const band = page.locator('.page-head h1 > span').first();
+
+    await page.evaluate(() => {
+      document.documentElement.dataset.penPhase = 'lift';
+    });
+
+    // Mid-transition: part of the band is gone, and what remains still starts at
+    // the left edge, so the right edge is the one retreating.
+    await expect
+      .poll(() => band.evaluate((element) => getComputedStyle(element).backgroundSize))
+      .toMatch(/^(?!100%)\d+(\.\d+)?% /);
+    await expect(band).toHaveCSS('background-position-x', /^0(px|%)$/);
+  });
+});
