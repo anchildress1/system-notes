@@ -5,7 +5,8 @@
 .fan {
   --len: clamp(13rem, 24vw, 19rem);
   --hide: 74%;
-  --tuck: 48%;
+  /* Tucked still shows a tip at least 44px on each side, to see and to tap. */
+  --tuck: 38%;
   --rest: 14%;
   --show: 6%;
   --out: -9%;
@@ -34,6 +35,7 @@
 @media (max-width: 60rem) {
   .fan {
     --rest: 26%;
+    --tuck: 34%;
     --b0: -0.12;
   }
 }

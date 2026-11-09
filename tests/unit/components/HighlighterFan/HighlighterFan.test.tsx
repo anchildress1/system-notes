@@ -193,12 +193,12 @@ describe('HighlighterFan', () => {
     expect(pen('Pink').dataset.state).toBe('show');
 
     fireEvent.mouseLeave(fan);
-    act(() => vi.advanceTimersByTime(299));
+    act(() => vi.advanceTimersByTime(599));
     expect(pen('Pink').dataset.state, 'a gap between pens must not fold the fan').toBe('show');
 
     fireEvent.mouseEnter(fan);
     fireEvent.mouseLeave(fan);
-    act(() => vi.advanceTimersByTime(299));
+    act(() => vi.advanceTimersByTime(599));
     expect(pen('Pink').dataset.state, 're-entering restarts the grace').toBe('show');
 
     act(() => vi.advanceTimersByTime(1));
@@ -259,10 +259,10 @@ describe('HighlighterFan', () => {
     expect(pen('Green').dataset.state).toBe('hide');
   });
 
-  it('keeps the chosen pen tucked while the page sits scrolled, and rests it at the top', () => {
+  it('rests out on arrival, and tucks for good once the page scrolls', () => {
     render(<HighlighterFan />);
+    expect(pen('Yellow').dataset.state).toBe('rest');
 
-    Object.defineProperty(window, 'scrollY', { value: 600, configurable: true });
     fireEvent.scroll(window);
     expect(pen('Yellow').dataset.state).toBe('tuck');
 
@@ -270,10 +270,19 @@ describe('HighlighterFan', () => {
     expect(pen('Yellow').dataset.state, 'reading without scrolling must not bring it back').toBe(
       'tuck'
     );
+  });
 
-    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+  it('folds back to the tuck once the pointer has left', () => {
+    render(<HighlighterFan />);
     fireEvent.scroll(window);
-    expect(pen('Yellow').dataset.state).toBe('rest');
+    const fan = screen.getByRole('group');
+
+    fireEvent.mouseEnter(fan);
+    expect(pen('Yellow').dataset.state).toBe('out');
+
+    fireEvent.mouseLeave(fan);
+    act(() => vi.advanceTimersByTime(600));
+    expect(pen('Yellow').dataset.state).toBe('tuck');
   });
 
   it('closes an open fan when the page scrolls', () => {
