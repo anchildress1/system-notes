@@ -299,6 +299,7 @@ describe('HighlighterFan', () => {
     preferences({ hover: false });
     render(<HighlighterFan />);
     fireEvent.click(pen('Yellow'));
+    expect(pen('Blue').dataset.state).toBe('show');
 
     fireEvent.scroll(window);
 
