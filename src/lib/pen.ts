@@ -14,7 +14,7 @@ export const DEFAULT_PEN: Pen = 'yellow';
  * Narrows an unknown stored value to a pen.
  *
  * @param value Anything read out of storage or an attribute.
- * @returns The pen, or null when the value is not one of the four literals.
+ * @returns The pen, or null when the value is not one of `PENS`.
  */
 export function parsePen(value: unknown): Pen | null {
   return PENS.find((pen) => pen === value) ?? null;
