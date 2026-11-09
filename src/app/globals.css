@@ -592,10 +592,11 @@ body::before {
    A background is clipped to its own border box however large the image is, so
    the overhang a marker leaves has to come from a box that is itself wider:
    hence the negative inline inset. */
-.washed::before {
+.washed::before,
+.btn[data-variant='outline']::before {
   position: absolute;
   z-index: -1;
-  inset: 0 -0.8rem;
+  inset: 0 calc(var(--wash-overhang, 0.8rem) * -1);
   background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
   /* 102% and centred, because --stroke-swipe's ink stops at x 0.4 and 119.4 of a
      120 viewBox and would otherwise land short of even this wider box. */
@@ -609,7 +610,8 @@ body::before {
 }
 
 .washed:hover::before,
-.washed:focus-visible::before {
+.washed:focus-visible::before,
+.btn[data-variant='outline']:hover:not(:disabled)::before {
   /* 158%, as everything drawn with --stroke-swipe uses. No colour set here: the
      band is a layer, so every label keeps the contrast it already had. */
   background-size:
@@ -681,26 +683,14 @@ body::before {
   content: '';
 }
 
+/* Draws the .washed band, overhanging its own border the way a marker
+   overshoots a box. */
 .btn[data-variant='outline'] {
+  --wash-overhang: 0.6rem;
   position: relative;
   isolation: isolate;
   border-color: var(--line-strong);
   color: var(--soft);
-}
-
-/* The band .washed draws, overhanging the border the way a marker overshoots a
-   box. On a pseudo because a background is clipped to the element's own edge. */
-.btn[data-variant='outline']::before {
-  position: absolute;
-  z-index: -1;
-  inset: 0 -0.6rem;
-  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: 102% 0;
-  rotate: -1deg;
-  content: '';
-  pointer-events: none;
 }
 
 /* The wash is for EMPTY boxes only. A filled button is already the gold, so a
@@ -717,12 +707,6 @@ body::before {
 
 .btn[data-variant='outline']:hover:not(:disabled) {
   border-color: var(--ink-accent);
-}
-
-.btn[data-variant='outline']:hover:not(:disabled)::before {
-  background-size:
-    102% 158%,
-    102% 158%;
 }
 
 /* Reads as deliberately parked rather than broken: the label stays legible
