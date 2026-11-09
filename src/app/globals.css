@@ -602,6 +602,8 @@ body::before {
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: 102% 0;
+  /* The angle .swiped lays its stroke at, so a hover reads as hand-drawn too. */
+  rotate: -1deg;
   content: '';
   pointer-events: none;
 }
@@ -680,8 +682,25 @@ body::before {
 }
 
 .btn[data-variant='outline'] {
+  position: relative;
+  isolation: isolate;
   border-color: var(--line-strong);
   color: var(--soft);
+}
+
+/* The band .washed draws, overhanging the border the way a marker overshoots a
+   box. On a pseudo because a background is clipped to the element's own edge. */
+.btn[data-variant='outline']::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0 -0.6rem;
+  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: 102% 0;
+  rotate: -1deg;
+  content: '';
+  pointer-events: none;
 }
 
 /* The wash is for EMPTY boxes only. A filled button is already the gold, so a
@@ -696,14 +715,11 @@ body::before {
     linear-gradient(to bottom, var(--mark-lift) 0 6%, transparent 24%);
 }
 
-/* The same band .washed draws, not a flat 16% fill and not the opaque mark. */
 .btn[data-variant='outline']:hover:not(:disabled) {
   border-color: var(--ink-accent);
-  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
-  /* On the element, not a pseudo: a bordered control's band belongs inside its
-     own edge. calc() would only crop, since a background is clipped to the box. */
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
+}
+
+.btn[data-variant='outline']:hover:not(:disabled)::before {
   background-size:
     102% 158%,
     102% 158%;
