@@ -26,7 +26,7 @@ export function parseTheme(value: unknown): Theme | null {
 /* The script that stamps the theme onto `<html>` before the first paint.
 
    Runs synchronously in `<head>`, so it must not throw: `localStorage` is a
-   SecurityError in Safari private mode and in a sandboxed frame, and an uncaught
+   SecurityError in a sandboxed frame and under blocked site data, and an uncaught
    throw in a blocking head script leaves a blank document. It touches `<html>` and
    the theme-color meta and nothing else — `suppressHydrationWarning` covers exactly
    one element's own attributes. */

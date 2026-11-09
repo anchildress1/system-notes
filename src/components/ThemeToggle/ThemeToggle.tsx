@@ -57,7 +57,7 @@ export default function ThemeToggle() {
     try {
       localStorage.setItem(THEME_STORAGE_KEY, next);
     } catch {
-      // Storage is unavailable in Safari private mode and sandboxed frames.
+      // Storage throws in sandboxed frames and under blocked site data.
       // The theme still applies for this page; it just will not be remembered.
     }
     for (const listener of listeners) listener();
