@@ -89,6 +89,28 @@ describe('HighlighterFan', () => {
     expect(root.dataset.penPhase).toBeUndefined();
   });
 
+  it('lets a superseded swap stand down once its frames have been queued', () => {
+    render(<HighlighterFan />);
+    fireEvent.click(pen('Blue'));
+    act(() => vi.advanceTimersByTime(230));
+    expect(root.dataset.penPhase).toBe('pre');
+
+    fireEvent.click(pen('Green'));
+    expect(root.dataset.penPhase).toBe('lift');
+
+    act(() => vi.advanceTimersByTime(32));
+    expect(root.dataset.penPhase, "blue's frames must not draw over green's lift").toBe('lift');
+
+    act(() => vi.advanceTimersByTime(198));
+    expect(root.dataset.pen).toBe('green');
+    act(() => vi.advanceTimersByTime(32));
+    expect(root.dataset.penPhase).toBe('draw');
+    act(() => vi.advanceTimersByTime(699));
+    expect(root.dataset.penPhase, "only green's own timer ends its draw").toBe('draw');
+    act(() => vi.advanceTimersByTime(1));
+    expect(root.dataset.penPhase).toBeUndefined();
+  });
+
   it('returns to the default by removing the attribute rather than naming yellow', () => {
     root.dataset.pen = 'pink';
     preferences({ reducedMotion: true });

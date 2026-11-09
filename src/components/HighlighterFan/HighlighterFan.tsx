@@ -58,6 +58,9 @@ export default function HighlighterFan() {
   const [tucked, setTucked] = useState(false);
   const fanRef = useRef<HTMLFieldSetElement>(null);
   const timers = useRef<number[]>([]);
+  // Bumped by every pick and by teardown. A frame callback cannot be cleared
+  // with the timers, so a superseded swap checks this and stands down.
+  const swap = useRef(0);
   const hoverOff = useRef<number | undefined>(undefined);
 
   useEffect(() => {
@@ -78,6 +81,7 @@ export default function HighlighterFan() {
       clearTimeout(untuck);
       clearTimeout(hoverOff.current);
       pending.forEach(clearTimeout);
+      swap.current += 1;
       // Torn down mid-swap, the phase would hold every band at zero width.
       delete document.documentElement.dataset.penPhase;
       if (pickedRef.current) applyPen(pickedRef.current);
@@ -99,7 +103,7 @@ export default function HighlighterFan() {
       try {
         localStorage.setItem(PEN_STORAGE_KEY, next);
       } catch {
-        // Storage is unavailable in Safari private mode and sandboxed frames.
+        // Storage throws in sandboxed frames and under blocked site data.
         // The pen still applies for this page; it just will not be remembered.
       }
       pickedRef.current = next;
@@ -108,6 +112,7 @@ export default function HighlighterFan() {
       const root = document.documentElement;
       timers.current.forEach(clearTimeout);
       timers.current.length = 0;
+      const id = ++swap.current;
       if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
         delete root.dataset.penPhase;
         applyPen(next);
@@ -122,6 +127,7 @@ export default function HighlighterFan() {
           // starts; one frame can coalesce both into a single style change.
           requestAnimationFrame(() =>
             requestAnimationFrame(() => {
+              if (id !== swap.current) return;
               root.dataset.penPhase = 'draw';
               timers.current.push(window.setTimeout(() => delete root.dataset.penPhase, DRAW_MS));
             })
