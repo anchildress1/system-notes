@@ -3,8 +3,8 @@
   min-height: 100vh;
   align-content: center;
   padding: clamp(1.5rem, 5vw, 5rem);
-  background: #0b0c0f;
-  color: #f0eee9;
+  background: #0c0c0c;
+  color: #eeeeee;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
@@ -23,7 +23,7 @@
 .errorMessage {
   max-width: 38rem;
   margin: 2rem 0 0;
-  color: #9598a0;
+  color: #989898;
   font-size: 1rem;
 }
 
@@ -33,7 +33,7 @@
   padding: 0 1rem;
   margin-top: 2rem;
   border: 0;
-  background: #f0eee9;
+  background: #eeeeee;
   color: #221a00;
   cursor: pointer;
   font: inherit;

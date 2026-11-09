@@ -99,7 +99,7 @@
   border-radius: 0.08rem;
   background: var(--mark);
   /* The chip is a sample of the board, so it carries the board's plate as its edge.
-     On paper that edge is load-bearing: a gold chip is about 1.4:1 against cream and
+     On paper that edge is load-bearing: a gold chip is about 1.4:1 against paper and
      would otherwise have no boundary at all. */
   box-shadow: 0 0 0 1px var(--tile-keyline);
 }
@@ -551,7 +551,7 @@
   width: 0.85rem;
   /* --mark, not --ink-accent. The alias resolves to --mark-ink on paper, which
      painted this black there: correct for ink, wrong for a MARK. Gold is
-     1.41:1 on cream, so it carries --tile-keyline along its own edge instead of
+     1.41:1 on paper, so it carries --tile-keyline along its own edge instead of
      changing hue. drop-shadow twice, not box-shadow — the mask clips a shadow
      drawn on the box, while drop-shadow traces the alpha the mask leaves. */
   background: var(--mark);

@@ -9,8 +9,8 @@ export const DEFAULT_THEME: Theme = 'dark';
 
 /** sRGB renderings of --void, for the browser chrome that cannot read a token. */
 export const THEME_COLORS: Readonly<Record<Theme, string>> = {
-  dark: '#0b0c0f',
-  light: '#f7f6f2',
+  dark: '#0c0c0c',
+  light: '#f6f6f6',
 };
 
 /**
