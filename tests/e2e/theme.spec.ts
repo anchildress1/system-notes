@@ -378,6 +378,43 @@ test.describe('Highlighter pen', () => {
     }
   }
 
+  test('restates every pre-inked band in every pen block', async ({ page }) => {
+    await page.goto('/');
+    // A data URI cannot read --mark, so a pen block that misses one leaves that
+    // band gold, and contrast still passes. Masks are drawn black and need none.
+    const inked = await page.evaluate(() => {
+      const names = new Set<string>();
+      for (const sheet of document.styleSheets) {
+        for (const rule of sheet.cssRules) {
+          if (!(rule instanceof CSSStyleRule) || rule.selectorText !== ':root') continue;
+          for (const name of rule.style) {
+            const value = rule.style.getPropertyValue(name);
+            if (name.startsWith('--stroke-') && !value.includes("fill='%23000'")) names.add(name);
+          }
+        }
+      }
+      return [...names];
+    });
+    expect(inked.length).toBeGreaterThan(0);
+
+    const read = () =>
+      page.evaluate(
+        (names) =>
+          names.map((name) => getComputedStyle(document.documentElement).getPropertyValue(name)),
+        inked
+      );
+    const gold = await read();
+    for (const pen of ALTERNATE_PENS) {
+      await page.evaluate((stamped) => {
+        document.documentElement.dataset.pen = stamped;
+      }, pen);
+      const painted = await read();
+      inked.forEach((name, index) =>
+        expect(painted[index], `${pen} ${name}`).not.toBe(gold[index])
+      );
+    }
+  });
+
   test('repaints the headline band from the pen, not a baked-in gold', async ({ page }) => {
     await page.goto('/');
     const band = page.locator('.page-head h1 > span').first();
