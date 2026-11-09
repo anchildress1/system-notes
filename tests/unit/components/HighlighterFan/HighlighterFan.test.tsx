@@ -272,6 +272,16 @@ describe('HighlighterFan', () => {
     );
   });
 
+  it('starts tucked when a reload has already restored the page mid-scroll', () => {
+    Object.defineProperty(window, 'scrollY', { value: 900, configurable: true });
+    try {
+      render(<HighlighterFan />);
+      expect(pen('Yellow').dataset.state).toBe('tuck');
+    } finally {
+      Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+    }
+  });
+
   it('folds back to the tuck once the pointer has left', () => {
     render(<HighlighterFan />);
     fireEvent.scroll(window);

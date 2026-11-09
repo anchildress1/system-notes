@@ -74,6 +74,9 @@ export default function HighlighterFan() {
       if (!fanRef.current?.contains(event.target as Node)) setOpen(false);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    // A reload restores the scroll position, often before this listener exists,
+    // so no event arrives and the pen would stay out over the text.
+    if (window.scrollY > 0) onScroll();
     document.addEventListener('pointerdown', onPointerDown);
     const pending = timers.current;
     return () => {
