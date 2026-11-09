@@ -340,15 +340,28 @@ test.describe('Highlighter pen', () => {
 
     // By keyboard: the splayed pens overlap toward their pivot, so a pointer
     // aimed at a pen's centre lands on its neighbour. A reader aims at the tip.
+    // Tab climbs the fan from the chosen pen, so the top pen is reachable from
+    // whichever one is chosen.
+    const climb = async () => {
+      const names: string[] = [];
+      for (let step = 0; step < 3; step++) {
+        await page.keyboard.press('Tab');
+        names.push(
+          await page.evaluate(() => document.activeElement?.getAttribute('aria-label') ?? '')
+        );
+      }
+      return names;
+    };
     await page.getByRole('button', { name: 'Yellow highlighter', exact: true }).focus();
-    await page.keyboard.press('Tab');
+    expect(await climb()).toEqual(['Pink highlighter', 'Green highlighter', 'Blue highlighter']);
     const blue = page.getByRole('button', { name: 'Blue highlighter', exact: true });
-    await expect(blue).toBeFocused();
     await page.keyboard.press('Enter');
 
     await expect(blue).toHaveAttribute('aria-pressed', 'true');
     await expect(html).toHaveAttribute('data-pen', 'blue');
     await expect(html).not.toHaveAttribute('data-pen-phase');
+    await expect(blue, 'the pick reorders the fan without dropping focus').toBeFocused();
+    expect(await climb()).toEqual(['Pink highlighter', 'Green highlighter', 'Yellow highlighter']);
 
     // Stamped by the head script, so the reload never paints a gold frame first.
     await page.reload();

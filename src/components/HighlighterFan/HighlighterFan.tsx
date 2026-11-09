@@ -160,6 +160,10 @@ export default function HighlighterFan() {
 
   const expanded = open || hover || focus;
   const others = PENS.filter((id) => id !== pen);
+  // Source order is the fan's order, bottom up: the chosen pen first, so Tab
+  // enters on the one pen showing, then climbs. In PENS order, Tab from the
+  // chosen pen never reached the pens listed before it.
+  const order = [pen, ...others.toReversed()];
 
   return (
     // A landmark, because content outside one is unreachable by landmark
@@ -180,7 +184,7 @@ export default function HighlighterFan() {
         onKeyDown={onKeyDown}
       >
         <legend className="visually-hidden">Highlighter colour</legend>
-        {PENS.map((id) => {
+        {order.map((id) => {
           const chosen = id === pen;
           return (
             <button
