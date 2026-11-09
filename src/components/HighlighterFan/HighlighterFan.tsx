@@ -7,7 +7,6 @@ import styles from './HighlighterFan.module.css';
 
 const LIFT_MS = 230;
 const DRAW_MS = 700;
-const UNTUCK_MS = 400;
 // The splayed pens leave gaps, and a pointer crossing one to reach the next pen
 // leaves the fan. Closing at once folded the pen away from under the cursor.
 const HOVER_GRACE_MS = 300;
@@ -24,6 +23,21 @@ function readPen(): Pen {
 
 function serverPen(): Pen {
   return DEFAULT_PEN;
+}
+
+// Tucked for as long as the page sits scrolled, not just while it moves: a pen
+// that comes back the moment scrolling stops lands on the line being read.
+function subscribeScroll(onChange: () => void): () => void {
+  window.addEventListener('scroll', onChange, { passive: true });
+  return () => window.removeEventListener('scroll', onChange);
+}
+
+function readScrolled(): boolean {
+  return window.scrollY > 0;
+}
+
+function serverScrolled(): boolean {
+  return false;
 }
 
 function applyPen(pen: Pen): void {
@@ -55,7 +69,7 @@ export default function HighlighterFan() {
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
   const [focus, setFocus] = useState(false);
-  const [tucked, setTucked] = useState(false);
+  const tucked = useSyncExternalStore(subscribeScroll, readScrolled, serverScrolled);
   const fanRef = useRef<HTMLFieldSetElement>(null);
   const timers = useRef<number[]>([]);
   // Bumped by every pick and by teardown. A frame callback cannot be cleared
@@ -64,13 +78,7 @@ export default function HighlighterFan() {
   const hoverOff = useRef<number | undefined>(undefined);
 
   useEffect(() => {
-    let untuck: number | undefined;
-    const onScroll = () => {
-      setTucked(true);
-      setOpen(false);
-      clearTimeout(untuck);
-      untuck = window.setTimeout(() => setTucked(false), UNTUCK_MS);
-    };
+    const onScroll = () => setOpen(false);
     const onPointerDown = (event: PointerEvent) => {
       if (!fanRef.current?.contains(event.target as Node)) setOpen(false);
     };
@@ -78,7 +86,6 @@ export default function HighlighterFan() {
     document.addEventListener('pointerdown', onPointerDown);
     const pending = timers.current;
     return () => {
-      clearTimeout(untuck);
       clearTimeout(hoverOff.current);
       pending.forEach(clearTimeout);
       swap.current += 1;

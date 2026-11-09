@@ -259,14 +259,31 @@ describe('HighlighterFan', () => {
     expect(pen('Green').dataset.state).toBe('hide');
   });
 
-  it('tucks the chosen pen while the page scrolls and brings it back after', () => {
+  it('keeps the chosen pen tucked while the page sits scrolled, and rests it at the top', () => {
     render(<HighlighterFan />);
 
+    Object.defineProperty(window, 'scrollY', { value: 600, configurable: true });
     fireEvent.scroll(window);
     expect(pen('Yellow').dataset.state).toBe('tuck');
 
-    act(() => vi.advanceTimersByTime(400));
+    act(() => vi.advanceTimersByTime(5000));
+    expect(pen('Yellow').dataset.state, 'reading without scrolling must not bring it back').toBe(
+      'tuck'
+    );
+
+    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+    fireEvent.scroll(window);
     expect(pen('Yellow').dataset.state).toBe('rest');
+  });
+
+  it('closes an open fan when the page scrolls', () => {
+    preferences({ hover: false });
+    render(<HighlighterFan />);
+    fireEvent.click(pen('Yellow'));
+
+    fireEvent.scroll(window);
+
+    expect(pen('Blue').dataset.state).toBe('hide');
   });
 
   it('leaves no phase behind when torn down mid-swap', () => {
