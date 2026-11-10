@@ -201,15 +201,15 @@ describe('HighlighterFan', () => {
     render(<HighlighterFan />);
     const fan = screen.getByRole('group');
 
-    fireEvent.mouseEnter(fan);
+    fireEvent.pointerEnter(fan, { pointerType: 'mouse' });
     expect(pen('Pink').dataset.state).toBe('show');
 
-    fireEvent.mouseLeave(fan);
+    fireEvent.pointerLeave(fan, { pointerType: 'mouse' });
     act(() => vi.advanceTimersByTime(599));
     expect(pen('Pink').dataset.state, 'a gap between pens must not fold the fan').toBe('show');
 
-    fireEvent.mouseEnter(fan);
-    fireEvent.mouseLeave(fan);
+    fireEvent.pointerEnter(fan, { pointerType: 'mouse' });
+    fireEvent.pointerLeave(fan, { pointerType: 'mouse' });
     act(() => vi.advanceTimersByTime(599));
     expect(pen('Pink').dataset.state, 're-entering restarts the grace').toBe('show');
 
@@ -217,13 +217,23 @@ describe('HighlighterFan', () => {
     expect(pen('Pink').dataset.state).toBe('hide');
   });
 
-  it('does not open for a hover a touch screen reports', () => {
-    preferences({ hover: false });
+  it('does not open for the enter a finger fires, even where the screen reports hover', () => {
     render(<HighlighterFan />);
 
-    fireEvent.mouseEnter(screen.getByRole('group'));
+    fireEvent.pointerEnter(screen.getByRole('group'), { pointerType: 'touch' });
 
     expect(pen('Pink').dataset.state).toBe('hide');
+  });
+
+  it('opens on the first finger tap of a touchscreen that reports hover', () => {
+    preferences({ reducedMotion: true });
+    render(<HighlighterFan />);
+
+    fireEvent(pen('Yellow'), new PointerEvent('click', { bubbles: true, pointerType: 'touch' }));
+    expect(pen('Pink').dataset.state).toBe('show');
+
+    fireEvent(pen('Blue'), new PointerEvent('click', { bubbles: true, pointerType: 'touch' }));
+    expect(root.dataset.pen).toBe('blue');
   });
 
   it('opens for keyboard focus, and Escape folds it back onto the chosen pen', () => {
@@ -299,10 +309,10 @@ describe('HighlighterFan', () => {
     fireEvent.scroll(window);
     const fan = screen.getByRole('group');
 
-    fireEvent.mouseEnter(fan);
+    fireEvent.pointerEnter(fan, { pointerType: 'mouse' });
     expect(pen('Yellow').dataset.state).toBe('out');
 
-    fireEvent.mouseLeave(fan);
+    fireEvent.pointerLeave(fan, { pointerType: 'mouse' });
     act(() => vi.advanceTimersByTime(600));
     expect(pen('Yellow').dataset.state).toBe('tuck');
   });

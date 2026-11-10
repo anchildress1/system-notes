@@ -31,9 +31,11 @@ function applyPen(pen: Pen): void {
   else root.dataset.pen = pen;
 }
 
-// A touch screen has no hover to open the fan, so the first tap opens it instead.
-function canHover(): boolean {
-  return matchMedia('(hover: hover)').matches;
+// A finger has no hover to open the fan, so its first tap opens it instead. Read
+// from the event, because a touchscreen laptop reports (hover: hover) and a
+// finger there still cannot hover. Keyboard clicks carry no pointer type.
+function isTouch(pointerType: string): boolean {
+  return pointerType ? pointerType !== 'mouse' : !matchMedia('(hover: hover)').matches;
 }
 
 type PenState = 'hide' | 'tuck' | 'rest' | 'show' | 'out';
@@ -92,8 +94,8 @@ export default function HighlighterFan() {
   }, []);
 
   const pick = useCallback(
-    (next: Pen) => {
-      const touch = !canHover();
+    (next: Pen, pointerType: string) => {
+      const touch = isTouch(pointerType);
       // Keyboard focus already shows every pen, so a key press there picks.
       if (touch && !open && !focus) {
         setOpen(true);
@@ -174,11 +176,12 @@ export default function HighlighterFan() {
       <fieldset
         ref={fanRef}
         className={styles.group}
-        onMouseEnter={() => {
+        // A tap fires an enter with no leave, which would pin the fan open.
+        onPointerEnter={(event) => {
           clearTimeout(hoverOff.current);
-          if (canHover()) setHover(true);
+          if (event.pointerType === 'mouse') setHover(true);
         }}
-        onMouseLeave={() => {
+        onPointerLeave={() => {
           hoverOff.current = window.setTimeout(() => setHover(false), HOVER_GRACE_MS);
         }}
         onFocus={onFocus}
@@ -198,7 +201,9 @@ export default function HighlighterFan() {
               data-slot={chosen ? 3 : others.indexOf(id)}
               aria-pressed={chosen}
               aria-label={`${id[0].toUpperCase()}${id.slice(1)} highlighter`}
-              onClick={() => pick(id)}
+              onClick={(event) =>
+                pick(id, (event.nativeEvent as Partial<PointerEvent>).pointerType ?? '')
+              }
             >
               <PenDrawing />
             </button>
