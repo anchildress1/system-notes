@@ -1004,10 +1004,10 @@ main {
    and the new ink goes down left to right. Text that sits ON a band falls back
    to page ink while the band is gone, or --mark-ink would vanish into graphite.
    Reduced motion skips the phases entirely, so these never run there. */
-:root[data-pen-phase='lift']
-  :is(.marked-link, .marked-soft, .marked, .page-head h1 > span, .page-head-title > span),
-:root[data-pen-phase='pre']
-  :is(.marked-link, .marked-soft, .marked, .page-head h1 > span, .page-head-title > span) {
+/* Inherited, so every band that reads var(--band-w, 100%) lifts with no list
+   of consumers to keep in step. */
+:root[data-pen-phase='lift'],
+:root[data-pen-phase='pre'] {
   --band-w: 0%;
 }
 
