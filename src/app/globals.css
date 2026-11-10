@@ -31,8 +31,8 @@
   --pen-yellow: oklch(0.86 0.17 92);
   --pen-yellow-ink: oklch(0.22 0.045 92);
   --pen-blue: oklch(0.77 0.145 226);
-  /* 0.035, not 0.045: hue 226 has no chroma 0.045 at L 0.18. */
-  --pen-blue-ink: oklch(0.18 0.035 226);
+  /* 0.034, not 0.045: at L 0.18, hue 226 leaves sRGB just past chroma 0.034. */
+  --pen-blue-ink: oklch(0.18 0.034 226);
   --pen-green: oklch(0.76 0.24 144);
   --pen-green-ink: oklch(0.18 0.045 144);
   --pen-pink: oklch(0.75 0.19 344);
