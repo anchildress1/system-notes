@@ -31,6 +31,16 @@ function applyPen(pen: Pen): void {
   else root.dataset.pen = pen;
 }
 
+function clearPenPhase(): void {
+  delete document.documentElement.dataset.penPhase;
+}
+
+// Two frames, so the zero-width band commits before the draw transition starts;
+// one frame can coalesce both into a single style change.
+function afterNextPaint(callback: () => void): void {
+  requestAnimationFrame(() => requestAnimationFrame(callback));
+}
+
 // A finger has no hover to open the fan, so its first tap opens it instead. Read
 // from the event, because a touchscreen laptop reports (hover: hover) and a
 // finger there still cannot hover. Keyboard clicks carry no pointer type.
@@ -96,7 +106,7 @@ export default function HighlighterFan() {
       pending.forEach(clearTimeout);
       swap.current += 1;
       // Torn down mid-swap, the phase would hold every band at zero width.
-      delete document.documentElement.dataset.penPhase;
+      clearPenPhase();
       if (pickedRef.current) applyPen(pickedRef.current);
       window.removeEventListener('scroll', onScroll);
       document.removeEventListener('pointerdown', onPointerDown);
@@ -128,7 +138,7 @@ export default function HighlighterFan() {
       timers.current.length = 0;
       const id = ++swap.current;
       if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        delete root.dataset.penPhase;
+        clearPenPhase();
         applyPen(next);
         return;
       }
@@ -137,15 +147,11 @@ export default function HighlighterFan() {
         window.setTimeout(() => {
           root.dataset.penPhase = 'pre';
           applyPen(next);
-          // Two frames, so the zero-width band commits before the draw transition
-          // starts; one frame can coalesce both into a single style change.
-          requestAnimationFrame(() =>
-            requestAnimationFrame(() => {
-              if (id !== swap.current) return;
-              root.dataset.penPhase = 'draw';
-              timers.current.push(window.setTimeout(() => delete root.dataset.penPhase, DRAW_MS));
-            })
-          );
+          afterNextPaint(() => {
+            if (id !== swap.current) return;
+            root.dataset.penPhase = 'draw';
+            timers.current.push(window.setTimeout(clearPenPhase, DRAW_MS));
+          });
         }, LIFT_MS)
       );
     },
