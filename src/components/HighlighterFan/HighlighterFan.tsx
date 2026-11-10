@@ -38,6 +38,16 @@ function isTouch(pointerType: string): boolean {
   return pointerType ? pointerType !== 'mouse' : !matchMedia('(hover: hover)').matches;
 }
 
+// Hydrated or not, without a mismatch. The server cannot know the stored pen,
+// so a server-rendered fan showed gold until hydration swapped the pen in.
+function readHydrated(): boolean {
+  return true;
+}
+
+function serverHydrated(): boolean {
+  return false;
+}
+
 type PenState = 'hide' | 'tuck' | 'rest' | 'show' | 'out';
 
 function penState(chosen: boolean, expanded: boolean, tucked: boolean): PenState {
@@ -161,6 +171,9 @@ export default function HighlighterFan() {
     setOpen(false);
     setHover(false);
   };
+
+  const hydrated = useSyncExternalStore(subscribe, readHydrated, serverHydrated);
+  if (!hydrated) return null;
 
   const expanded = open || hover || focus;
   const others = PENS.filter((id) => id !== pen);

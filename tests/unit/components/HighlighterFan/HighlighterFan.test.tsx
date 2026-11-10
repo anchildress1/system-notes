@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import HighlighterFan from '@/components/HighlighterFan/HighlighterFan';
 import { PEN_STORAGE_KEY } from '@/lib/pen';
@@ -234,6 +235,10 @@ describe('HighlighterFan', () => {
 
     fireEvent(pen('Blue'), new PointerEvent('click', { bubbles: true, pointerType: 'touch' }));
     expect(root.dataset.pen).toBe('blue');
+  });
+
+  it('renders nothing on the server, which cannot know the stored pen', () => {
+    expect(renderToString(<HighlighterFan />)).toBe('');
   });
 
   it('opens for keyboard focus, and Escape folds it back onto the chosen pen', () => {
