@@ -165,7 +165,7 @@ export default function HighlighterFan() {
   // Source order is the fan's order, bottom up: the chosen pen first, so Tab
   // enters on the one pen showing, then climbs. In PENS order, Tab from the
   // chosen pen never reached the pens listed before it.
-  const order = [pen, ...others.toReversed()];
+  const order = [pen, ...[...others].reverse()];
 
   return (
     // A landmark, because content outside one is unreachable by landmark
