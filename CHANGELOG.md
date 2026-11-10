@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/anchildress1/system-notes/compare/v3.4.1...v3.5.0) (2026-11-10)
+
+
+### Features
+
+* reader-chosen highlighter pens ([#203](https://github.com/anchildress1/system-notes/issues/203)) ([a74d6e3](https://github.com/anchildress1/system-notes/commit/a74d6e3b73b0c5fb0eada87ac0b2dab80c3adb21))
+
 ## [3.4.1](https://github.com/anchildress1/system-notes/compare/v3.4.0...v3.4.1) (2026-11-07)
 
 
