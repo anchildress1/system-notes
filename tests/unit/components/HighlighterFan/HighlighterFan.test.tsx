@@ -175,6 +175,18 @@ describe('HighlighterFan', () => {
     expect(localStorage.getItem(PEN_STORAGE_KEY)).toBeNull();
   });
 
+  it('picks on the first key press when keyboard focus has opened the fan on a touch screen', () => {
+    preferences({ hover: false, reducedMotion: true });
+    focusVisible(true);
+    render(<HighlighterFan />);
+    fireEvent.focus(pen('Yellow'));
+    expect(pen('Blue').dataset.state).toBe('show');
+
+    fireEvent.click(pen('Blue'));
+
+    expect(root.dataset.pen).toBe('blue');
+  });
+
   it('closes on a tap outside the fan', () => {
     preferences({ hover: false });
     render(<HighlighterFan />);

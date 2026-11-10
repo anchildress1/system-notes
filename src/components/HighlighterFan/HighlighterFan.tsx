@@ -94,7 +94,8 @@ export default function HighlighterFan() {
   const pick = useCallback(
     (next: Pen) => {
       const touch = !canHover();
-      if (touch && !open) {
+      // Keyboard focus already shows every pen, so a key press there picks.
+      if (touch && !open && !focus) {
         setOpen(true);
         return;
       }
@@ -136,7 +137,7 @@ export default function HighlighterFan() {
         }, LIFT_MS)
       );
     },
-    [open, pen]
+    [focus, open, pen]
   );
 
   const onFocus = (event: FocusEvent<HTMLFieldSetElement>) => {
