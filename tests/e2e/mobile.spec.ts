@@ -159,6 +159,41 @@ test.describe('mobile interactions', () => {
     }
   });
 
+  test('leaves a tucked pen tip big enough to see and tap', async ({ page }) => {
+    // Tucked is where the pen spends a visit after the first scroll, so its tip
+    // is the target. 961 is just above the narrow breakpoint, where the pen is
+    // shortest at the desktop tuck depth.
+    for (const width of [280, 390, 961, 1440]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto('/about');
+      await page.evaluate(() => window.scrollTo({ top: 600, behavior: 'instant' }));
+
+      const tip = page.getByRole('button', { name: 'Yellow highlighter', exact: true });
+      await expect(tip).toHaveAttribute('data-state', 'tuck');
+      // Mid-transition the pen is still sliding in from rest, wider than the tuck.
+      await tip.evaluate((pen) => Promise.all(pen.getAnimations().map((run) => run.finished)));
+
+      // The pen hangs off the viewport, so its box overstates the target. Count
+      // only the points that land on it on screen.
+      const visible = await tip.evaluate((pen) => {
+        let left = innerWidth;
+        let top = innerHeight;
+        for (let x = innerWidth - 1; x > innerWidth - 240; x -= 1) {
+          for (let y = innerHeight - 1; y > innerHeight - 240; y -= 1) {
+            const hit = document.elementFromPoint(x, y);
+            if (hit && pen.contains(hit)) {
+              left = Math.min(left, x);
+              top = Math.min(top, y);
+            }
+          }
+        }
+        return { wide: innerWidth - left, tall: innerHeight - top };
+      });
+      expect(visible.wide, `tip width at ${width}px`).toBeGreaterThanOrEqual(44);
+      expect(visible.tall, `tip height at ${width}px`).toBeGreaterThanOrEqual(44);
+    }
+  });
+
   test('can cancel buffering and then play the theme song on mobile', async ({ page }) => {
     const audioReady = Promise.withResolvers<void>();
     let requests = 0;

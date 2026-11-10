@@ -9,8 +9,8 @@ export const DEFAULT_THEME: Theme = 'dark';
 
 /** sRGB renderings of --void, for the browser chrome that cannot read a token. */
 export const THEME_COLORS: Readonly<Record<Theme, string>> = {
-  dark: '#0b0c0f',
-  light: '#f7f6f2',
+  dark: '#0c0c0c',
+  light: '#f6f6f6',
 };
 
 /**
@@ -26,7 +26,7 @@ export function parseTheme(value: unknown): Theme | null {
 /* The script that stamps the theme onto `<html>` before the first paint.
 
    Runs synchronously in `<head>`, so it must not throw: `localStorage` is a
-   SecurityError in Safari private mode and in a sandboxed frame, and an uncaught
+   SecurityError in a sandboxed frame and under blocked site data, and an uncaught
    throw in a blocking head script leaves a blank document. It touches `<html>` and
    the theme-color meta and nothing else — `suppressHydrationWarning` covers exactly
    one element's own attributes. */

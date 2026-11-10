@@ -1,18 +1,20 @@
 :root {
-  /* Every chromatic token is hue 92. Neutrals are hue 265, or hue 90 below
-     chroma 0.012. There is no second chromatic hue. */
-  --void: oklch(0.155 0.006 265);
-  --panel: oklch(0.2 0.007 265);
-  --panel-hi: oklch(0.25 0.008 265);
-  --edge: oklch(0.34 0.01 265);
-  --bone: oklch(0.95 0.008 90);
-  --soft: oklch(0.76 0.008 265);
-  --mute: oklch(0.68 0.012 265);
+  /* Every neutral is chroma 0, so the grounds favour no pen. A tint toward
+     one hue is a complement to some pens and a clash with the rest. The site's
+     chromatic tokens are hue 92; the only other hues are the reader's
+     alternate pens below, which paint the fan and, once picked, --mark. */
+  --void: oklch(0.155 0 0);
+  --panel: oklch(0.2 0 0);
+  --panel-hi: oklch(0.25 0 0);
+  --edge: oklch(0.34 0 0);
+  --bone: oklch(0.95 0 0);
+  --soft: oklch(0.76 0 0);
+  --mute: oklch(0.68 0 0);
   /* Gold is a MARKER, never an ink. --mark is the ground; --mark-ink is what
      sits on it. Both are shared, because a gold fill needs dark ink on either
      theme. --ink-accent is an alias for one of them and never holds a literal. */
-  --mark: oklch(0.86 0.17 92);
-  --mark-ink: oklch(0.22 0.045 92);
+  --mark: var(--pen-yellow);
+  --mark-ink: var(--pen-yellow-ink);
   --ink-accent: var(--mark);
   /* Ink pools low where the felt drags and thins where it lifts. Both are
      yellows over the same yellow, so the composite never leaves the band's
@@ -20,17 +22,35 @@
   --mark-drag: oklch(0.78 0.15 92 / 0.55);
   --mark-lift: oklch(0.91 0.12 92 / 0.5);
 
-  /* THERE IS NO SECOND PEN. A mark that has to survive paper carries
-     --tile-keyline along its own edge; it is never recoloured. See
-     .wordmark::before and .byline::before. */
+  /* THE PENS. Gold ships; a reader may swap in one other through the fan, and
+     [data-pen] then re-points every --mark primitive at once. Each pen is a
+     GROUND only, at least 7:1 under its own ink, and inside sRGB. A mark that
+     has to survive paper still carries --tile-keyline along its own edge rather
+     than being recoloured. The fan draws all four at once, so each is its own
+     token rather than only a value of --mark. */
+  --pen-yellow: oklch(0.86 0.17 92);
+  --pen-yellow-ink: oklch(0.22 0.045 92);
+  --pen-blue: oklch(0.77 0.145 226);
+  /* 0.034, not 0.045: at L 0.18, hue 226 leaves sRGB just past chroma 0.034. */
+  --pen-blue-ink: oklch(0.18 0.034 226);
+  --pen-green: oklch(0.76 0.24 144);
+  --pen-green-ink: oklch(0.18 0.045 144);
+  --pen-pink: oklch(0.75 0.19 344);
+  --pen-pink-ink: oklch(0.18 0.045 344);
+  /* The barrel's plastic and its light. Neutral, so a pen reads as its ink. */
+  --pen-cap: oklch(0.3 0 0);
+  --pen-shine: oklch(1 0 0);
+  --pen-shade: oklch(0 0 0);
 
   /* Drawn, not described. MASKS rather than background images, so the colour
      stays a variable. preserveAspectRatio='none' stretches one stroke from an
      8px byline bullet to a 200px headline band. Nothing here is a rectangle. */
   --stroke-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%23000'/%3E%3C/svg%3E");
   /* The same brush, pre-inked. A data URI is its own document and cannot read a
-     custom property, so --mark's value is written out. Safe only because --mark
-     does not change with the theme; if that stops being true, this becomes a mask. */
+     custom property, so --mark's value is written out, and every [data-pen]
+     block below restates it with its own pen. --mark does not change with the
+     theme, so no theme block needs to. It stays a background, never a mask: a
+     mask would clip the text it sits behind. */
   --stroke-brush-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%23f9cc21'/%3E%3C/svg%3E");
   /* The same stroke on its side, for rules that run down a block rather than
      under a word. Transposed rather than rotated, so it still stretches to any
@@ -53,7 +73,8 @@
      and still clones correctly across wrapped lines via box-decoration-break.
      Stops are --mark-drag/--mark-lift pre-blended over --mark's own
      0.549/0.502 alpha, in sRGB, since a data URI cannot read a custom
-     property; recompute by hand if either token's value changes. Percentages
+     property; recompute by hand if either token's value changes, here and in
+     the pen's [data-pen] block. Percentages
      are of the PATH's own bounding box (the default gradientUnits), not the
      full viewBox — the ink pools within the stroke itself, not the padding
      around it. */
@@ -62,12 +83,12 @@
   /* Sized for a halo around a 10px tile. --mark-soft is a panel-wide wash and
      disappears at that scale. */
   --mark-glow: oklch(0.86 0.17 92 / 0.5);
-  --drop: oklch(0.06 0.01 265 / 0.9);
-  --thumb: oklch(0.42 0.01 265);
+  --drop: oklch(0.06 0 0 / 0.9);
+  --thumb: oklch(0.42 0 0);
 
   /* Gold is 1.41:1 against paper — invisible, not faint. The edge does the
      separating, so the fill is free to be a colour rather than a contrast value. */
-  --tile-keyline: oklch(0.06 0.01 265 / 0.55);
+  --tile-keyline: oklch(0.06 0 0 / 0.55);
 
   /* THREE TONES AND A RING, not five hues. Neutral carries the ranking and the
      accent takes one slot. The awards tone repeats the accent on purpose: an
@@ -75,21 +96,23 @@
 
      Slots are rank positions, not the categories their names remember — the
      largest category takes --k-decision, the next --k-note. swatchPalette.ts
-     assigns the ranks; these five lines are the only place the tones live.
+     assigns the ranks; this block and the light one are the only place the
+     tones live.
 
-     The neutrals invert between themes; the gold does not, because the keyline
+     The accent slots alias the mark, so they follow the reader's pen. The
+     neutrals invert between themes; the mark does not, because the keyline
      is what makes it legible rather than its lightness. */
-  --k-decision: oklch(0.93 0.008 90);
-  --k-note: oklch(0.68 0.006 265);
-  --k-other: oklch(0.86 0.17 92);
-  --k-principle: oklch(0.52 0.006 265);
-  --k-award: oklch(0.86 0.17 92);
+  --k-decision: oklch(0.93 0 0);
+  --k-note: oklch(0.68 0 0);
+  --k-other: var(--mark);
+  --k-principle: oklch(0.52 0 0);
+  --k-award: var(--mark);
 
   /* Translucent rather than resolving to --edge: about thirty borders composite
      over whatever sits behind them, and an opaque token would need every one
      re-tuned by hand. */
-  --line: oklch(0.95 0.008 90 / 0.13);
-  --line-strong: oklch(0.95 0.008 90 / 0.28);
+  --line: oklch(0.95 0 0 / 0.13);
+  --line-strong: oklch(0.95 0 0 / 0.28);
 
   /* next/font re-declares these on <body> with hashed family names; the values
      here are the SSR-time fallback. */
@@ -106,7 +129,7 @@
   /* The hairline running the height of the page. Too faint to derive from --line,
      and it inverts with the theme. 61.8% rather than 50%: an axis of symmetry is
      the one thing a page built on asymmetry should not hand a reader. */
-  --seam: oklch(0.95 0.008 90 / 0.028);
+  --seam: oklch(0.95 0 0 / 0.028);
   --seam-at: 61.8%;
 
   /* Geometry and easing are theme-independent and belong to both. */
@@ -122,6 +145,49 @@
   --head-tail: clamp(1.75rem, 4.5vh, 3.5rem);
 }
 
+/* One block per alternate pen, stamped on <html> by the head script. Yellow is
+   :root itself. Only the --mark primitives move; every alias and every
+   consumer follows. The data URIs are each pen's sRGB rendering, built the
+   same way as the gold ones above. */
+:root[data-pen='blue'] {
+  --mark: var(--pen-blue);
+  --mark-ink: var(--pen-blue-ink);
+  --mark-drag: oklch(0.69 0.13 226 / 0.55);
+  --mark-lift: oklch(0.82 0.1 226 / 0.5);
+  --mark-soft: oklch(0.77 0.145 226 / 0.16);
+  --mark-glow: oklch(0.77 0.145 226 / 0.5);
+  --stroke-brush-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%2312c6fa'/%3E%3C/svg%3E");
+  --stroke-swipe-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%2312c6fa'/%3E%3C/svg%3E");
+  --stroke-swipe-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%2312c6fa' fill-opacity='0.16'/%3E%3C/svg%3E");
+  --stroke-swipe-smudged: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2345ccf8'/%3E%3Cstop offset='0.06' stop-color='%2345ccf8'/%3E%3Cstop offset='0.24' stop-color='%2312c6fa'/%3E%3Cstop offset='0.52' stop-color='%2312c6fa'/%3E%3Cstop offset='0.74' stop-color='%2310b7e8'/%3E%3Cstop offset='0.92' stop-color='%2312c6fa'/%3E%3Cstop offset='1' stop-color='%2312c6fa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='url(%23g)'/%3E%3C/svg%3E");
+}
+
+:root[data-pen='green'] {
+  --mark: var(--pen-green);
+  --mark-ink: var(--pen-green-ink);
+  --mark-drag: oklch(0.68 0.21 144 / 0.55);
+  --mark-lift: oklch(0.81 0.17 144 / 0.5);
+  --mark-soft: oklch(0.76 0.24 144 / 0.16);
+  --mark-glow: oklch(0.76 0.24 144 / 0.5);
+  --stroke-brush-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%231ad535'/%3E%3C/svg%3E");
+  --stroke-swipe-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%231ad535'/%3E%3C/svg%3E");
+  --stroke-swipe-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%231ad535' fill-opacity='0.16'/%3E%3C/svg%3E");
+  --stroke-swipe-smudged: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2348d956'/%3E%3Cstop offset='0.06' stop-color='%2348d956'/%3E%3Cstop offset='0.24' stop-color='%231ad535'/%3E%3Cstop offset='0.52' stop-color='%231ad535'/%3E%3Cstop offset='0.74' stop-color='%231dc533'/%3E%3Cstop offset='0.92' stop-color='%231ad535'/%3E%3Cstop offset='1' stop-color='%231ad535'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='url(%23g)'/%3E%3C/svg%3E");
+}
+
+:root[data-pen='pink'] {
+  --mark: var(--pen-pink);
+  --mark-ink: var(--pen-pink-ink);
+  --mark-drag: oklch(0.67 0.17 344 / 0.55);
+  --mark-lift: oklch(0.8 0.13 344 / 0.5);
+  --mark-soft: oklch(0.75 0.19 344 / 0.16);
+  --mark-glow: oklch(0.75 0.19 344 / 0.5);
+  --stroke-brush-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 16' preserveAspectRatio='none'%3E%3Cpath d='M1.2,10.4 C10.5,5.1 21,2.6 33.4,3.2 C42.1,3.6 49,6.1 54.8,4.3 L55.2,10.1 C48.6,13.9 40.2,12.4 31.1,12.8 C20.4,13.3 9.6,14.7 1.4,12.3 Z' fill='%23fd76cb'/%3E%3C/svg%3E");
+  --stroke-swipe-inked: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23fd76cb'/%3E%3C/svg%3E");
+  --stroke-swipe-soft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='%23fd76cb' fill-opacity='0.16'/%3E%3C/svg%3E");
+  --stroke-swipe-smudged: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 26' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fb88cf'/%3E%3Cstop offset='0.06' stop-color='%23fb88cf'/%3E%3Cstop offset='0.24' stop-color='%23fd76cb'/%3E%3Cstop offset='0.52' stop-color='%23fd76cb'/%3E%3Cstop offset='0.74' stop-color='%23ea6cbb'/%3E%3Cstop offset='0.92' stop-color='%23fd76cb'/%3E%3Cstop offset='1' stop-color='%23fd76cb'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0.6,7.34 Q0.8,6.78 2.2,6.71 L117,5.77 Q119.2,5.7 119.4,6.46 L118.6,19.96 Q118.4,20.59 117,20.65 L2.4,21.47 Q0.4,21.54 0.4,20.78 Z' fill='url(%23g)'/%3E%3C/svg%3E");
+}
+
 /* Keyed on the attribute alone. The head script resolves the system preference
    and stamps it before first paint, so a media query here would duplicate the
    block for a state that never renders. With scripting off, everyone gets dark. */
@@ -129,15 +195,15 @@
   /* Native widgets read this. Leaving it dark under a white page is how a light
      theme ends up with dark native widgets on it. */
   color-scheme: light;
-  --void: oklch(0.972 0.005 90);
+  --void: oklch(0.972 0 0);
   --panel: oklch(1 0 0);
-  --panel-hi: oklch(0.945 0.008 90);
-  --edge: oklch(0.855 0.012 90);
-  --bone: oklch(0.22 0.008 265);
-  --soft: oklch(0.4 0.008 265);
-  --mute: oklch(0.53 0.012 265);
+  --panel-hi: oklch(0.945 0 0);
+  --edge: oklch(0.855 0 0);
+  --bone: oklch(0.22 0 0);
+  --soft: oklch(0.4 0 0);
+  --mute: oklch(0.53 0 0);
   /* The accent as ink on paper is the MARK'S OWN INK — an alias, not a colour.
-     A hue-92 near-black, 15.98:1 on paper, guaranteed to belong beside the gold.
+     A near-black on the current pen's hue, so it always belongs beside the mark.
      Emphasis here is carried by weight against --soft and --mute. */
   --ink-accent: var(--mark-ink);
 
@@ -148,20 +214,20 @@
      dark mass on white does not weigh what light mass on black weighs, so giving
      the darkest tone to the largest category read as one black slab. Steps stay
      at least 0.13 apart and the keyline carries every boundary. */
-  --tile-keyline: oklch(0.3 0.01 265 / 0.75);
-  --k-decision: oklch(0.72 0.006 265);
-  --k-note: oklch(0.55 0.006 265);
-  --k-other: oklch(0.86 0.17 92);
-  --k-principle: oklch(0.3 0.008 265);
-  --k-award: oklch(0.86 0.17 92);
-  --drop: oklch(0.55 0.02 265 / 0.22);
-  --thumb: oklch(0.8 0.012 265);
+  --tile-keyline: oklch(0.3 0 0 / 0.75);
+  --k-decision: oklch(0.72 0 0);
+  --k-note: oklch(0.55 0 0);
+  --k-other: var(--mark);
+  --k-principle: oklch(0.3 0 0);
+  --k-award: var(--mark);
+  --drop: oklch(0.55 0 0 / 0.22);
+  --thumb: oklch(0.8 0 0);
 
   /* The same ramp inverted, so a category keeps its identity across a theme
      switch rather than only its rank. */
-  --line: oklch(0.22 0.008 265 / 0.13);
-  --line-strong: oklch(0.22 0.008 265 / 0.28);
-  --seam: oklch(0.22 0.008 265 / 0.05);
+  --line: oklch(0.22 0 0 / 0.13);
+  --line-strong: oklch(0.22 0 0 / 0.28);
+  --seam: oklch(0.22 0 0 / 0.05);
 }
 
 *,
@@ -232,7 +298,7 @@ body::before {
   background-image: var(--stroke-brush-inked);
   background-position: 0 100%;
   background-repeat: no-repeat;
-  background-size: 100% 0.24em;
+  background-size: var(--band-w, 100%) 0.24em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   color: inherit;
@@ -244,7 +310,7 @@ body::before {
 
 .marked-link:hover,
 .marked-link:focus-visible {
-  background-size: 100% 0.42em;
+  background-size: var(--band-w, 100%) 0.42em;
 }
 
 /* ONE HOVER, AT TWO SCALES. Compose these; never write a hover that sets a
@@ -329,7 +395,7 @@ body::before {
   /* 158%, for the same reason .btn uses it: --stroke-swipe insets its ink to
      the middle 61% of the viewBox, so at 100% the band would cover only the
      middle of the text. */
-  background-size: 100% 158%;
+  background-size: var(--band-w, 100%) 158%;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
@@ -527,22 +593,26 @@ body::before {
    A background is clipped to its own border box however large the image is, so
    the overhang a marker leaves has to come from a box that is itself wider:
    hence the negative inline inset. */
-.washed::before {
+.washed::before,
+.btn[data-variant='outline']::before {
   position: absolute;
   z-index: -1;
-  inset: 0 -0.8rem;
+  inset: 0 calc(var(--wash-overhang, 0.8rem) * -1);
   background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
   /* 102% and centred, because --stroke-swipe's ink stops at x 0.4 and 119.4 of a
      120 viewBox and would otherwise land short of even this wider box. */
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: 102% 0;
+  /* The angle .swiped lays its stroke at, so a hover reads as hand-drawn too. */
+  rotate: -1deg;
   content: '';
   pointer-events: none;
 }
 
 .washed:hover::before,
-.washed:focus-visible::before {
+.washed:focus-visible::before,
+.btn[data-variant='outline']:hover:not(:disabled)::before {
   /* 158%, as everything drawn with --stroke-swipe uses. No colour set here: the
      band is a layer, so every label keeps the contrast it already had. */
   background-size:
@@ -614,7 +684,12 @@ body::before {
   content: '';
 }
 
+/* Draws the .washed band, overhanging its own border the way a marker
+   overshoots a box. */
 .btn[data-variant='outline'] {
+  --wash-overhang: 0.6rem;
+  position: relative;
+  isolation: isolate;
   border-color: var(--line-strong);
   color: var(--soft);
 }
@@ -631,17 +706,8 @@ body::before {
     linear-gradient(to bottom, var(--mark-lift) 0 6%, transparent 24%);
 }
 
-/* The same band .washed draws, not a flat 16% fill and not the opaque mark. */
 .btn[data-variant='outline']:hover:not(:disabled) {
   border-color: var(--ink-accent);
-  background-image: var(--stroke-swipe-soft), var(--stroke-swipe-soft);
-  /* On the element, not a pseudo: a bordered control's band belongs inside its
-     own edge. calc() would only crop, since a background is clipped to the box. */
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size:
-    102% 158%,
-    102% 158%;
 }
 
 /* Reads as deliberately parked rather than broken: the label stays legible
@@ -882,8 +948,8 @@ main {
 }
 
 /* THE MARK — the single definition of the highlighter. Compose this one class;
-   never re-implement the band. The yellow is a ground only: 11.34:1 under
-   --mark-ink on either theme, which is why it needs no light/dark variant.
+   never re-implement the band. Every pen is a ground only, at least 7:1
+   under its own ink on either theme, which is why none needs a light/dark variant.
 
    box-decoration-break so a run long enough to wrap gets a band per line. */
 .marked,
@@ -897,7 +963,7 @@ main {
      descenders, which a mask on the text itself cannot do. -smudged, not
      -inked: the headline mark carries the ink-pools-low texture; the smaller
      marks (.marked-soft) stay flat on -inked. */
-  background: var(--stroke-swipe-smudged) 0 50% / 100% 100% no-repeat;
+  background: var(--stroke-swipe-smudged) 0 50% / var(--band-w, 100%) 100% no-repeat;
 }
 
 /* background-image, not background-color: forced-colors already strips the
@@ -930,4 +996,38 @@ main {
   /* On a Didone the italic is a genuinely different letterform rather than a
      slant, so it reads as a change of voice — which is what the turn is. */
   font-style: italic;
+}
+
+/* THE PEN SWAP. HighlighterFan steps <html> through lift → pre → draw: the old
+   ink comes off right to left (the band stays anchored left, so its right edge
+   retreats), the pen changes while nothing is on the page,
+   and the new ink goes down left to right. Text that sits ON a band falls back
+   to page ink while the band is gone, or --mark-ink would vanish into graphite.
+   Reduced motion skips the phases entirely, so these never run there. */
+/* Inherited, so every band that reads var(--band-w, 100%) lifts with no list
+   of consumers to keep in step. */
+:root[data-pen-phase='lift'],
+:root[data-pen-phase='pre'] {
+  --band-w: 0%;
+}
+
+:root[data-pen-phase='lift']
+  :is(.marked-soft, .marked, .page-head h1 > span, .page-head-title > span),
+:root[data-pen-phase='pre']
+  :is(.marked-soft, .marked, .page-head h1 > span, .page-head-title > span) {
+  color: var(--bone);
+}
+
+:root[data-pen-phase='lift']
+  :is(.marked-link, .marked-soft, .marked, .page-head h1 > span, .page-head-title > span) {
+  transition:
+    background-size 220ms cubic-bezier(0.5, 0, 0.9, 0.4),
+    color 140ms ease;
+}
+
+:root[data-pen-phase='draw']
+  :is(.marked-link, .marked-soft, .marked, .page-head h1 > span, .page-head-title > span) {
+  transition:
+    background-size 640ms var(--ease-out),
+    color 260ms ease 180ms;
 }

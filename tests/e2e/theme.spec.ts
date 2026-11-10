@@ -328,3 +328,168 @@ test.describe('Theme', () => {
     });
   });
 });
+
+// Chromium: the pen is shared root-layout markup and tokens; one engine answers it.
+test.describe('Highlighter pen', () => {
+  const ALTERNATE_PENS = ['blue', 'green', 'pink'] as const;
+
+  test('is picked from the fan and survives a reload', async ({ page }) => {
+    await page.goto('/');
+    const html = page.locator('html');
+    await expect(html).not.toHaveAttribute('data-pen');
+
+    // By keyboard: the splayed pens overlap toward their pivot, so a pointer
+    // aimed at a pen's centre lands on its neighbour. A reader aims at the tip.
+    // Tab climbs the fan from the chosen pen, so the top pen is reachable from
+    // whichever one is chosen.
+    const climb = async () => {
+      const names: string[] = [];
+      for (let step = 0; step < 3; step++) {
+        await page.keyboard.press('Tab');
+        names.push(
+          await page.evaluate(() => document.activeElement?.getAttribute('aria-label') ?? '')
+        );
+      }
+      return names;
+    };
+    await page.getByRole('button', { name: 'Yellow highlighter', exact: true }).focus();
+    expect(await climb()).toEqual(['Pink highlighter', 'Green highlighter', 'Blue highlighter']);
+    const blue = page.getByRole('button', { name: 'Blue highlighter', exact: true });
+    await page.keyboard.press('Enter');
+
+    await expect(blue).toHaveAttribute('aria-pressed', 'true');
+    await expect(html).toHaveAttribute('data-pen', 'blue');
+    await expect(html).not.toHaveAttribute('data-pen-phase');
+    await expect(blue, 'the pick reorders the fan without dropping focus').toBeFocused();
+    expect(await climb()).toEqual(['Pink highlighter', 'Green highlighter', 'Yellow highlighter']);
+
+    // Stamped by the head script, so the reload never paints a gold frame first.
+    await page.reload();
+    await expect(html).toHaveAttribute('data-pen', 'blue');
+    await expect(blue).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  for (const pen of ALTERNATE_PENS) {
+    for (const scheme of ['dark', 'light'] as const) {
+      test(`${pen} keeps every band legible in ${scheme}`, async ({ page }) => {
+        await page.emulateMedia({ colorScheme: scheme });
+        await page.addInitScript((stored) => localStorage.setItem('system-notes-pen', stored), pen);
+
+        for (const route of ROUTES) {
+          await page.goto(route);
+          await expect(page.locator('html')).toHaveAttribute('data-pen', pen);
+
+          const results = await new AxeBuilder({ page }).withRules(['color-contrast']).analyze();
+          // A rule that never ran reports no violations too.
+          expect(
+            results.passes.map((result) => result.id),
+            route
+          ).toContain('color-contrast');
+          expect(results.violations, route).toEqual([]);
+        }
+      });
+    }
+  }
+
+  // The loop above loads each route at rest. These are the states only
+  // interaction reaches: the swap's bare text, and the outline hover band.
+  for (const scheme of ['dark', 'light'] as const) {
+    test(`every pen keeps the swap and hover states legible in ${scheme}`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto('/');
+      const html = page.locator('html');
+      const scan = async (state: string) => {
+        const results = await new AxeBuilder({ page }).withRules(['color-contrast']).analyze();
+        expect(
+          results.passes.map((result) => result.id),
+          state
+        ).toContain('color-contrast');
+        expect(results.violations, state).toEqual([]);
+      };
+
+      for (const pen of ['yellow', ...ALTERNATE_PENS]) {
+        await page.evaluate((stamped) => {
+          document.documentElement.dataset.pen = stamped;
+          document.documentElement.dataset.penPhase = 'pre';
+        }, pen);
+        await expect(html).toHaveAttribute('data-pen-phase', 'pre');
+        await scan(`${pen} mid-swap`);
+
+        await page.evaluate(() => delete document.documentElement.dataset.penPhase);
+        await page.getByRole('button', { name: 'Light theme', exact: true }).hover();
+        await scan(`${pen} outline hover`);
+      }
+    });
+  }
+
+  test('restates every pre-inked band in every pen block', async ({ page }) => {
+    await page.goto('/');
+    // A data URI cannot read --mark, so a pen block that misses one leaves that
+    // band gold, and contrast still passes. Masks are drawn black and need none.
+    const inked = await page.evaluate(() => {
+      const names = new Set<string>();
+      for (const sheet of document.styleSheets) {
+        for (const rule of sheet.cssRules) {
+          if (!(rule instanceof CSSStyleRule) || rule.selectorText !== ':root') continue;
+          for (const name of rule.style) {
+            const value = rule.style.getPropertyValue(name);
+            if (name.startsWith('--stroke-') && !value.includes("fill='%23000'")) names.add(name);
+          }
+        }
+      }
+      return [...names];
+    });
+    expect(inked.length).toBeGreaterThan(0);
+
+    const read = () =>
+      page.evaluate(
+        (names) =>
+          names.map((name) => getComputedStyle(document.documentElement).getPropertyValue(name)),
+        inked
+      );
+    const gold = await read();
+    for (const pen of ALTERNATE_PENS) {
+      await page.evaluate((stamped) => {
+        document.documentElement.dataset.pen = stamped;
+      }, pen);
+      const painted = await read();
+      inked.forEach((name, index) =>
+        expect(painted[index], `${pen} ${name}`).not.toBe(gold[index])
+      );
+    }
+  });
+
+  test('repaints the headline band from the pen, not a baked-in gold', async ({ page }) => {
+    await page.goto('/');
+    const band = page.locator('.page-head h1 > span').first();
+    const gold = await band.evaluate((element) => getComputedStyle(element).backgroundImage);
+
+    await page.evaluate(() => {
+      document.documentElement.dataset.pen = 'pink';
+    });
+
+    await expect
+      .poll(() => band.evaluate((element) => getComputedStyle(element).backgroundImage))
+      .not.toBe(gold);
+  });
+});
+
+test.describe('Highlighter swap motion', () => {
+  test.use({ reducedMotion: 'no-preference' });
+
+  test('lifts the old ink right to left by keeping the band anchored left', async ({ page }) => {
+    await page.goto('/');
+    const band = page.locator('.page-head h1 > span').first();
+
+    await page.evaluate(() => {
+      document.documentElement.dataset.penPhase = 'lift';
+    });
+
+    // Mid-transition: part of the band is gone, and what remains still starts at
+    // the left edge, so the right edge is the one retreating.
+    await expect
+      .poll(() => band.evaluate((element) => getComputedStyle(element).backgroundSize))
+      .toMatch(/^(?!100%)\d+(\.\d+)?% /);
+    await expect(band).toHaveCSS('background-position-x', /^0(px|%)$/);
+  });
+});

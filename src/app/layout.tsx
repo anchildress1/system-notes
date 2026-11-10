@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Bodoni_Moda } from 'next/font/google';
 import localFont from 'next/font/local';
+import HighlighterFan from '@/components/HighlighterFan/HighlighterFan';
 import RouteFocus from '@/components/RouteFocus/RouteFocus';
 import SiteFooter from '@/components/SiteFooter/SiteFooter';
 import SiteHeader from '@/components/SiteHeader/SiteHeader';
@@ -8,6 +9,7 @@ import { getProjects } from '@/lib/api';
 import { algoliaPreconnectHost } from '@/lib/algolia';
 import { buildSiteJsonLd } from '@/lib/siteJsonLd';
 import { SITE_NAME, SOCIAL_IMAGE, SOCIAL_IMAGE_URL } from '@/lib/siteMetadata';
+import { PEN_SCRIPT } from '@/lib/pen';
 import { THEME_COLORS, THEME_SCRIPT } from '@/lib/theme';
 import { resolveBaseUrl, serializeJsonLd } from '@/lib/urlSafety';
 import './globals.css';
@@ -123,6 +125,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {/* Blocking, and first: it stamps data-theme before the first paint so a
             light reader never sees a dark frame. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: PEN_SCRIPT }} />
       </head>
       <body
         className={`${sans.variable} ${display.variable} ${editorial.variable}`}
@@ -132,6 +135,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <RouteFocus />
         {children}
         <SiteFooter />
+        <HighlighterFan />
       </body>
     </html>
   );
