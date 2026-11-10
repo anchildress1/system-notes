@@ -168,11 +168,11 @@ export default function HighlighterFan() {
     if (!event.currentTarget.contains(event.relatedTarget)) setFocus(false);
   };
 
-  const onKeyDown = (event: KeyboardEvent<HTMLFieldSetElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (event.key !== 'Escape') return;
     // Focus moves to the chosen pen first, because every other pen is about to
     // hide, and a hidden element holding focus strands the reader.
-    event.currentTarget.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus();
+    fanRef.current?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus();
     setFocus(false);
     setOpen(false);
     setHover(false);
@@ -205,7 +205,6 @@ export default function HighlighterFan() {
         }}
         onFocus={onFocus}
         onBlur={onBlur}
-        onKeyDown={onKeyDown}
       >
         <legend className="visually-hidden">Highlighter colour</legend>
         {order.map((id) => {
@@ -220,6 +219,7 @@ export default function HighlighterFan() {
               data-slot={chosen ? 3 : others.indexOf(id)}
               aria-pressed={chosen}
               aria-label={`${id[0].toUpperCase()}${id.slice(1)} highlighter`}
+              onKeyDown={onKeyDown}
               onClick={(event) =>
                 pick(id, (event.nativeEvent as Partial<PointerEvent>).pointerType ?? '')
               }
