@@ -1,4 +1,4 @@
-FROM node:26.13.0-trixie-slim AS installer
+FROM node:26.13.1-trixie-slim AS installer
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NPM_CONFIG_UPDATE_NOTIFIER=false
@@ -33,7 +33,7 @@ ENV NEXT_PUBLIC_ALGOLIA_AGENT_ID=$NEXT_PUBLIC_ALGOLIA_AGENT_ID
 # `postbuild` folds .next/static and public into .next/standalone.
 RUN npm run build
 
-FROM node:26.13.0-trixie-slim AS runner
+FROM node:26.13.1-trixie-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
